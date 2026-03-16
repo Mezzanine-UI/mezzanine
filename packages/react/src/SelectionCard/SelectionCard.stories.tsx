@@ -179,14 +179,20 @@ const ItemList = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-const ItemContent = ({ children }: { children: ReactNode }) => (
+const ItemContent = ({
+  children,
+  gap,
+}: {
+  children: ReactNode;
+  gap?: string;
+}) => (
   <div
     style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '8px',
-      width: '100%',
+      gap: gap ?? '8px',
       marginBottom: 16,
+      width: '100%',
     }}
   >
     {children}
@@ -367,7 +373,7 @@ export const Horizontal: Story = {
         <form onSubmit={(event) => event.preventDefault()}>
           <ItemList>
             <SectionItem direction="column" label="Radios:">
-              <ItemContent>
+              <ItemContent gap="var(--mzn-spacing-gap-calm)">
                 <Typography>Multiple Radios:</Typography>
                 <SelectionCard
                   defaultChecked
@@ -394,7 +400,7 @@ export const Horizontal: Story = {
               </ItemContent>
             </SectionItem>
             <SectionItem direction="column" label="Checkboxes:">
-              <ItemContent>
+              <ItemContent gap="var(--mzn-spacing-gap-calm)">
                 <Typography>Multiple Checkboxes:</Typography>
                 <SelectionCard
                   defaultChecked
@@ -618,7 +624,7 @@ export const Vertical: Story = {
         <form onSubmit={(event) => event.preventDefault()}>
           <ItemList>
             <SectionItem direction="column" label="Radios:">
-              <ItemContent>
+              <ItemContent gap="var(--mzn-spacing-gap-calm)">
                 <Typography>Multiple Radios:</Typography>
                 <SelectionCard
                   defaultChecked
@@ -648,7 +654,7 @@ export const Vertical: Story = {
               </ItemContent>
             </SectionItem>
             <SectionItem direction="column" label="Checkboxes:">
-              <ItemContent>
+              <ItemContent gap="var(--mzn-spacing-gap-calm)">
                 <Typography>Multiple Checkboxes:</Typography>
                 <SelectionCard
                   defaultChecked
