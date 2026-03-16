@@ -1326,7 +1326,7 @@ export const WithCustomRender: Story = {
             return (
               <div style={{ display: 'flex', gap: 4 }}>
                 {record.tags?.map((tag) => (
-                  <Tag key={tag} label={tag} size="minor" />
+                  <Tag key={tag} label={tag} size="sub" />
                 ))}
               </div>
             );
@@ -1794,7 +1794,7 @@ export const Combined: Story = {
             return (
               <div style={{ display: 'flex', gap: 4 }}>
                 {record.tags?.map((tag) => (
-                  <Tag key={tag} label={tag} size="minor" />
+                  <Tag key={tag} label={tag} size="sub" />
                 ))}
               </div>
             );
