@@ -4,7 +4,7 @@
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/effect' as effect;
 @use '~@mezzanine-ui/system/transition' as transition;
-@use './selection' as *;
+@use './selection-card' as *;
 
 $input-size: spacing.primitive-variable(12);
 $input-offset: spacing.primitive-variable(12);
