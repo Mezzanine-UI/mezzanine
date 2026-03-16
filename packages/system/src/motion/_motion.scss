@@ -3,7 +3,7 @@
 
 $prefix: mzn-motion;
 
-$duration-names: (fast, moderate, slow, loop, pause-short, pause-long);
+$duration-names: (fast, moderate, slow, long, loop, pause-short, pause-long);
 $default-durations: (
   fast: 150ms,
   moderate: 250ms,
