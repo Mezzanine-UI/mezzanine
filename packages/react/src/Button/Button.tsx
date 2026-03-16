@@ -82,8 +82,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             onClick(event);
           }
         }}
-        onMouseEnter={tooltipProps?.onMouseEnter}
-        onMouseLeave={tooltipProps?.onMouseLeave}
+        {...(tooltipProps && {
+          onMouseEnter: tooltipProps.onMouseEnter,
+          onMouseLeave: tooltipProps.onMouseLeave,
+        })}
       >
         {loading ? (
           renderIcon()
