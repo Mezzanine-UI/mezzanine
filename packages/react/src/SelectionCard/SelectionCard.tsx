@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEventHandler, forwardRef, MouseEvent, Ref, useId, useMemo } from 'react';
+import { CSSProperties, ChangeEventHandler, forwardRef, MouseEvent, Ref, useId, useMemo } from 'react';
 
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
@@ -70,9 +70,21 @@ export interface SelectionCardPropsBase
    */
   text: string;
   /**
+   * The max width of the text element.
+   * @example '112px' // 8 Chinese characters at 14px
+   * @example '168px' // 24 English letters at 14px
+   */
+  textMaxWidth?: CSSProperties['maxWidth'];
+  /**
    * The accessible description of selection.
    */
   supportingText?: string;
+  /**
+   * The max width of the supporting text element.
+   * @example '144px' // 12 Chinese characters at 12px
+   * @example '216px' // 36 English letters at 12px
+   */
+  supportingTextMaxWidth?: CSSProperties['maxWidth'];
   /**
    * Whether the selection is readonly.
    * @default false
@@ -128,7 +140,9 @@ const SelectionCard = forwardRef<HTMLLabelElement, SelectionCardProps>(
       readonly = false,
       selector = 'radio',
       supportingText,
+      supportingTextMaxWidth,
       text,
+      textMaxWidth,
       value,
       customIcon,
       onClick,
@@ -198,6 +212,7 @@ const SelectionCard = forwardRef<HTMLLabelElement, SelectionCardProps>(
               display="block"
               ellipsis
               id={textId}
+              style={textMaxWidth !== undefined ? { maxWidth: textMaxWidth } : undefined}
               variant="body-highlight"
             >
               {text}
@@ -209,6 +224,7 @@ const SelectionCard = forwardRef<HTMLLabelElement, SelectionCardProps>(
                 display="block"
                 ellipsis
                 id={supportingTextId}
+                style={supportingTextMaxWidth !== undefined ? { maxWidth: supportingTextMaxWidth } : undefined}
                 variant="caption"
               >
                 {supportingText}
