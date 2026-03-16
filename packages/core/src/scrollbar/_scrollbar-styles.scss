@@ -2,6 +2,7 @@
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/motion' as motion;
 @use '~@mezzanine-ui/system/transition' as transition;
 @use './scrollbar' as *;
 
@@ -33,6 +34,9 @@ $scrollbar-radius: radius.variable(full);
     --os-handle-bg: #{$scrollbar-thumb-color};
     --os-handle-bg-hover: #{$scrollbar-thumb-hover-color};
     --os-handle-bg-active: #{$scrollbar-thumb-hover-color};
+
+    transition: transition.entrance(opacity, fast),
+      transition.entrance(visibility, fast);
   }
 
   .os-scrollbar-vertical {
@@ -45,6 +49,11 @@ $scrollbar-radius: radius.variable(full);
     --os-size: calc(#{$scrollbar-size} + 2 * #{$scrollbar-padding-vertical});
     --os-padding-perpendicular: #{$scrollbar-padding-vertical};
     --os-padding-axis: #{$scrollbar-padding-horizontal};
+  }
+
+  .os-scrollbar-auto-hidden {
+    transition: transition.exit(opacity, fast, motion.duration(long)),
+      transition.exit(visibility, fast, motion.duration(long));
   }
 
   .os-scrollbar-handle {
