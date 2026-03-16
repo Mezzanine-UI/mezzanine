@@ -73,7 +73,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     passwordChecked: false,
     passwordCheckedLabel: 'Remember me',
     showCancelButton: true,
-    showDismissButton: false,
+    showDismissButton: true,
     showModalFooter: true,
     showModalHeader: true,
     showStatusTypeIcon: false,
