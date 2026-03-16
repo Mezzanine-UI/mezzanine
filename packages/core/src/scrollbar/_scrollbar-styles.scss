@@ -9,6 +9,8 @@ $scrollbar-thumb-color: palette.semantic-variable("scrollbar", neutral);
 $scrollbar-thumb-hover-color: palette.semantic-variable("scrollbar", strong);
 $scrollbar-track-hover-color: palette.semantic-variable("scrollbar", neutral-light);
 $scrollbar-size: spacing.semantic-variable(size, element, tight);
+$scrollbar-padding-horizontal: spacing.semantic-variable(padding, horizontal, micro);
+$scrollbar-padding-vertical: spacing.semantic-variable(padding, vertical, tiny);
 $scrollbar-radius: radius.variable(full);
 
 .#{$prefix} {
@@ -23,9 +25,6 @@ $scrollbar-radius: radius.variable(full);
   }
 
   .os-scrollbar {
-    --os-size: #{$scrollbar-size};
-    --os-padding-perpendicular: 0;
-    --os-padding-axis: 0;
     --os-track-border-radius: #{$scrollbar-radius};
     --os-track-bg: transparent;
     --os-track-bg-hover: #{$scrollbar-track-hover-color};
@@ -34,6 +33,18 @@ $scrollbar-radius: radius.variable(full);
     --os-handle-bg: #{$scrollbar-thumb-color};
     --os-handle-bg-hover: #{$scrollbar-thumb-hover-color};
     --os-handle-bg-active: #{$scrollbar-thumb-hover-color};
+  }
+
+  .os-scrollbar-vertical {
+    --os-size: calc(#{$scrollbar-size} + 2 * #{$scrollbar-padding-horizontal});
+    --os-padding-perpendicular: #{$scrollbar-padding-horizontal};
+    --os-padding-axis: #{$scrollbar-padding-vertical};
+  }
+
+  .os-scrollbar-horizontal {
+    --os-size: calc(#{$scrollbar-size} + 2 * #{$scrollbar-padding-vertical});
+    --os-padding-perpendicular: #{$scrollbar-padding-vertical};
+    --os-padding-axis: #{$scrollbar-padding-horizontal};
   }
 
   .os-scrollbar-handle {
