@@ -277,6 +277,8 @@ $file-icon-color: (
   }
 
   &:hover {
+    background-color: palette.semantic-variable("background", neutral-ghost);
+
     .#{$single-thumbnail-card-prefix}__overlay {
       background-color: palette.semantic-variable("overlay", subtle);
     }
@@ -319,6 +321,7 @@ $file-icon-color: (
       flex-shrink: 0;
       width: spacing.semantic-variable(size, element, roomy);
       height: spacing.semantic-variable(size, element, roomy);
+      margin: 2px;
       border-radius: radius.variable(base);
       background-color: map.get($file-icon-color, default);
       display: flex;
@@ -386,6 +389,7 @@ $file-icon-color: (
     transition: transition.standard(box-shadow, fast);
 
     &--empty {
+      border: 1px solid palette.semantic-variable("border", neutral-faint);
       pointer-events: none;
     }
 
