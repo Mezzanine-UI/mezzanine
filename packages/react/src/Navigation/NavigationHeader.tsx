@@ -47,7 +47,7 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
           icon={SiderIcon}
         />
         <BrandComponent
-          type="button"
+          type={onBrandClick ? 'button' : undefined}
           className={classes.content}
           onClick={onBrandClick}
         >
