@@ -230,7 +230,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       >
         <Tooltip
           disablePortal={false}
-          offsetMainAxis={8}
+          offsetMainAxis={8 + 6 /* 6 is the padding of the item */}
           options={{
             placement: collapsed ? 'right' : 'top',
           }}

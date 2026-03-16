@@ -79,7 +79,11 @@ const NavigationUserMenu = forwardRef<
       >
         <Tooltip
           disablePortal={false}
-          offsetMainAxis={8}
+          offsetMainAxis={
+            collapsed
+              ? 8 + 6 /* 6 is the padding of the item */
+              : 8 + 8 /* 8 is the padding of the item and avatar */
+          }
           options={{
             placement: collapsed ? 'right' : 'top',
           }}
