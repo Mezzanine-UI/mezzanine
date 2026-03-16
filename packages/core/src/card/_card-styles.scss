@@ -51,6 +51,7 @@ $file-icon-color: (
   @include button-utils.reset();
 
   --base-card-title-color: #{palette.semantic-variable(text, neutral-solid)};
+  --base-card-description-color: #{palette.semantic-variable(text, neutral)};
 
   width: 100%;
   height: 100%;
@@ -77,6 +78,7 @@ $file-icon-color: (
   }
 
   &--disabled {
+    --base-card-description-color: #{palette.semantic-variable(text, neutral-light)};
     --base-card-title-color: #{palette.semantic-variable(text, neutral-light)};
 
     background-color: palette.semantic-variable("background", neutral-subtle);
@@ -114,7 +116,7 @@ $file-icon-color: (
       &__description {
         @include typography.semantic-variable(caption);
 
-        color: palette.semantic-variable(text, neutral);
+        color: var(--base-card-description-color);
       }
     }
 
