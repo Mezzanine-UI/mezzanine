@@ -498,7 +498,7 @@ const NotificationCenter: NotificationCenter = ((
       {targetIcon
         ? (
           <div className={classes.iconContainer}>
-            <Icon icon={targetIcon} className={classes.severityIcon} />
+            <Icon icon={targetIcon} className={classes.severityIcon} size={32} />
           </div>
         )
         : null
@@ -512,18 +512,6 @@ const NotificationCenter: NotificationCenter = ((
         </div>
         {!hideButtons && (
           <ButtonGroup className={classes.action}>
-            {showConfirmButton
-              ? (
-                <Button
-                  onClick={onConfirm}
-                  size="minor"
-                  {...confirmButtonProps}
-                >
-                  {confirmButtonText}
-                </Button>
-              )
-              : <></>
-            }
             {showCancelButton
               ? (
                 <Button
@@ -533,6 +521,18 @@ const NotificationCenter: NotificationCenter = ((
                   {...cancelButtonProps}
                 >
                   {cancelButtonText}
+                </Button>
+              )
+              : <></>
+            }
+            {showConfirmButton
+              ? (
+                <Button
+                  onClick={onConfirm}
+                  size="minor"
+                  {...confirmButtonProps}
+                >
+                  {confirmButtonText}
                 </Button>
               )
               : <></>
