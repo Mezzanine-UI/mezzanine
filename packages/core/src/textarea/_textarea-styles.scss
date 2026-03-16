@@ -1,7 +1,8 @@
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/radius';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/typography';
 @use './textarea' as *;
 
 .#{$prefix}.#{$prefix} {
@@ -29,6 +30,13 @@
       background-clip: content-box;
       border: spacing.semantic-variable(gap, tight) solid transparent;
       border-radius: radius.variable(full);
+      cursor: pointer;
+      transition: transition.exit(background-color, fast);
+
+      &:hover {
+        background-color: palette.semantic-variable("scrollbar", strong);
+        transition: transition.entrance(background-color, fast);
+      }
     }
 
     &::-webkit-resizer {
