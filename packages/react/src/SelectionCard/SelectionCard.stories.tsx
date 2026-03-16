@@ -690,6 +690,111 @@ export const Vertical: Story = {
   ),
 };
 
+export const TextMaxWidth: Story = {
+  render: () => (
+    <>
+      <Section title="參照中文字建議:">
+        <ItemList>
+          <SectionItem label="標題 4-8字，子標題 4-12字，溢出時顯示 “...”">
+            <ItemContent>
+              <Typography>短文字（不截斷）:</Typography>
+              <SelectionCard
+                name="text-max-width-zh-short"
+                selector="radio"
+                supportingText="四個字"
+                text="四個字"
+                textMaxWidth="112px"
+                supportingTextMaxWidth="144px"
+                value="short"
+              />
+              <Typography>剛好到限制（8字 / 12字）:</Typography>
+              <SelectionCard
+                name="text-max-width-zh-exact"
+                selector="radio"
+                supportingText="適合這個方案選項使用"
+                text="這個選項適合你"
+                textMaxWidth="112px"
+                supportingTextMaxWidth="144px"
+                value="exact"
+              />
+              <Typography>超出限制（截斷）:</Typography>
+              <SelectionCard
+                name="text-max-width-zh-overflow"
+                selector="radio"
+                supportingText="這是一段超過十二個中文字的說明文字會被截斷"
+                text="這個選項的文字超過八個字會被截斷"
+                textMaxWidth="112px"
+                supportingTextMaxWidth="144px"
+                value="overflow"
+              />
+              <Typography>垂直超出限制 （截斷）:</Typography>
+              <SelectionCard
+                name="text-max-width-zh-overflow-vertical"
+                selector="radio"
+                supportingText="這是一段超過十二個中文字的說明文字會被截斷"
+                text="這個選項的文字超過八個字會被截斷"
+                textMaxWidth="112px"
+                direction="vertical"
+                supportingTextMaxWidth="144px"
+                value="overflow-vertical"
+              />
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+      <Section title="參照英文字建議:">
+        <ItemList>
+          <SectionItem label="標題 16-24 字，子標題 20-36 個字，溢出時顯示 “...”">
+            <ItemContent>
+              <Typography>Short text (no truncation):</Typography>
+              <SelectionCard
+                name="text-max-width-en-short"
+                selector="radio"
+                supportingText="Short desc"
+                text="Short label"
+                textMaxWidth="168px"
+                supportingTextMaxWidth="216px"
+                value="short"
+              />
+              <Typography>Near limit (24 / 36 letters):</Typography>
+              <SelectionCard
+                name="text-max-width-en-exact"
+                selector="radio"
+                supportingText="Supporting text near limit"
+                text="Label text near limit ok"
+                textMaxWidth="168px"
+                supportingTextMaxWidth="216px"
+                value="exact"
+              />
+              <Typography>Overflow (truncated):</Typography>
+              <SelectionCard
+                name="text-max-width-en-overflow"
+                selector="radio"
+                supportingText="This supporting text is way too long and will be truncated with ellipsis"
+                text="This label text is too long and will be truncated"
+                textMaxWidth="168px"
+                supportingTextMaxWidth="216px"
+                value="overflow"
+              />
+              <Typography>Overflow Vertical (truncated):</Typography>
+              <SelectionCard
+                name="text-max-width-en-overflow-vertical"
+                selector="radio"
+                supportingText="This supporting text is way too long and will be truncated with ellipsis"
+                text="This label text is too long and will be truncated"
+                textMaxWidth="168px"
+                direction="vertical"
+                supportingTextMaxWidth="216px"
+                value="overflow-vertical"
+              />
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+    </>
+  ),
+};
+
 export const SelectionCardGroupBasic: Story = {
   render: () => (
     <>
