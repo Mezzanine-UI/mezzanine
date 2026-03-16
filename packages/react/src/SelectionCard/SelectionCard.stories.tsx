@@ -146,7 +146,7 @@ const SectionItem = ({
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
-      width: '33%',
+      width: '100%',
       height: 'auto',
       backgroundColor: '#F3F4F6',
       padding: 32,
@@ -167,7 +167,14 @@ const SectionItem = ({
 );
 
 const ItemList = ({ children }: { children: ReactNode }) => (
-  <div style={{ display: 'flex', gap: '36px', alignItems: 'flex-start' }}>
+  <div
+    style={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '36px',
+      alignItems: 'flex-start',
+    }}
+  >
     {children}
   </div>
 );
