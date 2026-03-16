@@ -32,6 +32,7 @@ import {
 } from '@mezzanine-ui/icons';
 import Tag from '../Tag';
 import Button from '../Button';
+import Typography from '../Typography';
 import Toggle from '../Toggle';
 import Input from '../Input';
 import Icon from '../Icon';
@@ -59,12 +60,16 @@ const baseColumns: TableColumn<DataType>[] = [
     minWidth: 150,
   },
   {
-    dataIndex: 'age',
     key: 'age',
     title: 'Age',
     align: 'center',
     width: 100,
     minWidth: 100,
+    render: (record) => (
+      <Typography component="span" variant="body-mono">
+        {record.age}
+      </Typography>
+    ),
   },
   {
     dataIndex: 'address',
@@ -391,8 +396,12 @@ export const CreateDeleteTransition: Story = {
           width: 150,
         },
         {
-          dataIndex: 'age',
           key: 'age',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           title: 'Age',
           width: 100,
         },
@@ -598,8 +607,12 @@ export const CreateDeleteTransitionWithExpansion: Story = {
           width: 150,
         },
         {
-          dataIndex: 'age',
           key: 'age',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           title: 'Age',
           width: 100,
         },
@@ -720,8 +733,12 @@ export const WithSorting: Story = {
           width: 150,
         },
         {
-          dataIndex: 'age',
           key: 'age',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           sortOrder:
             sortOrder?.key === 'age' ? sortOrder?.sortOrder : undefined,
           onSort: (key, order) => {
@@ -1125,14 +1142,22 @@ export const WithFixedColumns: Story = {
           width: 120,
         },
         {
-          dataIndex: 'age',
           key: 'age',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           title: 'Age',
           width: 140,
         },
         {
-          dataIndex: 'age',
           key: 'age2',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           title: 'Fixed Age',
           width: 120,
           fixed: 'start',
@@ -1212,8 +1237,12 @@ export const WithResizableColumns: Story = {
           maxWidth: 220,
         },
         {
-          dataIndex: 'age',
           key: 'age',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           title: 'Age',
           minWidth: 80,
         },
@@ -1283,7 +1312,11 @@ export const WithCustomRender: Story = {
         },
         {
           key: 'age',
-          dataIndex: 'age',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           title: 'Age',
           width: 100,
         },
@@ -1705,8 +1738,12 @@ export const Combined: Story = {
           maxWidth: 300,
         },
         {
-          dataIndex: 'age',
           key: 'age',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.age}
+            </Typography>
+          ),
           sortOrder:
             sortOrder?.key === 'age' ? sortOrder?.sortOrder : undefined,
           onSort: (key, order) => {
