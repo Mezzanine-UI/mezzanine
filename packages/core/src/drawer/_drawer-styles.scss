@@ -76,7 +76,7 @@ $drawer-size-config: (
     border-block-end: 1px solid palette.semantic-variable(separator, neutral-faint);
     display: flex;
     justify-content: space-between;
-    padding-block: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, vertical, comfort);
+    padding-block: spacing.semantic-variable(padding, vertical, base);
     padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
 
     &--button-only {
