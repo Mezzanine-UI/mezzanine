@@ -10,17 +10,27 @@ describe('<ModalFooter />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<ModalFooter ref={ref} confirmText="Confirm" />),
+    render(
+      <ModalFooter ref={ref} confirmText="Confirm" showCancelButton={false} />,
+    ),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<ModalFooter className={className} confirmText="Confirm" />),
+    render(
+      <ModalFooter
+        className={className}
+        confirmText="Confirm"
+        showCancelButton={false}
+      />,
+    ),
   );
 
   describe('basic rendering', () => {
     it('should bind footer class and render children', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter confirmText="Confirm">foo</ModalFooter>,
+        <ModalFooter confirmText="Confirm" showCancelButton={false}>
+          foo
+        </ModalFooter>,
       );
       const element = getHostHTMLElement();
 
@@ -30,7 +40,7 @@ describe('<ModalFooter />', () => {
 
     it('should render confirm button by default', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter confirmText="Confirm" />,
+        <ModalFooter confirmText="Confirm" showCancelButton={false} />,
       );
       const element = getHostHTMLElement();
       const buttons = element.querySelectorAll(
@@ -46,7 +56,7 @@ describe('<ModalFooter />', () => {
   describe('prop: actionsButtonLayout', () => {
     it('should render fixed layout by default', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter confirmText="Confirm" />,
+        <ModalFooter confirmText="Confirm" showCancelButton={false} />,
       );
       const element = getHostHTMLElement();
       const buttonContainer = element.querySelector(
@@ -62,7 +72,11 @@ describe('<ModalFooter />', () => {
 
     it('should render fill layout when actionsButtonLayout="fill"', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter actionsButtonLayout="fill" confirmText="Confirm" />,
+        <ModalFooter
+          actionsButtonLayout="fill"
+          confirmText="Confirm"
+          showCancelButton={false}
+        />,
       );
       const element = getHostHTMLElement();
       const buttonContainer = element.querySelector(
@@ -92,11 +106,7 @@ describe('<ModalFooter />', () => {
 
     it('should hide cancel button when showCancelButton=false', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter
-          confirmText="Confirm"
-          cancelText="Cancel"
-          showCancelButton={false}
-        />,
+        <ModalFooter confirmText="Confirm" showCancelButton={false} />,
       );
       const element = getHostHTMLElement();
       const buttons = element.querySelectorAll(
@@ -172,6 +182,7 @@ describe('<ModalFooter />', () => {
             auxiliaryContentType="annotation"
             annotation="This is a note"
             confirmText="Confirm"
+            showCancelButton={false}
           />,
         );
         const element = getHostHTMLElement();
@@ -192,6 +203,7 @@ describe('<ModalFooter />', () => {
             auxiliaryContentButtonText="Extra Action"
             auxiliaryContentOnClick={onClick}
             confirmText="Confirm"
+            showCancelButton={false}
           />,
         );
         const element = getHostHTMLElement();
@@ -217,6 +229,7 @@ describe('<ModalFooter />', () => {
             auxiliaryContentChecked={false}
             auxiliaryContentOnChange={onChange}
             confirmText="Confirm"
+            showCancelButton={false}
           />,
         );
         const element = getHostHTMLElement();
@@ -242,6 +255,7 @@ describe('<ModalFooter />', () => {
             auxiliaryContentChecked={true}
             auxiliaryContentOnChange={onChange}
             confirmText="Confirm"
+            showCancelButton={false}
           />,
         );
         const element = getHostHTMLElement();
@@ -267,6 +281,7 @@ describe('<ModalFooter />', () => {
             passwordButtonText="Forgot password?"
             passwordOnClick={onButtonClick}
             confirmText="Login"
+            showCancelButton={false}
           />,
         );
         const element = getHostHTMLElement();
@@ -298,6 +313,7 @@ describe('<ModalFooter />', () => {
             passwordCheckedLabel="Remember me"
             passwordButtonText="Forgot password?"
             confirmText="Login"
+            showCancelButton={false}
           />,
         );
         const element = getHostHTMLElement();

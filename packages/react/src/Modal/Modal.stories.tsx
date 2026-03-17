@@ -2,6 +2,7 @@ import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { ReactNode, useCallback, useState } from 'react';
 import Modal, {
   ModalBodyForVerification,
+  ModalFooterCancelProps,
   ModalHeaderLayoutProps,
   ModalSize,
   ModalStatusType,
@@ -183,6 +184,10 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     const [open, setOpen] = useState(false);
     const onClose = useCallback(() => setOpen(false), []);
 
+    const cancelProps: ModalFooterCancelProps = showCancelButton
+      ? { cancelText: cancelText ?? '' }
+      : { showCancelButton: false };
+
     const baseProps = {
       actionsButtonLayout,
       annotation,
@@ -192,7 +197,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       auxiliaryContentOnChange: () => {},
       auxiliaryContentOnClick: () => {},
       auxiliaryContentType,
-      cancelText,
+      ...cancelProps,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
       fullScreen,
@@ -207,7 +212,6 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       passwordCheckedLabel,
       passwordCheckedOnChange: passwordCheckedOnChange || (() => {}),
       passwordOnClick: () => {},
-      showCancelButton,
       showDismissButton,
       size,
     };
@@ -578,6 +582,7 @@ export const ModalHeaderCombinations: StoryObj = {
       modalType: 'standard' as const,
       onClose,
       onConfirm: onClose,
+      showCancelButton: false as const,
       showModalFooter: true as const,
       showModalHeader: true as const,
     };

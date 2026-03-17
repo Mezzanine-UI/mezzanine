@@ -180,7 +180,6 @@ const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
       ? {
           showModalFooter: true as const,
           confirmText,
-          showCancelButton: true,
           cancelText,
           onCancel: handleCancel,
           onConfirm: handleConfirm,

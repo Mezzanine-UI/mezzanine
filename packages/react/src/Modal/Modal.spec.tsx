@@ -298,6 +298,7 @@ describe('<Modal />', () => {
           modalType="standard"
           showModalFooter
           confirmText="Confirm"
+          showCancelButton={false}
         />,
       );
 
@@ -315,6 +316,7 @@ describe('<Modal />', () => {
           modalType="extendedSplit"
           showModalFooter
           confirmText="Confirm"
+          showCancelButton={false}
           extendedSplitLeftSideContent={<div>Left</div>}
           extendedSplitRightSideContent={<div>Right</div>}
         />,
