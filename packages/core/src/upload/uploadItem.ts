@@ -1,9 +1,25 @@
 export const uploadItemPrefix = 'mzn-upload-item';
 
+/**
+ * 上傳項目的狀態。
+ * - `'done'` — 上傳完成
+ * - `'error'` — 上傳錯誤
+ * - `'loading'` — 上傳中
+ */
 export type UploadItemStatus = 'done' | 'error' | 'loading';
 
+/**
+ * 上傳項目的尺寸規格。
+ * - `'main'` — 主要尺寸（較大）
+ * - `'sub'` — 次要尺寸（較小）
+ */
 export type UploadItemSize = 'main' | 'sub';
 
+/**
+ * 上傳項目的預覽類型。
+ * - `'icon'` — 以圖示呈現
+ * - `'thumbnail'` — 以縮圖呈現
+ */
 export type UploadItemType = 'icon' | 'thumbnail';
 
 export const uploadItemClasses = {

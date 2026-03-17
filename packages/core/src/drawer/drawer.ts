@@ -6,6 +6,12 @@ export const drawerPrefix = 'mzn-drawer';
  */
 export type DrawerPlacement = 'top' | 'right' | 'bottom' | 'left';
 
+/**
+ * Drawer 的寬度尺寸。
+ * - `'narrow'` — 最窄尺寸
+ * - `'medium'` — 中等尺寸
+ * - `'wide'` — 寬尺寸
+ */
 export type DrawerSize = 'narrow' | 'medium' | 'wide';
 
 export const drawerClasses = {

@@ -62,7 +62,40 @@ export interface ToggleProps
 }
 
 /**
- * The react component for `mezzanine` toggle.
+ * 切換開關元件（亦以 `Switch` 名稱匯出），用於表示開／關二元狀態。
+ *
+ * 支援受控（`checked` + `onChange`）與非受控（`defaultChecked`）兩種用法；
+ * `label` 顯示於開關右側，`supportingText` 顯示於 label 下方作為輔助說明。
+ * `disabled` 可透過 `FormControlContext` 自動繼承，無需手動傳入。
+ *
+ * @example
+ * ```tsx
+ * import Toggle from '@mezzanine-ui/react/Toggle';
+ *
+ * // 受控用法
+ * <Toggle
+ *   checked={enabled}
+ *   onChange={(e) => setEnabled(e.target.checked)}
+ *   label="啟用通知"
+ * />
+ *
+ * // 非受控用法（預設開啟）
+ * <Toggle defaultChecked label="自動儲存" />
+ *
+ * // 帶輔助說明文字
+ * <Toggle
+ *   checked={darkMode}
+ *   onChange={(e) => setDarkMode(e.target.checked)}
+ *   label="深色模式"
+ *   supportingText="切換介面主題配色"
+ * />
+ *
+ * // 停用狀態
+ * <Toggle disabled label="此功能暫不開放" />
+ * ```
+ *
+ * @see {@link useSwitchControlValue} 管理 Toggle 受控／非受控值狀態的 hook
+ * @see {@link Checkbox} 多選框元件，適用於多選場景
  */
 const Toggle = forwardRef<HTMLDivElement, ToggleProps>(
   function Toggle(props, ref) {

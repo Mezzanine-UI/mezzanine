@@ -4,6 +4,12 @@ import {
   WarningFilledIcon,
 } from '@mezzanine-ui/icons';
 
+/**
+ * AlertBanner 的嚴重程度等級。
+ * - `'info'` — 一般資訊提示
+ * - `'warning'` — 警告訊息
+ * - `'error'` — 錯誤訊息
+ */
 export type AlertBannerSeverity = 'info' | 'warning' | 'error';
 
 export const alertBannerPrefix = 'mzn-alert-banner';

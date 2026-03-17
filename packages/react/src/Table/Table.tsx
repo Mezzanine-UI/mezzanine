@@ -703,9 +703,57 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 }
 
 /**
- * Table is a high-performance data table component with support for
- * virtual scrolling, column resizing, fixed columns, row selection,
- * sorting, expandable rows, and drag-and-drop row reordering.
+ * 資料表格元件，支援排序、選取、展開、虛擬捲動與拖曳排序等功能。
+ *
+ * 透過 `columns` 定義欄位結構，`dataSource` 傳入資料列；可搭配 `rowSelection`
+ * 啟用勾選功能、`expandable` 展開子列、`scroll.virtualized` 開啟虛擬捲動以渲染大量資料。
+ * `draggable` 與 `pinnable` 為互斥選項，無法同時啟用。
+ *
+ * @example
+ * ```tsx
+ * import Table from '@mezzanine-ui/react/Table';
+ *
+ * // 基本用法
+ * <Table
+ *   columns={[
+ *     { key: 'name', title: '名稱', dataIndex: 'name', width: 200 },
+ *     { key: 'age', title: '年齡', dataIndex: 'age', width: 100 },
+ *   ]}
+ *   dataSource={[
+ *     { key: '1', name: 'Alice', age: 30 },
+ *     { key: '2', name: 'Bob', age: 25 },
+ *   ]}
+ * />
+ *
+ * // 啟用虛擬捲動（大資料量）
+ * <Table
+ *   columns={columns}
+ *   dataSource={largeData}
+ *   scroll={{ y: 400, virtualized: true }}
+ * />
+ *
+ * // 勾選列 + 批次操作
+ * <Table
+ *   columns={columns}
+ *   dataSource={data}
+ *   rowSelection={{
+ *     mode: 'checkbox',
+ *     selectedRowKeys,
+ *     onChange: setSelectedRowKeys,
+ *   }}
+ * />
+ *
+ * // 可展開子列
+ * <Table
+ *   columns={columns}
+ *   dataSource={data}
+ *   expandable={{
+ *     expandedRowRender: (row) => <div>{row.detail}</div>,
+ *   }}
+ * />
+ * ```
+ *
+ * @see {@link Pagination} 搭配 `pagination` prop 使用分頁元件
  */
 export const Table = forwardRef(
   TableInner as Parameters<typeof forwardRef>[0],

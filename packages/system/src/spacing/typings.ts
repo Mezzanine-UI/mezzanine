@@ -44,22 +44,35 @@ export type SpacingScale =
 export type SpacingPrimitives = Partial<Record<SpacingScale, string | number>>;
 
 /**
- * Spacing semantic contexts - 語意化間距的使用情境
+ * 語意化間距的使用情境。
+ *
+ * - `'size'` — 元素或容器的固定尺寸（寬、高）
+ * - `'gap'` — 元素之間的間隙
+ * - `'padding'` — 元素的內邊距
  */
 export type SpacingContext = 'size' | 'gap' | 'padding';
 
 /**
- * Spacing mode - 間距模式
+ * 間距模式。
+ *
+ * - `'default'` — 預設間距，適用於一般版面
+ * - `'compact'` — 緊湊間距，適用於密集排列或空間受限的介面
  */
 export type SpacingMode = 'default' | 'compact';
 
 /**
- * Size categories - 尺寸分類
+ * 尺寸分類。
+ *
+ * - `'element'` — 單一元素（如按鈕、輸入框）的尺寸
+ * - `'container'` — 容器區塊（如面板、卡片）的尺寸
  */
 export type SizeCategory = 'element' | 'container';
 
 /**
- * Padding categories - 內邊距分類
+ * 內邊距分類。
+ *
+ * - `'horizontal'` — 水平方向（左、右）的內邊距
+ * - `'vertical'` — 垂直方向（上、下）的內邊距
  */
 export type PaddingCategory = 'horizontal' | 'vertical';
 

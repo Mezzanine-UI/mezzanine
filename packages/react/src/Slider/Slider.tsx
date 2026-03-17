@@ -76,9 +76,13 @@ export interface SliderBaseProps
 }
 
 export type SliderWithInputProps = SliderBaseProps & {
+  /** 此配置下不適用。 */
   onPrefixIconClick?: never;
+  /** 此配置下不適用。 */
   onSuffixIconClick?: never;
+  /** 此配置下不適用。 */
   prefixIcon?: never;
+  /** 此配置下不適用。 */
   suffixIcon?: never;
   /**
    * Whether to show input box to allow user to input value.
@@ -107,10 +111,15 @@ export type SliderWithIconProps = SliderBaseProps & {
 };
 
 export type SliderWithoutAddonsProps = SliderBaseProps & {
+  /** 此配置下不適用。 */
   onPrefixIconClick?: never;
+  /** 此配置下不適用。 */
   onSuffixIconClick?: never;
+  /** 此配置下不適用。 */
   prefixIcon?: never;
+  /** 此配置下不適用。 */
   suffixIcon?: never;
+  /** 此配置下不適用。 */
   withInput?: never;
 };
 
@@ -120,6 +129,7 @@ export type SliderAddonProps =
   | SliderWithoutAddonsProps;
 
 export type SingleSliderProps = SliderAddonProps & {
+  /** 滑桿值變更時的回呼函式。 */
   onChange?: (value: SingleSliderValue) => void;
   /**
    * The value of the slider.
@@ -128,6 +138,7 @@ export type SingleSliderProps = SliderAddonProps & {
 };
 
 export type RangeSliderProps = SliderAddonProps & {
+  /** 範圍滑桿值變更時的回呼函式，回傳 [min, max] 元組。 */
   onChange?: (value: RangeSliderValue) => void;
   /**
    * The value of the slider.

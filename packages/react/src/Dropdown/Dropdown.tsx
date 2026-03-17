@@ -40,7 +40,10 @@ import DropdownItem from './DropdownItem';
 
 // Helper type to extract ref from a ReactElement.
 // Models `ref` on the element itself, which is compatible with React 18 and 19.
-type ReactElementWithRef<P, E extends Element = HTMLElement> = ReactElement<P> & {
+type ReactElementWithRef<
+  P,
+  E extends Element = HTMLElement,
+> = ReactElement<P> & {
   ref?: Ref<E>;
 };
 
@@ -280,6 +283,53 @@ export interface DropdownProps extends DropdownItemSharedProps {
   scrollbarOptions?: import('overlayscrollbars').PartialOptions;
 }
 
+/**
+ * 下拉選單元件，以 `Button` 或 `Input` 作為觸發元素，點擊後展開選項列表。
+ *
+ * 支援受控（`open`）與非受控兩種開關模式，可透過 `type` 切換單選或多選行為，
+ * 並透過 `inputPosition` 選擇彈出（outside）或內嵌（inside）的輸入框位置。
+ * 可搭配 `showDropdownActions` 顯示確認／取消操作列，以及 `status` 設定
+ * 載入中或空狀態的顯示內容。
+ *
+ * @example
+ * ```tsx
+ * import Dropdown from '@mezzanine-ui/react/Dropdown';
+ * import Button from '@mezzanine-ui/react/Button';
+ * import Input from '@mezzanine-ui/react/Input';
+ *
+ * // 以 Button 為觸發元素
+ * <Dropdown
+ *   options={[{ label: '選項一', value: '1' }, { label: '選項二', value: '2' }]}
+ *   onSelect={(option) => console.log(option)}
+ * >
+ *   <Button>請選擇</Button>
+ * </Dropdown>
+ *
+ * // 以 Input 為觸發元素，同寬展開
+ * <Dropdown
+ *   options={[{ label: '台北', value: 'tpe' }, { label: '台中', value: 'txg' }]}
+ *   sameWidth
+ *   onSelect={(opt) => setValue(opt.value)}
+ * >
+ *   <Input placeholder="搜尋城市" />
+ * </Dropdown>
+ *
+ * // 多選模式搭配操作列
+ * <Dropdown
+ *   type="multiple"
+ *   options={options}
+ *   showDropdownActions
+ *   actionConfirmText="確認"
+ *   actionCancelText="取消"
+ *   onActionConfirm={handleConfirm}
+ * >
+ *   <Button>多選</Button>
+ * </Dropdown>
+ * ```
+ *
+ * @see {@link Select} 封裝好選取邏輯的選擇器元件
+ * @see {@link AutoComplete} 具備自動補全功能的輸入元件
+ */
 export default function Dropdown(props: DropdownProps) {
   const {
     activeIndex: activeIndexProp,
@@ -617,11 +667,16 @@ export default function Dropdown(props: DropdownProps) {
   );
 
   const triggerElement = useMemo(() => {
-    const childWithRef = children as ReactElementWithRef<ButtonProps | InputProps, HTMLElement>;
+    const childWithRef = children as ReactElementWithRef<
+      ButtonProps | InputProps,
+      HTMLElement
+    >;
     const childProps = childWithRef.props;
     const childRef = getElementRef(childWithRef);
     const composedRef = composeRefs<HTMLElement>([anchorRef, childRef]);
-    const originalOnClick = childProps.onClick as React.MouseEventHandler<HTMLElement> | undefined;
+    const originalOnClick = childProps.onClick as
+      | React.MouseEventHandler<HTMLElement>
+      | undefined;
 
     return cloneElement(childWithRef, {
       ref: composedRef,
@@ -642,13 +697,22 @@ export default function Dropdown(props: DropdownProps) {
       return null;
     }
 
-    const childWithRef = children as ReactElementWithRef<ButtonProps | InputProps, HTMLElement>;
+    const childWithRef = children as ReactElementWithRef<
+      ButtonProps | InputProps,
+      HTMLElement
+    >;
     const childProps = childWithRef.props;
     const childRef = getElementRef(childWithRef);
     const composedRef = composeRefs<HTMLElement>([childRef]);
-    const originalOnBlur = childProps.onBlur as React.FocusEventHandler<HTMLElement> | undefined;
-    const originalOnClick = childProps.onClick as React.MouseEventHandler<HTMLElement> | undefined;
-    const originalOnFocus = childProps.onFocus as React.FocusEventHandler<HTMLElement> | undefined;
+    const originalOnBlur = childProps.onBlur as
+      | React.FocusEventHandler<HTMLElement>
+      | undefined;
+    const originalOnClick = childProps.onClick as
+      | React.MouseEventHandler<HTMLElement>
+      | undefined;
+    const originalOnFocus = childProps.onFocus as
+      | React.FocusEventHandler<HTMLElement>
+      | undefined;
 
     return cloneElement(childWithRef, {
       ref: composedRef,

@@ -104,22 +104,47 @@ export function getRowKey(record: TableDataSource): string {
   return '';
 }
 
-/** Sort direction type */
+/**
+ * 欄位的排序方向。
+ * - `'ascend'` — 升冪排序
+ * - `'descend'` — 降冪排序
+ * - `null` — 無排序
+ */
 export type SortOrder = 'ascend' | 'descend' | null;
 
-/** Column alignment */
+/**
+ * 欄位內容的對齊方式。
+ * - `'start'` — 靠左對齊
+ * - `'center'` — 置中對齊
+ * - `'end'` — 靠右對齊
+ */
 export type ColumnAlign = 'start' | 'center' | 'end';
 
-/** Highlight mode for hover effects */
+/**
+ * 滑鼠懸停時的高亮模式。
+ * - `'cell'` — 僅高亮單一儲存格
+ * - `'column'` — 高亮整欄
+ * - `'row'` — 高亮整列
+ * - `'cross'` — 同時高亮所在欄與列
+ */
 export type HighlightMode = 'cell' | 'column' | 'row' | 'cross';
 
 /** Fixed column position */
 export type FixedType = boolean | 'start' | 'end';
 
-/** Table size type */
+/**
+ * 表格的尺寸規格。
+ * - `'main'` — 主要尺寸（較大）
+ * - `'sub'` — 次要尺寸（較小）
+ */
 export type TableSize = 'main' | 'sub';
 
-/** Row state for semantic background color overrides */
+/**
+ * 資料列的語意狀態，用於覆蓋背景色。
+ * - `'added'` — 新增狀態
+ * - `'deleted'` — 刪除狀態
+ * - `'disabled'` — 停用狀態
+ */
 export type TableRowState = 'added' | 'deleted' | 'disabled';
 
 /**
@@ -227,7 +252,11 @@ export type TableColumnWithMinWidth<
   | TableColumnWithDataIndexAndMinWidth<T>
   | TableColumnWithRenderAndMinWidth<T>;
 
-/** Selection mode for row selection */
+/**
+ * 資料列的選取模式。
+ * - `'checkbox'` — 多選模式
+ * - `'radio'` — 單選模式
+ */
 export type TableSelectionMode = 'checkbox' | 'radio';
 
 /**

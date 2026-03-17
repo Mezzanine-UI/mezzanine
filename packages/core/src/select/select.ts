@@ -1,7 +1,17 @@
 import { TextFieldSize } from '../text-field';
 
 export type SelectInputSize = TextFieldSize;
+/**
+ * Select 的選取模式。
+ * - `'single'` — 單選模式
+ * - `'multiple'` — 多選模式
+ */
 export type SelectMode = 'single' | 'multiple';
+/**
+ * Select 觸發按鈕的顯示狀態類型。
+ * - `'default'` — 預設樣式
+ * - `'error'` — 錯誤樣式
+ */
 export type SelectTriggerType = 'default' | 'error';
 
 export const selectPrefix = 'mzn-select';

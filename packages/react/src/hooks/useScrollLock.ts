@@ -132,13 +132,15 @@ function isIOS(): boolean {
 }
 
 /**
- * Hook to lock/unlock body scroll
- * Handles multiple concurrent locks (nested modals/overlays)
- * Prevents layout shift by reserving scrollbar width
- * Handles iOS rubber band scrolling
+ * 鎖定／解鎖頁面捲動的 Hook。
+ *
+ * 支援多層巢狀鎖定（nested modals/overlays），保留捲軸寬度以防止版面偏移，
+ * 並針對 iOS Safari 的 rubber band scrolling 進行特別處理。
  *
  * @example
  * ```tsx
+ * import { useScrollLock } from '@mezzanine-ui/react';
+ *
  * function Modal({ open }) {
  *   useScrollLock({ enabled: open });
  *   return <div>...</div>;

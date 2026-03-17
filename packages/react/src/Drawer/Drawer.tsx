@@ -225,6 +225,46 @@ export interface DrawerProps
   size?: DrawerSize;
 }
 
+/**
+ * 從螢幕右側滑入的抽屜面板元件。
+ *
+ * 使用 `Backdrop` 作為遮罩層，並以 `Slide` 動畫過渡效果呈現開關狀態。
+ * 支援標題列、自訂控制列（含分頁 Radio）、底部操作按鈕區域，以及按下 Escape 鍵關閉。
+ * 當多個 Drawer 同時開啟時，Escape 鍵只會關閉最上層的 Drawer。
+ *
+ * @example
+ * ```tsx
+ * import Drawer from '@mezzanine-ui/react/Drawer';
+ *
+ * // 基本用法
+ * <Drawer open={open} onClose={() => setOpen(false)} isHeaderDisplay headerTitle="詳細資料">
+ *   <p>抽屜內容</p>
+ * </Drawer>
+ *
+ * // 帶有底部操作按鈕
+ * <Drawer
+ *   open={open}
+ *   onClose={() => setOpen(false)}
+ *   isHeaderDisplay
+ *   headerTitle="編輯"
+ *   isBottomDisplay
+ *   bottomPrimaryActionText="確認"
+ *   bottomOnPrimaryActionClick={handleSubmit}
+ *   bottomSecondaryActionText="取消"
+ *   bottomOnSecondaryActionClick={() => setOpen(false)}
+ * >
+ *   <form>表單內容</form>
+ * </Drawer>
+ *
+ * // 使用 contentKey 強制重新掛載內容
+ * <Drawer open={open} onClose={() => setOpen(false)} contentKey={recordId}>
+ *   <RecordDetail id={recordId} />
+ * </Drawer>
+ * ```
+ *
+ * @see {@link Modal} 對話框元件
+ * @see {@link Backdrop} 遮罩層元件
+ */
 const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
   const {
     bottomGhostActionDisabled,

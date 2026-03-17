@@ -283,7 +283,37 @@ export type InputProps =
   | PasswordInputProps;
 
 /**
- * The react component for `mezzanine` input.
+ * 多功能輸入框元件，透過 `variant` 支援多種輸入類型。
+ *
+ * 支援以下八種 variant：`base`（基本輸入）、`affix`（帶前後綴裝飾）、`search`（搜尋，預設帶清除鍵）、
+ * `number`（原生數字輸入）、`measure`（格式化數字，可選轉盤按鈕）、`action`（帶操作按鈕）、
+ * `select`（帶下拉選單按鈕）、`password`（密碼，可切換可見性並顯示強度指示器）。
+ * `measure` variant 會自動以千分位格式化顯示值，並在 `onChange` 時回傳原始數值。
+ *
+ * @example
+ * ```tsx
+ * import Input from '@mezzanine-ui/react/Input';
+ *
+ * // 基本輸入（可清除）
+ * <Input variant="base" clearable placeholder="請輸入文字" />
+ *
+ * // 搜尋輸入
+ * <Input variant="search" placeholder="搜尋關鍵字" />
+ *
+ * // 密碼輸入（含強度指示器）
+ * <Input
+ *   variant="password"
+ *   placeholder="請輸入密碼"
+ *   showPasswordStrengthIndicator
+ *   passwordStrengthIndicator={{ strength: 2 }}
+ * />
+ *
+ * // 數字計量輸入（含轉盤按鈕）
+ * <Input variant="measure" suffix="px" showSpinner min={0} max={100} />
+ * ```
+ *
+ * @see {@link FormField} 用於包裹 Input 並提供標籤與錯誤訊息
+ * @see {@link TextField} Input 底層使用的文字框容器元件
  */
 const Input = forwardRef<HTMLDivElement, InputProps>(
   function Input(props, ref) {

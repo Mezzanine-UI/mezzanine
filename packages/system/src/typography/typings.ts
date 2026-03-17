@@ -3,6 +3,13 @@ export type TypographyPrimitiveFontFamily =
   | 'noto-sans-tc'
   | 'sf-mono';
 
+/**
+ * 字體原始字重。
+ *
+ * - `'regular'` — 標準字重（400），適用於內文
+ * - `'medium'` — 中等字重（500），適用於次要強調
+ * - `'semibold'` — 半粗字重（600），適用於標題或主要強調
+ */
 export type TypographyPrimitiveFontWeight = 'regular' | 'medium' | 'semibold';
 
 export type TypographyPrimitiveFontSize = 24 | 18 | 16 | 14 | 12 | 10;

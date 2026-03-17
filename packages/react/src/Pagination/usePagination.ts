@@ -21,6 +21,26 @@ export const range = (start: number, end: number) => {
   return Array.from({ length }, (_, i) => start + i);
 };
 
+/**
+ * 計算分頁項目清單的 Hook。
+ *
+ * 根據 `total`、`pageSize`、`current`、`boundaryCount` 與 `siblingCount` 等參數，
+ * 計算出包含頁碼按鈕、省略號、上一頁、下一頁的 `PaginationItemProps` 陣列。
+ *
+ * @example
+ * ```tsx
+ * import { usePagination } from '@mezzanine-ui/react';
+ *
+ * const { items } = usePagination({
+ *   total: 100,
+ *   pageSize: 10,
+ *   current: 1,
+ *   onChange: (page) => setCurrentPage(page),
+ * });
+ * ```
+ *
+ * @see {@link Pagination} 搭配的元件
+ */
 export function usePagination(props: UsePaginationParams = {}) {
   const {
     boundaryCount = 1,

@@ -15,6 +15,25 @@ export interface UseCheckboxControlValueProps
   value?: string;
 }
 
+/**
+ * 管理 Checkbox 勾選狀態的受控 Hook。
+ *
+ * 支援獨立使用與在 CheckboxGroup 內使用兩種情境：
+ * 當傳入 `checkboxGroup` 上下文時，會自動從群組的 `value` 陣列中計算出當前勾選狀態。
+ *
+ * @example
+ * ```tsx
+ * import { useCheckboxControlValue } from '@mezzanine-ui/react';
+ *
+ * const [checked, handleChange] = useCheckboxControlValue({
+ *   defaultChecked: false,
+ *   onChange: (e) => console.log(e.target.checked),
+ * });
+ * ```
+ *
+ * @see {@link Checkbox} 搭配的元件
+ * @see {@link CheckboxGroup} 搭配的元件
+ */
 export function useCheckboxControlValue(props: UseCheckboxControlValueProps) {
   const {
     checkboxGroup,

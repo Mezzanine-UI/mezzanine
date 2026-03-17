@@ -2,22 +2,59 @@ import type { IconDefinition } from '@mezzanine-ui/icons';
 
 export const dropdownPrefix = 'mzn-dropdown';
 
+/**
+ * Dropdown 的非同步內容狀態。
+ * - `'loading'` — 資料載入中
+ * - `'empty'` — 無可用選項
+ */
 export type DropdownStatus = 'loading' | 'empty';
 
+/**
+ * Dropdown 的選取模式。
+ * - `'single'` — 單選模式
+ * - `'multiple'` — 多選模式
+ */
 export type DropdownMode = 'single' | 'multiple';
 
+/**
+ * Dropdown 的資料結構類型。
+ * - `'default'` — 扁平列表，選項無子層
+ * - `'tree'` — 樹狀結構，最多支援三層巢狀
+ * - `'grouped'` — 群組結構，選項可包含一層子項目
+ */
 export type DropdownType = 'default' | 'tree' | 'grouped';
 
 export type DropdownItemLevel = 0 | 1 | 2;
 
+/**
+ * Dropdown 選項的驗證狀態樣式。
+ * - `'default'` — 預設樣式
+ * - `'danger'` — 危險／警示樣式
+ */
 export type DropdownItemValidate = 'default' | 'danger';
 
 // TODO: Should be renamed to DropdownCheckSite to follow the naming convention of the other components.
 // TODO: The value should be 'prefix' | 'suffix' | 'both';
+/**
+ * Dropdown 選項中勾選圖示的顯示位置。
+ * - `'prefix'` — 顯示於選項左側
+ * - `'suffix'` — 顯示於選項右側
+ * - `'none'` — 不顯示勾選圖示
+ */
 export type DropdownCheckPosition = 'prefix' | 'suffix' | 'none';
 
+/**
+ * Dropdown 搜尋輸入框的位置。
+ * - `'inside'` — 輸入框顯示於下拉選單內部
+ * - `'outside'` — 輸入框顯示於下拉選單外部（觸發器本身）
+ */
 export type DropdownInputPosition = 'inside' | 'outside';
 
+/**
+ * Dropdown 載入指示器的顯示位置。
+ * - `'full'` — 覆蓋整個下拉選單區域
+ * - `'bottom'` — 僅顯示於列表底部（載入更多）
+ */
 export type DropdownLoadingPosition = 'full' | 'bottom';
 
 /**

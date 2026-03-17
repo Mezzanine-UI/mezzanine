@@ -86,8 +86,42 @@ export interface DatePickerProps
 }
 
 /**
- * The react component for `mezzanine` date picker.
- * Notice that any component related to date-picker should be used along with `CalendarContext`. <br />
+ * 日期選擇器元件，透過點擊輸入框或日曆圖示開啟日曆彈出層進行日期選取。
+ *
+ * 必須搭配 `CalendarContext`（`CalendarConfigProvider`）使用，以提供語系與格式化函式。
+ * 支援 `day`、`week`、`month`、`quarter`、`half-year`、`year` 等多種選取模式，
+ * 可透過 `isDateDisabled` 等相關 props 限制可選日期範圍，並支援受控（`value`）
+ * 與非受控（`defaultValue`）兩種使用方式。
+ *
+ * @example
+ * ```tsx
+ * import DatePicker from '@mezzanine-ui/react/DatePicker';
+ * import CalendarConfigProvider from '@mezzanine-ui/react/CalendarConfigProvider';
+ *
+ * // 基本用法（需包覆在 CalendarConfigProvider 內）
+ * <CalendarConfigProvider methods={...}>
+ *   <DatePicker onChange={(date) => console.log(date)} />
+ * </CalendarConfigProvider>
+ *
+ * // 受控用法
+ * const [date, setDate] = useState<DateType>();
+ * <CalendarConfigProvider methods={...}>
+ *   <DatePicker value={date} onChange={setDate} />
+ * </CalendarConfigProvider>
+ *
+ * // 月份選取模式，禁用過去月份
+ * <CalendarConfigProvider methods={...}>
+ *   <DatePicker
+ *     mode="month"
+ *     isMonthDisabled={(iso) => iso < '2024-01'}
+ *     onChange={setDate}
+ *   />
+ * </CalendarConfigProvider>
+ * ```
+ *
+ * @see {@link DateRangePicker} 日期範圍選擇器元件
+ * @see {@link DateTimePicker} 日期時間選擇器元件
+ * @see {@link Calendar} 日曆元件
  */
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   function DatePicker(props, ref) {

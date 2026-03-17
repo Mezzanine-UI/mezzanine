@@ -111,7 +111,44 @@ export interface PaginationProps
 }
 
 /**
- * The react component for `mezzanine` pagination.
+ * 分頁導覽元件，提供頁碼切換、頁碼跳轉輸入框以及每頁筆數選擇器。
+ *
+ * 傳入 `total` 與 `pageSize` 自動計算總頁數並渲染頁碼列表；`boundaryCount` 控制首尾
+ * 始終顯示的頁數，`siblingCount` 控制當前頁兩側的頁數。啟用 `showJumper` 可直接輸入頁碼跳轉，
+ * 啟用 `showPageSizeOptions` 可讓使用者選擇每頁顯示筆數。
+ *
+ * @example
+ * ```tsx
+ * import Pagination from '@mezzanine-ui/react/Pagination';
+ *
+ * // 基本用法
+ * <Pagination total={100} current={page} onChange={setPage} />
+ *
+ * // 顯示結果摘要與每頁筆數選擇器
+ * <Pagination
+ *   total={200}
+ *   current={page}
+ *   pageSize={pageSize}
+ *   onChange={setPage}
+ *   onChangePageSize={setPageSize}
+ *   showPageSizeOptions
+ *   pageSizeOptions={[10, 20, 50]}
+ *   renderResultSummary={(from, to, total) => `顯示 ${from}–${to} 筆，共 ${total} 筆`}
+ * />
+ *
+ * // 顯示頁碼跳轉輸入框
+ * <Pagination
+ *   total={500}
+ *   current={page}
+ *   onChange={setPage}
+ *   showJumper
+ *   hintText="前往"
+ *   buttonText="GO"
+ * />
+ * ```
+ *
+ * @see {@link Table} 搭配 Table 元件的 `pagination` prop 使用
+ * @see {@link usePagination} 獨立使用分頁邏輯的 hook
  */
 const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
   const {

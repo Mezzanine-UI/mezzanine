@@ -1,7 +1,17 @@
 export const uploaderPrefix = 'mzn-uploader';
 
+/**
+ * 上傳器的觸發類型。
+ * - `'base'` — 基本拖放區域
+ * - `'button'` — 按鈕觸發
+ */
 export type UploadType = 'base' | 'button';
 
+/**
+ * 上傳器提示訊息的類型。
+ * - `'error'` — 錯誤提示
+ * - `'info'` — 一般資訊提示
+ */
 export type UploaderHintType = 'error' | 'info';
 
 export type UploadPictureControl = {

@@ -8,10 +8,34 @@ import {
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
+/**
+ * Modal 的狀態類型，用於顯示對應的狀態圖示。
+ * - `'success'` — 成功狀態
+ * - `'warning'` — 警告狀態
+ * - `'error'` — 錯誤狀態
+ * - `'info'` — 資訊狀態
+ * - `'email'` — 電子郵件相關操作
+ * - `'delete'` — 刪除操作
+ */
 export type ModalStatusType = SeverityWithInfo | 'email' | 'delete';
 
+/**
+ * Modal 的寬度尺寸。
+ * - `'tight'` — 最窄尺寸
+ * - `'narrow'` — 較窄尺寸
+ * - `'regular'` — 標準尺寸
+ * - `'wide'` — 寬尺寸
+ */
 export type ModalSize = 'tight' | 'narrow' | 'regular' | 'wide';
 
+/**
+ * Modal 的版面配置類型。
+ * - `'extended'` — 延伸版面，內容區域較大
+ * - `'extendedSplit'` — 延伸分割版面，左右兩欄配置
+ * - `'standard'` — 標準版面
+ * - `'mediaPreview'` — 媒體預覽版面
+ * - `'verification'` — 驗證碼輸入版面
+ */
 export type ModalType =
   | 'extended'
   | 'extendedSplit'

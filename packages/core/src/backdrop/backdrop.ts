@@ -1,5 +1,10 @@
 export const backdropPrefix = 'mzn-backdrop';
 
+/**
+ * Backdrop 的遮罩顏色變體。
+ * - `'dark'` — 深色半透明遮罩
+ * - `'light'` — 淺色半透明遮罩
+ */
 export type BackdropVariant = 'dark' | 'light';
 
 export const backdropClasses = {

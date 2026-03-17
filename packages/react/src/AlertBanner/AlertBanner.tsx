@@ -24,8 +24,7 @@ import Portal from '../Portal';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface AlertBannerAction
-  extends Omit<ButtonPropsBase, 'children'> {
+export interface AlertBannerAction extends Omit<ButtonPropsBase, 'children'> {
   /**
    * The text content of the button.
    */
@@ -40,7 +39,7 @@ export type AlertBannerConfigProps = NotifierConfig;
 
 export interface AlertBannerData
   extends Omit<NotifierData, 'onClose'>,
-  AlertBannerConfigProps {
+    AlertBannerConfigProps {
   /**
    * The action buttons to be rendered on the right side of the banner.
    * Maximum 2 actions, minimum 0 (will not display if empty).
@@ -106,7 +105,10 @@ function sortAlertNotifiers(notifiers: AlertBannerNotifier[]) {
 }
 
 export interface AlertBannerProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'title'> {
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'div'>,
+    'children' | 'title'
+  > {
   /**
    * The action buttons to be rendered on the right side of the banner.
    * Maximum 2 actions, minimum 0 (will not display if empty).
@@ -139,7 +141,9 @@ export interface AlertBannerProps
   severity: AlertBannerSeverity;
 }
 
-export type AlertBannerType = ((props: AlertBannerData) => ReactElement | null) &
+export type AlertBannerType = ((
+  props: AlertBannerData,
+) => ReactElement | null) &
   Notifier<AlertBannerData, AlertBannerConfigProps> &
   Record<
     string,
@@ -152,136 +156,166 @@ export type AlertBannerType = ((props: AlertBannerData) => ReactElement | null) 
   >;
 
 /**
- * The react component for `mezzanine` alert banner.
+ * 頁面層級的橫幅式警示訊息元件。
+ *
+ * 預設透過 `Portal` 渲染至 `alert` layer，支援 `info`、`warning`、`error` 三種嚴重程度。
+ * 提供最多 2 個操作按鈕與關閉按鈕，並在顯示及關閉時套用進入／離開動畫。
+ * 也可透過靜態方法 `AlertBanner.info()`、`AlertBanner.warning()`、`AlertBanner.error()` 以命令式方式觸發。
+ *
+ * @example
+ * ```tsx
+ * import AlertBanner from '@mezzanine-ui/react/AlertBanner';
+ *
+ * // 基本用法（JSX）
+ * <AlertBanner severity="info" message="系統將於今晚進行維護" />
+ *
+ * // 帶有操作按鈕
+ * <AlertBanner
+ *   severity="warning"
+ *   message="您有未儲存的變更"
+ *   actions={[
+ *     { content: '儲存', onClick: handleSave },
+ *     { content: '捨棄', onClick: handleDiscard },
+ *   ]}
+ * />
+ *
+ * // 命令式呼叫
+ * AlertBanner.error('操作失敗，請稍後再試');
+ * AlertBanner.info('資料已更新', { closable: true });
+ * ```
+ *
+ * @see {@link InlineMessage} 行內訊息元件
+ * @see {@link Message} 全域提示訊息元件
  */
-export const AlertBannerComponent = forwardRef<HTMLDivElement, AlertBannerProps>(
-  function AlertBanner(props, ref) {
-    const {
-      actions,
-      className,
-      closable = true,
-      disablePortal = false,
-      icon,
-      message,
-      onClose,
-      severity,
-      ...rest
-    } = props;
-    const [visible, setVisible] = useState(true);
-    const [isExiting, setIsExiting] = useState(false);
-    const [isEntering, setIsEntering] = useState(false);
-    const nodeRef = useRef<HTMLDivElement>(null);
-    const composedRef = useComposeRefs([ref, nodeRef]);
+export const AlertBannerComponent = forwardRef<
+  HTMLDivElement,
+  AlertBannerProps
+>(function AlertBanner(props, ref) {
+  const {
+    actions,
+    className,
+    closable = true,
+    disablePortal = false,
+    icon,
+    message,
+    onClose,
+    severity,
+    ...rest
+  } = props;
+  const [visible, setVisible] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const composedRef = useComposeRefs([ref, nodeRef]);
 
-    const handleClose = useCallback(() => {
-      setIsExiting(true);
+  const handleClose = useCallback(() => {
+    setIsExiting(true);
 
-      setTimeout(() => {
-        setVisible(false);
+    setTimeout(() => {
+      setVisible(false);
 
-        if (onClose) {
-          onClose();
-        }
-      }, 250); // moderate duration
-    }, [onClose]);
-
-    useEffect(() => {
-      if (actions && actions.length > 2) {
-        console.warn('AlertBanner: actions maximum is 2');
+      if (onClose) {
+        onClose();
       }
-    }, [actions]);
+    }, 250); // moderate duration
+  }, [onClose]);
 
-    useEffect(() => {
-      if (visible && !isExiting && nodeRef.current) {
-        // Force reflow to ensure initial state is applied
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        nodeRef.current.offsetHeight;
-
-        // Trigger entering animation in next frame
-        requestAnimationFrame(() => {
-          setIsEntering(true);
-        });
-      }
-    }, [visible, isExiting]);
-
-    if (!visible) {
-      return null;
+  useEffect(() => {
+    if (actions && actions.length > 2) {
+      console.warn('AlertBanner: actions maximum is 2');
     }
+  }, [actions]);
 
-    const resolvedIcon = icon ?? alertBannerIcons[severity];
-    const showCloseButton = closable ?? Boolean(onClose);
+  useEffect(() => {
+    if (visible && !isExiting && nodeRef.current) {
+      // Force reflow to ensure initial state is applied
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      nodeRef.current.offsetHeight;
 
-    const validActions = actions?.slice(0, 2) ?? []; // Maximum support 2 actions
-    const hasActions = validActions.length > 0;
-
-    const actionsArea = hasActions ? (
-      <div className={classes.actions}>
-        {validActions.map((action, index) => {
-          const { content, onClick, ...buttonProps } = action;
-
-          return (
-            <Button
-              key={index}
-              onClick={onClick}
-              size="minor"
-              variant="inverse"
-              {...buttonProps}
-            >
-              {content}
-            </Button>
-          );
-        })}
-      </div>
-    ) : null;
-
-    const clearActionsArea = showCloseButton ? (
-      <ClearActions
-        className={classes.close}
-        onClick={handleClose}
-        type="standard"
-        variant="inverse"
-      />
-    ) : null;
-
-    const {
-      maxCount: _maxCount,
-      instanceKey: _instanceKey,
-      ...restProps
-    } = rest as typeof rest & { maxCount?: unknown; instanceKey?: unknown };
-
-    const content = (
-      <div
-        {...restProps}
-        ref={composedRef}
-        aria-live="polite"
-        className={cx(
-          classes.host,
-          classes.severity(severity),
-          isExiting && classes.exiting,
-          isEntering && !isExiting && classes.entering,
-          className,
-        )}
-        role="status"
-      >
-        <div className={classes.body}>
-          <Icon className={classes.icon} icon={resolvedIcon} />
-          <span className={classes.message}>{message}</span>
-        </div>
-
-        <div className={classes.controls}>
-          {actionsArea}
-          {clearActionsArea}
-        </div>
-      </div>
-    );
-
-    if (disablePortal) {
-      return content;
+      // Trigger entering animation in next frame
+      requestAnimationFrame(() => {
+        setIsEntering(true);
+      });
     }
+  }, [visible, isExiting]);
 
-    return <Portal layer="alert">{content}</Portal>;
-  },
-);
+  if (!visible) {
+    return null;
+  }
+
+  const resolvedIcon = icon ?? alertBannerIcons[severity];
+  const showCloseButton = closable ?? Boolean(onClose);
+
+  const validActions = actions?.slice(0, 2) ?? []; // Maximum support 2 actions
+  const hasActions = validActions.length > 0;
+
+  const actionsArea = hasActions ? (
+    <div className={classes.actions}>
+      {validActions.map((action, index) => {
+        const { content, onClick, ...buttonProps } = action;
+
+        return (
+          <Button
+            key={index}
+            onClick={onClick}
+            size="minor"
+            variant="inverse"
+            {...buttonProps}
+          >
+            {content}
+          </Button>
+        );
+      })}
+    </div>
+  ) : null;
+
+  const clearActionsArea = showCloseButton ? (
+    <ClearActions
+      className={classes.close}
+      onClick={handleClose}
+      type="standard"
+      variant="inverse"
+    />
+  ) : null;
+
+  const {
+    maxCount: _maxCount,
+    instanceKey: _instanceKey,
+    ...restProps
+  } = rest as typeof rest & { maxCount?: unknown; instanceKey?: unknown };
+
+  const content = (
+    <div
+      {...restProps}
+      ref={composedRef}
+      aria-live="polite"
+      className={cx(
+        classes.host,
+        classes.severity(severity),
+        isExiting && classes.exiting,
+        isEntering && !isExiting && classes.entering,
+        className,
+      )}
+      role="status"
+    >
+      <div className={classes.body}>
+        <Icon className={classes.icon} icon={resolvedIcon} />
+        <span className={classes.message}>{message}</span>
+      </div>
+
+      <div className={classes.controls}>
+        {actionsArea}
+        {clearActionsArea}
+      </div>
+    </div>
+  );
+
+  if (disablePortal) {
+    return content;
+  }
+
+  return <Portal layer="alert">{content}</Portal>;
+});
 
 const AlertBanner: AlertBannerType = ((props) => {
   const {
@@ -325,7 +359,10 @@ function initializeAlertBannerNotifier() {
         onClose: onCloseProp,
         createdAt: _createdAt,
         ...restProps
-      } = notifierProps as typeof notifierProps & { maxCount?: unknown; instanceKey?: unknown };
+      } = notifierProps as typeof notifierProps & {
+        maxCount?: unknown;
+        instanceKey?: unknown;
+      };
 
       return (
         <AlertBannerComponent
@@ -395,5 +432,3 @@ severities.forEach((severity) => {
 });
 
 export default AlertBanner;
-
-

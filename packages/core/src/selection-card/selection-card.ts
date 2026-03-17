@@ -1,5 +1,15 @@
+/**
+ * 選擇卡片的排列方向。
+ * - `'horizontal'` — 水平排列
+ * - `'vertical'` — 垂直排列
+ */
 export type SelectionCardDirection = 'horizontal' | 'vertical';
 
+/**
+ * 選擇卡片的選取類型。
+ * - `'radio'` — 單選
+ * - `'checkbox'` — 多選
+ */
 export type SelectionCardType = 'radio' | 'checkbox';
 
 export type SelectionCardImageObjectFit =

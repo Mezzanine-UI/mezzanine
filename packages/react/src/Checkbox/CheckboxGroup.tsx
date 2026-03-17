@@ -23,7 +23,10 @@ import { useControlValueState } from '../Form/useControlValueState';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Checkbox, { CheckboxProps } from './Checkbox';
-import { CheckboxGroupContext, CheckboxGroupContextValue } from './CheckboxGroupContext';
+import {
+  CheckboxGroupContext,
+  CheckboxGroupContextValue,
+} from './CheckboxGroupContext';
 
 export interface CheckboxGroupChangeEventTarget extends HTMLInputElement {
   values: string[];
@@ -106,7 +109,8 @@ export interface CheckboxGroupLevelConfig {
   onChange?: ChangeEventHandler<HTMLInputElement>;
 }
 
-interface CheckboxGroupBaseProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+interface CheckboxGroupBaseProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * The default value of checkbox group.
    */
@@ -134,11 +138,11 @@ interface CheckboxGroupBaseProps extends NativeElementPropsWithoutKeyAndRef<'div
   /**
    * The name of checkbox group.
    * Control the name of checkboxes in group if name not passed to checkbox.
-   * 
+   *
    * @important When integrating with react-hook-form, this prop is highly recommended.
    * All checkboxes in the group will share the same `name` attribute, which is required
    * for react-hook-form to correctly collect the selected values as an array.
-   * 
+   *
    * @example Using with react-hook-form's Controller:
    * ```tsx
    * const { control } = useForm();
@@ -192,7 +196,45 @@ const equalityFn = (a: string[], b: string[]) => {
 };
 
 /**
- * The react component for `mezzanine` checkbox group.
+ * 核取方塊群組元件，用於管理一組具有相同 `name` 的核取方塊。
+ *
+ * 支援透過 `options` 陣列或 `children` 傳入子元件兩種方式渲染選項，並可透過
+ * `layout` 控制水平或垂直排列。啟用 `level` 設定可顯示「全選」控制核取方塊，
+ * 勾選狀態會自動計算 indeterminate 中間態；`onChange` 回呼透過 `event.target.values`
+ * 提供最新已選取的值陣列。
+ *
+ * @example
+ * ```tsx
+ * import CheckboxGroup from '@mezzanine-ui/react/CheckboxGroup';
+ * import Checkbox from '@mezzanine-ui/react/Checkbox';
+ *
+ * // 使用 options 陣列
+ * <CheckboxGroup
+ *   name="fruits"
+ *   defaultValue={['apple']}
+ *   options={[
+ *     { label: '蘋果', value: 'apple' },
+ *     { label: '香蕉', value: 'banana' },
+ *     { label: '橘子', value: 'orange' },
+ *   ]}
+ *   onChange={(e) => console.log(e.target.values)}
+ * />
+ *
+ * // 使用 children 方式，垂直排列
+ * <CheckboxGroup name="options" layout="vertical">
+ *   <Checkbox label="選項一" value="a" />
+ *   <Checkbox label="選項二" value="b" />
+ * </CheckboxGroup>
+ *
+ * // 啟用全選控制
+ * <CheckboxGroup
+ *   name="items"
+ *   options={[{ label: '項目 A', value: 'a' }, { label: '項目 B', value: 'b' }]}
+ *   level={{ active: true, label: '全選' }}
+ * />
+ * ```
+ *
+ * @see {@link Checkbox} 單一核取方塊元件
  */
 const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
   function CheckboxGroup(props, ref) {
@@ -215,10 +257,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
     const generatedName = useId();
     const resolvedName = name ?? generatedName;
 
-    const normalizedOptions = useMemo(
-      () => options ?? [],
-      [options],
-    );
+    const normalizedOptions = useMemo(() => options ?? [], [options]);
 
     const [value, setValue] = useControlValueState<string[]>({
       defaultValue: defaultValue ?? [],
@@ -278,7 +317,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       if (!name) {
         console.warn(
           'CheckboxGroup: The `name` prop is recommended, especially when integrating with react-hook-form. ' +
-          'All checkboxes in the group should share the same `name` attribute.',
+            'All checkboxes in the group should share the same `name` attribute.',
         );
       }
 
@@ -290,7 +329,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
             if (!checkboxProps.value) {
               console.warn(
                 `CheckboxGroup: Each Checkbox child should have a \`value\` prop. ` +
-                `Checkbox at index ${index} is missing the \`value\` prop.`,
+                  `Checkbox at index ${index} is missing the \`value\` prop.`,
               );
             }
           }
@@ -305,7 +344,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
           if (isValidElement(child) && child.type !== Checkbox) {
             console.warn(
               'CheckboxGroup: When using ReactNode (children) input, only Checkbox components are supported. ' +
-              `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
+                `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
             );
           }
         });
@@ -372,8 +411,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
     const shouldRenderLevelInsideContent = isLevelActive && isChipMode;
     const ariaOrientation = isLevelActive ? 'vertical' : layout;
 
-    const canRenderLevelControl =
-      isLevelActive && normalizedOptions.length > 0;
+    const canRenderLevelControl = isLevelActive && normalizedOptions.length > 0;
 
     useEffect(() => {
       if (isLevelActive && !hasOptionsInput) {
@@ -405,7 +443,9 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       return { levelChecked: false, levelIndeterminate: true };
     }, [canRenderLevelControl, normalizedOptions, value]);
 
-    const handleLevelControlChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    const handleLevelControlChange = useCallback<
+      ChangeEventHandler<HTMLInputElement>
+    >(
       (event) => {
         if (!canRenderLevelControl) {
           return;
@@ -444,7 +484,15 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
           onChangeProp(syntheticEvent);
         }
       },
-      [canRenderLevelControl, level, onChangeProp, normalizedOptions, resolvedName, setValue, value],
+      [
+        canRenderLevelControl,
+        level,
+        onChangeProp,
+        normalizedOptions,
+        resolvedName,
+        setValue,
+        value,
+      ],
     );
 
     return (
@@ -492,9 +540,9 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
                 name={`${resolvedName}-level-control`}
                 onChange={handleLevelControlChange}
               />
-              {
-                isHorizontalLayout && <i className={classes.levelControlSeparator} />
-              }
+              {isHorizontalLayout && (
+                <i className={classes.levelControlSeparator} />
+              )}
             </>
           )}
           <CheckboxGroupContext.Provider value={context}>
@@ -507,4 +555,3 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
 );
 
 export default CheckboxGroup;
-

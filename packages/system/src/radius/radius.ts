@@ -1,5 +1,14 @@
 import { radiusPrefix } from './constants';
 
+/**
+ * 元件圓角尺寸。
+ *
+ * - `'none'` — 無圓角（0px）
+ * - `'tiny'` — 極小圓角（2px）
+ * - `'base'` — 基礎圓角（4px）
+ * - `'roomy'` — 較大圓角（8px）
+ * - `'full'` — 完全圓角（999px），呈現膠囊形狀
+ */
 export type RadiusSize = 'none' | 'tiny' | 'base' | 'roomy' | 'full';
 
 export interface RadiusConfig {

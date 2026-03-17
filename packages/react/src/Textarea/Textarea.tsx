@@ -28,11 +28,42 @@ export type TextareaProps = Omit<
         /** ReadOnly state of the textarea, Only available on default type. */
         readOnly?: boolean;
       }
-    | { type: 'warning' | 'error'; disabled?: never; readOnly?: never }
+    | {
+        /** 文字區域類型：警告或錯誤狀態。 */
+        type: 'warning' | 'error';
+        /** 警告/錯誤狀態下不適用。 */
+        disabled?: never;
+        /** 警告/錯誤狀態下不適用。 */
+        readOnly?: never;
+      }
   );
 
 /**
- * The react component for `mezzanine` textarea.
+ * 多行文字輸入區域元件，支援禁用、唯讀、警告與錯誤等視覺狀態。
+ *
+ * 以 `TextField` 作為外框容器，`type` 控制視覺樣式（`default`、`warning`、`error`），
+ * `disabled` 與 `readOnly` 僅在 `type="default"` 時有效。`resize` prop 對應原生 CSS
+ * `resize` 屬性，設為非 `none` 時會顯示右下角的調整大小拖曳圖示。
+ *
+ * @example
+ * ```tsx
+ * import Textarea from '@mezzanine-ui/react/Textarea';
+ *
+ * // 基本用法
+ * <Textarea placeholder="請輸入內容..." rows={4} />
+ *
+ * // 允許垂直縮放
+ * <Textarea resize="vertical" rows={3} />
+ *
+ * // 錯誤狀態
+ * <Textarea type="error" value={text} onChange={(e) => setText(e.target.value)} />
+ *
+ * // 禁用狀態
+ * <Textarea disabled placeholder="此欄位已停用" />
+ * ```
+ *
+ * @see {@link Input} 單行文字輸入元件
+ * @see {@link FormField} 表單欄位容器，可整合 label 與錯誤訊息
  */
 const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
   function Textarea(props, ref) {

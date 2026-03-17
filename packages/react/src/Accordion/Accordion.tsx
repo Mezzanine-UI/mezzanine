@@ -112,6 +112,42 @@ const resolveChildren = (
   };
 };
 
+/**
+ * 手風琴元件，提供可展開／收合的內容區塊。
+ *
+ * 可透過 `title` prop 快速設定標題文字，或以 `AccordionTitle` 子元件進行客製化；
+ * 內容區域使用 `AccordionContent` 子元件包裹。支援受控（`expanded`）與非受控
+ * （`defaultExpanded`）兩種模式，以及 `size` 控制整體尺寸，`actions` 可在標題右側
+ * 插入操作按鈕（僅限 `Button` 或 `Dropdown`）。
+ *
+ * @example
+ * ```tsx
+ * import Accordion from '@mezzanine-ui/react/Accordion';
+ * import AccordionTitle from '@mezzanine-ui/react/AccordionTitle';
+ * import AccordionContent from '@mezzanine-ui/react/AccordionContent';
+ *
+ * // 使用 title prop（最簡單的方式）
+ * <Accordion title="常見問題">
+ *   <p>這裡是問題的詳細說明內容。</p>
+ * </Accordion>
+ *
+ * // 使用子元件客製化
+ * <Accordion defaultExpanded>
+ *   <AccordionTitle>進階設定</AccordionTitle>
+ *   <AccordionContent>
+ *     <p>展開後顯示的內容。</p>
+ *   </AccordionContent>
+ * </Accordion>
+ *
+ * // 受控模式
+ * const [expanded, setExpanded] = useState(false);
+ * <Accordion expanded={expanded} onChange={setExpanded} title="收費方案">
+ *   <p>詳細收費說明。</p>
+ * </Accordion>
+ * ```
+ *
+ * @see {@link AccordionGroup} 管理多個手風琴的群組元件
+ */
 const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
   function Accordion(props, ref) {
     const {

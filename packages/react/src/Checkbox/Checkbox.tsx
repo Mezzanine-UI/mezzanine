@@ -53,7 +53,7 @@ type CheckboxInputElementProps = Omit<
 
 export interface CheckboxProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'>,
-  CheckboxPropsBase {
+    CheckboxPropsBase {
   /**
    * Whether to show an editable input when checkbox is checked.
    * When `true`, an Input component will be displayed after the checkbox when checked.
@@ -165,7 +165,36 @@ export interface CheckboxProps
 }
 
 /**
- * The react component for `mezzanine` checkbox.
+ * 核取方塊元件，支援預設（default）與晶片（chip）兩種模式。
+ *
+ * 提供受控與非受控兩種使用方式，可透過 `checked`／`defaultChecked` 切換狀態。
+ * 在 `CheckboxGroup` 內使用時，必須提供 `value` 屬性；支援 `indeterminate` 中間狀態
+ * 及 `withEditInput` 勾選後顯示附加輸入框的功能。
+ *
+ * @example
+ * ```tsx
+ * import Checkbox from '@mezzanine-ui/react/Checkbox';
+ *
+ * // 基本用法（非受控）
+ * <Checkbox label="同意條款" defaultChecked />
+ *
+ * // 受控用法
+ * const [checked, setChecked] = useState(false);
+ * <Checkbox
+ *   checked={checked}
+ *   label="訂閱電子報"
+ *   onChange={(e) => setChecked(e.target.checked)}
+ * />
+ *
+ * // Chip 模式
+ * <Checkbox label="熱門" mode="chip" size="sub" />
+ *
+ * // 含附加輸入框
+ * <Checkbox label="其他" withEditInput editableInput={{ placeholder: '請輸入其他選項' }} />
+ * ```
+ *
+ * @see {@link CheckboxGroup} 管理多個核取方塊的群組元件
+ * @see {@link useCheckboxControlValue} 核取方塊受控值的自訂 Hook
  */
 const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
   function Checkbox(props, ref) {
@@ -219,7 +248,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       if (!checkboxGroup && !name && !nameFromInputProps && label) {
         console.warn(
           'Checkbox: The `name` prop is recommended when integrating with react-hook-form. ' +
-          `Checkbox with label "${label}" is missing the \`name\` prop.`,
+            `Checkbox with label "${label}" is missing the \`name\` prop.`,
         );
       }
     }, [checkboxGroup, name, nameFromInputProps, label]);
@@ -368,7 +397,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
               <Input
                 {...defaultEditableInput}
                 {...((!isChecked || disabled) &&
-                  defaultEditableInput.disabled !== true
+                defaultEditableInput.disabled !== true
                   ? { disabled: true }
                   : {})}
                 inputRef={composeRefs([

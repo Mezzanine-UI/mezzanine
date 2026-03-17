@@ -7,6 +7,11 @@ export type RadioSize = Exclude<InputCheckSize, 'minor'>;
 
 export type RadioGroupOrientation = InputCheckGroupOrientation;
 
+/**
+ * Radio 的顯示類型。
+ * - `'radio'` — 標準圓形單選按鈕樣式
+ * - `'segment'` — 分段選擇器樣式
+ */
 export type RadioType = 'radio' | 'segment';
 
 export const radioPrefix = 'mzn-radio';

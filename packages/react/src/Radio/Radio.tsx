@@ -61,7 +61,9 @@ export interface RadioBaseProps
 }
 
 export interface RadioNormalProps extends RadioBaseProps {
+  /** 此模式下不適用，僅限 segment 類型。 */
   icon?: never;
+  /** 顯示在 radio 標籤下方的輔助說明文字。 */
   hint?: string;
   /**
    * The type of radio.
@@ -86,19 +88,51 @@ export interface RadioSegmentProps extends RadioBaseProps {
    * The icon in radio prefix.
    */
   icon?: IconDefinition;
+  /** 此模式下不適用，僅限 radio 類型。 */
   hint?: never;
   /**
    * The type of radio.
    * @default 'radio'
    */
   type: 'segment';
+  /** 此模式下不適用，僅限 radio 類型。 */
   withInputConfig?: never;
 }
 
 export type RadioProps = RadioNormalProps | RadioSegmentProps;
 
 /**
- * The react component for `mezzanine` radio.
+ * 單選按鈕元件，支援標準（radio）與區段（segment）兩種類型。
+ *
+ * 在 `RadioGroup` 內使用時，會自動繼承群組的 `name`、`size` 與 `type`；
+ * 也可獨立使用，透過 `checked`／`defaultChecked` 進行受控或非受控操作。
+ * `segment` 類型可搭配 `icon` 屬性顯示圖示，適合用於分頁切換情境。
+ *
+ * @example
+ * ```tsx
+ * import Radio from '@mezzanine-ui/react/Radio';
+ *
+ * // 基本用法（非受控）
+ * <Radio value="male" inputProps={{ name: 'gender' }}>男性</Radio>
+ *
+ * // 受控用法
+ * const [value, setValue] = useState('a');
+ * <Radio
+ *   checked={value === 'a'}
+ *   value="a"
+ *   inputProps={{ name: 'option' }}
+ *   onChange={() => setValue('a')}
+ * >
+ *   選項 A
+ * </Radio>
+ *
+ * // Segment 類型搭配圖示
+ * import { ListIcon } from '@mezzanine-ui/icons';
+ * <Radio type="segment" icon={ListIcon} value="list">列表</Radio>
+ * ```
+ *
+ * @see {@link RadioGroup} 管理多個單選按鈕的群組元件
+ * @see {@link useRadioControlValue} 單選按鈕受控值的自訂 Hook
  */
 const Radio = forwardRef<HTMLDivElement, RadioProps>(
   function Radio(props, ref) {

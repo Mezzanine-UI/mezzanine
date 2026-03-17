@@ -5,12 +5,16 @@ import { TextFieldProps } from '../TextField';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface SelectValue<T = string> {
+  /** 選項的唯一識別值。 */
   id: T;
+  /** 選項的顯示文字。 */
   name: string;
 }
 
 export interface SelectControl<T = string> {
+  /** 當前選取的值，單選為 SelectValue | null，多選為 SelectValue[]。 */
   value: SelectValue<T>[] | SelectValue<T> | null;
+  /** 選取變更時的回呼函式。 */
   onChange: (
     v: SelectValue<T> | null,
   ) => SelectValue<T>[] | SelectValue<T> | null;
@@ -91,7 +95,12 @@ export interface SelectTriggerBaseProps
    * @default false
    */
   required?: boolean;
+  /** 觸發器輸入框中的搜尋/篩選文字，用於過濾下拉選項。 */
   searchText?: string;
+  /**
+   * 多選模式下是否在已選標籤後顯示文字輸入框，啟用行內搜尋。
+   * @default false
+   */
   showTextInputAfterTags?: boolean;
   /** Suffix icon click event handler */
   suffixAction?: VoidFunction;

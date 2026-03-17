@@ -2,6 +2,13 @@ import { Orientation } from '@mezzanine-ui/system/orientation';
 import { GeneralSize } from '@mezzanine-ui/system/size';
 
 export type DescriptionSize = Extract<GeneralSize, 'main' | 'sub'>;
+/**
+ * Description 標題欄位的寬度類型。
+ * - `'narrow'` — 窄幅
+ * - `'wide'` — 寬幅
+ * - `'stretch'` — 延伸填滿
+ * - `'hug'` — 依內容收縮
+ */
 export type DescriptionWidthType = 'narrow' | 'wide' | 'stretch' | 'hug';
 export type DescriptionContentVariant =
   | 'badge'

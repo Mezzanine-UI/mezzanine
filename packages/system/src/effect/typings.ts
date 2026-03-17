@@ -11,12 +11,18 @@ export type ShadowType =
   | 'inner-top-and-bottom';
 
 /**
- * Focus types - 聚焦類型
+ * 聚焦效果類型。
+ *
+ * - `'primary'` — 主要聚焦樣式，用於一般互動元素
+ * - `'error'` — 錯誤狀態聚焦樣式，用於驗證失敗的輸入元素
  */
 export type FocusType = 'primary' | 'error';
 
 /**
- * Effect contexts - 效果情境
+ * 視覺效果的使用情境。
+ *
+ * - `'shadow'` — 陰影效果，用於表達元素的高度與層次
+ * - `'focus'` — 聚焦效果，用於表達鍵盤或互動焦點
  */
 export type EffectContext = 'shadow' | 'focus';
 

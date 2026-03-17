@@ -1,6 +1,12 @@
 import { TextFieldSize } from '../text-field';
 
 export type InputSize = TextFieldSize;
+/**
+ * 密碼輸入的強度等級。
+ * - `'weak'` — 弱強度
+ * - `'medium'` — 中等強度
+ * - `'strong'` — 強強度
+ */
 export type InputStrength = 'weak' | 'medium' | 'strong';
 
 export const inputPrefix = 'mzn-input';

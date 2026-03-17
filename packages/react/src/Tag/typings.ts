@@ -49,42 +49,70 @@ type TagPropsStatic = TagSpanHostProps & {
   onClick?: never;
 };
 type TagPropsCounter = TagSpanHostProps & {
+  /** 標籤類型：計數器模式。 */
   type: 'counter';
+  /** 標籤顯示的文字。 */
   label: string;
+  /** 計數器顯示的數字。 */
   count: number;
+  /** 此模式下不適用。 */
   active?: never;
+  /** 此模式下不適用。 */
   disabled?: never;
+  /** 此模式下不適用。 */
   onClose?: never;
+  /** 此模式下不適用。 */
   onClick?: never;
+  /** 此模式下不適用。 */
   readOnly?: never;
 };
 type TagPropsOverflowCounter = TagButtonHostProps & {
+  /** 標籤類型：溢出計數器模式，顯示隱藏的項目數量。 */
   type: 'overflow-counter';
+  /** 溢出的項目數量。 */
   count: number;
+  /**
+   * 是否禁用。
+   * @default false
+   */
   disabled?: boolean;
+  /** 點擊時的回呼函式。 */
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  /**
+   * 是否為唯讀。
+   * @default false
+   */
   readOnly?: boolean;
+  /** 此模式下不適用。 */
   active?: never;
+  /** 此模式下不適用。 */
   label?: never;
+  /** 此模式下不適用。 */
   onClose?: never;
 };
 type TagPropsDismissable = TagSpanHostProps & {
+  /** 標籤類型：可關閉模式。 */
   type: 'dismissable';
   active?: boolean;
   disabled?: boolean;
   readOnly?: never;
   label: string;
   onClose: MouseEventHandler<HTMLButtonElement>;
+  /** 此模式下不適用。 */
   count?: never;
+  /** 此模式下不適用。 */
   onClick?: never;
 };
 type TagPropsAddable = TagButtonHostProps & {
+  /** 標籤類型：可新增模式。 */
   type: 'addable';
   active?: boolean;
   disabled?: boolean;
   label: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  /** 此模式下不適用。 */
   count?: never;
+  /** 此模式下不適用。 */
   onClose?: never;
   readOnly?: never;
 };

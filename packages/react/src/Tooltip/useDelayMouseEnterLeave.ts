@@ -11,6 +11,23 @@ export interface DelayMouseEnterLeave {
   visible: boolean;
 }
 
+/**
+ * 管理帶有延遲的滑鼠移入／移出可見性狀態的 Hook。
+ *
+ * 在滑鼠離開目標或 Popper 時，會等待 `mouseLeaveDelay` 秒後才隱藏，
+ * 讓使用者有時間將游標移入 Popper 內容區域而不觸發消失。
+ *
+ * @example
+ * ```tsx
+ * import { useDelayMouseEnterLeave } from '@mezzanine-ui/react';
+ *
+ * const { visible, onTargetEnter, onLeave, onPopperEnter } = useDelayMouseEnterLeave({
+ *   mouseLeaveDelay: 0.1,
+ * });
+ * ```
+ *
+ * @see {@link Tooltip} 搭配的元件
+ */
 export function useDelayMouseEnterLeave(
   opt: UseDelayMouseEnterLeave,
 ): DelayMouseEnterLeave {

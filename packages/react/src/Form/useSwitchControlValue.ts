@@ -10,6 +10,24 @@ export interface UseSwitchControlValueProps {
 
 const equalityFn = (a: boolean, b: boolean) => a === b;
 
+/**
+ * 管理布林開關（checked）狀態的受控 Hook。
+ *
+ * 適用於任何基於 `<input type="checkbox">` 的切換元件，
+ * 回傳當前勾選狀態與穩定的 `onChange` 事件處理器。
+ *
+ * @example
+ * ```tsx
+ * import { useSwitchControlValue } from '@mezzanine-ui/react';
+ *
+ * const [checked, handleChange] = useSwitchControlValue({
+ *   defaultChecked: false,
+ *   onChange: (e) => console.log(e.target.checked),
+ * });
+ * ```
+ *
+ * @see {@link Switch} 搭配的元件
+ */
 export function useSwitchControlValue(props: UseSwitchControlValueProps) {
   const {
     checked: checkedProp,

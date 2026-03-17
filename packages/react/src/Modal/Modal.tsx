@@ -154,7 +154,49 @@ export type ModalProps = BaseModalProps &
   );
 
 /**
- * The react component for `mezzanine` modal.
+ * 對話框元件，以 Backdrop 遮罩呈現需要使用者互動或確認的浮動視窗。
+ *
+ * 透過 `showModalHeader` 與 `showModalFooter` 分別啟用標題列與操作列，
+ * `modalStatusType` 可在標題旁顯示狀態圖示（`info`、`success`、`warning`、`error`）。
+ * `modalType` 支援 `standard`、`extended`、`mediaPreview`、`verification` 及 `extendedSplit` 佈局，
+ * 其中 `extendedSplit` 需同時傳入 `extendedSplitLeftSideContent` 與 `extendedSplitRightSideContent`。
+ * `size` 可選 `regular`、`large`、`wide` 等尺寸，`fullScreen` 則強制全螢幕顯示。
+ *
+ * @example
+ * ```tsx
+ * import Modal from '@mezzanine-ui/react/Modal';
+ *
+ * // 基本對話框（含標題與操作列）
+ * <Modal
+ *   open={isOpen}
+ *   onClose={() => setIsOpen(false)}
+ *   showModalHeader
+ *   title="確認刪除"
+ *   showModalFooter
+ *   confirmText="確認"
+ *   cancelText="取消"
+ *   onConfirm={handleConfirm}
+ *   onCancel={() => setIsOpen(false)}
+ * >
+ *   <p>此操作無法復原，確定要刪除嗎？</p>
+ * </Modal>
+ *
+ * // 帶狀態圖示的對話框
+ * <Modal
+ *   open={isOpen}
+ *   onClose={() => setIsOpen(false)}
+ *   showModalHeader
+ *   title="操作成功"
+ *   showStatusTypeIcon
+ *   modalStatusType="success"
+ *   showModalFooter
+ *   confirmText="關閉"
+ *   onConfirm={() => setIsOpen(false)}
+ * />
+ * ```
+ *
+ * @see {@link Drawer} 從側邊滑入的抽屜式對話框元件
+ * @see {@link useModalContainer} 用於自訂 Modal 掛載容器的 Hook
  */
 const Modal = forwardRef<HTMLDivElement, ModalProps>(
   function Modal(props, ref) {

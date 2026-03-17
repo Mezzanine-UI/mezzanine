@@ -33,7 +33,29 @@ export interface IconProps extends NativeElementPropsWithoutKeyAndRef<'i'> {
 }
 
 /**
- * The react component for `mezzanine` icon.
+ * 渲染來自 `@mezzanine-ui/icons` 的 SVG 圖示元件。
+ *
+ * 透過 `icon` prop 傳入圖示定義物件，支援調整顏色、尺寸與旋轉動畫。
+ * 當元件綁定 `onClick` 或 `onMouseOver` 事件時，游標樣式會自動切換為 pointer。
+ * 可透過 `title` prop 提供無障礙標題文字。
+ *
+ * @example
+ * ```tsx
+ * import Icon from '@mezzanine-ui/react/Icon';
+ * import { SearchIcon, LoadingIcon, CheckCircleFilledIcon } from '@mezzanine-ui/icons';
+ *
+ * // 基本用法
+ * <Icon icon={SearchIcon} />
+ *
+ * // 自訂顏色與尺寸
+ * <Icon icon={CheckCircleFilledIcon} color="success" size={24} />
+ *
+ * // 旋轉動畫（常用於載入狀態）
+ * <Icon icon={LoadingIcon} spin />
+ *
+ * // 加入無障礙標題
+ * <Icon icon={SearchIcon} title="搜尋" />
+ * ```
  */
 const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
   const {

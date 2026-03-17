@@ -40,6 +40,30 @@ export interface UseDateRangePickerValueProps {
   value?: RangePickerValue;
 }
 
+/**
+ * 管理日期區間選取器的值狀態與互動邏輯的 Hook。
+ *
+ * 協調「起始日期輸入框」、「結束日期輸入框」與「日曆」三者之間的狀態同步，
+ * 支援鍵盤輸入、日曆點選、hover 預覽以及清除功能。
+ *
+ * @example
+ * ```tsx
+ * import { useDateRangePickerValue } from '@mezzanine-ui/react';
+ *
+ * const {
+ *   value, calendarValue, inputFromValue, inputToValue,
+ *   onCalendarChange, onInputFromChange, onInputToChange, onClear,
+ * } = useDateRangePickerValue({
+ *   format: 'YYYY-MM-DD',
+ *   inputFromRef,
+ *   inputToRef,
+ *   value: rangePickerValue,
+ *   onChange: setRangePickerValue,
+ * });
+ * ```
+ *
+ * @see {@link DateRangePicker} 搭配的元件
+ */
 export function useDateRangePickerValue({
   format,
   hasDisabledDateInRange,

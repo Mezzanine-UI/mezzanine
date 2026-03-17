@@ -2,6 +2,12 @@ import type { UploadItemStatus } from './uploadItem';
 
 export const uploadPictureCardPrefix = 'mzn-upload-picture-card';
 
+/**
+ * 圖片上傳卡片的尺寸規格。
+ * - `'main'` — 主要尺寸（最大）
+ * - `'sub'` — 次要尺寸（中）
+ * - `'minor'` — 最小尺寸
+ */
 export type UploadPictureCardSize = 'main' | 'sub' | 'minor';
 
 export type UploadSize = Exclude<UploadPictureCardSize, 'minor'>;

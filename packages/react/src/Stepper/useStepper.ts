@@ -15,6 +15,24 @@ export interface UseStepperOptions {
   totalSteps?: number;
 }
 
+/**
+ * 管理多步驟流程狀態的 Hook。
+ *
+ * 維護當前步驟索引，並提供 `nextStep`、`prevStep`、`goToStep` 等導航方法，
+ * 同時暴露 `isFirstStep` 與 `isLastStep` 兩個旗標以簡化邊界判斷。
+ *
+ * @example
+ * ```tsx
+ * import { useStepper } from '@mezzanine-ui/react';
+ *
+ * const { currentStep, nextStep, prevStep, isFirstStep, isLastStep } = useStepper({
+ *   totalSteps: 3,
+ *   defaultStep: 0,
+ * });
+ * ```
+ *
+ * @see {@link Stepper} 搭配的元件
+ */
 export const useStepper = ({
   defaultStep = 0,
   totalSteps = Number.MAX_VALUE,

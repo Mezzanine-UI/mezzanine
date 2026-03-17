@@ -56,7 +56,45 @@ export interface TooltipProps
 }
 
 /**
- * The react component for `mezzanine` tooltip.
+ * 滑鼠懸停時顯示的提示框元件。
+ *
+ * 採用 render prop 模式，`children` 為接收 `ref`、`onMouseEnter`、`onMouseLeave` 的函式。
+ * 內部使用 `Popper` 進行定位，並整合 `flip`、`shift` 等 floating-ui middleware 自動調整位置以避免溢出視窗。
+ * 支援自訂偏移量、顯示箭頭及滑鼠離開延遲時間。
+ *
+ * @example
+ * ```tsx
+ * import Tooltip from '@mezzanine-ui/react/Tooltip';
+ *
+ * // 基本用法
+ * <Tooltip title="這是提示文字">
+ *   {({ ref, onMouseEnter, onMouseLeave }) => (
+ *     <button ref={ref} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+ *       Hover me
+ *     </button>
+ *   )}
+ * </Tooltip>
+ *
+ * // 自訂位置與關閉箭頭
+ * <Tooltip title="底部提示" arrow={false} options={{ placement: 'bottom' }}>
+ *   {({ ref, onMouseEnter, onMouseLeave }) => (
+ *     <span ref={ref} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+ *       文字
+ *     </span>
+ *   )}
+ * </Tooltip>
+ *
+ * // 增加滑鼠離開延遲
+ * <Tooltip title="可懸停的提示" mouseLeaveDelay={0.3}>
+ *   {({ ref, onMouseEnter, onMouseLeave }) => (
+ *     <button ref={ref} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+ *       按鈕
+ *     </button>
+ *   )}
+ * </Tooltip>
+ * ```
+ *
+ * @see {@link Popper} 浮動定位元件
  */
 const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
   function Tooltip(props, ref) {

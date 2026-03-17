@@ -46,30 +46,33 @@ import type {
 } from '../Select/typings';
 import { SelectValue } from '../Select/typings';
 import { PickRenameMulti } from '../utils/general';
-import { getFullParsedList, useAutoCompleteCreation } from './useAutoCompleteCreation';
+import {
+  getFullParsedList,
+  useAutoCompleteCreation,
+} from './useAutoCompleteCreation';
 import { useAutoCompleteKeyboard } from './useAutoCompleteKeyboard';
 import { useAutoCompleteSearch } from './useAutoCompleteSearch';
 import { useCreationTracker } from './useCreationTracker';
 
 export interface AutoCompleteBaseProps
   extends Omit<
-    SelectTriggerProps,
-    | 'active'
-    | 'clearable'
-    | 'forceHideSuffixActionIcon'
-    | 'mode'
-    | 'onClick'
-    | 'onKeyDown'
-    | 'onChange'
-    | 'renderValue'
-    | 'inputProps'
-    | 'suffixActionIcon'
-    | 'value'
-  >,
-  PickRenameMulti<
-    Pick<PopperProps, 'options'>,
-    { options: 'popperOptions' }
-  > {
+      SelectTriggerProps,
+      | 'active'
+      | 'clearable'
+      | 'forceHideSuffixActionIcon'
+      | 'mode'
+      | 'onClick'
+      | 'onKeyDown'
+      | 'onChange'
+      | 'renderValue'
+      | 'inputProps'
+      | 'suffixActionIcon'
+      | 'value'
+    >,
+    PickRenameMulti<
+      Pick<PopperProps, 'options'>,
+      { options: 'popperOptions' }
+    > {
   /**
    * Set to true when options can be added dynamically
    * @default false
@@ -200,10 +203,11 @@ export interface AutoCompleteBaseProps
    * Imperative handle to control search text externally (e.g. reset or sync).
    */
   searchTextControlRef?: RefObject<
-    {
-      reset: () => void;
-      setSearchText: Dispatch<SetStateAction<string>>;
-    } | undefined
+    | {
+        reset: () => void;
+        setSearchText: Dispatch<SetStateAction<string>>;
+      }
+    | undefined
   >;
   /**
    * Whether to trim whitespace from created items.
@@ -341,9 +345,57 @@ function isSingleValue(
 }
 
 /**
- * The AutoComplete component for react. <br />
- * Note that if you need search for ONLY given options, not included your typings,
- * should considering using the `Select` component with `onSearch` prop.
+ * 自動完成輸入元件，在使用者輸入時即時顯示符合的下拉選項。
+ *
+ * 支援 `single`（單選）與 `multiple`（多選標籤）兩種模式；設定 `addable` 與 `onInsert`
+ * 可讓使用者動態建立不在選項清單中的項目。`asyncData` 搭配 `onSearch` 可實現非同步搜尋，
+ * 輸入時觸發 debounce 查詢並顯示 loading 狀態。若僅需從固定選項中搜尋，請改用 `Select` 元件。
+ *
+ * @example
+ * ```tsx
+ * import AutoComplete from '@mezzanine-ui/react/AutoComplete';
+ *
+ * // 單選基本用法
+ * <AutoComplete
+ *   mode="single"
+ *   options={[{ id: '1', name: 'Apple' }, { id: '2', name: 'Banana' }]}
+ *   value={selected}
+ *   onChange={setSelected}
+ *   placeholder="請搜尋..."
+ * />
+ *
+ * // 多選模式
+ * <AutoComplete
+ *   mode="multiple"
+ *   options={options}
+ *   value={selectedList}
+ *   onChange={setSelectedList}
+ * />
+ *
+ * // 非同步搜尋
+ * <AutoComplete
+ *   mode="single"
+ *   asyncData
+ *   options={asyncOptions}
+ *   onSearch={async (text) => { const res = await fetchOptions(text); setAsyncOptions(res); }}
+ *   value={selected}
+ *   onChange={setSelected}
+ * />
+ *
+ * // 可新增選項
+ * <AutoComplete
+ *   mode="multiple"
+ *   addable
+ *   options={options}
+ *   onInsert={(text, current) => [...current, { id: text, name: text }]}
+ *   value={selectedList}
+ *   onChange={setSelectedList}
+ * />
+ * ```
+ *
+ * @see {@link Select} 從固定選項清單中選取時使用
+ * @see {@link Input} 純文字輸入欄位
+ * @see {@link useAutoCompleteValueControl} 管理 AutoComplete 內部值狀態的 hook
  */
 const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
   function AutoComplete(props, ref) {
@@ -446,7 +498,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
                       createSeparators,
                       trimOnCreate,
                     );
-                    return full.length > 1 ? full[0] ?? undefined : undefined;
+                    return full.length > 1 ? (full[0] ?? undefined) : undefined;
                   }
                 : undefined,
             mode: 'multiple',
@@ -637,7 +689,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
       clearUnselected();
       onRemoveCreated(cleanedOptions);
-    }, [clearUnselected, creationEnabled, filterUnselected, onRemoveCreated, optionsProp]);
+    }, [
+      clearUnselected,
+      creationEnabled,
+      filterUnselected,
+      onRemoveCreated,
+      optionsProp,
+    ]);
 
     useEffect(
       () => () => {
@@ -796,14 +854,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       ? getPendingCreateList(insertText)[0]
       : undefined;
 
-    const searchTextExistWithoutOption: boolean = !!(
-      (firstPendingText
-        ? firstPendingText &&
-          options.find((option) => option.name === firstPendingText) ===
-            undefined
-        : searchText &&
-          options.find((option) => option.name === searchText) === undefined)
-    );
+    const searchTextExistWithoutOption: boolean = !!(firstPendingText
+      ? firstPendingText &&
+        options.find((option) => option.name === firstPendingText) === undefined
+      : searchText &&
+        options.find((option) => option.name === searchText) === undefined);
 
     const shouldShowCreateAction = !!(
       searchTextExistWithoutOption &&
@@ -824,8 +879,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     // Convert SelectValue[] to DropdownOption[] (created options first)
     const dropdownOptions: DropdownOption[] = useMemo(() => {
       const sortedOptions = [...options].sort(
-        (a, b) =>
-          (isCreated(b.id) ? 1 : 0) - (isCreated(a.id) ? 1 : 0),
+        (a, b) => (isCreated(b.id) ? 1 : 0) - (isCreated(a.id) ? 1 : 0),
       );
       return sortedOptions.map((option) => {
         const created = isCreated(option.id);
@@ -870,7 +924,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         : undefined;
     const shouldForceClearable = isMultiple
       ? (isMultipleValue(value) && value.length > 0) ||
-      searchText.trim().length > 0
+        searchText.trim().length > 0
       : isSingleValue(value);
 
     // Handle dropdown option selection
@@ -908,7 +962,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
     // Active index for dropdown keyboard navigation
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
-    const setListboxHasVisualFocus = useCallback((_focus: boolean) => { }, []);
+    const setListboxHasVisualFocus = useCallback((_focus: boolean) => {}, []);
 
     // Reset activeIndex when options change
     useEffect(() => {
@@ -1134,7 +1188,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               mode={mode}
               onTagClose={wrappedOnChange}
               onClear={handleClear}
-              overflowStrategy={isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy}
+              overflowStrategy={
+                isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy
+              }
               placeholder={getPlaceholder()}
               prefix={prefix}
               readOnly={false}
@@ -1157,8 +1213,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               suffixAction={onClickSuffixActionIcon}
               value={
                 mode === 'multiple' &&
-                  isMultipleValue(value) &&
-                  value.length === 0
+                isMultipleValue(value) &&
+                value.length === 0
                   ? undefined
                   : (value ?? undefined)
               }

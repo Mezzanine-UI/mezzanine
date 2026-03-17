@@ -123,7 +123,42 @@ export interface FormFieldProps
 }
 
 /**
- * The React component for `mezzanine` form field.
+ * 表單欄位容器元件，整合標籤、提示文字與錯誤狀態。
+ *
+ * 透過 `FormControlContext` 將 `disabled`、`required`、`severity` 等狀態向下傳遞給子元件。
+ * 支援水平、垂直與延伸三種排版方式，並可選擇性顯示字數計數器與提示文字圖示。
+ * 當 `disabled` 為 `true` 時，提示訊息將不會顯示。
+ *
+ * @example
+ * ```tsx
+ * import FormField from '@mezzanine-ui/react/Form';
+ * import { TextField } from '@mezzanine-ui/react/TextField';
+ *
+ * // 基本水平排版
+ * <FormField name="username" label="使用者名稱">
+ *   <TextField placeholder="請輸入使用者名稱" />
+ * </FormField>
+ *
+ * // 帶有錯誤提示的垂直排版
+ * <FormField
+ *   name="email"
+ *   label="電子郵件"
+ *   layout="vertical"
+ *   severity="error"
+ *   hintText="電子郵件格式不正確"
+ * >
+ *   <TextField placeholder="請輸入電子郵件" />
+ * </FormField>
+ *
+ * // 帶有字數計數器
+ * <FormField name="bio" label="自我介紹" counter="50/200">
+ *   <TextField placeholder="請輸入自我介紹" />
+ * </FormField>
+ * ```
+ *
+ * @see {@link FormLabel} 表單標籤元件
+ * @see {@link FormHintText} 表單提示文字元件
+ * @see {@link FormControlContext} 表單控制狀態 Context
  */
 const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
   function FormField(props, ref) {

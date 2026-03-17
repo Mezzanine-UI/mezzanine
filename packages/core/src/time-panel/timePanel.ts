@@ -4,6 +4,12 @@ export type TimePanelUnit = {
   value: TimePanelUnitValue;
   label: string;
 };
+/**
+ * 時間面板的時間單位模式。
+ * - `'hour'` — 小時選取
+ * - `'minute'` — 分鐘選取
+ * - `'second'` — 秒數選取
+ */
 export type TimePanelMode = 'hour' | 'minute' | 'second';
 
 /** Classes */

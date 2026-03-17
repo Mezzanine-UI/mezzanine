@@ -1,3 +1,8 @@
+/**
+ * 切換元件的尺寸規格。
+ * - `'main'` — 主要尺寸（較大）
+ * - `'sub'` — 次要尺寸（較小）
+ */
 export type ToggleSize = 'main' | 'sub';
 
 export const togglePrefix = 'mzn-toggle';

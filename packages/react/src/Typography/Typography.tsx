@@ -74,7 +74,29 @@ export type TypographyProps<C extends TypographyComponent = 'p'> =
   >;
 
 /**
- * The react component for `mezzanine` typography.
+ * 文字排版元件，提供一致的語意化文字樣式。
+ *
+ * 透過 `variant` 套用設計系統中定義的語意排版類型（如 `h1`、`h2`、`h3`、`body`、`caption` 等），
+ * 並自動推斷對應的 HTML 標籤（`h1–h3` → `<h1>–<h3>`，body 系列 → `<p>`，其餘 → `<span>`）。
+ * 可透過 `color` 套用調色盤中的文字色彩，`align` 控制對齊方式，`ellipsis` 啟用單行截斷省略號。
+ * 支援透過 `component` prop 覆寫根元素標籤。
+ *
+ * @example
+ * ```tsx
+ * import Typography from '@mezzanine-ui/react/Typography';
+ *
+ * // 標題
+ * <Typography variant="h1">頁面標題</Typography>
+ *
+ * // 本文
+ * <Typography variant="body">這是一段說明文字。</Typography>
+ *
+ * // 套用色彩
+ * <Typography variant="body" color="error">錯誤提示訊息</Typography>
+ *
+ * // 單行截斷（需搭配 block 或 inline-block 容器）
+ * <Typography variant="caption" ellipsis display="block">超長文字會在此被截斷顯示省略號...</Typography>
+ * ```
  */
 const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(
   function Typography(props, ref) {

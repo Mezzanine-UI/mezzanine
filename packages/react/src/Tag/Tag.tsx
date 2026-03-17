@@ -17,7 +17,33 @@ const isTagType = <T extends NonNullable<TagProps['type']>>(
 ): props is Extract<TagProps, { type?: T }> => getTagType(props) === current;
 
 /**
- * The react component for `mezzanine` tag.
+ * 標籤元件，用於分類、篩選或標記內容，支援靜態、計數、可關閉及可新增四種模式。
+ *
+ * 透過 `type` prop 切換顯示模式：`static` 純標籤（預設）、`counter` 帶數字的標籤、
+ * `dismissable` 含關閉按鈕、`addable` 含新增按鈕。`overflow-counter` 適用於收合多餘標籤並顯示剩餘數量。
+ * `dismissable` 與 `addable` 模式支援 `active` 和 `disabled` 狀態。
+ *
+ * @example
+ * ```tsx
+ * import Tag from '@mezzanine-ui/react/Tag';
+ *
+ * // 靜態標籤
+ * <Tag type="static" label="設計" />
+ *
+ * // 計數標籤
+ * <Tag type="counter" label="待處理" count={3} />
+ *
+ * // 可關閉標籤
+ * <Tag type="dismissable" label="React" onClose={() => removeTag('React')} />
+ *
+ * // 可新增標籤（按鈕形式）
+ * <Tag type="addable" label="新增標籤" onClick={handleAdd} />
+ *
+ * // 收合溢出的標籤數量
+ * <Tag type="overflow-counter" count={5} onClick={handleExpand} />
+ * ```
+ *
+ * @see {@link TagGroup} 以群組方式管理多個標籤
  */
 const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
   function Tag(props, ref) {

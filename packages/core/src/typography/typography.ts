@@ -5,6 +5,13 @@ import {
   TypographySemanticType,
 } from '@mezzanine-ui/system/typography';
 
+/**
+ * 文字的對齊方式。
+ * - `'left'` — 靠左對齊
+ * - `'center'` — 置中對齊
+ * - `'right'` — 靠右對齊
+ * - `'justify'` — 兩端對齊
+ */
 export type TypographyAlign = 'left' | 'center' | 'right' | 'justify';
 
 export type TypographyColor = 'inherit' | `text-${TextTone}`;

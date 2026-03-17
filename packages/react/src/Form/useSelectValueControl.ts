@@ -156,6 +156,25 @@ function useSelectBaseValueControl(props: UseSelectValueControl) {
   };
 }
 
+/**
+ * 管理 Select 單選／多選值的受控狀態 Hook。
+ *
+ * 根據 `mode` 分別處理單選（`single`）與多選（`multiple`）邏輯，
+ * 提供 `value`、`onChange` 與 `onClear` 等操作介面。
+ *
+ * @example
+ * ```tsx
+ * import { useSelectValueControl } from '@mezzanine-ui/react';
+ *
+ * const control = useSelectValueControl({
+ *   mode: 'single',
+ *   value: selectedOption,
+ *   onChange: (option) => setSelectedOption(option),
+ * });
+ * ```
+ *
+ * @see {@link Select} 搭配的元件
+ */
 export const useSelectValueControl = (props: UseSelectValueControl) => {
   if (props.mode === 'multiple') {
     // eslint-disable-next-line react-hooks/rules-of-hooks

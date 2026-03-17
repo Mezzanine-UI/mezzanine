@@ -8,6 +8,11 @@ import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
 export type NotificationSeverity = SeverityWithInfo;
 
+/**
+ * 通知中心的顯示類型。
+ * - `'notification'` — 浮動通知訊息樣式
+ * - `'drawer'` — 抽屜面板樣式
+ */
 export type NotificationType = 'notification' | 'drawer';
 
 export const notificationPrefix = 'mzn-notification-center';

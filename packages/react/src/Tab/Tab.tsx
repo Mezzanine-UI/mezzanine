@@ -54,7 +54,39 @@ export interface TabProps
 }
 
 /**
- * The react component for `mezzanine` tab.
+ * 頁籤導航元件，透過底部滑動指示條標示當前選取的頁籤。
+ *
+ * 以 `TabItem` 作為子元件定義每個頁籤項目，支援水平（`horizontal`）與垂直（`vertical`）
+ * 兩種排列方向。可透過 `activeKey`（受控）或 `defaultActiveKey`（非受控）指定當前頁籤，
+ * `onChange` 回呼在切換時接收新的 `activeKey` 與索引。
+ *
+ * @example
+ * ```tsx
+ * import Tab from '@mezzanine-ui/react/Tab';
+ * import TabItem from '@mezzanine-ui/react/TabItem';
+ *
+ * // 基本用法（非受控）
+ * <Tab defaultActiveKey="home">
+ *   <TabItem key="home">首頁</TabItem>
+ *   <TabItem key="profile">個人資料</TabItem>
+ *   <TabItem key="settings">設定</TabItem>
+ * </Tab>
+ *
+ * // 受控用法
+ * const [activeKey, setActiveKey] = useState<Key>('tab1');
+ * <Tab activeKey={activeKey} onChange={(key) => setActiveKey(key)}>
+ *   <TabItem key="tab1">頁籤一</TabItem>
+ *   <TabItem key="tab2">頁籤二</TabItem>
+ * </Tab>
+ *
+ * // 垂直方向
+ * <Tab direction="vertical" size="sub">
+ *   <TabItem key="a">分類 A</TabItem>
+ *   <TabItem key="b">分類 B</TabItem>
+ * </Tab>
+ * ```
+ *
+ * @see {@link TabItem} 頁籤項目元件
  */
 const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
   props: TabProps,

@@ -41,21 +41,21 @@ import {
 
 export interface SelectBaseProps
   extends Omit<
-    SelectTriggerProps,
-    | 'active'
-    | 'inputProps'
-    | 'mode'
-    | 'onBlur'
-    | 'onChange'
-    | 'onClick'
-    | 'onFocus'
-    | 'onKeyDown'
-    | 'onScroll'
-    | 'type'
-    | 'renderValue'
-    | 'value'
-  >,
-  FormElementFocusHandlers {
+      SelectTriggerProps,
+      | 'active'
+      | 'inputProps'
+      | 'mode'
+      | 'onBlur'
+      | 'onChange'
+      | 'onClick'
+      | 'onFocus'
+      | 'onKeyDown'
+      | 'onScroll'
+      | 'type'
+      | 'renderValue'
+      | 'value'
+    >,
+    FormElementFocusHandlers {
   /**
    * Direct options array for dropdown (supports tree structure).
    * If provided, `type` will be automatically set.
@@ -195,6 +195,38 @@ export type SelectSingleProps = SelectBaseProps & {
 
 export type SelectProps = SelectMultipleProps | SelectSingleProps;
 
+/**
+ * 下拉選擇元件，支援單選與多選兩種模式。
+ *
+ * 透過 `mode` 切換 `single`（單選，預設）或 `multiple`（多選，以標籤呈現已選項目）。
+ * 傳入 `options` 陣列即可自動建立下拉選單；多選模式下若 options 含有 `children` 巢狀結構，
+ * 會自動切換為樹狀選取（`type: 'tree'`）並為所有選項加上勾選框。
+ * 支援 `clearable`、`readOnly`、`loading` 狀態，以及透過 `renderValue` 自訂顯示文字。
+ *
+ * @example
+ * ```tsx
+ * import Select from '@mezzanine-ui/react/Select';
+ *
+ * const options = [
+ *   { id: '1', name: '選項一' },
+ *   { id: '2', name: '選項二' },
+ *   { id: '3', name: '選項三' },
+ * ];
+ *
+ * // 單選
+ * <Select options={options} placeholder="請選擇" onChange={(val) => console.log(val)} />
+ *
+ * // 多選
+ * <Select mode="multiple" options={options} placeholder="可多選" onChange={(vals) => console.log(vals)} />
+ *
+ * // 帶搜尋功能（搭配 AutoComplete）
+ * <Select options={options} clearable placeholder="選擇或搜尋" />
+ * ```
+ *
+ * @see {@link AutoComplete} 支援自由輸入文字的搜尋下拉元件
+ * @see {@link Dropdown} Select 底層使用的下拉清單容器元件
+ * @see {@link useSelectValueControl} 用於在受控模式下管理選取值的 Hook
+ */
 const Select = forwardRef<HTMLDivElement, SelectProps>(
   function Select(props, ref) {
     const {

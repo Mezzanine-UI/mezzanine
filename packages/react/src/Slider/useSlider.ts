@@ -47,6 +47,27 @@ export interface UseSliderResult {
   railRef: RefObject<HTMLDivElement | null>;
 }
 
+/**
+ * 管理 Slider 拖曳互動與 CSS 變數計算的 Hook。
+ *
+ * 支援單值（`SingleSliderValue`）與範圍值（`RangeSliderValue`）兩種模式，
+ * 處理滑鼠／觸控拖曳事件並計算出對應的 CSS 自訂屬性供樣式使用。
+ *
+ * @example
+ * ```tsx
+ * import { useSlider } from '@mezzanine-ui/react';
+ *
+ * const { cssVars, handlePress, handleClickTrackOrRail, railRef } = useSlider({
+ *   min: 0,
+ *   max: 100,
+ *   step: 1,
+ *   value: sliderValue,
+ *   onChange: (v) => setSliderValue(v),
+ * });
+ * ```
+ *
+ * @see {@link Slider} 搭配的元件
+ */
 export function useSlider(props: UseRangeSliderProps): UseSliderResult;
 export function useSlider(props: UseSingleSliderProps): UseSliderResult;
 export function useSlider(props: UseSliderProps) {

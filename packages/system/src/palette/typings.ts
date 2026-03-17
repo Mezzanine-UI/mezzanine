@@ -61,7 +61,11 @@ export type SemanticContext =
   | 'shadow';
 
 /**
- * Layer tones - 圖層層級
+ * 圖層層級調性。
+ *
+ * - `'01'` — 第一層，最底層的介面層級
+ * - `'02'` — 第二層，疊加於第一層之上
+ * - `'03'` — 第三層，最高的介面層級
  */
 export type LayerTone = '01' | '02' | '03';
 
@@ -175,12 +179,21 @@ export type SeparatorTone =
   | 'brand';
 
 /**
- * Overlay tones - 遮罩顏色調性
+ * 遮罩顏色調性。
+ *
+ * - `'strong'` — 深色遮罩，遮蔽效果最強
+ * - `'default'` — 預設遮罩，適用於一般對話框或抽屜
+ * - `'subtle'` — 淡色遮罩，視覺干擾最低
  */
 export type OverlayTone = 'strong' | 'default' | 'subtle';
 
 /**
- * Surface tones - 表面顏色調性（半透明）
+ * 表面顏色調性（半透明）。
+ *
+ * - `'solid'` — 不透明實色表面
+ * - `'strong'` — 較高不透明度的半透明表面
+ * - `'subtle'` — 較低不透明度的半透明表面
+ * - `'ghost'` — 極淡的幾乎全透明表面
  */
 export type SurfaceTone = 'solid' | 'strong' | 'subtle' | 'ghost';
 
@@ -242,6 +255,9 @@ export type SemanticColor = {
 }[SemanticContext];
 
 /**
- * Color mode - 顏色模式
+ * 介面顏色模式。
+ *
+ * - `'light'` — 淺色模式，適用於明亮環境
+ * - `'dark'` — 深色模式，適用於低光或夜間環境
  */
 export type ColorMode = 'light' | 'dark';

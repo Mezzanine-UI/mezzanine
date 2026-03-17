@@ -204,6 +204,26 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   };
 }
 
+/**
+ * 管理 AutoComplete 搜尋文字與選取值的受控狀態 Hook。
+ *
+ * 根據 `mode` 支援單選（`single`）與多選（`multiple`），並內建選項過濾邏輯、
+ * 焦點狀態追蹤以及清除功能，回傳完整的操作介面供 AutoComplete 元件使用。
+ *
+ * @example
+ * ```tsx
+ * import { useAutoCompleteValueControl } from '@mezzanine-ui/react';
+ *
+ * const control = useAutoCompleteValueControl({
+ *   mode: 'single',
+ *   options: [{ id: '1', name: 'Option A' }],
+ *   disabledOptionsFilter: false,
+ *   onChange: (option) => console.log(option),
+ * });
+ * ```
+ *
+ * @see {@link AutoComplete} 搭配的元件
+ */
 export const useAutoCompleteValueControl = (
   props: UseAutoCompleteValueControl,
 ) => {

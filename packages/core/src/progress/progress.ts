@@ -13,6 +13,12 @@ export const progressClasses = {
   type: (type: ProgressType) => `${progressPrefix}--${type}`,
 } as const;
 
+/**
+ * 進度條的狀態。
+ * - `'enabled'` — 進行中狀態
+ * - `'success'` — 成功狀態
+ * - `'error'` — 錯誤狀態
+ */
 export type ProgressStatus = 'enabled' | 'success' | 'error';
 
 export enum ProgressStatuses {
@@ -27,4 +33,10 @@ export enum ProgressTypes {
   icon = 'icon',
 }
 
+/**
+ * 進度條的顯示類型。
+ * - `'progress'` — 長條進度列樣式
+ * - `'percent'` — 顯示百分比數值
+ * - `'icon'` — 以圖示顯示完成狀態
+ */
 export type ProgressType = 'progress' | 'percent' | 'icon';

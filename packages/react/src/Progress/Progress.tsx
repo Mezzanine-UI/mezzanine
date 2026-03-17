@@ -66,7 +66,30 @@ export interface ProgressProps
 }
 
 /**
- * The react component for `mezzanine` progress.
+ * 進度條元件，支援百分比文字與狀態圖示兩種顯示類型。
+ *
+ * `percent` 介於 0～100，未達 100 時狀態自動為 `enabled`，達到 100 時自動切換為 `success`。
+ * 可強制指定 `status` 為 `error` 以顯示錯誤圖示；使用 `tick` prop 可在進度條上標記特定位置。
+ * 支援 `icons` prop 自訂 success 與 error 狀態的圖示。
+ *
+ * @example
+ * ```tsx
+ * import Progress from '@mezzanine-ui/react/Progress';
+ *
+ * // 基本進度條
+ * <Progress percent={60} />
+ *
+ * // 顯示百分比文字
+ * <Progress percent={75} type="percent" />
+ *
+ * // 錯誤狀態
+ * <Progress percent={40} status="error" type="icon" />
+ *
+ * // 帶有 tick 標記點
+ * <Progress percent={60} tick={80} />
+ * ```
+ *
+ * @see {@link Spin} 載入旋轉元件
  */
 const Progress = forwardRef<HTMLDivElement, ProgressProps>(
   function Progress(props, ref) {
@@ -91,9 +114,18 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       return icons?.error ?? DangerousFilledIcon;
     }, [status, icons]);
 
-    const isSuccessStatus = useMemo(() => status === ProgressStatuses.success && type === ProgressTypes.icon, [status, type]);
-    const isErrorStatus = useMemo(() => status === ProgressStatuses.error && type === ProgressTypes.icon, [status, type]);
-    const isActiveTick = useMemo(() => tick !== undefined && tick > 0 && tick < 100, [tick]);
+    const isSuccessStatus = useMemo(
+      () => status === ProgressStatuses.success && type === ProgressTypes.icon,
+      [status, type],
+    );
+    const isErrorStatus = useMemo(
+      () => status === ProgressStatuses.error && type === ProgressTypes.icon,
+      [status, type],
+    );
+    const isActiveTick = useMemo(
+      () => tick !== undefined && tick > 0 && tick < 100,
+      [tick],
+    );
 
     const tickPosition = useMemo(() => {
       if (!isActiveTick || tick === undefined) return undefined;
@@ -164,46 +196,42 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
     return (
       <div
         ref={ref}
-        className={
-          cx(
-            classes.host,
-            classes.type(type),
-            status === ProgressStatuses.success && classes.success,
-            status === ProgressStatuses.error && classes.error,
-            className,
-          )
-        }
+        className={cx(
+          classes.host,
+          classes.type(type),
+          status === ProgressStatuses.success && classes.success,
+          status === ProgressStatuses.error && classes.error,
+          className,
+        )}
       >
         <div ref={lineRef} className={classes.lineVariant}>
-          <i className={classes.lineBg} style={{ width: `${percentLimited}%` }} />
+          <i
+            className={classes.lineBg}
+            style={{ width: `${percentLimited}%` }}
+          />
         </div>
-        {
-          type === ProgressTypes.percent && (
-            <Typography variant="input" {...percentProps} className={classes.infoPercent}>
-              {`${percentLimited}%`}
-            </Typography>
-          )
-        }
-        {
-          (isSuccessStatus || isErrorStatus) && (
-            <Icon
-              className={classes.infoIcon}
-              icon={icon}
-            />
-          )
-        }
-        {
-          isActiveTick && tickLeft !== undefined && (
-            <div
-              className={classes.tick}
-              style={
-                {
-                  '--tick-position': tickLeft,
-                } as React.CSSProperties
-              }
-            />
-          )
-        }
+        {type === ProgressTypes.percent && (
+          <Typography
+            variant="input"
+            {...percentProps}
+            className={classes.infoPercent}
+          >
+            {`${percentLimited}%`}
+          </Typography>
+        )}
+        {(isSuccessStatus || isErrorStatus) && (
+          <Icon className={classes.infoIcon} icon={icon} />
+        )}
+        {isActiveTick && tickLeft !== undefined && (
+          <div
+            className={classes.tick}
+            style={
+              {
+                '--tick-position': tickLeft,
+              } as React.CSSProperties
+            }
+          />
+        )}
       </div>
     );
   },
