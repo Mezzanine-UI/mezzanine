@@ -3,7 +3,7 @@ import {
   InputCheckSize,
 } from '../_internal/input-check';
 
-export type RadioSize = InputCheckSize;
+export type RadioSize = Exclude<InputCheckSize, 'minor'>;
 
 export type RadioGroupOrientation = InputCheckGroupOrientation;
 
@@ -13,7 +13,7 @@ export const radioPrefix = 'mzn-radio';
 
 export const radioClasses = {
   host: radioPrefix,
-  size: (size: RadioSize) => `${radioPrefix}--${size}`,
+  size: (size: InputCheckSize) => `${radioPrefix}--${size}`,
   checked: `${radioPrefix}--checked`,
   focused: `${radioPrefix}--focused`,
   error: `${radioPrefix}--error`,

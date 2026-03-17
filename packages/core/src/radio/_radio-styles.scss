@@ -40,7 +40,13 @@
       --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
       --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
       --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+
+      color: palette.semantic-variable(text, neutral);
       @include typography.semantic-variable(label-primary-highlight);
+
+      .mzn-icon {
+        color: palette.semantic-variable(icon, neutral);
+      }
     }
   }
 
@@ -51,7 +57,13 @@
       --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
       --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
       --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+
+      color: palette.semantic-variable(text, neutral);
       @include typography.semantic-variable(label-primary-highlight);
+
+      .mzn-icon {
+        color: palette.semantic-variable(icon, neutral);
+      }
     }
   }
 
@@ -62,6 +74,8 @@
       --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tiny)};
       --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
       --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', neutral-subtle)};
+
+      min-width: spacing.semantic-variable(size, element, extra-wide);
       @include typography.semantic-variable(button-highlight);
     }
   }
@@ -80,6 +94,7 @@
   .#{input-check.$prefix}:hover &,
   &--checked,
   &--focused,
+  &:has(input:focus-visible),
   .#{input-check.$prefix}--disabled & {
     border-color: var(--#{input-check.$prefix}-color);
   }
@@ -144,10 +159,6 @@
     background-color: transparent;
     transition: transition.standard(background-color, fast);
     will-change: background-color;
-
-    &--have-min-width {
-      min-width: spacing.semantic-variable(size, element, extra-wide);
-    }
 
     &--with-icon-text {
       padding-left: var(--#{$prefix}-segmented-horizontal-with-icon-padding);
