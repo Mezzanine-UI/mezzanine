@@ -203,7 +203,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
       <div
         {...rest}
         ref={ref}
-        className={cx(classes.host, classes.size(size), className)}
+        className={cx(classes.host, classes.size(size), { [classes.hostDisabled]: disabled }, className)}
       >
         <AccordionControlContext.Provider value={contextValue}>
           {title ? (
