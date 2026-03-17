@@ -106,24 +106,24 @@ $embedded-emphasis: (
 // Clearable type - Default variant
 $clearable-default: (
   enable: (
-    icon-color: palette.semantic-variable(icon, neutral),
+    icon-color: palette.semantic-variable(background, neutral),
     background-color: transparent,
     focus-color: none,
   ),
   hover: (
-    icon-color: palette.semantic-variable(icon, neutral-strong),
+    icon-color: palette.semantic-variable(background, neutral-strong),
     background-color: transparent,
     focus-color: none,
   ),
   active: (
-    icon-color: palette.semantic-variable(icon, neutral-strong),
+    icon-color: palette.semantic-variable(background, neutral-strong),
     background-color: transparent,
-    focus-color: effect.variable(focus, primary),
+    focus-color: none,
   ),
   focus: (
     icon-color: palette.semantic-variable(icon, neutral-strong),
     background-color: transparent,
-    focus-color: effect.variable(focus, primary),
+    focus-color: none,
   ),
 );
 
