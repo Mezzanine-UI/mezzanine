@@ -161,7 +161,7 @@ $drawer-container-config: (
   flex-wrap: wrap;
   width: spacing.semantic-variable(size, container, standard);
   height: fit-content;
-  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, vertical, spacious);
+  padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, spacious);
   border-radius: radius.variable(roomy);
   background-color: palette.semantic-variable("background", base);
   box-shadow: effect.variable(shadow, floating);
@@ -169,10 +169,12 @@ $drawer-container-config: (
   pointer-events: auto;
   gap: spacing.semantic-variable(gap, base);
   transition: transition.standard(background-color, fast), transition.standard(box-shadow, fast);
-  border: 0;
+  border: 1px solid palette.semantic-variable(border, neutral-faint);
 
   // Drawer type modifier
   &--drawer {
+    padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, tiny-fixed) spacing.semantic-variable(padding, vertical, spacious);
+    border: 0;
     @include _apply-drawer-type();
   }
 
@@ -256,9 +258,7 @@ $drawer-container-config: (
   }
 
   &__severity-icon {
-    padding: spacing.semantic-variable(padding, vertical, micro) 0;
     color: var(--#{$prefix}-color);
-    font-size: typography.semantic-prop(h1, font-size);
   }
 
   &__close-icon {
