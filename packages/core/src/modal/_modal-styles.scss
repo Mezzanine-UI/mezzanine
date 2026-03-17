@@ -102,7 +102,7 @@ $modalSizes: (
     padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
 
     &--show-modal-status-type-icon {
-      padding: spacing.semantic-variable(padding, vertical, generous) spacing.semantic-variable(padding, horizontal, relaxed);
+      padding: spacing.semantic-variable(padding, vertical, generous) spacing.semantic-variable(padding, horizontal, relaxed) spacing.semantic-variable(padding, vertical, spacious);
     }
 
     &--horizontal {
