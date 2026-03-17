@@ -799,6 +799,69 @@ export const ExtendedSplit: StoryObj = {
   },
 };
 
+const LONG_BODY_TEXT = Array.from({ length: 12 }, (_, i) => (
+  <p key={i} style={{ margin: '0 0 12px' }}>
+    Paragraph {i + 1} — Lorem ipsum dolor sit amet, consectetur adipisicing
+    elit. Dolorum illum neque soluta atque eum dolores placeat unde molestias
+    exercitationem tempore perspiciatis quia porro sapiente vero impedit
+    consequatur recusandae excepturi cumque.
+  </p>
+));
+
+export const BodySeparator: StoryObj = {
+  render: function Render() {
+    const [openStandard, setOpenStandard] = useState(false);
+    const [openExtended, setOpenExtended] = useState(false);
+    const onCloseStandard = useCallback(() => setOpenStandard(false), []);
+    const onCloseExtended = useCallback(() => setOpenExtended(false), []);
+
+    return (
+      <>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button onClick={() => setOpenStandard(true)} variant="base-primary">
+            Scroll-based Separator
+          </Button>
+          <Button onClick={() => setOpenExtended(true)} variant="base-primary">
+            Extended (Always Visible)
+          </Button>
+        </div>
+
+        <Modal
+          cancelText="Cancel"
+          confirmText="Confirm"
+          modalType="standard"
+          onCancel={onCloseStandard}
+          onClose={onCloseStandard}
+          onConfirm={onCloseStandard}
+          open={openStandard}
+          showModalFooter
+          showModalHeader
+          size="regular"
+          title="Scroll-based Separator"
+        >
+          {LONG_BODY_TEXT}
+        </Modal>
+
+        <Modal
+          cancelText="Cancel"
+          confirmText="Confirm"
+          modalType="extended"
+          onCancel={onCloseExtended}
+          onClose={onCloseExtended}
+          onConfirm={onCloseExtended}
+          open={openExtended}
+          showModalFooter
+          showModalHeader
+          size="regular"
+          title="Extended (Always Visible)"
+        >
+          <>Both separators are always visible in Extended Modal.</>
+        </Modal>
+      </>
+    );
+  },
+};
+
 export const VerificationCodeInput: StoryObj = {
   render: function Render() {
     const [open4Digit, setOpen4Digit] = useState(false);

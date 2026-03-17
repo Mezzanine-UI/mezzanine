@@ -3,7 +3,7 @@ import {
   ModalSize,
   ModalStatusType,
 } from '@mezzanine-ui/core/modal';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useRef, useState, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import useModalContainer, { ModalContainerProps } from './useModalContainer';
@@ -252,6 +252,55 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       ...rest
     } = props;
 
+    const bodyContentRef = useRef<HTMLDivElement>(null);
+    const [hasTopSeparator, setHasTopSeparator] = useState(false);
+    const [hasBottomSeparator, setHasBottomSeparator] = useState(false);
+    const scrollCleanupRef = useRef<(() => void) | null>(null);
+
+    const handleBodyContainerRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        if (scrollCleanupRef.current) {
+          scrollCleanupRef.current();
+          scrollCleanupRef.current = null;
+        }
+
+        if (!node) {
+          setHasTopSeparator(false);
+          setHasBottomSeparator(false);
+
+          return;
+        }
+
+        const checkScroll = () => {
+          const { scrollTop, scrollHeight, clientHeight } = node;
+
+          setHasTopSeparator(scrollTop > 0);
+          setHasBottomSeparator(scrollTop + clientHeight < scrollHeight);
+        };
+
+        const rafId = requestAnimationFrame(checkScroll);
+
+        node.addEventListener('scroll', checkScroll);
+
+        const observer = new ResizeObserver(checkScroll);
+
+        observer.observe(node);
+
+        const content = bodyContentRef.current;
+
+        if (content) {
+          observer.observe(content);
+        }
+
+        scrollCleanupRef.current = () => {
+          cancelAnimationFrame(rafId);
+          node.removeEventListener('scroll', checkScroll);
+          observer.disconnect();
+        };
+      },
+      [],
+    );
+
     const modalControl: ModalControl = useMemo(
       () => ({
         loading,
@@ -350,7 +399,17 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
               modalType === 'mediaPreview') && (
               <>
                 {children && (
-                  <div className={classes.modalBodyContainer}>{children}</div>
+                  <div
+                    ref={handleBodyContainerRef}
+                    className={cx(classes.modalBodyContainer, {
+                      [classes.modalBodyContainerWithTopSeparator]:
+                        modalType === 'extended' || hasTopSeparator,
+                      [classes.modalBodyContainerWithBottomSeparator]:
+                        modalType === 'extended' || hasBottomSeparator,
+                    })}
+                  >
+                    <div ref={bodyContentRef}>{children}</div>
+                  </div>
                 )}
                 {showModalFooter && renderModalFooter()}
               </>

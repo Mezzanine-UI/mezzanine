@@ -44,6 +44,8 @@ $modalSizes: (
   box-shadow: effect.variable(shadow, modal);
   border-radius: radius.variable(roomy);
   pointer-events: auto;
+  max-height: 100dvh;
+  overflow: hidden;
 
   // each size variant
   @each $size in $modalSizes {
@@ -55,19 +57,17 @@ $modalSizes: (
 
         .#{$prefix}__body-container {
           min-height: spacing.semantic-variable(size, container, tight);
-          max-height: spacing.semantic-variable(size, container, wide);
         }
       } @else if $size == 'regular' {
         width: spacing.semantic-variable(size, container, wide);
 
         .#{$prefix}__body-container {
           min-height: spacing.semantic-variable(size, container, tight);
-          max-height: spacing.semantic-variable(size, container, expanded);
         }
       } @else if $size == 'wide' {
         width: max-content;
         max-width: calc(100% - spacing.semantic-variable(padding, horizontal, spacious) * 2);
-        max-height: spacing.semantic-variable(size, container, expanded);
+        max-height: min(spacing.semantic-variable(size, container, expanded), 100dvh);
 
         .#{$prefix}__body-container {
           padding-top: spacing.semantic-variable(padding, vertical, spacious);
@@ -98,6 +98,7 @@ $modalSizes: (
   }
 
   &__header {
+    flex-shrink: 0;
     padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
 
     &--show-modal-status-type-icon {
@@ -177,11 +178,19 @@ $modalSizes: (
   }
 
   &__body-container {
-    border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
-    border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+    flex: 1;
+    min-height: 0;
     padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
     overflow-y: auto;
     box-sizing: border-box;
+
+    &--with-top-separator {
+      border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
+    }
+
+    &--with-bottom-separator {
+      border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+    }
 
     &__extended-split {
       display: flex;
@@ -287,6 +296,7 @@ $modalSizes: (
   }
 
   &__footer {
+    flex-shrink: 0;
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-end;
