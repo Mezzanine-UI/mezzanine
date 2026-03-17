@@ -31,8 +31,8 @@ export const EmptyMainNotificationIcon = forwardRef<
           y1="33"
           y2="46.8785"
         >
-          <stop stopColor="#9DA4AE" />
-          <stop offset="1" stopColor="#E5E7EB" />
+          <stop style={{ stopColor: 'var(--mzn-color-background-neutral)' }} />
+          <stop offset="1" style={{ stopColor: 'var(--mzn-color-background-neutral-subtle)' }} />
         </linearGradient>
         <linearGradient
           gradientUnits="userSpaceOnUse"
@@ -42,8 +42,8 @@ export const EmptyMainNotificationIcon = forwardRef<
           y1="-1.43647e-06"
           y2="35.9963"
         >
-          <stop stopColor="#E5E7EB" />
-          <stop offset="1" stopColor="#9DA4AE" />
+          <stop style={{ stopColor: 'var(--mzn-color-background-neutral-subtle)' }} />
+          <stop offset="1" style={{ stopColor: 'var(--mzn-color-background-neutral)' }} />
         </linearGradient>
       </defs>
       <circle cx="22" cy="40" fill="url(#paint0_linear_8482_10235)" r="7" />

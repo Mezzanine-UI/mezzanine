@@ -31,8 +31,8 @@ export const EmptyMainInitialDataIcon = forwardRef<
           y1="11.7333"
           y2="52.6933"
         >
-          <stop stopColor="#E5E7EB" />
-          <stop offset="1" stopColor="#9DA4AE" />
+          <stop style={{ stopColor: 'var(--mzn-color-background-neutral-subtle)' }} />
+          <stop offset="1" style={{ stopColor: 'var(--mzn-color-background-neutral)' }} />
         </linearGradient>
         <linearGradient
           gradientUnits="userSpaceOnUse"
@@ -42,8 +42,8 @@ export const EmptyMainInitialDataIcon = forwardRef<
           y1="11.7333"
           y2="52.0904"
         >
-          <stop stopColor="#E5E7EB" />
-          <stop offset="1" stopColor="#9DA4AE" />
+          <stop style={{ stopColor: 'var(--mzn-color-background-neutral-subtle)' }} />
+          <stop offset="1" style={{ stopColor: 'var(--mzn-color-background-neutral)' }} />
         </linearGradient>
         <clipPath id="clip0_15033_10920">
           <rect fill="white" height="64" width="64" />
