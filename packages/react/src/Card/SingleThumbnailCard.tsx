@@ -103,7 +103,7 @@ const SingleThumbnailCard = forwardRef<
             onClick={handlePersonalActionClick}
             type="button"
           >
-            <Icon icon={currentPersonalActionIcon} size={24} />
+            <Icon icon={currentPersonalActionIcon} size={16} />
           </button>
         )}
         {child}
