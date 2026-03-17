@@ -183,6 +183,7 @@ $drawer-container-config: (
   &__prepend-tips {
     color: palette.semantic-variable(text, neutral);
     @include typography.semantic-variable(body);
+    padding-bottom: spacing.semantic-variable(padding, vertical, micro);
 
     &:first-child {
       padding-block-start: 0;
@@ -297,6 +298,7 @@ $drawer-container-config: (
 
   &__notifications-container {
     padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, spacious);
+    height: 100%;
   }
 }
 
