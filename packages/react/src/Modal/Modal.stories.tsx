@@ -580,38 +580,6 @@ export const ModalHeaderComprehensive: StoryObj = {
   },
 };
 
-export const ModalFooterBasic: StoryObj = {
-  render: function Render() {
-    const [open, setOpen] = useState(false);
-    const onClose = useCallback(() => setOpen(false), []);
-
-    return (
-      <>
-        <Button onClick={() => setOpen(true)} variant="base-primary">
-          Open Modal with Footer
-        </Button>
-        <Modal
-          modalType="standard"
-          cancelText="Cancel"
-          confirmText="Confirm"
-          onCancel={onClose}
-          onConfirm={onClose}
-          onClose={onClose}
-          open={open}
-          showModalFooter
-          showModalHeader
-          title="Modal with Footer"
-        >
-          <>
-            This modal uses the new ModalFooter component with cancel and
-            confirm buttons.
-          </>
-        </Modal>
-      </>
-    );
-  },
-};
-
 export const ModalFooterButtonLayout: StoryObj = {
   render: function Render() {
     const [openFixed, setOpenFixed] = useState(false);
@@ -633,14 +601,14 @@ export const ModalFooterButtonLayout: StoryObj = {
           actionsButtonLayout="fixed"
           cancelText="Cancel"
           confirmText="Confirm"
-          onCancel={onCloseFixed}
-          onConfirm={onCloseFixed}
-          title="Fixed Layout"
           modalType="standard"
+          onCancel={onCloseFixed}
           onClose={onCloseFixed}
+          onConfirm={onCloseFixed}
           open={openFixed}
           showModalFooter
           showModalHeader
+          title="Fixed Layout"
         >
           <>
             This modal uses fixed width buttons (default behavior). The buttons
@@ -651,14 +619,14 @@ export const ModalFooterButtonLayout: StoryObj = {
           actionsButtonLayout="fill"
           cancelText="Cancel"
           confirmText="Confirm"
-          onCancel={onCloseFill}
-          onConfirm={onCloseFill}
-          title="Fill Layout"
           modalType="standard"
+          onCancel={onCloseFill}
           onClose={onCloseFill}
+          onConfirm={onCloseFill}
           open={openFill}
           showModalFooter
           showModalHeader
+          title="Fill Layout"
         >
           <>
             This modal uses fill layout. The buttons expand to fill the
