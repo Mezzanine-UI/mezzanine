@@ -12,6 +12,7 @@ import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
 import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import Input from '../Input';
 import PageHeader from '../PageHeader';
+import SectionGroup from './SectionGroup';
 import Tab, { TabItem } from '../Tab';
 import BreadcrumbItem from '../Breadcrumb/BreadcrumbItem';
 
@@ -173,18 +174,20 @@ export const SectionVerticalLayout: Story = {
         </ContentHeader>
       </PageHeader>
 
-      <div style={{ display: 'flex', gap: 'var(--mzn-spacing-gap-calm)' }}>
-        <Section contentHeader={sampleContentHeader}>{sampleContent}</Section>
-        <Section contentHeader={sampleContentHeader}>{sampleContent}</Section>
-      </div>
+      <SectionGroup>
+        <SectionGroup direction="horizontal">
+          <Section contentHeader={sampleContentHeader}>{sampleContent}</Section>
+          <Section contentHeader={sampleContentHeader}>{sampleContent}</Section>
+        </SectionGroup>
 
-      <Section
-        contentHeader={sampleContentHeader}
-        filterArea={sampleFilterArea}
-        tab={sampleTab}
-      >
-        {sampleContent}
-      </Section>
+        <Section
+          contentHeader={sampleContentHeader}
+          filterArea={sampleFilterArea}
+          tab={sampleTab}
+        >
+          {sampleContent}
+        </Section>
+      </SectionGroup>
     </div>
   ),
 };
