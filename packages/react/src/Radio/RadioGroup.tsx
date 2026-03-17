@@ -1,4 +1,4 @@
-import { RadioSize } from '@mezzanine-ui/core/radio';
+import { InputCheckSize } from '@mezzanine-ui/core/_internal/input-check';
 import { ChangeEventHandler, forwardRef, ReactNode, useMemo } from 'react';
 import InputCheckGroup, {
   InputCheckGroupProps,
@@ -54,7 +54,7 @@ export interface RadioGroupBaseProps
    * The size of radio group.
    * Control the size of radios in group if size not passed to radio.
    */
-  size?: RadioSize;
+  size?: InputCheckSize;
   /**
    * The value of radio group.
    */

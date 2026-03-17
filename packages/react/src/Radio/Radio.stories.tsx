@@ -17,7 +17,7 @@ export default {
 
 const orientations: RadioGroupOrientation[] = ['horizontal', 'vertical'];
 
-const sizes: RadioSize[] = ['minor', 'sub', 'main'];
+const sizes: RadioSize[] = ['sub', 'main'];
 
 export const Playground: StoryObj<RadioProps> = {
   argTypes: {
@@ -93,7 +93,6 @@ export const Sizes: StoryObj = {
           alignItems: 'flex-start',
         }}
       >
-        <Radio size="minor">Minor</Radio>
         <Radio size="sub">Sub</Radio>
         <Radio size="main">Main</Radio>
       </div>

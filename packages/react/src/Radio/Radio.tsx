@@ -1,7 +1,8 @@
 'use client';
 
-import { ChangeEventHandler, forwardRef, useContext, useState } from 'react';
+import { ChangeEventHandler, forwardRef, useContext } from 'react';
 import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
+import { InputCheckSize } from '@mezzanine-ui/core/_internal/input-check';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import InputCheck, {
   InputCheckProps,
@@ -119,7 +120,7 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       hint,
       inputProps,
       onChange: onChangeProp,
-      size = sizeFromGroup || 'main',
+      size: sizeProp,
       type = typeFromGroup || 'radio',
       value,
       withInputConfig,
@@ -137,7 +138,7 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       radioGroup,
       value,
     });
-    const [focused, setFocused] = useState<boolean>(false);
+    const size: InputCheckSize = sizeProp ?? sizeFromGroup ?? 'main';
 
     return (
       <div ref={ref} className={cx(classes.wrapper, className)}>
@@ -148,14 +149,12 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
               className={cx(classes.host, classes.size(size), {
                 [classes.segmented]: type === 'segment',
                 [classes.checked]: checked,
-                [classes.focused]: focused,
                 [classes.error]: error,
               })}
             >
               {type === 'segment' && (
                 <span
                   className={cx(classes.segmentedContainer, {
-                    [classes.segmentedContainerHaveMinWidth]: !!children,
                     [classes.segmentedContainerWithIconText]:
                       !!children && !!icon,
                   })}
@@ -172,12 +171,6 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
                 disabled={disabled}
                 id={inputId}
                 onChange={onChange}
-                onFocus={() => {
-                  setFocused(true);
-                }}
-                onBlur={() => {
-                  setFocused(false);
-                }}
                 name={name}
                 type="radio"
                 value={value}
@@ -186,7 +179,6 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
           }
           disabled={disabled}
           error={error}
-          focused={focused}
           hint={hint}
           htmlFor={inputId}
           segmentedStyle={type === 'segment'}
