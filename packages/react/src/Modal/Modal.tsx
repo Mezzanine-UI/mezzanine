@@ -12,10 +12,48 @@ import ModalHeader, { ModalHeaderProps } from './ModalHeader';
 import ModalFooter, { ModalFooterProps } from './ModalFooter';
 import ClearActions from '../ClearActions';
 
+export type ModalHeaderLayoutProps =
+  | {
+      /**
+       * Layout of the status type icon relative to title.
+       * - 'horizontal': Icon to the left of title
+       */
+      statusTypeIconLayout: 'horizontal';
+      /**
+       * Alignment of the supporting text.
+       * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
+       * @default 'left'
+       */
+      supportingTextAlign?: 'left';
+      /**
+       * Alignment of the title.
+       * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
+       * @default 'left'
+       */
+      titleAlign?: 'left';
+    }
+  | {
+      /**
+       * Layout of the status type icon relative to title.
+       * - 'vertical': Icon above title
+       * @default 'vertical'
+       */
+      statusTypeIconLayout?: 'vertical';
+      /**
+       * Alignment of the supporting text.
+       * @default 'left'
+       */
+      supportingTextAlign?: 'left' | 'center';
+      /**
+       * Alignment of the title.
+       * @default 'left'
+       */
+      titleAlign?: 'left' | 'center';
+    };
+
 interface CommonModalProps
   extends Omit<ModalContainerProps, 'children'>,
     Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>,
-    Partial<Omit<ModalHeaderProps, 'children' | 'className' | 'title'>>,
     Partial<Omit<ModalFooterProps, 'children' | 'className' | 'confirmText'>> {
   /**
    * The custom class name applied to the modal container.
@@ -42,6 +80,15 @@ interface CommonModalProps
    * @default true
    */
   showDismissButton?: boolean;
+  /**
+   * Whether to show status type icon.
+   * @default false
+   */
+  showStatusTypeIcon?: boolean;
+  /**
+   * Supporting text displayed below the title.
+   */
+  supportingText?: string;
 }
 
 interface ExtendedSplitModalProps extends CommonModalProps {
@@ -146,6 +193,7 @@ type ModalFooterPropsWithoutFooter = {
 };
 
 export type ModalProps = BaseModalProps &
+  ModalHeaderLayoutProps &
   (
     | (ModalHeaderPropsWithHeader & ModalFooterPropsWithFooter)
     | (ModalHeaderPropsWithHeader & ModalFooterPropsWithoutFooter)
@@ -368,12 +416,14 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           >
             {showModalHeader && (
               <ModalHeader
-                showStatusTypeIcon={showStatusTypeIcon}
-                statusTypeIconLayout={statusTypeIconLayout}
-                supportingText={supportingText}
-                supportingTextAlign={supportingTextAlign}
-                title={title as string}
-                titleAlign={titleAlign}
+                {...({
+                  showStatusTypeIcon,
+                  statusTypeIconLayout,
+                  supportingText,
+                  supportingTextAlign,
+                  title: title as string,
+                  titleAlign,
+                } as ModalHeaderProps)}
               />
             )}
             {modalType === 'extendedSplit' && (

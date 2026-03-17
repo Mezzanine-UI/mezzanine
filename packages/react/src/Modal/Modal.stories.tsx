@@ -1,6 +1,11 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { ReactNode, useCallback, useState } from 'react';
-import Modal, { ModalStatusType, ModalSize, ModalBodyForVerification } from '.';
+import Modal, {
+  ModalBodyForVerification,
+  ModalHeaderLayoutProps,
+  ModalSize,
+  ModalStatusType,
+} from '.';
 import Button from '../Button';
 import { ModalType } from '@mezzanine-ui/core/modal';
 import Typography from '../Typography';
@@ -207,6 +212,24 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       size,
     };
 
+    const layoutProps: ModalHeaderLayoutProps =
+      statusTypeIconLayout === 'horizontal'
+        ? {
+            statusTypeIconLayout: 'horizontal',
+            supportingTextAlign:
+              supportingTextAlign === 'center'
+                ? undefined
+                : supportingTextAlign,
+            titleAlign: titleAlign === 'center' ? undefined : titleAlign,
+          }
+        : {
+            statusTypeIconLayout: statusTypeIconLayout as
+              | 'vertical'
+              | undefined,
+            supportingTextAlign,
+            titleAlign,
+          };
+
     // Extended split specific props
     const extendedSplitLeftSideContent = (
       <div
@@ -246,17 +269,15 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
+              {...layoutProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
               size="wide"
               confirmText={confirmText || 'Confirm'}
               showStatusTypeIcon={showStatusTypeIcon}
-              statusTypeIconLayout={statusTypeIconLayout}
               supportingText={supportingText}
-              supportingTextAlign={supportingTextAlign}
               title={typeof title === 'string' ? title : 'Title'}
-              titleAlign={titleAlign}
               showModalFooter
               showModalHeader
             />
@@ -272,16 +293,14 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
+              {...layoutProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
               size="wide"
               showStatusTypeIcon={showStatusTypeIcon}
-              statusTypeIconLayout={statusTypeIconLayout}
               supportingText={supportingText}
-              supportingTextAlign={supportingTextAlign}
               title={typeof title === 'string' ? title : 'Title'}
-              titleAlign={titleAlign}
               showModalHeader
             />
           </>
@@ -332,14 +351,12 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
+            {...layoutProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showStatusTypeIcon={showStatusTypeIcon}
-            statusTypeIconLayout={statusTypeIconLayout}
             supportingText={supportingText}
-            supportingTextAlign={supportingTextAlign}
             title={typeof title === 'string' ? title : 'Title'}
-            titleAlign={titleAlign}
             showModalFooter
             showModalHeader
           >
@@ -357,13 +374,11 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
+            {...layoutProps}
             modalType={modalType}
             showStatusTypeIcon={showStatusTypeIcon}
-            statusTypeIconLayout={statusTypeIconLayout}
             supportingText={supportingText}
-            supportingTextAlign={supportingTextAlign}
             title={typeof title === 'string' ? title : 'Title'}
-            titleAlign={titleAlign}
             showModalHeader
           >
             {body}
@@ -561,9 +576,9 @@ export const ModalHeaderComprehensive: StoryObj = {
           showStatusTypeIcon
           statusTypeIconLayout="horizontal"
           supportingText="This modal demonstrates all header features combined together"
-          supportingTextAlign="center"
+          supportingTextAlign="left"
           title="Complete Header Example"
-          titleAlign="center"
+          titleAlign="left"
           modalStatusType="warning"
           onClose={onClose}
           open={open}

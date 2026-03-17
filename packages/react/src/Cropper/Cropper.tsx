@@ -3,7 +3,7 @@
 import { cropperClasses as classes } from '@mezzanine-ui/core/cropper';
 import type { ReactElement } from 'react';
 import { Key, forwardRef, useCallback, useRef, useState } from 'react';
-import type { ModalProps } from '../Modal';
+import type { ModalHeaderLayoutProps, ModalProps } from '../Modal';
 import Modal from '../Modal';
 import { createNotifier } from '../Notifier';
 import { cx } from '../utils/cx';
@@ -24,49 +24,50 @@ export type CropperModalProps = Omit<
   | 'showModalHeader'
   | 'confirmText'
   | 'title'
-> & {
-  /**
-   * The text for the cancel button.
-   */
-  cancelText?: ModalProps['cancelText'];
-  /**
-   * The text for the confirm button.
-   * @default '確認'
-   */
-  confirmText?: string;
-  /**
-   * Additional className for the cropper content wrapper.
-   */
-  cropperContentClassName?: string;
-  /**
-   * Props for the CropperElement component.
-   */
-  cropperProps?: CropperPropsBase;
-  /**
-   * Callback fired when the cancel button is clicked.
-   */
-  onCancel?: () => void;
-  /**
-   * Callback fired when the confirm button is clicked.
-   * Receives the cropping context with canvas, cropArea, and imageSrc.
-   */
-  onConfirm?: (context: CropperModalConfirmContext) => void | Promise<void>;
-  /**
-   * Whether to show the modal footer with confirm and cancel buttons.
-   * @default true
-   */
-  showModalFooter?: boolean;
-  /**
-   * Whether to show the modal header.
-   * @default true
-   */
-  showModalHeader?: boolean;
-  /**
-   * The title of the modal header.
-   * @default '圖片裁切'
-   */
-  title?: string;
-};
+> &
+  ModalHeaderLayoutProps & {
+    /**
+     * The text for the cancel button.
+     */
+    cancelText?: ModalProps['cancelText'];
+    /**
+     * The text for the confirm button.
+     * @default '確認'
+     */
+    confirmText?: string;
+    /**
+     * Additional className for the cropper content wrapper.
+     */
+    cropperContentClassName?: string;
+    /**
+     * Props for the CropperElement component.
+     */
+    cropperProps?: CropperPropsBase;
+    /**
+     * Callback fired when the cancel button is clicked.
+     */
+    onCancel?: () => void;
+    /**
+     * Callback fired when the confirm button is clicked.
+     * Receives the cropping context with canvas, cropArea, and imageSrc.
+     */
+    onConfirm?: (context: CropperModalConfirmContext) => void | Promise<void>;
+    /**
+     * Whether to show the modal footer with confirm and cancel buttons.
+     * @default true
+     */
+    showModalFooter?: boolean;
+    /**
+     * Whether to show the modal header.
+     * @default true
+     */
+    showModalHeader?: boolean;
+    /**
+     * The title of the modal header.
+     * @default '圖片裁切'
+     */
+    title?: string;
+  };
 
 export interface CropperModalConfirmContext {
   canvas: HTMLCanvasElement | null;
@@ -102,11 +103,7 @@ const Cropper = forwardRef<HTMLDivElement, CropperProps>(
       <Component
         {...rest}
         ref={ref}
-        className={cx(
-          classes.host,
-          classes.size(size),
-          className,
-        )}
+        className={cx(classes.host, classes.size(size), className)}
       >
         {children}
       </Component>
@@ -181,25 +178,25 @@ const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
 
     const modalFooterProps = showModalFooter
       ? {
-        showModalFooter: true as const,
-        confirmText,
-        showCancelButton: true,
-        cancelText,
-        onCancel: handleCancel,
-        onConfirm: handleConfirm,
-      }
+          showModalFooter: true as const,
+          confirmText,
+          showCancelButton: true,
+          cancelText,
+          onCancel: handleCancel,
+          onConfirm: handleConfirm,
+        }
       : {
-        showModalFooter: false as const,
-      };
+          showModalFooter: false as const,
+        };
 
     const modalHeaderProps = showModalHeader
       ? {
-        showModalHeader: true as const,
-        title,
-      }
+          showModalHeader: true as const,
+          title,
+        }
       : {
-        showModalHeader: false as const,
-      };
+          showModalHeader: false as const,
+        };
 
     return (
       <Modal
@@ -233,11 +230,16 @@ const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
   },
 );
 
-export type CropperModalType = ((props: CropperModalProps) => ReactElement | null) & {
-  open: (options: CropperModalOpenOptions) => Promise<CropperModalResult | null>;
+export type CropperModalType = ((
+  props: CropperModalProps,
+) => ReactElement | null) & {
+  open: (
+    options: CropperModalOpenOptions,
+  ) => Promise<CropperModalResult | null>;
 };
 
-export const CropperModal = CropperModalComponent as unknown as CropperModalType;
+export const CropperModal =
+  CropperModalComponent as unknown as CropperModalType;
 
 interface CropperModalNotifierData extends CropperModalOpenOptions {
   instanceKey?: Key;
@@ -299,23 +301,16 @@ const CropperModalNotifier = (props: CropperModalNotifierProps) => {
     onClose: handleClose,
     onConfirm: handleConfirm,
     open: true,
-  };
+  } as CropperModalProps;
 
-  return (
-    <CropperModal {...mergedModalProps} />
-  );
+  return <CropperModal {...mergedModalProps} />;
 };
 
 const cropperModalNotifier = createNotifier<CropperModalNotifierData>({
   render: (notifierProps) => {
     const { key, ...restProps } = notifierProps;
 
-    return (
-      <CropperModalNotifier
-        {...restProps}
-        notifierKey={key}
-      />
-    );
+    return <CropperModalNotifier {...restProps} notifierKey={key} />;
   },
 });
 
@@ -328,4 +323,3 @@ CropperModal.open = (options: CropperModalOpenOptions) =>
   });
 
 export default Cropper;
-
