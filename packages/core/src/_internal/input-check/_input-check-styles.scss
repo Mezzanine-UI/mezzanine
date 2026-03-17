@@ -2,6 +2,7 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/effect';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use './input-check' as *;
@@ -55,6 +56,7 @@
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    margin: 1px;
     width: var(--#{$prefix}-control-size);
     height: var(--#{$prefix}-control-size);
     padding: spacing.semantic-variable(padding, vertical, micro)
@@ -88,14 +90,10 @@
     &--segmented:has(input:focus-visible) {
       background-color: palette.semantic-variable('background', base);
       border-radius: var(--#{$prefix}-segmented-border-radius);
+      box-shadow: effect.variable(focus, primary);
 
       &::before {
-        width: calc(100% + 4px);
-        height: calc(100% + 4px);
-        background-color: palette.semantic-variable('background', base);
-        border-radius: var(--#{$prefix}-segmented-border-radius);
-        top: -2px;
-        left: -2px;
+        display: none;
       }
     }
   }
