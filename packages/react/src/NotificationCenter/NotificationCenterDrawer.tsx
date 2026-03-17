@@ -10,11 +10,9 @@ import {
 import { DrawerSize } from '@mezzanine-ui/core/drawer';
 import { notificationClasses as classes } from '@mezzanine-ui/core/notification-center';
 
-import { NotificationIcon, type IconDefinition } from '@mezzanine-ui/icons';
 
 import Drawer, { type DrawerProps } from '../Drawer';
-import Icon from '../Icon';
-import Typography from '../Typography';
+import Empty from '../Empty';
 import NotificationCenter, {
   type NotificationData,
 } from './NotificationCenter';
@@ -51,13 +49,13 @@ type NotificationCenterDrawerPropsBase = Pick<
    */
   earlierLabel?: string;
   /**
-   * The icon of the empty notification.
-   */
-  emptyNotificationIcon?: IconDefinition;
-  /**
    * The title of the empty notification.
    */
   emptyNotificationTitle?: string;
+  /**
+   * The description of the empty notification.
+   */
+  emptyNotificationDescription?: string;
   /**
    * The label for the "past 7 days" time group.
    * @default '過去七天'
@@ -81,25 +79,25 @@ type NotificationCenterDrawerPropsBase = Pick<
 
 export type NotificationCenterDrawerProps =
   | (NotificationCenterDrawerPropsBase & {
-      /**
-       * The children of the drawer.
-       * Use this when you want to manually render NotificationCenter components.
-       * Can be a single NotificationCenter element or an array of them.
-       */
-      children:
-        | ReactElement<ComponentProps<typeof NotificationCenter>>
-        | ReactElement<ComponentProps<typeof NotificationCenter>>[];
-      notificationList?: never;
-    })
+    /**
+     * The children of the drawer.
+     * Use this when you want to manually render NotificationCenter components.
+     * Can be a single NotificationCenter element or an array of them.
+     */
+    children:
+    | ReactElement<ComponentProps<typeof NotificationCenter>>
+    | ReactElement<ComponentProps<typeof NotificationCenter>>[];
+    notificationList?: never;
+  })
   | (NotificationCenterDrawerPropsBase & {
-      /**
-       * The list of notifications to render.
-       * Use this when you want to pass notification data and let the component render them.
-       * Each notification must have `key` and `type: 'drawer'`.
-       */
-      notificationList: NotificationDataForDrawer[];
-      children?: never;
-    });
+    /**
+     * The list of notifications to render.
+     * Use this when you want to pass notification data and let the component render them.
+     * Each notification must have `key` and `type: 'drawer'`.
+     */
+    notificationList: NotificationDataForDrawer[];
+    children?: never;
+  });
 
 const isValidTime = (timestamp: string | number | undefined): boolean => {
   if (!timestamp) return false;
@@ -189,8 +187,8 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
     controlBarValue,
     drawerSize = 'narrow',
     earlierLabel,
-    emptyNotificationIcon = NotificationIcon,
     emptyNotificationTitle = '目前沒有新的通知',
+    emptyNotificationDescription = '當有新的系統通知時，將會顯示在這裡。',
     notificationList,
     onClose,
     open,
@@ -218,8 +216,12 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
     const renderEmptyNotifications = () => {
       return (
         <div className={classes.emptyNotifications}>
-          <Icon icon={emptyNotificationIcon} size={28} />
-          <Typography>{emptyNotificationTitle}</Typography>
+          <Empty
+            type="notification"
+            size="main"
+            title={emptyNotificationTitle}
+            description={emptyNotificationDescription}
+          />
         </div>
       );
     };
@@ -285,8 +287,8 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
     isEmpty,
     notificationList,
     children,
-    emptyNotificationIcon,
     emptyNotificationTitle,
+    emptyNotificationDescription,
     earlierLabel,
     past7DaysLabel,
     todayLabel,
@@ -315,7 +317,9 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
       size={drawerSize}
       {...restDrawerProps}
     >
-      {renderNotifications}
+      <div className={classes.notificationsContainer}>
+        {renderNotifications}
+      </div>
     </Drawer>
   );
 };

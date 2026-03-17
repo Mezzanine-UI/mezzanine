@@ -2,6 +2,7 @@
 
 import {
   Children,
+  cloneElement,
   FC,
   Fragment,
   isValidElement,
@@ -12,6 +13,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from 'react';
 
@@ -25,7 +27,8 @@ import {
   NotificationSeverity,
   NotificationType
 } from '@mezzanine-ui/core/notification-center';
-import { CloseIcon, DotVerticalIcon } from '@mezzanine-ui/icons';
+import { CloseIcon, DotHorizontalIcon } from '@mezzanine-ui/icons';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 import Badge from '../Badge';
 import Button, { ButtonGroup, ButtonProps } from '../Button';
@@ -38,19 +41,23 @@ import {
   NotifierData,
 } from '../Notifier';
 import Popper from '../Popper';
-import { Slide, SlideProps } from '../Transition';
+import Transition, { type SlideProps, type TransitionState } from '../Transition';
+import { reflow } from '../Transition/reflow';
+import { useSetNodeTransition } from '../Transition/useSetNodeTransition';
 import Typography from '../Typography';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 
 export interface NotificationConfigProps
   extends Pick<NotifierConfig, 'duration'>,
   Pick<
     SlideProps,
+    | 'easing'
+    | 'from'
     | 'onEnter'
     | 'onEntered'
     | 'onExit'
     | 'onExited'
-    | 'easing'
   > {
   /**
    * Callback function when "View All" button is clicked.
@@ -172,6 +179,49 @@ export interface NotificationCenter
   > { }
 
 const DEFAULT_MAX_VISIBLE_NOTIFICATIONS = 3;
+
+const NOTIFICATION_SLIDE_FADE_DURATION = {
+  enter: MOTION_DURATION.slow,
+  exit: MOTION_DURATION.moderate,
+};
+
+const NOTIFICATION_SLIDE_FADE_EASING = {
+  enter: MOTION_EASING.standard,
+  exit: MOTION_EASING.exit,
+};
+
+function getNotificationSlideFadeStyle(
+  state: TransitionState,
+  inProp: boolean,
+  from: 'right' | 'top',
+): CSSProperties {
+  if (state === 'entering' || state === 'entered') {
+    return {
+      opacity: 1,
+      transform: 'translate3d(0, 0, 0)',
+    };
+  }
+
+  const style: CSSProperties =
+    state === 'exiting'
+      ? {
+        opacity: 0,
+        transform: 'translate3d(0, 0, 0)',
+      }
+      : {
+        opacity: 0,
+        transform: {
+          top: 'translate3d(0, -100%, 0)',
+          right: 'translate3d(100%, 0, 0)',
+        }[from],
+      };
+
+  if (state === 'exited' && !inProp) {
+    style.visibility = 'hidden';
+  }
+
+  return style;
+}
 
 const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
   const notificationItems = useMemo(
@@ -306,6 +356,7 @@ const NotificationCenter: NotificationCenter = ((
     onBadgeSelect: onBadgeSelectProp,
     prependTips,
     appendTips,
+    from = 'top',
     ...restTransitionProps
   } = props;
 
@@ -315,6 +366,31 @@ const NotificationCenter: NotificationCenter = ((
   const [open, setOpen] = useState(true);
   const [timeStampAnchor, setTimeStampAnchor] = useState<HTMLElement | null>(null);
   const timeStampRef = useRef<HTMLElement>(null);
+  const notificationSlideFadeNodeRef = useRef<HTMLElement>(null);
+
+  const slideFadeResolvedDuration = NOTIFICATION_SLIDE_FADE_DURATION;
+  const slideFadeEasing = restTransitionProps.easing ?? NOTIFICATION_SLIDE_FADE_EASING;
+  const slideFadeDelay = 0;
+
+  const [setSlideTransition, resetSlideTransition] = useSetNodeTransition(
+    {
+      delay: slideFadeDelay,
+      duration: slideFadeResolvedDuration,
+      easing: slideFadeEasing,
+      properties: ['transform'],
+    },
+    undefined,
+  );
+  const [setFadeTransition, resetFadeTransition] = useSetNodeTransition(
+    {
+      delay: slideFadeDelay,
+      duration: slideFadeResolvedDuration,
+      easing: slideFadeEasing,
+      properties: ['opacity'],
+    },
+    undefined,
+  );
+  const notificationSlideFadeComposedRef = useComposeRefs([notificationSlideFadeNodeRef]);
 
   const isToday = useMemo(() => {
     try {
@@ -569,7 +645,7 @@ const NotificationCenter: NotificationCenter = ((
                   </div>
                 </Popper>
               )}
-              <Typography ref={timeStampRef} className={classes.timeStamp}>
+              <Typography className={classes.timeStamp} ref={timeStampRef} variant="label-secondary">
                 {formattedTimeStamp}
               </Typography>
             </>
@@ -588,12 +664,12 @@ const NotificationCenter: NotificationCenter = ((
               placement="bottom-end"
               zIndex={'var(--mzn-z-index-popover)'}
             >
-              <Button variant="base-ghost" size="minor" onClick={onClose}>
+              <Button variant="base-ghost" onClick={onClose} className={classes.dotIconButton}>
                 {
                   showBadge && <Badge variant="dot-error" />
                 }
                 <Icon
-                  icon={DotVerticalIcon}
+                  icon={DotHorizontalIcon}
                   className={classes.closeIcon}
                   size={16}
                   onClick={onBadgeClick}
@@ -615,14 +691,39 @@ const NotificationCenter: NotificationCenter = ((
 
   if (type === 'notification') {
     return (
-      <Slide
-        in={open}
-        appear
-        onExited={onExited}
+      <Transition
         {...restTransitionProps}
+        appear
+        duration={slideFadeResolvedDuration}
+        in={open}
+        nodeRef={notificationSlideFadeNodeRef}
+        onEnter={(node, isAppearing) => {
+          setSlideTransition(node, 'enter');
+          reflow(node);
+          restTransitionProps.onEnter?.(node, isAppearing);
+        }}
+        onEntered={(node, isAppearing) => {
+          resetSlideTransition(node);
+          restTransitionProps.onEntered?.(node, isAppearing);
+        }}
+        onExited={(node) => {
+          resetFadeTransition(node);
+          onExited(node);
+        }}
+        onExit={(node) => {
+          setFadeTransition(node, 'exit');
+          restTransitionProps.onExit?.(node);
+        }}
       >
-        {notificationContent}
-      </Slide>
+        {(state) =>
+          cloneElement(notificationContent, {
+            ref: notificationSlideFadeComposedRef,
+            style: {
+              ...getNotificationSlideFadeStyle(state, open, from),
+              ...notificationContent.props.style,
+            },
+          })}
+      </Transition>
     );
   }
 
