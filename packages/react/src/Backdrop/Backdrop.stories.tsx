@@ -1,8 +1,12 @@
 import { useRef, useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { SpinnerIcon } from '@mezzanine-ui/icons';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import Button from '../Button';
+import Drawer from '../Drawer';
 import Icon from '../Icon';
+import Modal from '../Modal';
+import Select from '../Select';
 import Typography from '../Typography';
 import Backdrop from '.';
 
@@ -416,6 +420,68 @@ export const DisablePortal: Story = {
           </Backdrop>
         </div>
       </div>
+    );
+  },
+};
+
+export const DrawerModalSelectLayering: Story = {
+  render: function DrawerModalSelectLayeringStory() {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectValue, setSelectValue] = useState<DropdownOption | null>(null);
+
+    const options: DropdownOption[] = [
+      { id: '1', name: 'Option 1' },
+      { id: '2', name: 'Option 2' },
+      { id: '3', name: 'Option 3' },
+      { id: '4', name: 'Option 4' },
+      { id: '5', name: 'Option 5' },
+    ];
+
+    return (
+      <>
+        <Button onClick={() => setDrawerOpen(true)} variant="base-primary">
+          Open Drawer
+        </Button>
+        <Drawer
+          headerTitle="Drawer"
+          isHeaderDisplay
+          onClose={() => {
+            setDrawerOpen(false);
+            setModalOpen(false);
+          }}
+          open={drawerOpen}
+          size="medium"
+        >
+          <div style={{ padding: '16px' }}>
+            <Button onClick={() => setModalOpen(true)} variant="base-primary">
+              Open Modal
+            </Button>
+          </div>
+        </Drawer>
+        <Modal
+          confirmText="OK"
+          cancelText="Cancel"
+          modalType="standard"
+          onClose={() => setModalOpen(false)}
+          onConfirm={() => setModalOpen(false)}
+          onCancel={() => setModalOpen(false)}
+          open={modalOpen}
+          showDismissButton
+          showModalFooter
+          showModalHeader
+          size="regular"
+          title="Modal with Select"
+        >
+          <Select
+            fullWidth
+            options={options}
+            placeholder="Select an option"
+            value={selectValue}
+            onChange={(v) => setSelectValue(v)}
+          />
+        </Modal>
+      </>
     );
   },
 };

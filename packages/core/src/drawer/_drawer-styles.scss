@@ -1,5 +1,4 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/z-index';
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/spacing';
@@ -106,10 +105,6 @@ $drawer-size-config: (
       display: flex;
       gap: spacing.semantic-variable(gap, base);
     }
-  }
-
-  &__overlay {
-    z-index: z-index.get(drawer);
   }
 
   &--right {
