@@ -1,10 +1,10 @@
 'use client';
 
-import { forwardRef, PropsWithChildren } from 'react';
+import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react';
 import { sectionGroupClasses as classes } from '@mezzanine-ui/core/section';
 import { cx } from '../utils/cx';
 
-export interface SectionGroupProps {
+export interface SectionGroupProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Additional style for the section group container.
    */
@@ -22,7 +22,7 @@ export interface SectionGroupProps {
  */
 const SectionGroup = forwardRef<HTMLDivElement, PropsWithChildren<SectionGroupProps>>(
   function SectionGroup(props, ref) {
-    const { children, className, direction = 'vertical' } = props;
+    const { children, className, direction = 'vertical', ...rest } = props;
 
     return (
       <div
@@ -32,6 +32,7 @@ const SectionGroup = forwardRef<HTMLDivElement, PropsWithChildren<SectionGroupPr
           className,
         )}
         ref={ref}
+        {...rest}
       >
         {children}
       </div>
