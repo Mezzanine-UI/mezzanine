@@ -2,15 +2,18 @@
 
 import { StoryObj, Meta } from '@storybook/react-webpack5';
 import Section, { SectionProps } from './Section';
-import ContentHeader from '../ContentHeader';
-import Input from '../Input';
+import Breadcrumb from '../Breadcrumb';
 import Button from '../Button';
+import ContentHeader from '../ContentHeader';
 import Dropdown from '../Dropdown';
-import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import { Filter, FilterArea, FilterLine } from '../FilterArea';
 import { FormField } from '../Form';
 import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
+import { DotHorizontalIcon } from '@mezzanine-ui/icons';
+import Input from '../Input';
+import PageHeader from '../PageHeader';
 import Tab, { TabItem } from '../Tab';
+import BreadcrumbItem from '../Breadcrumb/BreadcrumbItem';
 
 export default {
   title: 'Data Display/Section',
@@ -100,7 +103,7 @@ export const All: Story = {
         backgroundColor: '#F3F4F6',
         display: 'flex',
         flexDirection: 'column',
-        gap: '24px',
+        gap: 'var(--mzn-spacing-gap-calm)',
         padding: '16px',
       }}
     >
@@ -142,6 +145,118 @@ export const All: Story = {
 
       {/* Content only (no props) */}
       <Section>{sampleContent}</Section>
+    </div>
+  ),
+};
+
+export const SectionVerticalLayout: Story = {
+  name: 'Section Vertical',
+  render: () => (
+    <div
+      style={{
+        backgroundColor: '#F3F4F6',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--mzn-spacing-gap-calm)',
+        padding: '16px',
+      }}
+    >
+      <PageHeader>
+        <Breadcrumb>
+          <BreadcrumbItem name="Home" href="/" />
+          <BreadcrumbItem name="Page" href="/1" />
+          <BreadcrumbItem name="History" href="/" />
+        </Breadcrumb>
+        <ContentHeader title="Page Title">
+          <Button variant="base-secondary">Secondary</Button>
+          <Button>Primary</Button>
+        </ContentHeader>
+      </PageHeader>
+
+      <div style={{ display: 'flex', gap: 'var(--mzn-spacing-gap-calm)' }}>
+        <Section contentHeader={sampleContentHeader}>{sampleContent}</Section>
+        <Section contentHeader={sampleContentHeader}>{sampleContent}</Section>
+      </div>
+
+      <Section
+        contentHeader={sampleContentHeader}
+        filterArea={sampleFilterArea}
+        tab={sampleTab}
+      >
+        {sampleContent}
+      </Section>
+    </div>
+  ),
+};
+
+export const ContentVerticalLayout: Story = {
+  name: 'Content Vertical',
+  render: () => (
+    <div
+      style={{
+        backgroundColor: '#F3F4F6',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--mzn-spacing-gap-calm)',
+        padding: '16px',
+      }}
+    >
+      <PageHeader>
+        <ContentHeader title="Page Title" />
+      </PageHeader>
+
+      <Section contentHeader={sampleContentHeader}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--mzn-spacing-gap-calm)',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#F9FAFB',
+              minHeight: 'var(--mzn-spacing-size-container-small)',
+              padding: '16px',
+            }}
+          >
+            Content of Section 1
+          </div>
+
+          <div style={{ display: 'flex', gap: 'var(--mzn-spacing-gap-calm)' }}>
+            <div
+              style={{
+                backgroundColor: '#F9FAFB',
+                flex: '1',
+                minHeight: 'var(--mzn-spacing-size-container-small)',
+                padding: '16px',
+              }}
+            >
+              Content of Section 2
+            </div>
+            <div
+              style={{
+                backgroundColor: '#F9FAFB',
+                flex: '1',
+                minHeight: 'var(--mzn-spacing-size-container-small)',
+                padding: '16px',
+              }}
+            >
+              Content of Section 3
+            </div>
+            <div
+              style={{
+                backgroundColor: '#F9FAFB',
+                flex: '1',
+                minHeight: 'var(--mzn-spacing-size-container-small)',
+                padding: '16px',
+              }}
+            >
+              Content of Section 4
+            </div>
+          </div>
+        </div>
+      </Section>
     </div>
   ),
 };

@@ -36,14 +36,16 @@ describe('<Section />', () => {
     expect(ref.current?.classList.contains('mzn-section')).toBeTruthy();
   });
 
-  it('should render children', () => {
-    const { getByText } = render(
+  it('should render children inside content wrapper', () => {
+    const { container } = render(
       <Section>
         <div>Section Content</div>
       </Section>,
     );
+    const contentWrapper = container.querySelector('.mzn-section__content');
 
-    expect(getByText('Section Content')).toBeInTheDocument();
+    expect(contentWrapper).toBeInTheDocument();
+    expect(contentWrapper).toHaveTextContent('Section Content');
   });
 
   describe('contentHeader prop', () => {
@@ -167,6 +169,21 @@ describe('<Section />', () => {
       expect(tab).toBeInTheDocument();
     });
 
+    it('should render Tab without applying size prop', () => {
+      const { container } = render(
+        <Section
+          tab={
+            <Tab activeKey="tab1" onChange={() => {}}>
+              <TabItem key="tab1">Tab 1</TabItem>
+            </Tab>
+          }
+        />,
+      );
+      const tab = container.querySelector('.mzn-tab');
+
+      expect(tab?.classList.contains('mzn-tab--sub')).toBeFalsy();
+    });
+
     it('should warn when tab is not a Tab component', () => {
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -232,6 +249,38 @@ describe('<Section />', () => {
       expect(container.querySelector('.mzn-tab')).toBeInTheDocument();
       expect(getByText('Header Title')).toBeInTheDocument();
       expect(getByText('Main Content')).toBeInTheDocument();
+    });
+
+    it('should render sub-components in order: contentHeader, filterArea, tab, content', () => {
+      const { container } = render(
+        <Section
+          contentHeader={<ContentHeader title="Header" />}
+          filterArea={
+            <FilterArea>
+              <FilterLine>
+                <Filter>
+                  <Input />
+                </Filter>
+              </FilterLine>
+            </FilterArea>
+          }
+          tab={
+            <Tab activeKey="tab1" onChange={() => {}}>
+              <TabItem key="tab1">Tab 1</TabItem>
+            </Tab>
+          }
+        >
+          <div>Content</div>
+        </Section>,
+      );
+      const children = Array.from(
+        container.firstElementChild?.children ?? [],
+      );
+
+      expect(children[0]).toHaveClass('mzn-content-header');
+      expect(children[1]).toHaveClass('mzn-filter-area');
+      expect(children[2]).toHaveClass('mzn-tab');
+      expect(children[3]).toHaveClass('mzn-section__content');
     });
   });
 });
