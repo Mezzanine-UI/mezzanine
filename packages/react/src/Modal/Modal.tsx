@@ -41,14 +41,32 @@ export type ModalHeaderLayoutProps =
       statusTypeIconLayout?: 'vertical';
       /**
        * Alignment of the supporting text.
+       * Only 'left' is allowed when titleAlign is 'left'.
+       * @default 'left'
+       */
+      supportingTextAlign?: 'left';
+      /**
+       * Alignment of the title.
+       * @default 'left'
+       */
+      titleAlign?: 'left';
+    }
+  | {
+      /**
+       * Layout of the status type icon relative to title.
+       * - 'vertical': Icon above title
+       * @default 'vertical'
+       */
+      statusTypeIconLayout?: 'vertical';
+      /**
+       * Alignment of the supporting text.
        * @default 'left'
        */
       supportingTextAlign?: 'left' | 'center';
       /**
        * Alignment of the title.
-       * @default 'left'
        */
-      titleAlign?: 'left' | 'center';
+      titleAlign: 'center';
     };
 
 interface CommonModalProps

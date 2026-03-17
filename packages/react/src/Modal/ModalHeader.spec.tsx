@@ -182,6 +182,7 @@ describe('<ModalHeader />', () => {
       const { getHostHTMLElement } = render(
         <ModalHeader
           title="Title"
+          titleAlign="center"
           supportingText="Supporting text"
           supportingTextAlign="center"
         />,

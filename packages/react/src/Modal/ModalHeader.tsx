@@ -49,7 +49,27 @@ interface ModalHeaderHorizontalIconProps extends ModalHeaderBaseProps {
   titleAlign?: 'left';
 }
 
-interface ModalHeaderVerticalIconProps extends ModalHeaderBaseProps {
+interface ModalHeaderVerticalLeftTitleProps extends ModalHeaderBaseProps {
+  /**
+   * Layout of the status type icon relative to title.
+   * - 'vertical': Icon above title
+   * @default 'vertical'
+   */
+  statusTypeIconLayout?: 'vertical';
+  /**
+   * Alignment of the supporting text.
+   * Only 'left' is allowed when titleAlign is 'left'.
+   * @default 'left'
+   */
+  supportingTextAlign?: 'left';
+  /**
+   * Alignment of the title.
+   * @default 'left'
+   */
+  titleAlign?: 'left';
+}
+
+interface ModalHeaderVerticalCenterTitleProps extends ModalHeaderBaseProps {
   /**
    * Layout of the status type icon relative to title.
    * - 'vertical': Icon above title
@@ -63,14 +83,14 @@ interface ModalHeaderVerticalIconProps extends ModalHeaderBaseProps {
   supportingTextAlign?: 'left' | 'center';
   /**
    * Alignment of the title.
-   * @default 'left'
    */
-  titleAlign?: 'left' | 'center';
+  titleAlign: 'center';
 }
 
 export type ModalHeaderProps =
   | ModalHeaderHorizontalIconProps
-  | ModalHeaderVerticalIconProps;
+  | ModalHeaderVerticalCenterTitleProps
+  | ModalHeaderVerticalLeftTitleProps;
 
 /**
  * The React component for `mezzanine` modal header.

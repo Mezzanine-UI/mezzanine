@@ -222,13 +222,24 @@ export const Playground: StoryObj<PlaygroundArgs> = {
                 : supportingTextAlign,
             titleAlign: titleAlign === 'center' ? undefined : titleAlign,
           }
-        : {
-            statusTypeIconLayout: statusTypeIconLayout as
-              | 'vertical'
-              | undefined,
-            supportingTextAlign,
-            titleAlign,
-          };
+        : titleAlign === 'center'
+          ? {
+              statusTypeIconLayout: statusTypeIconLayout as
+                | 'vertical'
+                | undefined,
+              supportingTextAlign,
+              titleAlign: 'center',
+            }
+          : {
+              statusTypeIconLayout: statusTypeIconLayout as
+                | 'vertical'
+                | undefined,
+              supportingTextAlign:
+                supportingTextAlign === 'center'
+                  ? undefined
+                  : supportingTextAlign,
+              titleAlign: titleAlign as 'left' | undefined,
+            };
 
     // Extended split specific props
     const extendedSplitLeftSideContent = (
@@ -551,6 +562,194 @@ export const ModalHeaderStatusTypes: StoryObj = {
           showModalHeader
         >
           <>Are you sure you want to delete this item permanently?</>
+        </Modal>
+      </>
+    );
+  },
+};
+
+export const ModalHeaderCombinations: StoryObj = {
+  render: function Render() {
+    const [openIndex, setOpenIndex] = useState<number | null>(null);
+    const onClose = useCallback(() => setOpenIndex(null), []);
+
+    const baseProps = {
+      confirmText: 'OK',
+      modalType: 'standard' as const,
+      onClose,
+      onConfirm: onClose,
+      showModalFooter: true as const,
+      showModalHeader: true as const,
+    };
+
+    const body = <>Modal body content.</>;
+
+    return (
+      <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div>
+            <Typography color="text-neutral-strong" variant="body">
+              No Icon
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginTop: '8px',
+              }}
+            >
+              <Button onClick={() => setOpenIndex(0)} variant="base-primary">
+                Title
+              </Button>
+              <Button onClick={() => setOpenIndex(1)} variant="base-primary">
+                Title (Center)
+              </Button>
+              <Button onClick={() => setOpenIndex(2)} variant="base-primary">
+                Title + Supporting
+              </Button>
+              <Button onClick={() => setOpenIndex(3)} variant="base-primary">
+                Both Center
+              </Button>
+            </div>
+          </div>
+          <div>
+            <Typography color="text-neutral-strong" variant="body">
+              Vertical Icon
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginTop: '8px',
+              }}
+            >
+              <Button onClick={() => setOpenIndex(4)} variant="base-primary">
+                Title
+              </Button>
+              <Button onClick={() => setOpenIndex(5)} variant="base-primary">
+                Title (Center)
+              </Button>
+              <Button onClick={() => setOpenIndex(6)} variant="base-primary">
+                Title + Supporting
+              </Button>
+              <Button onClick={() => setOpenIndex(7)} variant="base-primary">
+                Both Center
+              </Button>
+            </div>
+          </div>
+          <div>
+            <Typography color="text-neutral-strong" variant="body">
+              Horizontal Icon
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginTop: '8px',
+              }}
+            >
+              <Button onClick={() => setOpenIndex(8)} variant="base-primary">
+                Title
+              </Button>
+              <Button onClick={() => setOpenIndex(9)} variant="base-primary">
+                Title + Supporting
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* No Icon */}
+        <Modal {...baseProps} open={openIndex === 0} title="Title Only">
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 1}
+          title="Title Only (Center)"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 2}
+          supportingText="Supporting text displayed below the title."
+          title="Title + Supporting"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 3}
+          supportingText="Supporting text aligned center."
+          supportingTextAlign="center"
+          title="Both Center"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+
+        {/* Vertical Icon */}
+        <Modal
+          {...baseProps}
+          open={openIndex === 4}
+          showStatusTypeIcon
+          title="Vertical Icon"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 5}
+          showStatusTypeIcon
+          title="Vertical Icon (Center)"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 6}
+          showStatusTypeIcon
+          supportingText="Supporting text displayed below the title."
+          title="Vertical Icon + Supporting"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 7}
+          showStatusTypeIcon
+          supportingText="Supporting text aligned center."
+          supportingTextAlign="center"
+          title="Vertical Icon + Both Center"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+
+        {/* Horizontal Icon */}
+        <Modal
+          {...baseProps}
+          open={openIndex === 8}
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
+          title="Horizontal Icon"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 9}
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
+          supportingText="Supporting text displayed below the title."
+          title="Horizontal Icon + Supporting"
+        >
+          {body}
         </Modal>
       </>
     );
