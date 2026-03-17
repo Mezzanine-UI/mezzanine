@@ -63,7 +63,8 @@
     will-change: background-color;
     box-sizing: border-box;
 
-    &--focused {
+    &--focused,
+    &:has(input:focus-visible) {
       &::before {
         content: '';
         position: absolute;
@@ -83,7 +84,8 @@
       padding: 0;
     }
 
-    &--segmented.#{$prefix}__control--focused {
+    &--segmented.#{$prefix}__control--focused,
+    &--segmented:has(input:focus-visible) {
       background-color: palette.semantic-variable('background', base);
       border-radius: var(--#{$prefix}-segmented-border-radius);
 
