@@ -113,7 +113,7 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
         )}
         <div className={cx(classes.modalHeaderTitleAndSupportingTextContainer)}>
           <Typography
-            variant="h3"
+            variant="h2"
             color="text-neutral-solid"
             className={cx(classes.modalHeaderTitle)}
             title={typeof title === 'string' ? title : undefined}
