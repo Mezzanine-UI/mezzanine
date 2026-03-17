@@ -25,6 +25,7 @@ export const notificationClasses = {
   severity: (severity: NotificationSeverity) =>
     `${notificationPrefix}--${severity}`,
   closeIcon: `${notificationPrefix}__close-icon`,
+  dotIconButton: `${notificationPrefix}__dot-icon-button`,
   type: (type: NotificationType) => `${notificationPrefix}--${type}`,
   prependTips: `${notificationPrefix}__prepend-tips`,
   appendTips: `${notificationPrefix}__append-tips`,

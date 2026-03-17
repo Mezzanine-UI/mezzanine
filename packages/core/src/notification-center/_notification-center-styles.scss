@@ -241,6 +241,10 @@ $drawer-container-config: (
     @include typography.semantic-variable(label-primary-highlight);
   }
 
+  &__dot-icon-button {
+    padding: spacing.semantic-variable(padding, vertical, tight);
+  }
+
   &__body-content {
     display: flex;
     flex-direction: column;
