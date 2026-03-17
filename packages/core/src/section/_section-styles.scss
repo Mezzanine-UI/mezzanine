@@ -20,7 +20,7 @@
     min-height: spacing.semantic-variable(size, container, small);
   }
 
-  .#{tab.$prefix}--horizontal.#{tab.$prefix}--main {
+  > .#{tab.$prefix}--horizontal.#{tab.$prefix}--main {
     padding: 0;
   }
 }
