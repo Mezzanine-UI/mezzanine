@@ -21,6 +21,7 @@ export const notificationIcons = {
 };
 
 export const notificationClasses = {
+  notificationsContainer: `${notificationPrefix}__notifications-container`,
   host: notificationPrefix,
   severity: (severity: NotificationSeverity) =>
     `${notificationPrefix}--${severity}`,

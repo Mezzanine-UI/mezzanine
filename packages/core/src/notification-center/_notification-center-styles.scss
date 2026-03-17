@@ -32,7 +32,6 @@ $drawer-type-config: (
   background-color: transparent,
   width: 100%,
   box-shadow: none,
-  border-bottom: 1px solid palette.semantic-variable(border, neutral-faint),
   cursor: pointer,
   hover-background-color: palette.semantic-variable(background, neutral-ghost),
   body-gap: spacing.semantic-variable(gap, base),
@@ -89,7 +88,6 @@ $drawer-container-config: (
   $background-color: _get-drawer-type-value(background-color);
   $width: _get-drawer-type-value(width);
   $box-shadow: _get-drawer-type-value(box-shadow);
-  $border-bottom: _get-drawer-type-value(border-bottom);
   $cursor: _get-drawer-type-value(cursor);
   $hover-background-color: _get-drawer-type-value(hover-background-color);
   $body-gap: _get-drawer-type-value(body-gap);
@@ -108,10 +106,6 @@ $drawer-container-config: (
 
   @if $box-shadow {
     box-shadow: $box-shadow;
-  }
-
-  @if $border-bottom {
-    border-bottom: $border-bottom;
   }
 
   @if $cursor {
@@ -190,9 +184,13 @@ $drawer-container-config: (
     color: palette.semantic-variable(text, neutral);
     @include typography.semantic-variable(body);
 
-    padding-top: spacing.semantic-variable(padding, vertical, comfort);
-    padding-bottom: spacing.semantic-variable(padding, vertical, micro);
-    padding-inline: spacing.semantic-variable(padding, horizontal, comfort);
+    &:first-child {
+      padding-block-start: 0;
+    }
+
+    &:not(:first-child) {
+      margin-block-start: spacing.semantic-variable(gap, calm);
+    }
   }
 
   &__append-tips {
@@ -295,6 +293,10 @@ $drawer-container-config: (
     justify-content: center;
     align-items: center;
     gap: spacing.semantic-variable(gap, slim);
+  }
+
+  &__notifications-container {
+    padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, spacious);
   }
 }
 
