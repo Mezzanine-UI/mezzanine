@@ -2,6 +2,7 @@ export const accordionPrefix = 'mzn-accordion';
 
 export const accordionClasses = {
   host: accordionPrefix,
+  hostDisabled: `${accordionPrefix}--disabled`,
   size: (size: 'main' | 'sub') => `${accordionPrefix}--${size}`,
   title: `${accordionPrefix}__title`,
   titleExpanded: `${accordionPrefix}__title--expanded`,
