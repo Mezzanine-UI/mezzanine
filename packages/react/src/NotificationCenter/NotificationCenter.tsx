@@ -645,7 +645,7 @@ const NotificationCenter: NotificationCenter = ((
                   </div>
                 </Popper>
               )}
-              <Typography ref={timeStampRef} className={classes.timeStamp}>
+              <Typography className={classes.timeStamp} ref={timeStampRef} variant="label-secondary">
                 {formattedTimeStamp}
               </Typography>
             </>

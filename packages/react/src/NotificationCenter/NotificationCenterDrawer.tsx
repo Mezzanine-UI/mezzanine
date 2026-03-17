@@ -81,25 +81,25 @@ type NotificationCenterDrawerPropsBase = Pick<
 
 export type NotificationCenterDrawerProps =
   | (NotificationCenterDrawerPropsBase & {
-      /**
-       * The children of the drawer.
-       * Use this when you want to manually render NotificationCenter components.
-       * Can be a single NotificationCenter element or an array of them.
-       */
-      children:
-        | ReactElement<ComponentProps<typeof NotificationCenter>>
-        | ReactElement<ComponentProps<typeof NotificationCenter>>[];
-      notificationList?: never;
-    })
+    /**
+     * The children of the drawer.
+     * Use this when you want to manually render NotificationCenter components.
+     * Can be a single NotificationCenter element or an array of them.
+     */
+    children:
+    | ReactElement<ComponentProps<typeof NotificationCenter>>
+    | ReactElement<ComponentProps<typeof NotificationCenter>>[];
+    notificationList?: never;
+  })
   | (NotificationCenterDrawerPropsBase & {
-      /**
-       * The list of notifications to render.
-       * Use this when you want to pass notification data and let the component render them.
-       * Each notification must have `key` and `type: 'drawer'`.
-       */
-      notificationList: NotificationDataForDrawer[];
-      children?: never;
-    });
+    /**
+     * The list of notifications to render.
+     * Use this when you want to pass notification data and let the component render them.
+     * Each notification must have `key` and `type: 'drawer'`.
+     */
+    notificationList: NotificationDataForDrawer[];
+    children?: never;
+  });
 
 const isValidTime = (timestamp: string | number | undefined): boolean => {
   if (!timestamp) return false;
@@ -315,7 +315,9 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
       size={drawerSize}
       {...restDrawerProps}
     >
-      {renderNotifications}
+      <div className={classes.notificationsContainer}>
+        {renderNotifications}
+      </div>
     </Drawer>
   );
 };
