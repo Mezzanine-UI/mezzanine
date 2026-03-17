@@ -8,6 +8,7 @@
 $size-configs: (
   main: (
     icon-size: spacing.semantic-variable(size, element, extra),
+    icon-color: none,
     title: h3,
     title-color: palette.semantic-variable(text, neutral-solid),
     description: body,
@@ -21,6 +22,7 @@ $size-configs: (
   ),
   sub: (
     icon-size: spacing.semantic-variable(size, element, airy),
+    icon-color: palette.semantic-variable(icon, neutral-light),
     title: body-highlight,
     title-color: palette.semantic-variable(text, neutral-light),
     description: label-secondary,
@@ -34,6 +36,7 @@ $size-configs: (
   ),
   minor: (
     icon-size: spacing.semantic-variable(size, element, base),
+    icon-color: palette.semantic-variable(icon, neutral-light),
     title: body,
     title-color: palette.semantic-variable(text, neutral-light),
     description: none,
@@ -82,6 +85,10 @@ $icon-color: palette.semantic-variable(icon, neutral-subtle) !default;
 
       .#{$prefix}__icon {
         font-size: _get-size-config($size, icon-size);
+
+        @if _get-size-config($size, icon-color) {
+          color: _get-size-config($size, icon-color);
+        }
       }
 
       .#{$prefix}__title {
