@@ -46,11 +46,12 @@ export interface NotificationConfigProps
   extends Pick<NotifierConfig, 'duration'>,
   Pick<
     SlideProps,
+    | 'easing'
+    | 'from'
     | 'onEnter'
     | 'onEntered'
     | 'onExit'
     | 'onExited'
-    | 'easing'
   > {
   /**
    * Callback function when "View All" button is clicked.
@@ -306,6 +307,7 @@ const NotificationCenter: NotificationCenter = ((
     onBadgeSelect: onBadgeSelectProp,
     prependTips,
     appendTips,
+    from = 'top',
     ...restTransitionProps
   } = props;
 
@@ -616,6 +618,7 @@ const NotificationCenter: NotificationCenter = ((
   if (type === 'notification') {
     return (
       <Slide
+        from={from}
         in={open}
         appear
         onExited={onExited}
