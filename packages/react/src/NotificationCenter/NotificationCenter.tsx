@@ -27,8 +27,8 @@ import {
   NotificationSeverity,
   NotificationType
 } from '@mezzanine-ui/core/notification-center';
+import { CloseIcon, DotHorizontalIcon } from '@mezzanine-ui/icons';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { CloseIcon, DotVerticalIcon } from '@mezzanine-ui/icons';
 
 import Badge from '../Badge';
 import Button, { ButtonGroup, ButtonProps } from '../Button';
@@ -664,12 +664,12 @@ const NotificationCenter: NotificationCenter = ((
               placement="bottom-end"
               zIndex={'var(--mzn-z-index-popover)'}
             >
-              <Button variant="base-ghost" size="minor" onClick={onClose}>
+              <Button variant="base-ghost" onClick={onClose} className={classes.dotIconButton}>
                 {
                   showBadge && <Badge variant="dot-error" />
                 }
                 <Icon
-                  icon={DotVerticalIcon}
+                  icon={DotHorizontalIcon}
                   className={classes.closeIcon}
                   size={16}
                   onClick={onBadgeClick}
