@@ -199,6 +199,25 @@ $form-field-counter-colors: (
   &--sub {
     min-height: spacing.semantic-variable(size, container, atomic);
   }
+
+  &--columns-2,
+  &--columns-3,
+  &--columns-4 {
+    display: grid;
+    gap: spacing.semantic-variable(gap, calm);
+  }
+
+  &--columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &--columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &--columns-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .#{$prefix}__hint-text-and-counter-area {
@@ -240,6 +259,10 @@ $form-field-counter-colors: (
   color: palette.semantic-variable(text, neutral);
 
   @include typography.semantic-variable(annotation);
+}
+
+.#{$prefix}__hint-text__icon {
+  font-size: spacing.semantic-variable(size, element, narrow);
 }
 
 @each $color in $form-field-hint-text-colors {
