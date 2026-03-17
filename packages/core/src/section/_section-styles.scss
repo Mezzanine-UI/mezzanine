@@ -24,3 +24,18 @@
     padding: 0;
   }
 }
+
+.#{$group-prefix} {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, calm);
+
+  &--horizontal {
+    flex-direction: row;
+
+    > * {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+}
