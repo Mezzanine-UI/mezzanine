@@ -110,6 +110,7 @@ $radius: radius.variable(full);
     background-color: _get-status-colors(enable, background-color, off);
     border-radius: $radius;
     display: flex;
+    flex-shrink: 0;
     position: relative;
     transition: transition.standard(background-color, fast), transition.standard(box-shadow, fast);
     will-change: background-color, box-shadow;
