@@ -10,12 +10,7 @@ import type { FC, Key } from 'react';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
-import {
-  createNotifier,
-  Notifier,
-  NotifierData,
-  NotifierConfig,
-} from '../Notifier';
+import { createNotifier, NotifierData, NotifierConfig } from '../Notifier';
 import { Translate, TranslateProps } from '../Transition';
 import { messageTimerController } from './MessageTimerController';
 
@@ -56,25 +51,41 @@ export interface MessageData
   severity?: MessageSeverity;
 }
 
-export type MessageType = FC<MessageData> &
-  Notifier<MessageData, MessageConfigProps> &
-  Record<
-    string,
-    (
-      message: MessageData['children'],
-      props?: Omit<MessageData, 'children' | 'severity' | 'icon'> & {
-        key?: Key;
-      },
-    ) => Key
-  >;
+/**
+ * Props accepted by Message severity shorthand methods such as `Message.success`.
+ * Includes an optional `key` to identify the message for later updates or dismissal.
+ */
+export type MessageShorthandProps = Omit<
+  MessageData,
+  'children' | 'severity' | 'icon'
+> & { key?: Key };
 
 /**
- * The react component for `mezzanine` message.
- *
- * Use the API from the Message instance such as `Message.add` and `Message.success`
- * to display a notification message globally.
+ * Signature shared by all Message severity shorthand methods.
+ * @param message - The notification content.
+ * @param props   - Optional configuration; mirrors {@link MessageData} minus `children`, `severity`, and `icon`.
  */
-const Message: MessageType = ((props) => {
+export type MessageShorthandMethod = (
+  message: MessageData['children'],
+  props?: MessageShorthandProps,
+) => Key;
+
+/** Static severity shorthand methods attached to the {@link Message} component. */
+export interface MessageSeverityMethods {
+  /** Display an error message. */
+  error: MessageShorthandMethod;
+  /** Display an informational message. */
+  info: MessageShorthandMethod;
+  /** Display a loading message that will **not** auto-close. */
+  loading: MessageShorthandMethod;
+  /** Display a success message. */
+  success: MessageShorthandMethod;
+  /** Display a warning message. */
+  warning: MessageShorthandMethod;
+}
+
+/** @internal Underlying React element rendered by the Message notifier. */
+const MessageFC: FC<MessageData> = (props) => {
   const {
     children,
     duration,
@@ -88,7 +99,7 @@ const Message: MessageType = ((props) => {
   const [open, setOpen] = useState(true);
   const timerRef = useRef<number | null>(null);
   const remainingTimeRef = useRef<number>(duration || 0);
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef<number>(0);
 
   // 清理計時器
   const clearTimer = useCallback(() => {
@@ -221,7 +232,7 @@ const Message: MessageType = ((props) => {
       </div>
     </Translate>
   );
-}) as MessageType;
+};
 
 const { add, config, destroy, remove } = createNotifier<
   MessageData,
@@ -230,60 +241,76 @@ const { add, config, destroy, remove } = createNotifier<
   duration: 3000,
   maxCount: 4,
   render: (message) => (
-    <Message {...message} reference={message.key} key={undefined} />
+    <MessageFC {...message} reference={message.key} key={undefined} />
   ),
   setRoot: (root) => {
     root?.setAttribute('class', classes.root);
   },
 });
 
-Message.add = add;
-Message.config = config;
-Message.destroy = destroy;
-Message.remove = remove;
-
-const severities = [
-  {
-    key: 'success',
-    icon: messageIcons.success,
-  },
-  {
-    key: 'warning',
-    icon: messageIcons.warning,
-  },
-  {
-    key: 'error',
-    icon: messageIcons.error,
-  },
-  {
-    key: 'info',
-    icon: messageIcons.info,
-  },
-  {
-    key: 'loading',
-    icon: messageIcons.loading,
-  },
-];
-
-const validSeverities: MessageSeverity[] = [
-  'success',
-  'warning',
-  'error',
-  'info',
-  'loading',
-];
-
-severities.forEach((severity) => {
-  Message[severity.key] = (message, props) =>
-    Message.add({
+/**
+ * The react component for `mezzanine` message.
+ *
+ * Trigger messages imperatively via severity shorthand methods:
+ *
+ * @example
+ * ```tsx
+ * import Message from '@mezzanine-ui/react/message';
+ *
+ * Message.success('Saved!');
+ * Message.error('Something went wrong.');
+ *
+ * // With custom key for later update/dismissal
+ * const key = Message.loading('Uploading…');
+ * Message.success('Done!', { key });
+ * ```
+ *
+ * @see {@link MessageData} for the full set of options accepted by `Message.add`.
+ */
+const Message = Object.assign(MessageFC, {
+  add,
+  config,
+  destroy,
+  remove,
+  error: (message: MessageData['children'], props?: MessageShorthandProps) =>
+    add({
       ...props,
       children: message,
-      severity: validSeverities.includes(severity.key as MessageSeverity)
-        ? (severity.key as MessageSeverity)
-        : undefined,
-      icon: severity.icon,
-      duration: severity.key === 'loading' ? false : props?.duration,
-    });
+      icon: messageIcons.error,
+      severity: 'error',
+    }),
+  info: (message: MessageData['children'], props?: MessageShorthandProps) =>
+    add({
+      ...props,
+      children: message,
+      icon: messageIcons.info,
+      severity: 'info',
+    }),
+  loading: (message: MessageData['children'], props?: MessageShorthandProps) =>
+    add({
+      ...props,
+      children: message,
+      icon: messageIcons.loading,
+      severity: 'loading',
+      duration: false,
+    }),
+  success: (message: MessageData['children'], props?: MessageShorthandProps) =>
+    add({
+      ...props,
+      children: message,
+      icon: messageIcons.success,
+      severity: 'success',
+    }),
+  warning: (message: MessageData['children'], props?: MessageShorthandProps) =>
+    add({
+      ...props,
+      children: message,
+      icon: messageIcons.warning,
+      severity: 'warning',
+    }),
 });
+
+/** Full type of the {@link Message} component including all static notification API methods. */
+export type MessageType = typeof Message;
 
 export default Message;

@@ -1,14 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useEffect } from 'react';
 import Button, { ButtonGroup } from '../Button';
-import Message from '.';
+import Message, { type MessageData } from '.';
 
 export default {
   title: 'Feedback/Message',
   component: Message,
-} as Meta;
+} satisfies Meta<MessageData>;
 
-type Story = StoryObj<typeof Message>;
+type Story = StoryObj<MessageData>;
 
 function createRandomNumber() {
   return Math.floor(Math.random() ** 7 * 1000000);
