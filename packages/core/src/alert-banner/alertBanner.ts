@@ -30,6 +30,7 @@ export const alertBannerClasses = {
   controls: `${alertBannerPrefix}__controls`,
   actions: `${alertBannerPrefix}__actions`,
   close: `${alertBannerPrefix}__close`,
+  wrapper: `${alertBannerPrefix}__wrapper`,
   severity: (severity: AlertBannerSeverity) =>
     `${alertBannerPrefix}--${severity}`,
   entering: `${alertBannerPrefix}--entering`,

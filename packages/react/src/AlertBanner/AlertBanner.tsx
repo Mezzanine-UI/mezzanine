@@ -10,6 +10,7 @@ import {
   alertBannerClasses as classes,
 } from '@mezzanine-ui/core/alert-banner';
 import { IconDefinition } from '@mezzanine-ui/icons';
+import { MOTION_EASING } from '@mezzanine-ui/system/motion';
 import Button, { ButtonPropsBase } from '../Button';
 import ClearActions from '../ClearActions';
 import { useComposeRefs } from '../hooks/useComposeRefs';
@@ -21,6 +22,7 @@ import {
   NotifierData,
 } from '../Notifier';
 import Portal from '../Portal';
+import { reflow } from '../Transition/reflow';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
@@ -203,13 +205,21 @@ export const AlertBannerComponent = forwardRef<
     ...rest
   } = props;
   const [visible, setVisible] = useState(true);
-  const [isExiting, setIsExiting] = useState(false);
-  const [isEntering, setIsEntering] = useState(false);
   const nodeRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const composedRef = useComposeRefs([ref, nodeRef]);
 
   const handleClose = useCallback(() => {
-    setIsExiting(true);
+    const wrapper = wrapperRef.current;
+
+    if (wrapper) {
+      wrapper.style.height = `${wrapper.scrollHeight}px`;
+      wrapper.style.overflow = 'hidden';
+      reflow(wrapper);
+
+      wrapper.style.transition = `height 250ms ${MOTION_EASING.exit}`;
+      wrapper.style.height = '0px';
+    }
 
     setTimeout(() => {
       setVisible(false);
@@ -227,17 +237,26 @@ export const AlertBannerComponent = forwardRef<
   }, [actions]);
 
   useEffect(() => {
-    if (visible && !isExiting && nodeRef.current) {
-      // Force reflow to ensure initial state is applied
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      nodeRef.current.offsetHeight;
+    if (visible && nodeRef.current && wrapperRef.current) {
+      const wrapper = wrapperRef.current;
+      const inner = nodeRef.current;
 
-      // Trigger entering animation in next frame
+      wrapper.style.height = '0px';
+      wrapper.style.overflow = 'hidden';
+      reflow(wrapper);
+
       requestAnimationFrame(() => {
-        setIsEntering(true);
+        wrapper.style.transition = `height 250ms ${MOTION_EASING.entrance}`;
+        wrapper.style.height = `${inner.scrollHeight}px`;
+
+        setTimeout(() => {
+          wrapper.style.height = 'auto';
+          wrapper.style.overflow = 'visible';
+          wrapper.style.transition = '';
+        }, 250);
       });
     }
-  }, [visible, isExiting]);
+  }, [visible]);
 
   if (!visible) {
     return null;
@@ -285,27 +304,27 @@ export const AlertBannerComponent = forwardRef<
   } = rest as typeof rest & { maxCount?: unknown; instanceKey?: unknown };
 
   const content = (
-    <div
-      {...restProps}
-      ref={composedRef}
-      aria-live="polite"
-      className={cx(
-        classes.host,
-        classes.severity(severity),
-        isExiting && classes.exiting,
-        isEntering && !isExiting && classes.entering,
-        className,
-      )}
-      role="status"
-    >
-      <div className={classes.body}>
-        <Icon className={classes.icon} icon={resolvedIcon} />
-        <span className={classes.message}>{message}</span>
-      </div>
+    <div ref={wrapperRef} className={classes.wrapper}>
+      <div
+        {...restProps}
+        ref={composedRef}
+        aria-live="polite"
+        className={cx(
+          classes.host,
+          classes.severity(severity),
+          className,
+        )}
+        role="status"
+      >
+        <div className={classes.body}>
+          <Icon className={classes.icon} icon={resolvedIcon} />
+          <span className={classes.message}>{message}</span>
+        </div>
 
-      <div className={classes.controls}>
-        {actionsArea}
-        {clearActionsArea}
+        <div className={classes.controls}>
+          {actionsArea}
+          {clearActionsArea}
+        </div>
       </div>
     </div>
   );
