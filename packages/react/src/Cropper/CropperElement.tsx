@@ -1219,6 +1219,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           <Typography
             className={classes.tag}
             color="text-fixed-light"
+            variant="label-secondary"
             style={{
               left: tagPosition.left,
               top: tagPosition.top,
