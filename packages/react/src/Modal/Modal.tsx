@@ -3,14 +3,7 @@ import {
   ModalSize,
   ModalStatusType,
 } from '@mezzanine-ui/core/modal';
-import {
-  forwardRef,
-  ReactNode,
-  useCallback,
-  useRef,
-  useState,
-  useMemo,
-} from 'react';
+import { forwardRef, useCallback, useRef, useState, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import useModalContainer, { ModalContainerProps } from './useModalContainer';
@@ -19,62 +12,10 @@ import ModalHeader, { ModalHeaderProps } from './ModalHeader';
 import ModalFooter, { ModalFooterProps } from './ModalFooter';
 import ClearActions from '../ClearActions';
 
-export type ModalHeaderLayoutProps =
-  | {
-      /**
-       * Layout of the status type icon relative to title.
-       * - 'horizontal': Icon to the left of title
-       */
-      statusTypeIconLayout: 'horizontal';
-      /**
-       * Alignment of the supporting text.
-       * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
-       * @default 'left'
-       */
-      supportingTextAlign?: 'left';
-      /**
-       * Alignment of the title.
-       * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
-       * @default 'left'
-       */
-      titleAlign?: 'left';
-    }
-  | {
-      /**
-       * Layout of the status type icon relative to title.
-       * - 'vertical': Icon above title
-       * @default 'vertical'
-       */
-      statusTypeIconLayout?: 'vertical';
-      /**
-       * Alignment of the supporting text.
-       * Only 'left' is allowed when titleAlign is 'left'.
-       * @default 'left'
-       */
-      supportingTextAlign?: 'left';
-      /**
-       * Alignment of the title.
-       * @default 'left'
-       */
-      titleAlign?: 'left';
-    }
-  | {
-      /**
-       * Layout of the status type icon relative to title.
-       * - 'vertical': Icon above title
-       * @default 'vertical'
-       */
-      statusTypeIconLayout?: 'vertical';
-      /**
-       * Alignment of the supporting text.
-       * @default 'left'
-       */
-      supportingTextAlign?: 'left' | 'center';
-      /**
-       * Alignment of the title.
-       */
-      titleAlign: 'center';
-    };
+export type ModalHeaderLayoutProps = Pick<
+  ModalHeaderProps,
+  'statusTypeIconLayout' | 'titleAlign' | 'supportingTextAlign'
+>;
 
 interface CommonModalProps
   extends Omit<ModalContainerProps, 'children'>,
@@ -202,30 +143,10 @@ type ModalHeaderPropsWithoutHeader = {
   title?: never;
 };
 
-export type ModalFooterCancelProps =
-  | {
-      /**
-       * Text content of the cancel button.
-       * Required when cancel button is shown (showCancelButton is true or not provided).
-       */
-      cancelText: ReactNode;
-      /**
-       * Whether to show the cancel button.
-       * @default true
-       */
-      showCancelButton?: true;
-    }
-  | {
-      /**
-       * Text content of the cancel button.
-       * Cannot be provided when showCancelButton is false.
-       */
-      cancelText?: never;
-      /**
-       * Whether to show the cancel button.
-       */
-      showCancelButton: false;
-    };
+export type ModalFooterCancelProps = Pick<
+  ModalFooterProps,
+  'cancelText' | 'showCancelButton'
+>;
 
 type ModalFooterPropsWithFooter = {
   /**
