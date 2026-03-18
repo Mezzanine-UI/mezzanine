@@ -11,6 +11,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import { createNotifier, NotifierData, NotifierConfig } from '../Notifier';
+import Spin from '../Spin';
 import { Translate, TranslateProps } from '../Transition';
 import { messageTimerController } from './MessageTimerController';
 
@@ -221,12 +222,12 @@ const MessageFC: FC<MessageData> = (props) => {
         onMouseLeave={handleMouseLeave}
         role="status"
       >
-        {icon ? (
-          <Icon
-            className={classes.icon}
-            icon={icon}
-            spin={severity === 'loading'}
-          />
+        {severity === 'loading' ? (
+          <span className={classes.icon}>
+            <Spin loading size="minor" />
+          </span>
+        ) : icon ? (
+          <Icon className={classes.icon} icon={icon} />
         ) : null}
         <span className={classes.content}>{children}</span>
       </div>
@@ -290,7 +291,6 @@ const Message = Object.assign(MessageFC, {
     add({
       ...props,
       children: message,
-      icon: messageIcons.loading,
       severity: 'loading',
       duration: false,
     }),

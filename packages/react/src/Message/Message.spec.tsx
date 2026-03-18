@@ -3,7 +3,6 @@ import {
   WarningFilledIcon,
   ErrorFilledIcon,
   InfoFilledIcon,
-  SpinnerIcon,
 } from '@mezzanine-ui/icons';
 import { MessageSeverity } from '@mezzanine-ui/core/message';
 import { Key } from 'react';
@@ -37,21 +36,10 @@ describe('<Message />', () => {
 
   describe('prop: severity', () => {
     const icons = {
-      success: {
-        icon: CheckedFilledIcon,
-      },
-      warning: {
-        icon: WarningFilledIcon,
-      },
-      error: {
-        icon: ErrorFilledIcon,
-      },
-      info: {
-        icon: InfoFilledIcon,
-      },
-      loading: {
-        icon: SpinnerIcon,
-      },
+      success: CheckedFilledIcon,
+      warning: WarningFilledIcon,
+      error: ErrorFilledIcon,
+      info: InfoFilledIcon,
     };
 
     severities.forEach((severity) => {
@@ -63,21 +51,29 @@ describe('<Message />', () => {
           element.classList.contains(`mzn-message--${severity}`),
         ).toBeTruthy();
       });
+    });
 
-      const targetIcon = icons[severity].icon;
-
-      it(`should render "${targetIcon?.name}" icon if severity="${severity}"`, () => {
+    (
+      Object.entries(icons) as [keyof typeof icons, typeof CheckedFilledIcon][]
+    ).forEach(([severity, icon]) => {
+      it(`should render "${icon.name}" icon if severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <Message icon={targetIcon} severity={severity} />,
+          <Message icon={icon} severity={severity} />,
         );
 
         const element = getHostHTMLElement();
         const { firstElementChild: iconElement } = element;
 
-        expect(iconElement?.getAttribute('data-icon-name')).toBe(
-          targetIcon?.name,
-        );
+        expect(iconElement?.getAttribute('data-icon-name')).toBe(icon.name);
       });
+    });
+
+    it('should render Spin component if severity="loading"', () => {
+      const { getHostHTMLElement } = render(<Message severity="loading" />);
+
+      const element = getHostHTMLElement();
+
+      expect(element.querySelector('.mzn-spin__spin')).not.toBeNull();
     });
   });
 
@@ -153,21 +149,19 @@ describe('<Message />', () => {
     });
   });
 
-  describe('icon spin', () => {
-    it('should spin icon when severity is loading', () => {
+  describe('loading spin', () => {
+    it('should render Spin instead of Icon when severity is loading', () => {
       const { getHostHTMLElement } = render(
-        <Message severity="loading" icon={SpinnerIcon}>
-          載入中
-        </Message>,
+        <Message severity="loading">載入中</Message>,
       );
 
       const element = getHostHTMLElement();
-      const iconElement = element.querySelector('.mzn-icon');
 
-      expect(iconElement?.classList.contains('mzn-icon--spin')).toBeTruthy();
+      expect(element.querySelector('.mzn-spin__spin')).not.toBeNull();
+      expect(element.querySelector('.mzn-icon')).toBeNull();
     });
 
-    it('should not spin icon for other severities', () => {
+    it('should not render Spin for other severities', () => {
       const { getHostHTMLElement } = render(
         <Message severity="success" icon={CheckedFilledIcon}>
           成功
@@ -177,7 +171,8 @@ describe('<Message />', () => {
       const element = getHostHTMLElement();
       const iconElement = element.querySelector('.mzn-icon');
 
-      expect(iconElement?.classList.contains('mzn-icon--spin')).toBeFalsy();
+      expect(iconElement).not.toBeNull();
+      expect(element.querySelector('.mzn-spin__spin')).toBeNull();
     });
   });
 });
