@@ -1,6 +1,6 @@
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/transition';
+@use '@mezzanine-ui/system/palette';
+@use '@mezzanine-ui/system/spacing';
+@use '@mezzanine-ui/system/transition';
 @use '../text-field';
 @use './multiple-date-picker' as *;
 

@@ -1,6 +1,6 @@
 
-@use '~@mezzanine-ui/system/palette' as palette;
-@use '~@mezzanine-ui/system/spacing';
+@use '@mezzanine-ui/system/palette' as palette;
+@use '@mezzanine-ui/system/spacing';
 @use './content-header' as *;
 
 .#{$prefix} {

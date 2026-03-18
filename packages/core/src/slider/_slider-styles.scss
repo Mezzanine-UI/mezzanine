@@ -1,9 +1,9 @@
 /* stylelint-disable declaration-property-value-keyword-no-deprecated */
 @use 'sass:math';
-@use '~@mezzanine-ui/system/effect';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/transition' as transition;
+@use '@mezzanine-ui/system/effect';
+@use '@mezzanine-ui/system/palette';
+@use '@mezzanine-ui/system/spacing';
+@use '@mezzanine-ui/system/transition' as transition;
 @use './slider' as *;
 
 $rail-height: spacing.semantic-variable(size, element, hairline) !default;

@@ -1,7 +1,7 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/palette' as palette;
-@use '~@mezzanine-ui/system/spacing' as spacing;
-@use '~@mezzanine-ui/system/typography';
+@use '@mezzanine-ui/system/palette' as palette;
+@use '@mezzanine-ui/system/spacing' as spacing;
+@use '@mezzanine-ui/system/typography';
 @use './empty' as *;
 
 // Size configurations

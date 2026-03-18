@@ -1,4 +1,4 @@
-@use '~@mezzanine-ui/system/typography' as typography;
+@use '@mezzanine-ui/system/typography' as typography;
 
 .#{typography.$semantic-prefix} {
   @each $type in typography.$semantic-semantic-types {

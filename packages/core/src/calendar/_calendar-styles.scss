@@ -1,10 +1,10 @@
 @use 'sass:math';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/effect';
-@use '~@mezzanine-ui/system/radius';
+@use '@mezzanine-ui/system/typography';
+@use '@mezzanine-ui/system/palette';
+@use '@mezzanine-ui/system/transition';
+@use '@mezzanine-ui/system/spacing';
+@use '@mezzanine-ui/system/effect';
+@use '@mezzanine-ui/system/radius';
 @use '../button/utils' as btn-utils;
 @use './calendar' as *;
 

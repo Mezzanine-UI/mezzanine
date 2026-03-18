@@ -1,4 +1,4 @@
-@use '~@mezzanine-ui/system/severity';
+@use '@mezzanine-ui/system/severity';
 
 $prefix: mzn-notification-center;
 $severities: severity.$severities-with-info;

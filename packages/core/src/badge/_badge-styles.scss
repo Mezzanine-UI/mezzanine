@@ -1,9 +1,9 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/radius';
+@use '@mezzanine-ui/system/palette';
+@use '@mezzanine-ui/system/transition';
+@use '@mezzanine-ui/system/typography';
+@use '@mezzanine-ui/system/spacing';
+@use '@mezzanine-ui/system/radius';
 @use './badge' as *;
 
 $dot-size: spacing.semantic-variable(size, element, tight);

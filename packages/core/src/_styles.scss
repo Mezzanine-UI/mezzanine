@@ -9,7 +9,7 @@
       @error 'Invalid options of #{$name}. Only accept false, null or map';
     }
 
-    $url: #{'~@mezzanine-ui/core/'}#{$namespace}#{'/'}#{$name}#{'-styles'};
+    $url: #{'@mezzanine-ui/core/'}#{$namespace}#{'/'}#{$name}#{'-styles'};
 
     @include meta.load-css($url, $options);
   }

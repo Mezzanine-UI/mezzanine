@@ -1,5 +1,5 @@
 @use 'sass:list';
-@use '~@mezzanine-ui/system/severity';
+@use '@mezzanine-ui/system/severity';
 
 $prefix: mzn-inline-message;
 $group-prefix: #{$prefix}-group;

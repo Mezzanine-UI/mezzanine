@@ -1,9 +1,9 @@
-@use '~@mezzanine-ui/system/palette' as palette;
-@use '~@mezzanine-ui/system/spacing' as spacing;
-@use '~@mezzanine-ui/system/radius' as radius;
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/transition' as transition;
-@use '~@mezzanine-ui/system/effect' as effect;
+@use '@mezzanine-ui/system/palette' as palette;
+@use '@mezzanine-ui/system/spacing' as spacing;
+@use '@mezzanine-ui/system/radius' as radius;
+@use '@mezzanine-ui/system/typography';
+@use '@mezzanine-ui/system/transition' as transition;
+@use '@mezzanine-ui/system/effect' as effect;
 @use '../button/utils' as btn-utils;
 @use './accordion' as *;
 

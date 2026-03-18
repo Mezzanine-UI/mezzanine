@@ -1,7 +1,7 @@
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/motion' as motion;
+@use '@mezzanine-ui/system/palette';
+@use '@mezzanine-ui/system/typography';
+@use '@mezzanine-ui/system/transition';
+@use '@mezzanine-ui/system/motion' as motion;
 @use './skeleton' as *;
 
 $animation-duration: motion.duration(moderate) !default;

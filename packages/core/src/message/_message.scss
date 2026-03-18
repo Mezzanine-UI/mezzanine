@@ -1,5 +1,5 @@
 @use 'sass:list';
-@use '~@mezzanine-ui/system/severity';
+@use '@mezzanine-ui/system/severity';
 
 $prefix: mzn-message;
 $severities: list.append(severity.$severities-with-info, loading);

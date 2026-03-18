@@ -1,6 +1,6 @@
-@use '~@mezzanine-ui/system/palette' as palette;
-@use '~@mezzanine-ui/system/radius' as radius;
-@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '@mezzanine-ui/system/palette' as palette;
+@use '@mezzanine-ui/system/radius' as radius;
+@use '@mezzanine-ui/system/spacing' as spacing;
 @use '../tab/tab' as tab;
 @use './section' as *;
 
