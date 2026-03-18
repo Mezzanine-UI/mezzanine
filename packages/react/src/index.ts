@@ -425,7 +425,10 @@ export type {
   SelectValue,
 } from './Select';
 export { default as SelectionCard } from './SelectionCard';
-export type { SelectionCardProps, SelectionCardPropsBase } from './SelectionCard';
+export type {
+  SelectionCardProps,
+  SelectionCardPropsBase,
+} from './SelectionCard';
 export { default as Slider, useSlider } from './Slider';
 export type {
   RangeSliderProps,
@@ -465,11 +468,8 @@ export type {
   TimeRangePickerValue,
   UseTimeRangePickerValueProps,
 } from './TimeRangePicker';
-export { default as Switch } from './Toggle';
-export type {
-  ToggleProps as SwitchProps,
-  ToggleSize as SwitchSize,
-} from './Toggle';
+export { default as Toggle } from './Toggle';
+export type { ToggleProps, ToggleSize } from './Toggle';
 export { Upload, UploadItem, UploadPictureCard, Uploader } from './Upload';
 export type {
   UploadFile,

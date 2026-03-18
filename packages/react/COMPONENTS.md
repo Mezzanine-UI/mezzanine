@@ -110,7 +110,7 @@
 | SelectTriggerTags         | `SelectTriggerTags`         | 多選 Select 的標籤顯示區域                                                               | —                                                         |
 | SelectionCard             | `SelectionCard`             | 可選取的卡片元件，作為 Checkbox/Radio 的卡片式替代                                       | —                                                         |
 | Slider                    | `Slider`                    | 滑桿元件，支援單點與範圍兩種模式                                                         | `useSlider`                                               |
-| Switch                    | `Switch`                    | 開關切換元件（對應 Toggle）                                                              | `useSwitchControlValue`                                   |
+| Toggle                    | `Toggle`                    | 切換開關元件，用於表示開／關二元狀態                                                     | `useSwitchControlValue`                                   |
 | Textarea                  | `Textarea`                  | 多行文字輸入框，支援自動調整高度與字數限制                                               | `useInputControlValue`                                    |
 | TextField                 | `TextField`                 | 文字欄位基底元件，提供通用的邊框/尺寸/狀態樣式                                           | —                                                         |
 | TimePicker                | `TimePicker`                | 時間選擇器，點擊觸發 TimePanel 面板選取時間                                              | `usePickerValue`                                          |
@@ -220,7 +220,7 @@
 | `useSelectValueControl`         | Select                  | 受控單選 / 多選值管理      |
 | `useCheckboxControlValue`       | Checkbox、CheckboxGroup | 受控勾選狀態管理           |
 | `useRadioControlValue`          | Radio、RadioGroup       | 受控 radio 選取管理        |
-| `useSwitchControlValue`         | Switch（Toggle）        | 受控開關狀態管理           |
+| `useSwitchControlValue`         | Toggle                  | 受控開關狀態管理           |
 | `useAutoCompleteValueControl`   | AutoComplete            | 受控自動完成值管理         |
 | `useCustomControlValue`         | 任意元件                | 泛用受控值 hook            |
 | `useControlValueState`          | 任意元件                | 基礎受控 / 非受控狀態管理  |

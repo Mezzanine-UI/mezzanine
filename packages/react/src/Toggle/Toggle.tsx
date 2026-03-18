@@ -62,7 +62,7 @@ export interface ToggleProps
 }
 
 /**
- * 切換開關元件（亦以 `Switch` 名稱匯出），用於表示開／關二元狀態。
+ * 切換開關元件，用於表示開／關二元狀態。
  *
  * 支援受控（`checked` + `onChange`）與非受控（`defaultChecked`）兩種用法；
  * `label` 顯示於開關右側，`supportingText` 顯示於 label 下方作為輔助說明。
