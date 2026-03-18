@@ -22,6 +22,7 @@
     "scss/selector-no-redundant-nesting-selector": null,
     "custom-property-no-missing-var-function": null,
     "custom-property-pattern": null,
-    "function-no-unknown": null
+    "function-no-unknown": null,
+    "declaration-property-value-keyword-no-deprecated": null
   }
 }
