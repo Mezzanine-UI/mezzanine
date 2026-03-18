@@ -43,7 +43,7 @@ import '@mezzanine-ui/core/select/styles';
 - **General** — Button, ButtonGroup, Cropper, Icon, Layout, Separator, Typography
 - **Navigation** — Breadcrumb, Drawer, Navigation (+ sub-components), PageHeader, PageFooter, Stepper, Tab
 - **Data Display** — Accordion, Badge, Cards (BaseCard, FourThumbnailCard, SingleThumbnailCard, QuickActionCard), Description, Empty, Pagination, Table, Tag, Tooltip
-- **Data Entry** — AutoComplete, Checkbox, DatePicker, DateRangePicker, DateTimePicker, FilterArea, FormField, Input, Radio, Select, Slider, Switch, Textarea, TimePicker, Upload, Cascader
+- **Data Entry** — AutoComplete, Checkbox, DatePicker, DateRangePicker, DateTimePicker, FilterArea, FormField, Input, Radio, Select, Slider, Toggle, Textarea, TimePicker, Upload, Cascader
 - **Feedback** — InlineMessage, Message, Modal, NotificationCenter, Progress, ResultState, Skeleton, Spin
 - **Others** — AlertBanner, Anchor, Backdrop, FloatingButton
 - **Utility** — Calendar, Dropdown, Popper, Portal, TimePanel, Transition animations (Collapse, Fade, Rotate, Scale, Slide, Translate)
@@ -73,6 +73,30 @@ import dayjs from 'dayjs';
 ```
 
 **forwardRef** — all components forward their ref to the underlying DOM element.
+
+## Common Pitfalls for AI Assistants
+
+**Typography `variant` is not h1–h6.** The prop is named `variant` but its type is `TypographySemanticType` — a design-system semantic scale, not HTML heading levels. Valid values are `h1`, `h2`, `h3` (no h4/h5/h6), then `body`, `body-highlight`, `body-mono`, `caption`, `caption-highlight`, `annotation`, `annotation-highlight`, `button`, `input`, `label-primary`, `label-secondary`, and a few others. Never use `h4`, `h5`, or `h6`.
+```tsx
+<Typography variant="h1">Title</Typography>      // ✅
+<Typography variant="body">Body text</Typography> // ✅
+<Typography variant="h5">Subtitle</Typography>    // ❌ h5 does not exist
+```
+
+**Button icons use `icon` + `iconType`, not `prefix`/`suffix` JSX.** Pass an icon definition object (from `@mezzanine-ui/icons`) to the `icon` prop and set position via `iconType`: `"leading"` | `"trailing"` | `"icon-only"`. Do not wrap `<Icon />` in `prefix` or `suffix` props — those props do not exist on Button.
+```tsx
+import { PlusIcon } from '@mezzanine-ui/icons';
+<Button icon={PlusIcon} iconType="leading">新增</Button>   // ✅
+<Button prefix={<Icon icon={PlusIcon} />}>新增</Button>    // ❌ prefix does not exist
+```
+
+**`TextField` is a low-level layout container, not a full form field.** It renders the border/background/affix shell around an `<input>` but does not include a label, hint text, or error message. For a complete labeled form field, use `FormField` (which wraps `TextField` + `Input` + label + validation message).
+```tsx
+// Full labeled form field:
+<FormField label="Email" required errorMessage={error}>
+  <TextField><Input placeholder="you@example.com" /></TextField>
+</FormField>
+```
 
 ## Further Reference
 

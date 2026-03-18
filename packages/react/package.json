@@ -13,6 +13,7 @@
   "module": "index.js",
   "typings": "index.d.ts",
   "sideEffects": false,
+  "llms": "./llms.txt",
   "publishConfig": {
     "access": "public"
   },
