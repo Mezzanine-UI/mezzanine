@@ -3,7 +3,14 @@ import {
   ModalSize,
   ModalStatusType,
 } from '@mezzanine-ui/core/modal';
-import { forwardRef, useMemo } from 'react';
+import {
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 import { cx } from '../utils/cx';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import useModalContainer, { ModalContainerProps } from './useModalContainer';
@@ -12,11 +19,76 @@ import ModalHeader, { ModalHeaderProps } from './ModalHeader';
 import ModalFooter, { ModalFooterProps } from './ModalFooter';
 import ClearActions from '../ClearActions';
 
+export type ModalHeaderLayoutProps =
+  | {
+      /**
+       * Layout of the status type icon relative to title.
+       * - 'horizontal': Icon to the left of title
+       */
+      statusTypeIconLayout: 'horizontal';
+      /**
+       * Alignment of the supporting text.
+       * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
+       * @default 'left'
+       */
+      supportingTextAlign?: 'left';
+      /**
+       * Alignment of the title.
+       * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
+       * @default 'left'
+       */
+      titleAlign?: 'left';
+    }
+  | {
+      /**
+       * Layout of the status type icon relative to title.
+       * - 'vertical': Icon above title
+       * @default 'vertical'
+       */
+      statusTypeIconLayout?: 'vertical';
+      /**
+       * Alignment of the supporting text.
+       * Only 'left' is allowed when titleAlign is 'left'.
+       * @default 'left'
+       */
+      supportingTextAlign?: 'left';
+      /**
+       * Alignment of the title.
+       * @default 'left'
+       */
+      titleAlign?: 'left';
+    }
+  | {
+      /**
+       * Layout of the status type icon relative to title.
+       * - 'vertical': Icon above title
+       * @default 'vertical'
+       */
+      statusTypeIconLayout?: 'vertical';
+      /**
+       * Alignment of the supporting text.
+       * @default 'left'
+       */
+      supportingTextAlign?: 'left' | 'center';
+      /**
+       * Alignment of the title.
+       */
+      titleAlign: 'center';
+    };
+
 interface CommonModalProps
   extends Omit<ModalContainerProps, 'children'>,
     Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>,
-    Partial<Omit<ModalHeaderProps, 'children' | 'className' | 'title'>>,
-    Partial<Omit<ModalFooterProps, 'children' | 'className' | 'confirmText'>> {
+    Partial<
+      Omit<
+        ModalFooterProps,
+        | 'cancelText'
+        | 'children'
+        | 'className'
+        | 'confirmText'
+        | 'showCancelButton'
+      >
+    > {
   /**
    * The custom class name applied to the modal container.
    */
@@ -38,10 +110,29 @@ interface CommonModalProps
    */
   modalStatusType?: ModalStatusType;
   /**
+   * Text content of the cancel button.
+   * Required when cancel button is shown (showCancelButton is true or not provided).
+   */
+  cancelText?: ReactNode;
+  /**
+   * Whether to show the cancel button.
+   * @default true
+   */
+  showCancelButton?: boolean;
+  /**
    * Controls whether or not to show dismiss button at top-end.
    * @default true
    */
   showDismissButton?: boolean;
+  /**
+   * Whether to show status type icon.
+   * @default false
+   */
+  showStatusTypeIcon?: boolean;
+  /**
+   * Supporting text displayed below the title.
+   */
+  supportingText?: string;
 }
 
 interface ExtendedSplitModalProps extends CommonModalProps {
@@ -121,6 +212,31 @@ type ModalHeaderPropsWithoutHeader = {
   title?: never;
 };
 
+export type ModalFooterCancelProps =
+  | {
+      /**
+       * Text content of the cancel button.
+       * Required when cancel button is shown (showCancelButton is true or not provided).
+       */
+      cancelText: ReactNode;
+      /**
+       * Whether to show the cancel button.
+       * @default true
+       */
+      showCancelButton?: true;
+    }
+  | {
+      /**
+       * Text content of the cancel button.
+       * Cannot be provided when showCancelButton is false.
+       */
+      cancelText?: never;
+      /**
+       * Whether to show the cancel button.
+       */
+      showCancelButton: false;
+    };
+
 type ModalFooterPropsWithFooter = {
   /**
    * Whether to show modal footer.
@@ -130,7 +246,7 @@ type ModalFooterPropsWithFooter = {
    * The confirm button text of the modal footer (required when showModalFooter is true).
    */
   confirmText: string;
-};
+} & ModalFooterCancelProps;
 
 type ModalFooterPropsWithoutFooter = {
   /**
@@ -146,6 +262,7 @@ type ModalFooterPropsWithoutFooter = {
 };
 
 export type ModalProps = BaseModalProps &
+  ModalHeaderLayoutProps &
   (
     | (ModalHeaderPropsWithHeader & ModalFooterPropsWithFooter)
     | (ModalHeaderPropsWithHeader & ModalFooterPropsWithoutFooter)
@@ -252,6 +369,55 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       ...rest
     } = props;
 
+    const bodyContentRef = useRef<HTMLDivElement>(null);
+    const [hasTopSeparator, setHasTopSeparator] = useState(false);
+    const [hasBottomSeparator, setHasBottomSeparator] = useState(false);
+    const scrollCleanupRef = useRef<(() => void) | null>(null);
+
+    const handleBodyContainerRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        if (scrollCleanupRef.current) {
+          scrollCleanupRef.current();
+          scrollCleanupRef.current = null;
+        }
+
+        if (!node) {
+          setHasTopSeparator(false);
+          setHasBottomSeparator(false);
+
+          return;
+        }
+
+        const checkScroll = () => {
+          const { scrollTop, scrollHeight, clientHeight } = node;
+
+          setHasTopSeparator(scrollTop > 0);
+          setHasBottomSeparator(scrollTop + clientHeight < scrollHeight);
+        };
+
+        const rafId = requestAnimationFrame(checkScroll);
+
+        node.addEventListener('scroll', checkScroll);
+
+        const observer = new ResizeObserver(checkScroll);
+
+        observer.observe(node);
+
+        const content = bodyContentRef.current;
+
+        if (content) {
+          observer.observe(content);
+        }
+
+        scrollCleanupRef.current = () => {
+          cancelAnimationFrame(rafId);
+          node.removeEventListener('scroll', checkScroll);
+          observer.disconnect();
+        };
+      },
+      [],
+    );
+
     const modalControl: ModalControl = useMemo(
       () => ({
         loading,
@@ -264,29 +430,31 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
     const renderModalFooter = () => (
       <ModalFooter
-        actionsButtonLayout={actionsButtonLayout}
-        annotation={annotation}
-        auxiliaryContentButtonProps={auxiliaryContentButtonProps}
-        auxiliaryContentButtonText={auxiliaryContentButtonText}
-        auxiliaryContentChecked={auxiliaryContentChecked}
-        auxiliaryContentLabel={auxiliaryContentLabel}
-        auxiliaryContentOnChange={auxiliaryContentOnChange}
-        auxiliaryContentOnClick={auxiliaryContentOnClick}
-        auxiliaryContentType={auxiliaryContentType}
-        cancelButtonProps={cancelButtonProps}
-        cancelText={cancelText}
-        confirmButtonProps={confirmButtonProps}
-        confirmText={confirmText as string}
-        loading={loading}
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-        passwordButtonProps={passwordButtonProps}
-        passwordButtonText={passwordButtonText}
-        passwordChecked={passwordChecked}
-        passwordCheckedLabel={passwordCheckedLabel}
-        passwordCheckedOnChange={passwordCheckedOnChange}
-        passwordOnClick={passwordOnClick}
-        showCancelButton={showCancelButton}
+        {...({
+          actionsButtonLayout,
+          annotation,
+          auxiliaryContentButtonProps,
+          auxiliaryContentButtonText,
+          auxiliaryContentChecked,
+          auxiliaryContentLabel,
+          auxiliaryContentOnChange,
+          auxiliaryContentOnClick,
+          auxiliaryContentType,
+          cancelButtonProps,
+          cancelText,
+          confirmButtonProps,
+          confirmText: confirmText as string,
+          loading,
+          onCancel,
+          onConfirm,
+          passwordButtonProps,
+          passwordButtonText,
+          passwordChecked,
+          passwordCheckedLabel,
+          passwordCheckedOnChange,
+          passwordOnClick,
+          showCancelButton,
+        } as ModalFooterProps)}
       />
     );
 
@@ -319,12 +487,14 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           >
             {showModalHeader && (
               <ModalHeader
-                showStatusTypeIcon={showStatusTypeIcon}
-                statusTypeIconLayout={statusTypeIconLayout}
-                supportingText={supportingText}
-                supportingTextAlign={supportingTextAlign}
-                title={title as string}
-                titleAlign={titleAlign}
+                {...({
+                  showStatusTypeIcon,
+                  statusTypeIconLayout,
+                  supportingText,
+                  supportingTextAlign,
+                  title: title as string,
+                  titleAlign,
+                } as ModalHeaderProps)}
               />
             )}
             {modalType === 'extendedSplit' && (
@@ -350,7 +520,17 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
               modalType === 'mediaPreview') && (
               <>
                 {children && (
-                  <div className={classes.modalBodyContainer}>{children}</div>
+                  <div
+                    ref={handleBodyContainerRef}
+                    className={cx(classes.modalBodyContainer, {
+                      [classes.modalBodyContainerWithTopSeparator]:
+                        modalType === 'extended' || hasTopSeparator,
+                      [classes.modalBodyContainerWithBottomSeparator]:
+                        modalType === 'extended' || hasBottomSeparator,
+                    })}
+                  >
+                    <div ref={bodyContentRef}>{children}</div>
+                  </div>
                 )}
                 {showModalFooter && renderModalFooter()}
               </>

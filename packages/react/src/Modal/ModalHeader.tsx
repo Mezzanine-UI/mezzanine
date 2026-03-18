@@ -12,7 +12,7 @@ import Icon from '../Icon';
 import { ModalControlContext } from './ModalControl';
 import Typography from '../Typography';
 
-export interface ModalHeaderProps
+interface ModalHeaderBaseProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Whether to show status type icon.
@@ -20,31 +20,77 @@ export interface ModalHeaderProps
    */
   showStatusTypeIcon?: boolean;
   /**
-   * Layout of the status type icon relative to title.
-   * - 'vertical': Icon above title
-   * - 'horizontal': Icon to the left of title
-   * @default 'vertical'
-   */
-  statusTypeIconLayout?: 'vertical' | 'horizontal';
-  /**
    * Supporting text displayed below the title.
    */
   supportingText?: string;
+  /**
+   * The title text of the modal header.
+   */
+  title: string;
+}
+
+interface ModalHeaderHorizontalIconProps extends ModalHeaderBaseProps {
+  /**
+   * Layout of the status type icon relative to title.
+   * - 'horizontal': Icon to the left of title
+   */
+  statusTypeIconLayout: 'horizontal';
+  /**
+   * Alignment of the supporting text.
+   * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
+   * @default 'left'
+   */
+  supportingTextAlign?: 'left';
+  /**
+   * Alignment of the title.
+   * Only 'left' is allowed when statusTypeIconLayout is 'horizontal'.
+   * @default 'left'
+   */
+  titleAlign?: 'left';
+}
+
+interface ModalHeaderVerticalLeftTitleProps extends ModalHeaderBaseProps {
+  /**
+   * Layout of the status type icon relative to title.
+   * - 'vertical': Icon above title
+   * @default 'vertical'
+   */
+  statusTypeIconLayout?: 'vertical';
+  /**
+   * Alignment of the supporting text.
+   * Only 'left' is allowed when titleAlign is 'left'.
+   * @default 'left'
+   */
+  supportingTextAlign?: 'left';
+  /**
+   * Alignment of the title.
+   * @default 'left'
+   */
+  titleAlign?: 'left';
+}
+
+interface ModalHeaderVerticalCenterTitleProps extends ModalHeaderBaseProps {
+  /**
+   * Layout of the status type icon relative to title.
+   * - 'vertical': Icon above title
+   * @default 'vertical'
+   */
+  statusTypeIconLayout?: 'vertical';
   /**
    * Alignment of the supporting text.
    * @default 'left'
    */
   supportingTextAlign?: 'left' | 'center';
   /**
-   * The title text of the modal header.
-   */
-  title: string;
-  /**
    * Alignment of the title.
-   * @default 'left'
    */
-  titleAlign?: 'left' | 'center';
+  titleAlign: 'center';
 }
+
+export type ModalHeaderProps =
+  | ModalHeaderHorizontalIconProps
+  | ModalHeaderVerticalCenterTitleProps
+  | ModalHeaderVerticalLeftTitleProps;
 
 /**
  * The React component for `mezzanine` modal header.
@@ -113,7 +159,7 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
         )}
         <div className={cx(classes.modalHeaderTitleAndSupportingTextContainer)}>
           <Typography
-            variant="h3"
+            variant="h2"
             color="text-neutral-solid"
             className={cx(classes.modalHeaderTitle)}
             title={typeof title === 'string' ? title : undefined}

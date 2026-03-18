@@ -8,7 +8,7 @@ import Checkbox from '../Checkbox/Checkbox';
 import Toggle from '../Toggle/Toggle';
 import Typography from '../Typography';
 
-export interface ModalFooterProps
+interface ModalFooterBaseProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Layout of action buttons.
@@ -72,10 +72,6 @@ export interface ModalFooterProps
    */
   cancelButtonProps?: ButtonProps;
   /**
-   * Text content of the cancel button.
-   */
-  cancelText?: ReactNode;
-  /**
    * Additional props for the confirm button.
    */
   confirmButtonProps?: ButtonProps;
@@ -125,12 +121,36 @@ export interface ModalFooterProps
    * Only used when auxiliaryContentType is 'password'.
    */
   passwordOnClick?: ButtonProps['onClick'];
+}
+
+interface ModalFooterWithCancelButtonProps extends ModalFooterBaseProps {
+  /**
+   * Text content of the cancel button.
+   * Required when cancel button is shown (showCancelButton is true or not provided).
+   */
+  cancelText: ReactNode;
   /**
    * Whether to show the cancel button.
    * @default true
    */
-  showCancelButton?: boolean;
+  showCancelButton?: true;
 }
+
+interface ModalFooterWithoutCancelButtonProps extends ModalFooterBaseProps {
+  /**
+   * Text content of the cancel button.
+   * Cannot be provided when showCancelButton is false.
+   */
+  cancelText?: never;
+  /**
+   * Whether to show the cancel button.
+   */
+  showCancelButton: false;
+}
+
+export type ModalFooterProps =
+  | ModalFooterWithCancelButtonProps
+  | ModalFooterWithoutCancelButtonProps;
 
 /**
  * The react component for `mezzanine` modal footer.

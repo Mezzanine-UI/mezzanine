@@ -1,6 +1,12 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { ReactNode, useCallback, useState } from 'react';
-import Modal, { ModalStatusType, ModalSize, ModalBodyForVerification } from '.';
+import Modal, {
+  ModalBodyForVerification,
+  ModalFooterCancelProps,
+  ModalHeaderLayoutProps,
+  ModalSize,
+  ModalStatusType,
+} from '.';
 import Button from '../Button';
 import { ModalType } from '@mezzanine-ui/core/modal';
 import Typography from '../Typography';
@@ -73,7 +79,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     passwordChecked: false,
     passwordCheckedLabel: 'Remember me',
     showCancelButton: true,
-    showDismissButton: false,
+    showDismissButton: true,
     showModalFooter: true,
     showModalHeader: true,
     showStatusTypeIcon: false,
@@ -178,6 +184,10 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     const [open, setOpen] = useState(false);
     const onClose = useCallback(() => setOpen(false), []);
 
+    const cancelProps: ModalFooterCancelProps = showCancelButton
+      ? { cancelText: cancelText ?? '' }
+      : { showCancelButton: false };
+
     const baseProps = {
       actionsButtonLayout,
       annotation,
@@ -187,7 +197,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       auxiliaryContentOnChange: () => {},
       auxiliaryContentOnClick: () => {},
       auxiliaryContentType,
-      cancelText,
+      ...cancelProps,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
       fullScreen,
@@ -202,10 +212,38 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       passwordCheckedLabel,
       passwordCheckedOnChange: passwordCheckedOnChange || (() => {}),
       passwordOnClick: () => {},
-      showCancelButton,
       showDismissButton,
       size,
     };
+
+    const layoutProps: ModalHeaderLayoutProps =
+      statusTypeIconLayout === 'horizontal'
+        ? {
+            statusTypeIconLayout: 'horizontal',
+            supportingTextAlign:
+              supportingTextAlign === 'center'
+                ? undefined
+                : supportingTextAlign,
+            titleAlign: titleAlign === 'center' ? undefined : titleAlign,
+          }
+        : titleAlign === 'center'
+          ? {
+              statusTypeIconLayout: statusTypeIconLayout as
+                | 'vertical'
+                | undefined,
+              supportingTextAlign,
+              titleAlign: 'center',
+            }
+          : {
+              statusTypeIconLayout: statusTypeIconLayout as
+                | 'vertical'
+                | undefined,
+              supportingTextAlign:
+                supportingTextAlign === 'center'
+                  ? undefined
+                  : supportingTextAlign,
+              titleAlign: titleAlign as 'left' | undefined,
+            };
 
     // Extended split specific props
     const extendedSplitLeftSideContent = (
@@ -246,17 +284,15 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
+              {...layoutProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
               size="wide"
               confirmText={confirmText || 'Confirm'}
               showStatusTypeIcon={showStatusTypeIcon}
-              statusTypeIconLayout={statusTypeIconLayout}
               supportingText={supportingText}
-              supportingTextAlign={supportingTextAlign}
               title={typeof title === 'string' ? title : 'Title'}
-              titleAlign={titleAlign}
               showModalFooter
               showModalHeader
             />
@@ -272,16 +308,14 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
+              {...layoutProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
               size="wide"
               showStatusTypeIcon={showStatusTypeIcon}
-              statusTypeIconLayout={statusTypeIconLayout}
               supportingText={supportingText}
-              supportingTextAlign={supportingTextAlign}
               title={typeof title === 'string' ? title : 'Title'}
-              titleAlign={titleAlign}
               showModalHeader
             />
           </>
@@ -332,14 +366,12 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
+            {...layoutProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showStatusTypeIcon={showStatusTypeIcon}
-            statusTypeIconLayout={statusTypeIconLayout}
             supportingText={supportingText}
-            supportingTextAlign={supportingTextAlign}
             title={typeof title === 'string' ? title : 'Title'}
-            titleAlign={titleAlign}
             showModalFooter
             showModalHeader
           >
@@ -357,13 +389,11 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
+            {...layoutProps}
             modalType={modalType}
             showStatusTypeIcon={showStatusTypeIcon}
-            statusTypeIconLayout={statusTypeIconLayout}
             supportingText={supportingText}
-            supportingTextAlign={supportingTextAlign}
             title={typeof title === 'string' ? title : 'Title'}
-            titleAlign={titleAlign}
             showModalHeader
           >
             {body}
@@ -542,6 +572,195 @@ export const ModalHeaderStatusTypes: StoryObj = {
   },
 };
 
+export const ModalHeaderCombinations: StoryObj = {
+  render: function Render() {
+    const [openIndex, setOpenIndex] = useState<number | null>(null);
+    const onClose = useCallback(() => setOpenIndex(null), []);
+
+    const baseProps = {
+      confirmText: 'OK',
+      modalType: 'standard' as const,
+      onClose,
+      onConfirm: onClose,
+      showCancelButton: false as const,
+      showModalFooter: true as const,
+      showModalHeader: true as const,
+    };
+
+    const body = <>Modal body content.</>;
+
+    return (
+      <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div>
+            <Typography color="text-neutral-strong" variant="body">
+              No Icon
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginTop: '8px',
+              }}
+            >
+              <Button onClick={() => setOpenIndex(0)} variant="base-primary">
+                Title
+              </Button>
+              <Button onClick={() => setOpenIndex(1)} variant="base-primary">
+                Title (Center)
+              </Button>
+              <Button onClick={() => setOpenIndex(2)} variant="base-primary">
+                Title + Supporting
+              </Button>
+              <Button onClick={() => setOpenIndex(3)} variant="base-primary">
+                Both Center
+              </Button>
+            </div>
+          </div>
+          <div>
+            <Typography color="text-neutral-strong" variant="body">
+              Vertical Icon
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginTop: '8px',
+              }}
+            >
+              <Button onClick={() => setOpenIndex(4)} variant="base-primary">
+                Title
+              </Button>
+              <Button onClick={() => setOpenIndex(5)} variant="base-primary">
+                Title (Center)
+              </Button>
+              <Button onClick={() => setOpenIndex(6)} variant="base-primary">
+                Title + Supporting
+              </Button>
+              <Button onClick={() => setOpenIndex(7)} variant="base-primary">
+                Both Center
+              </Button>
+            </div>
+          </div>
+          <div>
+            <Typography color="text-neutral-strong" variant="body">
+              Horizontal Icon
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginTop: '8px',
+              }}
+            >
+              <Button onClick={() => setOpenIndex(8)} variant="base-primary">
+                Title
+              </Button>
+              <Button onClick={() => setOpenIndex(9)} variant="base-primary">
+                Title + Supporting
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* No Icon */}
+        <Modal {...baseProps} open={openIndex === 0} title="Title Only">
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 1}
+          title="Title Only (Center)"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 2}
+          supportingText="Supporting text displayed below the title."
+          title="Title + Supporting"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 3}
+          supportingText="Supporting text aligned center."
+          supportingTextAlign="center"
+          title="Both Center"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+
+        {/* Vertical Icon */}
+        <Modal
+          {...baseProps}
+          open={openIndex === 4}
+          showStatusTypeIcon
+          title="Vertical Icon"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 5}
+          showStatusTypeIcon
+          title="Vertical Icon (Center)"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 6}
+          showStatusTypeIcon
+          supportingText="Supporting text displayed below the title."
+          title="Vertical Icon + Supporting"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 7}
+          showStatusTypeIcon
+          supportingText="Supporting text aligned center."
+          supportingTextAlign="center"
+          title="Vertical Icon + Both Center"
+          titleAlign="center"
+        >
+          {body}
+        </Modal>
+
+        {/* Horizontal Icon */}
+        <Modal
+          {...baseProps}
+          open={openIndex === 8}
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
+          title="Horizontal Icon"
+        >
+          {body}
+        </Modal>
+        <Modal
+          {...baseProps}
+          open={openIndex === 9}
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
+          supportingText="Supporting text displayed below the title."
+          title="Horizontal Icon + Supporting"
+        >
+          {body}
+        </Modal>
+      </>
+    );
+  },
+};
+
 export const ModalHeaderComprehensive: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
@@ -561,9 +780,9 @@ export const ModalHeaderComprehensive: StoryObj = {
           showStatusTypeIcon
           statusTypeIconLayout="horizontal"
           supportingText="This modal demonstrates all header features combined together"
-          supportingTextAlign="center"
+          supportingTextAlign="left"
           title="Complete Header Example"
-          titleAlign="center"
+          titleAlign="left"
           modalStatusType="warning"
           onClose={onClose}
           open={open}
@@ -573,38 +792,6 @@ export const ModalHeaderComprehensive: StoryObj = {
           <>
             This modal showcases all header features: status icon, horizontal
             layout, centered title and supporting text.
-          </>
-        </Modal>
-      </>
-    );
-  },
-};
-
-export const ModalFooterBasic: StoryObj = {
-  render: function Render() {
-    const [open, setOpen] = useState(false);
-    const onClose = useCallback(() => setOpen(false), []);
-
-    return (
-      <>
-        <Button onClick={() => setOpen(true)} variant="base-primary">
-          Open Modal with Footer
-        </Button>
-        <Modal
-          modalType="standard"
-          cancelText="Cancel"
-          confirmText="Confirm"
-          onCancel={onClose}
-          onConfirm={onClose}
-          onClose={onClose}
-          open={open}
-          showModalFooter
-          showModalHeader
-          title="Modal with Footer"
-        >
-          <>
-            This modal uses the new ModalFooter component with cancel and
-            confirm buttons.
           </>
         </Modal>
       </>
@@ -633,14 +820,14 @@ export const ModalFooterButtonLayout: StoryObj = {
           actionsButtonLayout="fixed"
           cancelText="Cancel"
           confirmText="Confirm"
-          onCancel={onCloseFixed}
-          onConfirm={onCloseFixed}
-          title="Fixed Layout"
           modalType="standard"
+          onCancel={onCloseFixed}
           onClose={onCloseFixed}
+          onConfirm={onCloseFixed}
           open={openFixed}
           showModalFooter
           showModalHeader
+          title="Fixed Layout"
         >
           <>
             This modal uses fixed width buttons (default behavior). The buttons
@@ -651,14 +838,14 @@ export const ModalFooterButtonLayout: StoryObj = {
           actionsButtonLayout="fill"
           cancelText="Cancel"
           confirmText="Confirm"
-          onCancel={onCloseFill}
-          onConfirm={onCloseFill}
-          title="Fill Layout"
           modalType="standard"
+          onCancel={onCloseFill}
           onClose={onCloseFill}
+          onConfirm={onCloseFill}
           open={openFill}
           showModalFooter
           showModalHeader
+          title="Fill Layout"
         >
           <>
             This modal uses fill layout. The buttons expand to fill the
@@ -794,6 +981,69 @@ export const ExtendedSplit: StoryObj = {
           showModalFooter
           showModalHeader
         />
+      </>
+    );
+  },
+};
+
+const LONG_BODY_TEXT = Array.from({ length: 12 }, (_, i) => (
+  <p key={i} style={{ margin: '0 0 12px' }}>
+    Paragraph {i + 1} — Lorem ipsum dolor sit amet, consectetur adipisicing
+    elit. Dolorum illum neque soluta atque eum dolores placeat unde molestias
+    exercitationem tempore perspiciatis quia porro sapiente vero impedit
+    consequatur recusandae excepturi cumque.
+  </p>
+));
+
+export const BodySeparator: StoryObj = {
+  render: function Render() {
+    const [openStandard, setOpenStandard] = useState(false);
+    const [openExtended, setOpenExtended] = useState(false);
+    const onCloseStandard = useCallback(() => setOpenStandard(false), []);
+    const onCloseExtended = useCallback(() => setOpenExtended(false), []);
+
+    return (
+      <>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button onClick={() => setOpenStandard(true)} variant="base-primary">
+            Scroll-based Separator
+          </Button>
+          <Button onClick={() => setOpenExtended(true)} variant="base-primary">
+            Extended (Always Visible)
+          </Button>
+        </div>
+
+        <Modal
+          cancelText="Cancel"
+          confirmText="Confirm"
+          modalType="standard"
+          onCancel={onCloseStandard}
+          onClose={onCloseStandard}
+          onConfirm={onCloseStandard}
+          open={openStandard}
+          showModalFooter
+          showModalHeader
+          size="regular"
+          title="Scroll-based Separator"
+        >
+          {LONG_BODY_TEXT}
+        </Modal>
+
+        <Modal
+          cancelText="Cancel"
+          confirmText="Confirm"
+          modalType="extended"
+          onCancel={onCloseExtended}
+          onClose={onCloseExtended}
+          onConfirm={onCloseExtended}
+          open={openExtended}
+          showModalFooter
+          showModalHeader
+          size="regular"
+          title="Extended (Always Visible)"
+        >
+          <>Both separators are always visible in Extended Modal.</>
+        </Modal>
       </>
     );
   },

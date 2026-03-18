@@ -182,6 +182,7 @@ describe('<ModalHeader />', () => {
       const { getHostHTMLElement } = render(
         <ModalHeader
           title="Title"
+          titleAlign="center"
           supportingText="Supporting text"
           supportingTextAlign="center"
         />,
@@ -210,12 +211,12 @@ describe('<ModalHeader />', () => {
       expect(title?.textContent).toBe('Test Modal Title');
     });
 
-    it('should render title as h3 variant', () => {
+    it('should render title as h2 variant', () => {
       const { getHostHTMLElement } = render(<ModalHeader title="Test Title" />);
       const element = getHostHTMLElement();
       const title = element.querySelector('.mzn-modal__header__title');
 
-      expect(title?.tagName.toLowerCase()).toBe('h3');
+      expect(title?.tagName.toLowerCase()).toBe('h2');
     });
   });
 });
