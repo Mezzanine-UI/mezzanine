@@ -65,25 +65,7 @@ $severity-config: (
   border-radius: radius.variable(none);
   box-sizing: border-box;
   pointer-events: auto;
-  opacity: 0;
-  transform: translate3d(0, -100%, 0);
-  transition:
-    transition.entrance(opacity, moderate),
-    transition.entrance(transform, moderate);
 
-  &--entering {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-
-  &--exiting {
-    opacity: 0;
-    transform: translate3d(0, -100%, 0);
-    transition:
-      transition.exit(opacity, moderate),
-      transition.exit(transform, moderate);
-  }
-  
   &__icon {
     flex-shrink: 0;
     font-size: spacing.semantic-variable(size, element, gentle);
@@ -138,6 +120,10 @@ $severity-config: (
       @include _apply-severity($severity);
     }
   }
+}
+
+.#{$prefix}__wrapper {
+  overflow: hidden;
 }
 
 .#{$group-prefix} {
