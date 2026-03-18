@@ -148,7 +148,7 @@ export const SubSize: Story = {
                 density={horizontal.density}
                 layout={horizontal.layout}
               >
-                <Input name="name" size="sub" placeholder="Enter name" />
+                <Input name="name" placeholder="Enter name" />
               </FormField>
             </Filter>
             <Filter span={2}>
@@ -158,7 +158,7 @@ export const SubSize: Story = {
                 density={horizontal.density}
                 layout={horizontal.layout}
               >
-                <Input name="remark" size="sub" placeholder="Enter name" />
+                <Input name="remark" placeholder="Enter name" />
               </FormField>
             </Filter>
           </FilterLine>
@@ -176,7 +176,7 @@ export const SubSize: Story = {
                   menuMaxHeight={140}
                   options={autoCompleteOptions}
                   placeholder="請輸入"
-                  size="sub"
+
                 />
               </FormField>
             </Filter>
@@ -193,7 +193,7 @@ export const SubSize: Story = {
                   menuMaxHeight={140}
                   options={autoCompleteOptions}
                   placeholder="請輸入"
-                  size="sub"
+
                 />
               </FormField>
             </Filter>

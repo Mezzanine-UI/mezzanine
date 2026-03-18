@@ -10,6 +10,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 import Button from '../Button';
 import { FilterLineProps } from './FilterLine';
+import FilterAreaContext from './FilterAreaContext';
 
 export interface FilterAreaProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onSubmit' | 'onReset'> {
@@ -86,6 +87,7 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
       () => Children.toArray(children) as ReactElement<FilterLineProps>[],
       [children],
     );
+    const contextValue = useMemo(() => ({ size }), [size]);
     const hasMultipleLines = filterLines.length > 1;
     const [expanded, setExpanded] = useState(false);
 
@@ -142,35 +144,37 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
     const firstLine = filterLines[0];
 
     return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          className,
-          {
-            [classes.size(size)]: size,
-          },
-        )}
-      >
-        {expanded ? (
-          <>
-            {filterLines}
-            <div className={classes.row}>
-              {renderAction()}
-            </div>
-          </>
-        ) : (
-          <>
-            {firstLine && (
+      <FilterAreaContext.Provider value={contextValue}>
+        <div
+          {...rest}
+          ref={ref}
+          className={cx(
+            classes.host,
+            className,
+            {
+              [classes.size(size)]: size,
+            },
+          )}
+        >
+          {expanded ? (
+            <>
+              {filterLines}
               <div className={classes.row}>
-                {firstLine}
                 {renderAction()}
               </div>
-            )}
-          </>
-        )}
-      </div>
+            </>
+          ) : (
+            <>
+              {firstLine && (
+                <div className={classes.row}>
+                  {firstLine}
+                  {renderAction()}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </FilterAreaContext.Provider>
     );
   },
 );
