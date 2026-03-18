@@ -481,9 +481,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openInfo}
           showModalFooter
           showModalHeader
-        >
-          <>Here are some details you should know about.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -498,9 +496,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openError}
           showModalFooter
           showModalHeader
-        >
-          <>Please try again or contact support if the problem persists.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -515,9 +511,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openWarning}
           showModalFooter
           showModalHeader
-        >
-          <>This action may have unintended consequences.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -532,9 +526,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openSuccess}
           showModalFooter
           showModalHeader
-        >
-          <>Your changes have been saved and applied.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -549,9 +541,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openEmail}
           showModalFooter
           showModalHeader
-        >
-          <>Check your inbox for important updates and notifications.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Cancel"
@@ -567,9 +557,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openDelete}
           showModalFooter
           showModalHeader
-        >
-          <>Are you sure you want to delete this item permanently?</>
-        </Modal>
+        />
       </>
     );
   },
@@ -706,27 +694,21 @@ export const ModalHeaderCombinations: StoryObj = {
           open={openIndex === 4}
           showStatusTypeIcon
           title="Vertical Icon"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 5}
           showStatusTypeIcon
           title="Vertical Icon (Center)"
           titleAlign="center"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 6}
           showStatusTypeIcon
           supportingText="Supporting text displayed below the title."
           title="Vertical Icon + Supporting"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 7}
@@ -735,9 +717,7 @@ export const ModalHeaderCombinations: StoryObj = {
           supportingTextAlign="center"
           title="Vertical Icon + Both Center"
           titleAlign="center"
-        >
-          {body}
-        </Modal>
+        />
 
         {/* Horizontal Icon */}
         <Modal
@@ -746,9 +726,7 @@ export const ModalHeaderCombinations: StoryObj = {
           showStatusTypeIcon
           statusTypeIconLayout="horizontal"
           title="Horizontal Icon"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 9}
@@ -756,47 +734,7 @@ export const ModalHeaderCombinations: StoryObj = {
           statusTypeIconLayout="horizontal"
           supportingText="Supporting text displayed below the title."
           title="Horizontal Icon + Supporting"
-        >
-          {body}
-        </Modal>
-      </>
-    );
-  },
-};
-
-export const ModalHeaderComprehensive: StoryObj = {
-  render: function Render() {
-    const [open, setOpen] = useState(false);
-    const onClose = useCallback(() => setOpen(false), []);
-
-    return (
-      <>
-        <Button onClick={() => setOpen(true)} variant="base-primary">
-          Comprehensive Header
-        </Button>
-        <Modal
-          modalType="standard"
-          cancelText="Cancel"
-          confirmText="Acknowledge"
-          onCancel={onClose}
-          onConfirm={onClose}
-          showStatusTypeIcon
-          statusTypeIconLayout="horizontal"
-          supportingText="This modal demonstrates all header features combined together"
-          supportingTextAlign="left"
-          title="Complete Header Example"
-          titleAlign="left"
-          modalStatusType="warning"
-          onClose={onClose}
-          open={open}
-          showModalFooter
-          showModalHeader
-        >
-          <>
-            This modal showcases all header features: status icon, horizontal
-            layout, centered title and supporting text.
-          </>
-        </Modal>
+        />
       </>
     );
   },
