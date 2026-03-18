@@ -80,8 +80,8 @@ yarn add luxon      # Alternative
 Create a `main.scss` file in your project:
 
 ```scss
-@use '~@mezzanine-ui/system' as mzn-system;
-@use '~@mezzanine-ui/core' as mzn-core;
+@use '@mezzanine-ui/system' as mzn-system;
+@use '@mezzanine-ui/core' as mzn-core;
 
 // Apply design system variables
 :root {
@@ -270,7 +270,7 @@ Mezzanine UI v2 uses a two-layer design token system:
 Override palette colors by passing a custom configuration:
 
 ```scss
-@use '~@mezzanine-ui/system' as mzn-system;
+@use '@mezzanine-ui/system' as mzn-system;
 
 $custom-palette: (
   background: (
@@ -300,8 +300,8 @@ $custom-palette: (
 Override typography settings:
 
 ```scss
-@use '~@mezzanine-ui/system' as mzn-system;
-@use '~@mezzanine-ui/system/typography' as typography;
+@use '@mezzanine-ui/system' as mzn-system;
+@use '@mezzanine-ui/system/typography' as typography;
 
 $custom-variables: (
   typography: (
@@ -325,7 +325,7 @@ $custom-variables: (
 Override spacing values:
 
 ```scss
-@use '~@mezzanine-ui/system' as mzn-system;
+@use '@mezzanine-ui/system' as mzn-system;
 
 $custom-variables: (
   spacing: (
@@ -356,10 +356,10 @@ $custom-variables: (
 ### In SCSS
 
 ```scss
-@use '~@mezzanine-ui/system/palette' as palette;
-@use '~@mezzanine-ui/system/spacing' as spacing;
-@use '~@mezzanine-ui/system/radius' as radius;
-@use '~@mezzanine-ui/system/typography' as typography;
+@use '@mezzanine-ui/system/palette' as palette;
+@use '@mezzanine-ui/system/spacing' as spacing;
+@use '@mezzanine-ui/system/radius' as radius;
+@use '@mezzanine-ui/system/typography' as typography;
 
 .my-component {
   // Colors - use semantic variables
