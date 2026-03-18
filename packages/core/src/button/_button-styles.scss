@@ -696,6 +696,22 @@ $size-configs: (
   @return null;
 }
 
+// 套用 loading 狀態的 Spin CSS 變數
+// --mzn-spin--color  : 動畫弧線色（對應 loading icon-color）
+// --mzn-spin--track-color : 靜態軌道色（對應 loading background-color，無背景則不設定，讓 Spin 使用 transparent fallback）
+@mixin _apply-loading-spin-colors($variant) {
+  $icon: _get-color($variant, loading, icon-color);
+  $bg: _get-color($variant, loading, background-color);
+
+  @if $icon {
+    --mzn-spin--color: #{$icon};
+  }
+
+  @if $bg {
+    --mzn-spin--track-color: #{$bg};
+  }
+}
+
 // 套用特定層級的顏色
 @mixin _apply-hierarchy-colors($variant, $hierarchy) {
   $text: _get-color($variant, $hierarchy, text-color);
@@ -752,6 +768,7 @@ $size-configs: (
   // Loading state
   &.#{$prefix}--loading {
     @include _apply-hierarchy-colors($variant, loading);
+    @include _apply-loading-spin-colors($variant);
   }
 }
 
