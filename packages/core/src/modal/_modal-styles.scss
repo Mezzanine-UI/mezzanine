@@ -319,7 +319,7 @@ $modalSizes: (
       align-items: baseline;
       padding-block-start: spacing.semantic-variable(padding, vertical, comfort);
 
-      .#{checkbox.$prefix}--main {
+      .#{checkbox.$prefix}.#{checkbox.$prefix}--main {
         padding-block: spacing.semantic-variable(padding, vertical, tight);
       }
     }
