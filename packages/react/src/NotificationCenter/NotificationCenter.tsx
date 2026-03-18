@@ -18,14 +18,12 @@ import {
 } from 'react';
 
 import { flip, offset } from '@floating-ui/react-dom';
-import {
-  DropdownOption,
-} from '@mezzanine-ui/core/dropdown/dropdown';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import {
   notificationClasses as classes,
   notificationIcons,
   NotificationSeverity,
-  NotificationType
+  NotificationType,
 } from '@mezzanine-ui/core/notification-center';
 import { CloseIcon, DotHorizontalIcon } from '@mezzanine-ui/icons';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
@@ -34,14 +32,12 @@ import Badge from '../Badge';
 import Button, { ButtonGroup, ButtonProps } from '../Button';
 import Dropdown from '../Dropdown';
 import Icon from '../Icon';
-import {
-  createNotifier,
-  Notifier,
-  NotifierConfig,
-  NotifierData,
-} from '../Notifier';
+import { createNotifier, NotifierConfig, NotifierData } from '../Notifier';
 import Popper from '../Popper';
-import Transition, { type SlideProps, type TransitionState } from '../Transition';
+import Transition, {
+  type SlideProps,
+  type TransitionState,
+} from '../Transition';
 import { reflow } from '../Transition/reflow';
 import { useSetNodeTransition } from '../Transition/useSetNodeTransition';
 import Typography from '../Typography';
@@ -50,15 +46,10 @@ import { cx } from '../utils/cx';
 
 export interface NotificationConfigProps
   extends Pick<NotifierConfig, 'duration'>,
-  Pick<
-    SlideProps,
-    | 'easing'
-    | 'from'
-    | 'onEnter'
-    | 'onEntered'
-    | 'onExit'
-    | 'onExited'
-  > {
+    Pick<
+      SlideProps,
+      'easing' | 'from' | 'onEnter' | 'onEntered' | 'onExit' | 'onExited'
+    > {
   /**
    * Callback function when "View All" button is clicked.
    * This will be called after closing all notifications.
@@ -73,7 +64,7 @@ export interface NotificationConfigProps
 
 export interface NotificationData
   extends NotifierData,
-  NotificationConfigProps {
+    NotificationConfigProps {
   /**
    * The tips to be appended to the notification.
    * Only displayed when the type is 'drawer'.
@@ -170,13 +161,23 @@ export interface NotificationData
   type?: NotificationType;
 }
 
-export interface NotificationCenter
-  extends FC<NotificationData>,
-  Notifier<NotificationData, NotificationConfigProps>,
-  Record<
-    NotificationSeverity,
-    (props?: Omit<NotificationData, 'severity'>) => Key
-  > { }
+/** Props accepted by NotificationCenter severity shorthand methods such as `NotificationCenter.success`. */
+export type NotificationCenterShorthandProps = Omit<
+  NotificationData,
+  'severity'
+>;
+
+/** Static severity shorthand methods attached to the {@link NotificationCenter} component. */
+export interface NotificationCenterSeverityMethods {
+  /** Display an error notification. */
+  error: (props?: NotificationCenterShorthandProps) => Key;
+  /** Display an informational notification. */
+  info: (props?: NotificationCenterShorthandProps) => Key;
+  /** Display a success notification. */
+  success: (props?: NotificationCenterShorthandProps) => Key;
+  /** Display a warning notification. */
+  warning: (props?: NotificationCenterShorthandProps) => Key;
+}
 
 const DEFAULT_MAX_VISIBLE_NOTIFICATIONS = 3;
 
@@ -205,16 +206,16 @@ function getNotificationSlideFadeStyle(
   const style: CSSProperties =
     state === 'exiting'
       ? {
-        opacity: 0,
-        transform: 'translate3d(0, 0, 0)',
-      }
+          opacity: 0,
+          transform: 'translate3d(0, 0, 0)',
+        }
       : {
-        opacity: 0,
-        transform: {
-          top: 'translate3d(0, -100%, 0)',
-          right: 'translate3d(100%, 0, 0)',
-        }[from],
-      };
+          opacity: 0,
+          transform: {
+            top: 'translate3d(0, -100%, 0)',
+            right: 'translate3d(100%, 0, 0)',
+          }[from],
+        };
 
   if (state === 'exited' && !inProp) {
     style.visibility = 'hidden';
@@ -262,8 +263,10 @@ const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
       .find((notification) => notification !== null);
 
     if (firstNotification) {
-      return firstNotification.props.maxVisibleNotifications
-        ?? DEFAULT_MAX_VISIBLE_NOTIFICATIONS;
+      return (
+        firstNotification.props.maxVisibleNotifications ??
+        DEFAULT_MAX_VISIBLE_NOTIFICATIONS
+      );
     }
 
     return DEFAULT_MAX_VISIBLE_NOTIFICATIONS;
@@ -303,35 +306,25 @@ const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
       {visibleItems}
-      {
-        hasOverflow
-          ? (
-            <div className={classes.viewAllButton}>
-              <Button
-                onClick={handleViewAll}
-                size="main"
-                variant="base-secondary"
-                className={classes.viewAllButtonText}
-              >
-                {viewAllButtonText}
-              </Button>
-            </div>
-          )
-          : null
-      }
+      {hasOverflow ? (
+        <div className={classes.viewAllButton}>
+          <Button
+            onClick={handleViewAll}
+            size="main"
+            variant="base-secondary"
+            className={classes.viewAllButtonText}
+          >
+            {viewAllButtonText}
+          </Button>
+        </div>
+      ) : null}
     </>
   );
 };
 
-/**
- * The react component for `mezzanine` notification center.
- *
- * Use the API from the NotificationCenter instance such as `NotificationCenter.success` and `NotificationCenter.error`
- * to display a notification globally.
- */
-
-const NotificationCenter: NotificationCenter = ((
-  props: PropsWithChildren<NotificationData> & { reference: Key },
+/** @internal Underlying React element rendered by the NotificationCenter notifier. */
+const NotificationCenterFC: FC<PropsWithChildren<NotificationData>> = (
+  props,
 ) => {
   const {
     type = 'notification',
@@ -364,12 +357,15 @@ const NotificationCenter: NotificationCenter = ((
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const [open, setOpen] = useState(true);
-  const [timeStampAnchor, setTimeStampAnchor] = useState<HTMLElement | null>(null);
+  const [timeStampAnchor, setTimeStampAnchor] = useState<HTMLElement | null>(
+    null,
+  );
   const timeStampRef = useRef<HTMLElement>(null);
   const notificationSlideFadeNodeRef = useRef<HTMLElement>(null);
 
   const slideFadeResolvedDuration = NOTIFICATION_SLIDE_FADE_DURATION;
-  const slideFadeEasing = restTransitionProps.easing ?? NOTIFICATION_SLIDE_FADE_EASING;
+  const slideFadeEasing =
+    restTransitionProps.easing ?? NOTIFICATION_SLIDE_FADE_EASING;
   const slideFadeDelay = 0;
 
   const [setSlideTransition, resetSlideTransition] = useSetNodeTransition(
@@ -390,7 +386,9 @@ const NotificationCenter: NotificationCenter = ((
     },
     undefined,
   );
-  const notificationSlideFadeComposedRef = useComposeRefs([notificationSlideFadeNodeRef]);
+  const notificationSlideFadeComposedRef = useComposeRefs([
+    notificationSlideFadeNodeRef,
+  ]);
 
   const isToday = useMemo(() => {
     try {
@@ -402,7 +400,11 @@ const NotificationCenter: NotificationCenter = ((
       }
 
       const now = new Date();
-      const nowStartOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const nowStartOfDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+      );
       const timestampStartOfDay = new Date(
         timestampDate.getFullYear(),
         timestampDate.getMonth(),
@@ -418,7 +420,8 @@ const NotificationCenter: NotificationCenter = ((
   const formattedTimeStamp = useMemo(() => {
     try {
       const timestampDate = new Date(timeStamp);
-      const timeStampText = typeof timeStamp === 'string' ? timeStamp : String(timeStamp);
+      const timeStampText =
+        typeof timeStamp === 'string' ? timeStamp : String(timeStamp);
 
       // Check if the time stamp is a valid date
       if (Number.isNaN(timestampDate.getTime())) {
@@ -427,7 +430,11 @@ const NotificationCenter: NotificationCenter = ((
 
       const now = Date.now();
       const nowDate = new Date(now);
-      const nowStartOfDay = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      const nowStartOfDay = new Date(
+        nowDate.getFullYear(),
+        nowDate.getMonth(),
+        nowDate.getDate(),
+      );
       const timestampStartOfDay = new Date(
         timestampDate.getFullYear(),
         timestampDate.getMonth(),
@@ -439,9 +446,14 @@ const NotificationCenter: NotificationCenter = ((
       if (isToday) {
         const diffInMs = timestampDate.getTime() - now;
         const diffInSeconds = Math.round(diffInMs / 1000);
-        const rtf = new Intl.RelativeTimeFormat(timeStampLocale, { numeric: 'always' });
+        const rtf = new Intl.RelativeTimeFormat(timeStampLocale, {
+          numeric: 'always',
+        });
 
-        const units: Array<{ unit: Intl.RelativeTimeFormatUnit; seconds: number }> = [
+        const units: Array<{
+          unit: Intl.RelativeTimeFormatUnit;
+          seconds: number;
+        }> = [
           { unit: 'hour', seconds: 3600 },
           { unit: 'minute', seconds: 60 },
         ];
@@ -456,7 +468,8 @@ const NotificationCenter: NotificationCenter = ((
         return 'now';
       }
 
-      const hasTimeComponent = /:\d{2}/.test(timeStampText) || timeStampText.includes('T');
+      const hasTimeComponent =
+        /:\d{2}/.test(timeStampText) || timeStampText.includes('T');
 
       if (hasTimeComponent) {
         const dateFormatter = new Intl.DateTimeFormat(timeStampLocale, {
@@ -506,25 +519,25 @@ const NotificationCenter: NotificationCenter = ((
   const onClose = () => {
     setOpen(false);
 
-    if (onCloseProp) {
+    if (onCloseProp && reference !== undefined) {
       onCloseProp(reference);
     }
   };
 
   const onConfirm = onConfirmProp
     ? () => {
-      setOpen(false);
+        setOpen(false);
 
-      onConfirmProp();
-    }
+        onConfirmProp();
+      }
     : undefined;
 
   const onCancel = onCancelProp
     ? () => {
-      setOpen(false);
+        setOpen(false);
 
-      onCancelProp();
-    }
+        onCancelProp();
+      }
     : undefined;
 
   const onExited: SlideProps['onExited'] = (node: HTMLElement) => {
@@ -532,14 +545,19 @@ const NotificationCenter: NotificationCenter = ((
       onExitedProp(node);
     }
 
-    NotificationCenter.remove(reference);
+    if (reference) {
+      NotificationCenter.remove(reference);
+    }
   };
 
-  const onSelect = useCallback((option: DropdownOption) => {
-    if (onBadgeSelectProp) {
-      onBadgeSelectProp(option);
-    }
-  }, [onBadgeSelectProp]);
+  const onSelect = useCallback(
+    (option: DropdownOption) => {
+      if (onBadgeSelectProp) {
+        onBadgeSelectProp(option);
+      }
+    },
+    [onBadgeSelectProp],
+  );
 
   const handleNotificationMouseEnter = () => {
     if (type === 'drawer' && isToday) {
@@ -558,8 +576,13 @@ const NotificationCenter: NotificationCenter = ((
   };
 
   const showConfirmButton = Boolean(confirmButtonText && onConfirmProp);
-  const showCancelButton = Boolean(cancelButtonText && (onCancelProp || onCloseProp));
-  const hideButtons = !(type === 'notification' && (showConfirmButton || showCancelButton));
+  const showCancelButton = Boolean(
+    cancelButtonText && (onCancelProp || onCloseProp),
+  );
+  const hideButtons = !(
+    type === 'notification' &&
+    (showConfirmButton || showCancelButton)
+  );
 
   const notificationContent = (
     <div
@@ -571,121 +594,107 @@ const NotificationCenter: NotificationCenter = ((
       onMouseEnter={handleNotificationMouseEnter}
       onMouseLeave={handleNotificationMouseLeave}
     >
-      {targetIcon
-        ? (
-          <div className={classes.iconContainer}>
-            <Icon icon={targetIcon} className={classes.severityIcon} size={32} />
-          </div>
-        )
-        : null
-      }
+      {targetIcon ? (
+        <div className={classes.iconContainer}>
+          <Icon icon={targetIcon} className={classes.severityIcon} size={32} />
+        </div>
+      ) : null}
       <div className={classes.body}>
         <div className={classes.bodyContent}>
           <h4 className={classes.title}>{title}</h4>
-          <Typography className={classes.content}>
-            {description}
-          </Typography>
+          <Typography className={classes.content}>{description}</Typography>
         </div>
         {!hideButtons && (
           <ButtonGroup className={classes.action}>
-            {showCancelButton
-              ? (
-                <Button
-                  onClick={onCancel || onClose}
-                  size="minor"
-                  variant="base-secondary"
-                  {...cancelButtonProps}
-                >
-                  {cancelButtonText}
-                </Button>
-              )
-              : <></>
-            }
-            {showConfirmButton
-              ? (
-                <Button
-                  onClick={onConfirm}
-                  size="minor"
-                  {...confirmButtonProps}
-                >
-                  {confirmButtonText}
-                </Button>
-              )
-              : <></>
-            }
+            {showCancelButton ? (
+              <Button
+                onClick={onCancel || onClose}
+                size="minor"
+                variant="base-secondary"
+                {...cancelButtonProps}
+              >
+                {cancelButtonText}
+              </Button>
+            ) : (
+              <></>
+            )}
+            {showConfirmButton ? (
+              <Button onClick={onConfirm} size="minor" {...confirmButtonProps}>
+                {confirmButtonText}
+              </Button>
+            ) : (
+              <></>
+            )}
           </ButtonGroup>
         )}
-        {
-          type === 'drawer' && (
-            <>
-              {isToday && (
-                <Popper
-                  anchor={timeStampAnchor}
-                  open={Boolean(timeStampAnchor)}
-                  arrow={{
-                    className: classes.timeStampPopperArrow,
-                    enabled: true,
-                    padding: 0,
-                  }}
-                  style={{
-                    zIndex: 'var(--mzn-z-index-popover)',
-                  }}
-                  options={{
-                    placement: 'bottom',
-                    middleware: [
-                      offset({ mainAxis: 8 }),
-                      flip(),
-                    ],
-                  }}
-                >
-                  <div className={classes.timeStampPopper}>
-                    <Typography className={classes.timeStampText}>
-                      {timeStamp}
-                    </Typography>
-                  </div>
-                </Popper>
-              )}
-              <Typography className={classes.timeStamp} ref={timeStampRef} variant="label-secondary">
-                {formattedTimeStamp}
-              </Typography>
-            </>
-          )
-        }
-      </div>
-      {
-        type === 'drawer'
-          ? (
-            <Dropdown
-              open={openDropdown}
-              onClose={() => setOpenDropdown(false)}
-              onVisibilityChange={(open) => setOpenDropdown(open)}
-              options={options ?? []}
-              onSelect={onSelect}
-              placement="bottom-end"
-              zIndex={'var(--mzn-z-index-popover)'}
+        {type === 'drawer' && (
+          <>
+            {isToday && (
+              <Popper
+                anchor={timeStampAnchor}
+                open={Boolean(timeStampAnchor)}
+                arrow={{
+                  className: classes.timeStampPopperArrow,
+                  enabled: true,
+                  padding: 0,
+                }}
+                style={{
+                  zIndex: 'var(--mzn-z-index-popover)',
+                }}
+                options={{
+                  placement: 'bottom',
+                  middleware: [offset({ mainAxis: 8 }), flip()],
+                }}
+              >
+                <div className={classes.timeStampPopper}>
+                  <Typography className={classes.timeStampText}>
+                    {timeStamp}
+                  </Typography>
+                </div>
+              </Popper>
+            )}
+            <Typography
+              className={classes.timeStamp}
+              ref={timeStampRef}
+              variant="label-secondary"
             >
-              <Button variant="base-ghost" onClick={onClose} className={classes.dotIconButton}>
-                {
-                  showBadge && <Badge variant="dot-error" />
-                }
-                <Icon
-                  icon={DotHorizontalIcon}
-                  className={classes.closeIcon}
-                  size={16}
-                  onClick={onBadgeClick}
-                />
-              </Button>
-            </Dropdown>
-          )
-          : (
+              {formattedTimeStamp}
+            </Typography>
+          </>
+        )}
+      </div>
+      {type === 'drawer' ? (
+        <Dropdown
+          open={openDropdown}
+          onClose={() => setOpenDropdown(false)}
+          onVisibilityChange={(open) => setOpenDropdown(open)}
+          options={options ?? []}
+          onSelect={onSelect}
+          placement="bottom-end"
+          zIndex={'var(--mzn-z-index-popover)'}
+        >
+          <Button
+            variant="base-ghost"
+            onClick={onClose}
+            className={classes.dotIconButton}
+          >
+            {showBadge && <Badge variant="dot-error" />}
             <Icon
-              icon={CloseIcon}
+              icon={DotHorizontalIcon}
               className={classes.closeIcon}
               size={16}
-              onClick={onClose}
+              onClick={onBadgeClick}
             />
-          )
-      }
+          </Button>
+        </Dropdown>
+      ) : (
+        <Icon
+          icon={CloseIcon}
+          className={classes.closeIcon}
+          size={16}
+          onClick={onClose}
+        />
+      )}
     </div>
   );
 
@@ -722,35 +731,36 @@ const NotificationCenter: NotificationCenter = ((
               ...getNotificationSlideFadeStyle(state, open, from),
               ...notificationContent.props.style,
             },
-          })}
+          })
+        }
       </Transition>
     );
   }
 
   return (
     <>
-      {prependTips && <Typography className={classes.prependTips}>{prependTips}</Typography>}
+      {prependTips && (
+        <Typography className={classes.prependTips}>{prependTips}</Typography>
+      )}
       {notificationContent}
-      {appendTips && <Typography className={classes.appendTips}>{appendTips}</Typography>}
+      {appendTips && (
+        <Typography className={classes.appendTips}>{appendTips}</Typography>
+      )}
     </>
   );
-}) as NotificationCenter;
+};
 
-const { add: addNotifier, config, destroy, remove } = createNotifier<
-  NotificationData,
-  NotificationConfigProps
->({
+const {
+  add: addNotifier,
+  config,
+  destroy,
+  remove,
+} = createNotifier<NotificationData, NotificationConfigProps>({
   duration: false,
   render: (notif) => {
     const { key, ...restNotif } = notif;
 
-    return (
-      <NotificationCenter
-        key={key}
-        {...restNotif}
-        reference={key}
-      />
-    );
+    return <NotificationCenterFC key={key} {...restNotif} reference={key} />;
   },
   renderContainer: (children) => (
     <NotificationCenterContainer>{children}</NotificationCenterContainer>
@@ -760,23 +770,48 @@ const { add: addNotifier, config, destroy, remove } = createNotifier<
   },
 });
 
-NotificationCenter.add = (notif) => {
-  if (notif.type === 'drawer') {
-    return 'NOT_SET';
-  }
-  return addNotifier(notif);
-};
-NotificationCenter.config = config;
-NotificationCenter.destroy = destroy;
-NotificationCenter.remove = remove;
+/**
+ * The react component for `mezzanine` notification center.
+ *
+ * Trigger notifications imperatively via severity shorthand methods or `add`:
+ *
+ * @example
+ * ```tsx
+ * import NotificationCenter from '@mezzanine-ui/react/notification-center';
+ *
+ * NotificationCenter.success({ title: 'Saved!', description: 'Your changes have been saved.' });
+ * NotificationCenter.error({ title: 'Error', description: 'Something went wrong.' });
+ *
+ * // Dismiss programmatically
+ * const key = NotificationCenter.add({ severity: 'info', title: 'Processing…', type: 'notification' });
+ * NotificationCenter.remove(key);
+ * ```
+ *
+ * @see {@link NotificationData} for all available notification options.
+ * @see {@link NotificationCenterDrawer} for the drawer list variant.
+ */
+const NotificationCenter = Object.assign(NotificationCenterFC, {
+  add: (notif: NotificationData & { key?: Key }) => {
+    if (notif.type === 'drawer') {
+      return 'NOT_SET' as Key;
+    }
 
-(['success', 'warning', 'error', 'info'] as const).forEach((severity) => {
-  NotificationCenter[severity] = (props) =>
-    NotificationCenter.add({
-      ...props,
-      severity: severity || 'info',
-      type: 'notification',
-    });
+    return addNotifier(notif);
+  },
+  config,
+  destroy,
+  remove,
+  error: (props?: NotificationCenterShorthandProps) =>
+    addNotifier({ ...props, severity: 'error', type: 'notification' }),
+  info: (props?: NotificationCenterShorthandProps) =>
+    addNotifier({ ...props, severity: 'info', type: 'notification' }),
+  success: (props?: NotificationCenterShorthandProps) =>
+    addNotifier({ ...props, severity: 'success', type: 'notification' }),
+  warning: (props?: NotificationCenterShorthandProps) =>
+    addNotifier({ ...props, severity: 'warning', type: 'notification' }),
 });
+
+/** Full type of the {@link NotificationCenter} component including all static notification API methods. */
+export type NotificationCenterType = typeof NotificationCenter;
 
 export default NotificationCenter;

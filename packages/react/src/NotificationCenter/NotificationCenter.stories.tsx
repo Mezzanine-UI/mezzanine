@@ -13,9 +13,9 @@ import NotificationCenterDrawer, {
 export default {
   title: 'Feedback/Notification Center',
   component: NotificationCenter,
-} satisfies Meta<typeof NotificationCenter>;
+} satisfies Meta<NotificationData>;
 
-type Story = StoryObj<NotificationData & { reference?: string }>;
+type Story = StoryObj<NotificationData>;
 
 const severities: NotificationSeverity[] = [
   'success',
@@ -70,8 +70,8 @@ export const Playground: Story = {
     function PlaygroundNotification() {
       const reference = useMemo(() => `notification-playground`, []);
 
-      const onConfirm = () => { };
-      const onCancel = () => { };
+      const onConfirm = () => {};
+      const onCancel = () => {};
 
       return (
         <NotificationCenter
@@ -130,7 +130,7 @@ function AddMethodExample() {
     NotificationDataForDrawer[]
   >([]);
 
-  const handleBadgeSelect = (_: DropdownOption) => { };
+  const handleBadgeSelect = (_: DropdownOption) => {};
   const handleViewAll = () => {
     setDrawerOpen(true);
   };
@@ -309,8 +309,8 @@ function AddMethodExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => { }}
-        controlBarOnRadioChange={() => { }}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -330,7 +330,7 @@ type DrawerStory = StoryObj<NotificationCenterDrawerProps>;
 function DrawerWithChildrenExample() {
   const [open, setOpen] = useState(false);
 
-  const handleBadgeSelect = (_: DropdownOption) => { };
+  const handleBadgeSelect = (_: DropdownOption) => {};
 
   return (
     <div>
@@ -341,8 +341,8 @@ function DrawerWithChildrenExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => { }}
-        controlBarOnRadioChange={() => { }}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -421,7 +421,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '系統已完成更新，您現在可以使用最新版本功能。',
         key: '1',
-        onBadgeSelect: (_: DropdownOption) => { },
+        onBadgeSelect: (_: DropdownOption) => {},
         options: defaultBadgeOptions,
         severity: 'info' as NotificationSeverity,
         showBadge: true,
@@ -432,7 +432,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '您的登入地點異常，請確認是否為本人操作。',
         key: '2',
-        onBadgeSelect: (_: DropdownOption) => { },
+        onBadgeSelect: (_: DropdownOption) => {},
         options: defaultBadgeOptions,
         severity: 'warning' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -442,7 +442,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '您的檔案「月報表.pdf」已成功上傳，可前往資料庫查看結果。',
         key: '3',
-        onBadgeSelect: (_: DropdownOption) => { },
+        onBadgeSelect: (_: DropdownOption) => {},
         options: defaultBadgeOptions,
         severity: 'success' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -452,7 +452,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '您的檔案「月報表.pdf」上傳失敗，請重新上傳。',
         key: '4',
-        onBadgeSelect: (_: DropdownOption) => { },
+        onBadgeSelect: (_: DropdownOption) => {},
         options: defaultBadgeOptions,
         severity: 'error' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -463,7 +463,7 @@ function DrawerWithNotificationListExample() {
         description:
           '後端資料庫已完成更新，若您在操作中遇到延遲，屬正常現象，稍後即會改善。',
         key: '5',
-        onBadgeSelect: (_: DropdownOption) => { },
+        onBadgeSelect: (_: DropdownOption) => {},
         options: defaultBadgeOptions,
         severity: 'info' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -488,8 +488,8 @@ function DrawerWithNotificationListExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => { }}
-        controlBarOnRadioChange={() => { }}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -521,8 +521,8 @@ function DrawerEmptyExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => { }}
-        controlBarOnRadioChange={() => { }}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -546,7 +546,7 @@ function DrawerTimeStampExample() {
 
     const today30minAgo = new Date(now);
     today30minAgo.setMinutes(now.getMinutes() - 30);
-    const handleBadgeSelect = (_: DropdownOption) => { };
+    const handleBadgeSelect = (_: DropdownOption) => {};
 
     notifications.push({
       description: '這是30分鐘前的通知，應該顯示「30 分鐘前」',
@@ -704,8 +704,8 @@ function DrawerTimeStampExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => { }}
-        controlBarOnRadioChange={() => { }}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -728,7 +728,7 @@ function DrawerWithRenderControlBarExample() {
       {
         description: '系統已完成更新，您現在可以使用最新版本功能。',
         key: '1',
-        onBadgeSelect: (_: DropdownOption) => { },
+        onBadgeSelect: (_: DropdownOption) => {},
         options: defaultBadgeOptions,
         severity: 'info' as NotificationSeverity,
         showBadge: true,
@@ -739,7 +739,7 @@ function DrawerWithRenderControlBarExample() {
       {
         description: '您的登入地點異常，請確認是否為本人操作。',
         key: '2',
-        onBadgeSelect: (_: DropdownOption) => { },
+        onBadgeSelect: (_: DropdownOption) => {},
         options: defaultBadgeOptions,
         severity: 'warning' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -773,7 +773,7 @@ function DrawerWithRenderControlBarExample() {
             <Typography variant="caption">自訂工具列</Typography>
             <div style={{ display: 'flex', gap: '8px' }}>
               <Button
-                onClick={() => { }}
+                onClick={() => {}}
                 size="minor"
                 type="button"
                 variant="base-secondary"
@@ -781,7 +781,7 @@ function DrawerWithRenderControlBarExample() {
                 標示全部已讀
               </Button>
               <Button
-                onClick={() => { }}
+                onClick={() => {}}
                 size="minor"
                 type="button"
                 variant="base-ghost"
