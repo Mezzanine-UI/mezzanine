@@ -18,13 +18,40 @@ npm install @mezzanine-ui/react @mezzanine-ui/core @mezzanine-ui/icons @mezzanin
 
 ## Quick Start
 
-Import the component styles from `@mezzanine-ui/core`, then use components from this package:
+### 1. Setup Styles
+
+Create a `main.scss` and import it at your app entry point:
+
+```scss
+@use '~@mezzanine-ui/system' as mzn-system;
+@use '~@mezzanine-ui/core' as mzn-core;
+
+:root {
+  @include mzn-system.palette-variables(light);
+  @include mzn-system.common-variables(default);
+}
+
+/* Optional: dark mode */
+[data-theme='dark'] {
+  @include mzn-system.palette-variables(dark);
+}
+
+/* Optional: compact density */
+[data-density='compact'] {
+  @include mzn-system.common-variables(compact);
+}
+
+@include mzn-core.styles();
+```
 
 ```tsx
-// Import component styles (e.g. in your app entry or global stylesheet)
-import '@mezzanine-ui/core/button/styles';
+// app entry (e.g. main.tsx / _app.tsx)
+import './main.scss';
+```
 
-// Use the component
+### 2. Use Components
+
+```tsx
 import Button from '@mezzanine-ui/react/Button';
 
 function App() {
