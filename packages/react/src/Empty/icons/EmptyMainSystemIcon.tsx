@@ -31,8 +31,8 @@ export const EmptyMainSystemIcon = forwardRef<
           y1="22.9988"
           y2="62.6527"
         >
-          <stop stopColor="#E5E7EB" />
-          <stop offset="1" stopColor="#9DA4AE" />
+          <stop stopColor="var(--mzn-color-background-neutral-subtle)" />
+          <stop offset="1" stopColor="var(--mzn-color-background-neutral)" />
         </linearGradient>
         <linearGradient
           gradientUnits="userSpaceOnUse"
@@ -42,8 +42,8 @@ export const EmptyMainSystemIcon = forwardRef<
           y1="0.845703"
           y2="32.8715"
         >
-          <stop stopColor="#E5E7EB" />
-          <stop offset="1" stopColor="#9DA4AE" />
+          <stop stopColor="var(--mzn-color-background-neutral-subtle)" />
+          <stop offset="1" stopColor="var(--mzn-color-background-neutral)" />
         </linearGradient>
       </defs>
       <path
