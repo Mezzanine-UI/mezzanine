@@ -1099,3 +1099,40 @@ export const VerificationCodeInput: StoryObj = {
     );
   },
 };
+
+export const SaveSuccessWithCheckbox: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [checked, setChecked] = useState(false);
+    const onClose = useCallback(() => setOpen(false), []);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          open
+        </Button>
+        <Modal
+          auxiliaryContentChecked={checked}
+          auxiliaryContentLabel="不再顯示此訊息"
+          auxiliaryContentOnChange={setChecked}
+          auxiliaryContentType="checkbox"
+          cancelText="繼續編輯"
+          confirmText="返回列表"
+          modalStatusType="success"
+          modalType="standard"
+          onCancel={onClose}
+          onClose={onClose}
+          onConfirm={onClose}
+          open={open}
+          showDismissButton
+          showModalFooter
+          showModalHeader
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
+          supportingText="變更已成功儲存，您可以繼續編輯或返回列表頁面。"
+          title="儲存完成"
+        />
+      </>
+    );
+  },
+};
