@@ -477,6 +477,7 @@ export const DeleteTransition = () => {
                   {item.title}
                   <AccordionActions>
                     <Button
+                      aria-label="Delete accordion item"
                       color="danger"
                       icon={TrashIcon}
                       iconType="icon-only"
