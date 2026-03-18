@@ -78,6 +78,32 @@ describe('<Accordion />', () => {
   });
 
   describe('disabled', () => {
+    it('should apply hostDisabled class when disabled', () => {
+      const { getHostHTMLElement } = render(
+        <Accordion disabled>
+          <AccordionTitle id="accordion-1">foo</AccordionTitle>
+          <AccordionContent>bar</AccordionContent>
+        </Accordion>,
+      );
+
+      const host = getHostHTMLElement();
+
+      expect(host.classList.contains(accordionClasses.hostDisabled)).toBe(true);
+    });
+
+    it('should not apply hostDisabled class when not disabled', () => {
+      const { getHostHTMLElement } = render(
+        <Accordion>
+          <AccordionTitle id="accordion-1">foo</AccordionTitle>
+          <AccordionContent>bar</AccordionContent>
+        </Accordion>,
+      );
+
+      const host = getHostHTMLElement();
+
+      expect(host.classList.contains(accordionClasses.hostDisabled)).toBe(false);
+    });
+
     it('should not toggle when disabled', async () => {
       const { getHostHTMLElement } = render(
         <Accordion disabled defaultExpanded>

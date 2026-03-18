@@ -8,7 +8,7 @@
 @use './accordion' as *;
 
 .#{$prefix} {
-  background-color: palette.semantic-variable('background', neutral-faint);
+  background-color: palette.semantic-variable('background', neutral-ghost);
   border-radius: radius.variable(base);
   display: grid;
   outline: 1px solid palette.semantic-variable('border', neutral-faint);
@@ -48,6 +48,10 @@
         spacing.semantic-variable(padding, horizontal, spacious)
         spacing.semantic-variable(padding, vertical, base);
     }
+  }
+
+  &--disabled {
+    background-color: palette.semantic-variable('background', neutral-subtle);
   }
 
   &:has(.#{$prefix}__title__mainPart:focus-visible) {
@@ -114,12 +118,17 @@
 }
 
 .#{$prefix}__content {
-  width: 100%;
-  height: auto;
-  min-height: 0;
   border-bottom: 0;
   box-sizing: border-box;
+  color: palette.semantic-variable(text, neutral-strong);
+  display: grid;
+  height: auto;
+  max-width: spacing.semantic-variable(size, container, broad);
+  min-height: 0;
   transition: transition.standard(opacity, fast);
+  width: 100%;
+
+  @include typography.semantic-variable(body);
 }
 
 .#{$groupPrefix} {

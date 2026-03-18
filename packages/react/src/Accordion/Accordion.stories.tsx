@@ -1,5 +1,5 @@
 import { useState, MouseEvent } from 'react';
-import { DotVerticalIcon } from '@mezzanine-ui/icons';
+import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import Accordion, { AccordionTitle, AccordionContent } from '.';
 import Button from '../Button';
 import Dropdown from '../Dropdown';
@@ -141,7 +141,7 @@ export const WithActions = () => {
         placement="bottom-end"
       >
         <Button
-          icon={DotVerticalIcon}
+          icon={DotHorizontalIcon}
           iconType="icon-only"
           onClick={(event: MouseEvent<HTMLButtonElement>) => {
             event.stopPropagation();
@@ -149,8 +149,8 @@ export const WithActions = () => {
               anchor === event.currentTarget ? null : event.currentTarget,
             );
           }}
-          size="minor"
-          variant="base-secondary"
+          size="sub"
+          variant="base-text-link"
         />
       </Dropdown>
     ),
@@ -184,6 +184,7 @@ export const WithActions = () => {
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
             <AutoComplete
+              fullWidth
               options={[
                 { id: 'electronics', name: '電子產品' },
                 { id: 'clothing', name: '服飾配件' },
@@ -192,6 +193,7 @@ export const WithActions = () => {
               placeholder="選擇產品分類"
             />
             <AutoComplete
+              fullWidth
               options={[
                 { id: 'on-sale', name: '上架中' },
                 { id: 'off-shelf', name: '已下架' },

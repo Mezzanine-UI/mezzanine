@@ -227,6 +227,8 @@ export type {
 } from './Pagination';
 export { default as Section } from './Section';
 export type { SectionProps } from './Section';
+export { SectionGroup } from './Section';
+export type { SectionGroupProps } from './Section';
 export {
   default as Table,
   TableContext,

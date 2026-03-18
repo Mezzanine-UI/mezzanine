@@ -1,6 +1,7 @@
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/spacing' as spacing;
+@use '../tab/tab' as tab;
 @use './section' as *;
 
 .#{$prefix} {
@@ -17,5 +18,24 @@
 
   &__content {
     min-height: spacing.semantic-variable(size, container, small);
+  }
+
+  > .#{tab.$prefix}--horizontal.#{tab.$prefix}--main {
+    padding: 0;
+  }
+}
+
+.#{$group-prefix} {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, calm);
+
+  &--horizontal {
+    flex-direction: row;
+
+    > * {
+      flex: 1 1 0;
+      min-width: 0;
+    }
   }
 }
