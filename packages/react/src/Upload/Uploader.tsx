@@ -16,6 +16,7 @@ import {
 import {
   uploaderClasses as classes,
   type UploaderHintType,
+  type UploaderMode,
   type UploadPictureControl,
   type UploadType
 } from '@mezzanine-ui/core/upload';
@@ -78,7 +79,7 @@ export interface UploaderLabel {
    */
   error?: string;
   /**
-   * Label text for "Click to upload" when isFillWidth is true.
+   * Label text for "Click to upload" in `mode="dropzone"`.
    * @default 'Click to upload'
    */
   clickToUpload?: string;
@@ -127,19 +128,26 @@ export interface UploaderProps
    */
   accept?: string;
   /**
+   * Provide `controllerRef` if you need detail data of file.
+   */
+  controllerRef?: Ref<UploadPictureControl | null>;
+  /**
    * Whether the input is disabled.
    * @default false
    */
   disabled?: boolean;
   /**
+   * Array of hints to display with the upload component.
+   */
+  hints?: UploaderHint[];
+  /**
+   * Icon configuration for different actions and states.
+   */
+  icon?: UploaderIcon;
+  /**
    * The id of input element.
    */
   id?: string;
-  /**
-   * Whether to fill the width of the container.
-   * @default false
-   */
-  isFillWidth?: boolean;
   /**
    * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
    * If you need direct control to the input element, use this prop to provide to it.
@@ -150,36 +158,24 @@ export interface UploaderProps
    */
   inputRef?: React.Ref<HTMLInputElement>;
   /**
+   * Label configuration for different states.
+   */
+  label?: UploaderLabel;
+  /**
    * The name attribute of the input element.
    */
   name?: string;
+  /**
+   * The mode for upload component.
+   * @default 'basic'
+   * @example 'basic' | 'dropzone'
+   */
+  mode?: UploaderMode;
   /**
    * Whether can select multiple files to upload.
    * @default false
    */
   multiple?: boolean;
-  /**
-   * The type for upload component.
-   * @default 'base'
-   * @example 'base' | 'button'
-   */
-  type?: UploadType;
-  /**
-   * Array of hints to display with the upload component.
-   */
-  hints?: UploaderHint[];
-  /**
-   * Label configuration for different states.
-   */
-  label?: UploaderLabel;
-  /**
-   * Icon configuration for different actions and states.
-   */
-  icon?: UploaderIcon;
-  /**
-   * Provide `controllerRef` if you need detail data of file.
-   */
-  controllerRef?: Ref<UploadPictureControl | null>;
   /**
    * Invoked by input change event.
    */
@@ -189,9 +185,11 @@ export interface UploaderProps
    */
   onUpload?: (files: File[]) => void;
   /**
-   * Fired after user deletes file.
+   * The type for upload component.
+   * @default 'base'
+   * @example 'base' | 'button'
    */
-  onDelete?: () => void;
+  type?: UploadType;
 }
 
 /**
@@ -204,21 +202,20 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
   const {
     accept,
     className,
+    controllerRef: _controllerRef,
     disabled = false,
     id,
+    hints,
+    icon: iconConfig,
     inputProps,
     inputRef: inputRefProp,
-    isFillWidth = false,
+    label: labelConfig,
+    mode = 'basic',
     multiple = false,
     name,
-    type,
-    hints,
-    label: labelConfig,
-    icon: iconConfig,
-    controllerRef: _controllerRef,
     onChange: onChangeProp,
     onUpload,
-    onDelete: _onDelete,
+    type,
     ...rest
   } = props;
 
@@ -241,6 +238,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
   );
 
   const resolvedName = name ?? nameFromInputProps ?? finalInputId;
+  const isDropzone = mode === 'dropzone';
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (onChangeProp) {
@@ -341,7 +339,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
 
   const uploadLabel = labelConfig?.uploadLabel
     ? labelConfig?.uploadLabel
-    : isFillWidth
+    : isDropzone
       ? 'Drag the file here or'
       : 'Upload';
   const clickToUploadLabel = labelConfig?.clickToUpload ?? 'Click to upload';
@@ -360,7 +358,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
       className={cx(
         classes.host,
         type && classes.type(type),
-        type !== 'button' && isFillWidth && classes.fillWidth,
+        type !== 'button' && isDropzone && classes.fillWidth,
         isDragging && classes.dragging,
         type !== 'button' && disabled && classes.disabled,
         className,
@@ -375,7 +373,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
       <>
         {
           type === 'base'
-          && isFillWidth
+          && isDropzone
           && <div className={classes.uploadContent}>
             {uploadIcon}
             <Typography className={classes.uploadLabel}>
@@ -395,7 +393,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
         }
         {
           type === 'base'
-          && !isFillWidth
+          && !isDropzone
           && <div className={classes.uploadContent}>
             {uploadIcon}
             <Typography className={classes.uploadLabel}>

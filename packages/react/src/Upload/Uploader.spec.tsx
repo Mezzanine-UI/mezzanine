@@ -48,15 +48,15 @@ describe('<Uploader />', () => {
     });
   });
 
-  describe('prop: isFillWidth', () => {
-    it('應該添加 fillWidth class', () => {
-      const { getHostHTMLElement } = render(<Uploader isFillWidth />);
+  describe('prop: mode', () => {
+    it('mode="dropzone" 應該添加 fillWidth class', () => {
+      const { getHostHTMLElement } = render(<Uploader mode="dropzone" />);
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-uploader--fill-width')).toBeTruthy();
     });
 
-    it('預設不應該添加 fillWidth class', () => {
+    it('預設 mode="basic" 不應該添加 fillWidth class', () => {
       const { getHostHTMLElement } = render(<Uploader />);
       const element = getHostHTMLElement();
 
@@ -355,8 +355,8 @@ describe('<Uploader />', () => {
       }
     });
 
-    it('應該在 isFillWidth 時顯示預設標籤', () => {
-      const { container } = render(<Uploader type="base" isFillWidth />);
+    it('應該在 mode="dropzone" 時顯示預設標籤', () => {
+      const { container } = render(<Uploader type="base" mode="dropzone" />);
       const label = container.querySelector('.mzn-uploader__upload-label');
 
       expect(label).toBeTruthy();
@@ -368,8 +368,8 @@ describe('<Uploader />', () => {
     it('應該使用自定義 clickToUpload 標籤', () => {
       const { container } = render(
         <Uploader
+          mode="dropzone"
           type="base"
-          isFillWidth
           label={{ clickToUpload: '點擊上傳' }}
         />,
       );
@@ -382,7 +382,7 @@ describe('<Uploader />', () => {
     });
 
     it('預設 clickToUpload 應該是 "Click to upload"', () => {
-      const { container } = render(<Uploader type="base" isFillWidth />);
+      const { container } = render(<Uploader type="base" mode="dropzone" />);
       const clickToUpload = container.querySelector('.mzn-uploader__click-to-upload');
 
       expect(clickToUpload).toBeTruthy();
@@ -412,13 +412,15 @@ describe('<Uploader />', () => {
   });
 
   describe('prop: hints', () => {
-    it('應該在 isFillWidth 時顯示 hints', () => {
+    it('應該在 mode="dropzone" 時顯示 hints', () => {
       const hints = [
         { label: '提示 1', type: 'info' as const },
         { label: '提示 2', type: 'error' as const },
       ];
 
-      const { container } = render(<Uploader type="base" isFillWidth hints={hints} />);
+      const { container } = render(
+        <Uploader type="base" mode="dropzone" hints={hints} />,
+      );
       const hintsElements = container.querySelectorAll('.mzn-uploader__fill-width-hints');
 
       expect(hintsElements.length).toBe(2);

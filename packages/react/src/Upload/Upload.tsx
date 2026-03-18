@@ -25,10 +25,10 @@ import { DangerousFilledIcon, InfoFilledIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { isImageFile } from './upload-utils';
 import type { UploaderProps } from './Uploader';
 import Uploader from './Uploader';
 import UploadItem from './UploadItem';
-import { isImageFile } from './upload-utils';
 import UploadPictureCard from './UploadPictureCard';
 
 export interface UploadFile {
@@ -108,11 +108,6 @@ export interface UploadProps
    * The react ref passed to input element.
    */
   inputRef?: UploaderProps['inputRef'];
-  /**
-   * Whether to fill the width of the container.
-   * @default false
-   */
-  isFillWidth?: boolean;
   /**
    * Maximum number of files allowed to upload.
    * If exceeded, the excess files will be ignored.
@@ -438,10 +433,10 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
               const nextFiles = filesRef.current.map((file) =>
                 tempFiles.some((tf) => tf.id === file.id)
                   ? {
-                      ...file,
-                      status: 'done' as UploadItemStatus,
-                      progress: 100,
-                    }
+                    ...file,
+                    status: 'done' as UploadItemStatus,
+                    progress: 100,
+                  }
                   : file,
               );
 
@@ -565,19 +560,19 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const uploaderConfig = useMemo(() => {
       const config: Record<UploadMode, UploaderProps> = {
         list: {
-          isFillWidth: true,
+          mode: 'dropzone',
           type: 'base',
         },
         'button-list': {
           type: 'button',
         },
         cards: {
+          mode: 'basic',
           type: 'base',
-          isFillWidth: false,
         },
         'card-wall': {
+          mode: 'basic',
           type: 'base',
-          isFillWidth: false,
         },
       };
 
@@ -587,7 +582,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const topUploaderConfig = useMemo(() => {
       if (mode === 'card-wall') {
         return {
-          isFillWidth: true,
+          mode: 'dropzone' as const,
           type: 'base' as const,
         };
       }
@@ -676,6 +671,9 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
       />
     ) : null;
 
+    // When a top uploader exists (card-wall mode), the inline card uploader is not needed.
+    const inlineCardUploaderElement = topUploaderElement ? null : uploaderElement;
+
     const hintsElement = useMemo(() => {
       if (
         !hints ||
@@ -756,10 +754,10 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
                   })}
                 />
               ))}
-              {!isSingleFileCardMode && uploaderElement}
+              {!isSingleFileCardMode && inlineCardUploaderElement}
               {isSingleFileCardMode &&
                 imageFiles.length === 0 &&
-                uploaderElement}
+                inlineCardUploaderElement}
               {isSingleFileCardMode && (
                 <input
                   ref={replaceInputRef}
