@@ -110,16 +110,6 @@ interface CommonModalProps
    */
   modalStatusType?: ModalStatusType;
   /**
-   * Text content of the cancel button.
-   * Required when cancel button is shown (showCancelButton is true or not provided).
-   */
-  cancelText?: ReactNode;
-  /**
-   * Whether to show the cancel button.
-   * @default true
-   */
-  showCancelButton?: boolean;
-  /**
    * Controls whether or not to show dismiss button at top-end.
    * @default true
    */
@@ -259,6 +249,14 @@ type ModalFooterPropsWithoutFooter = {
    * Cannot be provided when showModalFooter is false.
    */
   confirmText?: never;
+  /**
+   * 此模式下不適用。
+   */
+  cancelText?: never;
+  /**
+   * 此模式下不適用。
+   */
+  showCancelButton?: never;
 };
 
 export type ModalProps = BaseModalProps &

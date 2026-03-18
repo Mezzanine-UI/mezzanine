@@ -197,7 +197,6 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       auxiliaryContentOnChange: () => {},
       auxiliaryContentOnClick: () => {},
       auxiliaryContentType,
-      ...cancelProps,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
       fullScreen,
@@ -285,6 +284,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             <Modal
               {...baseProps}
               {...layoutProps}
+              {...cancelProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
@@ -330,6 +330,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
+              {...cancelProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
@@ -367,6 +368,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           <Modal
             {...baseProps}
             {...layoutProps}
+            {...cancelProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showStatusTypeIcon={showStatusTypeIcon}
@@ -410,6 +412,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
+            {...cancelProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showModalFooter
