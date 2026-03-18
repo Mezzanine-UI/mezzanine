@@ -20,7 +20,7 @@ import {
   type UploadPictureControl,
   type UploadType
 } from '@mezzanine-ui/core/upload';
-import { type IconDefinition, UploadIcon as UploadIconIcon } from '@mezzanine-ui/icons';
+import { DangerousFilledIcon, InfoFilledIcon, type IconDefinition, UploadIcon as UploadIconIcon } from '@mezzanine-ui/icons';
 
 import Button from '../Button';
 import Icon from '../Icon';
@@ -137,6 +137,10 @@ export interface UploaderProps
    */
   disabled?: boolean;
   /**
+   * Array of hints to display outside the uploader (below the label element).
+   */
+  externalHints?: UploaderHint[];
+  /**
    * Array of hints to display with the upload component.
    */
   hints?: UploaderHint[];
@@ -204,6 +208,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
     className,
     controllerRef: _controllerRef,
     disabled = false,
+    externalHints,
     id,
     hints,
     icon: iconConfig,
@@ -354,79 +359,95 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
   };
 
   return (
-    <label
-      className={cx(
-        classes.host,
-        type && classes.type(type),
-        type !== 'button' && isDropzone && classes.fillWidth,
-        isDragging && classes.dragging,
-        type !== 'button' && disabled && classes.disabled,
-        className,
-      )}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      ref={ref}
-      {...rest}
-    >
-      <>
-        {
-          type === 'base'
-          && isDropzone
-          && <div className={classes.uploadContent}>
-            {uploadIcon}
-            <Typography className={classes.uploadLabel}>
-              {uploadLabel && <>{uploadLabel}{' '}</>}
-              <span className={classes.clickToUpload}>
-                {clickToUploadLabel}
-              </span>
-            </Typography>
-            {
-              hints?.map((hint, index) => (
-                <Typography key={index} className={classes.fillWidthHints}>
-                  {hint.label}
-                </Typography>
-              ))
-            }
-          </div>
-        }
-        {
-          type === 'base'
-          && !isDropzone
-          && <div className={classes.uploadContent}>
-            {uploadIcon}
-            <Typography className={classes.uploadLabel}>
-              {uploadLabel}
-            </Typography>
-          </div>
-        }
-        {
-          type === 'button'
-          && (
-            <Button disabled={disabled} onClick={handleClickToUpload}>
+    <>
+      <label
+        className={cx(
+          classes.host,
+          type && classes.type(type),
+          type !== 'button' && isDropzone && classes.fillWidth,
+          isDragging && classes.dragging,
+          type !== 'button' && disabled && classes.disabled,
+          className,
+        )}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        ref={ref}
+        {...rest}
+      >
+        <>
+          {
+            type === 'base'
+            && isDropzone
+            && <div className={classes.uploadContent}>
               {uploadIcon}
-              <Typography>
+              <Typography className={classes.uploadLabel}>
+                {uploadLabel && <>{uploadLabel}{' '}</>}
+                <span className={classes.clickToUpload}>
+                  {clickToUploadLabel}
+                </span>
+              </Typography>
+              {
+                hints?.map((hint, index) => (
+                  <Typography key={index} className={classes.fillWidthHints}>
+                    {hint.label}
+                  </Typography>
+                ))
+              }
+            </div>
+          }
+          {
+            type === 'base'
+            && !isDropzone
+            && <div className={classes.uploadContent}>
+              {uploadIcon}
+              <Typography className={classes.uploadLabel}>
                 {uploadLabel}
               </Typography>
-            </Button>
-          )
-        }
-        <input
-          {...restInputProps}
-          accept={accept}
-          aria-disabled={disabled}
-          className={classes.input}
-          disabled={disabled}
-          id={finalInputId}
-          multiple={multiple}
-          name={resolvedName}
-          onChange={handleChange}
-          ref={composedInputRef}
-          type="file"
-        />
-      </>
-    </label>
+            </div>
+          }
+          {
+            type === 'button'
+            && (
+              <Button disabled={disabled} onClick={handleClickToUpload}>
+                {uploadIcon}
+                <Typography>
+                  {uploadLabel}
+                </Typography>
+              </Button>
+            )
+          }
+          <input
+            {...restInputProps}
+            accept={accept}
+            aria-disabled={disabled}
+            className={classes.input}
+            disabled={disabled}
+            id={finalInputId}
+            multiple={multiple}
+            name={resolvedName}
+            onChange={handleChange}
+            ref={composedInputRef}
+            type="file"
+          />
+        </>
+      </label>
+      {externalHints && externalHints.length > 0 && (
+        <ul className={classes.externalHints}>
+          {externalHints.map((hint) => (
+            <li key={hint.label} className={classes.externalHint(hint.type || 'info')}>
+              <Icon
+                icon={hint.type === 'info' ? InfoFilledIcon : DangerousFilledIcon}
+                color={hint.type === 'info' ? 'info' : 'error'}
+                size={14}
+              />
+              {hint.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 });
 

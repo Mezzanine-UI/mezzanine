@@ -83,12 +83,16 @@ export interface UploadProps
    */
   disabled?: boolean;
   /**
+   * Hints passed into the Uploader dropzone area. Only visible in dropzone modes (`list`, `card-wall`).
+   */
+  dropzoneHints?: UploaderProps['hints'];
+  /**
    * Controlled file list for the upload component.
    * Provide this along with `onChange` to fully control the file state.
    */
   files?: UploadFile[];
   /**
-   * Array of hints to display with the upload component.
+   * Array of hints displayed outside the uploader area. Visible in all modes.
    */
   hints?: UploaderProps['hints'];
   /**
@@ -115,7 +119,8 @@ export interface UploadProps
   maxFiles?: number;
   /**
    * The display mode for the upload component.
-   * - 'list': Display files as a list using UploadItem
+   * - 'list': Display files as a list using UploadItem (with dropzone)
+   * - 'basic-list': Display files as a list without drag-and-drop
    * - 'button-list': Display uploader as a button with files in list format
    * - 'cards': Display image files as picture cards using UploadPictureCard
    * - 'card-wall': Display uploader at top with image files as picture cards below
@@ -213,6 +218,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
       accept,
       className,
       disabled = false,
+      dropzoneHints,
       mode = 'list',
       size = 'main',
       showFileSize = true,
@@ -563,6 +569,10 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
           mode: 'dropzone',
           type: 'base',
         },
+        'basic-list': {
+          mode: 'basic',
+          type: 'base',
+        },
         'button-list': {
           type: 'button',
         },
@@ -648,7 +658,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
         icon={uploaderIcon}
         inputRef={inputRef}
         inputProps={inputProps}
-        hints={hints}
+        hints={uploaderConfig.mode === 'dropzone' ? dropzoneHints : undefined}
         onUpload={handleUpload}
         {...uploaderConfig}
       />
@@ -665,7 +675,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
         icon={uploaderIcon}
         inputRef={inputRef}
         inputProps={inputProps}
-        hints={hints}
+        hints={dropzoneHints}
         onUpload={handleUpload}
         {...topUploaderConfig}
       />
@@ -675,16 +685,12 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const inlineCardUploaderElement = topUploaderElement ? null : uploaderElement;
 
     const hintsElement = useMemo(() => {
-      if (
-        !hints ||
-        hints.length === 0 ||
-        mode === 'list' ||
-        mode === 'card-wall'
-      )
-        return null;
+      if (!hints || hints.length === 0) return null;
 
       const hintsClassName =
-        mode === 'cards' ? classes.fillWidthHints : classes.hints;
+        mode === 'list' || mode === 'card-wall' || mode === 'cards'
+          ? classes.fillWidthHints
+          : classes.hints;
 
       return (
         <ul className={hintsClassName}>
@@ -715,10 +721,11 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
         {...rest}
       >
         {topUploaderElement}
+        {mode === 'card-wall' && hintsElement}
         {!shouldUsePictureCard && (
           <div className={classes.uploadButtonList}>
             {uploaderElement}
-            {mode === 'button-list' && hintsElement}
+            {hintsElement}
           </div>
         )}
         <div
