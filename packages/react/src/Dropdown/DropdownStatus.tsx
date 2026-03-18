@@ -1,19 +1,16 @@
 'use client';
 
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
 import {
   dropdownClasses as classes,
   DropdownStatus as DropdownStatusType,
-} from "@mezzanine-ui/core/dropdown/dropdown";
-import {
-  FolderOpenIcon,
-  IconDefinition,
-  SpinnerIcon,
-} from "@mezzanine-ui/icons";
+} from '@mezzanine-ui/core/dropdown/dropdown';
+import { FolderOpenIcon, IconDefinition } from '@mezzanine-ui/icons';
 
-import Icon from "../Icon";
-import Typography from "../Typography";
+import Icon from '../Icon';
+import Spin from '../Spin';
+import Typography from '../Typography';
 
 export interface DropdownStatusProps {
   /**
@@ -52,7 +49,7 @@ export default function DropdownStatus(props: DropdownStatusProps) {
 
   const IconElement = useMemo(() => {
     if (status === 'loading') {
-      return <Icon icon={SpinnerIcon} size={16} spin color="brand" />;
+      return <Spin loading size="minor" />;
     }
 
     return <Icon icon={emptyIcon ?? FolderOpenIcon} size={16} />;
@@ -65,5 +62,5 @@ export default function DropdownStatus(props: DropdownStatusProps) {
         {defaultStatusText}
       </Typography>
     </div>
-  )
+  );
 }
