@@ -90,6 +90,54 @@ describe('<Spin />', () => {
     });
   });
 
+  describe('prop: color', () => {
+    it('should set --mzn-spin--color on the ring when color is provided', () => {
+      const { getHostHTMLElement } = render(<Spin loading color="red" />);
+
+      const ring = getHostHTMLElement().querySelector(
+        '.mzn-spin__spin__ring',
+      ) as HTMLElement;
+
+      expect(ring.style.getPropertyValue('--mzn-spin--color')).toBe('red');
+    });
+
+    it('should not set --mzn-spin--color when color is not provided', () => {
+      const { getHostHTMLElement } = render(<Spin loading />);
+
+      const ring = getHostHTMLElement().querySelector(
+        '.mzn-spin__spin__ring',
+      ) as HTMLElement;
+
+      expect(ring.style.getPropertyValue('--mzn-spin--color')).toBe('');
+    });
+  });
+
+  describe('prop: trackColor', () => {
+    it('should set --mzn-spin--track-color on the ring when trackColor is provided', () => {
+      const { getHostHTMLElement } = render(
+        <Spin loading trackColor="rgba(255,255,255,0.3)" />,
+      );
+
+      const ring = getHostHTMLElement().querySelector(
+        '.mzn-spin__spin__ring',
+      ) as HTMLElement;
+
+      expect(ring.style.getPropertyValue('--mzn-spin--track-color')).toBe(
+        'rgba(255,255,255,0.3)',
+      );
+    });
+
+    it('should not set --mzn-spin--track-color when trackColor is not provided', () => {
+      const { getHostHTMLElement } = render(<Spin loading />);
+
+      const ring = getHostHTMLElement().querySelector(
+        '.mzn-spin__spin__ring',
+      ) as HTMLElement;
+
+      expect(ring.style.getPropertyValue('--mzn-spin--track-color')).toBe('');
+    });
+  });
+
   describe('prop: size', () => {
     it('should apply main size by default', () => {
       const { getHostHTMLElement } = render(<Spin loading />);

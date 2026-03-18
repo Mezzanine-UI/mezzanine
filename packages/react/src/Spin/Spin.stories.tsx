@@ -115,3 +115,63 @@ const SizesExample = () => (
 export const Sizes: StoryObj<typeof Spin> = {
   render: () => <SizesExample />,
 };
+
+const CustomColorsExample = () => (
+  <div style={{ display: 'grid', gap: 24 }}>
+    <div
+      style={{
+        background: '#1976d2',
+        padding: 24,
+        borderRadius: 8,
+        display: 'inline-flex',
+        gap: 24,
+        alignItems: 'center',
+      }}
+    >
+      <Spin
+        loading
+        color="white"
+        trackColor="rgba(255,255,255,0.3)"
+        description="On dark background"
+      />
+    </div>
+    <div
+      style={{
+        background: '#f5f5f5',
+        padding: 24,
+        borderRadius: 8,
+        display: 'inline-flex',
+        gap: 24,
+        alignItems: 'center',
+      }}
+    >
+      <Spin
+        loading
+        color="#e53935"
+        trackColor="rgba(229,57,53,0.15)"
+        description="Custom brand color"
+      />
+    </div>
+    <div
+      style={{
+        background: '#212121',
+        padding: 24,
+        borderRadius: 8,
+        display: 'inline-flex',
+        gap: 24,
+        alignItems: 'center',
+      }}
+    >
+      <Spin
+        loading
+        color="#69f0ae"
+        trackColor="rgba(105,240,174,0.2)"
+        description="On black background"
+      />
+    </div>
+  </div>
+);
+
+export const CustomColors: StoryObj<typeof Spin> = {
+  render: () => <CustomColorsExample />,
+};
