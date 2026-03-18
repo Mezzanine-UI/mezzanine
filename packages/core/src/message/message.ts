@@ -2,7 +2,6 @@ import {
   CheckedFilledIcon,
   ErrorFilledIcon,
   InfoFilledIcon,
-  SpinnerIcon,
   WarningFilledIcon,
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
@@ -16,7 +15,6 @@ export const messageIcons = {
   warning: WarningFilledIcon,
   error: ErrorFilledIcon,
   info: InfoFilledIcon,
-  loading: SpinnerIcon,
 } as const;
 
 export const messageClasses = {
