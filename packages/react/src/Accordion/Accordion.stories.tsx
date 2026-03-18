@@ -1,5 +1,10 @@
 import { useState, MouseEvent } from 'react';
-import { DotHorizontalIcon, EditIcon, PlusIcon, TrashIcon } from '@mezzanine-ui/icons';
+import {
+  DotHorizontalIcon,
+  EditIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@mezzanine-ui/icons';
 import Accordion, { AccordionTitle, AccordionContent } from '.';
 import Button from '../Button';
 import Dropdown from '../Dropdown';
@@ -418,14 +423,35 @@ type AccordionItem = {
   visible: boolean;
 };
 
-const fadeDuration = { enter: MOTION_DURATION.fast, exit: MOTION_DURATION.fast };
-const fadeEasing = { enter: MOTION_EASING.standard, exit: MOTION_EASING.standard };
+const fadeDuration = {
+  enter: MOTION_DURATION.fast,
+  exit: MOTION_DURATION.fast,
+};
+const fadeEasing = {
+  enter: MOTION_EASING.standard,
+  exit: MOTION_EASING.standard,
+};
 
 export const DeleteTransition = () => {
   const [items, setItems] = useState<AccordionItem[]>([
-    { content: '目前支援信用卡、Line Pay、Apple Pay 等多種付款方式。', id: 1, title: '付款方式', visible: true },
-    { content: '訂單成立後 1-3 個工作天內出貨，全台宅配約 1-2 天送達。', id: 2, title: '運送政策', visible: true },
-    { content: '商品到貨後 7 天內可申請退換貨，請保持商品完整包裝。', id: 3, title: '退換貨須知', visible: true },
+    {
+      content: '目前支援信用卡、Line Pay、Apple Pay 等多種付款方式。',
+      id: 1,
+      title: '付款方式',
+      visible: true,
+    },
+    {
+      content: '訂單成立後 1-3 個工作天內出貨，全台宅配約 1-2 天送達。',
+      id: 2,
+      title: '運送政策',
+      visible: true,
+    },
+    {
+      content: '商品到貨後 7 天內可申請退換貨，請保持商品完整包裝。',
+      id: 3,
+      title: '退換貨須知',
+      visible: true,
+    },
   ]);
   const [nextId, setNextId] = useState(4);
 
@@ -461,7 +487,7 @@ export const DeleteTransition = () => {
         width: '100%',
       }}
     >
-      <div>
+      <AccordionGroup>
         {items.map((item) => (
           <Fade
             appear
@@ -495,13 +521,9 @@ export const DeleteTransition = () => {
             </div>
           </Fade>
         ))}
-      </div>
+      </AccordionGroup>
       <div>
-        <Button
-          icon={PlusIcon}
-          onClick={handleAdd}
-          variant="base-secondary"
-        >
+        <Button icon={PlusIcon} onClick={handleAdd} variant="base-secondary">
           新增手風琴
         </Button>
       </div>
