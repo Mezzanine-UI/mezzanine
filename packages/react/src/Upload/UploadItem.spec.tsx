@@ -184,6 +184,57 @@ describe('<UploadItem />', () => {
     });
   });
 
+  describe('single-line-content modifier', () => {
+    it('應該只在 type="thumbnail" 且不顯示 fileSize 時套用 class', () => {
+      const file = createMockFile('test.jpg', 'image/jpeg', 2048);
+      const { getHostHTMLElement } = render(
+        <UploadItem file={file} status="loading" type="thumbnail" />,
+      );
+
+      const element = getHostHTMLElement();
+      expect(element.classList.contains('mzn-upload-item--single-line-content')).toBeTruthy();
+    });
+
+    it('不應該在 type="icon" 時套用 class', () => {
+      const file = createMockFile('test.jpg', 'image/jpeg', 2048);
+      const { getHostHTMLElement } = render(
+        <UploadItem file={file} status="loading" type="icon" />,
+      );
+
+      const element = getHostHTMLElement();
+      expect(element.classList.contains('mzn-upload-item--single-line-content')).toBeFalsy();
+    });
+
+    it('不應該在會顯示 fileSize 時套用 class', () => {
+      const file = createMockFile('test.jpg', 'image/jpeg', 2048);
+      const { getHostHTMLElement } = render(
+        <UploadItem file={file} status="done" showFileSize type="thumbnail" />,
+      );
+
+      const element = getHostHTMLElement();
+      expect(element.classList.contains('mzn-upload-item--single-line-content')).toBeFalsy();
+    });
+
+    it('應該在 status="error" 且有 errorMessage、但不顯示 fileSize 時套用 class', () => {
+      const file = createMockFile('test.jpg', 'image/jpeg', 2048);
+      const { container, getHostHTMLElement } = render(
+        <UploadItem
+          file={file}
+          status="error"
+          type="thumbnail"
+          showFileSize={false}
+          errorMessage="上傳失敗"
+        />,
+      );
+
+      const element = getHostHTMLElement();
+      const errorMessage = container.querySelector('.mzn-upload-item__error-message');
+
+      expect(errorMessage).toBeTruthy();
+      expect(element.classList.contains('mzn-upload-item--single-line-content')).toBeTruthy();
+    });
+  });
+
   describe('prop: disabled', () => {
     it('應該設置 disabled 屬性', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');

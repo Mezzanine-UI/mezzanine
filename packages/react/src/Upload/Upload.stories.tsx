@@ -177,16 +177,6 @@ const argTypes: Partial<ArgTypes<UploadProps>> = {
       defaultValue: { summary: 'undefined' },
     },
   },
-  isFillWidth: {
-    control: {
-      type: 'boolean',
-    },
-    description: 'Whether to fill the width of the container',
-    table: {
-      type: { summary: 'boolean' },
-      defaultValue: { summary: 'false' },
-    },
-  },
   name: {
     control: {
       type: 'text',
