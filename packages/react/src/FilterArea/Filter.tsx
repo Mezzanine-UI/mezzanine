@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ReactElement, useMemo } from 'react';
+import { Children, cloneElement, forwardRef, isValidElement, ReactElement, ReactNode, useContext, useMemo } from 'react';
 
 import {
   filterAreaClasses as classes,
@@ -13,6 +13,8 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 import { FormFieldProps } from '../Form';
+import FilterAreaContext, { FilterAreaContextValue } from './FilterAreaContext';
+import type { FilterAreaSize } from '@mezzanine-ui/core/filter-area';
 
 export interface FilterProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
@@ -54,6 +56,8 @@ const Filter = forwardRef<HTMLDivElement, FilterProps>(
       ...rest
     } = props;
 
+    const { size } = (useContext(FilterAreaContext) ?? {}) as FilterAreaContextValue;
+
     const filterClassName = useMemo(
       () =>
         cx(
@@ -78,6 +82,22 @@ const Filter = forwardRef<HTMLDivElement, FilterProps>(
       [grow, minWidth, rest.style, span],
     );
 
+    const sizedChildren = useMemo(() => {
+      if (!size) return children;
+      return Children.map(children, (formField) => {
+        const sizedInputs = Children.map(
+          formField.props.children as ReactNode,
+          (inputChild) => {
+            if (!isValidElement(inputChild)) return inputChild;
+            const { size: ownSize } = inputChild.props as { size?: FilterAreaSize };
+            if (ownSize !== undefined) return inputChild;
+            return cloneElement(inputChild as ReactElement<{ size: FilterAreaSize }>, { size });
+          },
+        );
+        return cloneElement(formField, {}, sizedInputs);
+      });
+    }, [children, size]);
+
     return (
       <div
         {...rest}
@@ -85,7 +105,7 @@ const Filter = forwardRef<HTMLDivElement, FilterProps>(
         className={filterClassName}
         style={style}
       >
-        {children}
+        {sizedChildren}
       </div>
     );
   },
