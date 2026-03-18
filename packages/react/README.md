@@ -23,12 +23,13 @@ npm install @mezzanine-ui/react @mezzanine-ui/core @mezzanine-ui/icons @mezzanin
 Create a `main.scss` and import it at your app entry point:
 
 ```scss
-@use '~@mezzanine-ui/system' as mzn-system;
-@use '~@mezzanine-ui/core' as mzn-core;
+@use '@mezzanine-ui/system' as mzn-system;
+@use '@mezzanine-ui/core' as mzn-core;
 
 :root {
+  @include mzn-system.common-variables('default');
+  @include mzn-system.colors();
   @include mzn-system.palette-variables(light);
-  @include mzn-system.common-variables(default);
 }
 
 /* Optional: dark mode */
@@ -43,6 +44,8 @@ Create a `main.scss` and import it at your app entry point:
 
 @include mzn-core.styles();
 ```
+
+> **Note:** The `~` prefix (e.g. `~@mezzanine-ui/system`) was required by older webpack 4 + sass-loader setups. Modern tooling (Next.js 13+, Vite) resolves node_modules without it.
 
 ```tsx
 // app entry (e.g. main.tsx / _app.tsx)
