@@ -10,7 +10,7 @@ import {
 import type { CropArea } from '../typings';
 
 describe('getBaseScale', () => {
-  it('should calculate scale based on image height and rect height', () => {
+  it('should calculate cover scale using min of height and width ratios', () => {
     const rect = new DOMRect(0, 0, 400, 300);
     const img = {
       width: 800,
@@ -19,11 +19,24 @@ describe('getBaseScale', () => {
 
     const scale = getBaseScale(rect, img);
 
-    expect(scale).toBe(2); // 600 / 300 = 2
+    // min(600/300, 800/400) = min(2, 2) = 2
+    expect(scale).toBe(2);
   });
 
   it('should return 1 when rect height is 0', () => {
     const rect = new DOMRect(0, 0, 400, 0);
+    const img = {
+      width: 800,
+      height: 600,
+    } as HTMLImageElement;
+
+    const scale = getBaseScale(rect, img);
+
+    expect(scale).toBe(1);
+  });
+
+  it('should return 1 when rect width is 0', () => {
+    const rect = new DOMRect(0, 0, 0, 300);
     const img = {
       width: 800,
       height: 600,
@@ -43,7 +56,8 @@ describe('getBaseScale', () => {
 
     const scale = getBaseScale(rect, img);
 
-    expect(scale).toBe(5); // 750 / 150 = 5
+    // min(750/150, 1000/200) = min(5, 5) = 5
+    expect(scale).toBe(5);
   });
 });
 
@@ -151,14 +165,16 @@ describe('calculateInitialCropArea', () => {
 
     const result = calculateInitialCropArea(img, rect);
 
-    // baseDisplayWidth = 600, baseDisplayHeight = 400
-    // But image fits: 800/scale = 600, 600/scale = 400, so scale = 1.333
-    // Actually: scale = 600/400 = 1.5, so baseDisplayWidth = 800/1.5 = 533.33, baseDisplayHeight = 600/1.5 = 400
-    // Wait, let me recalculate: scale = img.height / rect.height = 600 / 400 = 1.5
-    // baseDisplayWidth = 800 / 1.5 = 533.33, baseDisplayHeight = 600 / 1.5 = 400
-    // initialOffsetX = (600 - 533.33) / 2 = 33.33
-    expect(result.imagePosition.offsetX).toBeCloseTo(33.33, 1);
-    expect(result.imagePosition.offsetY).toBe(0);
+    // Cover strategy: scale = min(600/400, 800/600) = min(1.5, 1.333) = 1.333 = 4/3
+    // baseDisplayWidth = 800 / (4/3) = 600, baseDisplayHeight = 600 / (4/3) = 450
+    // offsetX = (600 - 600) / 2 = 0, offsetY = (400 - 450) / 2 = -25
+    expect(result.imagePosition.offsetX).toBe(0);
+    expect(result.imagePosition.offsetY).toBe(-25);
+    // Crop area fills full canvas
+    expect(result.cropArea.width).toBe(600);
+    expect(result.cropArea.height).toBe(400);
+    expect(result.cropArea.x).toBe(0);
+    expect(result.cropArea.y).toBe(0);
   });
 
   it('should handle square aspect ratio', () => {

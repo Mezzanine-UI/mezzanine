@@ -18,11 +18,11 @@ export interface InitialCropAreaResult {
 }
 
 /**
- * Calculate base scale for image to fit canvas height.
+ * Calculate base scale for image to cover canvas (both dimensions).
  */
 export function getBaseScale(rect: DOMRect, img: HTMLImageElement): number {
-  if (!rect.height) return 1;
-  return img.height / rect.height;
+  if (!rect.height || !rect.width) return 1;
+  return Math.min(img.height / rect.height, img.width / rect.width);
 }
 
 /**
@@ -53,26 +53,26 @@ export function calculateInitialCropArea(
   const initialOffsetX = (rect.width - baseDisplayWidth) / 2;
   const initialOffsetY = (rect.height - baseDisplayHeight) / 2;
 
-  let initialWidth = baseDisplayWidth;
-  let initialHeight = baseDisplayHeight;
+  let initialWidth = rect.width;
+  let initialHeight = rect.height;
 
   if (aspectRatio) {
-    const maxWidthByHeight = baseDisplayHeight * aspectRatio;
-    const maxHeightByWidth = baseDisplayWidth / aspectRatio;
+    const maxWidthByCanvasHeight = rect.height * aspectRatio;
+    const maxHeightByCanvasWidth = rect.width / aspectRatio;
 
-    if (maxWidthByHeight <= baseDisplayWidth) {
-      initialWidth = maxWidthByHeight;
-      initialHeight = baseDisplayHeight;
+    if (maxWidthByCanvasHeight <= rect.width) {
+      // Height is the limiting factor → crop fills full canvas height
+      initialWidth = maxWidthByCanvasHeight;
+      initialHeight = rect.height;
     } else {
-      initialWidth = baseDisplayWidth;
-      initialHeight = maxHeightByWidth;
+      // Width is the limiting factor → crop fills full canvas width
+      initialWidth = rect.width;
+      initialHeight = maxHeightByCanvasWidth;
     }
   }
 
-  const initialX =
-    initialOffsetX + (baseDisplayWidth - initialWidth) / 2;
-  const initialY =
-    initialOffsetY + (baseDisplayHeight - initialHeight) / 2;
+  const initialX = (rect.width - initialWidth) / 2;
+  const initialY = (rect.height - initialHeight) / 2;
 
   return {
     baseDisplayHeight,
