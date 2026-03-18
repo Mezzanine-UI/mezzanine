@@ -16,6 +16,16 @@ $thumbnail-image-size: spacing.primitive-variable(40);
   align-items: center;
   width: 100%;
 
+  &--single-line-content {
+    .#{$prefix}__content-wrapper {
+      align-items: center;
+    }
+
+    .#{$prefix}__content {
+      justify-content: center;
+    }
+  }
+
   &__container {
     align-items: center;
     background: palette.semantic-variable(background, neutral-subtle);

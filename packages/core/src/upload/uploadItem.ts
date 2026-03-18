@@ -24,6 +24,7 @@ export type UploadItemType = 'icon' | 'thumbnail';
 
 export const uploadItemClasses = {
   host: uploadItemPrefix,
+  singleLineContent: `${uploadItemPrefix}--single-line-content`,
   container: `${uploadItemPrefix}__container`,
   icon: `${uploadItemPrefix}__icon`,
   thumbnail: `${uploadItemPrefix}__thumbnail`,
