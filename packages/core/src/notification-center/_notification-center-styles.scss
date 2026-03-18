@@ -13,16 +13,16 @@
 // Severity configuration map
 $severity-configs: (
   error: (
-    severity-icon-color: palette.semantic-variable(text, error),
+    severity-icon-color: palette.semantic-variable(icon, error),
   ),
   warning: (
-    severity-icon-color: palette.semantic-variable(text, warning),
+    severity-icon-color: palette.semantic-variable(icon, warning),
   ),
   info: (
-    severity-icon-color: palette.semantic-variable(text, info),
+    severity-icon-color: palette.semantic-variable(icon, info),
   ),
   success: (
-    severity-icon-color: palette.semantic-variable(text, success),
+    severity-icon-color: palette.semantic-variable(icon, success),
   ),
 );
 
