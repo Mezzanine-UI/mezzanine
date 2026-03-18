@@ -28,32 +28,64 @@ import Select from '@mezzanine-ui/react/Select';
 
 Named exports from the barrel (hooks, types, utilities):
 ```ts
-import { usePagination, useCheckboxControlValue } from '@mezzanine-ui/react';
+import { usePagination, useCheckboxControlValue, cx } from '@mezzanine-ui/react';
 import type { ButtonProps, ButtonVariant } from '@mezzanine-ui/react';
+```
+
+Sub-path imports for component groups and core types:
+```ts
+// Navigation sub-components
+import {
+  NavigationFooter,
+  NavigationHeader,
+  NavigationOption,
+  NavigationIconButton,
+  NavigationUserMenu,
+} from '@mezzanine-ui/react/Navigation';
+
+// ContentHeader (page-level header with back button + action slots)
+import ContentHeader from '@mezzanine-ui/react/ContentHeader';
+
+// Form layout tokens from core (used with FormField)
+import {
+  ControlFieldSlotLayout,
+  FormFieldLayout,
+  FormFieldLabelSpacing,
+} from '@mezzanine-ui/core/form';
+```
+
+Spacing helpers in SCSS (from `@mezzanine-ui/system/spacing`):
+```scss
+@use '@mezzanine-ui/system/spacing';
+
+.host {
+  padding: spacing.semantic-variable(padding, vertical, spacious)
+    spacing.semantic-variable(padding, horizontal, comfort-fixed);
+  row-gap: spacing.semantic-variable(gap, calm);
+}
 ```
 
 Required styles — create a `main.scss` and import it at your app entry point. All component styles are loaded at once via `@include mzn-core.styles()`:
 ```scss
-@use '~@mezzanine-ui/system' as mzn-system;
-@use '~@mezzanine-ui/core' as mzn-core;
+@use '@mezzanine-ui/system' as mzn-system;
+@use '@mezzanine-ui/core' as mzn-core;
 
 :root {
-  @include mzn-system.palette-variables(light);
-  @include mzn-system.common-variables(default);
+  @include mzn-system.common-variables('default');
+  @include mzn-system.colors();
 }
 
-/* Optional: dark mode */
-[data-theme='dark'] {
-  @include mzn-system.palette-variables(dark);
-}
+/* Optional: light/dark palette theming */
+:root { @include mzn-system.palette-variables(light); }
+[data-theme='dark'] { @include mzn-system.palette-variables(dark); }
 
 /* Optional: compact density */
-[data-density='compact'] {
-  @include mzn-system.common-variables(compact);
-}
+[data-density='compact'] { @include mzn-system.common-variables(compact); }
 
 @include mzn-core.styles();
 ```
+
+> **Note:** The `~` prefix (e.g. `~@mezzanine-ui/core`) was required by older webpack 4 + sass-loader setups. Modern tooling (Next.js 13+, Vite) resolves node_modules without it — use bare paths as shown above.
 
 ## Component Categories
 
@@ -96,6 +128,46 @@ import { CalendarConfigProviderLuxon, CalendarLocale } from '@mezzanine-ui/react
 ```
 
 **forwardRef** — all components forward their ref to the underlying DOM element.
+
+**React Hook Form integration** — the recommended pattern is a `BaseField` wrapper that combines `FormField` with RHF's `formState.errors` for automatic error display. `ControlFieldSlotLayout.SUB` aligns the hint/error message with the input:
+```tsx
+import { useFormContext, get } from 'react-hook-form';
+import FormField from '@mezzanine-ui/react/Form/FormField';
+import { ControlFieldSlotLayout, FormFieldLayout } from '@mezzanine-ui/core/form';
+
+function BaseField({ name, label, required, disabled, children }) {
+  const { formState } = useFormContext();
+  const error = get(formState.errors, name);
+  return (
+    <FormField
+      name={name}
+      label={label}
+      required={required}
+      disabled={disabled}
+      layout={FormFieldLayout.VERTICAL}
+      controlFieldSlotLayout={ControlFieldSlotLayout.SUB}
+      hintText={error?.message ?? ''}
+      severity={error ? 'error' : 'info'}
+    >
+      {children}
+    </FormField>
+  );
+}
+```
+
+**Message imperative API** — `Message` is a global singleton for toast notifications. Call it imperatively without rendering any JSX:
+```tsx
+import { Message } from '@mezzanine-ui/react';
+
+Message.success('儲存成功');
+Message.warning('請確認輸入資料');
+Message.error('操作失敗，請稍後再試');
+```
+
+**Select inside Modal** — when rendering a `Select` (or `AutoComplete`) inside a `Modal` or `Drawer`, pass `dropdownZIndex` higher than the overlay (default modal z-index is ~1000):
+```tsx
+<Select options={options} dropdownZIndex={1004} />
+```
 
 ## Common Pitfalls for AI Assistants
 
