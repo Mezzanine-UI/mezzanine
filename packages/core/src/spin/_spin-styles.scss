@@ -154,8 +154,10 @@ $size-configs: (
       white       calc(100% - var(--mzn-spin--stroke-width)) calc(100% - 1px),
       transparent 100%
     );
-    background-color: transparent;
-    color: palette.semantic-variable(icon, brand);
+    // Use fallback values so ancestor elements can override via CSS cascade.
+    // --mzn-spin--color controls the animated arc; --mzn-spin--track-color controls the ring background.
+    background-color: var(--mzn-spin--track-color, transparent);
+    color: var(--mzn-spin--color, #{palette.semantic-variable(icon, brand)});
     animation: mzn-spin-ring motion.duration(loop) linear infinite;
   }
 
