@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-rc.5...@mezzanine-ui/system@1.0.0-rc.6) (2026-03-18)
+
+### Bug Fixes
+
+- **system/motion:** add missing duration name ([458e81b](https://github.com/Mezzanine-UI/mezzanine/commit/458e81be7331f1c3376b19c58c41deb301a0eba9))
+- **system/motion:** update long duration setting, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewxehnu ([cfa6b03](https://github.com/Mezzanine-UI/mezzanine/commit/cfa6b0333e3c5c85b78de8343277473cb9394b48))
+
 # [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-rc.4...@mezzanine-ui/system@1.0.0-rc.5) (2026-03-13)
 
 **Note:** Version bump only for package @mezzanine-ui/system

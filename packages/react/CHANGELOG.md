@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.5...@mezzanine-ui/react@1.0.0-rc.6) (2026-03-18)
+
+### Bug Fixes
+
+- **core/form:** apply correct hint text icon size and use filled icon variant [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwgcpk ([47807bf](https://github.com/Mezzanine-UI/mezzanine/commit/47807bf4aaa4d9581d38a9bb569d08d3beb05c10))
+- **navigation:** simplify title fade animation approach ([94a5bd3](https://github.com/Mezzanine-UI/mezzanine/commit/94a5bd3c3ea285e095096ab8c5d133b992896015))
+- **react/alert-banner:** use height-based wrapper animation for enter/exit ([86422cd](https://github.com/Mezzanine-UI/mezzanine/commit/86422cddc16812b3dea5e1aa0f2e38538dc2cdab))
+- **react/Backdrop:** replace SpinnerIcon with Spin in LightVariant story ([15255c4](https://github.com/Mezzanine-UI/mezzanine/commit/15255c480fb810384cc2f3fa07b8780c2a516181))
+- **react/button:** prevent tooltip handlers from overriding external mouse events ([5a76513](https://github.com/Mezzanine-UI/mezzanine/commit/5a76513fa19331b3ab05ba23333841081d0a9461)), closes [#86ewxhyj8](https://github.com/Mezzanine-UI/mezzanine/issues/86ewxhyj8)
+- **react/Button:** replace SpinnerIcon with Spin component for loading state ([afa669f](https://github.com/Mezzanine-UI/mezzanine/commit/afa669fb36f649fdc77184902b1aaaf802a47909))
+- **react/card:** personal action icon size updated, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6g8x ([defcae7](https://github.com/Mezzanine-UI/mezzanine/commit/defcae7457ebf291788aca5135c31cc263a2cf7d)), closes [#86ewy6g8](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6g8)
+- **react/cropper:** cover scale, canvas crop area, tag typography ([4de95e2](https://github.com/Mezzanine-UI/mezzanine/commit/4de95e2e34762900b5edb027fa58979f529511e5))
+- **react/Dropdown:** replace SpinnerIcon with Spin for loading status ([aa27d46](https://github.com/Mezzanine-UI/mezzanine/commit/aa27d463f05b10df93b1c0f1f1bde1136f29c1e8))
+- **react/empty:** replace hardcoded gradient stop colors with CSS design tokens 86ewym2hr ([ad76b3c](https://github.com/Mezzanine-UI/mezzanine/commit/ad76b3c41b5b9f4d7413a10f9f649228dc9b48e1))
+- **react/filter-area:** inherit size for nested inputs ([ee8df74](https://github.com/Mezzanine-UI/mezzanine/commit/ee8df74623cf5a0bda8dedcbea6ace516fc7af9f))
+- **react/Message:** replace SpinnerIcon with Spin for loading severity ([7789a38](https://github.com/Mezzanine-UI/mezzanine/commit/7789a38086e5f440577ff1e43415889552ab799b))
+- **react/modal:** correct header title typography variant from h3 to h2 ([2434644](https://github.com/Mezzanine-UI/mezzanine/commit/2434644a3898a1737e5f97f2fbdb19ff08e23736))
+- **react/modal:** set showDismissButton story default to true ([f6a5911](https://github.com/Mezzanine-UI/mezzanine/commit/f6a591102b3d6a134e5207f6bbc8fd250c456b0d))
+- **react/navigation:** preserve NavigationOption instances across collapse transition ([500d521](https://github.com/Mezzanine-UI/mezzanine/commit/500d5211fc9af1511ba25a92b1d7409e4580451f))
+- **react/navigation:** scrollbar overlay and tooltip offset ([e6616d4](https://github.com/Mezzanine-UI/mezzanine/commit/e6616d44b3aa60efaec35318040fd2605b8bffe6))
+- **react/notificationCenter:** add drawer styles & set time stamp typography token ([ff04fcc](https://github.com/Mezzanine-UI/mezzanine/commit/ff04fcc4884a73fa75a8e7608319722d03593f8b))
+- **react/notificationCenter:** change dot icon & custom padding on the button ([747a291](https://github.com/Mezzanine-UI/mezzanine/commit/747a29136800195495b26597706823ef168c05f2))
+- **react/notificationCenter:** move button site and add icon size[CU-86ewwy2qp] ([3edadbe](https://github.com/Mezzanine-UI/mezzanine/commit/3edadbed4d07d15023931991ab38879f37ab7ee5))
+- **react/notificationCenter:** set the slide in and fade out animation on the notification center[CU-86ewwy72h] ([59f3524](https://github.com/Mezzanine-UI/mezzanine/commit/59f3524f791efb8f9ca50677dfd6f96075e960f5))
+- **react/notificationCenter:** update story and change empty content view ([106f021](https://github.com/Mezzanine-UI/mezzanine/commit/106f02116eb33de49bb6e9f764d73924ef1a36a4))
+- **react/notificationCenter:** update transition display setting[CU-86ewwy5qy] ([6cbeb3f](https://github.com/Mezzanine-UI/mezzanine/commit/6cbeb3f7ca4970f74406ad45067118896f8a5b9b))
+- **react/page-footer:** change overflow button icon to DotHorizontalIcon ([b6f9798](https://github.com/Mezzanine-UI/mezzanine/commit/b6f979875c9aa7ebb00a1fb75e35e2da541d0472))
+- **react/radio:** remove minor size, clean up focus JS, update group context/stories ([a3626f8](https://github.com/Mezzanine-UI/mezzanine/commit/a3626f81a720d7269231775be14c95c54a24ddd2)), closes [#86ewykz12](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykz12) [#86ewykyd2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykyd2) [#86ewykz5](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykz5)
+- **react/section:** Potential fix for pull request finding ([9158891](https://github.com/Mezzanine-UI/mezzanine/commit/9158891a6ed457a38ca82a9a49a0c9d58280e44d))
+- **react/select:** add the dropdown loading on the select component[86ewwxhtv] ([2c35880](https://github.com/Mezzanine-UI/mezzanine/commit/2c35880b32354da23c91a5920656ae8eeb2e2a26))
+- **react/select:** forward overflowStrategy prop and add Storybook argTypes and size story ([3dec0bb](https://github.com/Mezzanine-UI/mezzanine/commit/3dec0bb471cbbc5a8c6b319b191a2c2b3ade5345))
+- **react/selectionCard:** fix the selection card horizontal content style ([7c37b67](https://github.com/Mezzanine-UI/mezzanine/commit/7c37b67f78ab8a34d4383f36b093b39db7cb71f9))
+- **react/selectionCard:** set the gap about multiple items on thee horizontal and vertical samples ([f148b34](https://github.com/Mezzanine-UI/mezzanine/commit/f148b3423ef2d7ef886e78583c98f10681af9ddf))
+- **react/table:** render age column with body-mono typography, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6k2n ([5dcf883](https://github.com/Mezzanine-UI/mezzanine/commit/5dcf883b1d55547a1b7f59cb6f0b4dbddc7a4252)), closes [#86ewy6k2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6k2)
+- **react/table:** update tag size to sub in table stories, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6k2z ([d316e0b](https://github.com/Mezzanine-UI/mezzanine/commit/d316e0b8171b40706b8ce06b121664768ce81235)), closes [#86ewy6k2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6k2)
+- **react/table:** update useTableDataSource default durations to match motion tokens, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6jyu ([0f9f7ef](https://github.com/Mezzanine-UI/mezzanine/commit/0f9f7ef8f7e90e675adba937deac2dd0bc57c292)), closes [#86ewy6](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6)
+- **react/Upload:** replace SpinnerIcon with Spin for upload loading state ([58252ba](https://github.com/Mezzanine-UI/mezzanine/commit/58252bafc0f9f71b4434e92196055105a33b6c70))
+
+### Features
+
+- **form:** add controlFieldSlotColumns prop to support multi-column control field slot layout ([69f54bc](https://github.com/Mezzanine-UI/mezzanine/commit/69f54bc8681122f164275cc94d4318c35b8d97e9))
+- **modal:** disallow supportingTextAlign center when titleAlign is left ([1d06adf](https://github.com/Mezzanine-UI/mezzanine/commit/1d06adf8fdd48ee7edfac33652aca29175ca4be3))
+- **modal:** enforce alignment constraints for horizontal icon layout ([acd265b](https://github.com/Mezzanine-UI/mezzanine/commit/acd265b2531bf6ddcea1f7b67fbb0df6df325a3c))
+- **modal:** implement dynamic body separator based on scroll state ([2589999](https://github.com/Mezzanine-UI/mezzanine/commit/2589999f56ab1fbfabdd4c6a3ab0e5aca24514e1))
+- **modal:** require cancelText when cancel button is shown ([da7cd42](https://github.com/Mezzanine-UI/mezzanine/commit/da7cd42954ac756604336c52e860b0da20591b5a))
+- **react/accordion:** add IconOnly, DisabledWithActions, and DeleteTransition stories 86ewykf1d ([c928755](https://github.com/Mezzanine-UI/mezzanine/commit/c92875523c9e041ff1f39862ac55ac279bd5671c))
+- **react/accordion:** apply hostDisabled class, update icon and story ([6f89d49](https://github.com/Mezzanine-UI/mezzanine/commit/6f89d49db9afffd62b51f32d0366a5a0218255f9))
+- **react/accordion:** update DeleteTransition story ([66c67a1](https://github.com/Mezzanine-UI/mezzanine/commit/66c67a16bf086e3b14b2c818656265fea5de61fe))
+- **react/navigation:** add keepMount and titleWrapper for text fade animation ([10b3a70](https://github.com/Mezzanine-UI/mezzanine/commit/10b3a70088693da9d15beac2eeb855226edf89a2))
+- **react/navigation:** header opacity ([285640f](https://github.com/Mezzanine-UI/mezzanine/commit/285640f105ec1bc8645ea919055185752fc1f31c))
+- **react/navigation:** NavigationHeader button type ([a8d0be1](https://github.com/Mezzanine-UI/mezzanine/commit/a8d0be1983cf5c64ddbc3c869c10f7045ac2087f))
+- **react/navigation:** NavigationIconButton activated ([55024a0](https://github.com/Mezzanine-UI/mezzanine/commit/55024a019cef7528f14c653957428092ec5dfb8a))
+- **react/navigation:** update tooltip offset ([d0e228e](https://github.com/Mezzanine-UI/mezzanine/commit/d0e228e17fe830bd9c03e8318c17b1b2d84b75ba))
+- **react/section:** add SectionGroup component and update stories 86ewym568 ([9720c3f](https://github.com/Mezzanine-UI/mezzanine/commit/9720c3f9a6424c520ef80374a5a92bfce3809779))
+- **react/section:** add vertical layout stories and update tests 86ewym5ge 86ewym5rt ([14e5ccd](https://github.com/Mezzanine-UI/mezzanine/commit/14e5ccd054c36c9c41bd54eebace76d0fb1701d7))
+- **react/selectionCard:** add SelectionCard text width control ([7130e77](https://github.com/Mezzanine-UI/mezzanine/commit/7130e778ea00ff6cc86cc1f20393a66442b00fc9))
+- **react/Spin:** add color and trackColor props for runtime color customization ([02145c8](https://github.com/Mezzanine-UI/mezzanine/commit/02145c813fc9959467d4f4b560f2e551fd753558))
+- **react/spin:** replace Icon spinner with CSS ring/tail elements ([b6dcc57](https://github.com/Mezzanine-UI/mezzanine/commit/b6dcc57db1a976063ea800c91bbf6999eb66bc3e)), closes [#86ewxf1t3](https://github.com/Mezzanine-UI/mezzanine/issues/86ewxf1t3)
+
 # [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.4...@mezzanine-ui/react@1.0.0-rc.5) (2026-03-13)
 
 ### Bug Fixes

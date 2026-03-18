@@ -3,6 +3,67 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.5...@mezzanine-ui/core@1.0.0-rc.6) (2026-03-18)
+
+### Bug Fixes
+
+- **core/alert-banner:** use height-based wrapper animation for enter/exit ([444b91a](https://github.com/Mezzanine-UI/mezzanine/commit/444b91ac07bab548f9469a1882b1f2906a3809dd))
+- **core/anchor:** use top/bottom instead of calc height for anchor bar [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewufqzj ([e7d294c](https://github.com/Mezzanine-UI/mezzanine/commit/e7d294c81f42323fc508f1b1c7adaeaf0c3a2db2))
+- **core/backdrop:** remove z-index from backdrop internals to fix stacking with drawer ([f6ce00a](https://github.com/Mezzanine-UI/mezzanine/commit/f6ce00ad9bcdc18e0a68213311b4f8a177f2ad8a))
+- **core/card:** set base-card description color to neutral-light when disabled ([3b7f7a1](https://github.com/Mezzanine-UI/mezzanine/commit/3b7f7a1024ecae5c72fd86ec7136c875746a8862)), closes [#86ewy6](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6)
+- **core/card:** update card styles, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6g1t, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6hrz, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6j7z ([9e3a725](https://github.com/Mezzanine-UI/mezzanine/commit/9e3a7250975da0d6ceff6a07bbe1ec57c7542213)), closes [#86ewy6g1](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6g1) [#86ewy6](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6) [#86ewy6j7](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6j7)
+- **core/clearAction:** update focus style & update the icon bg color ([b80503b](https://github.com/Mezzanine-UI/mezzanine/commit/b80503b1523a40af71d3a941357d1783d90d3cb9))
+- **core/empty:** apply icon-neutral-light color token to Sub and Minor sizes 86ewxhkye ([3a6db4b](https://github.com/Mezzanine-UI/mezzanine/commit/3a6db4bfb4450c1071b2ad43101a48368ca7927f))
+- **core/floating-button:** use background-fixed-solid for active state [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewxf2vh ([1104206](https://github.com/Mezzanine-UI/mezzanine/commit/1104206fd689fe42fb79d73b3ecbd263525635d4)), closes [#86ewxf2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewxf2)
+- **core/form:** apply correct hint text icon size and use filled icon variant [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwgcpk ([47807bf](https://github.com/Mezzanine-UI/mezzanine/commit/47807bf4aaa4d9581d38a9bb569d08d3beb05c10))
+- **core/form:** use body-highlight typography for form group title [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwgdn5 ([8850d5a](https://github.com/Mezzanine-UI/mezzanine/commit/8850d5ac257144dc7e3825a83168b34be5ea40b1)), closes [#86ewwgdn5](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwgdn5)
+- **core/input-check:** focus styling fixed, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewym0yv ([e7d4089](https://github.com/Mezzanine-UI/mezzanine/commit/e7d4089320aa616610550aa381750dec36f75547)), closes [#86ewym0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewym0)
+- **core/input-check:** use :has(input:focus-visible) for keyboard-only focus ring ([1a497b6](https://github.com/Mezzanine-UI/mezzanine/commit/1a497b6a9d531fa4441dbb6191663c73615ba847)), closes [#86ewykyd2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykyd2) [#86ewykz5](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykz5)
+- **core/message:** remove SpinnerIcon from loading severity token ([eb2d29c](https://github.com/Mezzanine-UI/mezzanine/commit/eb2d29cdf8559eb796ec1ada632958aa74891096))
+- **core/modal:** correct header padding-bottom when status type icon is shown ([22378a3](https://github.com/Mezzanine-UI/mezzanine/commit/22378a37ca3859f7642674a2b8ba9a01f32f474c))
+- **core/navigation:** add border-radius to user-menu host and update footer icon color to neutral-strong ([369bb62](https://github.com/Mezzanine-UI/mezzanine/commit/369bb62af5a2f44a5067ecebfd4587933117a29d))
+- **core/navigation:** collapsed active state and text overflow ([4868922](https://github.com/Mezzanine-UI/mezzanine/commit/4868922b0ee65e1998d1e8ed195fa39f72e2997a))
+- **core/navigation:** compact active background in collapsed mode ([99d2205](https://github.com/Mezzanine-UI/mezzanine/commit/99d220505afa524b3296ddc82509e4b6b84a2ceb))
+- **core/navigation:** fix titleWrapper flex layout and title display block ([54f3a8c](https://github.com/Mezzanine-UI/mezzanine/commit/54f3a8ccde9c3ca5d17adb24734a48fdcb598c8b))
+- **core/navigation:** NavigationIconButton avticated ([39afa23](https://github.com/Mezzanine-UI/mezzanine/commit/39afa23afd4844d91319bb0825d9ac903f267094))
+- **core/navigation:** width transition, content scrollbar, overflow menu height ([1d4df55](https://github.com/Mezzanine-UI/mezzanine/commit/1d4df55538e41cee3677191d7324f85ea340c19b))
+- **core/notifcationCenter:** update padding and remove icon styles[CU-86ewwy2qp] ([cb87168](https://github.com/Mezzanine-UI/mezzanine/commit/cb87168d8e17b78c600b3d1dd1e4fd7d500f8fab))
+- **core/notification-center:** fix stylelint error ([383e27e](https://github.com/Mezzanine-UI/mezzanine/commit/383e27e154bbd790adab1e98e1e87f964490f8da))
+- **core/notificationCenter:** add custom button style about dot icon[CU-86ewwy7fn] ([e2201c7](https://github.com/Mezzanine-UI/mezzanine/commit/e2201c7db0016d7c77fa157d2015511fd81ad481))
+- **core/notificationCenter:** set notification new styles and remove some styles ([8e01fa4](https://github.com/Mezzanine-UI/mezzanine/commit/8e01fa460e19f76a309596cfe1d7f8d0804e7aa7))
+- **core/notificationCenter:** update styles ([d4afdd6](https://github.com/Mezzanine-UI/mezzanine/commit/d4afdd60ce98c5505e71da5722f0aadd5fe1682e))
+- **core/notificatoinCenter:** change icons token ([ce392fe](https://github.com/Mezzanine-UI/mezzanine/commit/ce392fe35a1cba63935a94485fbe2120bba3f03b))
+- **core/page-footer:** add top separator with separator-neutral-faint ([e07494a](https://github.com/Mezzanine-UI/mezzanine/commit/e07494a3f9e5c054faadf7af2bedcb3ce640359c))
+- **core/progress:** update percentage text typography to body ([26fd031](https://github.com/Mezzanine-UI/mezzanine/commit/26fd0314cecfcc05ddb802a687331c5101fe71ce))
+- **core/radio:** remove minor size, fix segmented colors/min-width, add focus-visible ([b34063b](https://github.com/Mezzanine-UI/mezzanine/commit/b34063b4d36f39c7692badddb70ce499102361df)), closes [#86ewykzt9](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykzt9) [#86ewym1](https://github.com/Mezzanine-UI/mezzanine/issues/86ewym1) [#86ewykyd2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykyd2) [#86ewykz5](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykz5) [#86ewykz12](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykz12) [#86ewykzt9](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykzt9) [#86ewym1](https://github.com/Mezzanine-UI/mezzanine/issues/86ewym1) [#86ewykyd2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykyd2) [#86ewykz5](https://github.com/Mezzanine-UI/mezzanine/issues/86ewykz5)
+- **core/scrollbar:** add entrance/exit transition for scrollbar visibility [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewxeb67 ([6f6a80e](https://github.com/Mezzanine-UI/mezzanine/commit/6f6a80e30a1539e997eede77d5d73407849f6f59)), closes [#86ewxeb67](https://github.com/Mezzanine-UI/mezzanine/issues/86ewxeb67)
+- **core/scrollbar:** add track padding for horizontal and vertical axes [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewxe9zy ([b4f499c](https://github.com/Mezzanine-UI/mezzanine/commit/b4f499cc83e6797e14ac56888cd5ce365bed7b17)), closes [#86ewxe9](https://github.com/Mezzanine-UI/mezzanine/issues/86ewxe9)
+- **core/section:** override horizontal tab bar padding inside section 86ewym4h9 ([5a2ec7a](https://github.com/Mezzanine-UI/mezzanine/commit/5a2ec7ae081c3165c2056c8e2c379f0cdda46111))
+- **core/section:** Potential fix for pull request finding ([8a22ba4](https://github.com/Mezzanine-UI/mezzanine/commit/8a22ba4ec8f79e006fd36ab72800823e6f41951d))
+- **core/section:** Potential fix for pull request finding ([8eb17b8](https://github.com/Mezzanine-UI/mezzanine/commit/8eb17b8d48186cb4bd613a7d1716412e4c360587))
+- **core/skeleton:** slow down animation to continuous sweep ([8d2a13d](https://github.com/Mezzanine-UI/mezzanine/commit/8d2a13d6e3408ffedcc30d12d49b7dc5406d6ed5))
+- **core/spin:** use var() fallback to allow CSS cascade override ([a47694e](https://github.com/Mezzanine-UI/mezzanine/commit/a47694e8e827b0042917f41ef97c1c092bea749a))
+- **core/table:** align create/delete transition with motion tokens, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewy6jyu ([085f2fa](https://github.com/Mezzanine-UI/mezzanine/commit/085f2fab15ac3e30a8cb68372e3977e973a58fc7)), closes [#86ewy6](https://github.com/Mezzanine-UI/mezzanine/issues/86ewy6)
+- **core/textarea:** add scrollbar hover color and transition effect ([1ce9fe0](https://github.com/Mezzanine-UI/mezzanine/commit/1ce9fe09a15c1ea08c182957c5d432edd2cc547b)), closes [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)
+- **core/toggle:** add flex-shrink: 0 to prevent knob squish in flex containers 86ewxfh2e ([bb3dbbc](https://github.com/Mezzanine-UI/mezzanine/commit/bb3dbbce926cf2f76777abaf54d7d51d27ebe81d))
+- **navigation:** simplify title fade animation approach ([94a5bd3](https://github.com/Mezzanine-UI/mezzanine/commit/94a5bd3c3ea285e095096ab8c5d133b992896015))
+
+### Features
+
+- **core/accordion:** update styles and add hostDisabled class ([cee64fe](https://github.com/Mezzanine-UI/mezzanine/commit/cee64feb28b023ace3e16a317eab79948c4de218))
+- **core/button:** pipe Spin colors from loading variant tokens via CSS vars ([a3f489f](https://github.com/Mezzanine-UI/mezzanine/commit/a3f489f9321630aa69b35c51b56836c661c02b2e))
+- **core/navigation:** add titleWrapper for collapse/expand text fade animation ([0d12d82](https://github.com/Mezzanine-UI/mezzanine/commit/0d12d823b40cdda4ceb4a10ce4dce37b1b87d865))
+- **core/navigation:** header opacity ([6bd575d](https://github.com/Mezzanine-UI/mezzanine/commit/6bd575daabda3fc588afc22932f087aa20e74bfd))
+- **core/navigation:** pr issue ([550155f](https://github.com/Mezzanine-UI/mezzanine/commit/550155f3094bf3242f448d47468f8fcd8e2db357))
+- **core/section:** add SectionGroup styles and class definitions 86ewym568 ([1211ea5](https://github.com/Mezzanine-UI/mezzanine/commit/1211ea596d925cbceacacc7d88d3a22fbeb26b84))
+- **core/spin:** implement Fluent 2-style spinning arc animation ([649716e](https://github.com/Mezzanine-UI/mezzanine/commit/649716e279099a93d376ea1d41718a94a55f7471)), closes [#86ewxf1t3](https://github.com/Mezzanine-UI/mezzanine/issues/86ewxf1t3)
+- **form:** add controlFieldSlotColumns prop to support multi-column control field slot layout ([69f54bc](https://github.com/Mezzanine-UI/mezzanine/commit/69f54bc8681122f164275cc94d4318c35b8d97e9))
+- **modal:** implement dynamic body separator based on scroll state ([2589999](https://github.com/Mezzanine-UI/mezzanine/commit/2589999f56ab1fbfabdd4c6a3ab0e5aca24514e1))
+
+### Performance Improvements
+
+- **core/anchor:** use clip-path transition to avoid layout reflow on bar animation ([9bfce7d](https://github.com/Mezzanine-UI/mezzanine/commit/9bfce7d3f6663a2133d087ffa61be6d31102921d))
+
 # [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.4...@mezzanine-ui/core@1.0.0-rc.5) (2026-03-13)
 
 ### Bug Fixes
