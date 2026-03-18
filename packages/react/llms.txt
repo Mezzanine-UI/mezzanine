@@ -32,10 +32,27 @@ import { usePagination, useCheckboxControlValue } from '@mezzanine-ui/react';
 import type { ButtonProps, ButtonVariant } from '@mezzanine-ui/react';
 ```
 
-Required CSS — import per component's style entry from @mezzanine-ui/core:
-```ts
-import '@mezzanine-ui/core/button/styles';
-import '@mezzanine-ui/core/select/styles';
+Required styles — create a `main.scss` and import it at your app entry point. All component styles are loaded at once via `@include mzn-core.styles()`:
+```scss
+@use '~@mezzanine-ui/system' as mzn-system;
+@use '~@mezzanine-ui/core' as mzn-core;
+
+:root {
+  @include mzn-system.palette-variables(light);
+  @include mzn-system.common-variables(default);
+}
+
+/* Optional: dark mode */
+[data-theme='dark'] {
+  @include mzn-system.palette-variables(dark);
+}
+
+/* Optional: compact density */
+[data-density='compact'] {
+  @include mzn-system.common-variables(compact);
+}
+
+@include mzn-core.styles();
 ```
 
 ## Component Categories
@@ -65,11 +82,17 @@ Available control hooks: `useAutoCompleteValueControl`, `useCheckboxControlValue
 
 **Portal-based overlays** — Modal, Drawer, and Tooltip render outside the component tree via `Portal`. Use the `container` prop to target a specific DOM node.
 
-**Calendar adapter pattern** — Calendar components require a date adapter. Install one of `dayjs >= 1`, `moment >= 2`, or `luxon >= 3` and pass it to `CalendarConfigProvider`:
+**Calendar adapter pattern** — Calendar components require wrapping the app with a date-adapter provider. Import from the library-specific entry point to avoid bundling unused date libraries:
 ```tsx
-import { CalendarConfigProvider } from '@mezzanine-ui/react';
-import dayjs from 'dayjs';
-<CalendarConfigProvider methods={dayjsMethods}>...</CalendarConfigProvider>
+// Day.js (recommended)
+import { CalendarConfigProviderDayjs, CalendarLocale } from '@mezzanine-ui/react/dayjs';
+<CalendarConfigProviderDayjs locale={CalendarLocale.ZH_TW}>{children}</CalendarConfigProviderDayjs>
+
+// Moment.js
+import { CalendarConfigProviderMoment, CalendarLocale } from '@mezzanine-ui/react/moment';
+
+// Luxon
+import { CalendarConfigProviderLuxon, CalendarLocale } from '@mezzanine-ui/react/luxon';
 ```
 
 **forwardRef** — all components forward their ref to the underlying DOM element.
