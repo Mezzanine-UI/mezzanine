@@ -123,18 +123,5 @@
     "typescript-eslint": "^8.46.2",
     "webpack": "^5.102.1"
   },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.scss": [
-      "prettier --write",
-      "stylelint --fix"
-    ],
-    "*.{js,json,md}": [
-      "prettier --write"
-    ]
-  },
   "packageManager": "yarn@4.10.3"
 }
