@@ -1,11 +1,11 @@
 'use client';
 
 import { forwardRef, MouseEvent } from 'react';
-import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 import Icon from '../Icon';
+import Spin from '../Spin';
 import Tooltip from '../Tooltip';
 import { ButtonComponent, ButtonPropsBase } from './typings';
 
@@ -66,7 +66,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const showTooltip = isIconOnly && !disabledTooltip && Boolean(children);
 
     // Loading 狀態下的 icon
-    const loadingIcon = <Icon icon={SpinnerIcon} spin size={16} />;
+    const loadingIcon = <Spin loading size="minor" />;
 
     // 渲染 icon 內容
     const renderIcon = () => {

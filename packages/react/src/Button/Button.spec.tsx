@@ -1,4 +1,4 @@
-import { PlusIcon, SearchIcon, SpinnerIcon } from '@mezzanine-ui/icons';
+import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
 import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import {
@@ -157,28 +157,23 @@ describe('<Button />', () => {
       });
     });
 
-    it('should render loading spinner when loading=true', () => {
+    it('should render Spin when loading=true', () => {
       const { getHostHTMLElement } = render(<Button loading>Hello</Button>);
       const element = getHostHTMLElement();
-      const iconElement = element.querySelector('i');
 
-      expect(iconElement?.getAttribute('data-icon-name')).toBe(
-        SpinnerIcon.name,
-      );
+      expect(element.querySelector('.mzn-spin__spin')).not.toBeNull();
     });
 
-    it('should replace icon with loading spinner', () => {
+    it('should replace icon with Spin when loading=true', () => {
       const { getHostHTMLElement } = render(
         <Button icon={PlusIcon} iconType="leading" loading>
           Hello
         </Button>,
       );
       const element = getHostHTMLElement();
-      const iconElement = element.querySelector('i');
 
-      expect(iconElement?.getAttribute('data-icon-name')).toBe(
-        SpinnerIcon.name,
-      );
+      expect(element.querySelector('.mzn-spin__spin')).not.toBeNull();
+      expect(element.querySelector('.mzn-icon')).toBeNull();
     });
   });
 
