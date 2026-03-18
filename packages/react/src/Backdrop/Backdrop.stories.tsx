@@ -1,11 +1,10 @@
 import { useRef, useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import Button from '../Button';
 import Drawer from '../Drawer';
-import Icon from '../Icon';
 import Modal from '../Modal';
+import Spin from '../Spin';
 import Select from '../Select';
 import Typography from '../Typography';
 import Backdrop from '.';
@@ -154,7 +153,7 @@ export const LightVariant: Story = {
                 justifyContent: 'center',
               }}
             >
-              <Icon icon={SpinnerIcon} size={48} spin />
+              <Spin loading />
               <div
                 style={{
                   background: 'var(--mzn-color-background-base)',
