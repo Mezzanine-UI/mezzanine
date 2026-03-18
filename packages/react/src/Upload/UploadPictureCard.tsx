@@ -21,7 +21,6 @@ import {
   FileIcon,
   ImageIcon,
   ResetIcon,
-  SpinnerIcon,
   TrashIcon,
   ZoomInIcon,
 } from '@mezzanine-ui/icons';
@@ -29,6 +28,7 @@ import {
 import Button from '../Button';
 import ClearActions from '../ClearActions';
 import Icon from '../Icon';
+import Spin from '../Spin';
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -335,7 +335,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                   className={classes.loadingIcon}
                   aria-label={labels.uploading}
                 >
-                  <Icon icon={SpinnerIcon} color="fixed-light" spin size={32} />
+                  <Spin loading size="sub" />
                 </div>
               </>
             )}

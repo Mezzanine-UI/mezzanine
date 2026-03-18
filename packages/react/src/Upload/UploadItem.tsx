@@ -4,7 +4,7 @@ import {
   uploadItemClasses as classes,
   UploadItemSize,
   type UploadItemStatus,
-  type UploadItemType
+  type UploadItemType,
 } from '@mezzanine-ui/core/upload';
 import {
   forwardRef,
@@ -17,9 +17,17 @@ import {
   useState,
 } from 'react';
 
-import { DangerousFilledIcon, DownloadIcon, FileIcon, IconDefinition, ResetIcon, SpinnerIcon, TrashIcon } from '@mezzanine-ui/icons';
+import {
+  DangerousFilledIcon,
+  DownloadIcon,
+  FileIcon,
+  IconDefinition,
+  ResetIcon,
+  TrashIcon,
+} from '@mezzanine-ui/icons';
 import ClearActions from '../ClearActions';
 import Icon from '../Icon';
+import Spin from '../Spin';
 import Tooltip from '../Tooltip';
 import Typography from '../Typography';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
@@ -73,9 +81,9 @@ export interface UploadItemProps
    */
   disabled?: boolean;
   /**
-  * The status of the item.
-  * @default 'loading'
-  */
+   * The status of the item.
+   * @default 'loading'
+   */
   status: UploadItemStatus;
   /**
    * The error message to display when status is 'error'.
@@ -147,52 +155,64 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
 
     const itemIcon = useMemo(() => {
       if (type === 'thumbnail') {
-        return isImage
-          ? (<UploadPictureCard file={props.file} url={props.url} size="minor" className={classes.thumbnail} />)
-          : (
-            <div className={classes.thumbnail}>
-              <Icon icon={FileIcon} className={classes.icon} size={16} />
-            </div>
-          )
+        return isImage ? (
+          <UploadPictureCard
+            file={props.file}
+            url={props.url}
+            size="minor"
+            className={classes.thumbnail}
+          />
+        ) : (
+          <div className={classes.thumbnail}>
+            <Icon icon={FileIcon} className={classes.icon} size={16} />
+          </div>
+        );
       }
 
-      return <Icon icon={icon ?? FileIcon} className={classes.icon} size={16} />;
+      return (
+        <Icon icon={icon ?? FileIcon} className={classes.icon} size={16} />
+      );
     }, [type, icon, props.file, props.url, isImage]);
 
     const loadingIcon = useMemo(() => {
       return (
         <div className={classes.loadingIcon}>
-          <Icon icon={SpinnerIcon} color="brand" spin size={16} />
+          <Spin loading size="minor" />
         </div>
-      )
+      );
     }, []);
-
 
     const fileNameRef = useRef<HTMLParagraphElement>(null);
     const tooltipRefRef = useRef<Ref<HTMLParagraphElement> | null>(null);
     const [isTextTruncated, setIsTextTruncated] = useState(false);
 
-    const mergedRefCallback = useCallback((node: HTMLParagraphElement | null) => {
-      fileNameRef.current = node;
+    const mergedRefCallback = useCallback(
+      (node: HTMLParagraphElement | null) => {
+        fileNameRef.current = node;
 
-      const tooltipRef = tooltipRefRef.current;
+        const tooltipRef = tooltipRefRef.current;
 
-      if (tooltipRef) {
-        if (typeof tooltipRef === 'function') {
-          tooltipRef(node);
-        } else if (tooltipRef && 'current' in tooltipRef) {
-          (tooltipRef as { current: HTMLParagraphElement | null }).current = node;
+        if (tooltipRef) {
+          if (typeof tooltipRef === 'function') {
+            tooltipRef(node);
+          } else if (tooltipRef && 'current' in tooltipRef) {
+            (tooltipRef as { current: HTMLParagraphElement | null }).current =
+              node;
+          }
         }
-      }
-    }, []);
+      },
+      [],
+    );
 
-    const mergeRefs = useCallback((tooltipRef: Ref<HTMLParagraphElement>) => {
-      tooltipRefRef.current = tooltipRef;
-      return mergedRefCallback;
-    }, [mergedRefCallback]);
+    const mergeRefs = useCallback(
+      (tooltipRef: Ref<HTMLParagraphElement>) => {
+        tooltipRefRef.current = tooltipRef;
+        return mergedRefCallback;
+      },
+      [mergedRefCallback],
+    );
 
     const fileSize = useMemo(() => {
-
       if (!props.file && !props.fileSize) {
         return null;
       }
@@ -222,7 +242,9 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
 
     useEffect(() => {
       if (!props.file && !props.url) {
-        console.warn('UploadItem: Both `file` and `url` props are missing. At least one should be provided to display the upload item.');
+        console.warn(
+          'UploadItem: Both `file` and `url` props are missing. At least one should be provided to display the upload item.',
+        );
       }
     }, [props.file, props.url]);
 
@@ -263,9 +285,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
             tabIndex={disabled ? -1 : 0}
           >
             <div className={classes.contentWrapper}>
-              <div className={classes.icon}>
-                {itemIcon}
-              </div>
+              <div className={classes.icon}>{itemIcon}</div>
               <div className={classes.content}>
                 <Tooltip
                   title={isTextTruncated ? fileName : undefined}
@@ -283,52 +303,52 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
                     </Typography>
                   )}
                 </Tooltip>
-                {
-                  showFileSize && isFinished && fileSize && (
-                    <Typography className={classes.fontSize}>
-                      {fileSize}
-                    </Typography>
-                  )
-                }
+                {showFileSize && isFinished && fileSize && (
+                  <Typography className={classes.fontSize}>
+                    {fileSize}
+                  </Typography>
+                )}
               </div>
             </div>
             <div className={classes.actions}>
-              {
-                status === 'loading' && (
-                  <>
-                    {loadingIcon}
-                    <ClearActions
-                      onClick={onCancel}
-                      className={classes.closeIcon}
-                      role="button"
-                    />
-                  </>
-                )
-              }
-              {
-                status === 'done' && !disabled && (
-                  <Icon icon={DownloadIcon} size={16} className={classes.downloadIcon} onClick={onDownload} />
-                )
-              }
-              {
-                status === 'error' && !disabled && (
-                  <Icon icon={ResetIcon} size={16} className={classes.resetIcon} onClick={onReload} />
-                )
-              }
+              {status === 'loading' && (
+                <>
+                  {loadingIcon}
+                  <ClearActions
+                    onClick={onCancel}
+                    className={classes.closeIcon}
+                    role="button"
+                  />
+                </>
+              )}
+              {status === 'done' && !disabled && (
+                <Icon
+                  icon={DownloadIcon}
+                  size={16}
+                  className={classes.downloadIcon}
+                  onClick={onDownload}
+                />
+              )}
+              {status === 'error' && !disabled && (
+                <Icon
+                  icon={ResetIcon}
+                  size={16}
+                  className={classes.resetIcon}
+                  onClick={onReload}
+                />
+              )}
             </div>
           </div>
-          {
-            isFinished && !disabled && (
-              <div className={classes.deleteContent}>
-                <Icon
-                  icon={TrashIcon}
-                  size={16}
-                  className={classes.deleteIcon}
-                  onClick={onDelete}
-                />
-              </div>
-            )
-          }
+          {isFinished && !disabled && (
+            <div className={classes.deleteContent}>
+              <Icon
+                icon={TrashIcon}
+                size={16}
+                className={classes.deleteIcon}
+                onClick={onDelete}
+              />
+            </div>
+          )}
         </div>
         {status === 'error' && errorMessage && (
           <div className={classes.errorMessage}>
@@ -338,7 +358,11 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
               color="error"
               className={classes.errorIcon}
             />
-            <Typography color="text-error" variant="caption" className={classes.errorMessageText}>
+            <Typography
+              color="text-error"
+              variant="caption"
+              className={classes.errorMessageText}
+            >
               {errorMessage}
             </Typography>
           </div>
