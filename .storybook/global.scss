@@ -1,8 +1,8 @@
 /* stylelint-disable declaration-no-important */
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system';
-@use '~@mezzanine-ui/core';
+@use '@mezzanine-ui/system/palette';
+@use '@mezzanine-ui/system/transition';
+@use '@mezzanine-ui/system';
+@use '@mezzanine-ui/core';
 
 :root {
   @include system.common-variables("default");
