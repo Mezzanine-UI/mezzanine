@@ -351,6 +351,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
                 icon={TrashIcon}
                 size={16}
                 className={classes.deleteIcon}
+                color="neutral-solid"
                 onClick={onDelete}
               />
             </div>
