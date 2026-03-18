@@ -1,0 +1,81 @@
+# @mezzanine-ui/react
+
+> React component library for Mezzanine UI — a comprehensive set of accessible, themeable components built on top of @mezzanine-ui/core, @mezzanine-ui/icons, and @mezzanine-ui/system.
+
+## Installation
+
+```bash
+npm install @mezzanine-ui/react @mezzanine-ui/core @mezzanine-ui/icons @mezzanine-ui/system react react-dom lodash
+```
+
+Peer dependencies: `react >= 18`, `react-dom >= 18`, `lodash >= 4`
+
+## Related Packages
+
+| Package                  | Role                                              |
+| ------------------------ | ------------------------------------------------- |
+| `@mezzanine-ui/core`     | CSS styles and TypeScript type definitions        |
+| `@mezzanine-ui/icons`    | SVG icon definitions (plain objects)              |
+| `@mezzanine-ui/system`   | Design tokens: palette, spacing, typography, etc. |
+
+## Import Patterns
+
+Individual component (preferred for tree-shaking):
+```ts
+import Button from '@mezzanine-ui/react/Button';
+import Select from '@mezzanine-ui/react/Select';
+```
+
+Named exports from the barrel (hooks, types, utilities):
+```ts
+import { usePagination, useCheckboxControlValue } from '@mezzanine-ui/react';
+import type { ButtonProps, ButtonVariant } from '@mezzanine-ui/react';
+```
+
+Required CSS — import per component's style entry from @mezzanine-ui/core:
+```ts
+import '@mezzanine-ui/core/button/styles';
+import '@mezzanine-ui/core/select/styles';
+```
+
+## Component Categories
+
+- **General** — Button, ButtonGroup, Cropper, Icon, Layout, Separator, Typography
+- **Navigation** — Breadcrumb, Drawer, Navigation (+ sub-components), PageHeader, PageFooter, Stepper, Tab
+- **Data Display** — Accordion, Badge, Cards (BaseCard, FourThumbnailCard, SingleThumbnailCard, QuickActionCard), Description, Empty, Pagination, Table, Tag, Tooltip
+- **Data Entry** — AutoComplete, Checkbox, DatePicker, DateRangePicker, DateTimePicker, FilterArea, FormField, Input, Radio, Select, Slider, Switch, Textarea, TimePicker, Upload, Cascader
+- **Feedback** — InlineMessage, Message, Modal, NotificationCenter, Progress, ResultState, Skeleton, Spin
+- **Others** — AlertBanner, Anchor, Backdrop, FloatingButton
+- **Utility** — Calendar, Dropdown, Popper, Portal, TimePanel, Transition animations (Collapse, Fade, Rotate, Scale, Slide, Translate)
+
+## Key Design Patterns
+
+**Polymorphic `component` prop** — most components accept a `component` prop to override the rendered HTML element or pass a router link component:
+```tsx
+<Button component="a" href="/page">Link Button</Button>
+```
+
+**Controlled/uncontrolled with control hooks** — pair components with their corresponding hook:
+```tsx
+const [value, onChange] = useCheckboxControlValue({ defaultValue: [] });
+<CheckboxGroup value={value} onChange={onChange} options={options} />
+```
+
+Available control hooks: `useAutoCompleteValueControl`, `useCheckboxControlValue`, `useInputControlValue`, `useInputWithClearControlValue`, `useRadioControlValue`, `useSelectValueControl`, `useSwitchControlValue`, `useCustomControlValue`.
+
+**Portal-based overlays** — Modal, Drawer, and Tooltip render outside the component tree via `Portal`. Use the `container` prop to target a specific DOM node.
+
+**Calendar adapter pattern** — Calendar components require a date adapter. Install one of `dayjs >= 1`, `moment >= 2`, or `luxon >= 3` and pass it to `CalendarConfigProvider`:
+```tsx
+import { CalendarConfigProvider } from '@mezzanine-ui/react';
+import dayjs from 'dayjs';
+<CalendarConfigProvider methods={dayjsMethods}>...</CalendarConfigProvider>
+```
+
+**forwardRef** — all components forward their ref to the underlying DOM element.
+
+## Further Reference
+
+- Full component index with descriptions: `packages/react/COMPONENTS.md`
+- Complete prop types and JSDoc: `*.d.ts` files in the published package (or `packages/react/src/<ComponentName>/index.tsx`)
+- GitHub: https://github.com/Mezzanine-UI/mezzanine

@@ -1,0 +1,68 @@
+# @mezzanine-ui/system
+
+> Design system foundation for Mezzanine UI — provides color palette, typography, spacing, radius, motion, and z-index tokens as CSS custom properties and SCSS mixins.
+
+## Purpose
+
+`@mezzanine-ui/system` is the lowest-level package in the Mezzanine UI stack. It defines all design tokens and exposes them in two ways:
+
+1. **SCSS mixins** — consumed by `@mezzanine-ui/core` to generate component styles
+2. **TypeScript constants and types** — consumed by `@mezzanine-ui/react` for runtime token references
+
+Application code rarely imports this package directly; instead, tokens flow through `@mezzanine-ui/core` and `@mezzanine-ui/react`.
+
+## Token Categories
+
+| Category     | What it covers                                              |
+| ------------ | ----------------------------------------------------------- |
+| `palette`    | Primitive colors + semantic color roles (light/dark mode)   |
+| `typography` | Font family, font size, font weight, line height, letter spacing |
+| `spacing`    | Semantic spacing scale (primitive + semantic)               |
+| `radius`     | Border radius scale                                         |
+| `motion`     | Animation duration and easing curves                        |
+| `effect`     | Shadow/elevation tokens                                     |
+| `z-index`    | Layer ordering constants                                    |
+
+## CSS Custom Properties
+
+All tokens are emitted as CSS custom properties (e.g. `--mzn-color-primary`, `--mzn-spacing-md`). The `common-variables` and `colors` mixins in `_system.scss` emit these onto a selector of your choice (typically `:root`).
+
+## Theme Setup
+
+The recommended way to apply the theme is via the `MezzanineProvider` from `@mezzanine-ui/react`, which injects the CSS variables automatically.
+
+For manual setup, apply the SCSS mixins in your global stylesheet:
+
+```scss
+@use '@mezzanine-ui/system' as system;
+
+:root {
+  @include system.common-variables();
+  @include system.colors('light');
+}
+
+[data-theme='dark'] {
+  @include system.colors('dark');
+}
+```
+
+## TypeScript Exports
+
+```ts
+import { Color, Size, Severity, Orientation } from '@mezzanine-ui/system';
+import { toCssVar } from '@mezzanine-ui/system/css';
+```
+
+- `Size` — `'small' | 'medium' | 'large'`
+- `Severity` — `'success' | 'warning' | 'error' | 'info'`
+- `Orientation` — `'horizontal' | 'vertical'`
+- `toCssVar(token)` — converts a token name to its `var(--mzn-...)` CSS variable string
+
+## Consumed By
+
+- `@mezzanine-ui/core` — imports SCSS mixins to generate all component stylesheets
+- `@mezzanine-ui/react` — imports TypeScript types and runtime token helpers
+
+## GitHub
+
+https://github.com/Mezzanine-UI/mezzanine/tree/main/packages/system

@@ -1,0 +1,53 @@
+# @mezzanine-ui/core
+
+> CSS styles and shared TypeScript type definitions for Mezzanine UI — consumed by @mezzanine-ui/react to provide component styling.
+
+## Purpose
+
+`@mezzanine-ui/core` ships:
+- Per-component SCSS stylesheets compiled to CSS
+- Shared TypeScript types and constants used across components (e.g. `Size`, `Severity`, `Orientation`, calendar adapter interfaces)
+- SCSS design-token utilities, sourced from `@mezzanine-ui/system`
+
+This package does **not** export React components. It is a styling and type layer only.
+
+## Style Import Pattern
+
+Each component has its own style entry point. Import it once in your application (e.g. in your app entry file or a global CSS barrel):
+
+```ts
+import '@mezzanine-ui/core/button/styles';
+import '@mezzanine-ui/core/input/styles';
+import '@mezzanine-ui/core/select/styles';
+import '@mezzanine-ui/core/modal/styles';
+```
+
+Available style directories mirror component names: `accordion`, `alert-banner`, `anchor`, `backdrop`, `badge`, `breadcrumb`, `button`, `calendar`, `checkbox`, `drawer`, `empty`, `form`, `icon`, `inline-message`, `input`, `message`, `modal`, `navigation`, `page-footer`, `page-header`, `pagination`, `picker`, `portal`, `progress`, `radio`, `result-state`, `select`, `skeleton`, `slider`, `spin`, `stepper`, `tag`, `text-field`, `textarea`, `time-panel`, `toggle`, `tooltip`, `typography`, `upload`.
+
+## SCSS Usage (advanced)
+
+If you build your own components using Mezzanine design tokens, you can consume the SCSS directly:
+
+```scss
+@use '@mezzanine-ui/system' as system;
+@use '@mezzanine-ui/core/button' as button-core;
+```
+
+The package marks all `.scss` and `.css` files as `sideEffects` so bundlers do not tree-shake them.
+
+## Relationship with Other Packages
+
+| Dependency              | Role                                                    |
+| ----------------------- | ------------------------------------------------------- |
+| `@mezzanine-ui/system`  | Provides SCSS design-token mixins consumed by core SCSS |
+| `@mezzanine-ui/icons`   | Icon type definitions used in core TypeScript types     |
+
+`@mezzanine-ui/react` depends on this package and imports styles alongside React component logic.
+
+## Peer Dependencies
+
+`lodash >= 4` (required); `dayjs >= 1`, `moment >= 2`, `luxon >= 3` (all optional — only needed when using Calendar/Picker components).
+
+## GitHub
+
+https://github.com/Mezzanine-UI/mezzanine/tree/main/packages/core

@@ -1,0 +1,47 @@
+# @mezzanine-ui/icons
+
+> SVG icon definitions for Mezzanine UI — plain JavaScript objects that are passed to the `<Icon>` component from @mezzanine-ui/react.
+
+## Purpose
+
+Each icon is a plain object of type `IconDefinition` (not a React component). This keeps the package framework-agnostic. To render an icon in React, pass it to the `Icon` component from `@mezzanine-ui/react`.
+
+## Usage
+
+```tsx
+import { PlusIcon, CloseIcon, CheckedFilledIcon } from '@mezzanine-ui/icons';
+import Icon from '@mezzanine-ui/react/Icon';
+
+<Icon icon={PlusIcon} />
+<Icon icon={CloseIcon} color="error" />
+<Icon icon={CheckedFilledIcon} />
+```
+
+The `Icon` component accepts `icon`, `color`, and `size` props. See `@mezzanine-ui/react` for full prop documentation.
+
+## Icon Categories
+
+| Category     | Example exports                                                                     |
+| ------------ | ----------------------------------------------------------------------------------- |
+| **System**   | `MenuIcon`, `SearchIcon`, `UserIcon`, `CalendarIcon`, `NotificationIcon`, `HomeIcon`, `SpinnerIcon` |
+| **Arrow**    | `CaretDownIcon`, `ChevronRightIcon`, `LongTailArrowLeftIcon`, `SwitchVerticalIcon`  |
+| **Controls** | `CloseIcon`, `PlusIcon`, `MinusIcon`, `TrashIcon`, `EyeIcon`, `FilterIcon`, `LockIcon` |
+| **Alert**    | `CheckedFilledIcon`, `ErrorFilledIcon`, `WarningFilledIcon`, `InfoFilledIcon`, `DangerousFilledIcon` |
+| **Content**  | `EditIcon`, `DownloadIcon`, `UploadIcon`, `CopyIcon`, `FileIcon`, `StarFilledIcon`, `MailIcon` |
+| **Stepper**  | `Item0Icon` – `Item9Icon` (numeric step indicators)                                 |
+
+## All Named Exports
+
+See `packages/icons/src/index.ts` for the authoritative list of all ~110 exported icon definitions.
+
+## Type
+
+```ts
+import type { IconDefinition } from '@mezzanine-ui/icons';
+```
+
+An `IconDefinition` is a plain object — it is safe to store in constants, pass as props, or serialize.
+
+## GitHub
+
+https://github.com/Mezzanine-UI/mezzanine/tree/main/packages/icons

@@ -22,11 +22,13 @@ const licenseDistPath = path.resolve(packageDistPath, 'LICENSE');
 fse.copyFileSync(licenseFilePath, licenseDistPath);
 
 /**
- * copy README.md/package.json
+ * copy README.md/package.json/COMPONENTS.md/llms.txt
  */
-['README.md', 'package.json'].forEach((file) => {
-  const readmeFilePath = path.resolve(packagePath, file);
-  const readmeDistpath = path.resolve(packageDistPath, file);
+['README.md', 'package.json', 'COMPONENTS.md', 'llms.txt'].forEach((file) => {
+  const filePath = path.resolve(packagePath, file);
+  const distPath = path.resolve(packageDistPath, file);
 
-  fse.copyFileSync(readmeFilePath, readmeDistpath);
+  if (fse.existsSync(filePath)) {
+    fse.copyFileSync(filePath, distPath);
+  }
 });
