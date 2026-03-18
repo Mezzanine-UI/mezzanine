@@ -241,6 +241,8 @@ export const IconOnly = () => (
             <Button
               icon={EditIcon}
               iconType="icon-only"
+              aria-label="編輯篩選條件"
+              title="編輯篩選條件"
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
               }}
@@ -251,6 +253,8 @@ export const IconOnly = () => (
               color="danger"
               icon={TrashIcon}
               iconType="icon-only"
+              aria-label="刪除篩選條件"
+              title="刪除篩選條件"
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
               }}
@@ -343,6 +347,8 @@ export const DisabledWithActions = () => (
               disabled
               icon={EditIcon}
               iconType="icon-only"
+              aria-label="編輯"
+              title="編輯"
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
               }}
@@ -354,6 +360,8 @@ export const DisabledWithActions = () => (
               disabled
               icon={TrashIcon}
               iconType="icon-only"
+              aria-label="刪除"
+              title="刪除"
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
               }}
@@ -373,6 +381,8 @@ export const DisabledWithActions = () => (
             <Button
               icon={EditIcon}
               iconType="icon-only"
+              aria-label="編輯"
+              title="編輯"
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
               }}
@@ -383,6 +393,8 @@ export const DisabledWithActions = () => (
               color="danger"
               icon={TrashIcon}
               iconType="icon-only"
+              aria-label="刪除"
+              title="刪除"
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
               }}
