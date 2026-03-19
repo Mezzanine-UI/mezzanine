@@ -45,10 +45,14 @@ const SpinnerButton = forwardRef<HTMLButtonElement, SpinnerButtonProps>(
           size === 'main' ? classes.main : classes.sub,
           className,
         )}
+        aria-label={type === 'up' ? 'Increase value' : 'Decrease value'}
         title={type === 'up' ? 'Increase value' : 'Decrease value'}
         {...rest}
       >
-        <Icon icon={type === 'up' ? CaretUpFlatIcon : CaretDownFlatIcon} />
+        <Icon
+          aria-hidden="true"
+          icon={type === 'up' ? CaretUpFlatIcon : CaretDownFlatIcon}
+        />
       </button>
     );
   },
