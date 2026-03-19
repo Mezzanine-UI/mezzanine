@@ -150,6 +150,7 @@ function BasicStoryContent() {
         }}
       >
         <li>
+          <p>Uploading:</p>
           <UploadPictureCard
             file={imageFile}
             imageFit="contain"
@@ -157,6 +158,7 @@ function BasicStoryContent() {
           />
         </li>
         <li>
+          <p>Enable & Hover-Multiple Files:</p>
           <UploadPictureCard
             file={imageFile}
             imageFit="contain"
@@ -167,6 +169,19 @@ function BasicStoryContent() {
           />
         </li>
         <li>
+          <p>Hover-Limit Single File:</p>
+          <UploadPictureCard
+            file={imageFile}
+            ariaLabels={{
+              clickToReplace: 'Replace',
+            }}
+            status="done"
+            onDelete={action('onDelete')}
+            onReplace={action('onReplace')}
+          />
+        </li>
+        <li>
+          <p>Error:</p>
           <UploadPictureCard
             file={imageFile}
             imageFit="contain"
@@ -176,11 +191,24 @@ function BasicStoryContent() {
           />
         </li>
         <li>
+          <p>Disable:</p>
           <UploadPictureCard
             file={imageFile}
             imageFit="contain"
             status="done"
             disabled
+            onZoomIn={action('onZoomIn')}
+            onDownload={action('onDownload')}
+            onDelete={action('onDelete')}
+          />
+        </li>
+        <li>
+          <p>Read Only:</p>
+          <UploadPictureCard
+            file={imageFile}
+            imageFit="contain"
+            status="done"
+            readable
             onZoomIn={action('onZoomIn')}
             onDownload={action('onDownload')}
             onDelete={action('onDelete')}
@@ -349,6 +377,9 @@ function ReplaceModeStoryContent() {
             status="done"
             onDelete={action('onDelete')}
             onReplace={action('onReplace')}
+            ariaLabels={{
+              clickToReplace: 'Replace',
+            }}
           />
         </li>
         <li>
@@ -358,6 +389,9 @@ function ReplaceModeStoryContent() {
             size="sub"
             onDelete={action('onDelete')}
             onReplace={action('onReplace')}
+            ariaLabels={{
+              clickToReplace: 'Replace',
+            }}
           />
         </li>
       </ul>
