@@ -90,6 +90,7 @@ export const modalClasses = {
   /** Body Verification */
   modalBodyVerification: `${modalPrefix}__body-verification`,
   modalBodyVerificationInputs: `${modalPrefix}__body-verification__inputs`,
+  modalBodyVerificationInputsExtended: `${modalPrefix}__body-verification__inputs--extended`,
   modalBodyVerificationInput: `${modalPrefix}__body-verification__input`,
   modalBodyVerificationInputError: `${modalPrefix}__body-verification__input--error`,
   modalBodyVerificationResend: `${modalPrefix}__body-verification__resend`,

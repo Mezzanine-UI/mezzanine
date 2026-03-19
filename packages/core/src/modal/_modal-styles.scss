@@ -241,7 +241,16 @@ $modalSizes: (
 
     &__inputs {
       display: flex;
-      gap: spacing.semantic-variable(gap, base);
+      gap: spacing.semantic-variable(gap, comfort);
+
+      &--extended {
+        gap: spacing.semantic-variable(gap, base);
+
+        .#{$prefix}__body-verification__input {
+          width: spacing.semantic-variable(size, element, loose);
+          height: spacing.semantic-variable(size, element, extra-wide);
+        }
+      }
     }
 
     &__input {
