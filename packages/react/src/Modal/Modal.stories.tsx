@@ -1059,13 +1059,16 @@ export const VerificationCodeInput: StoryObj = {
           }}
           showStatusTypeIcon
           supportingText="請輸入我們寄送至您信箱的驗證碼"
+          supportingTextAlign="center"
           title="電子郵件驗證"
+          titleAlign="center"
           modalStatusType="email"
           modalType="verification"
           onClose={onClose4Digit}
           open={open4Digit}
           showModalFooter
           showModalHeader
+          size="tight"
         >
           <ModalBodyForVerification
             length={4}
@@ -1092,13 +1095,16 @@ export const VerificationCodeInput: StoryObj = {
           }}
           showStatusTypeIcon
           supportingText="請輸入6位數驗證碼以完成雙重驗證"
+          supportingTextAlign="center"
           title="雙重驗證 (2FA)"
+          titleAlign="center"
           modalStatusType="info"
           modalType="verification"
           onClose={onClose6Digit}
           open={open6Digit}
           showModalFooter
           showModalHeader
+          size="tight"
         >
           <ModalBodyForVerification
             length={6}
