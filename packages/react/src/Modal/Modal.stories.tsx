@@ -853,6 +853,9 @@ export const ModalFooterWithPassword: StoryObj = {
 export const ExtendedSplit: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
+    const [sidebarPosition, setSidebarPosition] = useState<'left' | 'right'>(
+      'right',
+    );
 
     const onClose = useCallback(() => {
       setOpen(false);
@@ -860,22 +863,57 @@ export const ExtendedSplit: StoryObj = {
 
     return (
       <>
-        <Button onClick={() => setOpen(true)} variant="base-primary">
-          Extended Split Layout
-        </Button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button
+            onClick={() => {
+              setSidebarPosition('right');
+              setOpen(true);
+            }}
+            variant="base-primary"
+          >
+            Sidebar Right
+          </Button>
+          <Button
+            onClick={() => {
+              setSidebarPosition('left');
+              setOpen(true);
+            }}
+            variant="base-primary"
+          >
+            Sidebar Left
+          </Button>
+        </div>
         <Modal
+          cancelText="匯出 CSV"
+          confirmText="開始資料校正"
+          extendedSplitLeftSideContent={
+            <div
+              style={{
+                alignItems: 'center',
+                backgroundColor: 'rgba(147, 127, 199, 0.1)',
+                display: 'flex',
+                justifyContent: 'center',
+                minHeight: '300px',
+                width: '100%',
+              }}
+            >
+              <Typography color="text-neutral" variant="body">
+                Left Side Content (Slot)
+              </Typography>
+            </div>
+          }
           extendedSplitRightSideContent={
             <div
               style={{
+                alignItems: 'center',
+                backgroundColor: 'rgba(147, 127, 199, 0.1)',
+                display: 'flex',
+                justifyContent: 'center',
                 minHeight: '300px',
                 width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(147, 127, 199, 0.1)',
               }}
             >
-              <Typography variant="body" color="text-neutral">
+              <Typography color="text-neutral" variant="body">
                 Right Side Content (Slot) Lorem ipsum dolor sit amet,
                 consectetur adipisicing elit. Distinctio id quibusdam quis
                 similique vitae? A ab alias aperiam assumenda deleniti ducimus
@@ -883,101 +921,11 @@ export const ExtendedSplit: StoryObj = {
                 blanditiis cum cumque dolor, ea eveniet exercitationem fugit hic
                 id incidunt ipsam mollitia nemo porro qui quibusdam quisquam
                 similique temporibus ullam, veniam voluptas voluptates
-                voluptatum? Aliquid beatae consequatur ipsa minus perferendis
-                quae, tempora? Accusantium aperiam, beatae consequuntur culpa
-                cupiditate debitis delectus deleniti dignissimos dolor dolorum
-                ducimus enim eos esse, eveniet id incidunt ipsa laboriosam
-                laudantium magnam magni maxime molestiae natus nobis optio
-                provident quasi quia quisquam quo repellat repellendus suscipit
-                vitae?
+                voluptatum?
               </Typography>
             </div>
           }
-          extendedSplitLeftSideContent={
-            <div
-              style={{
-                minHeight: '300px',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(147, 127, 199, 0.1)',
-              }}
-            >
-              <Typography variant="body" color="text-neutral">
-                Left Side Content (Slot)
-              </Typography>
-            </div>
-          }
-          cancelText="匯出 CSV"
-          confirmText="開始資料校正"
-          onCancel={onClose}
-          onConfirm={onClose}
-          title="組織專案"
-          modalType="extendedSplit"
-          size="wide"
-          onClose={onClose}
-          open={open}
-          showDismissButton
-          showModalFooter
-          showModalHeader
-        />
-      </>
-    );
-  },
-};
-
-export const ExtendedSplitSidebarLeft: StoryObj = {
-  render: function Render() {
-    const [open, setOpen] = useState(false);
-
-    const onClose = useCallback(() => {
-      setOpen(false);
-    }, []);
-
-    return (
-      <>
-        <Button onClick={() => setOpen(true)} variant="base-primary">
-          Extended Split Layout (Sidebar Left)
-        </Button>
-        <Modal
-          cancelText="匯出 CSV"
-          confirmText="開始資料校正"
-          extendedSplitLeftSideContent={
-            <div
-              style={{
-                alignItems: 'center',
-                backgroundColor: 'rgba(147, 127, 199, 0.1)',
-                display: 'flex',
-                justifyContent: 'center',
-                minHeight: '300px',
-                width: '100%',
-              }}
-            >
-              <Typography color="text-neutral" variant="body">
-                Left Side Content (Slot)
-              </Typography>
-            </div>
-          }
-          extendedSplitRightSideContent={
-            <div
-              style={{
-                alignItems: 'center',
-                backgroundColor: 'rgba(147, 127, 199, 0.1)',
-                display: 'flex',
-                justifyContent: 'center',
-                minHeight: '300px',
-                width: '100%',
-              }}
-            >
-              <Typography color="text-neutral" variant="body">
-                Right Side Content (Slot) Lorem ipsum dolor sit amet,
-                consectetur adipisicing elit. Distinctio id quibusdam quis
-                similique vitae?
-              </Typography>
-            </div>
-          }
-          extendedSplitSidebarPosition="left"
+          extendedSplitSidebarPosition={sidebarPosition}
           modalType="extendedSplit"
           onCancel={onClose}
           onClose={onClose}
