@@ -361,11 +361,12 @@ $modalSizes: (
   }
 
   &--media-preview {
-    width: auto;
-    height: auto;
+    width: 100vw;
+    height: 100dvh;
     background-color: unset;
     padding: 0;
     box-shadow: none;
+    overflow: visible;
   }
 
   &__media-preview-content {
@@ -373,20 +374,19 @@ $modalSizes: (
     align-items: center;
     justify-content: center;
     width: 100%;
+    height: 100%;
   }
 
   &__media-preview-media-container {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    min-width: 0;
-    min-height: 0;
+    width: 100%;
+    height: 100%;
   }
 
   &__media-preview-image {
     position: absolute;
+    inset: 0;
+    margin: auto;
     // 36px 是 icon button 的寬度加上 padding
     max-width: calc(100vw - (spacing.semantic-variable(padding, horizontal, wide) + 36px + spacing.semantic-variable(padding, horizontal, relaxed)) * 2);
     max-height: calc(100vh - (spacing.semantic-variable(padding, vertical, base) + typography.primitive-line-height-variable(body) + spacing.semantic-variable(padding, vertical, comfort)) * 2);

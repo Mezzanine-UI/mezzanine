@@ -1,5 +1,5 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MediaPreviewModal } from '.';
 import Button from '../Button';
 
@@ -287,6 +287,58 @@ export const MixedOrientations: StoryObj = {
         <MediaPreviewModal
           defaultIndex={2}
           mediaItems={mixedImages}
+          onClose={() => setOpen(false)}
+          open={open}
+        />
+      </>
+    );
+  },
+};
+
+export const LocalFileUpload: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [blobUrls, setBlobUrls] = useState<string[]>([]);
+
+    const handleFileChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files ?? []);
+
+        setBlobUrls((prev) => {
+          prev.forEach((url) => URL.revokeObjectURL(url));
+
+          return files.map((file) => URL.createObjectURL(file));
+        });
+      },
+      [],
+    );
+
+    useEffect(() => {
+      return () => {
+        blobUrls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    }, [blobUrls]);
+
+    return (
+      <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <input
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+            type="file"
+          />
+          <Button
+            disabled={blobUrls.length === 0}
+            onClick={() => setOpen(true)}
+            variant="base-primary"
+          >
+            預覽已上傳圖片（{blobUrls.length} 張）
+          </Button>
+        </div>
+        <MediaPreviewModal
+          enableCircularNavigation
+          mediaItems={blobUrls}
           onClose={() => setOpen(false)}
           open={open}
         />
