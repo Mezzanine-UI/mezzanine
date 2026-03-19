@@ -305,7 +305,7 @@ $image-size: spacing.primitive-variable(140);
         &::before {
           border-width: 2px;
           border-style: solid;
-          border-color: palette.semantic-variable("background", fixed-dark);
+          border-color: palette.semantic-variable(border, fixed-light);
           border-radius: 50%;
           content: '';
           height: spacing.semantic-variable(size, element, gentle);
