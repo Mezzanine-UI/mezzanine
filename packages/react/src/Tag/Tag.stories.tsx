@@ -1,11 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { ReactNode } from 'react';
+import { ReactNode, useCallback, useRef } from 'react';
 import Tag, { TagProps, TagSize } from '.';
 import { TagType } from '@mezzanine-ui/core/tag';
 import Typography from '../Typography';
 import { useState } from 'react';
 import Button from '../Button';
 import TagGroup from './TagGroup';
+import { AutoComplete } from '../AutoComplete';
+import { SelectValue } from '../Select/typings';
 
 export default {
   title: 'Data Display/Tag',
@@ -337,6 +339,92 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
+};
+
+const autocompleteOptions: SelectValue[] = [
+  { id: 'design', name: 'Design' },
+  { id: 'development', name: 'Development' },
+  { id: 'product', name: 'Product' },
+  { id: 'marketing', name: 'Marketing' },
+  { id: 'research', name: 'Research' },
+  { id: 'data', name: 'Data' },
+];
+
+export const Addable_Interactive = {
+  parameters: {
+    control: { disable: true },
+  },
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [options, setOptions] = useState<SelectValue[]>(autocompleteOptions);
+    const [selections, setSelections] = useState<SelectValue[]>([]);
+    const nextIdRef = useRef(autocompleteOptions.length + 1);
+
+    const handleInsert = useCallback(
+      (text: string, currentOptions: SelectValue[]): SelectValue[] => {
+        const newOption: SelectValue = {
+          id: `new-${nextIdRef.current++}`,
+          name: text,
+        };
+        const updatedOptions = [...currentOptions, newOption];
+
+        setOptions(updatedOptions);
+
+        return updatedOptions;
+      },
+      [],
+    );
+
+    const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+      setOptions(cleanedOptions);
+    }, []);
+
+    const closeDropdown = useCallback(() => {
+      setOpen(false);
+    }, []);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <TagGroup>
+          {selections.map((selection) => (
+            <Tag
+              key={selection.id}
+              label={selection.name}
+              type="dismissable"
+              onClose={() =>
+                setSelections((prev) =>
+                  prev.filter((s) => s.id !== selection.id),
+                )
+              }
+            />
+          ))}
+          <Tag
+            label={open ? '收起選單' : '新增標籤'}
+            type="addable"
+            onMouseDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              setOpen((prev) => !prev);
+            }}
+          />
+        </TagGroup>
+        <AutoComplete
+          addable
+          fullWidth
+          inputPosition="inside"
+          mode="multiple"
+          onChange={setSelections}
+          onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
+          onVisibilityChange={closeDropdown}
+          open={open}
+          options={options}
+          placeholder="搜尋或新增標籤..."
+          value={selections}
+        />
+      </div>
+    );
+  },
 };
 
 const mockTags = Array.from(new Array(5), (_, index) => `Tag${index + 1}`);
