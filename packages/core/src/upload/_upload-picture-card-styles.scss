@@ -182,6 +182,7 @@ $image-size: spacing.primitive-variable(140);
     gap: spacing.semantic-variable(gap, tiny);
     align-items: center;
     justify-content: center;
+    max-width: 80%;
   }
 
   &__name {
