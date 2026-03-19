@@ -78,6 +78,13 @@ interface ExtendedSplitModalProps extends CommonModalProps {
    */
   extendedSplitRightSideContent: React.ReactNode;
   /**
+   * Controls which side the sidebar panel (narrow column with footer) appears on.
+   * - `'left'`: sidebar on the left, wide content on the right
+   * - `'right'`: wide content on the left, sidebar on the right
+   * @default 'right'
+   */
+  extendedSplitSidebarPosition?: 'left' | 'right';
+  /**
    * Controls the type/layout of the modal.
    * - 'extendedSplit': Modal with split layout (footer inside left content)
    */
@@ -101,6 +108,10 @@ interface OtherModalProps extends CommonModalProps {
    * Cannot be provided when modalType is not 'extendedSplit'.
    */
   extendedSplitRightSideContent?: never;
+  /**
+   * 此模式下不適用。
+   */
+  extendedSplitSidebarPosition?: never;
   /**
    * Controls the type/layout of the modal.
    * - 'standard': Default modal with body container
@@ -259,6 +270,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       disablePortal = false,
       extendedSplitLeftSideContent,
       extendedSplitRightSideContent,
+      extendedSplitSidebarPosition = 'right',
       fullScreen = false,
       loading = false,
       modalStatusType = 'info',
@@ -417,7 +429,12 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
               />
             )}
             {modalType === 'extendedSplit' && (
-              <div className={classes.modalBodyContainerExtendedSplit}>
+              <div
+                className={cx(classes.modalBodyContainerExtendedSplit, {
+                  [classes.modalBodyContainerExtendedSplitSidebarLeft]:
+                    extendedSplitSidebarPosition === 'left',
+                })}
+              >
                 <div className={classes.modalBodyContainerExtendedSplitRight}>
                   {extendedSplitRightSideContent}
                 </div>

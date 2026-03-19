@@ -75,6 +75,7 @@ export const modalClasses = {
   modalBodyContainerWithTopSeparator: `${modalPrefix}__body-container--with-top-separator`,
   modalBodyContainerWithBottomSeparator: `${modalPrefix}__body-container--with-bottom-separator`,
   modalBodyContainerExtendedSplit: `${modalPrefix}__body-container__extended-split`,
+  modalBodyContainerExtendedSplitSidebarLeft: `${modalPrefix}__body-container__extended-split--sidebar-left`,
   modalBodyContainerExtendedSplitRight: `${modalPrefix}__body-container__extended-split-right`,
   modalBodyContainerExtendedSplitLeft: `${modalPrefix}__body-container__extended-split-left`,
   modalBodyContainerExtendedSplitLeftSideContent: `${modalPrefix}__body-container__extended-split-left__content`,

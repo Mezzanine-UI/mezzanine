@@ -927,6 +927,73 @@ export const ExtendedSplit: StoryObj = {
   },
 };
 
+export const ExtendedSplitSidebarLeft: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+
+    const onClose = useCallback(() => {
+      setOpen(false);
+    }, []);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Extended Split Layout (Sidebar Left)
+        </Button>
+        <Modal
+          cancelText="匯出 CSV"
+          confirmText="開始資料校正"
+          extendedSplitLeftSideContent={
+            <div
+              style={{
+                alignItems: 'center',
+                backgroundColor: 'rgba(147, 127, 199, 0.1)',
+                display: 'flex',
+                justifyContent: 'center',
+                minHeight: '300px',
+                width: '100%',
+              }}
+            >
+              <Typography color="text-neutral" variant="body">
+                Left Side Content (Slot)
+              </Typography>
+            </div>
+          }
+          extendedSplitRightSideContent={
+            <div
+              style={{
+                alignItems: 'center',
+                backgroundColor: 'rgba(147, 127, 199, 0.1)',
+                display: 'flex',
+                justifyContent: 'center',
+                minHeight: '300px',
+                width: '100%',
+              }}
+            >
+              <Typography color="text-neutral" variant="body">
+                Right Side Content (Slot) Lorem ipsum dolor sit amet,
+                consectetur adipisicing elit. Distinctio id quibusdam quis
+                similique vitae?
+              </Typography>
+            </div>
+          }
+          extendedSplitSidebarPosition="left"
+          modalType="extendedSplit"
+          onCancel={onClose}
+          onClose={onClose}
+          onConfirm={onClose}
+          open={open}
+          showDismissButton
+          showModalFooter
+          showModalHeader
+          size="wide"
+          title="檢視專案"
+        />
+      </>
+    );
+  },
+};
+
 const LONG_BODY_TEXT = Array.from({ length: 12 }, (_, i) => (
   <p key={i} style={{ margin: '0 0 12px' }}>
     Paragraph {i + 1} — Lorem ipsum dolor sit amet, consectetur adipisicing

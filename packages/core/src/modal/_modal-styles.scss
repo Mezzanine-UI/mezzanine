@@ -197,6 +197,15 @@ $modalSizes: (
       display: flex;
       flex-wrap: nowrap;
       border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
+
+      &--sidebar-left {
+        flex-direction: row-reverse;
+
+        .#{$prefix}__body-container__extended-split-left {
+          border-left: none;
+          border-right: 1px solid palette.semantic-variable(separator, neutral-faint);
+        }
+      }
     }
 
     &__extended-split-right {

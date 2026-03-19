@@ -17,6 +17,7 @@ export type CropperModalProps = Omit<
   | 'modalType'
   | 'extendedSplitLeftSideContent'
   | 'extendedSplitRightSideContent'
+  | 'extendedSplitSidebarPosition'
   | 'onCancel'
   | 'onConfirm'
   | 'showCancelButton'
