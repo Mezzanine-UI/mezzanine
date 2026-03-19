@@ -21,10 +21,10 @@ import {
   defaultUploadPictureCardErrorMessage,
 } from '@mezzanine-ui/core/upload';
 
-import { DangerousFilledIcon, FileIcon, InfoFilledIcon } from '@mezzanine-ui/icons';
+import { DangerousFilledIcon, InfoFilledIcon } from '@mezzanine-ui/icons';
 
 import Icon from '../Icon';
-import Modal, { MediaPreviewModal } from '../Modal';
+import { MediaPreviewModal } from '../Modal';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { isImageFile } from './upload-utils';
@@ -586,11 +586,6 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
 
     const previewImageSrc = previewFile?.url ?? previewObjectUrl ?? '';
 
-    const previewFileName =
-      previewFile?.file?.name ??
-      previewFile?.url?.split('/').pop() ??
-      '';
-
     const { imageFiles, nonImageFiles } = useMemo(() => {
       const images: UploadFile[] = [];
       const nonImages: UploadFile[] = [];
@@ -808,6 +803,24 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
                   })}
                 />
               ))}
+              {nonImageFiles.map((uploadFile) => (
+                <UploadPictureCard
+                  ariaLabels={ariaLabels}
+                  key={uploadFile.id}
+                  file={uploadFile.file}
+                  url={uploadFile.url}
+                  id={uploadFile.id}
+                  status={uploadFile.status}
+                  size={size}
+                  disabled={disabled}
+                  errorMessage={uploadFile.errorMessage}
+                  onDelete={() => handleDelete(uploadFile.id)}
+                  onReload={() => handleReload(uploadFile.id)}
+                  {...(!isSingleFileCardMode && {
+                    onDownload: () => handleDownload(uploadFile.id),
+                  })}
+                />
+              ))}
               {!isSingleFileCardMode && inlineCardUploaderElement}
               {isSingleFileCardMode &&
                 imageFiles.length === 0 &&
@@ -827,7 +840,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
               )}
             </>
           )}
-          {nonImageFiles.length > 0 && nonImageFiles.map(renderUploadItem)}
+          {!shouldUsePictureCard && nonImageFiles.length > 0 && nonImageFiles.map(renderUploadItem)}
           {!shouldUsePictureCard &&
             imageFiles.length > 0 &&
             imageFiles.map(renderUploadItem)}
@@ -839,17 +852,6 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
             onClose={() => setIsPreviewOpen(false)}
             mediaItems={[previewImageSrc]}
           />
-        )}
-        {previewFile && !previewIsImage && (
-          <Modal
-            modalType="standard"
-            open={isPreviewOpen}
-            onClose={() => setIsPreviewOpen(false)}
-            showModalHeader
-            title={previewFileName}
-          >
-            <Icon icon={FileIcon} />
-          </Modal>
         )}
       </div>
     );

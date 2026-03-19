@@ -847,8 +847,7 @@ function SingleFileLimitStoryContent() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: 800 }}>
       <div>
-        <h3>Cards Mode (maxFiles=1):</h3>
-        <p>The uploader card disappears once the slot is filled.</p>
+        <h3>上傳一張照片的情境</h3>
         <SingleFileLimitUpload mode="cards" />
       </div>
     </div>
