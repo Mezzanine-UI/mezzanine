@@ -811,3 +811,58 @@ export const PreloadedImageFromUrl: Story = {
   },
 };
 
+function SingleFileLimitUpload({ mode }: { mode: UploadProps['mode'] }) {
+  const { files, handleChange } = useControlledFiles(
+    [],
+    useCallback((next: UploadFile[]) => action('onChange')(next), []),
+  );
+
+  return (
+    <Upload
+      files={files}
+      maxFiles={1}
+      mode={mode}
+      multiple={false}
+      onChange={handleChange}
+      onDelete={storyHandlers.onDelete}
+      onDownload={storyHandlers.onDownload}
+      onMaxFilesExceeded={action('onMaxFilesExceeded')}
+      onReload={storyHandlers.onReload}
+      onUpload={simulateUpload}
+      onZoomIn={storyHandlers.onZoomIn}
+      hints={[
+        {
+          label: '最多 1 個檔案。',
+          type: 'info',
+        },
+      ]}
+      ariaLabels={{
+        clickToReplace: 'Replace',
+      }}
+    />
+  );
+}
+
+function SingleFileLimitStoryContent() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: 800 }}>
+      <div>
+        <h3>Cards Mode (maxFiles=1):</h3>
+        <p>The uploader card disappears once the slot is filled.</p>
+        <SingleFileLimitUpload mode="cards" />
+      </div>
+    </div>
+  );
+}
+
+export const SingleFileLimit: Story = {
+  render: () => <SingleFileLimitStoryContent />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates limiting uploads to a single file using `maxFiles={1}`. The uploader disables itself once the limit is reached. Selecting additional files triggers `onMaxFilesExceeded`.',
+      },
+    },
+  },
+};
+

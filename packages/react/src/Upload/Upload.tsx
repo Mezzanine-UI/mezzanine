@@ -12,6 +12,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type ReactNode,
 } from 'react';
 
@@ -20,15 +21,17 @@ import {
   defaultUploadPictureCardErrorMessage,
 } from '@mezzanine-ui/core/upload';
 
-import { DangerousFilledIcon, InfoFilledIcon } from '@mezzanine-ui/icons';
+import { DangerousFilledIcon, FileIcon, InfoFilledIcon } from '@mezzanine-ui/icons';
 
 import Icon from '../Icon';
+import Modal, { MediaPreviewModal } from '../Modal';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { isImageFile } from './upload-utils';
 import type { UploaderProps } from './Uploader';
 import Uploader from './Uploader';
 import UploadItem from './UploadItem';
+import type { UploadPictureCardAriaLabels } from './UploadPictureCard';
 import UploadPictureCard from './UploadPictureCard';
 
 export interface UploadFile {
@@ -161,6 +164,11 @@ export interface UploadProps
    */
   errorIcon?: ReactNode;
   /**
+   * Aria labels passed to picture cards in `cards` / `card-wall` mode.
+   * Useful for customizing text such as "Click to Replace".
+   */
+  ariaLabels?: UploadPictureCardAriaLabels;
+  /**
    * Fired when files list changes.
    */
   onChange?: (files: UploadFile[]) => void;
@@ -241,6 +249,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
       onMaxFilesExceeded,
       errorMessage,
       errorIcon,
+      ariaLabels,
       ...rest
     } = props;
 
@@ -248,6 +257,9 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const filesRef = useRef<UploadFile[]>(files);
     const replaceFileIdRef = useRef<string | null>(null);
     const replaceInputRef = useRef<HTMLInputElement>(null);
+
+    const [previewFile, setPreviewFile] = useState<UploadFile | null>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     useEffect(() => {
       filesRef.current = files;
@@ -538,12 +550,46 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const handleZoomIn = useCallback(
       (fileId: string) => {
         const file = findFileById(fileId);
-        if (file && file.file) {
+        if (!file) return;
+
+        setPreviewFile(file);
+        setIsPreviewOpen(true);
+
+        if (file.file) {
           onZoomIn?.(fileId, file.file);
         }
       },
       [findFileById, onZoomIn],
     );
+
+    const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+      if (!previewFile || previewFile.url || !previewFile.file) {
+        setPreviewObjectUrl(null);
+        return;
+      }
+      if (!isImageFile(previewFile.file, previewFile.url)) {
+        setPreviewObjectUrl(null);
+        return;
+      }
+      const url = URL.createObjectURL(previewFile.file);
+      setPreviewObjectUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }, [previewFile]);
+
+    const previewIsImage = previewFile
+      ? isImageFile(previewFile.file, previewFile.url)
+      : false;
+
+    const previewImageSrc = previewFile?.url ?? previewObjectUrl ?? '';
+
+    const previewFileName =
+      previewFile?.file?.name ??
+      previewFile?.url?.split('/').pop() ??
+      '';
 
     const { imageFiles, nonImageFiles } = useMemo(() => {
       const images: UploadFile[] = [];
@@ -738,6 +784,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
             <>
               {imageFiles.map((uploadFile) => (
                 <UploadPictureCard
+                  ariaLabels={ariaLabels}
                   key={uploadFile.id}
                   file={uploadFile.file}
                   url={uploadFile.url}
@@ -786,6 +833,24 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
             imageFiles.map(renderUploadItem)}
         </div>
         {mode === 'cards' && hintsElement}
+        {previewFile && previewIsImage && previewImageSrc && (
+          <MediaPreviewModal
+            open={isPreviewOpen}
+            onClose={() => setIsPreviewOpen(false)}
+            mediaItems={[previewImageSrc]}
+          />
+        )}
+        {previewFile && !previewIsImage && (
+          <Modal
+            modalType="standard"
+            open={isPreviewOpen}
+            onClose={() => setIsPreviewOpen(false)}
+            showModalHeader
+            title={previewFileName}
+          >
+            <Icon icon={FileIcon} />
+          </Modal>
+        )}
       </div>
     );
   },

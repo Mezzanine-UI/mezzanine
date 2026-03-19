@@ -3,6 +3,7 @@
 import {
   forwardRef,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -190,6 +191,21 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
 
     const labels = { ...defaultAriaLabels, ...ariaLabels };
 
+    const handleDelete = useCallback<MouseEventHandler>(
+      (e) => { e.stopPropagation(); onDelete?.(e); },
+      [onDelete],
+    );
+
+    const handleDownload = useCallback<MouseEventHandler>(
+      (e) => { e.stopPropagation(); onDownload?.(e); },
+      [onDownload],
+    );
+
+    const handleZoomIn = useCallback<MouseEventHandler>(
+      (e) => { e.stopPropagation(); onZoomIn?.(e); },
+      [onZoomIn],
+    );
+
     const isImage = useMemo(() => {
       return isImageFile(file, url);
     }, [file, url]);
@@ -358,7 +374,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                         size="minor"
                         icon={ZoomInIcon}
                         iconType="icon-only"
-                        onClick={onZoomIn}
+                        onClick={handleZoomIn}
                         aria-label={labels.zoomIn}
                       />
                     )}
@@ -368,7 +384,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                         size="minor"
                         iconType="icon-only"
                         icon={DownloadIcon}
-                        onClick={onDownload}
+                        onClick={handleDownload}
                         aria-label={labels.download}
                       />
                     )}
@@ -377,7 +393,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                       size="minor"
                       iconType="icon-only"
                       icon={TrashIcon}
-                      onClick={onDelete}
+                      onClick={handleDelete}
                       aria-label={labels.delete}
                     />
                   </div>
