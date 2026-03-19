@@ -584,6 +584,7 @@ $variant-hierarchy: (
 $size-main-configs: (
   // 無 icon
   default: (
+    min-width: spacing.semantic-variable(size, element, expansive),
     padding-y: spacing.semantic-variable(padding, vertical, calm),
     padding-x: spacing.semantic-variable(padding, horizontal, roomy),
   ),
@@ -610,6 +611,7 @@ $size-main-configs: (
 $size-sub-configs: (
   // 無 icon
   default: (
+    min-width: spacing.semantic-variable(size, element, expansive),
     padding-y: spacing.semantic-variable(padding, vertical, tight),
     padding-x: spacing.semantic-variable(padding, horizontal, cozy),
   ),
@@ -792,9 +794,13 @@ $size-configs: (
   $config: map.get($size-configs, $size);
 
   @if $config {
-    // Inverse variant 一律使用 button typography
+    // Inverse variant: main/sub 使用 button-highlight (font-weight 500)，minor 使用 button
     @if $variant == 'inverse' {
-      @include typography.semantic-variable(button);
+      @if $size == 'minor' {
+        @include typography.semantic-variable(button);
+      } @else {
+        @include typography.semantic-variable(button-highlight);
+      }
     } @else {
       @include typography.semantic-variable(map.get($config, typography));
     }
