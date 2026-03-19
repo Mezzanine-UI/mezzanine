@@ -240,6 +240,11 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       return /done|error/.test(status);
     }, [status]);
 
+    const shouldShowFileSize = Boolean(showFileSize && isFinished && fileSize);
+    const shouldSingleLineCenter = Boolean(
+      type === 'thumbnail' && fileName && !shouldShowFileSize,
+    );
+
     useEffect(() => {
       if (!props.file && !props.url) {
         console.warn(
@@ -273,6 +278,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
               [classes.alignCenter]: status !== 'done',
               [classes.error]: status === 'error',
               [classes.disabled]: disabled,
+              [classes.singleLineContent]: shouldSingleLineCenter,
             },
             className,
           )}
@@ -303,7 +309,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
                     </Typography>
                   )}
                 </Tooltip>
-                {showFileSize && isFinished && fileSize && (
+                {shouldShowFileSize && (
                   <Typography className={classes.fontSize}>
                     {fileSize}
                   </Typography>
@@ -345,6 +351,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
                 icon={TrashIcon}
                 size={16}
                 className={classes.deleteIcon}
+                color="neutral-solid"
                 onClick={onDelete}
               />
             </div>

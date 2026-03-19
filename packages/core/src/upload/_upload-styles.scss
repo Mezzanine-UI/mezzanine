@@ -6,7 +6,7 @@
 .#{$prefix} {
   display: flex;
   flex-direction: column;
-  gap: spacing.semantic-variable(gap, comfort);
+  gap: spacing.semantic-variable(gap, slim);
 
   &__upload-list {
     display: flex;
@@ -17,10 +17,6 @@
       flex-flow: row wrap;
       gap: spacing.semantic-variable(gap, base);
     }
-  }
-
-  &__host--cards {
-    gap: 0;
   }
 
   &__hints,
@@ -60,7 +56,7 @@
   &__upload-button-list {
     display: flex;
     flex-direction: column;
-    gap: spacing.semantic-variable(gap, base);
+    gap: spacing.semantic-variable(gap, slim);
   }
 }
 

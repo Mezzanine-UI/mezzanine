@@ -14,6 +14,13 @@ export type UploadType = 'base' | 'button';
  */
 export type UploaderHintType = 'error' | 'info';
 
+/**
+ * 上傳器模式。
+ * - `'basic'` — 基本模式
+ * - `'dropzone'` — 拖放區域模式
+ */
+export type UploaderMode = 'basic' | 'dropzone';
+
 export type UploadPictureControl = {
   getData: () => void;
 };
@@ -30,4 +37,6 @@ export const uploaderClasses = {
   clickToUpload: `${uploaderPrefix}__click-to-upload`,
   fillWidthHints: `${uploaderPrefix}__fill-width-hints`,
   uploadIcon: `${uploaderPrefix}__upload-icon`,
+  externalHints: `${uploaderPrefix}__external-hints`,
+  externalHint: (type: UploaderHintType) => `${uploaderPrefix}__external-hint--${type}`,
 } as const;

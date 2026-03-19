@@ -12,6 +12,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type ReactNode,
 } from 'react';
 
@@ -23,12 +24,14 @@ import {
 import { DangerousFilledIcon, InfoFilledIcon } from '@mezzanine-ui/icons';
 
 import Icon from '../Icon';
+import { MediaPreviewModal } from '../Modal';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { isImageFile } from './upload-utils';
 import type { UploaderProps } from './Uploader';
 import Uploader from './Uploader';
 import UploadItem from './UploadItem';
-import { isImageFile } from './upload-utils';
+import type { UploadPictureCardAriaLabels } from './UploadPictureCard';
 import UploadPictureCard from './UploadPictureCard';
 
 export interface UploadFile {
@@ -83,12 +86,16 @@ export interface UploadProps
    */
   disabled?: boolean;
   /**
+   * Hints passed into the Uploader dropzone area. Only visible in dropzone modes (`list`, `card-wall`).
+   */
+  dropzoneHints?: UploaderProps['hints'];
+  /**
    * Controlled file list for the upload component.
    * Provide this along with `onChange` to fully control the file state.
    */
   files?: UploadFile[];
   /**
-   * Array of hints to display with the upload component.
+   * Array of hints displayed outside the uploader area. Visible in all modes.
    */
   hints?: UploaderProps['hints'];
   /**
@@ -109,18 +116,14 @@ export interface UploadProps
    */
   inputRef?: UploaderProps['inputRef'];
   /**
-   * Whether to fill the width of the container.
-   * @default false
-   */
-  isFillWidth?: boolean;
-  /**
    * Maximum number of files allowed to upload.
    * If exceeded, the excess files will be ignored.
    */
   maxFiles?: number;
   /**
    * The display mode for the upload component.
-   * - 'list': Display files as a list using UploadItem
+   * - 'list': Display files as a list using UploadItem (with dropzone)
+   * - 'basic-list': Display files as a list without drag-and-drop
    * - 'button-list': Display uploader as a button with files in list format
    * - 'cards': Display image files as picture cards using UploadPictureCard
    * - 'card-wall': Display uploader at top with image files as picture cards below
@@ -160,6 +163,11 @@ export interface UploadProps
    * This will be used when a file's status becomes 'error' and no errorIcon is provided.
    */
   errorIcon?: ReactNode;
+  /**
+   * Aria labels passed to picture cards in `cards` / `card-wall` mode.
+   * Useful for customizing text such as "Click to Replace".
+   */
+  ariaLabels?: UploadPictureCardAriaLabels;
   /**
    * Fired when files list changes.
    */
@@ -218,6 +226,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
       accept,
       className,
       disabled = false,
+      dropzoneHints,
       mode = 'list',
       size = 'main',
       showFileSize = true,
@@ -240,6 +249,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
       onMaxFilesExceeded,
       errorMessage,
       errorIcon,
+      ariaLabels,
       ...rest
     } = props;
 
@@ -247,6 +257,9 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const filesRef = useRef<UploadFile[]>(files);
     const replaceFileIdRef = useRef<string | null>(null);
     const replaceInputRef = useRef<HTMLInputElement>(null);
+
+    const [previewFile, setPreviewFile] = useState<UploadFile | null>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     useEffect(() => {
       filesRef.current = files;
@@ -438,10 +451,10 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
               const nextFiles = filesRef.current.map((file) =>
                 tempFiles.some((tf) => tf.id === file.id)
                   ? {
-                      ...file,
-                      status: 'done' as UploadItemStatus,
-                      progress: 100,
-                    }
+                    ...file,
+                    status: 'done' as UploadItemStatus,
+                    progress: 100,
+                  }
                   : file,
               );
 
@@ -537,12 +550,41 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const handleZoomIn = useCallback(
       (fileId: string) => {
         const file = findFileById(fileId);
-        if (file && file.file) {
+        if (!file) return;
+
+        setPreviewFile(file);
+        setIsPreviewOpen(true);
+
+        if (file.file) {
           onZoomIn?.(fileId, file.file);
         }
       },
       [findFileById, onZoomIn],
     );
+
+    const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+      if (!previewFile || previewFile.url || !previewFile.file) {
+        setPreviewObjectUrl(null);
+        return;
+      }
+      if (!isImageFile(previewFile.file, previewFile.url)) {
+        setPreviewObjectUrl(null);
+        return;
+      }
+      const url = URL.createObjectURL(previewFile.file);
+      setPreviewObjectUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }, [previewFile]);
+
+    const previewIsImage = previewFile
+      ? isImageFile(previewFile.file, previewFile.url)
+      : false;
+
+    const previewImageSrc = previewFile?.url ?? previewObjectUrl ?? '';
 
     const { imageFiles, nonImageFiles } = useMemo(() => {
       const images: UploadFile[] = [];
@@ -565,19 +607,23 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const uploaderConfig = useMemo(() => {
       const config: Record<UploadMode, UploaderProps> = {
         list: {
-          isFillWidth: true,
+          mode: 'dropzone',
+          type: 'base',
+        },
+        'basic-list': {
+          mode: 'basic',
           type: 'base',
         },
         'button-list': {
           type: 'button',
         },
         cards: {
+          mode: 'basic',
           type: 'base',
-          isFillWidth: false,
         },
         'card-wall': {
+          mode: 'basic',
           type: 'base',
-          isFillWidth: false,
         },
       };
 
@@ -587,7 +633,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const topUploaderConfig = useMemo(() => {
       if (mode === 'card-wall') {
         return {
-          isFillWidth: true,
+          mode: 'dropzone' as const,
           type: 'base' as const,
         };
       }
@@ -653,7 +699,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
         icon={uploaderIcon}
         inputRef={inputRef}
         inputProps={inputProps}
-        hints={hints}
+        hints={uploaderConfig.mode === 'dropzone' ? dropzoneHints : undefined}
         onUpload={handleUpload}
         {...uploaderConfig}
       />
@@ -670,23 +716,22 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
         icon={uploaderIcon}
         inputRef={inputRef}
         inputProps={inputProps}
-        hints={hints}
+        hints={dropzoneHints}
         onUpload={handleUpload}
         {...topUploaderConfig}
       />
     ) : null;
 
+    // When a top uploader exists (card-wall mode), the inline card uploader is not needed.
+    const inlineCardUploaderElement = topUploaderElement ? null : uploaderElement;
+
     const hintsElement = useMemo(() => {
-      if (
-        !hints ||
-        hints.length === 0 ||
-        mode === 'list' ||
-        mode === 'card-wall'
-      )
-        return null;
+      if (!hints || hints.length === 0) return null;
 
       const hintsClassName =
-        mode === 'cards' ? classes.fillWidthHints : classes.hints;
+        mode === 'list' || mode === 'card-wall' || mode === 'cards'
+          ? classes.fillWidthHints
+          : classes.hints;
 
       return (
         <ul className={hintsClassName}>
@@ -717,10 +762,11 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
         {...rest}
       >
         {topUploaderElement}
+        {mode === 'card-wall' && hintsElement}
         {!shouldUsePictureCard && (
           <div className={classes.uploadButtonList}>
             {uploaderElement}
-            {mode === 'button-list' && hintsElement}
+            {hintsElement}
           </div>
         )}
         <div
@@ -733,6 +779,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
             <>
               {imageFiles.map((uploadFile) => (
                 <UploadPictureCard
+                  ariaLabels={ariaLabels}
                   key={uploadFile.id}
                   file={uploadFile.file}
                   url={uploadFile.url}
@@ -756,10 +803,28 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
                   })}
                 />
               ))}
-              {!isSingleFileCardMode && uploaderElement}
+              {nonImageFiles.map((uploadFile) => (
+                <UploadPictureCard
+                  ariaLabels={ariaLabels}
+                  key={uploadFile.id}
+                  file={uploadFile.file}
+                  url={uploadFile.url}
+                  id={uploadFile.id}
+                  status={uploadFile.status}
+                  size={size}
+                  disabled={disabled}
+                  errorMessage={uploadFile.errorMessage}
+                  onDelete={() => handleDelete(uploadFile.id)}
+                  onReload={() => handleReload(uploadFile.id)}
+                  {...(!isSingleFileCardMode && {
+                    onDownload: () => handleDownload(uploadFile.id),
+                  })}
+                />
+              ))}
+              {!isSingleFileCardMode && inlineCardUploaderElement}
               {isSingleFileCardMode &&
                 imageFiles.length === 0 &&
-                uploaderElement}
+                inlineCardUploaderElement}
               {isSingleFileCardMode && (
                 <input
                   ref={replaceInputRef}
@@ -775,12 +840,19 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(
               )}
             </>
           )}
-          {nonImageFiles.length > 0 && nonImageFiles.map(renderUploadItem)}
+          {!shouldUsePictureCard && nonImageFiles.length > 0 && nonImageFiles.map(renderUploadItem)}
           {!shouldUsePictureCard &&
             imageFiles.length > 0 &&
             imageFiles.map(renderUploadItem)}
         </div>
         {mode === 'cards' && hintsElement}
+        {previewFile && previewIsImage && previewImageSrc && (
+          <MediaPreviewModal
+            open={isPreviewOpen}
+            onClose={() => setIsPreviewOpen(false)}
+            mediaItems={[previewImageSrc]}
+          />
+        )}
       </div>
     );
   },

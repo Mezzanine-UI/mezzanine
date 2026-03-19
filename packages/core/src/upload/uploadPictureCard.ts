@@ -38,6 +38,7 @@ export const uploadPictureCardClasses = {
   errorIcon: `${uploadPictureCardPrefix}__error-icon`,
   error: `${uploadPictureCardPrefix}--error`,
   disabled: `${uploadPictureCardPrefix}--disabled`,
+  readable: `${uploadPictureCardPrefix}--readable`,
   replaceMode: `${uploadPictureCardPrefix}--replace-mode`,
   replaceLabel: `${uploadPictureCardPrefix}__replace-label`,
 } as const;

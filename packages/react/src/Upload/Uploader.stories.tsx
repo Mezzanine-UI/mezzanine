@@ -12,15 +12,12 @@ type Story = StoryObj<UploaderProps>;
 
 export const Playground: Story = {
   args: {
-    id: 'playground-upload',
-    name: 'playground-upload',
     accept: undefined,
     disabled: false,
-    isFillWidth: false,
+    id: 'playground-upload',
+    mode: 'basic',
     multiple: false,
-    onUpload: undefined,
-    onChange: undefined,
-    type: 'base',
+    name: 'playground-upload',
     label: {
       uploadLabel: undefined,
       uploadingLabel: undefined,
@@ -43,6 +40,9 @@ export const Playground: Story = {
         label: 'jpg/png files with a size less than 500KB.',
       },
     ],
+    onUpload: undefined,
+    onChange: undefined,
+    type: 'base',
   },
   argTypes: {
     accept: {
@@ -65,14 +65,15 @@ export const Playground: Story = {
         defaultValue: { summary: 'false' },
       },
     },
-    isFillWidth: {
+    mode: {
       control: {
-        type: 'boolean',
+        type: 'select',
+        options: ['basic', 'dropzone'],
       },
-      description: 'Whether to fill the width of the container',
+      description: 'The mode for upload component.',
       table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
+        type: { summary: "'basic' | 'dropzone'" },
+        defaultValue: { summary: "'basic'" },
       },
     },
     multiple: {
@@ -143,7 +144,7 @@ export const Playground: Story = {
         type: { summary: 'string' },
         defaultValue: { summary: 'base' },
       },
-    }
+    },
   },
   render: (props: UploaderProps) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

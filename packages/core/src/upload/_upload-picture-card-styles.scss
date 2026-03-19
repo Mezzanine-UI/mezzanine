@@ -21,14 +21,56 @@ $image-size: spacing.primitive-variable(140);
   transition: transition.standard(border-color, fast);
   gap: spacing.semantic-variable(gap, base);
 
-  &:hover {
+  &:hover:not(.#{$prefix}--readable) {
     border-color: palette.semantic-variable(border, brand);
   }
 
-  &:focus,
-  &:focus-visible,
-  &:focus-within,
-  &:focus-within:hover {
+  &--readable {
+    cursor: default;
+
+    &:is(:focus, :focus-visible, :focus-within) {
+      outline: none;
+    }
+
+    &:hover {
+      border-color: palette.semantic-variable(border, neutral-faint);
+    }
+
+    .#{$prefix}__container {
+      &:hover {
+        border-color: palette.semantic-variable(border, neutral-faint);
+
+        .#{$prefix}__actions--done,
+        .#{$prefix}__actions--error {
+          background: transparent;
+        }
+
+        .#{$prefix}__actions--done {
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        .#{$prefix}__tools {
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        .#{$prefix}__replace-label {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+
+      &:has(.#{$prefix}__actions--done) {
+        &:is(:hover, :focus, :focus-visible, :focus-within) {
+          border-color: palette.semantic-variable(border, neutral-faint);
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  &:is(:focus, :focus-visible, :focus-within):not(.#{$prefix}--readable) {
     outline: none;
     .#{$prefix}__container {
       box-shadow: effect.variable(focus, primary);
@@ -103,10 +145,7 @@ $image-size: spacing.primitive-variable(140);
         border-color: palette.semantic-variable(border, brand);
       }
 
-      &:focus,
-      &:focus-visible,
-      &:focus-within,
-      &:focus-within:hover {
+      &:is(:focus, :focus-visible, :focus-within) {
         border-color: palette.semantic-variable(border, brand);
         box-shadow: effect.variable(focus, brand);
       }
@@ -122,10 +161,7 @@ $image-size: spacing.primitive-variable(140);
     }
   }
 
-  &:focus,
-  &:focus-visible,
-  &:focus-within,
-  &:focus-within:hover {
+  &:is(:focus, :focus-visible, :focus-within):not(.#{$prefix}--readable) {
     .#{$prefix}__container:has(.#{$prefix}__actions--error) {
       box-shadow: effect.variable(focus, error);
     }
@@ -146,6 +182,7 @@ $image-size: spacing.primitive-variable(140);
     gap: spacing.semantic-variable(gap, tiny);
     align-items: center;
     justify-content: center;
+    max-width: 80%;
   }
 
   &__name {
@@ -269,7 +306,7 @@ $image-size: spacing.primitive-variable(140);
         &::before {
           border-width: 2px;
           border-style: solid;
-          border-color: palette.semantic-variable("background", fixed-dark);
+          border-color: palette.semantic-variable(border, fixed-light);
           border-radius: 50%;
           content: '';
           height: spacing.semantic-variable(size, element, gentle);

@@ -30,11 +30,11 @@ const argTypes: Partial<ArgTypes<UploadProps>> = {
   mode: {
     control: {
       type: 'radio',
-      options: ['list', 'button-list', 'cards', 'card-wall'],
+      options: ['list', 'basic-list', 'button-list', 'cards', 'card-wall'],
     },
     description: 'The display mode for the upload component',
     table: {
-      type: { summary: "'list' | 'button-list' | 'cards' | 'card-wall'" },
+      type: { summary: "'list' | 'basic-list' | 'button-list' | 'cards' | 'card-wall'" },
       defaultValue: { summary: "'list'" },
     },
   },
@@ -135,9 +135,17 @@ const argTypes: Partial<ArgTypes<UploadProps>> = {
       defaultValue: { summary: 'undefined' },
     },
   },
+  dropzoneHints: {
+    control: 'object',
+    description: 'Hints passed into the Uploader dropzone area. Only visible in dropzone modes (list, card-wall).',
+    table: {
+      type: { summary: 'UploaderProps["hints"]' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
   hints: {
-    control: false,
-    description: 'Array of hints to display with the upload component',
+    control: 'object',
+    description: 'Array of hints displayed outside the uploader area. Visible in all modes.',
     table: {
       type: { summary: 'UploaderProps["hints"]' },
       defaultValue: { summary: 'undefined' },
@@ -175,16 +183,6 @@ const argTypes: Partial<ArgTypes<UploadProps>> = {
     table: {
       type: { summary: 'React.Ref<HTMLInputElement>' },
       defaultValue: { summary: 'undefined' },
-    },
-  },
-  isFillWidth: {
-    control: {
-      type: 'boolean',
-    },
-    description: 'Whether to fill the width of the container',
-    table: {
-      type: { summary: 'boolean' },
-      defaultValue: { summary: 'false' },
     },
   },
   name: {
@@ -506,6 +504,7 @@ export const Playground: Story = {
   args: {
     accept: 'image/*',
     disabled: false,
+    hints: [{ label: '支援 JPG、PNG；單檔上限 500 KB。', type: 'info' }],
     mode: 'list',
     showFileSize: true,
     size: 'main',
@@ -585,14 +584,36 @@ function BasicStoryContent() {
     >
       <div>
         <h3>List Mode:</h3>
-        <p>Display files in list format, images use UploadPictureCard, other files use UploadItem</p>
+        <p>Display files in list format with dropzone. Use <code>dropzoneHints</code> to show hints inside the dropzone, and <code>hints</code> to show hints below the uploader.</p>
         <UploadWithPreloadedImage
           mode="list"
+          size="main"
+          showFileSize
+          dropzoneHints={[
+            {
+              label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。',
+            },
+          ]}
+          hints={[
+            {
+              label: '支援 JPG、PNG、PDF；單檔上限 500 KB。',
+              type: 'info',
+            },
+          ]}
+        />
+      </div>
+
+      <div>
+        <h3>Basic List Mode:</h3>
+        <p>Display files in list format without drag-and-drop (basic uploader).</p>
+        <UploadWithPreloadedImage
+          mode="basic-list"
           size="main"
           showFileSize
           hints={[
             {
               label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。',
+              type: 'info',
             },
           ]}
         />
@@ -785,6 +806,60 @@ export const PreloadedImageFromUrl: Story = {
     docs: {
       description: {
         story: 'Demonstrates loading pre-existing images from backend URLs. This scenario shows how Upload component handles files that are already uploaded to the server (using `url` prop instead of `file` object).',
+      },
+    },
+  },
+};
+
+function SingleFileLimitUpload({ mode }: { mode: UploadProps['mode'] }) {
+  const { files, handleChange } = useControlledFiles(
+    [],
+    useCallback((next: UploadFile[]) => action('onChange')(next), []),
+  );
+
+  return (
+    <Upload
+      files={files}
+      maxFiles={1}
+      mode={mode}
+      multiple={false}
+      onChange={handleChange}
+      onDelete={storyHandlers.onDelete}
+      onDownload={storyHandlers.onDownload}
+      onMaxFilesExceeded={action('onMaxFilesExceeded')}
+      onReload={storyHandlers.onReload}
+      onUpload={simulateUpload}
+      onZoomIn={storyHandlers.onZoomIn}
+      hints={[
+        {
+          label: '最多 1 個檔案。',
+          type: 'info',
+        },
+      ]}
+      ariaLabels={{
+        clickToReplace: 'Replace',
+      }}
+    />
+  );
+}
+
+function SingleFileLimitStoryContent() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: 800 }}>
+      <div>
+        <h3>上傳一張照片的情境</h3>
+        <SingleFileLimitUpload mode="cards" />
+      </div>
+    </div>
+  );
+}
+
+export const SingleFileLimit: Story = {
+  render: () => <SingleFileLimitStoryContent />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates limiting uploads to a single file using `maxFiles={1}`. The uploader disables itself once the limit is reached. Selecting additional files triggers `onMaxFilesExceeded`.',
       },
     },
   },

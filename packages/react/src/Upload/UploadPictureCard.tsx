@@ -3,6 +3,7 @@
 import {
   forwardRef,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -126,6 +127,11 @@ export interface UploadPictureCardProps
    */
   errorIcon?: IconDefinition;
   /**
+   * Whether the upload picture card is readable.
+   * @default false
+   */
+  readable?: boolean;
+  /**
    * When delete icon is clicked, this callback will be fired.
    */
   onDelete?: MouseEventHandler;
@@ -164,6 +170,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       disabled = false,
       errorMessage,
       errorIcon,
+      readable = false,
       onDelete,
       onDownload,
       onReload,
@@ -183,6 +190,21 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
     };
 
     const labels = { ...defaultAriaLabels, ...ariaLabels };
+
+    const handleDelete = useCallback<MouseEventHandler>(
+      (e) => { e.stopPropagation(); onDelete?.(e); },
+      [onDelete],
+    );
+
+    const handleDownload = useCallback<MouseEventHandler>(
+      (e) => { e.stopPropagation(); onDownload?.(e); },
+      [onDownload],
+    );
+
+    const handleZoomIn = useCallback<MouseEventHandler>(
+      (e) => { e.stopPropagation(); onZoomIn?.(e); },
+      [onZoomIn],
+    );
 
     const isImage = useMemo(() => {
       return isImageFile(file, url);
@@ -271,23 +293,26 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
           classes.host,
           classes.size(size),
           disabled && classes.disabled,
-          onReplace && status === 'done' && classes.replaceMode,
+          readable && classes.readable,
+          !readable && onReplace && status === 'done' && classes.replaceMode,
           className,
         )}
-        onClick={onReplace && status === 'done' ? onReplace : undefined}
+        onClick={
+          !readable && onReplace && status === 'done' ? onReplace : undefined
+        }
         onKeyDown={
-          onReplace && status === 'done'
+          !readable && onReplace && status === 'done'
             ? (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  e.currentTarget.click();
-                }
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.currentTarget.click();
               }
+            }
             : undefined
         }
         ref={ref}
         role="group"
-        tabIndex={disabled ? -1 : 0}
+        tabIndex={disabled || readable ? -1 : 0}
         {...rest}
       >
         <div className={classes.container}>
@@ -322,7 +347,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
             </div>
           )}
           <div className={cx(classes.actions, classes.actionsStatus(status))}>
-            {status === 'loading' && size !== 'minor' && (
+            {status === 'loading' && size !== 'minor' && !readable && (
               <>
                 <ClearActions
                   type="embedded"
@@ -339,7 +364,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                 </div>
               </>
             )}
-            {status === 'done' && size !== 'minor' && (
+            {status === 'done' && size !== 'minor' && !readable && (
               <>
                 <div className={classes.tools}>
                   <div className={classes.toolsContent}>
@@ -349,7 +374,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                         size="minor"
                         icon={ZoomInIcon}
                         iconType="icon-only"
-                        onClick={onZoomIn}
+                        onClick={handleZoomIn}
                         aria-label={labels.zoomIn}
                       />
                     )}
@@ -359,7 +384,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                         size="minor"
                         iconType="icon-only"
                         icon={DownloadIcon}
-                        onClick={onDownload}
+                        onClick={handleDownload}
                         aria-label={labels.download}
                       />
                     )}
@@ -368,7 +393,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                       size="minor"
                       iconType="icon-only"
                       icon={TrashIcon}
-                      onClick={onDelete}
+                      onClick={handleDelete}
                       aria-label={labels.delete}
                     />
                   </div>
@@ -380,7 +405,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                 )}
               </>
             )}
-            {status === 'error' && size !== 'minor' && (
+            {status === 'error' && size !== 'minor' && !readable && (
               <>
                 <div className={classes.tools}>
                   <div className={classes.toolsContent}>
@@ -404,7 +429,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                 </div>
               </>
             )}
-            {size === 'minor' && (
+            {size === 'minor' && !readable && (
               <Icon icon={ZoomInIcon} color="fixed-light" size={24} />
             )}
           </div>

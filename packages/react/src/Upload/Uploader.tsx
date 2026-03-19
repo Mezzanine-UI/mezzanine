@@ -16,10 +16,11 @@ import {
 import {
   uploaderClasses as classes,
   type UploaderHintType,
+  type UploaderMode,
   type UploadPictureControl,
   type UploadType
 } from '@mezzanine-ui/core/upload';
-import { type IconDefinition, UploadIcon as UploadIconIcon } from '@mezzanine-ui/icons';
+import { DangerousFilledIcon, InfoFilledIcon, type IconDefinition, UploadIcon as UploadIconIcon } from '@mezzanine-ui/icons';
 
 import Button from '../Button';
 import Icon from '../Icon';
@@ -78,7 +79,7 @@ export interface UploaderLabel {
    */
   error?: string;
   /**
-   * Label text for "Click to upload" when isFillWidth is true.
+   * Label text for "Click to upload" in `mode="dropzone"`.
    * @default 'Click to upload'
    */
   clickToUpload?: string;
@@ -127,19 +128,30 @@ export interface UploaderProps
    */
   accept?: string;
   /**
+   * Provide `controllerRef` if you need detail data of file.
+   */
+  controllerRef?: Ref<UploadPictureControl | null>;
+  /**
    * Whether the input is disabled.
    * @default false
    */
   disabled?: boolean;
   /**
+   * Array of hints to display outside the uploader (below the label element).
+   */
+  externalHints?: UploaderHint[];
+  /**
+   * Array of hints to display with the upload component.
+   */
+  hints?: UploaderHint[];
+  /**
+   * Icon configuration for different actions and states.
+   */
+  icon?: UploaderIcon;
+  /**
    * The id of input element.
    */
   id?: string;
-  /**
-   * Whether to fill the width of the container.
-   * @default false
-   */
-  isFillWidth?: boolean;
   /**
    * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
    * If you need direct control to the input element, use this prop to provide to it.
@@ -150,36 +162,24 @@ export interface UploaderProps
    */
   inputRef?: React.Ref<HTMLInputElement>;
   /**
+   * Label configuration for different states.
+   */
+  label?: UploaderLabel;
+  /**
    * The name attribute of the input element.
    */
   name?: string;
+  /**
+   * The mode for upload component.
+   * @default 'basic'
+   * @example 'basic' | 'dropzone'
+   */
+  mode?: UploaderMode;
   /**
    * Whether can select multiple files to upload.
    * @default false
    */
   multiple?: boolean;
-  /**
-   * The type for upload component.
-   * @default 'base'
-   * @example 'base' | 'button'
-   */
-  type?: UploadType;
-  /**
-   * Array of hints to display with the upload component.
-   */
-  hints?: UploaderHint[];
-  /**
-   * Label configuration for different states.
-   */
-  label?: UploaderLabel;
-  /**
-   * Icon configuration for different actions and states.
-   */
-  icon?: UploaderIcon;
-  /**
-   * Provide `controllerRef` if you need detail data of file.
-   */
-  controllerRef?: Ref<UploadPictureControl | null>;
   /**
    * Invoked by input change event.
    */
@@ -189,9 +189,11 @@ export interface UploaderProps
    */
   onUpload?: (files: File[]) => void;
   /**
-   * Fired after user deletes file.
+   * The type for upload component.
+   * @default 'base'
+   * @example 'base' | 'button'
    */
-  onDelete?: () => void;
+  type?: UploadType;
 }
 
 /**
@@ -204,21 +206,21 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
   const {
     accept,
     className,
+    controllerRef: _controllerRef,
     disabled = false,
+    externalHints,
     id,
+    hints,
+    icon: iconConfig,
     inputProps,
     inputRef: inputRefProp,
-    isFillWidth = false,
+    label: labelConfig,
+    mode = 'basic',
     multiple = false,
     name,
-    type,
-    hints,
-    label: labelConfig,
-    icon: iconConfig,
-    controllerRef: _controllerRef,
     onChange: onChangeProp,
     onUpload,
-    onDelete: _onDelete,
+    type,
     ...rest
   } = props;
 
@@ -241,6 +243,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
   );
 
   const resolvedName = name ?? nameFromInputProps ?? finalInputId;
+  const isDropzone = mode === 'dropzone';
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (onChangeProp) {
@@ -341,7 +344,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
 
   const uploadLabel = labelConfig?.uploadLabel
     ? labelConfig?.uploadLabel
-    : isFillWidth
+    : isDropzone
       ? 'Drag the file here or'
       : 'Upload';
   const clickToUploadLabel = labelConfig?.clickToUpload ?? 'Click to upload';
@@ -356,79 +359,95 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
   };
 
   return (
-    <label
-      className={cx(
-        classes.host,
-        type && classes.type(type),
-        type !== 'button' && isFillWidth && classes.fillWidth,
-        isDragging && classes.dragging,
-        type !== 'button' && disabled && classes.disabled,
-        className,
-      )}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      ref={ref}
-      {...rest}
-    >
-      <>
-        {
-          type === 'base'
-          && isFillWidth
-          && <div className={classes.uploadContent}>
-            {uploadIcon}
-            <Typography className={classes.uploadLabel}>
-              {uploadLabel && <>{uploadLabel}{' '}</>}
-              <span className={classes.clickToUpload}>
-                {clickToUploadLabel}
-              </span>
-            </Typography>
-            {
-              hints?.map((hint, index) => (
-                <Typography key={index} className={classes.fillWidthHints}>
-                  {hint.label}
-                </Typography>
-              ))
-            }
-          </div>
-        }
-        {
-          type === 'base'
-          && !isFillWidth
-          && <div className={classes.uploadContent}>
-            {uploadIcon}
-            <Typography className={classes.uploadLabel}>
-              {uploadLabel}
-            </Typography>
-          </div>
-        }
-        {
-          type === 'button'
-          && (
-            <Button disabled={disabled} onClick={handleClickToUpload}>
+    <>
+      <label
+        className={cx(
+          classes.host,
+          type && classes.type(type),
+          type !== 'button' && isDropzone && classes.fillWidth,
+          isDragging && classes.dragging,
+          type !== 'button' && disabled && classes.disabled,
+          className,
+        )}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        ref={ref}
+        {...rest}
+      >
+        <>
+          {
+            type === 'base'
+            && isDropzone
+            && <div className={classes.uploadContent}>
               {uploadIcon}
-              <Typography>
+              <Typography className={classes.uploadLabel}>
+                {uploadLabel && <>{uploadLabel}{' '}</>}
+                <span className={classes.clickToUpload}>
+                  {clickToUploadLabel}
+                </span>
+              </Typography>
+              {
+                hints?.map((hint, index) => (
+                  <Typography key={index} className={classes.fillWidthHints}>
+                    {hint.label}
+                  </Typography>
+                ))
+              }
+            </div>
+          }
+          {
+            type === 'base'
+            && !isDropzone
+            && <div className={classes.uploadContent}>
+              {uploadIcon}
+              <Typography className={classes.uploadLabel}>
                 {uploadLabel}
               </Typography>
-            </Button>
-          )
-        }
-        <input
-          {...restInputProps}
-          accept={accept}
-          aria-disabled={disabled}
-          className={classes.input}
-          disabled={disabled}
-          id={finalInputId}
-          multiple={multiple}
-          name={resolvedName}
-          onChange={handleChange}
-          ref={composedInputRef}
-          type="file"
-        />
-      </>
-    </label>
+            </div>
+          }
+          {
+            type === 'button'
+            && (
+              <Button disabled={disabled} onClick={handleClickToUpload}>
+                {uploadIcon}
+                <Typography>
+                  {uploadLabel}
+                </Typography>
+              </Button>
+            )
+          }
+          <input
+            {...restInputProps}
+            accept={accept}
+            aria-disabled={disabled}
+            className={classes.input}
+            disabled={disabled}
+            id={finalInputId}
+            multiple={multiple}
+            name={resolvedName}
+            onChange={handleChange}
+            ref={composedInputRef}
+            type="file"
+          />
+        </>
+      </label>
+      {externalHints && externalHints.length > 0 && (
+        <ul className={classes.externalHints}>
+          {externalHints.map((hint) => (
+            <li key={hint.label} className={classes.externalHint(hint.type || 'info')}>
+              <Icon
+                icon={hint.type === 'info' ? InfoFilledIcon : DangerousFilledIcon}
+                color={hint.type === 'info' ? 'info' : 'error'}
+                size={14}
+              />
+              {hint.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 });
 
