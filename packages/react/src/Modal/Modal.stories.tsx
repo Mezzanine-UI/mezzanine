@@ -892,8 +892,8 @@ export const ExtendedSplit: StoryObj = {
                 alignItems: 'center',
                 backgroundColor: 'rgba(147, 127, 199, 0.1)',
                 display: 'flex',
+                height: '100%',
                 justifyContent: 'center',
-                minHeight: '300px',
                 width: '100%',
               }}
             >
@@ -908,8 +908,8 @@ export const ExtendedSplit: StoryObj = {
                 alignItems: 'center',
                 backgroundColor: 'rgba(147, 127, 199, 0.1)',
                 display: 'flex',
+                flex: 1,
                 justifyContent: 'center',
-                minHeight: '300px',
                 width: '100%',
               }}
             >

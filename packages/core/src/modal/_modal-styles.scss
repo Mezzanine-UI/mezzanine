@@ -196,6 +196,8 @@ $modalSizes: (
     &__extended-split {
       display: flex;
       flex-wrap: nowrap;
+      flex: 1;
+      min-height: 0;
       border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
 
       &--sidebar-left {
@@ -209,6 +211,8 @@ $modalSizes: (
     }
 
     &__extended-split-right {
+      display: flex;
+      flex-direction: column;
       width: max-content;
       flex-grow: 1;
       padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, relaxed);
@@ -223,6 +227,7 @@ $modalSizes: (
     }
 
     &__extended-split-left__content {
+      flex: 1;
       padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, relaxed);
       border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
     }
