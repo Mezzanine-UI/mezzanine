@@ -79,7 +79,7 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
           )}
           ref={ref}
         >
-          <DescriptionTitle {...rest}>{title}</DescriptionTitle>
+          <DescriptionTitle {...rest} size={size}>{title}</DescriptionTitle>
           {injectedChildren}
         </div>
       </DescriptionContext.Provider>

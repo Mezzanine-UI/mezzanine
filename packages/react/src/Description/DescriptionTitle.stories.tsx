@@ -33,6 +33,27 @@ export const Playground: TitleStory = {
   ),
 };
 
+export const Sizes: TitleStory = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}
+    >
+      <DescriptionTitle size="main">Main Title</DescriptionTitle>
+      <DescriptionTitle size="sub">Sub Title</DescriptionTitle>
+      <DescriptionTitle size="main" badge="dot-success">
+        Main with Badge
+      </DescriptionTitle>
+      <DescriptionTitle size="sub" badge="dot-success">
+        Sub with Badge
+      </DescriptionTitle>
+    </div>
+  ),
+};
+
 export const WidthTypes: TitleStory = {
   render: () => (
     <div
