@@ -35,6 +35,8 @@ export const descriptionClasses = {
   // title
   titleHost: descriptionTitlePrefix,
   titleText: `${descriptionTitlePrefix}__text`,
+  titleSize: (size: DescriptionSize) =>
+    `${descriptionTitlePrefix}--${size}`,
   titleWidth: (width: DescriptionWidthType) =>
     `${descriptionTitlePrefix}--${width}`,
   // content

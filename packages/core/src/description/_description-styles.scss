@@ -56,6 +56,10 @@
     /* stylelint-disable-next-line */
     color: palette.semantic-variable(text, neutral) !important;
   }
+
+  &--sub &__text {
+    @include typography.semantic-variable(caption);
+  }
 }
 
 .#{$content-prefix} {
