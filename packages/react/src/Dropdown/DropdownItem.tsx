@@ -599,6 +599,11 @@ export default function DropdownItem<
           key={option.id}
           active={isActive}
           checked={selectionState.checked}
+          className={
+            !hasChildren && level === 1
+              ? dropdownClasses.cardLeafLevel1
+              : undefined
+          }
           indeterminate={selectionState.indeterminate}
           disabled={disabled}
           id={`${listboxId}-option-${optionIndex}`}
