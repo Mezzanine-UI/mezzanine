@@ -3,6 +3,9 @@ import OverflowTooltip, { OverflowTooltipProps } from '.';
 import { OverflowCounterTag } from '.';
 import { useRef, useState } from 'react';
 import Typography from '../Typography';
+import Icon from '../Icon';
+import { ChevronDownIcon } from '@mezzanine-ui/icons';
+import Tag from '../Tag';
 
 export default {
   title: 'Internal/OverflowTooltip',
@@ -103,6 +106,174 @@ export const States: TooltipStory = {
           <Typography variant="h2">Read only</Typography>
         </div>
         <OverflowTooltip {...args} anchor={anchor2Ref} readOnly />
+      </div>
+    );
+  },
+};
+
+const PLACEMENT_TAGS = ['Option 2', 'Option 3', 'Option 4', 'Option 5'];
+
+function PlacementItem({
+  label,
+  placement,
+}: {
+  label: string;
+  placement: OverflowTooltipProps['placement'];
+}) {
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '8px',
+        paddingTop: placement?.startsWith('bottom') ? '0' : '80px',
+        paddingBottom: placement?.startsWith('bottom') ? '80px' : '0',
+      }}
+    >
+      <Typography variant="caption">{label}</Typography>
+      <div
+        ref={anchorRef}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+          padding: '4px 8px',
+          border: '1px solid #d9d9d9',
+          borderRadius: '4px',
+          backgroundColor: 'white',
+          fontSize: '14px',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        Tag 1 × &nbsp;<strong>+ 3</strong>
+      </div>
+      <OverflowTooltip
+        anchor={anchorRef}
+        onTagDismiss={() => {}}
+        open
+        placement={placement}
+        tags={PLACEMENT_TAGS}
+        tagSize="main"
+      />
+    </div>
+  );
+}
+
+export const Placement: TooltipStory = {
+  parameters: { controls: { disable: true } },
+  render: function Render() {
+    return (
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '24px',
+          padding: '24px',
+        }}
+      >
+        <PlacementItem label="top-start" placement="top-start" />
+        <PlacementItem label="top" placement="top" />
+        <PlacementItem label="top-end" placement="top-end" />
+        <PlacementItem label="bottom-start" placement="bottom-start" />
+        <PlacementItem label="bottom" placement="bottom" />
+        <PlacementItem label="bottom-end" placement="bottom-end" />
+      </div>
+    );
+  },
+};
+
+const MOCK_VISIBLE_TAG = 'Option 1';
+
+function MockSelectWithOverflow({
+  placement,
+}: {
+  placement: OverflowTooltipProps['placement'];
+}) {
+  return (
+    <div
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '4px',
+        padding: '0 8px',
+        border: '1px solid #d9d9d9',
+        borderRadius: '4px',
+        backgroundColor: 'white',
+        minWidth: '200px',
+        height: '36px',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          overflow: 'hidden',
+        }}
+      >
+        <Tag
+          type="dismissable"
+          label={MOCK_VISIBLE_TAG}
+          onClose={() => {}}
+          size="main"
+        />
+        <OverflowCounterTag
+          onTagDismiss={() => {}}
+          placement={placement}
+          tags={PLACEMENT_TAGS}
+          tagSize="main"
+        />
+      </div>
+      <Icon
+        icon={ChevronDownIcon}
+        style={{ color: '#8c8c8c', flexShrink: 0 }}
+      />
+    </div>
+  );
+}
+
+export const PlacementOnClick: TooltipStory = {
+  parameters: { controls: { disable: true } },
+  render: function Render() {
+    return (
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '24px',
+          padding: '24px',
+        }}
+      >
+        {(
+          [
+            'top-start',
+            'top',
+            'top-end',
+            'bottom-start',
+            'bottom',
+            'bottom-end',
+          ] as OverflowTooltipProps['placement'][]
+        ).map((placement) => (
+          <div
+            key={placement}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '8px',
+              paddingTop: placement?.startsWith('bottom') ? '0' : '100px',
+              paddingBottom: placement?.startsWith('bottom') ? '100px' : '0',
+            }}
+          >
+            <Typography variant="caption">{placement}</Typography>
+            <MockSelectWithOverflow placement={placement} />
+          </div>
+        ))}
       </div>
     );
   },
