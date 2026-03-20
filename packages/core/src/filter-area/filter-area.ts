@@ -15,7 +15,15 @@ export type FilterAreaSize = 'main' | 'sub';
  */
 export type FilterAreaActionsAlign = 'start' | 'center' | 'end';
 
-export type FilterSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+/**
+ * FilterArea `__row` 的 cross-axis 對齊方式。
+ * - `'start'` — 靠起始端對齊（`flex-start`）
+ * - `'center'` — 置中對齊（`center`）
+ * - `'end'` — 靠結尾端對齊（`flex-end`）
+ */
+export type FilterAreaRowAlign = 'start' | 'center' | 'end';
+
+export type FilterSpan = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * 單一篩選欄位的對齊方式。
@@ -33,6 +41,7 @@ export const filterAreaClasses = {
     `${filterAreaPrefix}__actions--align-${align}`,
   actionsExpanded: `${filterAreaPrefix}__actions--expanded`,
   row: `${filterAreaPrefix}__row`,
+  rowAlign: (align: FilterAreaRowAlign) => `${filterAreaPrefix}__row--align-${align}`,
   size: (size: FilterAreaSize) => `${filterAreaPrefix}--${size}`,
   line: `${filterAreaPrefix}__line`,
   filter: `${filterAreaPrefix}__filter`,
