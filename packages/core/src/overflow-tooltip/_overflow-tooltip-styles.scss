@@ -16,7 +16,6 @@
     justify-content: flex-start;
     align-items: center;
     gap: spacing.semantic-variable(gap, tight);
-    width: fit-content;
     height: fit-content;
     max-width: spacing.semantic-variable(size, container, narrow);
     padding: spacing.semantic-variable(padding, vertical, tiny)

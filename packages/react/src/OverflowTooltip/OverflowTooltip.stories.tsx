@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import OverflowTooltip, { OverflowTooltipProps } from '.';
 import { OverflowCounterTag } from '.';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Typography from '../Typography';
 
 export default {
@@ -103,6 +103,73 @@ export const States: TooltipStory = {
           <Typography variant="h2">Read only</Typography>
         </div>
         <OverflowTooltip {...args} anchor={anchor2Ref} readOnly />
+      </div>
+    );
+  },
+};
+
+export const SingleTag: TooltipStory = {
+  parameters: { controls: { disable: true } },
+  render: function Render() {
+    const anchorRef = useRef<HTMLDivElement | null>(null);
+
+    return (
+      <div style={{ padding: '100px' }}>
+        <div
+          ref={anchorRef}
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '999px',
+            backgroundColor: 'white',
+          }}
+        />
+        <OverflowTooltip
+          anchor={anchorRef}
+          onTagDismiss={() => {}}
+          open
+          placement="top-start"
+          tags={['Tag 1']}
+          tagSize="main"
+        />
+      </div>
+    );
+  },
+};
+
+export const DismissableTags: TooltipStory = {
+  parameters: { controls: { disable: true } },
+  render: function Render() {
+    const anchorRef = useRef<HTMLDivElement | null>(null);
+    const [tags, setTags] = useState([
+      'Tag 1',
+      'Tag 2',
+      'Tag 3',
+      'Tag 4',
+      'Tag 5',
+    ]);
+
+    return (
+      <div style={{ padding: '100px' }}>
+        <div
+          ref={anchorRef}
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '999px',
+            backgroundColor: 'white',
+          }}
+        />
+        <OverflowTooltip
+          anchor={anchorRef}
+          onTagDismiss={(tagIndex) =>
+            setTags((prev) => prev.filter((_, i) => i !== tagIndex))
+          }
+          open
+          placement="top-start"
+          tags={tags}
+          tagSize="main"
+        />
       </div>
     );
   },

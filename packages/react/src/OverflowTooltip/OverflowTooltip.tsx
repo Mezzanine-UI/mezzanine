@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
 import Popper, { PopperProps } from '../Popper';
 import Tag, { TagProps } from '../Tag';
@@ -86,6 +86,46 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
       }
     }, [open]);
 
+    const contentRef = useRef<HTMLElement>(null);
+
+    useEffect(() => {
+      if (!popperOpen) return;
+
+      const rafId = requestAnimationFrame(() => {
+        const content = contentRef.current;
+        if (!content) return;
+
+        content.style.width = '';
+
+        const children = Array.from(content.children) as HTMLElement[];
+        if (!children.length) return;
+
+        const rows = new Map<number, HTMLElement[]>();
+        children.forEach((child) => {
+          const top = Math.round(child.getBoundingClientRect().top);
+          if (!rows.has(top)) rows.set(top, []);
+          rows.get(top)!.push(child);
+        });
+
+        const style = getComputedStyle(content);
+        const paddingLeft = parseFloat(style.paddingLeft);
+        const paddingRight = parseFloat(style.paddingRight);
+        const contentLeft = content.getBoundingClientRect().left;
+
+        let maxRowWidth = 0;
+        rows.forEach((rowItems) => {
+          const lastItem = rowItems[rowItems.length - 1];
+          const rowWidth =
+            lastItem.getBoundingClientRect().right - contentLeft - paddingLeft;
+          maxRowWidth = Math.max(maxRowWidth, rowWidth);
+        });
+
+        content.style.width = `${maxRowWidth + paddingLeft + paddingRight}px`;
+      });
+
+      return () => cancelAnimationFrame(rafId);
+    }, [tags, popperOpen]);
+
     return (
       <Popper
         ref={ref}
@@ -96,6 +136,7 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
         options={{ placement, middleware }}
       >
         <Fade
+          ref={contentRef}
           in={open}
           duration={{
             enter: MOTION_DURATION.fast,
