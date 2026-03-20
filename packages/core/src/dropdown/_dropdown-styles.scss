@@ -42,7 +42,7 @@ $card-state-configs: (
 
 $card-level-padding: (
   0: spacing.semantic-variable(padding, horizontal, base),
-  1: spacing.semantic-variable(padding, horizontal, relaxed),
+  1: spacing.semantic-variable(padding, horizontal, max),
   2: spacing.semantic-variable(padding, horizontal, ultra),
 );
 
@@ -56,8 +56,6 @@ $section-configs: (
   ),
   list-header: (
     background: palette.semantic-variable(background, base),
-    padding-block: spacing.semantic-variable(padding, vertical, tight),
-    padding-inline: spacing.semantic-variable(padding, horizontal, tight),
   ),
   action: (
     background: palette.semantic-variable(background, base),
@@ -111,26 +109,20 @@ $section-configs: (
 @mixin _apply-card-states() {
   @include _apply-card-state(enable);
 
-  &:hover:not(.#{$prefix}-item-card--active):not(.#{$prefix}-item-card--disabled) {
+  &:hover:not(.#{$prefix}-item-card--disabled) {
     @include _apply-card-state(hover);
   }
 
-  &:focus,
-  &:focus-visible,
-  &:focus-within {
+  &:focus-visible {
     @include _apply-card-state(focus);
 
     outline: none;
+    z-index: 1;
   }
 
-  &.#{$prefix}-item-card--active {
-    @include _apply-card-state(active);
-
-    &:hover {
-      &:not(.#{$prefix}-item-card--disabled) {
-        @include _apply-card-state(active);
-      }
-    }
+  &.#{$prefix}-item-card--keyboard-active:not(.#{$prefix}-item-card--disabled) {
+    box-shadow: effect.variable(focus, primary);
+    z-index: 1;
   }
 
   &.#{$prefix}-item-card--disabled {
@@ -214,7 +206,7 @@ $section-configs: (
     @include _apply-section(list);
 
     width: 100%;
-    min-width: max-content;
+    min-width: var(--#{$prefix}-list-min-width, #{spacing.semantic-variable(size, container, tiny)});
     max-width: 100%;
     margin: 0;
     list-style: none;
@@ -227,6 +219,7 @@ $section-configs: (
   &-list-header {
     @include _apply-section(list-header);
 
+    padding-block-end: spacing.semantic-variable(gap, tight);
     position: sticky;
     inset-block-start: 0;
     z-index: 1;
@@ -238,7 +231,7 @@ $section-configs: (
   }
 
   &-group-label {
-    @include typography.semantic-variable(body);
+    @include typography.semantic-variable(caption);
 
     color: palette.semantic-variable(text, neutral-light);
     font-feature-settings: 'liga' off, 'clig' off;
@@ -248,6 +241,7 @@ $section-configs: (
 
   &-list-wrapper {
     overflow-y: auto;
+    padding-block: spacing.semantic-variable(gap, tiny);
     padding-inline: spacing.semantic-variable(padding, horizontal, micro);
   }
 
@@ -262,7 +256,6 @@ $section-configs: (
     padding-block: spacing.semantic-variable(padding, vertical, base);
     box-sizing: border-box;
     cursor: pointer;
-    margin-bottom: spacing.semantic-variable(gap, tiny);
     position: relative;
     list-style: none;
     width: 100%;
@@ -271,10 +264,6 @@ $section-configs: (
       transition.standard(color, fast),
       transition.standard(border, fast),
       transition.standard(box-shadow, fast);
-
-    &:first-child {
-      margin-top: 2px;
-    }
 
     &--disabled {
       cursor: not-allowed;
@@ -301,7 +290,7 @@ $section-configs: (
   &-item-card-underline {
     width: 100%;
     height: 1px;
-    border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+    background-color: palette.semantic-variable(separator, neutral-faint);
     margin-block: spacing.semantic-variable(padding, vertical, tiny);
   }
 
@@ -387,6 +376,7 @@ $section-configs: (
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-top: spacing.semantic-variable(padding, vertical, tiny);
     width: 100%;
   }
 
