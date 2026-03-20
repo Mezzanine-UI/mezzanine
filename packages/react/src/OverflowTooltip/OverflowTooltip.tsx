@@ -65,6 +65,12 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
           '',
         ),
       ) * 16;
+    const arrowPadding =
+      Number(
+        getCSSVariableValue(
+          `--${spacingPrefix}-padding-horizontal-comfort`,
+        ).replace('rem', ''),
+      ) * 16;
 
     const middleware = [offset({ mainAxis: offsetValue + arrowHeight })];
     const flipMiddleware = flip({
@@ -131,7 +137,11 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
         ref={ref}
         anchor={anchor}
         open={popperOpen}
-        arrow={{ enabled: true, className: classes.arrow }}
+        arrow={{
+          enabled: true,
+          className: classes.arrow,
+          padding: arrowPadding,
+        }}
         className={cx(classes.host, className)}
         options={{ placement, middleware }}
       >
