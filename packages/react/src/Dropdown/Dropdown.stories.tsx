@@ -96,8 +96,24 @@ export const Playground: Story = {
     },
     placement: {
       control: 'select',
-      options: ['top', 'bottom', 'left', 'right', 'top-start', 'bottom-start', 'left-start', 'right-start', 'top-end', 'bottom-end', 'left-end', 'right-end', 'auto', 'auto-start', 'auto-end'],
-    }
+      options: [
+        'top',
+        'bottom',
+        'left',
+        'right',
+        'top-start',
+        'bottom-start',
+        'left-start',
+        'right-start',
+        'top-end',
+        'bottom-end',
+        'left-end',
+        'right-end',
+        'auto',
+        'auto-start',
+        'auto-end',
+      ],
+    },
   },
   args: {
     disabled: false,
@@ -174,6 +190,9 @@ export const Inside: Story = {
     const ExampleComponent = () => {
       const [inputValue, setInputValue] = useState('');
       const [open, setOpen] = useState(false);
+      const [selectedId, setSelectedId] = useState<string | undefined>(
+        undefined,
+      );
 
       const filteredOptions = useMemo(() => {
         const keyword = inputValue.trim().toLowerCase();
@@ -193,7 +212,14 @@ export const Inside: Story = {
           }}
         >
           <div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexDirection: 'column' }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                alignItems: 'flex-start',
+                flexDirection: 'column',
+              }}
+            >
               <div style={{ flex: 1 }}>
                 <Dropdown
                   inputPosition="inside"
@@ -201,12 +227,14 @@ export const Inside: Story = {
                   maxHeight={360}
                   onSelect={(option) => {
                     setInputValue(option.name);
+                    setSelectedId(option.id);
                   }}
                   onVisibilityChange={setOpen}
                   open={open}
                   options={filteredOptions}
                   followText={inputValue}
                   sameWidth
+                  value={selectedId}
                 >
                   <TextField>
                     <input
@@ -235,7 +263,19 @@ export const PlacementExample: Story = {
       placement,
     }: {
       label: string;
-      placement: 'top' | 'bottom' | 'left' | 'right' | 'top-start' | 'bottom-start' | 'left-start' | 'right-start' | 'top-end' | 'bottom-end' | 'left-end' | 'right-end';
+      placement:
+        | 'top'
+        | 'bottom'
+        | 'left'
+        | 'right'
+        | 'top-start'
+        | 'bottom-start'
+        | 'left-start'
+        | 'right-start'
+        | 'top-end'
+        | 'bottom-end'
+        | 'left-end'
+        | 'right-end';
     }) => {
       const [value, setValue] = useState<string | undefined>(undefined);
       const selectedLabel = useMemo(() => {
@@ -244,13 +284,15 @@ export const PlacementExample: Story = {
       }, [value]);
 
       return (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 8,
-          width: 160,
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 8,
+            width: 160,
+          }}
+        >
           <Tag label={label} />
           <Dropdown
             options={simpleOptions}
@@ -270,18 +312,36 @@ export const PlacementExample: Story = {
     };
 
     const ExampleComponent = () => {
-      const placementMap: Record<string, { label: string; placement: 'top' | 'bottom' | 'left' | 'right' | 'top-start' | 'bottom-start' | 'left-start' | 'right-start' | 'top-end' | 'bottom-end' | 'left-end' | 'right-end' }> = {
+      const placementMap: Record<
+        string,
+        {
+          label: string;
+          placement:
+            | 'top'
+            | 'bottom'
+            | 'left'
+            | 'right'
+            | 'top-start'
+            | 'bottom-start'
+            | 'left-start'
+            | 'right-start'
+            | 'top-end'
+            | 'bottom-end'
+            | 'left-end'
+            | 'right-end';
+        }
+      > = {
         'top-start': { label: 'Top Start', placement: 'top-start' },
-        'top': { label: 'Top', placement: 'top' },
+        top: { label: 'Top', placement: 'top' },
         'top-end': { label: 'Top End', placement: 'top-end' },
         'left-start': { label: 'Left Start', placement: 'left-start' },
-        'left': { label: 'Left', placement: 'left' },
+        left: { label: 'Left', placement: 'left' },
         'left-end': { label: 'Left End', placement: 'left-end' },
         'right-start': { label: 'Right Start', placement: 'right-start' },
-        'right': { label: 'Right', placement: 'right' },
+        right: { label: 'Right', placement: 'right' },
         'right-end': { label: 'Right End', placement: 'right-end' },
         'bottom-start': { label: 'Bottom Start', placement: 'bottom-start' },
-        'bottom': { label: 'Bottom', placement: 'bottom' },
+        bottom: { label: 'Bottom', placement: 'bottom' },
         'bottom-end': { label: 'Bottom End', placement: 'bottom-end' },
       };
 
@@ -298,29 +358,65 @@ export const PlacementExample: Story = {
           }}
         >
           <div />
-          <PlacementItem label={placementMap['top-start'].label} placement={placementMap['top-start'].placement} />
-          <PlacementItem label={placementMap['top'].label} placement={placementMap['top'].placement} />
-          <PlacementItem label={placementMap['top-end'].label} placement={placementMap['top-end'].placement} />
+          <PlacementItem
+            label={placementMap['top-start'].label}
+            placement={placementMap['top-start'].placement}
+          />
+          <PlacementItem
+            label={placementMap['top'].label}
+            placement={placementMap['top'].placement}
+          />
+          <PlacementItem
+            label={placementMap['top-end'].label}
+            placement={placementMap['top-end'].placement}
+          />
           <div />
-          <PlacementItem label={placementMap['left-start'].label} placement={placementMap['left-start'].placement} />
+          <PlacementItem
+            label={placementMap['left-start'].label}
+            placement={placementMap['left-start'].placement}
+          />
           <div />
           <div />
           <div />
-          <PlacementItem label={placementMap['right-start'].label} placement={placementMap['right-start'].placement} />
-          <PlacementItem label={placementMap['left'].label} placement={placementMap['left'].placement} />
+          <PlacementItem
+            label={placementMap['right-start'].label}
+            placement={placementMap['right-start'].placement}
+          />
+          <PlacementItem
+            label={placementMap['left'].label}
+            placement={placementMap['left'].placement}
+          />
           <div />
           <div />
           <div />
-          <PlacementItem label={placementMap['right'].label} placement={placementMap['right'].placement} />
-          <PlacementItem label={placementMap['left-end'].label} placement={placementMap['left-end'].placement} />
+          <PlacementItem
+            label={placementMap['right'].label}
+            placement={placementMap['right'].placement}
+          />
+          <PlacementItem
+            label={placementMap['left-end'].label}
+            placement={placementMap['left-end'].placement}
+          />
           <div />
           <div />
           <div />
-          <PlacementItem label={placementMap['right-end'].label} placement={placementMap['right-end'].placement} />
+          <PlacementItem
+            label={placementMap['right-end'].label}
+            placement={placementMap['right-end'].placement}
+          />
           <div />
-          <PlacementItem label={placementMap['bottom-start'].label} placement={placementMap['bottom-start'].placement} />
-          <PlacementItem label={placementMap['bottom'].label} placement={placementMap['bottom'].placement} />
-          <PlacementItem label={placementMap['bottom-end'].label} placement={placementMap['bottom-end'].placement} />
+          <PlacementItem
+            label={placementMap['bottom-start'].label}
+            placement={placementMap['bottom-start'].placement}
+          />
+          <PlacementItem
+            label={placementMap['bottom'].label}
+            placement={placementMap['bottom'].placement}
+          />
+          <PlacementItem
+            label={placementMap['bottom-end'].label}
+            placement={placementMap['bottom-end'].placement}
+          />
           <div />
         </div>
       );
@@ -342,7 +438,14 @@ export const ControlledVisibility: Story = {
       }, [value]);
 
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 240 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            maxWidth: 240,
+          }}
+        >
           <div style={{ display: 'flex', gap: 8 }}>
             <Button
               onMouseDown={(event) => event.stopPropagation()}
@@ -392,7 +495,7 @@ export const LoadMoreOnReachBottom: Story = {
   render: () => {
     const ExampleComponent = () => {
       const [options, setOptions] = useState<DropdownOption[]>(() =>
-        usStatesOptions.slice(0, 10)
+        usStatesOptions.slice(0, 10),
       );
       const [value, setValue] = useState<string | undefined>(undefined);
       const [loading, setLoading] = useState(false);
@@ -412,7 +515,10 @@ export const LoadMoreOnReachBottom: Story = {
         // 模擬異步加載數據
         setTimeout(() => {
           const currentCount = options.length;
-          const nextBatch = usStatesOptions.slice(currentCount, currentCount + 10);
+          const nextBatch = usStatesOptions.slice(
+            currentCount,
+            currentCount + 10,
+          );
 
           if (nextBatch.length === 0) {
             setHasMore(false);
@@ -437,8 +543,17 @@ export const LoadMoreOnReachBottom: Story = {
       }, []);
 
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 320 }}>
-          <Tag label={`已載入 ${options.length} / ${usStatesOptions.length} 個選項`} />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            maxWidth: 320,
+          }}
+        >
+          <Tag
+            label={`已載入 ${options.length} / ${usStatesOptions.length} 個選項`}
+          />
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <Dropdown
               maxHeight={300}
@@ -468,5 +583,3 @@ export const LoadMoreOnReachBottom: Story = {
     return <ExampleComponent />;
   },
 };
-
-

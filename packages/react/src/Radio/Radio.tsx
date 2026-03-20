@@ -1,6 +1,12 @@
 'use client';
 
-import { ChangeEventHandler, forwardRef, useContext } from 'react';
+import {
+  ChangeEventHandler,
+  forwardRef,
+  useCallback,
+  useContext,
+  useRef,
+} from 'react';
 import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
 import { InputCheckSize } from '@mezzanine-ui/core/_internal/input-check';
 import { IconDefinition } from '@mezzanine-ui/icons';
@@ -174,6 +180,19 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
     });
     const size: InputCheckSize = sizeProp ?? sizeFromGroup ?? 'main';
 
+    const radioInputRef = useRef<HTMLInputElement>(null);
+    const textInputRef = useRef<HTMLInputElement>(null);
+
+    const handleRadioChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+      (event) => {
+        onChange(event);
+        if (withInputConfig && !withInputConfig.disabled) {
+          textInputRef.current?.focus();
+        }
+      },
+      [onChange, withInputConfig],
+    );
+
     return (
       <div ref={ref} className={cx(classes.wrapper, className)}>
         <InputCheck
@@ -204,8 +223,9 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
                 checked={checked}
                 disabled={disabled}
                 id={inputId}
-                onChange={onChange}
+                onChange={handleRadioChange}
                 name={name}
+                ref={radioInputRef}
                 type="radio"
                 value={value}
               />
@@ -224,6 +244,12 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
           <div style={{ width: withInputConfig.width ?? 120 }}>
             <Input
               {...withInputConfig}
+              inputRef={textInputRef}
+              inputProps={{
+                onClick: () => {
+                  radioInputRef.current?.click();
+                },
+              }}
               variant="base"
               placeholder={withInputConfig.placeholder ?? 'Placeholder'}
             />

@@ -2,7 +2,14 @@ import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
 
-import { ClockIcon, DownloadIcon, EditIcon, EyeIcon, TrashIcon, UploadIcon } from '@mezzanine-ui/icons';
+import {
+  ClockIcon,
+  DownloadIcon,
+  EditIcon,
+  EyeIcon,
+  TrashIcon,
+  UploadIcon,
+} from '@mezzanine-ui/icons';
 import Tag from '../Tag';
 import DropdownItem, { DropdownItemProps } from './DropdownItem';
 
@@ -20,16 +27,22 @@ const actionsOptions: DropdownOption[] = [
   { name: '自動備份', id: 'auto-backup', checkSite: 'suffix' },
   { name: '深色模式', id: 'dark-mode', checkSite: 'suffix' },
   { name: '自動更新', id: 'auto-update', checkSite: 'suffix' },
-]
+];
 
 const iconsOptions: DropdownOption[] = [
   { name: '編輯', id: 'edit', icon: EditIcon },
   { name: '檢視', id: 'view', icon: EyeIcon },
-  { name: '刪除', id: 'delete', icon: TrashIcon, validate: 'danger', showUnderline: true },
+  {
+    name: '刪除',
+    id: 'delete',
+    icon: TrashIcon,
+    validate: 'danger',
+    showUnderline: true,
+  },
   { name: '匯入', id: 'import', icon: UploadIcon },
   { name: '下載', id: 'download', icon: DownloadIcon, showUnderline: true },
   { name: '過去版本', id: 'past-version', icon: ClockIcon },
-]
+];
 
 const groupedOptions: DropdownOption[] = [
   {
@@ -57,12 +70,12 @@ const groupedUnderlineOptions: DropdownOption[] = [
     children: [
       {
         name: '美國',
-        id: 'us'
+        id: 'us',
       },
       {
         name: '加拿大',
         id: 'ca',
-        showUnderline: true
+        showUnderline: true,
       },
     ],
   },
@@ -87,11 +100,11 @@ const treeOptions: DropdownOption[] = [
         children: [
           {
             name: 'React.js',
-            id: 'reactjs'
+            id: 'reactjs',
           },
           {
             name: 'React Native',
-            id: 'react-native'
+            id: 'react-native',
           },
         ],
       },
@@ -115,12 +128,12 @@ const treeCheckedOptions: DropdownOption[] = [
           {
             name: 'React.js',
             id: 'reactjs',
-            showCheckbox: true
+            showCheckbox: true,
           },
           {
             name: 'React Native',
             id: 'react-native',
-            showCheckbox: true
+            showCheckbox: true,
           },
         ],
       },
@@ -220,7 +233,6 @@ const shortcutOptions: DropdownOption[] = [
   },
 ];
 
-
 export const Playground: Story = {
   argTypes: {
     mode: {
@@ -239,7 +251,7 @@ export const Playground: Story = {
     listboxId: 'dropdown-listbox',
     type: 'tree',
   },
-  render: (args) => <DropdownItem {...args} />
+  render: (args) => <DropdownItem {...args} />,
 };
 
 export const Basic: Story = {
@@ -248,21 +260,20 @@ export const Basic: Story = {
     activeIndex: null,
     listboxId: 'dropdown-listbox',
     type: 'default',
-    mode: 'multiple'
+    mode: 'multiple',
   },
   render: (args) => {
     return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 20,
-        position: 'relative',
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 20,
+          position: 'relative',
+        }}
+      >
         <Tag label="Icons Dropdown" />
-        <DropdownItem
-          {...args}
-          options={iconsOptions}
-        />
+        <DropdownItem {...args} options={iconsOptions} />
         <Tag label="Actions Dropdown" />
         <DropdownItem
           {...args}
@@ -273,13 +284,19 @@ export const Basic: Story = {
             showTopBar: true,
             cancelText: '取消',
             confirmText: '套用設定',
-            onCancel: () => { },
-            onConfirm: () => { },
+            onCancel: () => {},
+            onConfirm: () => {},
           }}
         />
       </div>
     );
-  }
+  },
+};
+
+function getLeafIds(option: DropdownOption): string[] {
+  if (!option.children || option.children.length === 0) return [option.id];
+
+  return option.children.flatMap(getLeafIds);
 }
 
 export const Tree: Story = {
@@ -289,27 +306,61 @@ export const Tree: Story = {
     listboxId: 'dropdown-listbox',
     type: 'tree',
   },
-  render: (args) => (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 20,
-      position: 'relative',
-    }}>
-      <Tag label="Single-Select Dropdown" />
-      <DropdownItem
-        {...args}
-        options={treeOptions}
-        mode="single"
-      />
-      <Tag label="Multi-Select Dropdown" />
-      <DropdownItem
-        {...args}
-        options={treeCheckedOptions}
-        mode="multiple"
-      />
-    </div>
-  )
+  render: (args) => {
+    const TreeExample = () => {
+      const [singleValue, setSingleValue] = useState<string | null>(null);
+      const [multiValue, setMultiValue] = useState<string[]>([]);
+
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 20,
+            position: 'relative',
+          }}
+        >
+          <Tag label="Single-Select Dropdown" />
+          <DropdownItem
+            {...args}
+            mode="single"
+            options={treeOptions}
+            value={singleValue ?? undefined}
+            onSelect={(option) => setSingleValue(option.id)}
+          />
+          <Tag label="Multi-Select Dropdown" />
+          <DropdownItem
+            {...args}
+            mode="multiple"
+            options={treeCheckedOptions}
+            value={multiValue}
+            onSelect={(option) => {
+              if (option.children && option.children.length > 0) {
+                const leafIds = getLeafIds(option);
+                const allSelected = leafIds.every((id) =>
+                  multiValue.includes(id),
+                );
+
+                setMultiValue((prev) =>
+                  allSelected
+                    ? prev.filter((id) => !leafIds.includes(id))
+                    : [...new Set([...prev, ...leafIds])],
+                );
+              } else {
+                setMultiValue((prev) =>
+                  prev.includes(option.id)
+                    ? prev.filter((id) => id !== option.id)
+                    : [...prev, option.id],
+                );
+              }
+            }}
+          />
+        </div>
+      );
+    };
+
+    return <TreeExample />;
+  },
 };
 
 export const Grouped: Story = {
@@ -320,19 +371,21 @@ export const Grouped: Story = {
     type: 'grouped',
   },
   render: (args) => (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 20,
-      position: 'relative',
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
+        position: 'relative',
+      }}
+    >
       <Tag label="Grouped Dropdown" />
       <DropdownItem {...args} options={groupedOptions} />
       <Tag label="Grouped Underline Dropdown" />
       <DropdownItem {...args} options={groupedUnderlineOptions} />
     </div>
-  )
-}
+  ),
+};
 
 export const Shortcuts: Story = {
   args: {
@@ -344,20 +397,25 @@ export const Shortcuts: Story = {
   },
   render: (args) => {
     const ShortcutsExample = () => {
-      const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+      const [selectedId, setSelectedId] = useState<string | undefined>(
+        undefined,
+      );
 
       return (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 20,
-          position: 'relative',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 20,
+            position: 'relative',
+          }}
+        >
           <Tag label="Shortcut Keys Dropdown" />
           <div style={{ marginBottom: 8, fontSize: '14px', color: '#666' }}>
             請先點擊下拉選單使其獲得焦點，然後按下快捷鍵測試功能。
             <br />
-            支援的快捷鍵：⌘N / Ctrl+N、⌘O / Ctrl+O、⌘S / Ctrl+S、Delete / Backspace、K、⌘R / Ctrl+R / F5
+            支援的快捷鍵：⌘N / Ctrl+N、⌘O / Ctrl+O、⌘S / Ctrl+S、Delete /
+            Backspace、K、⌘R / Ctrl+R / F5
             <br />
             注意：單一按鈕（如 K）需要不按任何修飾鍵才能觸發
           </div>
@@ -371,7 +429,8 @@ export const Shortcuts: Story = {
           />
           {selectedId && (
             <div style={{ marginTop: 8, fontSize: '14px', color: '#333' }}>
-              已選擇：{shortcutOptions.find((opt) => opt.id === selectedId)?.name}
+              已選擇：
+              {shortcutOptions.find((opt) => opt.id === selectedId)?.name}
             </div>
           )}
         </div>

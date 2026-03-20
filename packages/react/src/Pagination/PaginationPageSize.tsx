@@ -97,11 +97,13 @@ const PaginationPageSize = forwardRef<HTMLDivElement, PaginationPageSizeProps>(
         ) : null}
         <Dropdown
           disabled={disabled}
+          minWidth={0}
           onSelect={dropDownOnSelect}
           onVisibilityChange={setOpen}
           open={open}
           options={selectOptions}
           sameWidth
+          value={currentValue?.id}
         >
           <SelectTrigger
             className={classes.select}

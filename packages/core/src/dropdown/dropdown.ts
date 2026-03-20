@@ -201,6 +201,7 @@ export const dropdownClasses = {
   card: `${dropdownPrefix}-item-card`,
   cardContainer: `${dropdownPrefix}-item-card-container`,
   cardActive: `${dropdownPrefix}-item-card--active`,
+  cardKeyboardActive: `${dropdownPrefix}-item-card--keyboard-active`,
   cardDisabled: `${dropdownPrefix}-item-card--disabled`,
   cardDanger: `${dropdownPrefix}-item-card--danger`,
   cardUnderline: `${dropdownPrefix}-item-card-underline`,

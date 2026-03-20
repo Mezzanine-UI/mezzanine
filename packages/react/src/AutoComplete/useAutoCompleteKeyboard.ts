@@ -30,6 +30,7 @@ type UseAutoCompleteKeyboardParams = {
   searchText: string;
   searchTextExistWithoutOption: boolean;
   setActiveIndex: Dispatch<SetStateAction<number | null>>;
+  setKeyboardActiveIndex?: Dispatch<SetStateAction<number | null>>;
   setListboxHasVisualFocus: (focus: boolean) => void;
   setInsertText: (value: string) => void;
   setSearchText: (value: string) => void;
@@ -64,6 +65,7 @@ export function useAutoCompleteKeyboard({
   searchText,
   searchTextExistWithoutOption,
   setActiveIndex,
+  setKeyboardActiveIndex,
   setInsertText,
   setListboxHasVisualFocus,
   setSearchText,
@@ -86,6 +88,7 @@ export function useAutoCompleteKeyboard({
         onEscape: () => {
           toggleOpen(false);
           setActiveIndex(null);
+          setKeyboardActiveIndex?.(null);
           setListboxHasVisualFocus(false);
           if (inputRef && typeof inputRef !== 'function') {
             inputRef.current?.blur();
@@ -94,6 +97,7 @@ export function useAutoCompleteKeyboard({
         open,
         options: dropdownOptions,
         setActiveIndex,
+        setKeyboardActiveIndex,
         setListboxHasVisualFocus,
         setOpen: (newOpen) => {
           if (newOpen && !open) {
@@ -112,6 +116,7 @@ export function useAutoCompleteKeyboard({
       onFocus,
       open,
       setActiveIndex,
+      setKeyboardActiveIndex,
       setListboxHasVisualFocus,
       toggleOpen,
     ],

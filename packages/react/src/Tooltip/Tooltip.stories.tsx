@@ -44,7 +44,6 @@ export const Basic: Story = {
         title={
           <div style={{ display: 'flex', flexFlow: 'row' }}>
             <span>Custom Element</span>
-            <Icon icon={InfoFilledIcon} size={16} />
           </div>
         }
         options={{

@@ -56,6 +56,14 @@
 
     &::placeholder {
       color: palette.semantic-variable(text, neutral-faint);
+
+      // Blurred state: placeholder shows human-readable text (e.g. "輸入日期") → use input typography
+      @include typography.semantic-variable(input);
+    }
+
+    &:focus::placeholder {
+      // Focused state: placeholder shows format template (e.g. "YYYY-MM-DD") → use input-mono typography
+      @include typography.semantic-variable(input-mono);
     }
   }
 

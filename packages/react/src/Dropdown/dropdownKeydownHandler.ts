@@ -12,6 +12,12 @@ export function createDropdownKeydownHandler(params: {
   open: boolean;
   options: DropdownOption[];
   setActiveIndex: Dispatch<SetStateAction<number | null>>;
+  /**
+   * Optional setter for keyboard-only active index.
+   * When provided, it is updated alongside `setActiveIndex` on arrow key navigation,
+   * and cleared on Escape / directional keys that exit the list.
+   */
+  setKeyboardActiveIndex?: Dispatch<SetStateAction<number | null>>;
   setListboxHasVisualFocus: (focus: boolean) => void;
   setOpen: (open: boolean) => void;
 }) {
@@ -22,6 +28,7 @@ export function createDropdownKeydownHandler(params: {
     open,
     options,
     setActiveIndex,
+    setKeyboardActiveIndex,
     setListboxHasVisualFocus,
     setOpen,
   } = params;
@@ -37,12 +44,15 @@ export function createDropdownKeydownHandler(params: {
           setOpen(true);
           setListboxHasVisualFocus(true);
           setActiveIndex(() => 0);
+          setKeyboardActiveIndex?.(() => 0);
           return;
         }
         setListboxHasVisualFocus(true);
         setActiveIndex((prev) => {
-          if (prev === null) return 0;
-          return prev >= options.length - 1 ? 0 : prev + 1;
+          const next =
+            prev === null ? 0 : prev >= options.length - 1 ? 0 : prev + 1;
+          setKeyboardActiveIndex?.(() => next);
+          return next;
         });
         break;
       }
@@ -54,12 +64,19 @@ export function createDropdownKeydownHandler(params: {
           setOpen(true);
           setListboxHasVisualFocus(true);
           setActiveIndex(() => options.length - 1);
+          setKeyboardActiveIndex?.(() => options.length - 1);
           return;
         }
         setListboxHasVisualFocus(true);
         setActiveIndex((prev) => {
-          if (prev === null) return options.length - 1;
-          return prev <= 0 ? options.length - 1 : prev - 1;
+          const next =
+            prev === null
+              ? options.length - 1
+              : prev <= 0
+                ? options.length - 1
+                : prev - 1;
+          setKeyboardActiveIndex?.(() => next);
+          return next;
         });
         break;
       }
@@ -87,6 +104,7 @@ export function createDropdownKeydownHandler(params: {
       case 'ArrowRight': {
         setListboxHasVisualFocus(false);
         setActiveIndex(() => null);
+        setKeyboardActiveIndex?.(() => null);
         break;
       }
 

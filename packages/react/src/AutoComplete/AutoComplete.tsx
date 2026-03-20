@@ -962,16 +962,26 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
     // Active index for dropdown keyboard navigation
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    // Keyboard-only active index: only set by arrow key navigation, not mouse hover.
+    // Drives the focus ring (--keyboard-active CSS class) separately from hover highlight.
+    const [keyboardActiveIndex, setKeyboardActiveIndex] = useState<
+      number | null
+    >(null);
     const setListboxHasVisualFocus = useCallback((_focus: boolean) => {}, []);
 
-    // Reset activeIndex when options change
+    // Reset activeIndex and keyboardActiveIndex when options change
     useEffect(() => {
       if (!dropdownOptions.length) {
         setActiveIndex(null);
+        setKeyboardActiveIndex(null);
         return;
       }
 
       setActiveIndex((prev) => {
+        if (prev === null) return null;
+        return Math.min(prev, dropdownOptions.length - 1);
+      });
+      setKeyboardActiveIndex((prev) => {
         if (prev === null) return null;
         return Math.min(prev, dropdownOptions.length - 1);
       });
@@ -1016,6 +1026,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       searchText,
       searchTextExistWithoutOption,
       setActiveIndex,
+      setKeyboardActiveIndex,
       setInsertText,
       setListboxHasVisualFocus,
       setSearchText,
@@ -1033,6 +1044,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             e.stopPropagation();
             toggleOpen(false);
             setActiveIndex(null);
+            setKeyboardActiveIndex(null);
             setListboxHasVisualFocus(false);
             onFocus(false);
             inputElementRef.current?.blur();
@@ -1047,6 +1059,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           inputProps,
           onFocus,
           setActiveIndex,
+          setKeyboardActiveIndex,
           setListboxHasVisualFocus,
           toggleOpen,
         ],
@@ -1068,6 +1081,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         // In multiple mode, blur/close can be driven by Dropdown visibility updates.
         // Keep input text cleanup consistent even when native input blur is not triggered.
+        if (!newOpen) {
+          setKeyboardActiveIndex(null);
+        }
+
         if (!newOpen && isMultiple && shouldClearSearchTextOnBlur) {
           if (skipNextMultipleCloseResetRef.current) {
             const menuElement = document.getElementById(menuId);
@@ -1094,6 +1111,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         menuId,
         open,
         resetSearchInputsAndOptions,
+        setKeyboardActiveIndex,
         shouldClearSearchTextOnBlur,
         toggleOpen,
       ],
@@ -1146,6 +1164,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
                 : undefined
             }
             activeIndex={activeIndex}
+            keyboardActiveIndex={keyboardActiveIndex}
             disabled={isInputDisabled}
             emptyText={emptyText}
             followText={searchText}

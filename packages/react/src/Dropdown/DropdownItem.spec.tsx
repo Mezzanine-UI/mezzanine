@@ -37,7 +37,7 @@ describe('DropdownItem', () => {
         <DropdownItem
           {...defaultProps}
           headerContent={<div data-testid="header">Header</div>}
-        />
+        />,
       );
       expect(screen.getByTestId('header')).toBeInTheDocument();
     });
@@ -52,16 +52,16 @@ describe('DropdownItem', () => {
       // Verify that the active option has the correct id
       const activeOption = screen.getByRole('option', { name: 'Option 2' });
       expect(activeOption).toHaveAttribute('id', 'test-listbox-option-1');
-      expect(activeOption).toHaveAttribute('aria-selected', 'true');
+      // aria-selected reflects selection state, not keyboard cursor position
+      // An unselected but keyboard-highlighted option has aria-selected="false"
+      expect(activeOption).toHaveAttribute('aria-selected', 'false');
     });
 
     it('should apply active class to active option', () => {
       const { container } = render(
-        <DropdownItem {...defaultProps} activeIndex={0} />
+        <DropdownItem {...defaultProps} activeIndex={0} />,
       );
-      const activeOption = container.querySelector(
-        '#test-listbox-option-0'
-      );
+      const activeOption = container.querySelector('#test-listbox-option-0');
       expect(activeOption).toHaveClass('mzn-dropdown-item-card--active');
     });
   });
@@ -80,7 +80,7 @@ describe('DropdownItem', () => {
       const user = userEvent.setup();
       const onSelect = jest.fn();
       render(
-        <DropdownItem {...defaultProps} disabled={true} onSelect={onSelect} />
+        <DropdownItem {...defaultProps} disabled={true} onSelect={onSelect} />,
       );
       const option = screen.getByText('Option 1');
       await user.click(option);
@@ -111,7 +111,7 @@ describe('DropdownItem', () => {
           mode="multiple"
           options={optionsWithCheckbox}
           value={['1']}
-        />
+        />,
       );
       const checkboxes = screen.getAllByRole('checkbox');
       expect(checkboxes.length).toBeGreaterThan(0);
@@ -128,7 +128,7 @@ describe('DropdownItem', () => {
           mode="multiple"
           options={optionsWithCheckbox}
           value={['1', '2']}
-        />
+        />,
       );
       const checkboxes = screen.getAllByRole('checkbox');
       expect(checkboxes[0]).toBeChecked();
@@ -138,13 +138,7 @@ describe('DropdownItem', () => {
 
   describe('single mode', () => {
     it('should mark selected option', () => {
-      render(
-        <DropdownItem
-          {...defaultProps}
-          mode="single"
-          value="1"
-        />
-      );
+      render(<DropdownItem {...defaultProps} mode="single" value="1" />);
       const option = screen.getByText('Option 1').closest('li');
       expect(option).toBeInTheDocument();
     });
@@ -168,7 +162,7 @@ describe('DropdownItem', () => {
           {...defaultProps}
           type="grouped"
           options={groupedOptions}
-        />
+        />,
       );
       expect(screen.getByText('Group 1')).toBeInTheDocument();
       expect(screen.getByText('Item 1')).toBeInTheDocument();
@@ -195,11 +189,7 @@ describe('DropdownItem', () => {
 
     it('should render tree options', () => {
       render(
-        <DropdownItem
-          {...defaultProps}
-          type="tree"
-          options={treeOptions}
-        />
+        <DropdownItem {...defaultProps} type="tree" options={treeOptions} />,
       );
       expect(screen.getByText('Parent')).toBeInTheDocument();
     });
@@ -207,11 +197,7 @@ describe('DropdownItem', () => {
     it('should expand/collapse tree nodes on click', async () => {
       const user = userEvent.setup();
       render(
-        <DropdownItem
-          {...defaultProps}
-          type="tree"
-          options={treeOptions}
-        />
+        <DropdownItem {...defaultProps} type="tree" options={treeOptions} />,
       );
       const parent = screen.getByText('Parent');
       await user.click(parent);
@@ -229,7 +215,7 @@ describe('DropdownItem', () => {
           onSelect={onSelect}
           type="tree"
           options={treeOptions}
-        />
+        />,
       );
       await user.click(screen.getByText('Parent'));
       expect(onSelect).not.toHaveBeenCalled();
@@ -246,11 +232,13 @@ describe('DropdownItem', () => {
           onSelect={onSelect}
           type="tree"
           options={treeOptions}
-        />
+        />,
       );
       const [parentCheckbox] = screen.getAllByRole('checkbox');
       await user.click(parentCheckbox);
-      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: '1' }),
+      );
     });
 
     it('should keep parent expanded when clicking parent checkbox', async () => {
@@ -263,7 +251,7 @@ describe('DropdownItem', () => {
           onSelect={onSelect}
           type="tree"
           options={treeOptions}
-        />
+        />,
       );
       await user.click(screen.getByText('Parent'));
       expect(screen.getByText('Child')).toBeInTheDocument();
@@ -271,7 +259,9 @@ describe('DropdownItem', () => {
       const [parentCheckbox] = screen.getAllByRole('checkbox');
       await user.click(parentCheckbox);
 
-      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: '1' }),
+      );
       expect(screen.getByText('Child')).toBeInTheDocument();
     });
 
@@ -286,10 +276,12 @@ describe('DropdownItem', () => {
           toggleCheckedOnClick={true}
           type="tree"
           options={treeOptions}
-        />
+        />,
       );
       await user.click(screen.getByText('Parent'));
-      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: '1' }),
+      );
     });
 
     describe('parent checkbox state based on leaf descendants only', () => {
@@ -313,7 +305,7 @@ describe('DropdownItem', () => {
             options={twoLeavesOptions}
             type="tree"
             value={[]}
-          />
+          />,
         );
         const [parentCheckbox] = screen.getAllByRole('checkbox');
         expect(parentCheckbox).not.toBeChecked();
@@ -328,7 +320,7 @@ describe('DropdownItem', () => {
             options={twoLeavesOptions}
             type="tree"
             value={['1-a']}
-          />
+          />,
         );
         const [parentCheckbox] = screen.getAllByRole('checkbox');
         expect(parentCheckbox).toBePartiallyChecked();
@@ -342,7 +334,7 @@ describe('DropdownItem', () => {
             options={twoLeavesOptions}
             type="tree"
             value={['1-a', '1-b']}
-          />
+          />,
         );
         const [parentCheckbox] = screen.getAllByRole('checkbox');
         expect(parentCheckbox).toBeChecked();
@@ -358,7 +350,7 @@ describe('DropdownItem', () => {
             options={treeOptions}
             type="tree"
             value={['1-1']}
-          />
+          />,
         );
         const [parentCheckbox] = screen.getAllByRole('checkbox');
         expect(parentCheckbox).not.toBeChecked();
@@ -374,7 +366,7 @@ describe('DropdownItem', () => {
             options={treeOptions}
             type="tree"
             value={['1-1-1']}
-          />
+          />,
         );
         const [parentCheckbox] = screen.getAllByRole('checkbox');
         expect(parentCheckbox).toBeChecked();
@@ -385,7 +377,7 @@ describe('DropdownItem', () => {
   describe('maxHeight', () => {
     it('should apply maxHeight style when provided', () => {
       const { container } = render(
-        <DropdownItem {...defaultProps} maxHeight={200} />
+        <DropdownItem {...defaultProps} maxHeight={200} />,
       );
       const listbox = container.querySelector('.mzn-dropdown-list');
       expect(listbox).toHaveStyle({ maxHeight: '200px' });
@@ -393,7 +385,7 @@ describe('DropdownItem', () => {
 
     it('should create scrollable wrapper when maxHeight is set', () => {
       const { container } = render(
-        <DropdownItem {...defaultProps} maxHeight={200} />
+        <DropdownItem {...defaultProps} maxHeight={200} />,
       );
       const wrapper = container.querySelector('.mzn-dropdown-list-wrapper');
       expect(wrapper).toBeInTheDocument();
@@ -410,7 +402,7 @@ describe('DropdownItem', () => {
             onCancel: jest.fn(),
             onConfirm: jest.fn(),
           }}
-        />
+        />,
       );
       expect(screen.getByText('Cancel')).toBeInTheDocument();
       expect(screen.getByText('Confirm')).toBeInTheDocument();
@@ -420,10 +412,10 @@ describe('DropdownItem', () => {
   describe('followText', () => {
     it('should highlight matching text in options', () => {
       const { container } = render(
-        <DropdownItem {...defaultProps} followText="Option" />
+        <DropdownItem {...defaultProps} followText="Option" />,
       );
       const highlighted = container.querySelector(
-        '.mzn-dropdown-item-card-highlighted-text'
+        '.mzn-dropdown-item-card-highlighted-text',
       );
       expect(highlighted).toBeInTheDocument();
     });
@@ -459,11 +451,7 @@ describe('DropdownItem', () => {
 
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       render(
-        <DropdownItem
-          {...defaultProps}
-          type="tree"
-          options={deepOptions}
-        />
+        <DropdownItem {...defaultProps} type="tree" options={deepOptions} />,
       );
       // Should truncate to max 3 levels
       expect(consoleSpy).toHaveBeenCalled();
@@ -471,4 +459,3 @@ describe('DropdownItem', () => {
     });
   });
 });
-

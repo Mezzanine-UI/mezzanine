@@ -31,7 +31,7 @@ $tag-type-config: (
     disabled: (
       text-color: palette.semantic-variable(text, neutral-light),
       icon-color: palette.semantic-variable(icon, neutral-light),
-      background-color: palette.semantic-variable(background, neutral-subtile),
+      background-color: palette.semantic-variable(background, neutral-subtle),
       border: 1px solid palette.semantic-variable(border, neutral-light),
     ),
     read-only: (
@@ -246,6 +246,7 @@ $tag-size-config: (
 
   &:is(button),
   & &__close-button {
+    font: inherit;
     cursor: pointer;
 
     &:disabled,

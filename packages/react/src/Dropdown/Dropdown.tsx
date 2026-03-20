@@ -86,9 +86,17 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   actionText?: string;
   /**
-   * The active option index for hover/focus state.
+   * The active option index for hover/focus state and Enter selection.
+   * Can be set by both keyboard navigation and mouse hover (e.g. in AutoComplete).
    */
   activeIndex?: number | null;
+  /**
+   * The keyboard-only active index.
+   * When provided, only this index triggers the focus ring (`--keyboard-active` CSS class).
+   * Mouse hover updates `activeIndex` for Enter selection but should not update this.
+   * When omitted, falls back to the internal uncontrolled index (set only by built-in keyboard navigation).
+   */
+  keyboardActiveIndex?: number | null;
   /**
    * The children of the dropdown.
    * This can be a button or an input.
@@ -130,6 +138,13 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * The max height of the dropdown list.
    */
   maxHeight?: number | string;
+  /**
+   * Override the default `min-width` of the dropdown list.
+   * Accepts a number (pixels) or any valid CSS length string.
+   * Pass `0` to remove the minimum width constraint entirely — useful when `sameWidth` controls the width.
+   * @default spacing token `size-container-tiny`
+   */
+  minWidth?: number | string;
   /**
    * Whether the dropdown is open (controlled).
    */
@@ -333,12 +348,14 @@ export interface DropdownProps extends DropdownItemSharedProps {
 export default function Dropdown(props: DropdownProps) {
   const {
     activeIndex: activeIndexProp,
+    keyboardActiveIndex: keyboardActiveIndexProp,
     id,
     children,
     options = [],
     type = 'default',
     toggleCheckedOnClick,
     maxHeight,
+    minWidth,
     disabled = false,
     showDropdownActions = false,
     actionCancelText,
@@ -417,16 +434,53 @@ export default function Dropdown(props: DropdownProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const isOpenControlled = openProp !== undefined;
   const isOpen = isOpenControlled ? !!openProp : uncontrolledOpen;
-  // Keep setter for uncontrolled mode support (e.g., keyboard navigation)
-  // Currently not used in handleItemHover to prevent style conflicts
-  const [uncontrolledActiveIndex, _setUncontrolledActiveIndex] = useState<
+  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<
     number | null
   >(activeIndexProp ?? null);
   const isActiveIndexControlled = activeIndexProp !== undefined;
   const mergedActiveIndex = isActiveIndexControlled
     ? activeIndexProp
     : uncontrolledActiveIndex;
+  // For keyboard-only visual focus (focus ring). When not externally controlled,
+  // `uncontrolledActiveIndex` is already set only by keyboard (never by hover).
+  const mergedKeyboardActiveIndex =
+    keyboardActiveIndexProp !== undefined
+      ? keyboardActiveIndexProp
+      : uncontrolledActiveIndex;
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Expansion state for tree type (lifted here so keyboard nav can track visible options)
+  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
+  const handleToggleExpand = useCallback((optionId: string) => {
+    setExpandedNodes((prev) => {
+      const next = new Set(prev);
+      if (next.has(optionId)) {
+        next.delete(optionId);
+      } else {
+        next.add(optionId);
+      }
+      return next;
+    });
+  }, []);
+
+  // Flat list of navigable options, respecting tree expansion state
+  const flatNavigableOptions = useMemo(() => {
+    const opts = options as DropdownOption[];
+    if (type === 'grouped') {
+      return opts.flatMap((g) => g.children ?? []);
+    }
+    if (type === 'tree') {
+      const flatten = (items: DropdownOption[]): DropdownOption[] =>
+        items.flatMap((item) => {
+          if (item.children?.length && expandedNodes.has(item.id)) {
+            return [item, ...flatten(item.children)];
+          }
+          return [item];
+        });
+      return flatten(opts);
+    }
+    return opts;
+  }, [options, type, expandedNodes]);
 
   const ariaActivedescendant = useMemo(() => {
     if (mergedActiveIndex !== null && mergedActiveIndex >= 0) {
@@ -582,10 +636,17 @@ export default function Dropdown(props: DropdownProps) {
 
   // Extract combobox props logic to avoid duplication
   const getComboboxProps = useMemo(() => {
-    // Only access the type property to check if it's a Button component
     const isInput = (children as { type: unknown }).type !== Button;
 
-    if (!isInput) return {};
+    if (!isInput) {
+      // Button trigger: expose listbox ARIA so screen readers can navigate
+      return {
+        'aria-haspopup': 'listbox' as const,
+        'aria-expanded': isOpen,
+        'aria-controls': listboxId,
+        'aria-activedescendant': ariaActivedescendant,
+      };
+    }
 
     return {
       role: 'combobox' as const,
@@ -604,19 +665,111 @@ export default function Dropdown(props: DropdownProps) {
     [onItemHover],
   );
 
+  // Reset active index when dropdown closes (uncontrolled only)
+  useEffect(() => {
+    if (!isOpen && !isActiveIndexControlled) {
+      setUncontrolledActiveIndex(null);
+    }
+  }, [isOpen, isActiveIndexControlled]);
+
+  // Scroll the active option into view whenever activeIndex changes
+  useEffect(() => {
+    if (!isOpen || mergedActiveIndex === null) return;
+    requestAnimationFrame(() => {
+      document
+        .getElementById(`${listboxId}-option-${mergedActiveIndex}`)
+        ?.scrollIntoView({ block: 'nearest' });
+    });
+  }, [mergedActiveIndex, isOpen, listboxId]);
+
+  // Built-in keyboard navigation (only when activeIndex is not controlled externally)
+  const handleBuiltinKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (isActiveIndexControlled) return;
+
+      const count = flatNavigableOptions.length;
+
+      if (!isOpen) {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          setOpen(true);
+        }
+        return;
+      }
+
+      if (count === 0) return;
+
+      switch (event.key) {
+        case 'ArrowDown': {
+          event.preventDefault();
+          setUncontrolledActiveIndex((prev) =>
+            prev === null ? 0 : (prev + 1) % count,
+          );
+          break;
+        }
+        case 'ArrowUp': {
+          event.preventDefault();
+          setUncontrolledActiveIndex((prev) =>
+            prev === null ? count - 1 : (prev - 1 + count) % count,
+          );
+          break;
+        }
+        case 'Enter': {
+          if (mergedActiveIndex !== null && mergedActiveIndex >= 0) {
+            const activeOption = flatNavigableOptions[mergedActiveIndex];
+            if (activeOption) {
+              event.preventDefault();
+              if (type === 'tree' && activeOption.children?.length) {
+                handleToggleExpand(activeOption.id);
+              } else {
+                onSelect?.(activeOption);
+                if (mode !== 'multiple') {
+                  setOpen(false);
+                }
+              }
+            }
+          }
+          break;
+        }
+        case 'Escape': {
+          event.preventDefault();
+          setOpen(false);
+          break;
+        }
+        default:
+          break;
+      }
+    },
+    [
+      isActiveIndexControlled,
+      isOpen,
+      flatNavigableOptions,
+      mergedActiveIndex,
+      type,
+      mode,
+      handleToggleExpand,
+      onSelect,
+      setOpen,
+    ],
+  );
+
   // Extract shared DropdownItem props to avoid duplication
   const baseDropdownItemProps = useMemo(
     () => ({
       actionConfig,
       activeIndex: mergedActiveIndex,
+      keyboardActiveIndex: mergedKeyboardActiveIndex,
       disabled,
+      expandedNodes,
       followText,
       listboxId,
       listboxLabel,
       maxHeight,
+      minWidth,
       sameWidth,
       onHover: handleItemHover,
       onSelect,
+      onToggleExpand: handleToggleExpand,
       onReachBottom,
       onLeaveBottom,
       onScroll,
@@ -638,13 +791,17 @@ export default function Dropdown(props: DropdownProps) {
     [
       actionConfig,
       mergedActiveIndex,
+      mergedKeyboardActiveIndex,
       disabled,
       followText,
       listboxId,
       listboxLabel,
       maxHeight,
+      minWidth,
       sameWidth,
       handleItemHover,
+      handleToggleExpand,
+      expandedNodes,
       onSelect,
       onReachBottom,
       onLeaveBottom,
@@ -677,6 +834,9 @@ export default function Dropdown(props: DropdownProps) {
     const originalOnClick = childProps.onClick as
       | React.MouseEventHandler<HTMLElement>
       | undefined;
+    const originalOnKeyDown = childProps.onKeyDown as
+      | React.KeyboardEventHandler<HTMLElement>
+      | undefined;
 
     return cloneElement(childWithRef, {
       ref: composedRef,
@@ -689,8 +849,13 @@ export default function Dropdown(props: DropdownProps) {
           setOpen((prev) => !prev);
         }
       },
+      onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+        originalOnKeyDown?.(event);
+        if (event?.defaultPrevented) return;
+        handleBuiltinKeyDown(event);
+      },
     } as TriggerElementProps);
-  }, [children, getComboboxProps, isInline, setOpen]);
+  }, [children, getComboboxProps, handleBuiltinKeyDown, isInline, setOpen]);
 
   const inlineTriggerElement = useMemo(() => {
     if (!isInline) {
@@ -712,6 +877,9 @@ export default function Dropdown(props: DropdownProps) {
       | undefined;
     const originalOnFocus = childProps.onFocus as
       | React.FocusEventHandler<HTMLElement>
+      | undefined;
+    const originalOnKeyDown = childProps.onKeyDown as
+      | React.KeyboardEventHandler<HTMLElement>
       | undefined;
 
     return cloneElement(childWithRef, {
@@ -752,8 +920,20 @@ export default function Dropdown(props: DropdownProps) {
 
         setOpen(true);
       },
+      onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+        originalOnKeyDown?.(event);
+        if (event?.defaultPrevented) return;
+        handleBuiltinKeyDown(event);
+      },
     } as TriggerElementProps);
-  }, [children, getComboboxProps, isInline, isOpenControlled, setOpen]);
+  }, [
+    children,
+    getComboboxProps,
+    handleBuiltinKeyDown,
+    isInline,
+    isOpenControlled,
+    setOpen,
+  ]);
 
   useDocumentEvents(() => {
     if (!isOpen) {
