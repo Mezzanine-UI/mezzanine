@@ -21,8 +21,9 @@ import { HighlightSegment, highlightText } from './highlightText';
 export interface DropdownItemCardProps {
   /**
    * Whether the option is currently active (highlighted by keyboard navigation).
-   * This controls the aria-selected attribute according to W3C ARIA spec.
-   * When an option is referenced by aria-activedescendant, it should have aria-selected="true".
+   * Used to apply visual highlight and drive the `--active` CSS modifier.
+   * Note: keyboard focus position is communicated to screen readers via `aria-activedescendant`
+   * on the trigger element, not via `aria-selected` on the option itself.
    */
   active?: boolean;
   /**
@@ -195,16 +196,20 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     return followText
       ? highlightText(cardLabel, followText)
       : [
-        {
-          text: cardLabel,
-          highlight: false,
-        },
-      ];
+          {
+            text: cardLabel,
+            highlight: false,
+          },
+        ];
   }, [cardLabel, followText]);
 
   const showPrependContent = useMemo(() => {
-    return prependIcon || (checkSite === 'prefix' && mode === 'multiple');
-  }, [prependIcon, checkSite, mode]);
+    return (
+      prependIcon ||
+      (checkSite === 'prefix' && mode === 'multiple') ||
+      (checkSite === 'prefix' && mode === 'single' && isChecked)
+    );
+  }, [prependIcon, checkSite, mode, isChecked]);
 
   const showAppendContent = useMemo(() => {
     return appendContent || appendIcon || (checkSite === 'suffix' && isChecked);
@@ -215,11 +220,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
       ? highlightText(subTitle, followText)
       : subTitle
         ? [
-          {
-            text: subTitle,
-            highlight: false,
-          },
-        ]
+            {
+              text: subTitle,
+              highlight: false,
+            },
+          ]
         : [];
   }, [subTitle, followText]);
 
@@ -279,7 +284,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     if (disabled) return;
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      onClick?.();
+      handleClick();
     }
   };
 
@@ -288,12 +293,13 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
       <li
         {...(labelId ? { 'aria-labelledby': labelId } : {})}
         {...(ariaLabel ? { 'aria-label': ariaLabel } : {})}
-        aria-selected={active}
+        aria-selected={isChecked}
         className={cx(
           classes.card,
           classes.cardLevel(level),
           {
             [classes.cardActive]: active || isChecked,
+            [classes.cardKeyboardActive]: active,
             [classes.cardDisabled]: disabled,
             [classes.cardDanger]: validate === 'danger',
           },
@@ -325,6 +331,9 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
                       }
                     : {})}
                 />
+              )}
+              {checkSite === 'prefix' && mode === 'single' && isChecked && (
+                <Icon icon={CheckedIcon} color={appendIconColor} size={16} />
               )}
             </div>
           )}

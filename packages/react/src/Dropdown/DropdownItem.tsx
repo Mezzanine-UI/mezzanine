@@ -1,7 +1,14 @@
 'use client';
 
 import keycode from 'keycode';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   DropdownCheckPosition,
@@ -36,15 +43,34 @@ function getLeafDescendantIds(option: DropdownOption): string[] {
   return option.children.flatMap(getLeafDescendantIds);
 }
 
-export interface DropdownItemProps<T extends DropdownType | undefined = DropdownType> extends Omit<DropdownItemSharedProps, 'type'> {
+export interface DropdownItemProps<
+  T extends DropdownType | undefined = DropdownType,
+> extends Omit<DropdownItemSharedProps, 'type'> {
   /**
    * The action configuration for the dropdown.
    */
   actionConfig?: DropdownActionProps;
   /**
-   * The active option index for hover/focus state.
+   * The active option index for hover/focus state and Enter selection.
    */
   activeIndex: number | null;
+  /**
+   * Keyboard-only active index. When provided, only this index applies the
+   * focus ring (`--keyboard-active`) and active background via `DropdownItemCard`'s `active` prop.
+   * Mouse hover should update `activeIndex` (for Enter selection) but NOT this value.
+   * Falls back to `activeIndex` when not provided (backward-compatible).
+   */
+  keyboardActiveIndex?: number | null;
+  /**
+   * Controlled set of expanded node IDs for tree type.
+   * When provided, expansion state is managed externally.
+   */
+  expandedNodes?: Set<string>;
+  /**
+   * Callback to toggle the expansion of a tree node.
+   * Required when `expandedNodes` is provided.
+   */
+  onToggleExpand?: (id: string) => void;
   /**
    * The text to follow.
    */
@@ -67,13 +93,20 @@ export interface DropdownItemProps<T extends DropdownType | undefined = Dropdown
    */
   maxHeight?: number | string;
   /**
+   * Override the default `min-width` of the dropdown list.
+   * Accepts a number (pixels) or any valid CSS length string.
+   * Pass `0` to remove the minimum width constraint entirely.
+   * @default spacing token `size-container-tiny`
+   */
+  minWidth?: number | string;
+  /**
    * Whether to set the same width as its anchor element.
    * @default false
    */
   sameWidth?: boolean;
   /**
    * Callback when hovering option index changes.
-  */
+   */
   onHover?: (index: number) => void;
   /**
    * Options to render.
@@ -172,15 +205,18 @@ export interface DropdownItemProps<T extends DropdownType | undefined = Dropdown
 function truncateArrayDepth(
   input: DropdownOption[],
   maxDepth: number = 3,
-  warn: boolean = true
+  warn: boolean = true,
 ): DropdownOption[] {
   // Internal recursive function: truncates children to specified depth
-  const truncate = (options: DropdownOption[], currentDepth: number = 1): DropdownOption[] => {
+  const truncate = (
+    options: DropdownOption[],
+    currentDepth: number = 1,
+  ): DropdownOption[] => {
     if (currentDepth >= maxDepth) {
       // Stop going deeper once maximum depth is reached, remove children
       return options.map(({ children: _children, ...option }) => option);
     }
-    return options.map(option => {
+    return options.map((option) => {
       if (!option.children) return option;
       return {
         ...option,
@@ -190,7 +226,10 @@ function truncateArrayDepth(
   };
 
   // Calculate maximum depth by checking all elements (not just the first one)
-  const getDepth = (options: DropdownOption[] | undefined, depth: number = 1): number => {
+  const getDepth = (
+    options: DropdownOption[] | undefined,
+    depth: number = 1,
+  ): number => {
     if (!options || options.length === 0) return depth - 1;
 
     // Find the maximum depth among all options
@@ -200,7 +239,7 @@ function truncateArrayDepth(
           return depth - 1;
         }
         return getDepth(option.children, depth + 1);
-      })
+      }),
     );
   };
 
@@ -210,7 +249,7 @@ function truncateArrayDepth(
   // Exceeds maximum depth → warn
   if (warn) {
     console.error(
-      `[truncateArrayDepth] Input DropdownOption array exceeds ${maxDepth} levels. Extra levels were truncated.`
+      `[truncateArrayDepth] Input DropdownOption array exceeds ${maxDepth} levels. Extra levels were truncated.`,
     );
   }
 
@@ -218,9 +257,12 @@ function truncateArrayDepth(
   return truncate(input);
 }
 
-export default function DropdownItem<T extends DropdownType | undefined = DropdownType>(props: DropdownItemProps<T>) {
+export default function DropdownItem<
+  T extends DropdownType | undefined = DropdownType,
+>(props: DropdownItemProps<T>) {
   const {
     activeIndex,
+    keyboardActiveIndex,
     disabled = false,
     listboxId,
     listboxLabel,
@@ -230,6 +272,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     value,
     type,
     maxHeight,
+    minWidth,
     actionConfig,
     onHover,
     onSelect,
@@ -249,31 +292,50 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     scrollbarOptions,
   } = props;
 
+  const {
+    expandedNodes: expandedNodesProp,
+    onToggleExpand: onToggleExpandProp,
+  } = props;
+
   const optionsContent = truncateArrayDepth(options, 3);
   const listRef = useRef<HTMLUListElement | null>(null);
   const listWrapperRef = useRef<HTMLDivElement | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const wasAtBottomRef = useRef(false);
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
+  const [internalExpandedNodes, setInternalExpandedNodes] = useState<
+    Set<string>
+  >(new Set());
+  const expandedNodes = expandedNodesProp ?? internalExpandedNodes;
   const hasActions = Boolean(actionConfig?.showActions);
   const hasHeader = Boolean(headerContent);
   const shouldUseScrollbar = maxHeight && !scrollbarDisabled;
 
   // Use custom hook to measure element heights
-  const [actionRef, actionHeight] = useElementHeight<HTMLDivElement>(hasActions && !!maxHeight);
-  const [headerRef, headerHeight] = useElementHeight<HTMLLIElement>(hasHeader && !!maxHeight);
+  const [actionRef, actionHeight] = useElementHeight<HTMLDivElement>(
+    hasActions && !!maxHeight,
+  );
+  const [headerRef, headerHeight] = useElementHeight<HTMLLIElement>(
+    hasHeader && !!maxHeight,
+  );
 
-  const toggleExpand = useCallback((optionId: string) => {
-    setExpandedNodes((prev) => {
-      const next = new Set(prev);
-      if (next.has(optionId)) {
-        next.delete(optionId);
-      } else {
-        next.add(optionId);
+  const toggleExpand = useCallback(
+    (optionId: string) => {
+      if (onToggleExpandProp) {
+        onToggleExpandProp(optionId);
+        return;
       }
-      return next;
-    });
-  }, []);
+      setInternalExpandedNodes((prev) => {
+        const next = new Set(prev);
+        if (next.has(optionId)) {
+          next.delete(optionId);
+        } else {
+          next.add(optionId);
+        }
+        return next;
+      });
+    },
+    [onToggleExpandProp],
+  );
 
   const visibleShortcutOptions = useMemo(() => {
     const result: DropdownOption[] = [];
@@ -312,71 +374,77 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     return result;
   }, [expandedNodes, optionsContent, type]);
 
-  const matchShortcut = useCallback((event: KeyboardEvent, shortcut: number | string) => {
-    const eventCode = event.which ?? event.keyCode;
+  const matchShortcut = useCallback(
+    (event: KeyboardEvent, shortcut: number | string) => {
+      const eventCode = event.which ?? event.keyCode;
 
-    if (typeof shortcut === 'number') {
-      return eventCode === shortcut;
-    }
-
-    const tokens = shortcut
-      .split('+')
-      .map((token) => token.trim().toLowerCase())
-      .filter(Boolean);
-
-    let requireMeta = false;
-    let requireCtrl = false;
-    let requireAlt = false;
-    let requireShift = false;
-    let mainToken: string | null = null;
-
-    tokens.forEach((token) => {
-      switch (token) {
-        case 'cmd':
-        case 'meta':
-        case 'command':
-          requireMeta = true;
-          break;
-        case 'ctrl':
-        case 'control':
-          requireCtrl = true;
-          break;
-        case 'alt':
-        case 'option':
-          requireAlt = true;
-          break;
-        case 'shift':
-          requireShift = true;
-          break;
-        default:
-          mainToken = token;
-          break;
+      if (typeof shortcut === 'number') {
+        return eventCode === shortcut;
       }
-    });
 
-    if (!mainToken) return false;
-    if (
-      requireMeta !== event.metaKey
-      || requireCtrl !== event.ctrlKey
-      || requireAlt !== event.altKey
-      || requireShift !== event.shiftKey
-    ) {
-      return false;
-    }
+      const tokens = shortcut
+        .split('+')
+        .map((token) => token.trim().toLowerCase())
+        .filter(Boolean);
 
-    const mainCode = keycode(mainToken);
-    if (typeof mainCode === 'number' && eventCode === mainCode) {
-      return true;
-    }
+      let requireMeta = false;
+      let requireCtrl = false;
+      let requireAlt = false;
+      let requireShift = false;
+      let mainToken: string | null = null;
 
-    const eventKey = event.key?.toLowerCase();
-    if (eventKey && eventKey === mainToken) {
-      return true;
-    }
+      tokens.forEach((token) => {
+        switch (token) {
+          case 'cmd':
+          case 'meta':
+          case 'command':
+            requireMeta = true;
+            break;
+          case 'ctrl':
+          case 'control':
+            requireCtrl = true;
+            break;
+          case 'alt':
+          case 'option':
+            requireAlt = true;
+            break;
+          case 'shift':
+            requireShift = true;
+            break;
+          default:
+            mainToken = token;
+            break;
+        }
+      });
 
-    const eventKeyName = keycode(eventCode);
-    return typeof eventKeyName === 'string' && eventKeyName.toLowerCase() === mainToken;
-  }, []);
+      if (!mainToken) return false;
+      if (
+        requireMeta !== event.metaKey ||
+        requireCtrl !== event.ctrlKey ||
+        requireAlt !== event.altKey ||
+        requireShift !== event.shiftKey
+      ) {
+        return false;
+      }
+
+      const mainCode = keycode(mainToken);
+      if (typeof mainCode === 'number' && eventCode === mainCode) {
+        return true;
+      }
+
+      const eventKey = event.key?.toLowerCase();
+      if (eventKey && eventKey === mainToken) {
+        return true;
+      }
+
+      const eventKeyName = keycode(eventCode);
+      return (
+        typeof eventKeyName === 'string' &&
+        eventKeyName.toLowerCase() === mainToken
+      );
+    },
+    [],
+  );
 
   const renderGroupedOptions = (
     optionList: DropdownOption[] | undefined,
@@ -385,7 +453,9 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     let currentIndex = startIndex;
 
     const elements = (optionList ?? []).flatMap((groupOption) => {
-      const hasChildren = Boolean(groupOption.children && groupOption.children.length > 0);
+      const hasChildren = Boolean(
+        groupOption.children && groupOption.children.length > 0,
+      );
       const groupElements: ReactNode[] = [];
 
       if (hasChildren) {
@@ -396,12 +466,16 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
             className={dropdownClasses.groupLabel}
           >
             {groupOption.name}
-          </Typography>
-        )
+          </Typography>,
+        );
         groupOption.children?.forEach((option) => {
           currentIndex += 1;
           const optionIndex = currentIndex;
-          const isActive = optionIndex === activeIndex;
+          const isActive =
+            optionIndex ===
+            (keyboardActiveIndex !== undefined
+              ? keyboardActiveIndex
+              : activeIndex);
           const isSelected = Array.isArray(value)
             ? value.includes(option.id)
             : value === option.id;
@@ -425,12 +499,12 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
                 if (disabled) return;
                 onSelect?.(option);
               }}
-              checkSite="none"
+              checkSite={option?.checkSite ?? 'suffix'}
               validate={option.validate ?? 'default'}
               onMouseEnter={() => onHover?.(optionIndex)}
               showUnderline={option.showUnderline ?? false}
               appendContent={shortcutText}
-            />
+            />,
           );
         });
       }
@@ -442,7 +516,10 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
   };
 
   const calculateNodeSelectionState = useCallback(
-    (option: DropdownOption, selectedIds: string[]): { checked: boolean; indeterminate: boolean } => {
+    (
+      option: DropdownOption,
+      selectedIds: string[],
+    ): { checked: boolean; indeterminate: boolean } => {
       if (!option.children || option.children.length === 0) {
         const isSelected = selectedIds.includes(String(option.id));
         return { checked: isSelected, indeterminate: false };
@@ -450,7 +527,9 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
 
       // Only check leaf descendants since parent nodes are never added to selectedIds
       const leafIds = getLeafDescendantIds(option);
-      const selectedLeafCount = leafIds.filter((id) => selectedIds.includes(id)).length;
+      const selectedLeafCount = leafIds.filter((id) =>
+        selectedIds.includes(id),
+      ).length;
       const totalLeafCount = leafIds.length;
 
       if (selectedLeafCount === 0) {
@@ -471,36 +550,49 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     startIndex: number,
   ): { elements: ReactNode[]; nextIndex: number } => {
     let currentIndex = startIndex;
-    const selectedIds = Array.isArray(value) ? value.map((id) => String(id)) : value ? [String(value)] : [];
+    const selectedIds = Array.isArray(value)
+      ? value.map((id) => String(id))
+      : value
+        ? [String(value)]
+        : [];
 
     const elements = (optionList ?? []).flatMap((option) => {
       currentIndex += 1;
       const optionIndex = currentIndex;
       const level = Math.min(depth, 2) as 0 | 1 | 2;
-      const isActive = optionIndex === activeIndex;
-      const hasChildren = Boolean(option.children && option.children.length > 0);
+      const isActive =
+        optionIndex ===
+        (keyboardActiveIndex !== undefined ? keyboardActiveIndex : activeIndex);
+      const hasChildren = Boolean(
+        option.children && option.children.length > 0,
+      );
       const isExpanded = hasChildren && expandedNodes.has(option.id);
       let prependIcon: IconDefinition | undefined = undefined;
 
       if (hasChildren && level !== 2) {
         prependIcon = isExpanded ? CaretDownIcon : CaretRightIcon;
       }
-      const checkSite: DropdownCheckPosition = option.showCheckbox ? 'prefix' : 'none';
+      const checkSite: DropdownCheckPosition = option.showCheckbox
+        ? 'prefix'
+        : (option.checkSite ?? (mode === 'single' ? 'suffix' : 'none'));
       const shortcutText = option.shortcutText
         ? option.shortcutText
         : shortcutTextHandler(option.shortcutKeys ?? []);
-      const selectionState = hasChildren && mode === 'multiple'
-        ? calculateNodeSelectionState(option, selectedIds)
-        : {
-          checked: selectedIds.includes(String(option.id)),
-          indeterminate: false,
-        };
-      const resolvedToggleCheckedOnClick = toggleCheckedOnClick ?? !(
-        hasChildren
-        && type === 'tree'
-        && mode === 'multiple'
-        && option.showCheckbox
-      );
+      const selectionState =
+        hasChildren && mode === 'multiple'
+          ? calculateNodeSelectionState(option, selectedIds)
+          : {
+              checked: selectedIds.includes(String(option.id)),
+              indeterminate: false,
+            };
+      const resolvedToggleCheckedOnClick =
+        toggleCheckedOnClick ??
+        !(
+          hasChildren &&
+          type === 'tree' &&
+          mode === 'multiple' &&
+          option.showCheckbox
+        );
 
       const card = (
         <DropdownItemCard
@@ -517,7 +609,12 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           toggleCheckedOnClick={resolvedToggleCheckedOnClick}
           onClick={() => {
             if (disabled) return;
-            if (hasChildren && type === 'tree' && mode === 'multiple' && option.showCheckbox) {
+            if (
+              hasChildren &&
+              type === 'tree' &&
+              mode === 'multiple' &&
+              option.showCheckbox
+            ) {
               toggleExpand(option.id);
             } else if (hasChildren && type === 'tree') {
               toggleExpand(option.id);
@@ -546,7 +643,11 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       );
 
       if (hasChildren && isExpanded && type === 'tree') {
-        const childResult = renderTreeOptions(option.children, depth + 1, currentIndex);
+        const childResult = renderTreeOptions(
+          option.children,
+          depth + 1,
+          currentIndex,
+        );
         currentIndex = childResult.nextIndex;
         return [card, ...childResult.elements];
       }
@@ -570,12 +671,14 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       const isSelected = Array.isArray(value)
         ? value.includes(option.id)
         : value === option.id;
-      const isActive = optionIndex === activeIndex;
+      const isActive =
+        optionIndex ===
+        (keyboardActiveIndex !== undefined ? keyboardActiveIndex : activeIndex);
       const shortcutText = option.shortcutText
         ? option.shortcutText
         : shortcutTextHandler(option.shortcutKeys ?? []);
 
-      const checkSite: DropdownCheckPosition = option?.checkSite ?? 'none';
+      const checkSite: DropdownCheckPosition = option?.checkSite ?? 'suffix';
 
       return (
         <DropdownItemCard
@@ -600,8 +703,8 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           checkSite={checkSite}
           appendContent={shortcutText}
         />
-      )
-    })
+      );
+    });
 
     return { elements, nextIndex: currentIndex };
   };
@@ -632,25 +735,36 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     (status === 'empty' || loadingPosition !== 'bottom');
 
   // Show bottom loading when status is loading and loadingPosition is bottom
-  const shouldShowBottomLoading = status === 'loading' && loadingPosition === 'bottom';
+  const shouldShowBottomLoading =
+    status === 'loading' && loadingPosition === 'bottom';
 
   const listStyle = useMemo((): React.CSSProperties | undefined => {
-    if (!maxHeight) {
-      return undefined;
+    const styles: React.CSSProperties & Record<string, unknown> = {};
+
+    if (maxHeight) {
+      styles.maxHeight =
+        typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
     }
 
-    return {
-      maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
-    };
-  }, [maxHeight]);
+    if (minWidth !== undefined) {
+      styles['--mzn-dropdown-list-min-width'] =
+        typeof minWidth === 'number' ? `${minWidth}px` : minWidth;
+    }
+
+    return Object.keys(styles).length > 0 ? styles : undefined;
+  }, [maxHeight, minWidth]);
 
   const listWrapperStyle = useMemo((): React.CSSProperties | undefined => {
     if (!maxHeight) {
       return undefined;
     }
 
-    const maxHeightValue = typeof maxHeight === 'number' ? maxHeight : parseFloat(maxHeight);
-    const availableHeight = Math.max(0, maxHeightValue - actionHeight - headerHeight);
+    const maxHeightValue =
+      typeof maxHeight === 'number' ? maxHeight : parseFloat(maxHeight);
+    const availableHeight = Math.max(
+      0,
+      maxHeightValue - actionHeight - headerHeight,
+    );
 
     return {
       maxHeight: `${availableHeight}px`,
@@ -672,10 +786,15 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       if (event.repeat) return;
 
       const targetOption = visibleShortcutOptions.find((option) => {
-        if (!Array.isArray(option.shortcutKeys) || option.shortcutKeys.length === 0) {
+        if (
+          !Array.isArray(option.shortcutKeys) ||
+          option.shortcutKeys.length === 0
+        ) {
           return false;
         }
-        return option.shortcutKeys.some((shortcut) => matchShortcut(event, shortcut));
+        return option.shortcutKeys.some((shortcut) =>
+          matchShortcut(event, shortcut),
+        );
       });
 
       if (!targetOption) return;
@@ -683,7 +802,11 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       event.preventDefault();
       event.stopPropagation();
 
-      if (type === 'tree' && targetOption.children && targetOption.children.length > 0) {
+      if (
+        type === 'tree' &&
+        targetOption.children &&
+        targetOption.children.length > 0
+      ) {
         toggleExpand(targetOption.id);
         return;
       }
@@ -696,7 +819,14 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     return () => {
       listElement.removeEventListener('keydown', handleKeyDown);
     };
-  }, [disabled, matchShortcut, onSelect, type, toggleExpand, visibleShortcutOptions]);
+  }, [
+    disabled,
+    matchShortcut,
+    onSelect,
+    type,
+    toggleExpand,
+    visibleShortcutOptions,
+  ]);
 
   const handleViewportReady = useCallback(
     (viewport: HTMLDivElement) => {
@@ -713,7 +843,8 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
   // Auto-scroll to bottom when bottom loading appears and user was at bottom
   useEffect(() => {
     // Only scroll when loading appears (transitions from false to true)
-    const loadingJustAppeared = shouldShowBottomLoading && !prevShouldShowBottomLoadingRef.current;
+    const loadingJustAppeared =
+      shouldShowBottomLoading && !prevShouldShowBottomLoadingRef.current;
     prevShouldShowBottomLoadingRef.current = shouldShowBottomLoading;
 
     if (!loadingJustAppeared) return;
@@ -744,7 +875,11 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     }
 
     const listWrapperElement = listWrapperRef.current;
-    if (!listWrapperElement || !maxHeight || (!onReachBottom && !onLeaveBottom && !onScroll)) {
+    if (
+      !listWrapperElement ||
+      !maxHeight ||
+      (!onReachBottom && !onLeaveBottom && !onScroll)
+    ) {
       return;
     }
 
@@ -794,8 +929,13 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     };
   }, [maxHeight, onReachBottom, onLeaveBottom, onScroll, shouldUseScrollbar]);
 
-  const scrollbarEvents = useMemo<OverlayScrollbarsComponentProps['events'] | undefined>(() => {
-    if (!shouldUseScrollbar || (!onReachBottom && !onLeaveBottom && !onScroll)) {
+  const scrollbarEvents = useMemo<
+    OverlayScrollbarsComponentProps['events'] | undefined
+  >(() => {
+    if (
+      !shouldUseScrollbar ||
+      (!onReachBottom && !onLeaveBottom && !onScroll)
+    ) {
       return undefined;
     }
 
@@ -830,11 +970,20 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
         wasAtBottomRef.current = isAtBottom;
       },
     };
-  }, [getIsAtBottom, shouldUseScrollbar, onReachBottom, onLeaveBottom, onScroll]);
+  }, [
+    getIsAtBottom,
+    shouldUseScrollbar,
+    onReachBottom,
+    onLeaveBottom,
+    onScroll,
+  ]);
 
   return (
     <ul
-      aria-label={listboxLabel || (optionsContent.length === 0 ? 'Dropdown options' : undefined)}
+      aria-label={
+        listboxLabel ||
+        (optionsContent.length === 0 ? 'Dropdown options' : undefined)
+      }
       className={dropdownClasses.list}
       id={listboxId}
       ref={listRef}
@@ -848,108 +997,99 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           role="presentation"
           ref={headerRef}
         >
-          <div className={dropdownClasses.listHeaderInner}>
-            {headerContent}
-          </div>
+          <div className={dropdownClasses.listHeaderInner}>{headerContent}</div>
         </li>
       )}
-      {
-        maxHeight
-          ? (
-            shouldUseScrollbar ? (
-              <Scrollbar
-                className={dropdownClasses.listWrapper}
-                defer={scrollbarDefer}
-                disabled={false}
-                events={scrollbarEvents}
-                maxHeight={listWrapperStyle?.maxHeight}
-                maxWidth={scrollbarMaxWidth}
-                onViewportReady={handleViewportReady}
-                options={scrollbarOptions}
-              >
-                {shouldShowFullStatus ? (
-                  <DropdownStatus
-                    status={status}
-                    loadingText={loadingText}
-                    emptyText={emptyText}
-                    emptyIcon={emptyIcon}
-                  />
-                ) : (
-                  <>
-                    {renderedOptions}
-                    {shouldShowBottomLoading && (
-                      <li
-                        className={dropdownClasses.loadingMore}
-                        aria-live="polite"
-                        role="status"
-                      >
-                        <DropdownStatus
-                          status="loading"
-                          loadingText={loadingText}
-                        />
-                      </li>
-                    )}
-                  </>
-                )}
-              </Scrollbar>
+      {maxHeight ? (
+        shouldUseScrollbar ? (
+          <Scrollbar
+            className={dropdownClasses.listWrapper}
+            defer={scrollbarDefer}
+            disabled={false}
+            events={scrollbarEvents}
+            maxHeight={listWrapperStyle?.maxHeight}
+            maxWidth={scrollbarMaxWidth}
+            onViewportReady={handleViewportReady}
+            options={scrollbarOptions}
+          >
+            {shouldShowFullStatus ? (
+              <DropdownStatus
+                status={status}
+                loadingText={loadingText}
+                emptyText={emptyText}
+                emptyIcon={emptyIcon}
+              />
             ) : (
-              <div
-                ref={listWrapperRef}
-                className={dropdownClasses.listWrapper}
-                style={listWrapperStyle}
-              >
-                {shouldShowFullStatus ? (
-                  <DropdownStatus
-                    status={status}
-                    loadingText={loadingText}
-                    emptyText={emptyText}
-                    emptyIcon={emptyIcon}
-                  />
-                ) : (
-                  <>
-                    {renderedOptions}
-                    {shouldShowBottomLoading && (
-                      <li
-                        className={dropdownClasses.loadingMore}
-                        aria-live="polite"
-                        role="status"
-                      >
-                        <DropdownStatus
-                          status="loading"
-                          loadingText={loadingText}
-                        />
-                      </li>
-                    )}
-                  </>
+              <>
+                {renderedOptions}
+                {shouldShowBottomLoading && (
+                  <li
+                    className={dropdownClasses.loadingMore}
+                    aria-live="polite"
+                    role="status"
+                  >
+                    <DropdownStatus
+                      status="loading"
+                      loadingText={loadingText}
+                    />
+                  </li>
                 )}
-              </div>
-            )
-          )
-          : shouldShowFullStatus ? (
-            <DropdownStatus
-              status={status}
-              loadingText={loadingText}
-              emptyText={emptyText}
-              emptyIcon={emptyIcon}
-            />
-          ) : (
-            <>
-              {renderedOptions}
-              {shouldShowBottomLoading && (
-                <li
-                  className={dropdownClasses.loadingMore}
-                  aria-live="polite"
-                  role="status"
-                >
-                  <DropdownStatus
-                    status="loading"
-                    loadingText={loadingText}
-                  />
-                </li>
-              )}
-            </>
-          )
-      }
+              </>
+            )}
+          </Scrollbar>
+        ) : (
+          <div
+            ref={listWrapperRef}
+            className={dropdownClasses.listWrapper}
+            style={listWrapperStyle}
+          >
+            {shouldShowFullStatus ? (
+              <DropdownStatus
+                status={status}
+                loadingText={loadingText}
+                emptyText={emptyText}
+                emptyIcon={emptyIcon}
+              />
+            ) : (
+              <>
+                {renderedOptions}
+                {shouldShowBottomLoading && (
+                  <li
+                    className={dropdownClasses.loadingMore}
+                    aria-live="polite"
+                    role="status"
+                  >
+                    <DropdownStatus
+                      status="loading"
+                      loadingText={loadingText}
+                    />
+                  </li>
+                )}
+              </>
+            )}
+          </div>
+        )
+      ) : shouldShowFullStatus ? (
+        <DropdownStatus
+          status={status}
+          loadingText={loadingText}
+          emptyText={emptyText}
+          emptyIcon={emptyIcon}
+        />
+      ) : (
+        <>
+          {renderedOptions}
+          {shouldShowBottomLoading && (
+            <li
+              className={dropdownClasses.loadingMore}
+              aria-live="polite"
+              role="status"
+            >
+              <DropdownStatus status="loading" loadingText={loadingText} />
+            </li>
+          )}
+        </>
+      )}
       {hasActions && (
         <div ref={actionRef}>
           <DropdownAction {...actionConfig} />

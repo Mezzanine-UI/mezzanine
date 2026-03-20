@@ -17,7 +17,13 @@ describe('DropdownItemCard', () => {
     });
 
     it('should render with aria-labelledby when id is provided', () => {
-      render(<DropdownItemCard {...defaultProps} id="test-option" label="Test Option" />);
+      render(
+        <DropdownItemCard
+          {...defaultProps}
+          id="test-option"
+          label="Test Option"
+        />,
+      );
       const option = screen.getByRole('option');
       expect(option).toHaveAttribute('aria-labelledby', 'test-option-label');
       const label = document.getElementById('test-option-label');
@@ -32,7 +38,7 @@ describe('DropdownItemCard', () => {
 
     it('should render prepend icon', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} prependIcon={CaretRightIcon} />
+        <DropdownItemCard {...defaultProps} prependIcon={CaretRightIcon} />,
       );
       const icon = container.querySelector('.mzn-icon');
       expect(icon).toBeInTheDocument();
@@ -40,7 +46,7 @@ describe('DropdownItemCard', () => {
 
     it('should render append icon', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} appendIcon={CaretRightIcon} />
+        <DropdownItemCard {...defaultProps} appendIcon={CaretRightIcon} />,
       );
       const icon = container.querySelector('.mzn-icon');
       expect(icon).toBeInTheDocument();
@@ -55,14 +61,34 @@ describe('DropdownItemCard', () => {
   describe('active state', () => {
     it('should apply active class when active', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} active={true} />
+        <DropdownItemCard {...defaultProps} active={true} />,
       );
       const card = container.querySelector('.mzn-dropdown-item-card--active');
       expect(card).toBeInTheDocument();
     });
 
-    it('should set aria-selected when active', () => {
-      render(<DropdownItemCard {...defaultProps} active={true} />);
+    it('should apply keyboard-active class when active (keyboard highlight)', () => {
+      const { container } = render(
+        <DropdownItemCard {...defaultProps} active={true} />,
+      );
+      const card = container.querySelector(
+        '.mzn-dropdown-item-card--keyboard-active',
+      );
+      expect(card).toBeInTheDocument();
+    });
+
+    it('should set aria-selected based on checked state, not keyboard active state', () => {
+      // aria-selected reflects selection, not keyboard cursor position
+      // keyboard position is communicated via aria-activedescendant on the combobox
+      render(
+        <DropdownItemCard {...defaultProps} active={true} checked={false} />,
+      );
+      const option = screen.getByRole('option');
+      expect(option).toHaveAttribute('aria-selected', 'false');
+    });
+
+    it('should set aria-selected true when option is checked (selected)', () => {
+      render(<DropdownItemCard {...defaultProps} checked={true} />);
       const option = screen.getByRole('option');
       expect(option).toHaveAttribute('aria-selected', 'true');
     });
@@ -71,7 +97,7 @@ describe('DropdownItemCard', () => {
   describe('disabled state', () => {
     it('should apply disabled class when disabled', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} disabled={true} />
+        <DropdownItemCard {...defaultProps} disabled={true} />,
       );
       const card = container.querySelector('.mzn-dropdown-item-card--disabled');
       expect(card).toBeInTheDocument();
@@ -81,7 +107,11 @@ describe('DropdownItemCard', () => {
       const user = userEvent.setup();
       const onClick = jest.fn();
       render(
-        <DropdownItemCard {...defaultProps} disabled={true} onClick={onClick} />
+        <DropdownItemCard
+          {...defaultProps}
+          disabled={true}
+          onClick={onClick}
+        />,
       );
       const option = screen.getByRole('option');
       await user.click(option);
@@ -96,7 +126,7 @@ describe('DropdownItemCard', () => {
           {...defaultProps}
           mode="multiple"
           checkSite="prefix"
-        />
+        />,
       );
       const checkbox = screen.getByRole('checkbox');
       expect(checkbox).toBeInTheDocument();
@@ -109,7 +139,7 @@ describe('DropdownItemCard', () => {
           mode="multiple"
           checkSite="suffix"
           checked={true}
-        />
+        />,
       );
       const icon = container.querySelector('.mzn-icon');
       expect(icon).toBeInTheDocument();
@@ -124,7 +154,7 @@ describe('DropdownItemCard', () => {
           mode="multiple"
           checkSite="suffix"
           onCheckedChange={onCheckedChange}
-        />
+        />,
       );
       const option = screen.getByRole('option');
       await user.click(option);
@@ -141,7 +171,7 @@ describe('DropdownItemCard', () => {
           checkSite="prefix"
           onCheckedChange={onCheckedChange}
           toggleCheckedOnClick={false}
-        />
+        />,
       );
       const option = screen.getByRole('option');
       await user.click(option);
@@ -159,7 +189,7 @@ describe('DropdownItemCard', () => {
           checkSite="prefix"
           onCheckedChange={onCheckedChange}
           onClick={onClick}
-        />
+        />,
       );
       const checkbox = screen.getByRole('checkbox');
       await user.click(checkbox);
@@ -188,9 +218,11 @@ describe('DropdownItemCard', () => {
           mode="multiple"
           checkSite="suffix"
           checked={true}
-        />
+        />,
       );
-      const icon = container.querySelector('.mzn-icon[data-icon-name="checked"]');
+      const icon = container.querySelector(
+        '.mzn-icon[data-icon-name="checked"]',
+      );
       expect(icon).toBeInTheDocument();
     });
 
@@ -201,9 +233,11 @@ describe('DropdownItemCard', () => {
           mode="multiple"
           checkSite="suffix"
           defaultChecked={true}
-        />
+        />,
       );
-      const icon = container.querySelector('.mzn-icon[data-icon-name="checked"]');
+      const icon = container.querySelector(
+        '.mzn-icon[data-icon-name="checked"]',
+      );
       expect(icon).toBeInTheDocument();
     });
   });
@@ -211,9 +245,11 @@ describe('DropdownItemCard', () => {
   describe('validation', () => {
     it('should apply danger color when validate is danger', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} validate="danger" />
+        <DropdownItemCard {...defaultProps} validate="danger" />,
       );
-      const typography = container.querySelector('.mzn-dropdown-item-card-title');
+      const typography = container.querySelector(
+        '.mzn-dropdown-item-card-title',
+      );
       expect(typography).toBeInTheDocument();
     });
   });
@@ -221,7 +257,7 @@ describe('DropdownItemCard', () => {
   describe('level', () => {
     it('should apply level class', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} level={1} />
+        <DropdownItemCard {...defaultProps} level={1} />,
       );
       const card = container.querySelector('.mzn-dropdown-item-card--level-1');
       expect(card).toBeInTheDocument();
@@ -231,9 +267,15 @@ describe('DropdownItemCard', () => {
   describe('highlight text', () => {
     it('should highlight matching text in label', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} label="Hello World" followText="Hello" />
+        <DropdownItemCard
+          {...defaultProps}
+          label="Hello World"
+          followText="Hello"
+        />,
       );
-      const highlighted = container.querySelector('.mzn-dropdown-item-card-highlighted-text');
+      const highlighted = container.querySelector(
+        '.mzn-dropdown-item-card-highlighted-text',
+      );
       expect(highlighted).toBeInTheDocument();
       expect(highlighted?.textContent).toBe('Hello');
     });
@@ -244,9 +286,11 @@ describe('DropdownItemCard', () => {
           {...defaultProps}
           subTitle="Hello World"
           followText="Hello"
-        />
+        />,
       );
-      const highlighted = container.querySelector('.mzn-dropdown-item-card-highlighted-text');
+      const highlighted = container.querySelector(
+        '.mzn-dropdown-item-card-highlighted-text',
+      );
       expect(highlighted).toBeInTheDocument();
     });
   });
@@ -254,17 +298,21 @@ describe('DropdownItemCard', () => {
   describe('underline', () => {
     it('should render underline when showUnderline is true', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} showUnderline={true} />
+        <DropdownItemCard {...defaultProps} showUnderline={true} />,
       );
-      const underline = container.querySelector('.mzn-dropdown-item-card-underline');
+      const underline = container.querySelector(
+        '.mzn-dropdown-item-card-underline',
+      );
       expect(underline).toBeInTheDocument();
     });
 
     it('should not render underline when showUnderline is false', () => {
       const { container } = render(
-        <DropdownItemCard {...defaultProps} showUnderline={false} />
+        <DropdownItemCard {...defaultProps} showUnderline={false} />,
       );
-      const underline = container.querySelector('.mzn-dropdown-item-card-underline');
+      const underline = container.querySelector(
+        '.mzn-dropdown-item-card-underline',
+      );
       expect(underline).not.toBeInTheDocument();
     });
   });
@@ -294,7 +342,11 @@ describe('DropdownItemCard', () => {
       const user = userEvent.setup();
       const onClick = jest.fn();
       render(
-        <DropdownItemCard {...defaultProps} disabled={true} onClick={onClick} />
+        <DropdownItemCard
+          {...defaultProps}
+          disabled={true}
+          onClick={onClick}
+        />,
       );
       const option = screen.getByRole('option');
       option.focus();
@@ -307,11 +359,12 @@ describe('DropdownItemCard', () => {
     it('should call onMouseEnter when mouse enters', async () => {
       const user = userEvent.setup();
       const onMouseEnter = jest.fn();
-      render(<DropdownItemCard {...defaultProps} onMouseEnter={onMouseEnter} />);
+      render(
+        <DropdownItemCard {...defaultProps} onMouseEnter={onMouseEnter} />,
+      );
       const option = screen.getByRole('option');
       await user.hover(option);
       expect(onMouseEnter).toHaveBeenCalled();
     });
   });
 });
-
