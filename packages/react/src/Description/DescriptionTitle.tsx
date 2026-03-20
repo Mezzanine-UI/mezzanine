@@ -91,6 +91,7 @@ const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
           <Badge
             variant={badge}
             text={children}
+            size={size}
             className={classes.titleText}
           />
         ) : (
