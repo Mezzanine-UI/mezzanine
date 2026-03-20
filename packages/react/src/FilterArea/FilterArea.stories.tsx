@@ -89,9 +89,9 @@ export const Basic: Story = {
             </Filter>
           </FilterLine>
           <FilterLine>
-            <Filter span={2}>
+            <Filter span={3}>
               <FormField
-                label="進階搜尋 1"
+                label="Label"
                 name="advanced1"
                 density={horizontal.density}
                 layout={horizontal.layout}
@@ -104,9 +104,9 @@ export const Basic: Story = {
                 />
               </FormField>
             </Filter>
-            <Filter span={6}>
+            <Filter span={2}>
               <FormField
-                label="進階搜尋 3"
+                label="Label"
                 name="advanced3"
                 density={horizontal.density}
                 layout={horizontal.layout}
@@ -163,9 +163,9 @@ export const SubSize: Story = {
             </Filter>
           </FilterLine>
           <FilterLine>
-            <Filter span={6}>
+            <Filter span={3}>
               <FormField
-                label="進階搜尋 1"
+                label="Label"
                 name="advanced1"
                 density={horizontal.density}
                 layout={horizontal.layout}
@@ -180,9 +180,9 @@ export const SubSize: Story = {
                 />
               </FormField>
             </Filter>
-            <Filter span={6}>
+            <Filter span={3}>
               <FormField
-                label="進階搜尋 3"
+                label="Label"
                 name="advanced3"
                 density={horizontal.density}
                 layout={horizontal.layout}
@@ -325,7 +325,7 @@ export const VerticalLabel: Story = {
 
     return (
       <CalendarConfigProviderDayjs locale="zh-TW">
-        <FilterArea {...args}>
+        <FilterArea {...args} rowAlign="end">
           <FilterLine>
             <Filter span={2}>
               <FormField
@@ -355,7 +355,7 @@ export const VerticalLabel: Story = {
           <FilterLine>
             <Filter span={2}>
               <FormField
-                label="進階搜尋 1"
+                label="Label"
                 name="advanced1"
                 density={vertical.density}
                 layout={vertical.layout}
@@ -368,9 +368,9 @@ export const VerticalLabel: Story = {
                 />
               </FormField>
             </Filter>
-            <Filter span={6}>
+            <Filter span={3}>
               <FormField
-                label="進階搜尋 3"
+                label="Label"
                 name="advanced3"
                 density={vertical.density}
                 layout={vertical.layout}

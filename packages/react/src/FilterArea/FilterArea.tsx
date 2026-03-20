@@ -3,7 +3,7 @@
 import { Children, ComponentPropsWithoutRef, forwardRef, ReactElement, useCallback, useMemo, useState } from 'react';
 import { cx } from '../utils/cx';
 
-import { filterAreaClasses as classes, FilterAreaActionsAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
+import { filterAreaClasses as classes, FilterAreaActionsAlign, FilterAreaRowAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
 import { ChevronDownIcon, ChevronUpIcon } from '@mezzanine-ui/icons';
 
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -60,6 +60,11 @@ export interface FilterAreaProps
    */
   resetButtonType?: ComponentPropsWithoutRef<'button'>['type'];
   /**
+   * The vertical alignment of the row (cross-axis align-items).
+   * @default 'center'
+   */
+  rowAlign?: FilterAreaRowAlign;
+  /**
    * The type of the submit button.
    * @default 'button'
    */
@@ -76,6 +81,7 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
       onReset,
       onSubmit,
       resetText = 'Reset',
+      rowAlign = 'center',
       size = 'main',
       submitText = 'Search',
       resetButtonType = 'button',
@@ -159,14 +165,14 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
           {expanded ? (
             <>
               {filterLines}
-              <div className={classes.row}>
+              <div className={cx(classes.row, classes.rowAlign(rowAlign))}>
                 {renderAction()}
               </div>
             </>
           ) : (
             <>
               {firstLine && (
-                <div className={classes.row}>
+                <div className={cx(classes.row, classes.rowAlign(rowAlign))}>
                   {firstLine}
                   {renderAction()}
                 </div>

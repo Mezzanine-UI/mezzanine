@@ -5,6 +5,13 @@
 @use './filter-area' as *;
 @use '../form/form-field' as formField;
 
+// Row alignment configs
+$row-align-configs: (
+  start: flex-start,
+  center: center,
+  end: flex-end,
+);
+
 // Actions alignment configs
 $actions-align-configs: (
   start: flex-start,
@@ -22,13 +29,13 @@ $filter-align-configs: (
 
 // Filter span configs
 $filter-span-configs: (
-  default: 4,
-  grow: 12,
+  default: 2,
+  grow: 6,
 );
 
 // Grid configs
 $grid-configs: (
-  columns: 12,
+  columns: 6,
   default-gap: calm,
   actions-gap: base,
 );
@@ -42,7 +49,6 @@ $layout-configs: (
   ),
   row: (
     gap: calm,
-    align-items: flex-end,
   ),
   line: (
     gap: calm,
@@ -82,7 +88,7 @@ $layout-configs: (
 
   &--main {
     padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
-    padding-block: spacing.semantic-variable(padding, vertical, spacious);
+    padding-top: spacing.semantic-variable(padding, vertical, spacious);
   }
 
   &__actions {
@@ -106,8 +112,14 @@ $layout-configs: (
 
   &__row {
     display: flex;
-    align-items: map.get(map.get($layout-configs, row), align-items);
+    align-items: center;
     gap: spacing.semantic-variable(gap, map.get(map.get($layout-configs, row), gap));
+
+    @each $align, $value in $row-align-configs {
+      &--align-#{$align} {
+        align-items: $value;
+      }
+    }
 
     > .#{$prefix}__line {
       flex: 1 1 auto;
