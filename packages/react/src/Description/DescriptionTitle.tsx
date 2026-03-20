@@ -4,6 +4,7 @@ import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import {
+  DescriptionSize,
   DescriptionWidthType,
   descriptionClasses as classes,
 } from '@mezzanine-ui/core/description';
@@ -26,6 +27,11 @@ interface DescriptionTitleBaseProps {
    * Title text
    */
   children: string;
+  /**
+   * Controls the text size of the title.
+   * @default 'main'
+   */
+  size?: DescriptionSize;
   /**
    * Controls the layout width behavior of the title
    * @default 'stretch'
@@ -65,6 +71,7 @@ const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
       className,
       children,
       icon,
+      size,
       tooltip,
       tooltipPlacement,
       widthType = 'stretch',
@@ -75,6 +82,7 @@ const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
         className={cx(
           classes.titleHost,
           classes.titleWidth(widthType),
+          size && classes.titleSize(size),
           className,
         )}
         ref={ref}
@@ -83,6 +91,7 @@ const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
           <Badge
             variant={badge}
             text={children}
+            size={size}
             className={classes.titleText}
           />
         ) : (

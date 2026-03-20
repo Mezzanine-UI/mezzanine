@@ -72,8 +72,8 @@ export const Basic: StoryFn<NavigationProps> = (args) => {
               key={index}
               title={`專案 ${index + 1}`}
             >
-              <NavigationOption title={'專案設定'} />
-              <NavigationOption title={'成員管理'} />
+              <NavigationOption title={`專案設定 ${index + 1}`} />
+              <NavigationOption title={`成員管理 ${index + 1}`} />
             </NavigationOption>
           ))}
         </>
@@ -162,8 +162,8 @@ export const CustomAnchorComponent: StoryFn<NavigationProps> = (args) => {
               key={index}
               title={`專案 ${index + 1}`}
             >
-              <NavigationOption title={'專案設定'} />
-              <NavigationOption title={'成員管理'} />
+              <NavigationOption title={`專案設定 ${index + 1}`} />
+              <NavigationOption title={`成員管理 ${index + 1}`} />
             </NavigationOption>
           ))}
         </>
@@ -223,8 +223,8 @@ export const Overflow: StoryFn<NavigationProps> = (args) => (
             key={index}
             title={`專案 ${index + 1}`}
           >
-            <NavigationOption title={'專案設定'} />
-            <NavigationOption title={'成員管理'} />
+            <NavigationOption title={`專案設定 ${index + 1}`} />
+            <NavigationOption title={`成員管理 ${index + 1}`} />
           </NavigationOption>
         ))}
       </>

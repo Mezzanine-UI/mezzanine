@@ -42,7 +42,7 @@ export type DescriptionProps = DistributiveOmit<
    */
   orientation?: DescriptionOrientation;
   /**
-   * Controls the text size of the description content
+   * Controls the text size of both the title and the description content
    * @default 'main'
    */
   size?: DescriptionSize;
@@ -79,7 +79,7 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
           )}
           ref={ref}
         >
-          <DescriptionTitle {...rest}>{title}</DescriptionTitle>
+          <DescriptionTitle {...rest} size={size}>{title}</DescriptionTitle>
           {injectedChildren}
         </div>
       </DescriptionContext.Provider>
