@@ -164,8 +164,8 @@ export const Sizes: ContentStory = {
           State
         </Typography>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <Badge variant="dot-success" text="已審核（main）" />
-          <Badge variant="dot-success" text="已審核（sub）" />
+          <Badge variant="dot-success" text="已審核（main）" size="main" />
+          <Badge variant="dot-success" text="已審核（sub）" size="sub" />
         </div>
       </div>
 
