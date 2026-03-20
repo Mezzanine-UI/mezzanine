@@ -42,7 +42,7 @@ $layout-configs: (
   ),
   row: (
     gap: calm,
-    align-items: flex-end,
+    align-items: center,
   ),
   line: (
     gap: calm,
@@ -82,7 +82,7 @@ $layout-configs: (
 
   &--main {
     padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
-    padding-block: spacing.semantic-variable(padding, vertical, spacious);
+    padding-top: spacing.semantic-variable(padding, vertical, spacious);
   }
 
   &__actions {
