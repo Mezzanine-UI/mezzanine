@@ -42,7 +42,7 @@ $card-state-configs: (
 
 $card-level-padding: (
   0: spacing.semantic-variable(padding, horizontal, base),
-  1: spacing.semantic-variable(padding, horizontal, max),
+  1: spacing.semantic-variable(padding, horizontal, relaxed),
   2: spacing.semantic-variable(padding, horizontal, ultra),
 );
 
@@ -285,6 +285,11 @@ $section-configs: (
     &-item-card--level-#{$level} {
       padding-inline-start: $padding-inline-start;
     }
+  }
+
+  // Level 1 leaf node (no caret toggle): use padding-horizontal-max
+  &-item-card--level-1-leaf {
+    padding-inline-start: spacing.semantic-variable(padding, horizontal, max);
   }
 
   &-item-card-underline {

@@ -207,6 +207,7 @@ export const dropdownClasses = {
   cardUnderline: `${dropdownPrefix}-item-card-underline`,
   cardLevel: (level: DropdownItemLevel) =>
     `${dropdownPrefix}-item-card--level-${level}`,
+  cardLeafLevel1: `${dropdownPrefix}-item-card--level-1-leaf`,
   cardBody: `${dropdownPrefix}-item-card-body`,
   cardTitle: `${dropdownPrefix}-item-card-title`,
   cardDescription: `${dropdownPrefix}-item-card-description`,
