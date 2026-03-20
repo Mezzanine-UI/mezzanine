@@ -42,7 +42,7 @@ export type DescriptionProps = DistributiveOmit<
    */
   orientation?: DescriptionOrientation;
   /**
-   * Controls the text size of the description content
+   * Controls the text size of both the title and the description content
    * @default 'main'
    */
   size?: DescriptionSize;
