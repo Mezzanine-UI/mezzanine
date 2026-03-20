@@ -121,11 +121,19 @@
       margin-left: spacing.semantic-variable(gap, tight);
     }
 
-    &:hover:not(&--active) {
+    &:hover:not(&--active):not(&--error) {
       color: palette.semantic-variable(text, brand);
 
       .#{$prefix}__item__icon {
         color: palette.semantic-variable(icon, brand);
+      }
+    }
+
+    &--error:hover:not(&--active) {
+      color: palette.semantic-variable(text, error-strong);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, error-strong);
       }
     }
 
