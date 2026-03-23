@@ -171,9 +171,12 @@ $states: (
     @include _apply-state(active);
   }
 
-  &:focus,
+  &:focus {
+    outline: none;
+  }
+
   &:focus-visible,
-  &:focus-within {
+  &:has(input:focus-visible) {
     outline: none;
     @include _apply-state(focus);
 
@@ -194,9 +197,12 @@ $states: (
     }
 
     // Selected + focus
-    &:focus,
+    &:focus {
+      outline: none;
+    }
+
     &:focus-visible,
-    &:focus-within {
+    &:has(input:focus-visible) {
       outline: none;
       @include _apply-state(selected);
 
