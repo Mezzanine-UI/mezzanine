@@ -434,7 +434,7 @@ describe('<Checkbox />', () => {
       expect(input.disabled).toBe(false);
     });
 
-    it('should render editable input when checkbox is unchecked but disabled', () => {
+    it('should render editable input as enabled when checkbox is unchecked', () => {
       const { getHostHTMLElement } = render(
         <Checkbox
           checked={false}
@@ -449,10 +449,10 @@ describe('<Checkbox />', () => {
       );
       const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
 
-      // Editable input should be rendered but disabled when unchecked
+      // Editable input should be rendered and enabled even when unchecked
       expect(editableInputContainer).toBeTruthy();
       expect(input).toBeTruthy();
-      expect(input.disabled).toBe(true);
+      expect(input.disabled).toBe(false);
     });
 
     it('should use default placeholder when editableInput is not provided', () => {
@@ -570,6 +570,71 @@ describe('<Checkbox />', () => {
       const description = element.querySelector('.mzn-checkbox__description');
 
       expect(description).toBeFalsy();
+    });
+
+    it('should focus the editable input when checkbox transitions from unchecked to checked', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          defaultChecked={false}
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const checkboxInput = element.querySelector('.mzn-checkbox__input') as HTMLInputElement;
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      ) as HTMLElement;
+      const editableInput = editableInputContainer.querySelector('input') as HTMLInputElement;
+
+      fireEvent.click(checkboxInput);
+
+      expect(document.activeElement).toBe(editableInput);
+    });
+
+    it('should check the checkbox when mousedown fires on the editable input container while unchecked', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          defaultChecked={false}
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const checkboxInput = element.querySelector('.mzn-checkbox__input') as HTMLInputElement;
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      ) as HTMLElement;
+
+      expect(checkboxInput.checked).toBe(false);
+
+      fireEvent.mouseDown(editableInputContainer);
+
+      expect(checkboxInput.checked).toBe(true);
+    });
+
+    it('should not toggle the checkbox when mousedown fires on the editable input container while already checked', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          defaultChecked
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const checkboxInput = element.querySelector('.mzn-checkbox__input') as HTMLInputElement;
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      ) as HTMLElement;
+
+      expect(checkboxInput.checked).toBe(true);
+
+      fireEvent.mouseDown(editableInputContainer);
+
+      expect(checkboxInput.checked).toBe(true);
     });
 
     it('should generate default id and name for editable input', () => {
