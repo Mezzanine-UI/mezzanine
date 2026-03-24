@@ -1,22 +1,18 @@
 import { AlertBannerSeverity } from '@mezzanine-ui/core/alert-banner';
 import { InfoFilledIcon } from '@mezzanine-ui/icons';
-import { act } from 'react';
+import { createRef } from 'react';
 import AlertBanner from '.';
-import { cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
+import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import { initializePortals, resetPortals } from '../Portal/portalRegistry';
 import { AlertBannerComponent } from './AlertBanner';
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  observe() { }
+  observe() {}
 
-  unobserve() { }
+  unobserve() {}
 
-  disconnect() { }
+  disconnect() {}
 } as any;
 
 describe('<AlertBanner />', () => {
@@ -31,30 +27,56 @@ describe('<AlertBanner />', () => {
     });
     cleanup();
     resetPortals();
+
+    // Clean up leftover portal DOM elements from previous tests
+    document
+      .querySelectorAll('#mzn-alert-container')
+      .forEach((el) => el.remove());
+    document
+      .querySelectorAll('#mzn-portal-container')
+      .forEach((el) => el.remove());
   });
 
-  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<AlertBannerComponent ref={ref} disablePortal message="系統通知" severity="info" />),
-  );
+  describe('ref', () => {
+    it('should forward ref to host element', () => {
+      const ref = createRef<HTMLDivElement>();
 
-  describeHostElementClassNameAppendable('mzn-alert-banner', (className) =>
-    render(
-      <AlertBannerComponent
-        className={className}
-        disablePortal
-        message="系統通知"
-        severity="info"
-      />,
-    ),
-  );
+      render(
+        <AlertBannerComponent
+          ref={ref}
+          disablePortal
+          message="系統通知"
+          severity="info"
+        />,
+      );
+
+      expect(ref.current).toBeInstanceOf(HTMLDivElement);
+    });
+  });
+
+  describe('className', () => {
+    it('should append class name on host element', () => {
+      const { getHostHTMLElement } = render(
+        <AlertBannerComponent
+          className="custom-class"
+          disablePortal
+          message="系統通知"
+          severity="info"
+        />,
+      );
+      const banner = getHostHTMLElement().querySelector('.mzn-alert-banner');
+
+      expect(banner?.classList.contains('custom-class')).toBeTruthy();
+    });
+  });
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <AlertBannerComponent disablePortal message="系統通知" severity="info" />,
     );
-    const element = getHostHTMLElement();
+    const banner = getHostHTMLElement().querySelector('.mzn-alert-banner');
 
-    expect(element.classList.contains('mzn-alert-banner')).toBeTruthy();
+    expect(banner).toBeTruthy();
   });
 
   it('should render message', () => {
@@ -68,17 +90,21 @@ describe('<AlertBanner />', () => {
     const element = getHostHTMLElement();
 
     expect(getByText('注意事項')).toBeInstanceOf(HTMLElement);
-    expect(
-      element.querySelector('.mzn-alert-banner__message'),
-    ).toBeTruthy();
+    expect(element.querySelector('.mzn-alert-banner__message')).toBeTruthy();
   });
 
   it('should provide accessibility attributes', () => {
-    const { getHostHTMLElement } = render(<AlertBannerComponent disablePortal message="重要訊息" severity="error" />);
-    const element = getHostHTMLElement();
+    const { getHostHTMLElement } = render(
+      <AlertBannerComponent
+        disablePortal
+        message="重要訊息"
+        severity="error"
+      />,
+    );
+    const banner = getHostHTMLElement().querySelector('.mzn-alert-banner');
 
-    expect(element.getAttribute('role')).toBe('status');
-    expect(element.getAttribute('aria-live')).toBe('polite');
+    expect(banner?.getAttribute('role')).toBe('status');
+    expect(banner?.getAttribute('aria-live')).toBe('polite');
   });
 
   describe('prop: severity', () => {
@@ -87,21 +113,29 @@ describe('<AlertBanner />', () => {
     severities.forEach((severity) => {
       it(`should append severity class when severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <AlertBannerComponent disablePortal message="狀態通知" severity={severity} />,
+          <AlertBannerComponent
+            disablePortal
+            message="狀態通知"
+            severity={severity}
+          />,
         );
-        const element = getHostHTMLElement();
+        const banner = getHostHTMLElement().querySelector('.mzn-alert-banner');
 
         expect(
-          element.classList.contains(`mzn-alert-banner--${severity}`),
+          banner?.classList.contains(`mzn-alert-banner--${severity}`),
         ).toBeTruthy();
       });
 
       it(`should render default icon for severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <AlertBannerComponent disablePortal message="狀態通知" severity={severity} />,
+          <AlertBannerComponent
+            disablePortal
+            message="狀態通知"
+            severity={severity}
+          />,
         );
-        const element = getHostHTMLElement();
-        const iconElement = element.querySelector('.mzn-alert-banner__icon');
+        const banner = getHostHTMLElement().querySelector('.mzn-alert-banner');
+        const iconElement = banner?.querySelector('.mzn-alert-banner__icon');
 
         expect(iconElement).toBeTruthy();
       });
@@ -135,7 +169,7 @@ describe('<AlertBanner />', () => {
           actions={[
             {
               content: '了解更多',
-              onClick: () => { },
+              onClick: () => {},
             },
           ]}
           disablePortal
@@ -145,9 +179,7 @@ describe('<AlertBanner />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(
-        element.querySelector('.mzn-alert-banner__actions'),
-      ).toBeTruthy();
+      expect(element.querySelector('.mzn-alert-banner__actions')).toBeTruthy();
       expect(getByText('了解更多')).toBeInstanceOf(HTMLButtonElement);
     });
   });
@@ -155,7 +187,12 @@ describe('<AlertBanner />', () => {
   describe('prop: onClose', () => {
     it('should render close button when onClose provided', () => {
       const { getHostHTMLElement } = render(
-        <AlertBannerComponent disablePortal message="可關閉訊息" onClose={() => { }} severity="info" />,
+        <AlertBannerComponent
+          disablePortal
+          message="可關閉訊息"
+          onClose={() => {}}
+          severity="info"
+        />,
       );
       const element = getHostHTMLElement();
       const closeButton = element.querySelector(
@@ -168,16 +205,28 @@ describe('<AlertBanner />', () => {
       ).toBeTruthy();
     });
 
-    it('should call onClose and hide banner when close button clicked', () => {
+    it('should call onClose and hide banner when close button clicked', async () => {
+      jest.useFakeTimers();
       const onClose = jest.fn();
       const { container, getByRole } = render(
-        <AlertBannerComponent disablePortal message="可關閉訊息" onClose={onClose} severity="info" />,
+        <AlertBannerComponent
+          disablePortal
+          message="可關閉訊息"
+          onClose={onClose}
+          severity="info"
+        />,
       );
 
       fireEvent.click(getByRole('button', { name: 'Close' }));
 
+      // handleClose uses a 250ms setTimeout before calling onClose and hiding
+      await act(async () => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(onClose).toHaveBeenCalledTimes(1);
       expect(container.querySelector('.mzn-alert-banner')).toBeNull();
+      jest.useRealTimers();
     });
   });
 
@@ -277,12 +326,12 @@ describe('<AlertBanner />', () => {
       const banners = getBannersInOrder();
 
       // Newer error should come first
-      expect(banners[0].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-        'Error 2',
-      );
-      expect(banners[1].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-        'Error 1',
-      );
+      expect(
+        banners[0].querySelector('.mzn-alert-banner__message')?.textContent,
+      ).toBe('Error 2');
+      expect(
+        banners[1].querySelector('.mzn-alert-banner__message')?.textContent,
+      ).toBe('Error 1');
     });
 
     describe('step-by-step scenarios', () => {
@@ -300,9 +349,9 @@ describe('<AlertBanner />', () => {
         const banners = getBannersInOrder();
 
         expect(getBannerSeverity(banners[0])).toBe('info');
-        expect(banners[0].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-          'Info message',
-        );
+        expect(
+          banners[0].querySelector('.mzn-alert-banner__message')?.textContent,
+        ).toBe('Info message');
       });
 
       it('step 2: error should appear before info when added after info', async () => {
@@ -340,7 +389,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(1);
@@ -352,7 +403,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(2);
@@ -364,7 +417,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(3);
@@ -385,7 +440,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(1);
@@ -397,7 +454,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(2);
@@ -409,7 +468,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(3);
@@ -421,7 +482,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(4);
@@ -431,14 +494,14 @@ describe('<AlertBanner />', () => {
 
         // Order should be: error (new), warning, error (old), info
         expect(getBannerSeverity(banners[0])).toBe('error');
-        expect(banners[0].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-          'Error message 2',
-        );
+        expect(
+          banners[0].querySelector('.mzn-alert-banner__message')?.textContent,
+        ).toBe('Error message 2');
         expect(getBannerSeverity(banners[1])).toBe('warning');
         expect(getBannerSeverity(banners[2])).toBe('error');
-        expect(banners[2].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-          'Error message 1',
-        );
+        expect(
+          banners[2].querySelector('.mzn-alert-banner__message')?.textContent,
+        ).toBe('Error message 1');
         expect(getBannerSeverity(banners[3])).toBe('info');
       });
 
@@ -449,7 +512,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(1);
@@ -461,7 +526,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(2);
@@ -473,7 +540,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(3);
@@ -485,7 +554,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(4);
@@ -497,7 +568,9 @@ describe('<AlertBanner />', () => {
 
         await waitFor(() => {
           const alertContainer = getAlertContainer();
-          const group = alertContainer?.querySelector('.mzn-alert-banner-group');
+          const group = alertContainer?.querySelector(
+            '.mzn-alert-banner-group',
+          );
           const banners = group?.querySelectorAll('.mzn-alert-banner') || [];
 
           expect(banners.length).toBe(5);
@@ -507,22 +580,22 @@ describe('<AlertBanner />', () => {
 
         // Order should be: error, warning, error, info (new), info (old)
         expect(getBannerSeverity(banners[0])).toBe('error');
-        expect(banners[0].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-          'Error message 2',
-        );
+        expect(
+          banners[0].querySelector('.mzn-alert-banner__message')?.textContent,
+        ).toBe('Error message 2');
         expect(getBannerSeverity(banners[1])).toBe('warning');
         expect(getBannerSeverity(banners[2])).toBe('error');
-        expect(banners[2].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-          'Error message 1',
-        );
+        expect(
+          banners[2].querySelector('.mzn-alert-banner__message')?.textContent,
+        ).toBe('Error message 1');
         expect(getBannerSeverity(banners[3])).toBe('info');
-        expect(banners[3].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-          'Info message 2',
-        );
+        expect(
+          banners[3].querySelector('.mzn-alert-banner__message')?.textContent,
+        ).toBe('Info message 2');
         expect(getBannerSeverity(banners[4])).toBe('info');
-        expect(banners[4].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-          'Info message 1',
-        );
+        expect(
+          banners[4].querySelector('.mzn-alert-banner__message')?.textContent,
+        ).toBe('Info message 1');
       });
     });
 
@@ -580,19 +653,17 @@ describe('<AlertBanner />', () => {
       // Error should be first, then all info banners (newest first)
       expect(getBannerSeverity(banners[0])).toBe('error');
       expect(getBannerSeverity(banners[1])).toBe('info');
-      expect(banners[1].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-        'Info 3',
-      );
+      expect(
+        banners[1].querySelector('.mzn-alert-banner__message')?.textContent,
+      ).toBe('Info 3');
       expect(getBannerSeverity(banners[2])).toBe('info');
-      expect(banners[2].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-        'Info 2',
-      );
+      expect(
+        banners[2].querySelector('.mzn-alert-banner__message')?.textContent,
+      ).toBe('Info 2');
       expect(getBannerSeverity(banners[3])).toBe('info');
-      expect(banners[3].querySelector('.mzn-alert-banner__message')?.textContent).toBe(
-        'Info 1',
-      );
+      expect(
+        banners[3].querySelector('.mzn-alert-banner__message')?.textContent,
+      ).toBe('Info 1');
     });
   });
 });
-
-
