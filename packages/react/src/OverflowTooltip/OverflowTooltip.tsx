@@ -130,7 +130,7 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
       });
 
       return () => cancelAnimationFrame(rafId);
-    }, [tags, popperOpen]);
+    }, [tags, popperOpen, tagSize, readOnly]);
 
     return (
       <Popper
