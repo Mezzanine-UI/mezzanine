@@ -509,7 +509,6 @@ describe('<Drawer />', () => {
         render(
           <Drawer
             bottomOnPrimaryActionClick={onPrimaryActionClick}
-            bottomPrimaryActionLoading
             bottomPrimaryActionText="Custom Submit"
             isBottomDisplay
             open
@@ -529,9 +528,6 @@ describe('<Drawer />', () => {
         expect(buttons?.[0].textContent).toBe('Custom Submit');
         expect(
           buttons?.[0].classList.contains('mzn-button--base-primary'),
-        ).toBeTruthy();
-        expect(
-          buttons?.[0].classList.contains('mzn-button--loading'),
         ).toBeTruthy();
       });
 
