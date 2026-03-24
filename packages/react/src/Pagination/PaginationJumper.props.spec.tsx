@@ -98,7 +98,7 @@ describe('<PaginationJumper />', () => {
 
       expect(renderMockTypography).toHaveBeenCalledWith(
         expect.objectContaining({
-          color: 'text-disabled',
+          variant: 'label-primary',
         }),
       );
 

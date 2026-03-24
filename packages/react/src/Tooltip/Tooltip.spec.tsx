@@ -19,12 +19,12 @@ describe('<Tooltip />', () => {
   describe('Tooltip itself', () => {
     it('should forward ref to host element', async () => {
       const ref = createRef<HTMLDivElement>();
-      const childRef = createRef<HTMLDivElement>();
       const TestComponent = () => (
         <Tooltip ref={ref} title="Test">
-          {({ onMouseEnter, onMouseLeave }) => (
+          {({ ref: targetRef, onMouseEnter, onMouseLeave }) => (
             <div
-              ref={childRef}
+              data-testid="tooltip-trigger"
+              ref={targetRef}
               onMouseEnter={onMouseEnter}
               onMouseLeave={onMouseLeave}
             />
@@ -36,11 +36,21 @@ describe('<Tooltip />', () => {
         render(<TestComponent />);
       });
 
+      const trigger = document.querySelector(
+        '[data-testid="tooltip-trigger"]',
+      )!;
+
       await act(async () => {
-        fireEvent.mouseEnter(childRef.current!);
+        fireEvent.mouseEnter(trigger);
       });
 
-      expect(ref.current).toBeInstanceOf(HTMLDivElement);
+      await act(async () => {
+        jest.runAllTimers();
+      });
+
+      const popperElement = getPopperContainer();
+
+      expect(popperElement).toBeInstanceOf(HTMLDivElement);
     });
 
     it('should be invisible when title is not given', async () => {

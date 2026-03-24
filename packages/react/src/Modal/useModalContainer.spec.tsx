@@ -1,4 +1,10 @@
-import { cleanup, cleanupHook, renderHook, render, fireEvent } from '../../__test-utils__';
+import {
+  cleanup,
+  cleanupHook,
+  renderHook,
+  render,
+  fireEvent,
+} from '../../__test-utils__';
 import useModalContainer from './useModalContainer';
 
 const renderMockBackdrop = jest.fn();
@@ -34,13 +40,15 @@ describe('useModalContainer()', () => {
 
       expect(renderMockBackdrop).toHaveBeenCalledWith(
         expect.objectContaining({
-          className: defaultOptions.className,
+          className: '',
           container: undefined,
-          disableCloseOnBackdropClick: defaultOptions.disableCloseOnBackdropClick,
+          disableCloseOnBackdropClick:
+            defaultOptions.disableCloseOnBackdropClick,
           disablePortal: defaultOptions.disablePortal,
           onBackdropClick: undefined,
           onClose: undefined,
           open: true,
+          role: 'presentation',
         }),
       );
     });
@@ -135,7 +143,9 @@ describe('useModalContainer()', () => {
         </Container>,
       );
 
-      expect(container.querySelector('[data-testid="mock-backdrop"]')).toBeNull();
+      expect(
+        container.querySelector('[data-testid="mock-backdrop"]'),
+      ).toBeNull();
     });
 
     it('should render when open=true', () => {
@@ -148,7 +158,9 @@ describe('useModalContainer()', () => {
         </Container>,
       );
 
-      expect(container.querySelector('[data-testid="mock-backdrop"]')).toBeTruthy();
+      expect(
+        container.querySelector('[data-testid="mock-backdrop"]'),
+      ).toBeTruthy();
     });
   });
 

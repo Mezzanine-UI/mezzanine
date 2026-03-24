@@ -1,5 +1,6 @@
 import { createRef } from 'react';
 import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
+import { tagClasses } from '@mezzanine-ui/core/tag';
 import type { OverflowTooltipProps } from '.';
 import type { RenderResult } from '../../__test-utils__';
 import { act, cleanup, fireEvent, render } from '../../__test-utils__';
@@ -112,12 +113,14 @@ describe('<OverflowTooltip />', () => {
 
   it('should fire onTagDismiss with tag index', async () => {
     const onTagDismiss = jest.fn();
-    const { getAllByRole } = await renderOverflowTooltip({
+    await renderOverflowTooltip({
       onTagDismiss,
       tags: ['Alpha', 'Beta'],
     });
 
-    const closeButtons = getAllByRole('button', { name: 'Dismiss tag' });
+    const closeButtons = document.querySelectorAll<HTMLButtonElement>(
+      `.${tagClasses.closeButton}`,
+    );
 
     await act(async () => {
       fireEvent.click(closeButtons[1]);

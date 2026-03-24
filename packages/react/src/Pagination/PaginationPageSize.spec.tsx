@@ -4,6 +4,40 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 
+jest.mock('../Dropdown', () => {
+  return function MockDropdown(props: any) {
+    const { children, onSelect, options, open } = props;
+    return (
+      <div data-testid="mock-dropdown">
+        <button
+          data-testid="mock-trigger"
+          onClick={() => props.onVisibilityChange?.(!open)}
+          type="button"
+        >
+          {children}
+        </button>
+        {open && (
+          <ul data-testid="mock-options">
+            {options?.map((option: any) => (
+              <li
+                key={option.id}
+                className="mzn-menu-item"
+                data-testid={`option-${option.id}`}
+                aria-selected={false}
+                role="option"
+              >
+                <button onClick={() => onSelect?.(option)} type="button">
+                  {option.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  };
+});
+
 import { PaginationPageSize } from '.';
 
 describe('<PaginationPageSize />', () => {
@@ -35,16 +69,16 @@ describe('<PaginationPageSize />', () => {
         />,
       );
       const element = getHostHTMLElement();
-      const textField = element.querySelector('.mzn-text-field');
+      const trigger = element.querySelector('[data-testid="mock-trigger"]');
 
       await act(async () => {
-        fireEvent.click(textField!);
+        fireEvent.click(trigger!);
       });
 
-      const options = document.querySelectorAll('.mzn-menu-item');
+      const optionButtons = element.querySelectorAll('.mzn-menu-item button');
 
       await act(async () => {
-        fireEvent.click(options[1]);
+        fireEvent.click(optionButtons[1]);
       });
 
       expect(onChange).toHaveBeenCalledTimes(1);

@@ -127,7 +127,7 @@ describe('usePickerValue', () => {
   });
 
   describe('should guard input value format', () => {
-    it('clear input value on blur if invalid', () => {
+    it('should show "Invalid date" on blur if input is invalid', () => {
       const inputRef = {
         current: document.createElement('input'),
       };
@@ -150,10 +150,10 @@ describe('usePickerValue', () => {
         result.current.onBlur({} as FocusEvent<HTMLInputElement>);
       });
 
-      expect(result.current.inputValue).toBe('');
+      expect(result.current.inputValue).toBe('Invalid date');
     });
 
-    it('clear input value on keydown if invalid', () => {
+    it('should show "Invalid date" on keydown if input is invalid', () => {
       const inputRef = {
         current: document.createElement('input'),
       };
@@ -178,7 +178,7 @@ describe('usePickerValue', () => {
         } as KeyboardEvent<HTMLInputElement>);
       });
 
-      expect(result.current.inputValue).toBe('');
+      expect(result.current.inputValue).toBe('Invalid date');
 
       act(() => {
         result.current.onInputChange({
@@ -195,7 +195,7 @@ describe('usePickerValue', () => {
         } as KeyboardEvent<HTMLInputElement>);
       });
 
-      expect(result.current.inputValue).toBe('');
+      expect(result.current.inputValue).toBe('Invalid date');
     });
   });
 

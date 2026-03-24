@@ -11,6 +11,8 @@ import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Cascader from '.';
 import { CascaderOption } from './typings';
 
+Element.prototype.scrollIntoView = jest.fn();
+
 const originalResizeObserver = (global as typeof globalThis).ResizeObserver;
 
 class ResizeObserverMock {

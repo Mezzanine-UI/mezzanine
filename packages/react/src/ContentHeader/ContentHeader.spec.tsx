@@ -7,8 +7,12 @@ import ContentHeader from '.';
 import { DotHorizontalIcon, MenuIcon, PlusIcon } from '@mezzanine-ui/icons';
 import Button from '../Button';
 
-const queryContentHeaderHostElement = (container: Element): HTMLElement => {
-  const host = container.querySelector('.mzn-content-header');
+const queryContentHeaderHostElement = (element: HTMLElement): HTMLElement => {
+  if (element.classList.contains('mzn-content-header')) {
+    return element;
+  }
+
+  const host = element.querySelector('.mzn-content-header');
 
   if (!host) {
     throw new Error('ContentHeader host element not found');
@@ -96,10 +100,10 @@ describe('<ContentHeader />', () => {
         <ContentHeader onBackClick={onBackClick} title="Test" />,
       );
       const backButton = getHostHTMLElement().querySelector(
-        '.mzn-content-header__back',
+        '.mzn-content-header__back-button button',
       ) as HTMLButtonElement;
 
-      backButton?.click();
+      backButton.click();
 
       expect(onBackClick).toHaveBeenCalledTimes(1);
     });

@@ -1,9 +1,10 @@
 import React, { createRef } from 'react';
 import { overflowTooltipClasses as tooltipClasses } from '@mezzanine-ui/core/overflow-tooltip';
+import { tagClasses } from '@mezzanine-ui/core/tag';
 import type { OverflowCounterTagProps } from './OverflowCounterTag';
 import type { OverflowTooltipProps } from './OverflowTooltip';
 import type { RenderResult } from '../../__test-utils__';
-import { act, cleanup, fireEvent, render } from '../../__test-utils__';
+import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import OverflowCounterTag from './OverflowCounterTag';
 import { resetPortals } from '../Portal/portalRegistry';
 
@@ -77,19 +78,19 @@ describe('<OverflowCounterTag />', () => {
   });
 
   it('should forward ref to trigger tag element', async () => {
-    const ref = createRef<HTMLSpanElement>();
+    const ref = createRef<HTMLButtonElement>();
 
     await act(async () => {
       render(
         <OverflowCounterTag
-          ref={ref}
+          ref={ref as React.Ref<HTMLSpanElement>}
           tags={['Alpha']}
           onTagDismiss={() => {}}
         />,
       );
     });
 
-    expect(ref.current).toBeInstanceOf(HTMLSpanElement);
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
   });
 
   it('should display tag count based on tags length', async () => {
@@ -127,7 +128,9 @@ describe('<OverflowCounterTag />', () => {
       fireEvent.click(document.body);
     });
 
-    expect(getTooltipHost()).toBeNull();
+    await waitFor(() => {
+      expect(getTooltipHost()).toBeNull();
+    });
   });
 
   it('should pass placement prop to OverflowTooltip component', async () => {
@@ -149,18 +152,18 @@ describe('<OverflowCounterTag />', () => {
 
   it('should call onTagDismiss from tooltip items', async () => {
     const onTagDismiss = jest.fn();
-    const { getHostHTMLElement, getAllByRole } = await renderOverflowCounterTag(
-      {
-        onTagDismiss,
-      },
-    );
+    const { getHostHTMLElement } = await renderOverflowCounterTag({
+      onTagDismiss,
+    });
     const trigger = getHostHTMLElement();
 
     await act(async () => {
       fireEvent.click(trigger);
     });
 
-    const closeButtons = getAllByRole('button', { name: 'Dismiss tag' });
+    const closeButtons = document.querySelectorAll<HTMLButtonElement>(
+      `.${tagClasses.closeButton}`,
+    );
 
     await act(async () => {
       fireEvent.click(closeButtons[0]);

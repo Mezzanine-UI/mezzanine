@@ -1,7 +1,14 @@
 /* global document */
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import { createRef, Dispatch, FocusEvent, MouseEvent, RefObject, SetStateAction } from 'react';
+import {
+  createRef,
+  Dispatch,
+  FocusEvent,
+  MouseEvent,
+  RefObject,
+  SetStateAction,
+} from 'react';
 import { AutoComplete } from '.';
 import {
   act,
@@ -581,10 +588,12 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onInsert = jest.fn((text: string, currentOptions: SelectValue[]) => [
-        ...currentOptions,
-        { id: `new-${text}`, name: text },
-      ]);
+      const onInsert = jest.fn(
+        (text: string, currentOptions: SelectValue[]) => [
+          ...currentOptions,
+          { id: `new-${text}`, name: text },
+        ],
+      );
       const onChange = jest.fn();
 
       const { container } = render(
@@ -611,7 +620,10 @@ describe('<AutoComplete />', () => {
       });
 
       await waitFor(() => {
-        const trimmed = 'Grid chart, Griddle, Grid'.split(',').map((s) => s.trim()).join(',');
+        const trimmed = 'Grid chart, Griddle, Grid'
+          .split(',')
+          .map((s) => s.trim())
+          .join(', ');
         expect(input!.value).toBe(trimmed);
       });
 
@@ -625,10 +637,12 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onInsert = jest.fn((text: string, currentOptions: SelectValue[]) => [
-        ...currentOptions,
-        { id: `new-${text}`, name: text },
-      ]);
+      const onInsert = jest.fn(
+        (text: string, currentOptions: SelectValue[]) => [
+          ...currentOptions,
+          { id: `new-${text}`, name: text },
+        ],
+      );
       const onChange = jest.fn();
 
       const { container } = render(
@@ -654,14 +668,14 @@ describe('<AutoComplete />', () => {
       });
 
       await waitFor(() => {
-        expect(input!.value).toBe('A,B,C');
+        expect(input!.value).toBe('A, B, C');
       });
 
       const createButton = await screen.findByText(/建立.*"A"/i);
       fireEvent.click(createButton);
 
       await waitFor(() => {
-        expect(input!.value).toBe('B,C');
+        expect(input!.value).toBe('B, C');
       });
 
       await waitFor(() => {
@@ -676,7 +690,10 @@ describe('<AutoComplete />', () => {
           addable
           createSeparators={[',']}
           mode="multiple"
-          onInsert={(text, opts) => [...opts, { id: `new-${text}`, name: text }]}
+          onInsert={(text, opts) => [
+            ...opts,
+            { id: `new-${text}`, name: text },
+          ]}
           options={defaultOptions}
           stepByStepBulkCreate
           trimOnCreate

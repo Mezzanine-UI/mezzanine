@@ -16,8 +16,8 @@ describe('DropdownStatus', () => {
 
     it('should render spinner icon for loading status', () => {
       const { container } = render(<DropdownStatus status="loading" />);
-      const icon = container.querySelector('.mzn-icon');
-      expect(icon).toBeInTheDocument();
+      const spinner = container.querySelector('.mzn-spin__spin');
+      expect(spinner).toBeInTheDocument();
     });
   });
 
@@ -40,10 +40,10 @@ describe('DropdownStatus', () => {
 
     it('should render custom empty icon', () => {
       const { container } = render(
-        <DropdownStatus 
-          status="empty" 
+        <DropdownStatus
+          status="empty"
           emptyIcon={require('@mezzanine-ui/icons').CloseIcon}
-        />
+        />,
       );
       const icon = container.querySelector('.mzn-icon');
       expect(icon).toBeInTheDocument();
@@ -55,10 +55,9 @@ describe('DropdownStatus', () => {
       const { container } = render(<DropdownStatus status="loading" />);
       const statusDiv = container.querySelector('.mzn-dropdown-status');
       const statusText = container.querySelector('.mzn-dropdown-status-text');
-      
+
       expect(statusDiv).toBeInTheDocument();
       expect(statusText).toBeInTheDocument();
     });
   });
 });
-
