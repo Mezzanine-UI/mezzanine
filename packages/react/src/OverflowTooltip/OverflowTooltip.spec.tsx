@@ -137,4 +137,108 @@ describe('<OverflowTooltip />', () => {
 
     expect(host?.getAttribute('data-popper-placement')).toBe('bottom-end');
   });
+
+  describe('prop: readOnly', () => {
+    it('should render static tags without close buttons when readOnly=true', async () => {
+      await renderOverflowTooltip({ readOnly: true, tags: ['A', 'B'] });
+
+      expect(
+        document.querySelectorAll(`.${tagClasses.type('static')}`).length,
+      ).toBe(2);
+      expect(
+        document.querySelectorAll(`.${tagClasses.closeButton}`).length,
+      ).toBe(0);
+    });
+
+    it('should render dismissable tags with close buttons when readOnly=false', async () => {
+      await renderOverflowTooltip({ readOnly: false, tags: ['A', 'B'] });
+
+      expect(
+        document.querySelectorAll(`.${tagClasses.type('dismissable')}`).length,
+      ).toBe(2);
+      expect(
+        document.querySelectorAll(`.${tagClasses.closeButton}`).length,
+      ).toBe(2);
+    });
+  });
+
+  describe('prop: tagSize', () => {
+    it('should apply the given size class to all tags', async () => {
+      await renderOverflowTooltip({ tagSize: 'sub', tags: ['A', 'B'] });
+
+      expect(
+        document.querySelectorAll(`.${tagClasses.size('sub')}`).length,
+      ).toBe(2);
+    });
+  });
+
+  describe('width measurement', () => {
+    let rafSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      rafSpy = jest
+        .spyOn(global, 'requestAnimationFrame')
+        .mockImplementation((cb) => {
+          cb(0);
+
+          return 0;
+        });
+    });
+
+    afterEach(() => {
+      rafSpy.mockRestore();
+    });
+
+    it('should call requestAnimationFrame to measure content width when popperOpen becomes true', async () => {
+      await renderOverflowTooltip({ tags: ['A', 'B'] });
+
+      expect(rafSpy).toHaveBeenCalled();
+    });
+
+    it('should re-run measurement when tagSize changes', async () => {
+      const { rerender } = await renderOverflowTooltip({
+        tagSize: 'sub',
+        tags: ['A', 'B'],
+      });
+
+      const callsAfterMount = rafSpy.mock.calls.length;
+
+      await act(async () => {
+        rerender(
+          <OverflowTooltip
+            anchor={document.body}
+            onTagDismiss={jest.fn()}
+            open
+            tagSize="minor"
+            tags={['A', 'B']}
+          />,
+        );
+      });
+
+      expect(rafSpy.mock.calls.length).toBeGreaterThan(callsAfterMount);
+    });
+
+    it('should re-run measurement when readOnly changes', async () => {
+      const { rerender } = await renderOverflowTooltip({
+        readOnly: false,
+        tags: ['A', 'B'],
+      });
+
+      const callsAfterMount = rafSpy.mock.calls.length;
+
+      await act(async () => {
+        rerender(
+          <OverflowTooltip
+            anchor={document.body}
+            onTagDismiss={jest.fn()}
+            open
+            readOnly
+            tags={['A', 'B']}
+          />,
+        );
+      });
+
+      expect(rafSpy.mock.calls.length).toBeGreaterThan(callsAfterMount);
+    });
+  });
 });
