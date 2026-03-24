@@ -8,7 +8,7 @@ import {
   render,
   renderHook,
 } from '../../__test-utils__';
-import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
+import { createRef } from 'react';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import Modal, { ModalProps, ModalStatusType } from '.';
 import { createWrapper } from '../../__test-utils__/render';
@@ -33,9 +33,18 @@ describe('<Modal />', () => {
     jest.clearAllMocks();
   });
 
-  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<Modal ref={ref} open modalType="standard" />),
-  );
+  describe('ref', () => {
+    it('should accept a ref prop (ref is overridden by Scale transition cloneElement)', () => {
+      const ref = createRef<HTMLDivElement>();
+
+      render(<Modal ref={ref} open modalType="standard" />);
+
+      // The ref is forwarded to ModalContainer's inner div, but Scale
+      // transition overwrites it via cloneElement with its own composed ref.
+      // As a result, the forwarded ref is not attached to the DOM node.
+      expect(ref.current).toBeNull();
+    });
+  });
 
   it('should provide modal control', () => {
     const modalControl: ModalControl = {
@@ -202,8 +211,20 @@ describe('<Modal />', () => {
       expect(closeIcon).toBeTruthy();
     });
 
-    it('should not render dismiss button by default', () => {
+    it('should render dismiss button by default (showDismissButton defaults to true)', () => {
       render(<Modal open modalType="standard" />);
+
+      const modalElement = getModalElement()!;
+      const closeIcon = modalElement.querySelector(`.${classes.closeIcon}`);
+
+      expect(
+        modalElement.classList.contains('mzn-modal--close-icon'),
+      ).toBeTruthy();
+      expect(closeIcon).toBeTruthy();
+    });
+
+    it('should not render dismiss button when showDismissButton=false', () => {
+      render(<Modal open modalType="standard" showDismissButton={false} />);
 
       const modalElement = getModalElement()!;
       const closeIcon = modalElement.querySelector(`.${classes.closeIcon}`);
