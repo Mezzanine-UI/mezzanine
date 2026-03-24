@@ -5,7 +5,7 @@ import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-t
 import Popper, { PopperProps } from '../Popper';
 import Tag, { TagProps } from '../Tag';
 import { cx } from '../utils/cx';
-import { getCSSVariableValue } from '../utils/get-css-variable-value';
+import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { flip, offset, Placement, shift } from '@floating-ui/react-dom';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import { Fade } from '../Transition';
@@ -54,23 +54,15 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
       tagSize,
     } = props;
 
-    const offsetValue =
-      Number(
-        getCSSVariableValue(`--${spacingPrefix}-gap-base`).replace('rem', ''),
-      ) * 16;
-    const arrowHeight =
-      Number(
-        getCSSVariableValue(`--${spacingPrefix}-size-element-tight`).replace(
-          'rem',
-          '',
-        ),
-      ) * 16;
-    const arrowPadding =
-      Number(
-        getCSSVariableValue(
-          `--${spacingPrefix}-padding-horizontal-comfort`,
-        ).replace('rem', ''),
-      ) * 16;
+    const offsetValue = getNumericCSSVariablePixelValue(
+      `--${spacingPrefix}-gap-base`,
+    );
+    const arrowHeight = getNumericCSSVariablePixelValue(
+      `--${spacingPrefix}-size-element-tight`,
+    );
+    const arrowPadding = getNumericCSSVariablePixelValue(
+      `--${spacingPrefix}-padding-horizontal-comfort`,
+    );
 
     const middleware = [offset({ mainAxis: offsetValue + arrowHeight })];
     const flipMiddleware = flip({
