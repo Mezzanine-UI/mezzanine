@@ -2,6 +2,7 @@
 
 import {
   ChangeEventHandler,
+  MouseEvent,
   Ref,
   forwardRef,
   useContext,
@@ -53,7 +54,7 @@ type CheckboxInputElementProps = Omit<
 
 export interface CheckboxProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'>,
-    CheckboxPropsBase {
+  CheckboxPropsBase {
   /**
    * Whether to show an editable input when checkbox is checked.
    * When `true`, an Input component will be displayed after the checkbox when checked.
@@ -248,7 +249,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       if (!checkboxGroup && !name && !nameFromInputProps && label) {
         console.warn(
           'Checkbox: The `name` prop is recommended when integrating with react-hook-form. ' +
-            `Checkbox with label "${label}" is missing the \`name\` prop.`,
+          `Checkbox with label "${label}" is missing the \`name\` prop.`,
         );
       }
     }, [checkboxGroup, name, nameFromInputProps, label]);
@@ -307,6 +308,21 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
     }, [withEditInput, editableInput, resolvedName, finalInputId]);
 
     const shouldShowEditableInput = withEditInput && defaultEditableInput;
+    const prevIsCheckedRef = useRef(isChecked);
+
+    useEffect(() => {
+      if (isChecked && !prevIsCheckedRef.current && shouldShowEditableInput && editableInputRef.current) {
+        editableInputRef.current.focus();
+      }
+      prevIsCheckedRef.current = isChecked;
+    }, [isChecked, shouldShowEditableInput]);
+
+    const handleEditableInputContainerMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+      if (!isChecked && !disabled && inputElementRef.current) {
+        event.preventDefault(); // 阻止原生 focus-on-mousedown，讓 useEffect 統一控制 focus 時機
+        inputElementRef.current.click();
+      }
+    };
 
     return (
       <div
@@ -393,11 +409,14 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
           defaultEditableInput &&
           mode !== 'chip' &&
           !indeterminate && (
-            <div className={classes.editableInputContainer}>
+            <div
+              className={classes.editableInputContainer}
+              onMouseDown={handleEditableInputContainerMouseDown}
+            >
               <Input
                 {...defaultEditableInput}
-                {...((!isChecked || disabled) &&
-                defaultEditableInput.disabled !== true
+                {...(disabled &&
+                  defaultEditableInput.disabled !== true
                   ? { disabled: true }
                   : {})}
                 inputRef={composeRefs([
