@@ -480,8 +480,7 @@ $checked-disabled: (
       border-color: var(--#{$prefix}-checked-bg);
     }
 
-    &:focus-visible:not(:disabled),
-    &:focus:not(:disabled) {
+    &:focus-visible:not(:disabled) {
       box-shadow: var(--#{$prefix}-focus-shadow);
     }
 
@@ -494,7 +493,7 @@ $checked-disabled: (
       pointer-events: none;
     }
   }
-  &:focus-within:not(.#{$prefix}--disabled) {
+  &:has(.#{$prefix}__input:focus-visible):not(.#{$prefix}--disabled) {
     .#{$prefix}__input {
       box-shadow: var(--#{$prefix}-focus-shadow);
     }
