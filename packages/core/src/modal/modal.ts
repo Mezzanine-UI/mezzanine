@@ -75,6 +75,7 @@ export const modalClasses = {
   modalBodyContainerWithTopSeparator: `${modalPrefix}__body-container--with-top-separator`,
   modalBodyContainerWithBottomSeparator: `${modalPrefix}__body-container--with-bottom-separator`,
   modalBodyContainerExtendedSplit: `${modalPrefix}__body-container__extended-split`,
+  modalBodyContainerExtendedSplitSidebarLeft: `${modalPrefix}__body-container__extended-split--sidebar-left`,
   modalBodyContainerExtendedSplitRight: `${modalPrefix}__body-container__extended-split-right`,
   modalBodyContainerExtendedSplitLeft: `${modalPrefix}__body-container__extended-split-left`,
   modalBodyContainerExtendedSplitLeftSideContent: `${modalPrefix}__body-container__extended-split-left__content`,
@@ -89,6 +90,7 @@ export const modalClasses = {
   /** Body Verification */
   modalBodyVerification: `${modalPrefix}__body-verification`,
   modalBodyVerificationInputs: `${modalPrefix}__body-verification__inputs`,
+  modalBodyVerificationInputsExtended: `${modalPrefix}__body-verification__inputs--extended`,
   modalBodyVerificationInput: `${modalPrefix}__body-verification__input`,
   modalBodyVerificationInputError: `${modalPrefix}__body-verification__input--error`,
   modalBodyVerificationResend: `${modalPrefix}__body-verification__resend`,

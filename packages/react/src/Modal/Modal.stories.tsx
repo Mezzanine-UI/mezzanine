@@ -197,7 +197,6 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       auxiliaryContentOnChange: () => {},
       auxiliaryContentOnClick: () => {},
       auxiliaryContentType,
-      ...cancelProps,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
       fullScreen,
@@ -285,6 +284,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             <Modal
               {...baseProps}
               {...layoutProps}
+              {...cancelProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
@@ -330,6 +330,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
+              {...cancelProps}
               extendedSplitLeftSideContent={extendedSplitLeftSideContent}
               extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
@@ -367,6 +368,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           <Modal
             {...baseProps}
             {...layoutProps}
+            {...cancelProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showStatusTypeIcon={showStatusTypeIcon}
@@ -410,6 +412,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
+            {...cancelProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showModalFooter
@@ -478,9 +481,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openInfo}
           showModalFooter
           showModalHeader
-        >
-          <>Here are some details you should know about.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -495,9 +496,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openError}
           showModalFooter
           showModalHeader
-        >
-          <>Please try again or contact support if the problem persists.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -512,9 +511,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openWarning}
           showModalFooter
           showModalHeader
-        >
-          <>This action may have unintended consequences.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -529,9 +526,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openSuccess}
           showModalFooter
           showModalHeader
-        >
-          <>Your changes have been saved and applied.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Close"
@@ -546,9 +541,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openEmail}
           showModalFooter
           showModalHeader
-        >
-          <>Check your inbox for important updates and notifications.</>
-        </Modal>
+        />
         <Modal
           modalType="standard"
           cancelText="Cancel"
@@ -564,9 +557,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           open={openDelete}
           showModalFooter
           showModalHeader
-        >
-          <>Are you sure you want to delete this item permanently?</>
-        </Modal>
+        />
       </>
     );
   },
@@ -703,27 +694,21 @@ export const ModalHeaderCombinations: StoryObj = {
           open={openIndex === 4}
           showStatusTypeIcon
           title="Vertical Icon"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 5}
           showStatusTypeIcon
           title="Vertical Icon (Center)"
           titleAlign="center"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 6}
           showStatusTypeIcon
           supportingText="Supporting text displayed below the title."
           title="Vertical Icon + Supporting"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 7}
@@ -732,9 +717,7 @@ export const ModalHeaderCombinations: StoryObj = {
           supportingTextAlign="center"
           title="Vertical Icon + Both Center"
           titleAlign="center"
-        >
-          {body}
-        </Modal>
+        />
 
         {/* Horizontal Icon */}
         <Modal
@@ -743,9 +726,7 @@ export const ModalHeaderCombinations: StoryObj = {
           showStatusTypeIcon
           statusTypeIconLayout="horizontal"
           title="Horizontal Icon"
-        >
-          {body}
-        </Modal>
+        />
         <Modal
           {...baseProps}
           open={openIndex === 9}
@@ -753,47 +734,7 @@ export const ModalHeaderCombinations: StoryObj = {
           statusTypeIconLayout="horizontal"
           supportingText="Supporting text displayed below the title."
           title="Horizontal Icon + Supporting"
-        >
-          {body}
-        </Modal>
-      </>
-    );
-  },
-};
-
-export const ModalHeaderComprehensive: StoryObj = {
-  render: function Render() {
-    const [open, setOpen] = useState(false);
-    const onClose = useCallback(() => setOpen(false), []);
-
-    return (
-      <>
-        <Button onClick={() => setOpen(true)} variant="base-primary">
-          Comprehensive Header
-        </Button>
-        <Modal
-          modalType="standard"
-          cancelText="Cancel"
-          confirmText="Acknowledge"
-          onCancel={onClose}
-          onConfirm={onClose}
-          showStatusTypeIcon
-          statusTypeIconLayout="horizontal"
-          supportingText="This modal demonstrates all header features combined together"
-          supportingTextAlign="left"
-          title="Complete Header Example"
-          titleAlign="left"
-          modalStatusType="warning"
-          onClose={onClose}
-          open={open}
-          showModalFooter
-          showModalHeader
-        >
-          <>
-            This modal showcases all header features: status icon, horizontal
-            layout, centered title and supporting text.
-          </>
-        </Modal>
+        />
       </>
     );
   },
@@ -912,6 +853,9 @@ export const ModalFooterWithPassword: StoryObj = {
 export const ExtendedSplit: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
+    const [sidebarPosition, setSidebarPosition] = useState<'left' | 'right'>(
+      'right',
+    );
 
     const onClose = useCallback(() => {
       setOpen(false);
@@ -919,22 +863,57 @@ export const ExtendedSplit: StoryObj = {
 
     return (
       <>
-        <Button onClick={() => setOpen(true)} variant="base-primary">
-          Extended Split Layout
-        </Button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button
+            onClick={() => {
+              setSidebarPosition('right');
+              setOpen(true);
+            }}
+            variant="base-primary"
+          >
+            Sidebar Right
+          </Button>
+          <Button
+            onClick={() => {
+              setSidebarPosition('left');
+              setOpen(true);
+            }}
+            variant="base-primary"
+          >
+            Sidebar Left
+          </Button>
+        </div>
         <Modal
+          cancelText="匯出 CSV"
+          confirmText="開始資料校正"
+          extendedSplitLeftSideContent={
+            <div
+              style={{
+                alignItems: 'center',
+                backgroundColor: 'rgba(147, 127, 199, 0.1)',
+                display: 'flex',
+                height: '100%',
+                justifyContent: 'center',
+                width: '100%',
+              }}
+            >
+              <Typography color="text-neutral" variant="body">
+                Left Side Content (Slot)
+              </Typography>
+            </div>
+          }
           extendedSplitRightSideContent={
             <div
               style={{
-                minHeight: '300px',
-                width: '100%',
-                display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
                 backgroundColor: 'rgba(147, 127, 199, 0.1)',
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'center',
+                width: '100%',
               }}
             >
-              <Typography variant="body" color="text-neutral">
+              <Typography color="text-neutral" variant="body">
                 Right Side Content (Slot) Lorem ipsum dolor sit amet,
                 consectetur adipisicing elit. Distinctio id quibusdam quis
                 similique vitae? A ab alias aperiam assumenda deleniti ducimus
@@ -942,44 +921,21 @@ export const ExtendedSplit: StoryObj = {
                 blanditiis cum cumque dolor, ea eveniet exercitationem fugit hic
                 id incidunt ipsam mollitia nemo porro qui quibusdam quisquam
                 similique temporibus ullam, veniam voluptas voluptates
-                voluptatum? Aliquid beatae consequatur ipsa minus perferendis
-                quae, tempora? Accusantium aperiam, beatae consequuntur culpa
-                cupiditate debitis delectus deleniti dignissimos dolor dolorum
-                ducimus enim eos esse, eveniet id incidunt ipsa laboriosam
-                laudantium magnam magni maxime molestiae natus nobis optio
-                provident quasi quia quisquam quo repellat repellendus suscipit
-                vitae?
+                voluptatum?
               </Typography>
             </div>
           }
-          extendedSplitLeftSideContent={
-            <div
-              style={{
-                minHeight: '300px',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(147, 127, 199, 0.1)',
-              }}
-            >
-              <Typography variant="body" color="text-neutral">
-                Left Side Content (Slot)
-              </Typography>
-            </div>
-          }
-          cancelText="匯出 CSV"
-          confirmText="開始資料校正"
-          onCancel={onClose}
-          onConfirm={onClose}
-          title="組織專案"
+          extendedSplitSidebarPosition={sidebarPosition}
           modalType="extendedSplit"
-          size="wide"
+          onCancel={onClose}
           onClose={onClose}
+          onConfirm={onClose}
           open={open}
           showDismissButton
           showModalFooter
           showModalHeader
+          size="wide"
+          title="檢視專案"
         />
       </>
     );
@@ -1103,13 +1059,16 @@ export const VerificationCodeInput: StoryObj = {
           }}
           showStatusTypeIcon
           supportingText="請輸入我們寄送至您信箱的驗證碼"
+          supportingTextAlign="center"
           title="電子郵件驗證"
+          titleAlign="center"
           modalStatusType="email"
           modalType="verification"
           onClose={onClose4Digit}
           open={open4Digit}
           showModalFooter
           showModalHeader
+          size="tight"
         >
           <ModalBodyForVerification
             length={4}
@@ -1136,13 +1095,16 @@ export const VerificationCodeInput: StoryObj = {
           }}
           showStatusTypeIcon
           supportingText="請輸入6位數驗證碼以完成雙重驗證"
+          supportingTextAlign="center"
           title="雙重驗證 (2FA)"
+          titleAlign="center"
           modalStatusType="info"
           modalType="verification"
           onClose={onClose6Digit}
           open={open6Digit}
           showModalFooter
           showModalHeader
+          size="tight"
         >
           <ModalBodyForVerification
             length={6}
@@ -1154,6 +1116,43 @@ export const VerificationCodeInput: StoryObj = {
             value={code6}
           />
         </Modal>
+      </>
+    );
+  },
+};
+
+export const SaveSuccessWithCheckbox: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [checked, setChecked] = useState(false);
+    const onClose = useCallback(() => setOpen(false), []);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          open
+        </Button>
+        <Modal
+          auxiliaryContentChecked={checked}
+          auxiliaryContentLabel="不再顯示此訊息"
+          auxiliaryContentOnChange={setChecked}
+          auxiliaryContentType="checkbox"
+          cancelText="繼續編輯"
+          confirmText="返回列表"
+          modalStatusType="success"
+          modalType="standard"
+          onCancel={onClose}
+          onClose={onClose}
+          onConfirm={onClose}
+          open={open}
+          showDismissButton
+          showModalFooter
+          showModalHeader
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
+          supportingText="變更已成功儲存，您可以繼續編輯或返回列表頁面。"
+          title="儲存完成"
+        />
       </>
     );
   },

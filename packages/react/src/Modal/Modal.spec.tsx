@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { ModalSize, modalClasses as classes } from '@mezzanine-ui/core/modal';
 import {
+  act,
   cleanup,
   cleanupHook,
   fireEvent,
@@ -514,6 +515,144 @@ describe('<Modal />', () => {
 
       const modalInContainer = container.querySelector('.mzn-modal');
       expect(modalInContainer).toBeTruthy();
+    });
+  });
+
+  describe('body container separator classes', () => {
+    it('should not have separator classes initially for standard modal', () => {
+      render(
+        <Modal open modalType="standard">
+          <div>Content</div>
+        </Modal>,
+      );
+
+      const bodyContainer = document.querySelector(
+        `.${classes.modalBodyContainer}`,
+      ) as HTMLDivElement;
+
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithTopSeparator,
+        ),
+      ).toBe(false);
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithBottomSeparator,
+        ),
+      ).toBe(false);
+    });
+
+    it('should add top and bottom separator classes when scrolled into middle of content', async () => {
+      render(
+        <Modal open modalType="standard">
+          <div>Content</div>
+        </Modal>,
+      );
+
+      const bodyContainer = document.querySelector(
+        `.${classes.modalBodyContainer}`,
+      ) as HTMLDivElement;
+
+      Object.defineProperty(bodyContainer, 'scrollTop', {
+        configurable: true,
+        value: 100,
+      });
+      Object.defineProperty(bodyContainer, 'scrollHeight', {
+        configurable: true,
+        value: 500,
+      });
+      Object.defineProperty(bodyContainer, 'clientHeight', {
+        configurable: true,
+        value: 300,
+      });
+
+      await act(async () => {
+        fireEvent.scroll(bodyContainer);
+      });
+
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithTopSeparator,
+        ),
+      ).toBe(true);
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithBottomSeparator,
+        ),
+      ).toBe(true);
+    });
+
+    it('should remove top separator class when scrolled back to top', async () => {
+      render(
+        <Modal open modalType="standard">
+          <div>Content</div>
+        </Modal>,
+      );
+
+      const bodyContainer = document.querySelector(
+        `.${classes.modalBodyContainer}`,
+      ) as HTMLDivElement;
+
+      Object.defineProperty(bodyContainer, 'scrollTop', {
+        configurable: true,
+        value: 100,
+      });
+      Object.defineProperty(bodyContainer, 'scrollHeight', {
+        configurable: true,
+        value: 500,
+      });
+      Object.defineProperty(bodyContainer, 'clientHeight', {
+        configurable: true,
+        value: 300,
+      });
+
+      await act(async () => {
+        fireEvent.scroll(bodyContainer);
+      });
+
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithTopSeparator,
+        ),
+      ).toBe(true);
+
+      Object.defineProperty(bodyContainer, 'scrollTop', {
+        configurable: true,
+        value: 0,
+      });
+
+      await act(async () => {
+        fireEvent.scroll(bodyContainer);
+      });
+
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithTopSeparator,
+        ),
+      ).toBe(false);
+    });
+
+    it('should always have both separator classes for extended modal type regardless of scroll', () => {
+      render(
+        <Modal open modalType="extended">
+          <div>Content</div>
+        </Modal>,
+      );
+
+      const bodyContainer = document.querySelector(
+        `.${classes.modalBodyContainer}`,
+      ) as HTMLDivElement;
+
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithTopSeparator,
+        ),
+      ).toBe(true);
+      expect(
+        bodyContainer.classList.contains(
+          classes.modalBodyContainerWithBottomSeparator,
+        ),
+      ).toBe(true);
     });
   });
 });

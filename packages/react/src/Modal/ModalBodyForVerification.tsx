@@ -189,7 +189,11 @@ const ModalBodyForVerification = forwardRef<
       ref={ref}
       className={cx(modalClasses.modalBodyVerification, className)}
     >
-      <div className={modalClasses.modalBodyVerificationInputs}>
+      <div
+        className={cx(modalClasses.modalBodyVerificationInputs, {
+          [modalClasses.modalBodyVerificationInputsExtended]: length > 4,
+        })}
+      >
         {Array.from({ length }).map((_, index) => (
           <input
             key={index}
