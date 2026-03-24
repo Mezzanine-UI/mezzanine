@@ -9,11 +9,11 @@ import Upload from './Upload';
 const originalResizeObserver = (global as typeof globalThis).ResizeObserver;
 
 class ResizeObserverMock {
-  observe() { }
+  observe() {}
 
-  unobserve() { }
+  unobserve() {}
 
-  disconnect() { }
+  disconnect() {}
 }
 
 // Mock URL.createObjectURL 和 URL.revokeObjectURL
@@ -38,7 +38,11 @@ afterAll(() => {
 describe('<Upload />', () => {
   afterEach(cleanup);
 
-  const createMockFile = (name: string, type: string, size: number = 1024): File => {
+  const createMockFile = (
+    name: string,
+    type: string,
+    size: number = 1024,
+  ): File => {
     const file = new File([''], name, { type });
     Object.defineProperty(file, 'size', { value: size });
     return file;
@@ -53,7 +57,9 @@ describe('<Upload />', () => {
     });
 
     it('應該支持自定義 className', () => {
-      const { getHostHTMLElement } = render(<Upload className="custom-class" />);
+      const { getHostHTMLElement } = render(
+        <Upload className="custom-class" />,
+      );
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('custom-class')).toBeTruthy();
@@ -78,7 +84,9 @@ describe('<Upload />', () => {
       const { getHostHTMLElement } = render(<Upload mode="cards" />);
       const element = getHostHTMLElement();
       // cards 模式應該有 hostCards class (mzn-upload__host--cards)
-      expect(element.classList.contains('mzn-upload__host--cards')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-upload__host--cards'),
+      ).toBeTruthy();
     });
 
     it('應該正確渲染 mode="card-wall"', () => {
@@ -107,7 +115,9 @@ describe('<Upload />', () => {
   describe('prop: disabled', () => {
     it('應該禁用上傳功能', () => {
       const { container } = render(<Upload disabled />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.disabled).toBeTruthy();
     });
@@ -127,7 +137,9 @@ describe('<Upload />', () => {
       ];
 
       const { container } = render(<Upload files={files} maxFiles={2} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.disabled).toBeTruthy();
     });
@@ -136,14 +148,18 @@ describe('<Upload />', () => {
   describe('prop: multiple', () => {
     it('應該支持多文件選擇', () => {
       const { container } = render(<Upload multiple />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.hasAttribute('multiple')).toBeTruthy();
     });
 
     it('預設不應該支持多文件選擇', () => {
       const { container } = render(<Upload />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.hasAttribute('multiple')).toBeFalsy();
     });
@@ -152,7 +168,9 @@ describe('<Upload />', () => {
   describe('prop: accept', () => {
     it('應該設置 accept 屬性', () => {
       const { container } = render(<Upload accept="image/*" />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.accept).toBe('image/*');
     });
@@ -206,7 +224,9 @@ describe('<Upload />', () => {
     it('應該在選擇文件時觸發 onUpload', async () => {
       const onUpload = jest.fn();
       const { container } = render(<Upload onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       const file = createMockFile('test.jpg', 'image/jpeg');
 
@@ -232,7 +252,9 @@ describe('<Upload />', () => {
       ]);
 
       const { container } = render(<Upload onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -247,12 +269,12 @@ describe('<Upload />', () => {
 
     it('應該支持 onUpload 返回 { id: string }[]', async () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const onUpload = jest.fn().mockResolvedValue([
-        { id: 'backend-id-1' },
-      ]);
+      const onUpload = jest.fn().mockResolvedValue([{ id: 'backend-id-1' }]);
 
       const { container } = render(<Upload onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -270,7 +292,9 @@ describe('<Upload />', () => {
       const onUpload = jest.fn().mockResolvedValue(undefined);
 
       const { container } = render(<Upload onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -285,7 +309,9 @@ describe('<Upload />', () => {
 
     it('應該支持 setProgress 回調更新進度', async () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      let progressCallback: ((fileIndex: number, progress: number) => void) | undefined;
+      let progressCallback:
+        | ((fileIndex: number, progress: number) => void)
+        | undefined;
 
       const onUpload = jest.fn().mockImplementation((files, setProgress) => {
         progressCallback = setProgress;
@@ -293,7 +319,9 @@ describe('<Upload />', () => {
       });
 
       const { container } = render(<Upload onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -322,9 +350,16 @@ describe('<Upload />', () => {
       });
 
       const { container, rerender } = render(
-        <Upload onUpload={onUpload} mode="list" files={files} onChange={onChange} />,
+        <Upload
+          onUpload={onUpload}
+          mode="list"
+          files={files}
+          onChange={onChange}
+        />,
       );
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -338,25 +373,38 @@ describe('<Upload />', () => {
       });
 
       // 等待 onChange 回傳狀態為 error 的文件
-      await waitFor(() => {
-        expect(
-          onChange.mock.calls.some(([nextFiles]) =>
-            nextFiles?.some((f: UploadFile) => f.status === 'error'),
-          ),
-        ).toBeTruthy();
-      }, { timeout: 5000, interval: 100 });
+      await waitFor(
+        () => {
+          expect(
+            onChange.mock.calls.some(([nextFiles]) =>
+              nextFiles?.some((f: UploadFile) => f.status === 'error'),
+            ),
+          ).toBeTruthy();
+        },
+        { timeout: 5000, interval: 100 },
+      );
 
       // 重新渲染組件以反映文件狀態變化
-      rerender(<Upload onUpload={onUpload} mode="list" files={files} onChange={onChange} />);
+      rerender(
+        <Upload
+          onUpload={onUpload}
+          mode="list"
+          files={files}
+          onChange={onChange}
+        />,
+      );
 
       // 等待異步操作完成 - 錯誤狀態的 upload item 應該有 error class
       // 注意：onUpload 失敗後會更新文件狀態為 error，這需要一些時間
       // 在 list 模式下，圖片文件會渲染為 UploadItem，錯誤狀態會有 mzn-upload-item--error class
       // 需要等待錯誤狀態更新完成
-      await waitFor(() => {
-        const uploadItem = container.querySelector('.mzn-upload-item--error');
-        expect(uploadItem).toBeTruthy();
-      }, { timeout: 5000, interval: 100 });
+      await waitFor(
+        () => {
+          const uploadItem = container.querySelector('.mzn-upload-item--error');
+          expect(uploadItem).toBeTruthy();
+        },
+        { timeout: 5000, interval: 100 },
+      );
     }, 15000);
   });
 
@@ -364,7 +412,9 @@ describe('<Upload />', () => {
     it('應該在文件列表變化時觸發 onChange', async () => {
       const onChange = jest.fn();
       const { container } = render(<Upload onChange={onChange} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       const file = createMockFile('test.jpg', 'image/jpeg');
 
@@ -393,8 +443,12 @@ describe('<Upload />', () => {
         },
       ];
 
-      const { container } = render(<Upload files={files} onDelete={onDelete} />);
-      const deleteButton = container.querySelector('.mzn-icon[data-icon-name="trash"]');
+      const { container } = render(
+        <Upload files={files} onDelete={onDelete} />,
+      );
+      const deleteButton = container.querySelector(
+        '.mzn-icon[data-icon-name="trash"]',
+      );
 
       await act(async () => {
         if (deleteButton) {
@@ -419,8 +473,12 @@ describe('<Upload />', () => {
         },
       ];
 
-      const { container } = render(<Upload files={files} onReload={onReload} />);
-      const reloadButton = container.querySelector('.mzn-icon[data-icon-name="reset"]');
+      const { container } = render(
+        <Upload files={files} onReload={onReload} />,
+      );
+      const reloadButton = container.querySelector(
+        '.mzn-icon[data-icon-name="reset"]',
+      );
 
       await act(async () => {
         if (reloadButton) {
@@ -445,8 +503,12 @@ describe('<Upload />', () => {
         },
       ];
 
-      const { container } = render(<Upload files={files} onDownload={onDownload} />);
-      const downloadButton = container.querySelector('.mzn-icon[data-icon-name="download"]');
+      const { container } = render(
+        <Upload files={files} onDownload={onDownload} />,
+      );
+      const downloadButton = container.querySelector(
+        '.mzn-icon[data-icon-name="download"]',
+      );
 
       await act(async () => {
         if (downloadButton) {
@@ -471,8 +533,12 @@ describe('<Upload />', () => {
         },
       ];
 
-      const { container } = render(<Upload files={files} mode="cards" onZoomIn={onZoomIn} />);
-      const zoomButton = container.querySelector('button[aria-label="Zoom in image"]');
+      const { container } = render(
+        <Upload files={files} mode="cards" onZoomIn={onZoomIn} />,
+      );
+      const zoomButton = container.querySelector(
+        'button[aria-label="Zoom in image"]',
+      );
 
       await act(async () => {
         if (zoomButton) {
@@ -498,9 +564,16 @@ describe('<Upload />', () => {
       ];
 
       const { container } = render(
-        <Upload files={files} maxFiles={2} multiple onMaxFilesExceeded={onMaxFilesExceeded} />,
+        <Upload
+          files={files}
+          maxFiles={2}
+          multiple
+          onMaxFilesExceeded={onMaxFilesExceeded}
+        />,
       );
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -509,7 +582,7 @@ describe('<Upload />', () => {
             files: [
               createMockFile('test2.jpg', 'image/jpeg'),
               createMockFile('test3.jpg', 'image/jpeg'),
-            ] as unknown as FileList
+            ] as unknown as FileList,
           },
         });
       });
@@ -532,7 +605,9 @@ describe('<Upload />', () => {
       ];
 
       const { container } = render(<Upload files={files} maxFiles={2} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.disabled).toBeTruthy();
     });
@@ -556,7 +631,9 @@ describe('<Upload />', () => {
       };
 
       const { container } = render(<Wrapper />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -570,10 +647,13 @@ describe('<Upload />', () => {
       });
 
       // 等待異步操作完成 - 至少應該出現錯誤狀態的項目
-      await waitFor(() => {
-        const errorItem = container.querySelector('.mzn-upload-item--error');
-        expect(errorItem).toBeTruthy();
-      }, { timeout: 5000, interval: 100 });
+      await waitFor(
+        () => {
+          const errorItem = container.querySelector('.mzn-upload-item--error');
+          expect(errorItem).toBeTruthy();
+        },
+        { timeout: 5000, interval: 100 },
+      );
     }, 15000);
   });
 
@@ -595,7 +675,9 @@ describe('<Upload />', () => {
       };
 
       const { container } = render(<Wrapper />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       await act(async () => {
         fireEvent.change(input, {
@@ -610,13 +692,18 @@ describe('<Upload />', () => {
 
       // 等待異步操作完成 - 錯誤訊息區域應該存在
       // 在 list 模式下，圖片文件會渲染為 UploadItem，錯誤訊息在 .mzn-upload-item__error-message
-      await waitFor(() => {
-        // errorIcon 會被渲染在 error message 區域
-        const errorIcon = container.querySelector('.mzn-icon[data-icon-name="info-filled"]');
-        // 或者檢查錯誤的 upload item 是否存在
-        const errorItem = container.querySelector('.mzn-upload-item--error');
-        expect(errorIcon || errorItem).toBeTruthy();
-      }, { timeout: 5000, interval: 100 });
+      await waitFor(
+        () => {
+          // errorIcon 會被渲染在 error message 區域
+          const errorIcon = container.querySelector(
+            '.mzn-icon[data-icon-name="info-filled"]',
+          );
+          // 或者檢查錯誤的 upload item 是否存在
+          const errorItem = container.querySelector('.mzn-upload-item--error');
+          expect(errorIcon || errorItem).toBeTruthy();
+        },
+        { timeout: 5000, interval: 100 },
+      );
     }, 15000);
   });
 
@@ -646,7 +733,7 @@ describe('<Upload />', () => {
       ];
 
       const { container } = render(<Upload files={files} mode="cards" />);
-      const uploadItem = container.querySelector('.mzn-upload-item');
+      const uploadItem = container.querySelector('.mzn-upload-picture-card');
 
       expect(uploadItem).toBeTruthy();
     });
@@ -692,7 +779,9 @@ describe('<Upload />', () => {
         },
       ];
 
-      const { container } = render(<Upload files={files} showFileSize={false} />);
+      const { container } = render(
+        <Upload files={files} showFileSize={false} />,
+      );
       const fileSize = container.querySelector('.mzn-upload-item__font-size');
 
       expect(fileSize).toBeFalsy();
@@ -752,12 +841,12 @@ describe('<Upload />', () => {
     });
 
     it('應該在 cards 模式下顯示 hints', () => {
-      const hints = [
-        { label: '提示 1', type: 'info' as const },
-      ];
+      const hints = [{ label: '提示 1', type: 'info' as const }];
 
       const { container } = render(<Upload mode="cards" hints={hints} />);
-      const hintsList = container.querySelector('.mzn-upload__fill-width-hints');
+      const hintsList = container.querySelector(
+        '.mzn-upload__fill-width-hints',
+      );
 
       expect(hintsList).toBeTruthy();
     });
