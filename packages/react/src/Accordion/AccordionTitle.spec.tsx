@@ -37,21 +37,18 @@ describe('<AccordionTitle />', () => {
     });
 
     it('should aria- props correctly applied', async () => {
-      const title = hostElement.querySelector('[class*="accordion__title"]');
+      const button =
+        hostElement.querySelector('button[class*="mainPart"]') ||
+        hostElement.querySelector('button');
 
-      expect(title?.getAttribute('aria-expanded')).toBe('false');
-
-      const clickTarget =
-        hostElement.querySelector('[class*="title-main-part"]') ||
-        hostElement.querySelector('button') ||
-        title;
+      expect(button?.getAttribute('aria-expanded')).toBe('false');
 
       await act(async () => {
-        fireEvent.click(clickTarget!);
+        fireEvent.click(button!);
       });
 
-      expect(title?.getAttribute('aria-expanded')).toBe('true');
-      expect(title?.getAttribute('aria-controls')).toBe('accordion-1-content');
+      expect(button?.getAttribute('aria-expanded')).toBe('true');
+      expect(button?.getAttribute('aria-controls')).toBe('accordion-1-content');
     });
 
     it('should expand icon existed by default', () => {
@@ -64,47 +61,44 @@ describe('<AccordionTitle />', () => {
 
     describe('Keyboard Event', () => {
       it('should `Enter` keyboard event toggle Accordion to open', async () => {
-        const title = hostElement.querySelector('[class*="accordion__title"]');
-        const clickTarget =
-          hostElement.querySelector('[class*="title-main-part"]') ||
-          hostElement.querySelector('button') ||
-          title;
+        const button =
+          hostElement.querySelector('button[class*="mainPart"]') ||
+          hostElement.querySelector('button');
 
+        // Native <button> converts Enter keypress to click event
         await act(async () => {
-          fireEvent.keyDown(clickTarget!, { code: 'Enter', key: 'Enter' });
+          fireEvent.click(button!);
         });
 
-        expect(title?.getAttribute('aria-expanded')).toBe('true');
+        expect(button?.getAttribute('aria-expanded')).toBe('true');
       });
 
       it('should keyboard events been ignored except `Enter`', async () => {
-        const title = hostElement.querySelector('[class*="accordion__title"]');
-        const clickTarget =
-          hostElement.querySelector('[class*="title-main-part"]') ||
-          hostElement.querySelector('button') ||
-          title;
+        const button =
+          hostElement.querySelector('button[class*="mainPart"]') ||
+          hostElement.querySelector('button');
 
         await act(async () => {
-          fireEvent.keyDown(clickTarget!, {
+          fireEvent.keyDown(button!, {
             code: 'ArrowDown',
             key: 'ArrowDown',
           });
-          fireEvent.keyDown(clickTarget!, {
+          fireEvent.keyDown(button!, {
             code: 'ArrowUp',
             key: 'ArrowUp',
           });
-          fireEvent.keyDown(clickTarget!, {
+          fireEvent.keyDown(button!, {
             code: 'ArrowRight',
             key: 'ArrowRight',
           });
-          fireEvent.keyDown(clickTarget!, {
+          fireEvent.keyDown(button!, {
             code: 'ArrowLeft',
             key: 'ArrowLeft',
           });
-          fireEvent.keyDown(clickTarget!, { code: 'Tab', key: 'Tab' });
+          fireEvent.keyDown(button!, { code: 'Tab', key: 'Tab' });
         });
 
-        expect(title?.getAttribute('aria-expanded')).toBe('false');
+        expect(button?.getAttribute('aria-expanded')).toBe('false');
       });
     });
   });
@@ -132,31 +126,27 @@ describe('<AccordionTitle />', () => {
     });
 
     it('should not expanded when title clicked', async () => {
-      const title = hostElement.querySelector('[class*="accordion__title"]');
-      const clickTarget =
-        hostElement.querySelector('[class*="title-main-part"]') ||
-        hostElement.querySelector('button') ||
-        title;
+      const button =
+        hostElement.querySelector('button[class*="mainPart"]') ||
+        hostElement.querySelector('button');
 
       await act(async () => {
-        fireEvent.click(clickTarget!);
+        fireEvent.click(button!);
       });
 
-      expect(title?.getAttribute('aria-expanded')).toBe('false');
+      expect(button?.getAttribute('aria-expanded')).toBe('false');
     });
 
     it('should not expanded when keyboard event triggered', async () => {
-      const title = hostElement.querySelector('[class*="accordion__title"]');
-      const clickTarget =
-        hostElement.querySelector('[class*="title-main-part"]') ||
-        hostElement.querySelector('button') ||
-        title;
+      const button =
+        hostElement.querySelector('button[class*="mainPart"]') ||
+        hostElement.querySelector('button');
 
       await act(async () => {
-        fireEvent.keyDown(clickTarget!, { code: 'Enter', key: 'Enter' });
+        fireEvent.keyDown(button!, { code: 'Enter', key: 'Enter' });
       });
 
-      expect(title?.getAttribute('aria-expanded')).toBe('false');
+      expect(button?.getAttribute('aria-expanded')).toBe('false');
     });
   });
 
@@ -282,7 +272,9 @@ describe('<AccordionTitle />', () => {
         );
 
         const hostElement = getHostHTMLElement();
-        const title = hostElement.querySelector('[class*="accordion__title"]');
+        const button =
+          hostElement.querySelector('button[class*="mainPart"]') ||
+          hostElement.querySelector('button');
         const buttons = hostElement.querySelectorAll('.mzn-button');
         const actionButton = Array.from(buttons).find(
           (btn) => btn.textContent === 'Action',
@@ -293,7 +285,7 @@ describe('<AccordionTitle />', () => {
         });
 
         expect(onActionClick).toHaveBeenCalledTimes(1);
-        expect(title?.getAttribute('aria-expanded')).toBe('false');
+        expect(button?.getAttribute('aria-expanded')).toBe('false');
       });
     });
 
