@@ -69,7 +69,7 @@ describe('<ButtonGroup />', () => {
 
         expect(TestButton).toHaveBeenCalledWith(
           expect.objectContaining({ variant }),
-          {},
+          undefined,
         );
       });
     });
@@ -101,7 +101,7 @@ describe('<ButtonGroup />', () => {
 
         expect(TestButton).toHaveBeenCalledWith(
           expect.objectContaining({ size }),
-          {},
+          undefined,
         );
       });
     });
@@ -119,7 +119,7 @@ describe('<ButtonGroup />', () => {
 
       expect(TestButton).toHaveBeenCalledWith(
         expect.objectContaining({ disabled: false }),
-        {},
+        undefined,
       );
     });
 
@@ -135,7 +135,7 @@ describe('<ButtonGroup />', () => {
 
         expect(TestButton).toHaveBeenCalledWith(
           expect.objectContaining({ disabled }),
-          {},
+          undefined,
         );
       });
     });
@@ -151,7 +151,7 @@ describe('<ButtonGroup />', () => {
 
       expect(TestButton).toHaveBeenCalledWith(
         expect.objectContaining({ disabled: false }),
-        {},
+        undefined,
       );
     });
   });
@@ -266,7 +266,7 @@ describe('<ButtonGroup />', () => {
           size: 'minor',
           disabled: true,
         }),
-        {},
+        undefined,
       );
     });
 
@@ -289,7 +289,7 @@ describe('<ButtonGroup />', () => {
           size: 'minor',
           disabled: false,
         }),
-        {},
+        undefined,
       );
     });
 
