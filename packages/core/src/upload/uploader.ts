@@ -37,6 +37,8 @@ export const uploaderClasses = {
   clickToUpload: `${uploaderPrefix}__click-to-upload`,
   fillWidthHints: `${uploaderPrefix}__fill-width-hints`,
   uploadIcon: `${uploaderPrefix}__upload-icon`,
+  uploadButtonText: `${uploaderPrefix}__upload-button-text`,
   externalHints: `${uploaderPrefix}__external-hints`,
-  externalHint: (type: UploaderHintType) => `${uploaderPrefix}__external-hint--${type}`,
+  externalHint: (type: UploaderHintType) =>
+    `${uploaderPrefix}__external-hint--${type}`,
 } as const;

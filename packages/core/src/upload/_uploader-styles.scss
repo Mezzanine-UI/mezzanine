@@ -67,6 +67,7 @@ $square-size: spacing.primitive-variable(140);
     align-items: center;
     justify-content: center;
     transition: transition.standard(border-color, fast);
+
   }
 
   &--dragging {
@@ -142,6 +143,10 @@ $square-size: spacing.primitive-variable(140);
   &__upload-icon {
     color: palette.semantic-variable(icon, brand);
     font-size: spacing.semantic-variable(size, element, base);
+  }
+
+  &__upload-button-text {
+    font-feature-settings: 'liga' off, 'clig' off;
   }
 }
 
