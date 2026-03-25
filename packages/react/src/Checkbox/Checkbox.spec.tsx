@@ -593,7 +593,7 @@ describe('<Checkbox />', () => {
       expect(document.activeElement).toBe(editableInput);
     });
 
-    it('should check the checkbox when mousedown fires on the editable input container while unchecked', () => {
+    it('should check the checkbox when click fires on the editable input container while unchecked', () => {
       const { getHostHTMLElement } = render(
         <Checkbox
           defaultChecked={false}
@@ -610,7 +610,7 @@ describe('<Checkbox />', () => {
 
       expect(checkboxInput.checked).toBe(false);
 
-      fireEvent.mouseDown(editableInputContainer);
+      fireEvent.click(editableInputContainer);
 
       expect(checkboxInput.checked).toBe(true);
     });
