@@ -1,4 +1,5 @@
 import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
+import { FilterAreaActionsAlign, FilterAreaRowAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { Filter, FilterArea, FilterAreaProps, FilterLine } from '.';
@@ -12,7 +13,7 @@ import { SelectValue } from '../Select/typings';
 export default {
   title: 'Data Entry/FilterArea',
   component: FilterArea,
-} as Meta;
+} satisfies Meta<typeof FilterArea>;
 
 const autoCompleteOptions: SelectValue[] = [
   { id: 'alpha', name: 'alpha' },
@@ -21,6 +22,96 @@ const autoCompleteOptions: SelectValue[] = [
 ];
 
 type Story = StoryObj<FilterAreaProps>;
+
+export const Playground: Story = {
+  argTypes: {
+    actionsAlign: {
+      control: { type: 'select' },
+      options: ['start', 'center', 'end'] satisfies FilterAreaActionsAlign[],
+    },
+    isDirty: {
+      control: { type: 'boolean' },
+    },
+    resetText: {
+      control: { type: 'text' },
+    },
+    rowAlign: {
+      control: { type: 'select' },
+      options: ['start', 'center', 'end'] satisfies FilterAreaRowAlign[],
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['main', 'sub'] satisfies FilterAreaSize[],
+    },
+    submitText: {
+      control: { type: 'text' },
+    },
+  },
+  args: {
+    actionsAlign: 'end',
+    isDirty: true,
+    resetText: 'Reset',
+    rowAlign: 'center',
+    size: 'main',
+    submitText: 'Search',
+  },
+  render: function PlaygroundStory(args) {
+    const horizontal = {
+      density: FormFieldDensity.BASE,
+      layout: FormFieldLayout.HORIZONTAL,
+    };
+
+    return (
+      <CalendarConfigProviderDayjs locale="zh-TW">
+        <FilterArea {...args}>
+          <FilterLine>
+            <Filter span={2}>
+              <FormField
+                label="Label"
+                name="name"
+                density={horizontal.density}
+                layout={horizontal.layout}
+              >
+                <Select
+                  fullWidth
+                  options={autoCompleteOptions}
+                  placeholder="請選擇"
+                />
+              </FormField>
+            </Filter>
+            <Filter span={2}>
+              <FormField
+                label="Label"
+                name="remark"
+                density={horizontal.density}
+                layout={horizontal.layout}
+              >
+                <Input placeholder="Enter name" />
+              </FormField>
+            </Filter>
+          </FilterLine>
+          <FilterLine>
+            <Filter span={3}>
+              <FormField
+                label="Label"
+                name="advanced1"
+                density={horizontal.density}
+                layout={horizontal.layout}
+              >
+                <AutoComplete
+                  fullWidth
+                  menuMaxHeight={140}
+                  options={autoCompleteOptions}
+                  placeholder="請輸入"
+                />
+              </FormField>
+            </Filter>
+          </FilterLine>
+        </FilterArea>
+      </CalendarConfigProviderDayjs>
+    );
+  },
+};
 
 export const Basic: Story = {
   argTypes: {
