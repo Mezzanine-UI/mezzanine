@@ -53,6 +53,7 @@ import {
 import { useAutoCompleteKeyboard } from './useAutoCompleteKeyboard';
 import { useAutoCompleteSearch } from './useAutoCompleteSearch';
 import { useCreationTracker } from './useCreationTracker';
+import AutoCompleteInsideTrigger from './AutoCompleteInside';
 
 export interface AutoCompleteBaseProps
   extends Omit<
@@ -705,7 +706,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     );
 
     useEffect(() => {
-      if (!isMultiple) return;
+      // Multiple mode bridge only applies to SelectTrigger (tags) rendering.
+      // In `inputPosition="inside"` we render a plain Input trigger, so the hidden
+      // SelectTrigger input bridge is not needed.
+      if (!isMultiple || inputPosition === 'inside') return;
 
       const hiddenTriggerInput =
         nodeRef.current?.querySelector<HTMLInputElement>(
@@ -721,7 +725,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
       hiddenTriggerInput.value = bridgeValue;
       hiddenTriggerInput.dispatchEvent(new Event('change', { bubbles: true }));
-    }, [isMultiple, searchText, value]);
+    }, [inputPosition, isMultiple, searchText, value]);
 
     // In single mode, show searchText when focused, otherwise show selected value
     // In multiple mode, always return empty string to avoid displaying "0"
@@ -736,6 +740,30 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         return () => '';
       }
       return undefined;
+    }, [
+      focused,
+      isMultiple,
+      isSingle,
+      searchText,
+      shouldClearSearchTextOnBlur,
+      value,
+    ]);
+
+    const insideInputValue = useMemo(() => {
+      // Inside trigger is a plain Input, so we must decide what to display.
+      // - multiple: always show current search text
+      // - single: show search text when focused (or when clear-on-blur is disabled)
+      if (isMultiple) return searchText;
+
+      if (
+        isSingle &&
+        (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
+      ) {
+        return searchText;
+      }
+
+      if (isSingleValue(value)) return value.name;
+      return '';
     }, [
       focused,
       isMultiple,
@@ -781,8 +809,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       }
 
       // Only open if not already open to avoid flickering
-      // When inputPosition is inside, Dropdown will handle opening via inlineTriggerElement
-      if (inputPosition !== 'inside' && !open) {
+      // Ensure inside/uncontrolled can open from the native input focus.
+      if (!open) {
         toggleOpen(true);
       }
       onFocus(true);
@@ -888,11 +916,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           name: option.name,
         };
 
-        // Set checkSite based on mode
-        // Multiple mode: show checkbox at prepend
-        // Single mode: show checked icon at append when selected
+        // Set checkSite based on mode and input position.
+        // - inside + multiple: keep multiple behavior, but render single-like checked icon
+        //   at suffix to match product visual expectation.
+        // - outside + multiple: render checkbox at prefix.
+        // - single: render checked icon at suffix.
         if (mode === 'multiple') {
-          result.checkSite = 'prefix';
+          result.checkSite = inputPosition === 'inside' ? 'suffix' : 'prefix';
         } else {
           result.checkSite = 'suffix';
         }
@@ -904,7 +934,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         return result;
       });
-    }, [isCreated, mode, options]);
+    }, [inputPosition, isCreated, mode, options]);
 
     // Get selected value for dropdown
     const dropdownValue = useMemo(() => {
@@ -1047,6 +1077,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             setKeyboardActiveIndex(null);
             setListboxHasVisualFocus(false);
             onFocus(false);
+            if (isMultiple && shouldClearSearchTextOnBlur) {
+              resetSearchInputsAndOptions();
+              cleanupUnselectedCreated();
+            }
             inputElementRef.current?.blur();
             inputProps?.onKeyDown?.(e);
             return;
@@ -1055,12 +1089,16 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           handleInputKeyDown(e);
         },
         [
+          cleanupUnselectedCreated,
           handleInputKeyDown,
           inputProps,
+          isMultiple,
           onFocus,
+          resetSearchInputsAndOptions,
           setActiveIndex,
           setKeyboardActiveIndex,
           setListboxHasVisualFocus,
+          shouldClearSearchTextOnBlur,
           toggleOpen,
         ],
       );
@@ -1188,6 +1226,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             showDropdownActions={shouldShowCreateAction}
             showActionShowTopBar={shouldShowCreateAction}
             status={dropdownStatus}
+            toggleCheckedOnClick={
+              inputPosition === 'inside' && mode === 'multiple' ? false : undefined
+            }
             type="default"
             value={dropdownValue}
             zIndex={dropdownZIndex}
@@ -1195,6 +1236,27 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             onReachBottom={onReachBottom}
             onLeaveBottom={onLeaveBottom}
           >
+          {inputPosition === 'inside' ? (
+            <AutoCompleteInsideTrigger
+              active={open}
+              className={className}
+              clearable={shouldForceClearable}
+              disabled={isInputDisabled}
+              error={error}
+              fullWidth={fullWidth}
+              inputRef={composedInputRef}
+              onClear={handleClear}
+              placeholder={getPlaceholder()}
+              resolvedInputProps={{
+                ...resolvedInputProps,
+                onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
+                  resolvedInputProps.onClick?.(e);
+                },
+              }}
+              size={size}
+              value={insideInputValue}
+            />
+          ) : (
             <SelectTrigger
               ref={composedRef}
               active={open}
@@ -1220,9 +1282,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
                 onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
                   // When inputPosition is inside, let Dropdown handle the click event
                   // Otherwise, stop propagation to prevent conflicts
-                  if (inputPosition !== 'inside') {
-                    e.stopPropagation();
-                  }
+                  // This branch is only rendered when `inputPosition !== 'inside'`.
+                  e.stopPropagation();
                   resolvedInputProps.onClick?.(e);
                 },
               }}
@@ -1239,6 +1300,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               }
               {...(mode === 'single' && renderValue ? { renderValue } : {})}
             />
+          )}
           </Dropdown>
         </div>
       </SelectControlContext.Provider>

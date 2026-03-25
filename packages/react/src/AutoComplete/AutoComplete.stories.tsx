@@ -658,9 +658,9 @@ const CreatableMultipleComponent = () => {
       }}
     >
       <div>
-        <h3>多選模式 - 可新增選項</h3>
+        <h3>inside 多選模式 - 單選風格 checked icon</h3>
         <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
-          輸入文字後按 Enter 或點擊 + 號新增選項
+          下拉視覺採單選風格 checked icon，但行為仍可多選；建立項目維持 New 標記。
         </p>
         <AutoComplete
           addable
@@ -801,9 +801,9 @@ export const BulkCreate: StoryObj<typeof AutoComplete> = {
 };
 
 const InputPositionInsideComponent = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [options, setOptions] = useState<SelectValue[]>(originOptions);
-  const [selections, setSelections] = useState<SelectValue[]>([]);
+  const [selections, setSelections] = useState<SelectValue[]>([originOptions[0]]);
   const nextIdRef = useRef(originOptions.length + 1);
 
   const handleInsert = useCallback(
@@ -897,6 +897,211 @@ const InputPositionInsideComponent = () => {
 
 export const InputPositionInside: StoryObj<typeof AutoComplete> = {
   render: () => <InputPositionInsideComponent />,
+};
+
+const InsideBulkCreateComponent = () => {
+  const [open, setOpen] = useState(true);
+  const [options, setOptions] = useState<SelectValue[]>(originOptions);
+  const [selections, setSelections] = useState<SelectValue[]>([]);
+  const nextIdRef = useRef(originOptions.length + 1);
+
+  const handleInsert = useCallback(
+    (text: string, currentOptions: SelectValue[]): SelectValue[] => {
+      const newOption: SelectValue = {
+        id: `new-${nextIdRef.current++}`,
+        name: text,
+      };
+
+      const updatedOptions = [...currentOptions, newOption];
+      setOptions(updatedOptions);
+      return updatedOptions;
+    },
+    [],
+  );
+
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
+  const closeDropdown = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '620px',
+      }}
+    >
+      <div>
+        <h3>inside 多選模式 - 單選風格 checked icon + step-by-step bulk create</h3>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
+          貼上多個項目後，dropdown 只顯示第一個「建立」，點擊後再顯示下一個。
+        </p>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '16px' }}>
+          試試貼上：<code>Grid chart, Griddle, Grid</code>
+        </p>
+
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '4px',
+            width: '100%',
+            marginBlock: '8px',
+          }}
+        >
+          {selections.map((selection) => (
+            <Tag
+              key={selection.id}
+              label={selection.name}
+              type="dismissable"
+              onClose={() =>
+                setSelections(selections.filter((s) => s.id !== selection.id))
+              }
+            />
+          ))}
+        </div>
+
+        <Tag
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            setOpen(!open);
+          }}
+          type="addable"
+          label={open ? '收起選單' : '展開選單'}
+        />
+
+        <AutoComplete
+          addable
+          createSeparators={[',', '+', '\n']}
+          fullWidth
+          inputPosition="inside"
+          mode="multiple"
+          onChange={setSelections}
+          onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
+          onVisibilityChange={closeDropdown}
+          options={options}
+          open={open}
+          placeholder="試試貼上..."
+          stepByStepBulkCreate
+          trimOnCreate
+          value={selections}
+        />
+      </div>
+
+      <div>
+        <p>已選擇數量: {selections.length}</p>
+        <p>選項數量: {options.length}</p>
+      </div>
+    </div>
+  );
+};
+
+export const InsideBulkCreate: StoryObj<typeof AutoComplete> = {
+  render: () => <InsideBulkCreateComponent />,
+};
+
+const InsideEmptyComponent = () => {
+  const [open, setOpen] = useState(true);
+
+  const closeDropdown = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '240px',
+      }}
+    >
+      <div>
+        <h3>inside 多選模式 - 單選風格 checked icon + empty</h3>
+        <Tag
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            setOpen(!open);
+          }}
+          type="addable"
+          label={open ? '收起選單' : '展開選單'}
+        />
+        <AutoComplete
+          emptyText="沒有符合的項目"
+          fullWidth
+          inputPosition="inside"
+          mode="multiple"
+          open={open}
+          onVisibilityChange={closeDropdown}
+          options={[]}
+          placeholder="沒有選項可選"
+          value={[]}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const InsideEmpty: StoryObj<typeof AutoComplete> = {
+  render: () => <InsideEmptyComponent />,
+};
+
+const InsideLoadingComponent = () => {
+  const [open, setOpen] = useState(true);
+
+  const closeDropdown = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '240px',
+      }}
+    >
+      <div>
+        <h3>inside 多選模式 - 單選風格 checked icon + loading</h3>
+        <Tag
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            setOpen(!open);
+          }}
+          type="addable"
+          label={open ? '收起選單' : '展開選單'}
+        />
+        <AutoComplete
+          emptyText="沒有符合的項目"
+          fullWidth
+          inputPosition="inside"
+          loading
+          loadingPosition="full"
+          loadingText="載入中..."
+          mode="multiple"
+          open={open}
+          onVisibilityChange={closeDropdown}
+          options={[]}
+          placeholder="資料載入中..."
+          value={[]}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const InsideLoading: StoryObj<typeof AutoComplete> = {
+  render: () => <InsideLoadingComponent />,
 };
 
 const LoadMoreOnReachBottomComponent = () => {
