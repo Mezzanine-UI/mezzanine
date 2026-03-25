@@ -627,7 +627,12 @@ export default function DropdownItem<
               // In `tree` + `multiple` mode, `DropdownItemCard` already triggers selection via
               // `onCheckedChange` when row is clicked (it toggles checked first, then calls `onClick`),
               // so calling `onSelect` here would cause it to fire twice for leaf nodes.
-              if (!(type === 'tree' && mode === 'multiple')) {
+              // In `multiple` mode, row click also triggers `onCheckedChange` when
+              // `toggleCheckedOnClick` is enabled, so avoid firing `onSelect` twice.
+              if (
+                !(type === 'tree' && mode === 'multiple') &&
+                !(mode === 'multiple' && resolvedToggleCheckedOnClick)
+              ) {
                 onSelect?.(option);
               }
             }

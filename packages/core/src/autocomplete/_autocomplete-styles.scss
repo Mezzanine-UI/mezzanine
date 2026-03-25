@@ -1,4 +1,5 @@
 @use '../select/select' as select;
+@use '../input/input' as input;
 @use '../text-field/text-field' as text-field;
 @use './autocomplete' as *;
 @use '@mezzanine-ui/system/spacing' as spacing;
@@ -28,6 +29,13 @@
 
   &--inside-closed {
     .#{select.$trigger-prefix} {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    // Inside trigger uses a plain Input instead of SelectTrigger in some cases.
+    // Hide it consistently so the host collapses when dropdown is closed.
+    .#{input.$prefix} {
       opacity: 0;
       pointer-events: none;
     }

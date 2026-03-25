@@ -53,6 +53,7 @@ import {
 import { useAutoCompleteKeyboard } from './useAutoCompleteKeyboard';
 import { useAutoCompleteSearch } from './useAutoCompleteSearch';
 import { useCreationTracker } from './useCreationTracker';
+import AutoCompleteInsideTrigger from './AutoCompleteInside';
 
 export interface AutoCompleteBaseProps
   extends Omit<
@@ -86,6 +87,8 @@ export interface AutoCompleteBaseProps
   asyncData?: boolean;
   /**
    * Whether to clear search text when leaving the textfield/dropdown scope.
+   * When `false`, typed text persists after blur. In `single` mode, a clearable
+   * icon will appear if the user has typed text without selecting an option.
    * @default true
    */
   clearSearchText?: boolean;
@@ -111,7 +114,10 @@ export interface AutoCompleteBaseProps
    */
   id?: string;
   /**
-   * The position of the input.
+   * The position of the search input relative to the dropdown.
+   * - `'outside'`: input is always visible above the dropdown (default trigger layout).
+   * - `'inside'`: input is rendered inside the dropdown panel; the trigger shows only
+   *   the selected value(s) and opens the dropdown on click.
    * @default 'outside'
    */
   inputPosition?: DropdownInputPosition;
@@ -158,10 +164,10 @@ export interface AutoCompleteBaseProps
    */
   name?: string;
   /**
-   * insert callback whenever insert icon is clicked
-   * receives the text to insert and current options, returns the updated options array
-   * should remove previously created but unselected options
-   * The returned options will be used to update the component's options prop
+   * Callback fired when the user confirms a new item creation.
+   * Receives the typed text and the current options array; must return the updated options array.
+   * Use this to append the new item to your options state.
+   * Required when `addable` is true; omitting it will disable the creation feature.
    */
   onInsert?(text: string, currentOptions: SelectValue[]): SelectValue[];
   /**
@@ -253,9 +259,10 @@ export interface AutoCompleteBaseProps
    */
   onLeaveBottom?: () => void;
   /**
-   * Called on blur when addable mode has unselected created items.
-   * Receives the cleaned options (unselected created items already removed).
-   * Use this to update your options state.
+   * Called when the dropdown closes (on blur or Escape) and `addable` mode has
+   * items that were created but never selected.
+   * Receives the cleaned options array with unselected created items already removed.
+   * Use this to sync your options state and strip the dangling created entries.
    * Only called when `addable` is true and there are unselected created items.
    */
   onRemoveCreated?(cleanedOptions: SelectValue[]): void;
@@ -347,7 +354,8 @@ function isSingleValue(
 /**
  * 自動完成輸入元件，在使用者輸入時即時顯示符合的下拉選項。
  *
- * 支援 `single`（單選）與 `multiple`（多選標籤）兩種模式；設定 `addable` 與 `onInsert`
+ * 支援 `single`（單選）與 `multiple`（多選標籤）兩種模式；`inputPosition` 控制搜尋輸入框
+ * 位於下拉選單外（`'outside'`，預設）或內（`'inside'`）。設定 `addable` 與 `onInsert`
  * 可讓使用者動態建立不在選項清單中的項目。`asyncData` 搭配 `onSearch` 可實現非同步搜尋，
  * 輸入時觸發 debounce 查詢並顯示 loading 狀態。若僅需從固定選項中搜尋，請改用 `Select` 元件。
  *
@@ -367,6 +375,15 @@ function isSingleValue(
  * // 多選模式
  * <AutoComplete
  *   mode="multiple"
+ *   options={options}
+ *   value={selectedList}
+ *   onChange={setSelectedList}
+ * />
+ *
+ * // 搜尋框置於下拉選單內（inside 模式）
+ * <AutoComplete
+ *   mode="multiple"
+ *   inputPosition="inside"
  *   options={options}
  *   value={selectedList}
  *   onChange={setSelectedList}
@@ -705,7 +722,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     );
 
     useEffect(() => {
-      if (!isMultiple) return;
+      // Multiple mode bridge only applies to SelectTrigger (tags) rendering.
+      // In `inputPosition="inside"` we render a plain Input trigger, so the hidden
+      // SelectTrigger input bridge is not needed.
+      if (!isMultiple || inputPosition === 'inside') return;
 
       const hiddenTriggerInput =
         nodeRef.current?.querySelector<HTMLInputElement>(
@@ -721,7 +741,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
       hiddenTriggerInput.value = bridgeValue;
       hiddenTriggerInput.dispatchEvent(new Event('change', { bubbles: true }));
-    }, [isMultiple, searchText, value]);
+    }, [inputPosition, isMultiple, searchText, value]);
 
     // In single mode, show searchText when focused, otherwise show selected value
     // In multiple mode, always return empty string to avoid displaying "0"
@@ -736,6 +756,30 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         return () => '';
       }
       return undefined;
+    }, [
+      focused,
+      isMultiple,
+      isSingle,
+      searchText,
+      shouldClearSearchTextOnBlur,
+      value,
+    ]);
+
+    const insideInputValue = useMemo(() => {
+      // Inside trigger is a plain Input, so we must decide what to display.
+      // - multiple: always show current search text
+      // - single: show search text when focused (or when clear-on-blur is disabled)
+      if (isMultiple) return searchText;
+
+      if (
+        isSingle &&
+        (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
+      ) {
+        return searchText;
+      }
+
+      if (isSingleValue(value)) return value.name;
+      return '';
     }, [
       focused,
       isMultiple,
@@ -781,8 +825,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       }
 
       // Only open if not already open to avoid flickering
-      // When inputPosition is inside, Dropdown will handle opening via inlineTriggerElement
-      if (inputPosition !== 'inside' && !open) {
+      // Ensure inside/uncontrolled can open from the native input focus.
+      if (!open) {
         toggleOpen(true);
       }
       onFocus(true);
@@ -888,11 +932,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           name: option.name,
         };
 
-        // Set checkSite based on mode
-        // Multiple mode: show checkbox at prepend
-        // Single mode: show checked icon at append when selected
+        // Set checkSite based on mode and input position.
+        // - inside + multiple: keep multiple behavior, but render single-like checked icon
+        //   at suffix to match product visual expectation.
+        // - outside + multiple: render checkbox at prefix.
+        // - single: render checked icon at suffix.
         if (mode === 'multiple') {
-          result.checkSite = 'prefix';
+          result.checkSite = inputPosition === 'inside' ? 'suffix' : 'prefix';
         } else {
           result.checkSite = 'suffix';
         }
@@ -904,7 +950,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         return result;
       });
-    }, [isCreated, mode, options]);
+    }, [inputPosition, isCreated, mode, options]);
 
     // Get selected value for dropdown
     const dropdownValue = useMemo(() => {
@@ -925,7 +971,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const shouldForceClearable = isMultiple
       ? (isMultipleValue(value) && value.length > 0) ||
         searchText.trim().length > 0
-      : isSingleValue(value);
+      : isSingleValue(value) ||
+        (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
 
     // Handle dropdown option selection
     const handleDropdownSelect = useCallback(
@@ -1047,6 +1094,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             setKeyboardActiveIndex(null);
             setListboxHasVisualFocus(false);
             onFocus(false);
+            if (isMultiple && shouldClearSearchTextOnBlur) {
+              resetSearchInputsAndOptions();
+              cleanupUnselectedCreated();
+            }
             inputElementRef.current?.blur();
             inputProps?.onKeyDown?.(e);
             return;
@@ -1055,12 +1106,16 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           handleInputKeyDown(e);
         },
         [
+          cleanupUnselectedCreated,
           handleInputKeyDown,
           inputProps,
+          isMultiple,
           onFocus,
+          resetSearchInputsAndOptions,
           setActiveIndex,
           setKeyboardActiveIndex,
           setListboxHasVisualFocus,
+          shouldClearSearchTextOnBlur,
           toggleOpen,
         ],
       );
@@ -1188,6 +1243,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             showDropdownActions={shouldShowCreateAction}
             showActionShowTopBar={shouldShowCreateAction}
             status={dropdownStatus}
+            toggleCheckedOnClick={
+              inputPosition === 'inside' && mode === 'multiple' ? false : undefined
+            }
             type="default"
             value={dropdownValue}
             zIndex={dropdownZIndex}
@@ -1195,6 +1253,27 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             onReachBottom={onReachBottom}
             onLeaveBottom={onLeaveBottom}
           >
+          {inputPosition === 'inside' ? (
+            <AutoCompleteInsideTrigger
+              active={open}
+              className={className}
+              clearable={shouldForceClearable}
+              disabled={isInputDisabled}
+              error={error}
+              fullWidth={fullWidth}
+              inputRef={composedInputRef}
+              onClear={handleClear}
+              placeholder={getPlaceholder()}
+              resolvedInputProps={{
+                ...resolvedInputProps,
+                onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
+                  resolvedInputProps.onClick?.(e);
+                },
+              }}
+              size={size}
+              value={insideInputValue}
+            />
+          ) : (
             <SelectTrigger
               ref={composedRef}
               active={open}
@@ -1220,9 +1299,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
                 onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
                   // When inputPosition is inside, let Dropdown handle the click event
                   // Otherwise, stop propagation to prevent conflicts
-                  if (inputPosition !== 'inside') {
-                    e.stopPropagation();
-                  }
+                  // This branch is only rendered when `inputPosition !== 'inside'`.
+                  e.stopPropagation();
                   resolvedInputProps.onClick?.(e);
                 },
               }}
@@ -1239,6 +1317,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               }
               {...(mode === 'single' && renderValue ? { renderValue } : {})}
             />
+          )}
           </Dropdown>
         </div>
       </SelectControlContext.Provider>

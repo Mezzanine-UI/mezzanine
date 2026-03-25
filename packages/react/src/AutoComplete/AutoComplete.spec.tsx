@@ -8,6 +8,7 @@ import {
   MouseEvent,
   RefObject,
   SetStateAction,
+  useState,
 } from 'react';
 import { AutoComplete } from '.';
 import {
@@ -633,6 +634,123 @@ describe('<AutoComplete />', () => {
       });
     });
 
+    it('should remove unselected created option on blur/close (outside)', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onRemoveCreated = jest.fn();
+
+      const Wrapper = () => {
+        const [options, setOptions] = useState<SelectValue[]>(defaultOptions);
+        const [value, setValue] = useState<SelectValue[]>([]);
+        const handleRemoveCreated = (cleanedOptions: SelectValue[]) => {
+          onRemoveCreated(cleanedOptions);
+          setOptions(cleanedOptions);
+        };
+
+        return (
+          <AutoComplete
+            addable
+            createSeparators={[',']}
+            disabledOptionsFilter
+            mode="multiple"
+            onChange={setValue}
+            onInsert={(text, currentOptions) => {
+              const updated = [
+                ...currentOptions,
+                { id: `new-${text}`, name: text },
+              ];
+              setOptions(updated);
+              return updated;
+            }}
+            onRemoveCreated={handleRemoveCreated}
+            options={options}
+            stepByStepBulkCreate
+            trimOnCreate
+            value={value}
+          />
+        );
+      };
+
+      const { container } = render(<Wrapper />);
+      const input = container.querySelector('input') as HTMLInputElement | null;
+      expect(input).not.toBeNull();
+
+      await act(async () => {
+        await user.click(input!);
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      fireEvent.paste(input!, {
+        clipboardData: { getData: () => 'Grid chart, Griddle, Grid' },
+      });
+
+      const firstCreateButton = await screen.findByText(/建立.*Grid chart/i);
+      await act(async () => {
+        await user.click(firstCreateButton);
+      });
+
+      await waitFor(() => {
+        const listbox = getDropdownListbox();
+        expect(listbox).toBeInTheDocument();
+        const createdSelectedOption = listbox?.querySelector(
+          '[role="option"][aria-selected="true"]',
+        ) as HTMLElement | null;
+        expect(createdSelectedOption).toBeInTheDocument();
+      });
+
+      const listbox = getDropdownListbox() as HTMLElement;
+      const createdOption = Array.from(
+        listbox.querySelectorAll('[role="option"]'),
+      ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart'));
+      expect(createdOption).toBeTruthy();
+
+      // Click once to unselect the created option.
+      await act(async () => {
+        await user.click(createdOption as HTMLElement);
+      });
+
+      await waitFor(() => {
+        const currentListbox = getDropdownListbox() as HTMLElement | null;
+        expect(currentListbox).toBeInTheDocument();
+        const currentOption = Array.from(
+          currentListbox!.querySelectorAll('[role="option"]'),
+        ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart'));
+        expect(currentOption).toBeTruthy();
+        expect((currentOption as HTMLElement).getAttribute('aria-selected')).toBe(
+          'false',
+        );
+      });
+
+      await act(async () => {
+        await user.click(input!);
+        await user.keyboard('{Escape}');
+        jest.runOnlyPendingTimers();
+      });
+
+      await waitFor(() => {
+        expect(
+          (screen.queryByRole('listbox') as HTMLElement | null) ??
+            getDropdownListbox(),
+        ).not.toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(onRemoveCreated).toHaveBeenCalled();
+        const lastCallArg =
+          onRemoveCreated.mock.calls[onRemoveCreated.mock.calls.length - 1]?.[0];
+        expect(lastCallArg).toEqual(expect.any(Array));
+        expect(
+          (lastCallArg as SelectValue[]).some(
+            (opt) => opt.id === 'new-Grid chart',
+          ),
+        ).toBe(false);
+      });
+    });
+
     it('should update input to remaining and show next create after clicking create', async () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
@@ -810,6 +928,370 @@ describe('<AutoComplete />', () => {
 
       await waitFor(() => {
         expect(onVisibilityChange).toHaveBeenCalledWith(true);
+      });
+    });
+  });
+
+  describe('prop: inputPosition="inside"', () => {
+    it('should render single-like checked icon (without checkbox) in multiple mode', async () => {
+      const { container } = render(
+        <AutoComplete
+          inputPosition="inside"
+          mode="multiple"
+          open
+          options={defaultOptions}
+          value={[defaultOptions[0]]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      const listbox = getDropdownListbox() as HTMLElement;
+      const checkboxes = listbox.querySelectorAll(
+        'input[type="checkbox"]',
+      ) as NodeListOf<HTMLInputElement>;
+
+      expect(checkboxes.length).toBe(0);
+
+      const selectedOption = listbox.querySelector(
+        '[role="option"][aria-selected="true"]',
+      ) as HTMLElement | null;
+      expect(selectedOption).toBeInTheDocument();
+      expect(
+        selectedOption?.querySelector('.mzn-dropdown-item-card-append-content .mzn-icon'),
+      ).toBeInTheDocument();
+
+      // Keep the input (trigger) and selection checkboxes separate:
+      // the inside trigger itself is the combobox input (not type=checkbox).
+      const triggerInputs = container.querySelectorAll(
+        'input[role="combobox"]',
+      );
+      expect(triggerInputs.length).toBeGreaterThan(0);
+    });
+
+    it('should show empty status when there are no options', async () => {
+      render(
+        <AutoComplete
+          inputPosition="inside"
+          mode="multiple"
+          open
+          options={[]}
+          emptyText="沒有符合的項目"
+        />,
+      );
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      expect(screen.getByText(/沒有符合的項目/i)).toBeInTheDocument();
+      expect(screen.queryByText(/建立/i)).not.toBeInTheDocument();
+    });
+
+    it('should show create action when addable and no option matches', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn((text: string) => [
+        { id: text, name: text },
+      ]);
+
+      render(
+        <AutoComplete
+          addable
+          inputPosition="inside"
+          mode="multiple"
+          onInsert={onInsert}
+          open
+          options={[]}
+          emptyText="沒有符合的項目"
+        />,
+      );
+
+      const input = await waitFor(() => {
+        const el = document.querySelector(
+          'input[role="combobox"]',
+        ) as HTMLInputElement | null;
+        expect(el).not.toBeNull();
+        return el!;
+      });
+
+      await act(async () => {
+        await user.click(input);
+        await user.type(input, 'newitem');
+      });
+
+      const createButton = await screen.findByText(/建立.*newitem/i);
+      expect(createButton).toBeInTheDocument();
+
+      fireEvent.click(createButton);
+      expect(onInsert).toHaveBeenCalledWith(
+        'newitem',
+        expect.any(Array),
+      );
+    });
+
+    it('should keep New tag for created option in inside mode', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const InsideCreatable = () => {
+        const [options, setOptions] = useState<SelectValue[]>(defaultOptions);
+        const [value, setValue] = useState<SelectValue[]>([]);
+
+        return (
+          <AutoComplete
+            addable
+            disabledOptionsFilter
+            inputPosition="inside"
+            mode="multiple"
+            onChange={setValue}
+            onInsert={(text, currentOptions) => {
+              const updated = [...currentOptions, { id: `new-${text}`, name: text }];
+              setOptions(updated);
+              return updated;
+            }}
+            open
+            options={options}
+            value={value}
+          />
+        );
+      };
+
+      render(<InsideCreatable />);
+
+      const input = await waitFor(() => {
+        const el = document.querySelector(
+          'input[role="combobox"]',
+        ) as HTMLInputElement | null;
+        expect(el).not.toBeNull();
+        return el!;
+      });
+
+      await act(async () => {
+        await user.click(input);
+        await user.type(input, 'newitem');
+      });
+
+      const createButton = await screen.findByText(/建立.*newitem/i);
+      fireEvent.click(createButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('New')).toBeInTheDocument();
+      });
+    });
+
+    it('should support step-by-step bulk create in inside position', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn(
+        (text: string, currentOptions: SelectValue[]) => [
+          ...currentOptions,
+          { id: `new-${text}`, name: text },
+        ],
+      );
+
+      render(
+        <AutoComplete
+          addable
+          createSeparators={[',']}
+          inputPosition="inside"
+          mode="multiple"
+          onInsert={onInsert}
+          open
+          options={defaultOptions}
+          stepByStepBulkCreate
+          trimOnCreate
+        />,
+      );
+
+      const input = await waitFor(() => {
+        const el = document.querySelector(
+          'input[role="combobox"]',
+        ) as HTMLInputElement | null;
+        expect(el).not.toBeNull();
+        return el!;
+      });
+
+      await act(async () => {
+        await user.click(input);
+      });
+
+      fireEvent.paste(input, {
+        clipboardData: { getData: () => 'Grid chart, Griddle, Grid' },
+      });
+
+      await waitFor(() => {
+        expect(input.value).toBe('Grid chart, Griddle, Grid');
+      });
+
+      const firstCreateButton = screen.queryByText(
+        /建立.*Grid chart/i,
+      );
+      expect(firstCreateButton).toBeInTheDocument();
+
+      fireEvent.click(firstCreateButton!);
+
+      await waitFor(() => {
+        expect(input.value).toBe('Griddle, Grid');
+      });
+
+      await waitFor(() => {
+        const nextCreateButton = screen.queryByText(/建立.*Griddle/i);
+        expect(nextCreateButton).toBeInTheDocument();
+      });
+    });
+
+    it('should show loading status in inside position', async () => {
+      render(
+        <AutoComplete
+          inputPosition="inside"
+          loading
+          loadingPosition="full"
+          loadingText="載入中..."
+          mode="multiple"
+          open
+          options={[]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      expect(screen.getByText(/載入中|loading/i)).toBeInTheDocument();
+    });
+
+    it('should remove unselected created option on blur/close (inside, uncontrolled)', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({
+        advanceTimers: jest.advanceTimersByTime,
+        delay: null,
+      });
+
+      const onRemoveCreated = jest.fn();
+
+      const Wrapper = () => {
+        const [options, setOptions] = useState<SelectValue[]>(defaultOptions);
+        const [value, setValue] = useState<SelectValue[]>([]);
+        const handleRemoveCreated = (cleanedOptions: SelectValue[]) => {
+          onRemoveCreated(cleanedOptions);
+          setOptions(cleanedOptions);
+        };
+
+        return (
+          <AutoComplete
+            addable
+            createSeparators={[',']}
+            disabledOptionsFilter
+            inputPosition="inside"
+            mode="multiple"
+            onChange={setValue}
+            onInsert={(text, currentOptions) => {
+              const updated = [
+                ...currentOptions,
+                { id: `new-${text}`, name: text },
+              ];
+              setOptions(updated);
+              return updated;
+            }}
+            onRemoveCreated={handleRemoveCreated}
+            options={options}
+            stepByStepBulkCreate
+            trimOnCreate
+            value={value}
+          />
+        );
+      };
+
+      render(<Wrapper />);
+
+      const input = await waitFor(() => {
+        const el = document.querySelector(
+          'input[role="combobox"]',
+        ) as HTMLInputElement | null;
+        expect(el).not.toBeNull();
+        return el!;
+      });
+
+      await act(async () => {
+        await user.click(input);
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      fireEvent.paste(input, {
+        clipboardData: { getData: () => 'Grid chart, Griddle, Grid' },
+      });
+
+      const firstCreateButton = await screen.findByText(/建立.*Grid chart/i);
+      await act(async () => {
+        await user.click(firstCreateButton);
+      });
+
+      await waitFor(() => {
+        const listbox = getDropdownListbox();
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Unselect the created option by clicking the selected row.
+      const getCreatedSelectedOption = () => {
+        const currentListbox = getDropdownListbox() as HTMLElement | null;
+        if (!currentListbox) return null;
+        return Array.from(
+          currentListbox.querySelectorAll('[role="option"][aria-selected="true"]'),
+        ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart')) as
+          | HTMLElement
+          | null;
+      };
+
+      const createdSelectedOption = await waitFor(() => {
+        const el = getCreatedSelectedOption();
+        expect(el).toBeTruthy();
+        return el!;
+      });
+
+      await act(async () => {
+        await user.click(createdSelectedOption);
+      });
+
+      await waitFor(() => {
+        const currentListbox = getDropdownListbox() as HTMLElement | null;
+        expect(currentListbox).toBeInTheDocument();
+        const currentOption = Array.from(
+          currentListbox!.querySelectorAll('[role="option"]'),
+        ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart'));
+        expect(currentOption).toBeTruthy();
+        expect((currentOption as HTMLElement).getAttribute('aria-selected')).toBe(
+          'false',
+        );
+      });
+
+      await act(async () => {
+        // Close via click-away (Dropdown inside mode uses container click-away)
+        await user.click(document.body);
+        jest.runOnlyPendingTimers();
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).not.toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(onRemoveCreated).toHaveBeenCalled();
+        const lastCallArg =
+          onRemoveCreated.mock.calls[onRemoveCreated.mock.calls.length - 1]?.[0];
+        expect(lastCallArg).toEqual(expect.any(Array));
+        expect(
+          (lastCallArg as SelectValue[]).some(
+            (opt) => opt.id === 'new-Grid chart',
+          ),
+        ).toBe(false);
       });
     });
   });
