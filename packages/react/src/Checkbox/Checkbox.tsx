@@ -5,6 +5,7 @@ import {
   MouseEvent,
   Ref,
   forwardRef,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -317,12 +318,19 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       prevIsCheckedRef.current = isChecked;
     }, [isChecked, shouldShowEditableInput]);
 
-    const handleEditableInputContainerMouseDown = (event: MouseEvent<HTMLDivElement>) => {
-      if (!isChecked && !disabled && inputElementRef.current) {
-        event.preventDefault(); // 阻止原生 focus-on-mousedown，讓 useEffect 統一控制 focus 時機
-        inputElementRef.current.click();
-      }
-    };
+    const handleEditableInputMouseDown = useCallback(
+      (event: MouseEvent<HTMLInputElement>) => {
+        defaultEditableInput?.inputProps?.onMouseDown?.(event);
+        if (event.defaultPrevented) {
+          return;
+        }
+        if (!isChecked && !disabled && inputElementRef.current) {
+          event.preventDefault(); // 阻止原生 focus-on-mousedown，讓 useEffect 統一控制 focus 時機
+          inputElementRef.current.click();
+        }
+      },
+      [defaultEditableInput, disabled, isChecked],
+    );
 
     return (
       <div
@@ -409,9 +417,9 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
           defaultEditableInput &&
           mode !== 'chip' &&
           !indeterminate && (
-            <div
+            <label
               className={classes.editableInputContainer}
-              onMouseDown={handleEditableInputContainerMouseDown}
+              htmlFor={finalInputId}
             >
               <Input
                 {...defaultEditableInput}
@@ -419,13 +427,17 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
                   defaultEditableInput.disabled !== true
                   ? { disabled: true }
                   : {})}
+                inputProps={{
+                  ...defaultEditableInput.inputProps,
+                  onMouseDown: handleEditableInputMouseDown,
+                }}
                 inputRef={composeRefs([
                   defaultEditableInput.inputRef,
                   editableInputRef,
                 ])}
                 variant="base"
               />
-            </div>
+            </label>
           )}
       </div>
     );

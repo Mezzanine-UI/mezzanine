@@ -20,7 +20,7 @@ import {
   type UploadPictureControl,
   type UploadType
 } from '@mezzanine-ui/core/upload';
-import { DangerousFilledIcon, InfoFilledIcon, type IconDefinition, UploadIcon as UploadIconIcon } from '@mezzanine-ui/icons';
+import { DangerousFilledIcon, InfoFilledIcon, UploadIcon as UploadIconIcon, type IconDefinition } from '@mezzanine-ui/icons';
 
 import Button from '../Button';
 import Icon from '../Icon';
@@ -410,9 +410,18 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
           {
             type === 'button'
             && (
-              <Button disabled={disabled} onClick={handleClickToUpload}>
-                {uploadIcon}
-                <Typography>
+              <Button
+                disabled={disabled}
+                iconType="leading"
+                icon={UploadIconIcon}
+                onClick={handleClickToUpload}
+              >
+                <Typography
+                  align="center"
+                  color="text-fixed-light"
+                  variant="button-highlight"
+                  className={classes.uploadButtonText}
+                >
                   {uploadLabel}
                 </Typography>
               </Button>
