@@ -87,6 +87,8 @@ export interface AutoCompleteBaseProps
   asyncData?: boolean;
   /**
    * Whether to clear search text when leaving the textfield/dropdown scope.
+   * When `false`, typed text persists after blur. In `single` mode, a clearable
+   * icon will appear if the user has typed text without selecting an option.
    * @default true
    */
   clearSearchText?: boolean;
@@ -112,7 +114,10 @@ export interface AutoCompleteBaseProps
    */
   id?: string;
   /**
-   * The position of the input.
+   * The position of the search input relative to the dropdown.
+   * - `'outside'`: input is always visible above the dropdown (default trigger layout).
+   * - `'inside'`: input is rendered inside the dropdown panel; the trigger shows only
+   *   the selected value(s) and opens the dropdown on click.
    * @default 'outside'
    */
   inputPosition?: DropdownInputPosition;
@@ -159,10 +164,10 @@ export interface AutoCompleteBaseProps
    */
   name?: string;
   /**
-   * insert callback whenever insert icon is clicked
-   * receives the text to insert and current options, returns the updated options array
-   * should remove previously created but unselected options
-   * The returned options will be used to update the component's options prop
+   * Callback fired when the user confirms a new item creation.
+   * Receives the typed text and the current options array; must return the updated options array.
+   * Use this to append the new item to your options state.
+   * Required when `addable` is true; omitting it will disable the creation feature.
    */
   onInsert?(text: string, currentOptions: SelectValue[]): SelectValue[];
   /**
@@ -254,9 +259,10 @@ export interface AutoCompleteBaseProps
    */
   onLeaveBottom?: () => void;
   /**
-   * Called on blur when addable mode has unselected created items.
-   * Receives the cleaned options (unselected created items already removed).
-   * Use this to update your options state.
+   * Called when the dropdown closes (on blur or Escape) and `addable` mode has
+   * items that were created but never selected.
+   * Receives the cleaned options array with unselected created items already removed.
+   * Use this to sync your options state and strip the dangling created entries.
    * Only called when `addable` is true and there are unselected created items.
    */
   onRemoveCreated?(cleanedOptions: SelectValue[]): void;
@@ -348,7 +354,8 @@ function isSingleValue(
 /**
  * 自動完成輸入元件，在使用者輸入時即時顯示符合的下拉選項。
  *
- * 支援 `single`（單選）與 `multiple`（多選標籤）兩種模式；設定 `addable` 與 `onInsert`
+ * 支援 `single`（單選）與 `multiple`（多選標籤）兩種模式；`inputPosition` 控制搜尋輸入框
+ * 位於下拉選單外（`'outside'`，預設）或內（`'inside'`）。設定 `addable` 與 `onInsert`
  * 可讓使用者動態建立不在選項清單中的項目。`asyncData` 搭配 `onSearch` 可實現非同步搜尋，
  * 輸入時觸發 debounce 查詢並顯示 loading 狀態。若僅需從固定選項中搜尋，請改用 `Select` 元件。
  *
@@ -368,6 +375,15 @@ function isSingleValue(
  * // 多選模式
  * <AutoComplete
  *   mode="multiple"
+ *   options={options}
+ *   value={selectedList}
+ *   onChange={setSelectedList}
+ * />
+ *
+ * // 搜尋框置於下拉選單內（inside 模式）
+ * <AutoComplete
+ *   mode="multiple"
+ *   inputPosition="inside"
  *   options={options}
  *   value={selectedList}
  *   onChange={setSelectedList}

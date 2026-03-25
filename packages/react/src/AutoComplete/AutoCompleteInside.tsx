@@ -2,8 +2,8 @@
 
 import { type MouseEventHandler, type Ref } from 'react';
 
-import Input from '../Input';
 import type { InputProps } from '../Input';
+import Input from '../Input';
 import type { SelectTriggerInputProps } from '../Select/typings';
 
 export interface AutoCompleteInsideTriggerProps {
@@ -48,9 +48,12 @@ export interface AutoCompleteInsideTriggerProps {
    */
   resolvedInputProps: SelectTriggerInputProps;
   /**
-   * Input clear handler.
+   * Whether to show the clear icon.
    */
   clearable: boolean;
+  /**
+   * Input clear handler.
+   */
   onClear?: MouseEventHandler;
 }
 
