@@ -44,6 +44,29 @@ export interface FilterProps
   span?: FilterSpan;
 }
 
+/**
+ * 單一篩選條件元件，用於在 FilterLine 中定義欄位的佔位寬度。
+ *
+ * 使用 12 欄 Grid，`span` 決定欄位佔用幾欄（1–6）；
+ * `grow` 設為 `true` 時欄位自動填滿整行。
+ * 從 FilterAreaContext 繼承 `size`，統一套用至內部的輸入元件。
+ *
+ * @example
+ * ```tsx
+ * import { Filter } from '@mezzanine-ui/react';
+ * import { FormField } from '@mezzanine-ui/react';
+ * import Input from '@mezzanine-ui/react/Input';
+ *
+ * <Filter span={2}>
+ *   <FormField label="名稱" name="name" layout="horizontal">
+ *     <Input placeholder="請輸入" />
+ *   </FormField>
+ * </Filter>
+ * ```
+ *
+ * @see {@link FilterLine} 包含 Filter 的行容器
+ * @see {@link FilterArea} 管理整個篩選器的容器
+ */
 const Filter = forwardRef<HTMLDivElement, FilterProps>(
   function Filter(props, ref) {
     const {

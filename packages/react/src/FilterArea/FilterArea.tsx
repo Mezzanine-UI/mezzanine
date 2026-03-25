@@ -71,6 +71,39 @@ export interface FilterAreaProps
   submitButtonType?: ComponentPropsWithoutRef<'button'>['type'];
 }
 
+/**
+ * 篩選器容器元件，管理多個 FilterLine 的展示與收合。
+ *
+ * 預設僅顯示第一行（`FilterLine`），多行時自動出現展開／收合切換按鈕。
+ * 透過 `size` 統一控制內部所有表單欄位的尺寸；
+ * 透過 `actionsAlign` 調整「送出／重設」按鈕區塊的對齊；
+ * 透過 `isDirty` 控制重設按鈕的啟用狀態（`false` 時禁用）。
+ *
+ * @example
+ * ```tsx
+ * import { Filter, FilterArea, FilterLine } from '@mezzanine-ui/react';
+ * import { FormField } from '@mezzanine-ui/react';
+ * import Input from '@mezzanine-ui/react/Input';
+ *
+ * <FilterArea
+ *   submitText="搜尋"
+ *   resetText="重設"
+ *   onSubmit={handleSubmit}
+ *   onReset={handleReset}
+ * >
+ *   <FilterLine>
+ *     <Filter span={2}>
+ *       <FormField label="名稱" name="name" layout="horizontal">
+ *         <Input placeholder="請輸入" />
+ *       </FormField>
+ *     </Filter>
+ *   </FilterLine>
+ * </FilterArea>
+ * ```
+ *
+ * @see {@link FilterLine} 用於組成 FilterArea 的單行條件列
+ * @see {@link Filter} 包裝單一篩選欄位的元件
+ */
 const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
   function FilterArea(props, ref) {
     const {
