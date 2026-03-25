@@ -35,14 +35,14 @@ export interface FilterAreaProps
    */
   onReset?: () => void;
   /**
-   * Callback function triggered when the form is submitted.
+   * Callback function triggered when the submit button is clicked.
    * FilterArea itself does not manage form state; the parent component should collect
-   * filter values and handle submission logic. If using react-hook-form, values will be
-   * handled through FormProvider's handleSubmit.
+   * filter values and handle submission logic.
    */
   onSubmit?: () => void;
   /**
    * The text of the reset button.
+   * @default 'Reset'
    */
   resetText?: string;
   /**
@@ -52,6 +52,7 @@ export interface FilterAreaProps
   size?: FilterAreaSize;
   /**
    * The text of the submit button.
+   * @default 'Search'
    */
   submitText?: string;
   /**

@@ -28,7 +28,7 @@ export interface FilterProps
    */
   children: ReactElement<FormFieldProps> | ReactElement<FormFieldProps>[];
   /**
-   * Layout control - Whether the field should automatically expand to fill the entire row (equivalent to span={12}).
+   * Layout control - Whether the field should automatically expand to fill the entire row (equivalent to span={6}).
    * @default false
    */
   grow?: boolean;
@@ -37,7 +37,7 @@ export interface FilterProps
    */
   minWidth?: string | number;
   /**
-   * Layout control - Number of columns the field occupies in the Grid (1-12, Grid has 12 columns total).
+   * Layout control - Number of columns the field occupies in the Grid (1-6, Grid has 6 columns total).
    * This property is ignored when grow is true.
    * @default 2
    */
@@ -47,7 +47,7 @@ export interface FilterProps
 /**
  * 單一篩選條件元件，用於在 FilterLine 中定義欄位的佔位寬度。
  *
- * 使用 12 欄 Grid，`span` 決定欄位佔用幾欄（1–6）；
+ * 使用 6 欄 Grid，`span` 決定欄位佔用幾欄（1–6）；
  * `grow` 設為 `true` 時欄位自動填滿整行。
  * 從 FilterAreaContext 繼承 `size`，統一套用至內部的輸入元件。
  *
