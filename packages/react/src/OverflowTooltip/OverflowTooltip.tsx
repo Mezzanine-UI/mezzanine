@@ -1,11 +1,11 @@
 'use client';
 
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
 import Popper, { PopperProps } from '../Popper';
 import Tag, { TagProps } from '../Tag';
 import { cx } from '../utils/cx';
-import { getCSSVariableValue } from '../utils/get-css-variable-value';
+import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { flip, offset, Placement, shift } from '@floating-ui/react-dom';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import { Fade } from '../Transition';
@@ -54,17 +54,15 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
       tagSize,
     } = props;
 
-    const offsetValue =
-      Number(
-        getCSSVariableValue(`--${spacingPrefix}-gap-base`).replace('rem', ''),
-      ) * 16;
-    const arrowHeight =
-      Number(
-        getCSSVariableValue(`--${spacingPrefix}-size-element-tight`).replace(
-          'rem',
-          '',
-        ),
-      ) * 16;
+    const offsetValue = getNumericCSSVariablePixelValue(
+      `--${spacingPrefix}-gap-base`,
+    );
+    const arrowHeight = getNumericCSSVariablePixelValue(
+      `--${spacingPrefix}-size-element-tight`,
+    );
+    const arrowPadding = getNumericCSSVariablePixelValue(
+      `--${spacingPrefix}-padding-horizontal-comfort`,
+    );
 
     const middleware = [offset({ mainAxis: offsetValue + arrowHeight })];
     const flipMiddleware = flip({
@@ -86,16 +84,61 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
       }
     }, [open]);
 
+    const contentRef = useRef<HTMLElement>(null);
+
+    useEffect(() => {
+      if (!popperOpen) return;
+
+      const rafId = requestAnimationFrame(() => {
+        const content = contentRef.current;
+        if (!content) return;
+
+        content.style.width = '';
+
+        const children = Array.from(content.children) as HTMLElement[];
+        if (!children.length) return;
+
+        const rows = new Map<number, HTMLElement[]>();
+        children.forEach((child) => {
+          const top = Math.round(child.getBoundingClientRect().top);
+          if (!rows.has(top)) rows.set(top, []);
+          rows.get(top)!.push(child);
+        });
+
+        const style = getComputedStyle(content);
+        const paddingLeft = parseFloat(style.paddingLeft);
+        const paddingRight = parseFloat(style.paddingRight);
+        const contentLeft = content.getBoundingClientRect().left;
+
+        let maxRowWidth = 0;
+        rows.forEach((rowItems) => {
+          const lastItem = rowItems[rowItems.length - 1];
+          const rowWidth =
+            lastItem.getBoundingClientRect().right - contentLeft - paddingLeft;
+          maxRowWidth = Math.max(maxRowWidth, rowWidth);
+        });
+
+        content.style.width = `${maxRowWidth + paddingLeft + paddingRight}px`;
+      });
+
+      return () => cancelAnimationFrame(rafId);
+    }, [tags, popperOpen, tagSize, readOnly]);
+
     return (
       <Popper
         ref={ref}
         anchor={anchor}
         open={popperOpen}
-        arrow={{ enabled: true, className: classes.arrow }}
+        arrow={{
+          enabled: true,
+          className: classes.arrow,
+          padding: arrowPadding,
+        }}
         className={cx(classes.host, className)}
         options={{ placement, middleware }}
       >
         <Fade
+          ref={contentRef}
           in={open}
           duration={{
             enter: MOTION_DURATION.fast,
