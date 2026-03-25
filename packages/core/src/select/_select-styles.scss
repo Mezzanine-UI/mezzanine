@@ -73,6 +73,8 @@
     min-width: 30%;
 
     input {
+      width: 100%;
+
       /* Hide native search clear button to avoid duplicate clear icon in trigger. */
       &[type='search']::-webkit-search-decoration,
       &[type='search']::-webkit-search-cancel-button,
