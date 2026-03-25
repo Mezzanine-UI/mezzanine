@@ -955,7 +955,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const shouldForceClearable = isMultiple
       ? (isMultipleValue(value) && value.length > 0) ||
         searchText.trim().length > 0
-      : isSingleValue(value);
+      : isSingleValue(value) ||
+        (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
 
     // Handle dropdown option selection
     const handleDropdownSelect = useCallback(
