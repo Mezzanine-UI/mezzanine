@@ -59,10 +59,12 @@ export interface AutoCompleteInsideTriggerProps {
 
 function extractIdAndName(props: SelectTriggerInputProps) {
   const { id, name, readOnly, onChange, ...rest } = props;
-  return { id, name, onChange, rest };
+  return { id, name, readOnly, onChange, rest };
 }
 
-export default function AutoCompleteInsideTrigger(props: AutoCompleteInsideTriggerProps) {
+export default function AutoCompleteInsideTrigger(
+  props: AutoCompleteInsideTriggerProps,
+) {
   const {
     active,
     className,
@@ -78,7 +80,8 @@ export default function AutoCompleteInsideTrigger(props: AutoCompleteInsideTrigg
     value,
   } = props;
 
-  const { id, name, onChange, rest } = extractIdAndName(resolvedInputProps);
+  const { id, name, readOnly, onChange, rest } =
+    extractIdAndName(resolvedInputProps);
 
   return (
     <Input
@@ -90,6 +93,7 @@ export default function AutoCompleteInsideTrigger(props: AutoCompleteInsideTrigg
       id={id}
       name={name}
       placeholder={placeholder}
+      readonly={readOnly || undefined}
       onChange={onChange}
       size={size}
       value={value}
@@ -102,4 +106,3 @@ export default function AutoCompleteInsideTrigger(props: AutoCompleteInsideTrigg
     />
   );
 }
-

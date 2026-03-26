@@ -102,7 +102,12 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
         children.forEach((child) => {
           const top = Math.round(child.getBoundingClientRect().top);
           if (!rows.has(top)) rows.set(top, []);
-          rows.get(top)!.push(child);
+
+          const arr = rows.get(top);
+
+          if (arr) {
+            arr.push(child);
+          }
         });
 
         const style = getComputedStyle(content);
