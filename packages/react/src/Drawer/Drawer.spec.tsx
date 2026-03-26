@@ -4,7 +4,8 @@ import {
   drawerClasses as classes,
 } from '@mezzanine-ui/core/drawer';
 import { CloseIcon } from '@mezzanine-ui/icons';
-import { cleanup, cleanupHook, fireEvent, render } from '../../__test-utils__';
+import userEvent from '@testing-library/user-event';
+import { cleanup, cleanupHook, fireEvent, render, screen, waitFor } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Drawer from '.';
 
@@ -691,41 +692,41 @@ describe('<Drawer />', () => {
     });
   });
 
-  describe('prop: controlBar (default)', () => {
-    it('should not render control bar by default when controlBarShow is false', () => {
+  describe('prop: filterArea (default)', () => {
+    it('should not render filter area by default when filterAreaShow is false', () => {
       render(<Drawer open>Content</Drawer>);
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
 
-      expect(controlBarElement).toBe(null);
+      expect(filterAreaElement).toBe(null);
     });
 
-    it('should render control bar when controlBarShow is true', () => {
+    it('should render filter area when filterAreaShow is true', () => {
       render(
-        <Drawer controlBarAllRadioLabel="All" controlBarShow open>
+        <Drawer filterAreaAllRadioLabel="All" filterAreaShow open>
           Content
         </Drawer>,
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
 
-      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(filterAreaElement).toBeInstanceOf(Node);
     });
 
     it('should render RadioGroup with correct labels', () => {
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarReadRadioLabel="Read"
-          controlBarShow
-          controlBarShowUnreadButton
-          controlBarUnreadRadioLabel="Unread"
+          filterAreaAllRadioLabel="All"
+          filterAreaReadRadioLabel="Read"
+          filterAreaShow
+          filterAreaShowUnreadButton
+          filterAreaUnreadRadioLabel="Unread"
           open
         >
           Content
@@ -733,14 +734,14 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const radios = controlBarElement?.querySelectorAll('input[type="radio"]');
+      const radios = filterAreaElement?.querySelectorAll('input[type="radio"]');
 
       expect(radios?.length).toBe(3);
 
-      const labels = controlBarElement?.querySelectorAll('label');
+      const labels = filterAreaElement?.querySelectorAll('label');
       const labelTexts = Array.from(labels || []).map(
         (label) => label.textContent,
       );
@@ -750,14 +751,14 @@ describe('<Drawer />', () => {
       expect(labelTexts).toContain('Unread');
     });
 
-    it('should render only 2 radios when controlBarShowUnreadButton is false', () => {
+    it('should render only 2 radios when filterAreaShowUnreadButton is false', () => {
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarReadRadioLabel="Read"
-          controlBarShow
-          controlBarShowUnreadButton={false}
-          controlBarUnreadRadioLabel="Unread"
+          filterAreaAllRadioLabel="All"
+          filterAreaReadRadioLabel="Read"
+          filterAreaShow
+          filterAreaShowUnreadButton={false}
+          filterAreaUnreadRadioLabel="Unread"
           open
         >
           Content
@@ -765,10 +766,10 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const radios = controlBarElement?.querySelectorAll('input[type="radio"]');
+      const radios = filterAreaElement?.querySelectorAll('input[type="radio"]');
 
       expect(radios?.length).toBe(2);
     });
@@ -776,10 +777,10 @@ describe('<Drawer />', () => {
     it('should render custom button with correct label', () => {
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarCustomButtonLabel="Clear All"
-          controlBarOnCustomButtonClick={jest.fn()}
-          controlBarShow
+          filterAreaAllRadioLabel="All"
+          filterAreaCustomButtonLabel="Clear All"
+          filterAreaOnCustomButtonClick={jest.fn()}
+          filterAreaShow
           open
         >
           Content
@@ -787,23 +788,23 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const button = controlBarElement?.querySelector('button');
+      const button = filterAreaElement?.querySelector('button');
 
       expect(button).toBeInstanceOf(HTMLButtonElement);
       expect(button?.textContent).toBe('Clear All');
       expect(button?.classList.contains('mzn-button--base-ghost')).toBeTruthy();
     });
 
-    it('should disable custom button when controlBarIsEmpty is true', () => {
+    it('should disable custom button when filterAreaIsEmpty is true', () => {
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarIsEmpty
-          controlBarOnCustomButtonClick={jest.fn()}
-          controlBarShow
+          filterAreaAllRadioLabel="All"
+          filterAreaIsEmpty
+          filterAreaOnCustomButtonClick={jest.fn()}
+          filterAreaShow
           open
         >
           Content
@@ -811,23 +812,23 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const button = controlBarElement?.querySelector(
+      const button = filterAreaElement?.querySelector(
         'button',
       ) as HTMLButtonElement;
 
       expect(button?.disabled).toBe(true);
     });
 
-    it('should enable custom button when controlBarIsEmpty is false', () => {
+    it('should enable custom button when filterAreaIsEmpty is false', () => {
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarIsEmpty={false}
-          controlBarOnCustomButtonClick={jest.fn()}
-          controlBarShow
+          filterAreaAllRadioLabel="All"
+          filterAreaIsEmpty={false}
+          filterAreaOnCustomButtonClick={jest.fn()}
+          filterAreaShow
           open
         >
           Content
@@ -835,24 +836,24 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const button = controlBarElement?.querySelector(
+      const button = filterAreaElement?.querySelector(
         'button',
       ) as HTMLButtonElement;
 
       expect(button?.disabled).toBe(false);
     });
 
-    it('should call controlBarOnCustomButtonClick when custom button clicked', () => {
+    it('should call filterAreaOnCustomButtonClick when custom button clicked', () => {
       const onCustomButtonClick = jest.fn();
 
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarOnCustomButtonClick={onCustomButtonClick}
-          controlBarShow
+          filterAreaAllRadioLabel="All"
+          filterAreaOnCustomButtonClick={onCustomButtonClick}
+          filterAreaShow
           open
         >
           Content
@@ -860,10 +861,10 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const button = controlBarElement?.querySelector(
+      const button = filterAreaElement?.querySelector(
         'button',
       ) as HTMLButtonElement;
 
@@ -872,15 +873,15 @@ describe('<Drawer />', () => {
       expect(onCustomButtonClick).toHaveBeenCalledTimes(1);
     });
 
-    it('should call controlBarOnRadioChange when radio selection changes', () => {
+    it('should call filterAreaOnRadioChange when radio selection changes', () => {
       const onRadioChange = jest.fn();
 
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarOnRadioChange={onRadioChange}
-          controlBarReadRadioLabel="Read"
-          controlBarShow
+          filterAreaAllRadioLabel="All"
+          filterAreaOnRadioChange={onRadioChange}
+          filterAreaReadRadioLabel="Read"
+          filterAreaShow
           open
         >
           Content
@@ -888,10 +889,10 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const radios = controlBarElement?.querySelectorAll(
+      const radios = filterAreaElement?.querySelectorAll(
         'input[type="radio"]',
       ) as NodeListOf<HTMLInputElement>;
 
@@ -903,10 +904,10 @@ describe('<Drawer />', () => {
     it('should set default value for RadioGroup', () => {
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarDefaultValue="read"
-          controlBarReadRadioLabel="Read"
-          controlBarShow
+          filterAreaAllRadioLabel="All"
+          filterAreaDefaultValue="read"
+          filterAreaReadRadioLabel="Read"
+          filterAreaShow
           open
         >
           Content
@@ -914,10 +915,10 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const radios = controlBarElement?.querySelectorAll(
+      const radios = filterAreaElement?.querySelectorAll(
         'input[type="radio"]',
       ) as NodeListOf<HTMLInputElement>;
       const checkedRadio = Array.from(radios).find((radio) => radio.checked);
@@ -928,10 +929,10 @@ describe('<Drawer />', () => {
     it('should control RadioGroup value', () => {
       const { rerender } = render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarReadRadioLabel="Read"
-          controlBarShow
-          controlBarValue="all"
+          filterAreaAllRadioLabel="All"
+          filterAreaReadRadioLabel="Read"
+          filterAreaShow
+          filterAreaValue="all"
           open
         >
           Content
@@ -939,10 +940,10 @@ describe('<Drawer />', () => {
       );
 
       let drawerElement = getDrawerElement()!;
-      let controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      let filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      let radios = controlBarElement?.querySelectorAll(
+      let radios = filterAreaElement?.querySelectorAll(
         'input[type="radio"]',
       ) as NodeListOf<HTMLInputElement>;
       let checkedRadio = Array.from(radios).find((radio) => radio.checked);
@@ -951,10 +952,10 @@ describe('<Drawer />', () => {
 
       rerender(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarReadRadioLabel="Read"
-          controlBarShow
-          controlBarValue="read"
+          filterAreaAllRadioLabel="All"
+          filterAreaReadRadioLabel="Read"
+          filterAreaShow
+          filterAreaValue="read"
           open
         >
           Content
@@ -962,8 +963,8 @@ describe('<Drawer />', () => {
       );
 
       drawerElement = getDrawerElement()!;
-      controlBarElement = drawerElement.querySelector(`.${classes.controlBar}`);
-      radios = controlBarElement?.querySelectorAll(
+      filterAreaElement = drawerElement.querySelector(`.${classes.filterArea}`);
+      radios = filterAreaElement?.querySelectorAll(
         'input[type="radio"]',
       ) as NodeListOf<HTMLInputElement>;
       checkedRadio = Array.from(radios).find((radio) => radio.checked);
@@ -973,17 +974,17 @@ describe('<Drawer />', () => {
 
     it('should not render control bar when no radio labels and no button callback are provided', () => {
       render(
-        <Drawer controlBarShow open>
+        <Drawer filterAreaShow open>
           Content
         </Drawer>,
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
 
-      expect(controlBarElement).toBe(null);
+      expect(filterAreaElement).toBe(null);
     });
 
     it('should render control bar with only button when no radio labels provided but button callback exists', () => {
@@ -991,9 +992,9 @@ describe('<Drawer />', () => {
 
       render(
         <Drawer
-          controlBarCustomButtonLabel="Action"
-          controlBarOnCustomButtonClick={onCustomButtonClick}
-          controlBarShow
+          filterAreaCustomButtonLabel="Action"
+          filterAreaOnCustomButtonClick={onCustomButtonClick}
+          filterAreaShow
           open
         >
           Content
@@ -1001,15 +1002,15 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const radioGroup = controlBarElement?.querySelector('.mzn-radio-group');
-      const button = controlBarElement?.querySelector('button');
+      const radioGroup = filterAreaElement?.querySelector('.mzn-radio-group');
+      const button = filterAreaElement?.querySelector('button');
 
-      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(filterAreaElement).toBeInstanceOf(Node);
       expect(
-        controlBarElement?.classList.contains(classes.controlBarButtonOnly),
+        filterAreaElement?.classList.contains(classes.filterAreaButtonOnly),
       ).toBeTruthy();
       expect(radioGroup).toBe(null);
       expect(button).toBeInstanceOf(HTMLButtonElement);
@@ -1021,8 +1022,8 @@ describe('<Drawer />', () => {
 
       render(
         <Drawer
-          controlBarOnCustomButtonClick={onCustomButtonClick}
-          controlBarShow
+          filterAreaOnCustomButtonClick={onCustomButtonClick}
+          filterAreaShow
           open
         >
           Content
@@ -1030,10 +1031,10 @@ describe('<Drawer />', () => {
       );
 
       const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
       );
-      const button = controlBarElement?.querySelector(
+      const button = filterAreaElement?.querySelector(
         'button',
       ) as HTMLButtonElement;
 
@@ -1043,114 +1044,79 @@ describe('<Drawer />', () => {
     });
   });
 
-  describe('prop: renderControlBar', () => {
-    it('should not render control bar by default', () => {
-      render(<Drawer open>Content</Drawer>);
-
-      const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        '[data-testid="control-bar"]',
-      );
-
-      expect(controlBarElement).toBe(null);
-    });
-
-    it('should render custom control bar when renderControlBar provided', () => {
-      const renderControlBar = () => (
-        <div data-testid="control-bar">Custom Control Bar</div>
-      );
-
-      render(
-        <Drawer open renderControlBar={renderControlBar}>
-          Content
-        </Drawer>,
-      );
-
-      const drawerElement = getDrawerElement()!;
-      const controlBarElement = drawerElement.querySelector(
-        '[data-testid="control-bar"]',
-      );
-
-      expect(controlBarElement).toBeInstanceOf(Node);
-      expect(controlBarElement?.textContent).toBe('Custom Control Bar');
-    });
-
-    it('should render control bar between header and content', () => {
-      const renderControlBar = () => (
-        <div data-testid="control-bar">Control Bar</div>
-      );
-
+  describe('prop: filterAreaOptions', () => {
+    it('should render icon button when filterAreaOptions is non-empty', () => {
       render(
         <Drawer
-          headerTitle="Header"
-          isHeaderDisplay
+          filterAreaShow
+          filterAreaOptions={[{ id: 'a', name: 'A' }]}
           open
-          renderControlBar={renderControlBar}
         >
           Content
         </Drawer>,
       );
 
-      const drawerElement = getDrawerElement()!;
-      const headerElement = drawerElement.querySelector(`.${classes.header}`);
-      const controlBarElement = drawerElement.querySelector(
-        '[data-testid="control-bar"]',
+      const filterAreaElement = getDrawerElement()!.querySelector(
+        `.${classes.filterArea}`,
       );
-      const contentElement = drawerElement.querySelector(`.${classes.content}`);
+      const iconButton = filterAreaElement?.querySelector('button');
 
-      // Check all elements exist
-      expect(headerElement).toBeInstanceOf(Node);
-      expect(controlBarElement).toBeInstanceOf(Node);
-      expect(contentElement).toBeInstanceOf(Node);
-
-      // Check order: header should come before control bar, control bar before content
-      const childNodes = Array.from(drawerElement.children);
-      const headerIndex = childNodes.indexOf(headerElement as Element);
-      const controlBarIndex = childNodes.indexOf(controlBarElement as Element);
-      const contentIndex = childNodes.indexOf(contentElement as Element);
-
-      expect(headerIndex).toBeLessThan(controlBarIndex);
-      expect(controlBarIndex).toBeLessThan(contentIndex);
+      expect(iconButton).toBeInstanceOf(Node);
+      expect(iconButton?.querySelector('i[data-icon-name]')).toBeInstanceOf(Node);
     });
 
-    it('should call renderControlBar function', () => {
-      const renderControlBar = jest.fn(() => <div>Control Bar</div>);
-
-      render(
-        <Drawer open renderControlBar={renderControlBar}>
-          Content
-        </Drawer>,
-      );
-
-      expect(renderControlBar).toHaveBeenCalled();
-    });
-
-    it('should use renderControlBar over default control bar when both provided', () => {
-      const renderControlBar = () => (
-        <div data-testid="custom-control-bar">Custom Control Bar</div>
-      );
-
+    it('should render plain text button when filterAreaOptions is empty', () => {
       render(
         <Drawer
-          controlBarAllRadioLabel="All"
-          controlBarShow
+          filterAreaCustomButtonLabel="Clear"
+          filterAreaOnCustomButtonClick={jest.fn()}
+          filterAreaShow
+          filterAreaOptions={[]}
           open
-          renderControlBar={renderControlBar}
         >
           Content
         </Drawer>,
       );
 
-      const drawerElement = getDrawerElement()!;
-      const customControlBar = drawerElement.querySelector(
-        '[data-testid="custom-control-bar"]',
+      const filterAreaElement = getDrawerElement()!.querySelector(
+        `.${classes.filterArea}`,
       );
-      const defaultControlBar = drawerElement.querySelector(
-        `.${classes.controlBar}`,
+      const button = filterAreaElement?.querySelector('button');
+
+      expect(button?.textContent).toBe('Clear');
+    });
+
+    it('should call filterAreaOnSelect when a dropdown option is selected', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+
+      render(
+        <Drawer
+          filterAreaShow
+          filterAreaOnSelect={onSelect}
+          filterAreaOptions={[{ id: 'a', name: 'Option A' }]}
+          open
+        >
+          Content
+        </Drawer>,
       );
 
-      expect(customControlBar).toBeInstanceOf(Node);
-      expect(defaultControlBar).toBe(null);
+      const filterAreaElement = getDrawerElement()!.querySelector(
+        `.${classes.filterArea}`,
+      );
+      const iconButton = filterAreaElement?.querySelector('button') as HTMLButtonElement;
+
+      await user.click(iconButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Option A')).toBeTruthy();
+      });
+
+      await user.click(screen.getByText('Option A'));
+
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'a' }),
+      );
     });
   });
 
@@ -1420,20 +1386,18 @@ describe('<Drawer />', () => {
     it('should render complete drawer with header, control bar, content, and bottom actions', () => {
       const onClose = jest.fn();
       const onPrimaryActionClick = jest.fn();
-      const renderControlBar = () => (
-        <div data-testid="control-bar">Filter Control Bar</div>
-      );
 
       render(
         <Drawer
           bottomOnPrimaryActionClick={onPrimaryActionClick}
           bottomPrimaryActionText="Submit"
+          filterAreaAllRadioLabel="All"
+          filterAreaShow
           headerTitle="Complete Drawer"
           isBottomDisplay
           isHeaderDisplay
           onClose={onClose}
           open
-          renderControlBar={renderControlBar}
           size="wide"
         >
           <div>Main Content</div>
@@ -1442,19 +1406,16 @@ describe('<Drawer />', () => {
 
       const drawerElement = getDrawerElement()!;
       const headerElement = drawerElement.querySelector(`.${classes.header}`);
-      const controlBarElement = drawerElement.querySelector(
-        '[data-testid="control-bar"]',
-      );
+      const filterAreaElement = drawerElement.querySelector(`.${classes.filterArea}`);
       const contentElement = drawerElement.querySelector(`.${classes.content}`);
       const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
 
       expect(headerElement).toBeInstanceOf(Node);
-      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(filterAreaElement).toBeInstanceOf(Node);
       expect(contentElement).toBeInstanceOf(Node);
       expect(bottomElement).toBeInstanceOf(Node);
 
       expect(headerElement?.textContent).toContain('Complete Drawer');
-      expect(controlBarElement?.textContent).toBe('Filter Control Bar');
       expect(contentElement?.textContent).toBe('Main Content');
     });
   });

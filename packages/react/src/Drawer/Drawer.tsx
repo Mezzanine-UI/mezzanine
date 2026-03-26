@@ -1,43 +1,46 @@
-import React, {
+import {
+  ButtonIconType,
+  ButtonSize,
+  ButtonVariant,
+} from '@mezzanine-ui/core/button';
+import {
+  drawerClasses as classes,
+  DrawerSize,
+} from '@mezzanine-ui/core/drawer';
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import { DotHorizontalIcon, IconDefinition } from '@mezzanine-ui/icons';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+import {
   forwardRef,
   useEffect,
   useMemo,
   useState,
   type ChangeEventHandler,
 } from 'react';
-import {
-  drawerClasses as classes,
-  DrawerSize,
-} from '@mezzanine-ui/core/drawer';
-import { IconDefinition } from '@mezzanine-ui/icons';
-import {
-  ButtonIconType,
-  ButtonSize,
-  ButtonVariant,
-} from '@mezzanine-ui/core/button';
-import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Backdrop, { BackdropProps } from '../Backdrop';
+import Button from '../Button';
+import ClearActions from '../ClearActions';
+import Dropdown from '../Dropdown';
+import Radio from '../Radio/Radio';
+import RadioGroup from '../Radio/RadioGroup';
 import { Slide } from '../Transition';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
 import useTopStack from '../hooks/useTopStack';
-import ClearActions from '../ClearActions';
-import Button from '../Button';
-import Radio from '../Radio/Radio';
-import RadioGroup from '../Radio/RadioGroup';
-import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+
 
 export interface DrawerProps
   extends NativeElementPropsWithoutKeyAndRef<'div'>,
-    Pick<
-      BackdropProps,
-      | 'container'
-      | 'disableCloseOnBackdropClick'
-      | 'disablePortal'
-      | 'onBackdropClick'
-      | 'onClose'
-      | 'open'
-    > {
+  Pick<
+    BackdropProps,
+    | 'container'
+    | 'disableCloseOnBackdropClick'
+    | 'disablePortal'
+    | 'onBackdropClick'
+    | 'onClose'
+    | 'open'
+  > {
   /**
    * Key prop for forcing content remount when data changes.
    * Use this to prevent DOM residue when list items decrease (e.g., records.length).
@@ -149,51 +152,62 @@ export interface DrawerProps
    */
   bottomSecondaryActionVariant?: ButtonVariant;
   /**
-   * The label of the all radio in control bar.
+   * The label of the all radio in filter area.
    */
-  controlBarAllRadioLabel?: string;
+  filterAreaAllRadioLabel?: string;
   /**
-   * The label of the custom button in control bar.
+   * The label of the custom button in filter area.
    */
-  controlBarCustomButtonLabel?: string;
+  filterAreaCustomButtonLabel?: string;
   /**
-   * The default value of the radio group in control bar.
+   * The default value of the radio group in filter area.
    */
-  controlBarDefaultValue?: string;
+  filterAreaDefaultValue?: string;
   /**
-   * Whether the control bar content is empty (for disabling custom button).
+   * Whether the filter area content is empty (for disabling custom button).
    */
-  controlBarIsEmpty?: boolean;
+  filterAreaIsEmpty?: boolean;
   /**
-   * The callback function when the custom button is clicked in control bar.
+   * The callback function when the custom button is clicked in filter area.
    */
-  controlBarOnCustomButtonClick?: VoidFunction;
+  filterAreaOnCustomButtonClick?: VoidFunction;
   /**
-   * The callback function when the radio group value changes in control bar.
+   * The callback function when the radio group value changes in filter area.
    */
-  controlBarOnRadioChange?: ChangeEventHandler<HTMLInputElement>;
+  filterAreaOnRadioChange?: ChangeEventHandler<HTMLInputElement>;
   /**
-   * The label of the read radio in control bar.
+   * The label of the read radio in filter area.
    */
-  controlBarReadRadioLabel?: string;
+  filterAreaReadRadioLabel?: string;
   /**
-   * Controls whether to display the control bar.
+   * Controls whether to display the filter area.
    * @default false
    */
-  controlBarShow?: boolean;
+  filterAreaShow?: boolean;
   /**
-   * Controls whether to display the unread button in control bar.
+   * Controls whether to display the unread button in filter area.
    * @default false
    */
-  controlBarShowUnreadButton?: boolean;
+  filterAreaShowUnreadButton?: boolean;
   /**
-   * The label of the unread radio in control bar.
+   * The label of the unread radio in filter area.
    */
-  controlBarUnreadRadioLabel?: string;
+  filterAreaUnreadRadioLabel?: string;
   /**
-   * The value of the radio group in control bar.
+   * The value of the radio group in filter area.
    */
-  controlBarValue?: string;
+  filterAreaValue?: string;
+  /**
+   * Options for the filter bar dropdown.
+   * When non-empty, the right-side filter area button is replaced by a Dropdown
+   * triggered by a `DotHorizontalIcon` icon button.
+   */
+  filterAreaOptions?: DropdownOption[];
+  /**
+   * Callback fired when a filter bar dropdown option is selected.
+   * Only used when `filterAreaOptions` is non-empty.
+   */
+  filterAreaOnSelect?: (option: DropdownOption) => void;
   /**
    * Controls whether to disable closing drawer while escape key down.
    * @default false
@@ -212,13 +226,6 @@ export interface DrawerProps
    */
   isHeaderDisplay?: boolean;
   /**
-   * Custom render function for the control bar area.
-   * The control bar will be rendered between the header and content areas.
-   * If provided, this will override the default control bar rendering and control bar-related props.
-   * @returns ReactNode - The custom control bar element
-   */
-  renderControlBar?: () => React.ReactNode;
-  /**
    * Controls the width of the drawer.
    * @default 'medium'
    */
@@ -229,7 +236,7 @@ export interface DrawerProps
  * 從螢幕右側滑入的抽屜面板元件。
  *
  * 使用 `Backdrop` 作為遮罩層，並以 `Slide` 動畫過渡效果呈現開關狀態。
- * 支援標題列、自訂控制列（含分頁 Radio）、底部操作按鈕區域，以及按下 Escape 鍵關閉。
+ * 支援標題列、篩選區域（含分頁 Radio）、底部操作按鈕區域，以及按下 Escape 鍵關閉。
  * 當多個 Drawer 同時開啟時，Escape 鍵只會關閉最上層的 Drawer。
  *
  * @example
@@ -291,21 +298,23 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     bottomSecondaryActionSize,
     bottomSecondaryActionText,
     bottomSecondaryActionVariant = 'base-secondary',
+    filterAreaOnSelect,
+    filterAreaOptions = [],
     children,
     className,
     container,
     contentKey,
-    controlBarAllRadioLabel,
-    controlBarCustomButtonLabel = '全部已讀',
-    controlBarDefaultValue,
-    controlBarIsEmpty = false,
-    controlBarOnCustomButtonClick,
-    controlBarOnRadioChange,
-    controlBarReadRadioLabel,
-    controlBarShow = false,
-    controlBarShowUnreadButton = false,
-    controlBarUnreadRadioLabel,
-    controlBarValue,
+    filterAreaAllRadioLabel,
+    filterAreaCustomButtonLabel = '全部已讀',
+    filterAreaDefaultValue,
+    filterAreaIsEmpty = false,
+    filterAreaOnCustomButtonClick,
+    filterAreaOnRadioChange,
+    filterAreaReadRadioLabel,
+    filterAreaShow = false,
+    filterAreaShowUnreadButton = false,
+    filterAreaUnreadRadioLabel,
+    filterAreaValue,
     disableCloseOnBackdropClick = false,
     disableCloseOnEscapeKeyDown = false,
     disablePortal,
@@ -315,7 +324,6 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     onBackdropClick,
     onClose,
     open,
-    renderControlBar: customRenderControlBar,
     size = 'medium',
     ...rest
   } = props;
@@ -336,46 +344,41 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
    */
   const checkIsOnTheTop = useTopStack(open);
 
-  const renderControlBar = useMemo(() => {
-    // If custom renderControlBar is provided, use it
-    if (customRenderControlBar) {
-      return customRenderControlBar;
-    }
-
-    // Default control bar implementation
-    if (!controlBarShow) {
+  const renderFilterArea = useMemo(() => {
+    if (!filterAreaShow) {
       return undefined;
     }
 
     return () => {
       const radios = [];
 
-      if (controlBarAllRadioLabel) {
+      if (filterAreaAllRadioLabel) {
         radios.push(
           <Radio key="all" type="segment" value="all">
-            {controlBarAllRadioLabel}
+            {filterAreaAllRadioLabel}
           </Radio>,
         );
       }
 
-      if (controlBarReadRadioLabel) {
+      if (filterAreaReadRadioLabel) {
         radios.push(
           <Radio key="read" type="segment" value="read">
-            {controlBarReadRadioLabel}
+            {filterAreaReadRadioLabel}
           </Radio>,
         );
       }
 
-      if (controlBarUnreadRadioLabel && controlBarShowUnreadButton) {
+      if (filterAreaUnreadRadioLabel && filterAreaShowUnreadButton) {
         radios.push(
           <Radio key="unread" type="segment" value="unread">
-            {controlBarUnreadRadioLabel}
+            {filterAreaUnreadRadioLabel}
           </Radio>,
         );
       }
 
       const hasRadios = radios.length > 0;
-      const hasButton = controlBarOnCustomButtonClick !== undefined;
+      const hasButton =
+        filterAreaOptions.length > 0 || filterAreaOnCustomButtonClick !== undefined;
 
       // Don't render if neither radios nor button are provided
       if (!hasRadios && !hasButton) {
@@ -385,48 +388,65 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
       return (
         <div
           className={cx(
-            classes.controlBar,
-            !hasRadios && hasButton && classes.controlBarButtonOnly,
+            classes.filterArea,
+            !hasRadios && hasButton && classes.filterAreaButtonOnly,
           )}
         >
           {hasRadios && (
             <RadioGroup
-              defaultValue={controlBarDefaultValue ?? 'all'}
-              onChange={controlBarOnRadioChange}
+              defaultValue={filterAreaDefaultValue ?? 'all'}
+              onChange={filterAreaOnRadioChange}
               size="minor"
               type="segment"
-              value={controlBarValue}
+              value={filterAreaValue}
             >
               {radios}
             </RadioGroup>
           )}
           {hasButton && (
-            <Button
-              disabled={controlBarIsEmpty}
-              onClick={controlBarOnCustomButtonClick}
-              size="minor"
-              type="button"
-              variant="base-ghost"
-            >
-              {controlBarCustomButtonLabel}
-            </Button>
+            filterAreaOptions.length > 0 ? (
+              <Dropdown
+                onSelect={filterAreaOnSelect}
+                options={filterAreaOptions}
+                placement="bottom-end"
+              >
+                <Button
+                  icon={DotHorizontalIcon}
+                  iconType="icon-only"
+                  size="minor"
+                  type="button"
+                  variant="base-ghost"
+                />
+              </Dropdown>
+            ) : (
+              <Button
+                disabled={filterAreaIsEmpty}
+                onClick={filterAreaOnCustomButtonClick}
+                size="minor"
+                type="button"
+                variant="base-ghost"
+              >
+                {filterAreaCustomButtonLabel}
+              </Button>
+            )
           )}
         </div>
       );
     };
   }, [
-    controlBarAllRadioLabel,
-    controlBarCustomButtonLabel,
-    controlBarDefaultValue,
-    controlBarIsEmpty,
-    controlBarOnCustomButtonClick,
-    controlBarOnRadioChange,
-    controlBarReadRadioLabel,
-    controlBarShow,
-    controlBarShowUnreadButton,
-    controlBarUnreadRadioLabel,
-    controlBarValue,
-    customRenderControlBar,
+    filterAreaAllRadioLabel,
+    filterAreaCustomButtonLabel,
+    filterAreaDefaultValue,
+    filterAreaIsEmpty,
+    filterAreaOnCustomButtonClick,
+    filterAreaOnRadioChange,
+    filterAreaReadRadioLabel,
+    filterAreaShow,
+    filterAreaShowUnreadButton,
+    filterAreaUnreadRadioLabel,
+    filterAreaValue,
+    filterAreaOnSelect,
+    filterAreaOptions,
   ]);
 
   useDocumentEscapeKeyDown(() => {
@@ -488,7 +508,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
             </div>
           )}
 
-          {renderControlBar?.()}
+          {renderFilterArea?.()}
 
           <div
             key={contentKey !== undefined ? contentKey : openCount}
