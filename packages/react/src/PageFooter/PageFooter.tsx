@@ -105,21 +105,35 @@ export type PageFooterProps =
   | PageFooterOverflowProps
   | PageFooterInformationProps;
 
+// Flat view of all possible props — used only to strip custom fields from DOM spread
+type _PageFooterFlatProps = PageFooterBaseProps & {
+  type?: PageFooterType;
+  annotation?: string;
+  dropdownProps?: Partial<DropdownProps>;
+  supportingActionIcon?: ButtonProps['icon'];
+  supportingActionName?: ButtonProps['children'];
+  supportingActionOnClick?: ButtonProps['onClick'];
+  supportingActionType?: ButtonProps['type'];
+  supportingActionVariant?: ButtonProps['variant'];
+};
+
 const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
   function PageFooter(props, ref) {
     const {
       actions,
       annotationClassName,
+      annotation,
       className,
+      dropdownProps,
+      supportingActionIcon,
+      supportingActionName,
+      supportingActionOnClick,
+      supportingActionType,
+      supportingActionVariant = 'base-ghost',
       type = 'standard',
       warningMessage,
       ...rest
-    } = props;
-
-    // Filter out onAnnotationClick from rest props to avoid React warnings
-    if ('onAnnotationClick' in rest) {
-      delete rest.onAnnotationClick;
-    }
+    } = props as _PageFooterFlatProps;
 
     const { children: primaryButtonText, ...restPrimaryButtonProps } =
       actions?.primaryButton ?? {};
@@ -127,14 +141,7 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
     // Render annotation based on type
     const renderAnnotation = () => {
       switch (type) {
-        case 'standard': {
-          const {
-            supportingActionName,
-            supportingActionType,
-            supportingActionOnClick,
-            supportingActionVariant = 'base-ghost',
-          } = props as PageFooterStandardProps;
-
+        case 'standard':
           return (
             <Button
               size="main"
@@ -145,11 +152,9 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
               {supportingActionName}
             </Button>
           );
-        }
 
-        case 'overflow': {
-          const { supportingActionIcon, dropdownProps } =
-            props as PageFooterOverflowProps;
+        case 'overflow':
+          if (!dropdownProps) return null;
 
           return (
             <Dropdown
@@ -166,18 +171,15 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
               />
             </Dropdown>
           );
-        }
 
-        case 'information': {
-          const { annotation } = props as PageFooterInformationProps;
+        case 'information':
           if (!annotation) return null;
 
           return (
             <Typography color="text-neutral" variant="caption">
-              {annotation as string}
+              {annotation}
             </Typography>
           );
-        }
 
         default:
           return null;
