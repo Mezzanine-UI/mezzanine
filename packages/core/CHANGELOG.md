@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.6...@mezzanine-ui/core@1.0.0-rc.7) (2026-03-26)
+
+### Bug Fixes
+
+- **core/button:** add min-width for main/sub sizes and correct inverse font-weight ([42aa673](https://github.com/Mezzanine-UI/mezzanine/commit/42aa673017e7bff3a232664f20db1f02ce39b54c))
+- **core/checkbox:** hide focus ring on mouse click, show only on keyboard focus ([1a00d00](https://github.com/Mezzanine-UI/mezzanine/commit/1a00d00843623ece5e54dff9bd5b422692a9897c))
+- **core/dropdown:** add level-1-leaf modifier for tree leaf node indent ([28d770e](https://github.com/Mezzanine-UI/mezzanine/commit/28d770ed3dc3aa1fab4eb07515b876f5f6bd4ea4))
+- **core/dropdown:** keyboard focus ring, style fixes, min-width token, list-header, group-label ([e707048](https://github.com/Mezzanine-UI/mezzanine/commit/e7070482880dca2298c04ab314959b92a0ecda76))
+- **core/filter-area:** add rowAlign type and class helper ([df3430e](https://github.com/Mezzanine-UI/mezzanine/commit/df3430ee353da44bd5c4573666362e41dee690b5))
+- **core/picker:** use input typography for text placeholder, input-mono for format template ([298e540](https://github.com/Mezzanine-UI/mezzanine/commit/298e540461195b6c59774037d752bf368d6c4bcb))
+- **core/select:** constrain tags-input width to prevent overflow in multiple mode ([447fb22](https://github.com/Mezzanine-UI/mezzanine/commit/447fb229b5b1f6aaf28e9c354966d9d09c4fa468))
+- **core/tab:** add error enabled and error hover styles CU-86ewz6r7r ([1d44b18](https://github.com/Mezzanine-UI/mezzanine/commit/1d44b18e1630fba6b01fe7c39233c5d1387d5777))
+- **core/tab:** stylelint issue ([f6223e3](https://github.com/Mezzanine-UI/mezzanine/commit/f6223e345c97c98de2b1ff3ec6f045e78f6d609a))
+- **core/tag:** correct font inheritance and disabled background for overflow-counter ([541a34a](https://github.com/Mezzanine-UI/mezzanine/commit/541a34a01ce0864418d6ed02b9a40d139402a203))
+- **core/upload:** add readable state for UploadPictureCard ([d6e33f9](https://github.com/Mezzanine-UI/mezzanine/commit/d6e33f999efc62e29ab3e61d2069cf3b504bce33))
+- **core/upload:** add uploader mode interface ([62127ca](https://github.com/Mezzanine-UI/mezzanine/commit/62127ca5f2fff9dfbd36e0d07a8c150fc00e98e4))
+- **core/upload:** center thumbnail filename when size line is absent ([24d4323](https://github.com/Mezzanine-UI/mezzanine/commit/24d43236d5de4d30d840ab91aff4579dde5d0c69))
+- **core/upload:** change upload icon & set delete icon style ([7d734d4](https://github.com/Mezzanine-UI/mezzanine/commit/7d734d4fc8d266f9b9326d844bd34f9142a8ec12))
+- **core/upload:** limit picture card text width ([2ba1c90](https://github.com/Mezzanine-UI/mezzanine/commit/2ba1c908432466d428c039331238742c418cd53b))
+- **core/upload:** tweak picture card styles ([ab52af9](https://github.com/Mezzanine-UI/mezzanine/commit/ab52af9397610c6a10b8353d94f433f0bfabf857))
+- **modal:** correct password container padding and add checkbox vertical padding ([1b0b02c](https://github.com/Mezzanine-UI/mezzanine/commit/1b0b02c95f352118aad2ca4a9e16102dd97958ff))
+- **modal:** fix extended split layout slot height not filling column ([7a444a9](https://github.com/Mezzanine-UI/mezzanine/commit/7a444a9b2ebea7608b68d1ce7708be310c2eee8d))
+- **modal:** fix media preview modal collapse and add LocalFileUpload story ([afc1ca2](https://github.com/Mezzanine-UI/mezzanine/commit/afc1ca2a57e49618ef3d453038e35aa3579fecba))
+- **modal:** increase checkbox selector specificity and restore password container padding-block-end ([4809fe5](https://github.com/Mezzanine-UI/mezzanine/commit/4809fe50acbf2fe57ce2a666c5af3d0fa3b18d06))
+- **overflow-tooltip:** align content width to rightmost tag via JS measurement ([dafc871](https://github.com/Mezzanine-UI/mezzanine/commit/dafc871a217f5600d84a89333f0c81f4a4c532b1))
+
+### Features
+
+- **core/autocomplete:** hide plain Input trigger when dropdown is closed ([64c4d40](https://github.com/Mezzanine-UI/mezzanine/commit/64c4d40a34cea852c918a4eb1b95e26fdbbf7fb7))
+- **core/description:** add titleSize class helper and sub size typography for title CU-86ewzr9dm ([51698c1](https://github.com/Mezzanine-UI/mezzanine/commit/51698c1af085c76486467cf8407d97f4da5e0fb6))
+- **core/upload:** add basic-list mode and external hint classnames ([57a8936](https://github.com/Mezzanine-UI/mezzanine/commit/57a8936d42de91443d472254bd5803600574c4b7))
+- **core/upload:** add upload-button-text class for button label styling ([8bdda42](https://github.com/Mezzanine-UI/mezzanine/commit/8bdda42c064ed85f8080eb4226f952e9a7f788ba))
+- **modal:** add extendedSplitSidebarPosition prop to support sidebar-left layout ([bec5712](https://github.com/Mezzanine-UI/mezzanine/commit/bec57129c8359307f2d875ba169f32663b9d30dd))
+- **modal:** adjust verification input size and gap based on digit count ([ded260b](https://github.com/Mezzanine-UI/mezzanine/commit/ded260bcb02f0d6bc17e346fb8e0da3e073f7990))
+
 # [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.5...@mezzanine-ui/core@1.0.0-rc.6) (2026-03-18)
 
 ### Bug Fixes
