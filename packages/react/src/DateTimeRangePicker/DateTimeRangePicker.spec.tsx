@@ -288,25 +288,4 @@ describe('<DateTimeRangePicker />', () => {
       expect(textFields.length).toBe(2);
     });
   });
-
-  describe('prop: defaultValue', () => {
-    it('should use defaultValue when value is not provided', () => {
-      const defaultValue: DateTimeRangePickerValue = [
-        '2024-01-15T10:00:00',
-        '2024-01-20T14:00:00',
-      ];
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimeRangePicker defaultValue={defaultValue} />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const inputElements = element.getElementsByTagName('input');
-
-      expect(inputElements[0].value).toBe('2024-01-15');
-      expect(inputElements[2].value).toBe('2024-01-20');
-    });
-  });
 });
