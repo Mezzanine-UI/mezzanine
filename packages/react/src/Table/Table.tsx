@@ -398,7 +398,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       pagination: pagination || undefined,
       pinnable: pinnableState,
       resizable,
-      rowState,
+      rowState: rowState as TableContextValue['rowState'],
       rowHeight,
       scroll,
       scrollContainerRef,
