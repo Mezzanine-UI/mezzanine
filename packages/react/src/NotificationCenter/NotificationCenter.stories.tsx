@@ -70,8 +70,8 @@ export const Playground: Story = {
     function PlaygroundNotification() {
       const reference = useMemo(() => `notification-playground`, []);
 
-      const onConfirm = () => {};
-      const onCancel = () => {};
+      const onConfirm = () => { };
+      const onCancel = () => { };
 
       return (
         <NotificationCenter
@@ -130,7 +130,7 @@ function AddMethodExample() {
     NotificationDataForDrawer[]
   >([]);
 
-  const handleBadgeSelect = (_: DropdownOption) => {};
+  const handleBadgeSelect = (_: DropdownOption) => { };
   const handleViewAll = () => {
     setDrawerOpen(true);
   };
@@ -306,16 +306,16 @@ function AddMethodExample() {
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
         title="通知中心"
-        controlBarAllRadioLabel="全部"
-        controlBarCustomButtonLabel="全部已讀"
-        controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => {}}
-        controlBarOnRadioChange={() => {}}
-        controlBarReadRadioLabel="已讀"
-        controlBarShow
-        controlBarShowUnreadButton
-        controlBarUnreadRadioLabel="未讀"
-        controlBarValue="all"
+        filterBarAllRadioLabel="全部"
+        filterBarCustomButtonLabel="全部已讀"
+        filterBarDefaultValue="all"
+        filterBarOnCustomButtonClick={() => { }}
+        filterBarOnRadioChange={() => { }}
+        filterBarReadRadioLabel="已讀"
+        filterBarShow
+        filterBarShowUnreadButton
+        filterBarUnreadRadioLabel="未讀"
+        filterBarValue="all"
       />
     </div>
   );
@@ -330,7 +330,7 @@ type DrawerStory = StoryObj<NotificationCenterDrawerProps>;
 function DrawerWithChildrenExample() {
   const [open, setOpen] = useState(false);
 
-  const handleBadgeSelect = (_: DropdownOption) => {};
+  const handleBadgeSelect = (_: DropdownOption) => { };
 
   return (
     <div>
@@ -338,16 +338,16 @@ function DrawerWithChildrenExample() {
         開啟通知中心
       </Button>
       <NotificationCenterDrawer
-        controlBarAllRadioLabel="全部"
-        controlBarCustomButtonLabel="全部已讀"
-        controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => {}}
-        controlBarOnRadioChange={() => {}}
-        controlBarReadRadioLabel="已讀"
-        controlBarShow
-        controlBarShowUnreadButton
-        controlBarUnreadRadioLabel="未讀"
-        controlBarValue="all"
+        filterBarAllRadioLabel="全部"
+        filterBarCustomButtonLabel="全部已讀"
+        filterBarDefaultValue="all"
+        filterBarOnCustomButtonClick={() => { }}
+        filterBarOnRadioChange={() => { }}
+        filterBarReadRadioLabel="已讀"
+        filterBarShow
+        filterBarShowUnreadButton
+        filterBarUnreadRadioLabel="未讀"
+        filterBarValue="all"
         drawerSize="narrow"
         onClose={() => setOpen(false)}
         open={open}
@@ -421,7 +421,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '系統已完成更新，您現在可以使用最新版本功能。',
         key: '1',
-        onBadgeSelect: (_: DropdownOption) => {},
+        onBadgeSelect: (_: DropdownOption) => { },
         options: defaultBadgeOptions,
         severity: 'info' as NotificationSeverity,
         showBadge: true,
@@ -432,7 +432,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '您的登入地點異常，請確認是否為本人操作。',
         key: '2',
-        onBadgeSelect: (_: DropdownOption) => {},
+        onBadgeSelect: (_: DropdownOption) => { },
         options: defaultBadgeOptions,
         severity: 'warning' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -442,7 +442,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '您的檔案「月報表.pdf」已成功上傳，可前往資料庫查看結果。',
         key: '3',
-        onBadgeSelect: (_: DropdownOption) => {},
+        onBadgeSelect: (_: DropdownOption) => { },
         options: defaultBadgeOptions,
         severity: 'success' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -452,7 +452,7 @@ function DrawerWithNotificationListExample() {
       {
         description: '您的檔案「月報表.pdf」上傳失敗，請重新上傳。',
         key: '4',
-        onBadgeSelect: (_: DropdownOption) => {},
+        onBadgeSelect: (_: DropdownOption) => { },
         options: defaultBadgeOptions,
         severity: 'error' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -463,7 +463,7 @@ function DrawerWithNotificationListExample() {
         description:
           '後端資料庫已完成更新，若您在操作中遇到延遲，屬正常現象，稍後即會改善。',
         key: '5',
-        onBadgeSelect: (_: DropdownOption) => {},
+        onBadgeSelect: (_: DropdownOption) => { },
         options: defaultBadgeOptions,
         severity: 'info' as NotificationSeverity,
         timeStamp: '2025-12-14 10:00:00',
@@ -485,16 +485,16 @@ function DrawerWithNotificationListExample() {
         onClose={() => setOpen(false)}
         open={open}
         title="通知中心"
-        controlBarAllRadioLabel="全部"
-        controlBarCustomButtonLabel="全部已讀"
-        controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => {}}
-        controlBarOnRadioChange={() => {}}
-        controlBarReadRadioLabel="已讀"
-        controlBarShow
-        controlBarShowUnreadButton
-        controlBarUnreadRadioLabel="未讀"
-        controlBarValue="all"
+        filterBarAllRadioLabel="全部"
+        filterBarCustomButtonLabel="全部已讀"
+        filterBarDefaultValue="all"
+        filterBarOnCustomButtonClick={() => { }}
+        filterBarOnRadioChange={() => { }}
+        filterBarReadRadioLabel="已讀"
+        filterBarShow
+        filterBarShowUnreadButton
+        filterBarUnreadRadioLabel="未讀"
+        filterBarValue="all"
       />
     </div>
   );
@@ -518,16 +518,16 @@ function DrawerEmptyExample() {
         onClose={() => setOpen(false)}
         open={open}
         title="通知中心"
-        controlBarAllRadioLabel="全部"
-        controlBarCustomButtonLabel="全部已讀"
-        controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => {}}
-        controlBarOnRadioChange={() => {}}
-        controlBarReadRadioLabel="已讀"
-        controlBarShow
-        controlBarShowUnreadButton
-        controlBarUnreadRadioLabel="未讀"
-        controlBarValue="all"
+        filterBarAllRadioLabel="全部"
+        filterBarCustomButtonLabel="全部已讀"
+        filterBarDefaultValue="all"
+        filterBarOnCustomButtonClick={() => { }}
+        filterBarOnRadioChange={() => { }}
+        filterBarReadRadioLabel="已讀"
+        filterBarShow
+        filterBarShowUnreadButton
+        filterBarUnreadRadioLabel="未讀"
+        filterBarValue="all"
       />
     </div>
   );
@@ -546,7 +546,7 @@ function DrawerTimeStampExample() {
 
     const today30minAgo = new Date(now);
     today30minAgo.setMinutes(now.getMinutes() - 30);
-    const handleBadgeSelect = (_: DropdownOption) => {};
+    const handleBadgeSelect = (_: DropdownOption) => { };
 
     notifications.push({
       description: '這是30分鐘前的通知，應該顯示「30 分鐘前」',
@@ -701,16 +701,16 @@ function DrawerTimeStampExample() {
         onClose={() => setOpen(false)}
         open={open}
         title="通知中心 - 時間戳記顯示範例"
-        controlBarAllRadioLabel="全部"
-        controlBarCustomButtonLabel="全部已讀"
-        controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => {}}
-        controlBarOnRadioChange={() => {}}
-        controlBarReadRadioLabel="已讀"
-        controlBarShow
-        controlBarShowUnreadButton
-        controlBarUnreadRadioLabel="未讀"
-        controlBarValue="all"
+        filterBarAllRadioLabel="全部"
+        filterBarCustomButtonLabel="全部已讀"
+        filterBarDefaultValue="all"
+        filterBarOnCustomButtonClick={() => { }}
+        filterBarOnRadioChange={() => { }}
+        filterBarReadRadioLabel="已讀"
+        filterBarShow
+        filterBarShowUnreadButton
+        filterBarUnreadRadioLabel="未讀"
+        filterBarValue="all"
       />
     </div>
   );
@@ -720,8 +720,15 @@ export const DrawerTimeStamp: DrawerStory = {
   render: () => <DrawerTimeStampExample />,
 };
 
-function DrawerWithRenderControlBarExample() {
+function DrawerWithFilterOptionsExample() {
   const [open, setOpen] = useState(false);
+  const [filter, setFilter] = useState('all');
+
+  const filterOptions: DropdownOption[] = [
+    { id: 'mark-all-read', name: '全部標示已讀' },
+    { id: 'delete-read', name: '刪除已讀通知', showUnderline: true },
+    { id: 'delete-all', name: '刪除所有通知', validate: 'danger' },
+  ];
 
   const notificationList = useMemo(
     () => [
@@ -746,6 +753,16 @@ function DrawerWithRenderControlBarExample() {
         title: '帳號安全提醒',
         type: 'drawer' as const,
       },
+      {
+        description: '您的檔案「月報表.pdf」已成功上傳，可前往資料庫查看結果。',
+        key: '3',
+        onBadgeSelect: (_: DropdownOption) => {},
+        options: defaultBadgeOptions,
+        severity: 'success' as NotificationSeverity,
+        timeStamp: '2025-12-14 10:00:00',
+        title: '已上傳完成',
+        type: 'drawer' as const,
+      },
     ],
     [],
   );
@@ -753,50 +770,30 @@ function DrawerWithRenderControlBarExample() {
   return (
     <div>
       <Button variant="base-primary" onClick={() => setOpen(true)}>
-        開啟通知中心（使用 renderControlBar）
+        開啟通知中心（含篩選 Dropdown）
       </Button>
       <NotificationCenterDrawer
         drawerSize="narrow"
+        filterBarAllRadioLabel="全部"
+        filterBarDefaultValue="all"
+        filterBarOnRadioChange={(e) => setFilter(e.target.value)}
+        filterBarOnSelect={(opt) => alert(`已選擇：${opt.name}`)}
+        filterBarOptions={filterOptions}
+        filterBarReadRadioLabel="已讀"
+        filterBarShow
+        filterBarShowUnreadButton
+        filterBarUnreadRadioLabel="未讀"
+        filterBarValue={filter}
         notificationList={notificationList}
         onClose={() => setOpen(false)}
         open={open}
-        renderControlBar={() => (
-          <div
-            style={{
-              alignItems: 'center',
-              borderBottom: '1px solid #e0e0e0',
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '16px',
-            }}
-          >
-            <Typography variant="caption">自訂工具列</Typography>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <Button
-                onClick={() => {}}
-                size="minor"
-                type="button"
-                variant="base-secondary"
-              >
-                標示全部已讀
-              </Button>
-              <Button
-                onClick={() => {}}
-                size="minor"
-                type="button"
-                variant="base-ghost"
-              >
-                清除全部
-              </Button>
-            </div>
-          </div>
-        )}
         title="通知中心"
       />
     </div>
   );
 }
 
-export const DrawerWithRenderControlBar: DrawerStory = {
-  render: () => <DrawerWithRenderControlBarExample />,
+export const DrawerWithFilterOptions: DrawerStory = {
+  render: () => <DrawerWithFilterOptionsExample />,
 };
+

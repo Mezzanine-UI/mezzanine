@@ -24,20 +24,60 @@ type NotificationDataForDrawer = NotificationData & {
 
 type NotificationCenterDrawerPropsBase = Pick<
   DrawerProps,
-  | 'controlBarAllRadioLabel'
-  | 'controlBarCustomButtonLabel'
-  | 'controlBarDefaultValue'
-  | 'controlBarOnCustomButtonClick'
-  | 'controlBarOnRadioChange'
-  | 'controlBarReadRadioLabel'
-  | 'controlBarShow'
-  | 'controlBarShowUnreadButton'
-  | 'controlBarUnreadRadioLabel'
-  | 'controlBarValue'
   | 'onClose'
   | 'open'
-  | 'renderControlBar'
 > & {
+  /**
+   * Label for the "all" filter option in the filter bar.
+   */
+  filterBarAllRadioLabel?: DrawerProps['filterAreaAllRadioLabel'];
+  /**
+   * Label for the custom action button in the filter bar.
+   */
+  filterBarCustomButtonLabel?: DrawerProps['filterAreaCustomButtonLabel'];
+  /**
+   * Default selected filter value in the filter bar.
+   */
+  filterBarDefaultValue?: DrawerProps['filterAreaDefaultValue'];
+  /**
+   * Callback fired when the custom action button is clicked.
+   */
+  filterBarOnCustomButtonClick?: DrawerProps['filterAreaOnCustomButtonClick'];
+  /**
+   * Callback fired when the filter option changes.
+   */
+  filterBarOnRadioChange?: DrawerProps['filterAreaOnRadioChange'];
+  /**
+   * Label for the "read" filter option in the filter bar.
+   */
+  filterBarReadRadioLabel?: DrawerProps['filterAreaReadRadioLabel'];
+  /**
+   * Whether to show the filter bar.
+   */
+  filterBarShow?: DrawerProps['filterAreaShow'];
+  /**
+   * Whether to show the "unread only" shortcut button.
+   */
+  filterBarShowUnreadButton?: DrawerProps['filterAreaShowUnreadButton'];
+  /**
+   * Label for the "unread" filter option in the filter bar.
+   */
+  filterBarUnreadRadioLabel?: DrawerProps['filterAreaUnreadRadioLabel'];
+  /**
+   * Controlled selected filter value in the filter bar.
+   */
+  filterBarValue?: DrawerProps['filterAreaValue'];
+  /**
+   * Options for the filter bar dropdown.
+   * When non-empty, the right-side filter area button is replaced by a Dropdown
+   * triggered by a `DotHorizontalIcon` icon button.
+   */
+  filterBarOptions?: DrawerProps['filterAreaOptions'];
+  /**
+   * Callback fired when a filter bar dropdown option is selected.
+   * Only used when `filterBarOptions` is non-empty.
+   */
+  filterBarOnSelect?: DrawerProps['filterAreaOnSelect'];
   /**
    * The size of the drawer.
    * @default 'narrow'
@@ -175,16 +215,18 @@ const getTimeGroup = (
 const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
   const {
     children,
-    controlBarAllRadioLabel,
-    controlBarCustomButtonLabel,
-    controlBarDefaultValue,
-    controlBarOnCustomButtonClick,
-    controlBarOnRadioChange,
-    controlBarReadRadioLabel,
-    controlBarShow,
-    controlBarShowUnreadButton,
-    controlBarUnreadRadioLabel,
-    controlBarValue,
+    filterBarAllRadioLabel,
+    filterBarCustomButtonLabel,
+    filterBarDefaultValue,
+    filterBarOnCustomButtonClick,
+    filterBarOnRadioChange,
+    filterBarOnSelect,
+    filterBarReadRadioLabel,
+    filterBarShow,
+    filterBarShowUnreadButton,
+    filterBarUnreadRadioLabel,
+    filterBarValue,
+    filterBarOptions,
     drawerSize = 'narrow',
     earlierLabel,
     emptyNotificationTitle = '目前沒有新的通知',
@@ -193,7 +235,6 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
     onClose,
     open,
     past7DaysLabel,
-    renderControlBar,
     title,
     todayLabel,
     yesterdayLabel,
@@ -298,22 +339,23 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
   return (
     <Drawer
       className={classes.drawer}
-      controlBarAllRadioLabel={controlBarAllRadioLabel}
-      controlBarCustomButtonLabel={controlBarCustomButtonLabel}
-      controlBarDefaultValue={controlBarDefaultValue}
-      controlBarIsEmpty={isEmpty}
-      controlBarOnCustomButtonClick={controlBarOnCustomButtonClick}
-      controlBarOnRadioChange={controlBarOnRadioChange}
-      controlBarReadRadioLabel={controlBarReadRadioLabel}
-      controlBarShow={controlBarShow}
-      controlBarShowUnreadButton={controlBarShowUnreadButton}
-      controlBarUnreadRadioLabel={controlBarUnreadRadioLabel}
-      controlBarValue={controlBarValue}
+      filterAreaAllRadioLabel={filterBarAllRadioLabel}
+      filterAreaCustomButtonLabel={filterBarCustomButtonLabel}
+      filterAreaDefaultValue={filterBarDefaultValue}
+      filterAreaIsEmpty={isEmpty}
+      filterAreaOnCustomButtonClick={filterBarOnCustomButtonClick}
+      filterAreaOnRadioChange={filterBarOnRadioChange}
+      filterAreaOnSelect={filterBarOnSelect}
+      filterAreaReadRadioLabel={filterBarReadRadioLabel}
+      filterAreaShow={filterBarShow}
+      filterAreaShowUnreadButton={filterBarShowUnreadButton}
+      filterAreaUnreadRadioLabel={filterBarUnreadRadioLabel}
+      filterAreaValue={filterBarValue}
+      filterAreaOptions={filterBarOptions}
       headerTitle={title}
       isHeaderDisplay={Boolean(title)}
       onClose={onClose}
       open={open}
-      renderControlBar={renderControlBar}
       size={drawerSize}
       {...restDrawerProps}
     >
