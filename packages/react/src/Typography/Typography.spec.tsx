@@ -1,5 +1,4 @@
 import { toCssVar } from '@mezzanine-ui/system/css';
-import { Color } from '@mezzanine-ui/system/palette';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -10,7 +9,7 @@ import Typography, {
   TypographyColor,
   TypographyComponent,
   TypographyDisplay,
-  TypographyVariant,
+  TypographySemanticType,
 } from '.';
 
 describe('<Typography />', () => {
@@ -32,29 +31,38 @@ describe('<Typography />', () => {
   });
 
   describe('prop: variant', () => {
-    it('should render variant="body1" by default', () => {
+    it('should render variant="body" by default', () => {
       const { getHostHTMLElement } = render(<Typography>Hello</Typography>);
       const { classList } = getHostHTMLElement();
 
-      expect(classList.contains('mzn-typography--body1')).toBeTruthy();
+      expect(classList.contains('mzn-typography--body')).toBeTruthy();
     });
 
-    const variantWithComponents: [TypographyVariant, TypographyComponent][] = [
+    const variantWithComponents: [
+      TypographySemanticType,
+      TypographyComponent,
+    ][] = [
       ['h1', 'h1'],
       ['h2', 'h2'],
       ['h3', 'h3'],
-      ['h4', 'h4'],
-      ['h5', 'h5'],
-      ['h6', 'h6'],
-      ['body1', 'p'],
-      ['body2', 'p'],
-      ['button1', 'span'],
-      ['button2', 'span'],
-      ['button3', 'span'],
-      ['input1', 'span'],
-      ['input2', 'span'],
-      ['input3', 'span'],
+      ['body', 'p'],
+      ['body-highlight', 'p'],
+      ['body-mono', 'p'],
+      ['body-mono-highlight', 'p'],
+      ['text-link-body', 'p'],
+      ['text-link-caption', 'span'],
       ['caption', 'span'],
+      ['caption-highlight', 'span'],
+      ['annotation', 'span'],
+      ['annotation-highlight', 'span'],
+      ['button', 'span'],
+      ['button-highlight', 'span'],
+      ['input', 'span'],
+      ['input-mono', 'span'],
+      ['input-highlight', 'span'],
+      ['label-primary', 'span'],
+      ['label-primary-highlight', 'span'],
+      ['label-secondary', 'span'],
     ];
 
     variantWithComponents.forEach(([variant, component]) => {
@@ -116,43 +124,26 @@ describe('<Typography />', () => {
   });
 
   describe('prop: color', () => {
-    const colorMaps: (
-      | [TypographyColor, Color]
-      | TypographyColor
-      | undefined
-    )[] = [
+    const colors: (TypographyColor | undefined)[] = [
       undefined,
       'inherit',
-      ['primary', 'primary'],
-      ['primary-dark', 'primary-dark'],
-      ['primary-light', 'primary-light'],
-      ['secondary', 'secondary'],
-      ['secondary-dark', 'secondary-dark'],
-      ['secondary-light', 'secondary-light'],
-      ['error', 'error'],
-      ['error-dark', 'error-dark'],
-      ['error-light', 'error-light'],
-      ['warning', 'warning'],
-      ['warning-dark', 'warning-dark'],
-      ['warning-light', 'warning-light'],
-      ['text-primary', 'text-primary'],
-      ['text-secondary', 'text-secondary'],
-      ['text-disabled', 'text-disabled'],
+      'text-neutral',
+      'text-neutral-strong',
+      'text-neutral-solid',
+      'text-brand',
+      'text-brand-strong',
+      'text-error',
+      'text-warning',
+      'text-success',
+      'text-info',
     ];
 
-    colorMaps.forEach((colorMap) => {
-      let color: TypographyColor | undefined;
-      let expected: string | undefined;
-
-      if (Array.isArray(colorMap)) {
-        const [typographyColor, expectedColor] = colorMap;
-
-        color = typographyColor;
-        expected = toCssVar(`mzn-color-${expectedColor}`);
-      } else {
-        color = colorMap;
-        expected = colorMap || '';
-      }
+    colors.forEach((color) => {
+      const expected = !color
+        ? ''
+        : color === 'inherit'
+          ? 'inherit'
+          : toCssVar(`mzn-color-${color}`);
 
       const message = color
         ? `should add class and style if color="${color}"`
