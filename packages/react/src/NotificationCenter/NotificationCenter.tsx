@@ -771,24 +771,36 @@ const {
 });
 
 /**
- * The react component for `mezzanine` notification center.
+ * 通知中心元件，支援即時提示（`notification`）與抽屜清單（`drawer`）兩種呈現模式。
  *
- * Trigger notifications imperatively via severity shorthand methods or `add`:
+ * 以 `<NotificationCenter type="notification" />` 宣告式渲染單筆浮動通知；
+ * 或使用靜態方法 `NotificationCenter.add()`、`.success()`、`.error()` 等命令式 API
+ * 觸發通知，並可透過回傳的 key 呼叫 `remove()` 收回。
+ * `type: 'drawer'` 模式下，請搭配 `NotificationCenterDrawer` 以清單方式顯示。
  *
  * @example
  * ```tsx
- * import NotificationCenter from '@mezzanine-ui/react/notification-center';
+ * import NotificationCenter from '@mezzanine-ui/react/NotificationCenter';
  *
- * NotificationCenter.success({ title: 'Saved!', description: 'Your changes have been saved.' });
- * NotificationCenter.error({ title: 'Error', description: 'Something went wrong.' });
+ * // 宣告式：嵌入畫面中的通知
+ * <NotificationCenter
+ *   reference="notify-1"
+ *   severity="success"
+ *   title="儲存成功"
+ *   type="notification"
+ * />
  *
- * // Dismiss programmatically
- * const key = NotificationCenter.add({ severity: 'info', title: 'Processing…', type: 'notification' });
+ * // 命令式：觸發浮動通知
+ * NotificationCenter.success({ title: '儲存成功', description: '資料已更新。' });
+ * NotificationCenter.error({ title: '操作失敗', description: '請稍後再試。' });
+ *
+ * // 手動控制生命週期
+ * const key = NotificationCenter.add({ severity: 'info', title: '處理中…', type: 'notification' });
  * NotificationCenter.remove(key);
  * ```
  *
- * @see {@link NotificationData} for all available notification options.
- * @see {@link NotificationCenterDrawer} for the drawer list variant.
+ * @see {@link NotificationData} 所有可用的通知設定項
+ * @see {@link NotificationCenterDrawer} 抽屜清單模式的容器元件
  */
 const NotificationCenter = Object.assign(NotificationCenterFC, {
   add: (notif: NotificationData & { key?: Key }) => {

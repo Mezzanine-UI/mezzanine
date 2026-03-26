@@ -1,12 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { StoryObj } from '@storybook/react-webpack5';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import {
   CheckedFilledIcon,
   ChevronLeftIcon,
+  ClockIcon,
   CloseIcon,
+  DownloadIcon,
   InfoOutlineIcon,
   PlusIcon,
+  UploadIcon
 } from '@mezzanine-ui/icons';
+import { StoryObj } from '@storybook/react-webpack5';
+import React, { useCallback, useEffect, useState } from 'react';
 import Drawer, { DrawerProps } from '.';
 import { Button, Modal, Typography } from '../index';
 
@@ -314,16 +318,16 @@ export const WithControlBar: StoryObj<DrawerProps> = {
         </Button>
 
         <Drawer
-          controlBarAllRadioLabel="全部"
-          controlBarCustomButtonLabel="清除"
-          controlBarDefaultValue="all"
-          controlBarOnCustomButtonClick={() => alert('清除篩選')}
-          controlBarOnRadioChange={(e) => setFilter(e.target.value)}
-          controlBarReadRadioLabel="進行中"
-          controlBarShow
-          controlBarShowUnreadButton
-          controlBarUnreadRadioLabel="已完成"
-          controlBarValue={filter}
+          filterAreaAllRadioLabel="全部"
+          filterAreaCustomButtonLabel="清除"
+          filterAreaDefaultValue="all"
+          filterAreaOnCustomButtonClick={() => alert('清除篩選')}
+          filterAreaOnRadioChange={(e) => setFilter(e.target.value)}
+          filterAreaReadRadioLabel="進行中"
+          filterAreaShow
+          filterAreaShowUnreadButton
+          filterAreaUnreadRadioLabel="已完成"
+          filterAreaValue={filter}
           headerTitle="內容篩選器"
           isHeaderDisplay
           onClose={handleClose}
@@ -362,9 +366,9 @@ export const WithControlBarButtonOnly: StoryObj<DrawerProps> = {
         </Button>
 
         <Drawer
-          controlBarCustomButtonLabel="重置全部"
-          controlBarOnCustomButtonClick={() => alert('重置')}
-          controlBarShow
+          filterAreaCustomButtonLabel="重置全部"
+          filterAreaOnCustomButtonClick={() => alert('重置')}
+          filterAreaShow
           headerTitle="設定"
           isHeaderDisplay
           onClose={handleClose}
@@ -375,71 +379,6 @@ export const WithControlBarButtonOnly: StoryObj<DrawerProps> = {
             <Typography variant="body">
               這個 Drawer 的控制列只有按鈕，沒有 Radio Group
             </Typography>
-          </div>
-        </Drawer>
-      </>
-    );
-  },
-};
-
-export const WithCustomControlBar: StoryObj<DrawerProps> = {
-  render: function Render() {
-    const [open, setOpen] = useState(false);
-
-    const handleClose = useCallback(() => setOpen(false), []);
-
-    return (
-      <>
-        <Button onClick={() => setOpen(true)} variant="base-text-link">
-          開啟 Drawer (自訂控制列)
-        </Button>
-
-        <Drawer
-          headerTitle="設定"
-          isHeaderDisplay
-          onClose={handleClose}
-          open={open}
-          renderControlBar={() => (
-            <div
-              style={{
-                backgroundColor: '#f5f5f5',
-                borderBottom: '2px solid #1976d2',
-                padding: '12px 16px',
-              }}
-            >
-              <div
-                style={{
-                  alignItems: 'center',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Typography variant="text-link-body">快速操作</Typography>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <Button
-                    onClick={() => alert('重置')}
-                    size="minor"
-                    type="button"
-                    variant="base-secondary"
-                  >
-                    重置
-                  </Button>
-                  <Button
-                    onClick={() => alert('套用')}
-                    size="minor"
-                    type="button"
-                    variant="base-primary"
-                  >
-                    套用
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-          size="medium"
-        >
-          <div style={{ padding: '16px' }}>
-            <Typography variant="body">這是 Drawer 的內容區域</Typography>
           </div>
         </Drawer>
       </>
@@ -613,6 +552,74 @@ export const WithModalWhileDrawerOpen: StoryObj<DrawerProps> = {
             測試 z-index 和背景遮罩是否正常運作。
           </Typography>
         </Modal>
+      </>
+    );
+  },
+};
+
+export const WithFilterBarDropdown: StoryObj<DrawerProps> = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState('');
+    const handleClose = useCallback(() => setOpen(false), []);
+
+    const filterOptions: DropdownOption[] = [
+      { id: 'import', name: '匯入', icon: DownloadIcon },
+      { id: 'export', name: '匯出', icon: UploadIcon, showUnderline: true },
+      { id: 'past-version', name: '過去版本', icon: ClockIcon },
+    ];
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-text-link">
+          開啟 Drawer (篩選 Dropdown)
+        </Button>
+
+        <Drawer
+          filterAreaAllRadioLabel="今日"
+          filterAreaReadRadioLabel="本月"
+          filterAreaShow
+          filterAreaOnSelect={(opt) => setSelected(opt.id)}
+          filterAreaOptions={filterOptions}
+          headerTitle="篩選器 Dropdown 示範"
+          isHeaderDisplay
+          onClose={handleClose}
+          open={open}
+          size="narrow"
+        >
+          <div style={{ padding: '16px' }}>
+            <Typography variant="body">
+              已選擇篩選：{selected || '（尚未選擇）'}
+            </Typography>
+          </div>
+        </Drawer>
+      </>
+    );
+  },
+};
+
+export const WithFilterAreaOnCustomButton: StoryObj<DrawerProps> = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const handleClose = useCallback(() => setOpen(false), []);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-text-link">
+          開啟 Drawer (篩選 Dropdown)
+        </Button>
+
+        <Drawer
+          filterAreaAllRadioLabel="今日"
+          filterAreaReadRadioLabel="本月"
+          filterAreaShow
+          filterAreaOnCustomButtonClick={() => alert('清除篩選')}
+          headerTitle="篩選器 Dropdown 示範"
+          isHeaderDisplay
+          onClose={handleClose}
+          open={open}
+          size="narrow"
+        />
       </>
     );
   },
