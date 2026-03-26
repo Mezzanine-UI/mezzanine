@@ -373,7 +373,7 @@ describe('<Input variant="number" />', () => {
   });
 });
 
-describe('<Input variant="currency" />', () => {
+describe('<Input variant="measure" />', () => {
   afterEach(cleanup);
 
   it('should automatically format value with thousand separators', () => {
@@ -383,7 +383,7 @@ describe('<Input variant="currency" />', () => {
       return (
         <div>
           <Input
-            variant="currency"
+            variant="measure"
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
@@ -411,7 +411,7 @@ describe('<Input variant="currency" />', () => {
       return (
         <div>
           <Input
-            variant="currency"
+            variant="measure"
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
@@ -441,7 +441,7 @@ describe('<Input variant="currency" />', () => {
 
       return (
         <Input
-          variant="currency"
+          variant="measure"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           formatter={(v) => `${v}%`}
@@ -459,7 +459,7 @@ describe('<Input variant="currency" />', () => {
 
   it('should render with prefix', () => {
     const { container } = render(
-      <Input variant="currency" prefix="$" defaultValue="100" />,
+      <Input variant="measure" prefix="$" defaultValue="100" />,
     );
 
     const prefix = container.querySelector('.mzn-text-field__prefix');
@@ -468,7 +468,7 @@ describe('<Input variant="currency" />', () => {
 
   it('should render with suffix', () => {
     const { container } = render(
-      <Input variant="currency" suffix="kg" defaultValue="50" />,
+      <Input variant="measure" suffix="kg" defaultValue="50" />,
     );
 
     const suffix = container.querySelector('.mzn-text-field__suffix');
@@ -477,7 +477,7 @@ describe('<Input variant="currency" />', () => {
 
   it('should render spinner buttons when showSpinner is true', () => {
     const { container } = render(
-      <Input variant="currency" showSpinner defaultValue="100" />,
+      <Input variant="measure" showSpinner defaultValue="100" />,
     );
 
     const spinners = container.querySelector('.mzn-input__spinners');
@@ -495,7 +495,7 @@ describe('<Input variant="currency" />', () => {
 
       return (
         <Input
-          variant="currency"
+          variant="measure"
           showSpinner
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -521,7 +521,7 @@ describe('<Input variant="currency" />', () => {
 
       return (
         <Input
-          variant="currency"
+          variant="measure"
           showSpinner
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -547,7 +547,7 @@ describe('<Input variant="currency" />', () => {
 
       return (
         <Input
-          variant="currency"
+          variant="measure"
           showSpinner
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -575,7 +575,7 @@ describe('<Input variant="currency" />', () => {
 
       return (
         <Input
-          variant="currency"
+          variant="measure"
           showSpinner
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -602,7 +602,7 @@ describe('<Input variant="currency" />', () => {
 
     const { container } = render(
       <Input
-        variant="currency"
+        variant="measure"
         showSpinner
         defaultValue="100"
         onSpinUp={onSpinUp}
@@ -622,7 +622,7 @@ describe('<Input variant="currency" />', () => {
 
     const { container } = render(
       <Input
-        variant="currency"
+        variant="measure"
         showSpinner
         defaultValue="100"
         onSpinDown={onSpinDown}
