@@ -75,7 +75,10 @@ export type BreadcrumbLinkItemProps = Omit<
   target?: '_blank' | '_parent' | '_self' | '_top' | string;
 };
 
-export type BreadcrumbDropdownProps = Omit<DropdownProps, 'children'> & {
+export type BreadcrumbDropdownProps = Omit<
+  DropdownProps,
+  'children' | 'onScroll'
+> & {
   className?: string;
   current?: boolean;
   href?: never;
