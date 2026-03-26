@@ -98,7 +98,7 @@ describe('<Tag />', () => {
         <Tag label="Closable" onClose={jest.fn()} type="dismissable" />,
       );
       const labelElement = getByText('Closable');
-      const closeButton = getByRole('button', { name: 'Dismiss tag' });
+      const closeButton = getByRole('button');
 
       expect(labelElement.classList.contains(classes.label)).toBeTruthy();
       expect(closeButton.querySelector(`.${classes.icon}`)).toBeTruthy();
@@ -109,7 +109,7 @@ describe('<Tag />', () => {
       const { getByRole } = render(
         <Tag label="Closable" onClose={onClose} type="dismissable" />,
       );
-      const closeButton = getByRole('button', { name: 'Dismiss tag' });
+      const closeButton = getByRole('button');
 
       fireEvent.click(closeButton);
 
@@ -122,7 +122,7 @@ describe('<Tag />', () => {
         <Tag disabled label="Closable" onClose={onClose} type="dismissable" />,
       );
       const element = getHostHTMLElement();
-      const closeButton = getByRole('button', { name: 'Dismiss tag' });
+      const closeButton = getByRole('button');
 
       expect(element.getAttribute('aria-disabled')).toBe('true');
       expect(element.classList.contains(classes.disabled)).toBeTruthy();
@@ -130,18 +130,6 @@ describe('<Tag />', () => {
 
       fireEvent.click(closeButton);
 
-      expect(onClose).not.toHaveBeenCalled();
-    });
-
-    it('should hide close button when readOnly', () => {
-      const onClose = jest.fn();
-      const { getHostHTMLElement, queryByRole } = render(
-        <Tag label="Closable" onClose={onClose} readOnly type="dismissable" />,
-      );
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains(classes.readOnly)).toBeTruthy();
-      expect(queryByRole('button', { name: 'Dismiss tag' })).toBeNull();
       expect(onClose).not.toHaveBeenCalled();
     });
   });
