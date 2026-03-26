@@ -615,16 +615,12 @@ const NotificationCenterFC: FC<PropsWithChildren<NotificationData>> = (
               >
                 {cancelButtonText}
               </Button>
-            ) : (
-              <></>
-            )}
+            ) : null}
             {showConfirmButton ? (
               <Button onClick={onConfirm} size="minor" {...confirmButtonProps}>
                 {confirmButtonText}
               </Button>
-            ) : (
-              <></>
-            )}
+            ) : null}
           </ButtonGroup>
         )}
         {type === 'drawer' && (
