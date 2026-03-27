@@ -12,7 +12,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('@mezzanine-ui/system/typography/SF-Mono/SFMonoRegular.woff') format('woff');
+  src: url('./SF-Mono/SFMonoRegular.woff') format('woff');
 }
 
 /* SF Mono Medium (500) */
@@ -21,7 +21,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('@mezzanine-ui/system/typography/SF-Mono/SFMonoMedium.woff') format('woff');
+  src: url('./SF-Mono/SFMonoMedium.woff') format('woff');
 }
 
 /* SF Mono Semibold (600) */
@@ -30,5 +30,5 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('@mezzanine-ui/system/typography/SF-Mono/SFMonoSemibold.woff') format('woff');
+  src: url('./SF-Mono/SFMonoSemibold.woff') format('woff');
 }
