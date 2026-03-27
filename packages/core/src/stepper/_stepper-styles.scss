@@ -186,7 +186,7 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
     &.#{$prefix-step}--number {
       display: flex;
       column-gap: spacing.semantic-variable(gap, tight);
-      align-items: start;
+      align-items: flex-start;
 
       .#{$prefix-step}__status-indicator {
         position: relative;
@@ -218,7 +218,7 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
     &.#{$prefix-step}--dot {
       display: flex;
       column-gap: spacing.semantic-variable(gap, base);
-      align-items: start;
+      align-items: flex-start;
 
       .#{$prefix-step}__status-indicator-dot {
         position: relative;
