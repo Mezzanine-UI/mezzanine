@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.7...@mezzanine-ui/react@1.0.0-rc.8) (2026-03-27)
+
+**Note:** Version bump only for package @mezzanine-ui/react
+
 # [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.6...@mezzanine-ui/react@1.0.0-rc.7) (2026-03-26)
 
 ### Bug Fixes

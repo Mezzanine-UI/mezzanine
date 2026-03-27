@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-rc.7...@mezzanine-ui/system@1.0.0-rc.8) (2026-03-27)
+
+### Bug Fixes
+
+- **system/typography:** fix mono font import path ([a771d90](https://github.com/Mezzanine-UI/mezzanine/commit/a771d90e05db8bd2c3de7699edf9c6b07b335594))
+
 # [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-rc.6...@mezzanine-ui/system@1.0.0-rc.7) (2026-03-26)
 
 **Note:** Version bump only for package @mezzanine-ui/system

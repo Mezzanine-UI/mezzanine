@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.7...@mezzanine-ui/core@1.0.0-rc.8) (2026-03-27)
+
+### Bug Fixes
+
+- **core/modal:** fix modal align-items start to flex-start ([9e73d67](https://github.com/Mezzanine-UI/mezzanine/commit/9e73d670774b904c211243b213d92a56b48925bd))
+- **core/stepper:** fix align-items start to flex-start ([d9cc7ad](https://github.com/Mezzanine-UI/mezzanine/commit/d9cc7ad181e200b17bcd093ae1f6bb2b794c79f6))
+
 # [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.6...@mezzanine-ui/core@1.0.0-rc.7) (2026-03-26)
 
 ### Bug Fixes
