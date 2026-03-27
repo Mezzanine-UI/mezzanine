@@ -109,7 +109,7 @@ $modalSizes: (
     &--horizontal {
       display: flex;
       flex-direction: row;
-      align-items: start;
+      align-items: flex-start;
       gap: spacing.semantic-variable(gap, calm);
 
       .#{$prefix}__header__title-supporting-text-container {
@@ -126,7 +126,7 @@ $modalSizes: (
     &--vertical {
       display: flex;
       flex-direction: column;
-      align-items: start;
+      align-items: flex-start;
       gap: spacing.semantic-variable(gap, calm);
     }
 
