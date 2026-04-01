@@ -668,7 +668,7 @@ $checked-disabled: (
 
   &--nested {
     .#{$group-prefix}--content-wrapper.#{$group-prefix}--vertical.#{$group-prefix}--chip {
-      .#{$prefix}.#{$prefix}--indeterminate.#{$prefix}--chip {
+      .#{$prefix}.#{$prefix}--chip:first-child {
         margin-bottom: spacing.semantic-variable(padding, vertical, tiny);
       }
     }
