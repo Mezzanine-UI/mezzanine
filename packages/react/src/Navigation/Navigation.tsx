@@ -281,13 +281,14 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
         >
           <div ref={contentRef} className={classes.content}>
             {filter && (
-              <Input
-                size="sub"
-                variant="search"
-                className={cx(classes.searchInput)}
-                value={filterText}
-                onChange={(e) => setFilterText(e.target.value)}
-              />
+              <div className={classes.searchInput}>
+                <Input
+                  size="sub"
+                  variant="search"
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+                />
+              </div>
             )}
             <Scrollbar
               disabled={collapsed}
