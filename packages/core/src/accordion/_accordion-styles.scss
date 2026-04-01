@@ -101,6 +101,10 @@
   &__actions {
     position: absolute;
     right: spacing.semantic-variable(padding, horizontal, spacious);
+
+    .mzn-button {
+      min-width: unset;
+    }
   }
 
   &__icon {
