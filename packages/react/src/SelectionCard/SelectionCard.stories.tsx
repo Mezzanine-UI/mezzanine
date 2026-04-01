@@ -220,7 +220,7 @@ export const Horizontal: Story = {
                 supportingText="This is a radio button"
                 name="basic-radio"
                 value="radio-1"
-                checked={true}
+                defaultChecked
               />
               <Typography>Disabled:</Typography>
               <SelectionCard
@@ -247,8 +247,8 @@ export const Horizontal: Story = {
                 selector="checkbox"
                 text="Checkbox Selection"
                 supportingText="This is a checkbox"
-                name="basic-radio"
-                value="radio-1"
+                name="basic-checkbox"
+                value="checkbox-1"
               />
               <Typography>Checked:</Typography>
               <SelectionCard
@@ -257,7 +257,7 @@ export const Horizontal: Story = {
                 supportingText="This is a checkbox"
                 name="basic-checkbox"
                 value="checkbox-1"
-                checked={true}
+                defaultChecked
               />
               <Typography>Disabled:</Typography>
               <SelectionCard
@@ -300,9 +300,9 @@ export const Horizontal: Story = {
                 text="Radio Selection"
                 supportingText="This is a radio button"
                 image="https://rytass.com/logo.png"
-                name="basic-radio"
+                name="basic-radio-image-checked"
                 value="radio-1"
-                checked={true}
+                defaultChecked
               />
               <Typography>Disabled:</Typography>
               <SelectionCard
@@ -332,8 +332,8 @@ export const Horizontal: Story = {
                 text="Checkbox Selection"
                 image="https://rytass.com/logo.png"
                 supportingText="This is a checkbox"
-                name="basic-radio"
-                value="radio-1"
+                name="basic-checkbox"
+                value="checkbox-1"
               />
               <Typography>Checked:</Typography>
               <SelectionCard
@@ -343,7 +343,7 @@ export const Horizontal: Story = {
                 image="https://rytass.com/logo.png"
                 name="basic-checkbox"
                 value="checkbox-1"
-                checked={true}
+                defaultChecked
               />
               <Typography>Disabled:</Typography>
               <SelectionCard
@@ -451,7 +451,7 @@ export const Vertical: Story = {
               />
               <Typography>Checked:</Typography>
               <SelectionCard
-                checked={true}
+                defaultChecked
                 direction="vertical"
                 selector="radio"
                 text="Radio Selection"
@@ -492,7 +492,7 @@ export const Vertical: Story = {
               />
               <Typography>Checked:</Typography>
               <SelectionCard
-                checked={true}
+                defaultChecked
                 direction="vertical"
                 selector="checkbox"
                 text="Checkbox Selection"
@@ -540,7 +540,7 @@ export const Vertical: Story = {
               />
               <Typography>Checked:</Typography>
               <SelectionCard
-                checked={true}
+                defaultChecked
                 direction="vertical"
                 image="https://rytass.com/logo.png"
                 selector="radio"
@@ -585,7 +585,7 @@ export const Vertical: Story = {
               />
               <Typography>Checked:</Typography>
               <SelectionCard
-                checked={true}
+                defaultChecked
                 direction="vertical"
                 image="https://rytass.com/logo.png"
                 selector="checkbox"
