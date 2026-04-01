@@ -213,7 +213,7 @@ const PasswordFieldExample = () => {
     <TextField
       suffix={
         <Icon
-          icon={showPassword ? EyeInvisibleIcon : EyeIcon}
+          icon={showPassword ? EyeIcon : EyeInvisibleIcon}
           onClick={() => setShowPassword(!showPassword)}
         />
       }
