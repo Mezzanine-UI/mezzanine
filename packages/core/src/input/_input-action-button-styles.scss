@@ -60,7 +60,7 @@ $action-button-sizes: (
 @mixin _apply-action-button-states($state) {
   $config: map.get($action-button-states, $state);
 
-  --#{$prefix}-action-button-icon-color: map.get($config, icon);
+  --#{$prefix}-action-button-icon-color: #{map.get($config, icon)};
 
   color: map.get($config, text);
   background-color: map.get($config, background);
