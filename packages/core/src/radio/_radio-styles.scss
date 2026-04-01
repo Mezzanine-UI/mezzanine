@@ -114,6 +114,11 @@
   &--checked & {
     &__segmented-container {
       background-color: var(--#{$prefix}-segmented-checked-color);
+      color: palette.semantic-variable(text, neutral-solid);
+
+      .mzn-icon {
+        color: palette.semantic-variable(icon, neutral-solid);
+      }
     }
   }
 
