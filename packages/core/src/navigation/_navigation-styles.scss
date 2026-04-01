@@ -29,14 +29,22 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, tight-fixed);
     margin-right: -1px;
-    padding: spacing.semantic-variable(padding, vertical, base)
-      spacing.semantic-variable(padding, horizontal, comfort-fixed);
+    padding-block: spacing.semantic-variable(padding, vertical, base);
 
     .#{$prefix}__list {
       @include utils.reset();
 
       display: grid;
       gap: spacing.semantic-variable(gap, tight);
+      padding-inline: spacing.semantic-variable(padding, horizontal, comfort-fixed);
+    }
+  }
+
+  &__search-input {
+    padding-inline: spacing.semantic-variable(padding, horizontal, comfort-fixed);
+
+    .mzn-text-field {
+      width: 100%;
     }
   }
 
