@@ -6,6 +6,7 @@
 
 .#{$prefix} {
   position: relative;
+  width: 100%;
 
   &--single {
     min-width: spacing.semantic-variable(size, container, concentrate-fixed);
@@ -21,10 +22,6 @@
     &:has(.#{select.$trigger-prefix} .#{text-field.$prefix}__prefix) {
       min-width: spacing.semantic-variable(size, container, small);
     }
-  }
-
-  &--full-width {
-    width: 100%;
   }
 
   &--inside-closed {
