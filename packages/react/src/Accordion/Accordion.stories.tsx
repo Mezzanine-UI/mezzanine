@@ -1,19 +1,19 @@
-import { useState, MouseEvent } from 'react';
 import {
   DotHorizontalIcon,
   EditIcon,
   PlusIcon,
   TrashIcon,
 } from '@mezzanine-ui/icons';
-import Accordion, { AccordionTitle, AccordionContent } from '.';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+import { MouseEvent, useState } from 'react';
+import Accordion, { AccordionContent, AccordionTitle } from '.';
+import AutoComplete from '../AutoComplete';
 import Button from '../Button';
 import Dropdown from '../Dropdown';
-import AccordionActions from './AccordionActions';
-import AutoComplete from '../AutoComplete';
-import AccordionGroup from './AccordionGroup';
-import Typography from '../Typography';
 import { Fade } from '../Transition';
-import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+import Typography from '../Typography';
+import AccordionActions from './AccordionActions';
+import AccordionGroup from './AccordionGroup';
 
 export default {
   title: 'Data Display/Accordion',
@@ -191,7 +191,6 @@ export const WithActions = () => {
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
             <AutoComplete
-              fullWidth
               options={[
                 { id: 'electronics', name: '電子產品' },
                 { id: 'clothing', name: '服飾配件' },
@@ -200,7 +199,6 @@ export const WithActions = () => {
               placeholder="選擇產品分類"
             />
             <AutoComplete
-              fullWidth
               options={[
                 { id: 'on-sale', name: '上架中' },
                 { id: 'off-shelf', name: '已下架' },

@@ -75,14 +75,12 @@ const BasicComponent = () => {
         }}
       >
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           options={originOptions}
           placeholder="單選"
           required
         />
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           mode="multiple"
           onChange={setMultipleSelections}
@@ -93,7 +91,6 @@ const BasicComponent = () => {
         />
         <AutoComplete
           error
-          fullWidth
           menuMaxHeight={140}
           options={originOptions}
           placeholder="錯誤"
@@ -101,7 +98,6 @@ const BasicComponent = () => {
         />
         <AutoComplete
           disabled
-          fullWidth
           menuMaxHeight={140}
           options={originOptions}
           placeholder="已禁用"
@@ -117,7 +113,6 @@ const BasicComponent = () => {
         }}
       >
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           options={originOptions}
           placeholder="單選"
@@ -125,7 +120,6 @@ const BasicComponent = () => {
           size="sub"
         />
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           mode="multiple"
           onChange={setMultipleSelections}
@@ -137,7 +131,6 @@ const BasicComponent = () => {
         />
         <AutoComplete
           error
-          fullWidth
           menuMaxHeight={140}
           options={originOptions}
           placeholder="錯誤"
@@ -146,7 +139,6 @@ const BasicComponent = () => {
         />
         <AutoComplete
           disabled
-          fullWidth
           menuMaxHeight={140}
           options={originOptions}
           placeholder="已禁用"
@@ -163,7 +155,6 @@ const BasicComponent = () => {
         }}
       >
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           mode="single"
           options={originOptions}
@@ -172,7 +163,6 @@ const BasicComponent = () => {
           required
         />
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           mode="single"
           size="sub"
@@ -182,7 +172,6 @@ const BasicComponent = () => {
           required
         />
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           mode="multiple"
           onChange={setMultipleSelections}
@@ -193,7 +182,6 @@ const BasicComponent = () => {
           value={multipleSelections}
         />
         <AutoComplete
-          fullWidth
           menuMaxHeight={140}
           mode="multiple"
           onChange={setMultipleSelections}
@@ -246,7 +234,6 @@ const SingleModeAsyncSearchComponent = () => {
         asyncData
         disabledOptionsFilter
         emptyText="沒有符合的選項"
-        fullWidth
         loadingText="載入中..."
         menuMaxHeight={200}
         mode="single"
@@ -290,7 +277,6 @@ const SingleModeSyncSearchComponent = () => {
       <AutoComplete
         disabledOptionsFilter
         emptyText="沒有符合的選項"
-        fullWidth
         menuMaxHeight={200}
         mode="single"
         onSearch={handleSearch}
@@ -372,7 +358,6 @@ const KeepSearchTextOnBlurComponent = () => {
             clearSearchText={false}
             disabledOptionsFilter
             emptyText="沒有符合的選項"
-            fullWidth
             menuMaxHeight={200}
             mode="single"
             onSearch={handleSingleSearch}
@@ -383,7 +368,6 @@ const KeepSearchTextOnBlurComponent = () => {
           <AutoComplete
             disabledOptionsFilter
             emptyText="沒有符合的選項"
-            fullWidth
             menuMaxHeight={200}
             mode="single"
             onSearch={handleSingleSearch}
@@ -406,7 +390,6 @@ const KeepSearchTextOnBlurComponent = () => {
             clearSearchText={false}
             disabledOptionsFilter
             emptyText="沒有符合的選項"
-            fullWidth
             menuMaxHeight={200}
             mode="multiple"
             onChange={setMultipleSelections}
@@ -419,7 +402,6 @@ const KeepSearchTextOnBlurComponent = () => {
           <AutoComplete
             disabledOptionsFilter
             emptyText="沒有符合的選項"
-            fullWidth
             menuMaxHeight={200}
             mode="multiple"
             onChange={setMultipleAutoClearSelections}
@@ -477,7 +459,6 @@ const MultipleComponent = () => {
       }}
     >
       <AutoComplete
-        fullWidth
         mode="multiple"
         onChange={(newOptions) => setSelections(newOptions)}
         options={originOptions}
@@ -520,7 +501,6 @@ const OverflowStrategyComponent = () => {
         <div style={{ maxWidth: '300px' }}>
           <AutoComplete
             disabledOptionsFilter
-            fullWidth
             mode="multiple"
             onChange={setCounterSelections}
             options={manyOptions}
@@ -541,7 +521,6 @@ const OverflowStrategyComponent = () => {
         <div style={{ maxWidth: '300px' }}>
           <AutoComplete
             disabledOptionsFilter
-            fullWidth
             mode="multiple"
             onChange={setWrapSelections}
             options={manyOptions}
@@ -602,7 +581,6 @@ const CreatableSingleComponent = () => {
         </p>
         <AutoComplete
           addable
-          fullWidth
           mode="single"
           onChange={setSelection}
           onInsert={handleInsert}
@@ -664,7 +642,6 @@ const CreatableMultipleComponent = () => {
         </p>
         <AutoComplete
           addable
-          fullWidth
           mode="multiple"
           onChange={setSelections}
           onInsert={handleInsert}
@@ -741,7 +718,6 @@ const BulkCreateComponent = () => {
           addable
           createSeparators={[',', '+', '\n']}
           emptyText="沒有符合的項目"
-          fullWidth
           mode="multiple"
           onChange={setSelections}
           onInsert={handleInsert}
@@ -874,7 +850,6 @@ const InputPositionInsideComponent = () => {
         />
         <AutoComplete
           addable
-          fullWidth
           mode="multiple"
           inputPosition="inside"
           onChange={setSelections}
@@ -979,7 +954,6 @@ const InsideBulkCreateComponent = () => {
         <AutoComplete
           addable
           createSeparators={[',', '+', '\n']}
-          fullWidth
           inputPosition="inside"
           mode="multiple"
           onChange={setSelections}
@@ -1036,7 +1010,6 @@ const InsideEmptyComponent = () => {
         />
         <AutoComplete
           emptyText="沒有符合的項目"
-          fullWidth
           inputPosition="inside"
           mode="multiple"
           open={open}
@@ -1083,7 +1056,6 @@ const InsideLoadingComponent = () => {
         />
         <AutoComplete
           emptyText="沒有符合的項目"
-          fullWidth
           inputPosition="inside"
           loading
           loadingPosition="full"
@@ -1161,7 +1133,6 @@ const LoadMoreOnReachBottomComponent = () => {
         <AutoComplete
           disabledOptionsFilter
           emptyText="沒有符合的選項"
-          fullWidth
           loading={loading}
           loadingText="載入中..."
           menuMaxHeight={120}
@@ -1233,7 +1204,6 @@ const SearchTextControlRefComponent = () => {
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <div style={{ flex: 1 }}>
             <AutoComplete
-              fullWidth
               options={originOptions}
               placeholder="輸入後點擊清除文字"
               searchTextControlRef={setSearchTextControlRef}
@@ -1257,7 +1227,6 @@ const SearchTextControlRefComponent = () => {
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <div style={{ flex: 1 }}>
             <AutoComplete
-              fullWidth
               mode="multiple"
               onChange={setResetValue}
               options={originOptions}
@@ -1287,7 +1256,6 @@ const SearchTextControlRefComponent = () => {
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <div style={{ flex: 1 }}>
             <AutoComplete
-              fullWidth
               mode="multiple"
               onChange={setSubmitValue}
               options={originOptions}

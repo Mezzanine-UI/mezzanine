@@ -32,10 +32,6 @@ export interface AutoCompleteInsideTriggerProps {
    */
   size?: InputProps['size'];
   /**
-   * Whether the input should occupy full width.
-   */
-  fullWidth?: boolean;
-  /**
    * Additional class name for the trigger.
    */
   className?: string;
@@ -71,7 +67,6 @@ export default function AutoCompleteInsideTrigger(
     clearable,
     disabled,
     error,
-    fullWidth,
     inputRef,
     onClear,
     placeholder,
@@ -89,7 +84,7 @@ export default function AutoCompleteInsideTrigger(
       className={className}
       {...(disabled ? { disabled: true as const } : {})}
       error={error}
-      fullWidth={fullWidth}
+      fullWidth
       id={id}
       name={name}
       placeholder={placeholder}
