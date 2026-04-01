@@ -87,6 +87,20 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
   }
 }
 
+@keyframes stepper-dot-breath-error {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+
+  50% {
+    box-shadow: 0 0 0 #{$dotBoxShadowMargin} palette.semantic-variable(background, error-subtle);
+  }
+
+  100% {
+    box-shadow: 0 0 0 #{$dotBoxShadowMargin} transparent;
+  }
+}
+
 .#{$prefix-step} {
   &--interactive {
     border-radius: radius.variable(base);
@@ -283,6 +297,15 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
 
         animation-iteration-count: infinite;
         animation-name: stepper-dot-breath;
+      }
+    }
+
+    &.#{$prefix-step}--processing-error {
+      .#{$prefix-step}__status-indicator-dot {
+        @include motion.pattern(breathe, animation);
+
+        animation-iteration-count: infinite;
+        animation-name: stepper-dot-breath-error;
       }
     }
   }
