@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "../packages",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "target": "es2022",
+    "skipLibCheck": true,
+    "paths": {
+      "@mezzanine-ui/icons": ["icons/src"],
+      "@mezzanine-ui/system/*": ["system/src/*"],
+      "@mezzanine-ui/core/*": ["core/src/*"],
+      "@mezzanine-ui/ng/*": ["ng/*"]
+    }
+  },
+  "include": ["./**/*.ts", "../packages/ng/**/*.ts"],
+  "exclude": ["../packages/ng/**/*.spec.ts"]
+}

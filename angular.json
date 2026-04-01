@@ -1,0 +1,46 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "packages",
+  "projects": {
+    "ng-storybook": {
+      "projectType": "application",
+      "root": "packages/ng",
+      "sourceRoot": "packages/ng",
+      "architect": {
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "configDir": ".storybook-ng",
+            "browserTarget": "ng-storybook:build-angular",
+            "port": 6007,
+            "compodoc": false
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
+          "options": {
+            "configDir": ".storybook-ng",
+            "browserTarget": "ng-storybook:build-angular",
+            "outputDir": "storybook-ng-static",
+            "compodoc": false
+          }
+        },
+        "build-angular": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ng-storybook",
+            "index": "",
+            "main": "",
+            "tsConfig": ".storybook-ng/tsconfig.json",
+            "styles": [".storybook-ng/global.scss"],
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": ["packages/system/src", "packages/core/src"]
+            }
+          }
+        }
+      }
+    }
+  }
+}
