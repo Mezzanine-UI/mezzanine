@@ -46,6 +46,7 @@ import type {
 } from '../Select/typings';
 import { SelectValue } from '../Select/typings';
 import { PickRenameMulti } from '../utils/general';
+import AutoCompleteInsideTrigger from './AutoCompleteInside';
 import {
   getFullParsedList,
   useAutoCompleteCreation,
@@ -53,28 +54,27 @@ import {
 import { useAutoCompleteKeyboard } from './useAutoCompleteKeyboard';
 import { useAutoCompleteSearch } from './useAutoCompleteSearch';
 import { useCreationTracker } from './useCreationTracker';
-import AutoCompleteInsideTrigger from './AutoCompleteInside';
 
 export interface AutoCompleteBaseProps
   extends Omit<
-      SelectTriggerProps,
-      | 'active'
-      | 'clearable'
-      | 'forceHideSuffixActionIcon'
-      | 'fullWidth'
-      | 'mode'
-      | 'onClick'
-      | 'onKeyDown'
-      | 'onChange'
-      | 'renderValue'
-      | 'inputProps'
-      | 'suffixActionIcon'
-      | 'value'
-    >,
-    PickRenameMulti<
-      Pick<PopperProps, 'options'>,
-      { options: 'popperOptions' }
-    > {
+    SelectTriggerProps,
+    | 'active'
+    | 'clearable'
+    | 'forceHideSuffixActionIcon'
+    | 'fullWidth'
+    | 'mode'
+    | 'onClick'
+    | 'onKeyDown'
+    | 'onChange'
+    | 'renderValue'
+    | 'inputProps'
+    | 'suffixActionIcon'
+    | 'value'
+  >,
+  PickRenameMulti<
+    Pick<PopperProps, 'options'>,
+    { options: 'popperOptions' }
+  > {
   /**
    * Set to true when options can be added dynamically
    * @default false
@@ -211,9 +211,9 @@ export interface AutoCompleteBaseProps
    */
   searchTextControlRef?: RefObject<
     | {
-        reset: () => void;
-        setSearchText: Dispatch<SetStateAction<string>>;
-      }
+      reset: () => void;
+      setSearchText: Dispatch<SetStateAction<string>>;
+    }
     | undefined
   >;
   /**
@@ -502,49 +502,49 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     } = useAutoCompleteValueControl(
       isMultiple
         ? {
-            defaultValue: isMultipleValue(defaultValue)
-              ? defaultValue
+          defaultValue: isMultipleValue(defaultValue)
+            ? defaultValue
+            : undefined,
+          disabledOptionsFilter,
+          getOptionsFilterQuery:
+            stepByStepBulkCreate && addable && onInsert
+              ? (st) => {
+                const full = getFullParsedList(
+                  st,
+                  createSeparators,
+                  trimOnCreate,
+                );
+                return full.length > 1 ? (full[0] ?? undefined) : undefined;
+              }
               : undefined,
-            disabledOptionsFilter,
-            getOptionsFilterQuery:
-              stepByStepBulkCreate && addable && onInsert
-                ? (st) => {
-                    const full = getFullParsedList(
-                      st,
-                      createSeparators,
-                      trimOnCreate,
-                    );
-                    return full.length > 1 ? (full[0] ?? undefined) : undefined;
-                  }
-                : undefined,
-            mode: 'multiple',
-            onChange: onChangeProp as
-              | ((newOptions: SelectValue[]) => void)
-              | undefined,
-            onClear: onClearProp,
-            onClose: () => toggleOpen(false),
-            onSearch,
-            options: optionsProp,
-            value: isMultipleValue(valueProp) ? valueProp : undefined,
-          }
+          mode: 'multiple',
+          onChange: onChangeProp as
+            | ((newOptions: SelectValue[]) => void)
+            | undefined,
+          onClear: onClearProp,
+          onClose: () => toggleOpen(false),
+          onSearch,
+          options: optionsProp,
+          value: isMultipleValue(valueProp) ? valueProp : undefined,
+        }
         : {
-            defaultValue: isSingleValue(defaultValue)
-              ? defaultValue
+          defaultValue: isSingleValue(defaultValue)
+            ? defaultValue
+            : undefined,
+          disabledOptionsFilter,
+          mode: 'single',
+          onChange: onChangeProp as
+            | ((newOption: SelectValue | null) => void)
+            | undefined,
+          onClear: onClearProp,
+          onClose: () => toggleOpen(false),
+          onSearch,
+          options: optionsProp,
+          value:
+            isSingleValue(valueProp) || valueProp === null
+              ? valueProp
               : undefined,
-            disabledOptionsFilter,
-            mode: 'single',
-            onChange: onChangeProp as
-              | ((newOption: SelectValue | null) => void)
-              | undefined,
-            onClear: onClearProp,
-            onClose: () => toggleOpen(false),
-            onSearch,
-            options: optionsProp,
-            value:
-              isSingleValue(valueProp) || valueProp === null
-                ? valueProp
-                : undefined,
-          },
+        },
     );
 
     /** export set search text action to props (allow user to customize search text) */
@@ -899,9 +899,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
     const searchTextExistWithoutOption: boolean = !!(firstPendingText
       ? firstPendingText &&
-        options.find((option) => option.name === firstPendingText) === undefined
+      options.find((option) => option.name === firstPendingText) === undefined
       : searchText &&
-        options.find((option) => option.name === searchText) === undefined);
+      options.find((option) => option.name === searchText) === undefined);
 
     const shouldShowCreateAction = !!(
       searchTextExistWithoutOption &&
@@ -969,9 +969,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         : undefined;
     const shouldForceClearable = isMultiple
       ? (isMultipleValue(value) && value.length > 0) ||
-        searchText.trim().length > 0
+      searchText.trim().length > 0
       : isSingleValue(value) ||
-        (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
+      (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
 
     // Handle dropdown option selection
     const handleDropdownSelect = useCallback(
@@ -1013,7 +1013,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const [keyboardActiveIndex, setKeyboardActiveIndex] = useState<
       number | null
     >(null);
-    const setListboxHasVisualFocus = useCallback((_focus: boolean) => {}, []);
+    const setListboxHasVisualFocus = useCallback((_focus: boolean) => { }, []);
 
     // Reset activeIndex and keyboardActiveIndex when options change
     useEffect(() => {
@@ -1211,9 +1211,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
                 ? createActionText
                   ? createActionText(createActionDisplayText)
                   : createActionTextTemplate.replace(
-                      '{text}',
-                      createActionDisplayText,
-                    )
+                    '{text}',
+                    createActionDisplayText,
+                  )
                 : undefined
             }
             activeIndex={activeIndex}
@@ -1251,71 +1251,70 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             onReachBottom={onReachBottom}
             onLeaveBottom={onLeaveBottom}
           >
-          {inputPosition === 'inside' ? (
-            <AutoCompleteInsideTrigger
-              active={open}
-              className={className}
-              clearable={shouldForceClearable}
-              disabled={isInputDisabled}
-              error={error}
-              fullWidth
-              inputRef={composedInputRef}
-              onClear={handleClear}
-              placeholder={getPlaceholder()}
-              resolvedInputProps={{
-                ...resolvedInputProps,
-                onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
-                  resolvedInputProps.onClick?.(e);
-                },
-              }}
-              size={size}
-              value={insideInputValue}
-            />
-          ) : (
-            <SelectTrigger
-              ref={composedRef}
-              active={open}
-              className={className}
-              clearable
-              disabled={isInputDisabled}
-              fullWidth
-              isForceClearable={shouldForceClearable}
-              inputRef={composedInputRef}
-              mode={mode}
-              onTagClose={wrappedOnChange}
-              onClear={handleClear}
-              overflowStrategy={
-                isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy
-              }
-              placeholder={getPlaceholder()}
-              prefix={prefix}
-              readOnly={false}
-              required={required}
-              type={error ? 'error' : 'default'}
-              inputProps={{
-                ...resolvedInputProps,
-                onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
-                  // When inputPosition is inside, let Dropdown handle the click event
-                  // Otherwise, stop propagation to prevent conflicts
-                  // This branch is only rendered when `inputPosition !== 'inside'`.
-                  e.stopPropagation();
-                  resolvedInputProps.onClick?.(e);
-                },
-              }}
-              searchText={searchText}
-              size={size}
-              showTextInputAfterTags
-              suffixAction={onClickSuffixActionIcon}
-              value={
-                mode === 'multiple' &&
-                isMultipleValue(value) &&
-                value.length === 0
-                  ? undefined
-                  : (value ?? undefined)
-              }
-              {...(mode === 'single' && renderValue ? { renderValue } : {})}
-            />
-          )}
+            {inputPosition === 'inside' ? (
+              <AutoCompleteInsideTrigger
+                active={open}
+                className={className}
+                clearable={shouldForceClearable}
+                disabled={isInputDisabled}
+                error={error}
+                inputRef={composedInputRef}
+                onClear={handleClear}
+                placeholder={getPlaceholder()}
+                resolvedInputProps={{
+                  ...resolvedInputProps,
+                  onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
+                    resolvedInputProps.onClick?.(e);
+                  },
+                }}
+                size={size}
+                value={insideInputValue}
+              />
+            ) : (
+              <SelectTrigger
+                ref={composedRef}
+                active={open}
+                className={className}
+                clearable
+                disabled={isInputDisabled}
+                fullWidth
+                isForceClearable={shouldForceClearable}
+                inputRef={composedInputRef}
+                mode={mode}
+                onTagClose={wrappedOnChange}
+                onClear={handleClear}
+                overflowStrategy={
+                  isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy
+                }
+                placeholder={getPlaceholder()}
+                prefix={prefix}
+                readOnly={false}
+                required={required}
+                type={error ? 'error' : 'default'}
+                inputProps={{
+                  ...resolvedInputProps,
+                  onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
+                    // When inputPosition is inside, let Dropdown handle the click event
+                    // Otherwise, stop propagation to prevent conflicts
+                    // This branch is only rendered when `inputPosition !== 'inside'`.
+                    e.stopPropagation();
+                    resolvedInputProps.onClick?.(e);
+                  },
+                }}
+                searchText={searchText}
+                size={size}
+                showTextInputAfterTags
+                suffixAction={onClickSuffixActionIcon}
+                value={
+                  mode === 'multiple' &&
+                    isMultipleValue(value) &&
+                    value.length === 0
+                    ? undefined
+                    : (value ?? undefined)
+                }
+                {...(mode === 'single' && renderValue ? { renderValue } : {})}
+              />
+            )}
           </Dropdown>
         </div>
       </SelectControlContext.Provider>
