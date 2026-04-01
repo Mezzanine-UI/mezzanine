@@ -61,6 +61,7 @@ export interface AutoCompleteBaseProps
       | 'active'
       | 'clearable'
       | 'forceHideSuffixActionIcon'
+      | 'fullWidth'
       | 'mode'
       | 'onClick'
       | 'onKeyDown'
@@ -418,7 +419,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
   function AutoComplete(props, ref) {
     const {
       disabled: disabledFromFormControl,
-      fullWidth: fullWidthFromFormControl,
       required: requiredFromFormControl,
       severity,
     } = useContext(FormControlContext) || {};
@@ -433,7 +433,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       disabledOptionsFilter = false,
       emptyText = '沒有符合的項目',
       error = severity === 'error' || false,
-      fullWidth = fullWidthFromFormControl || false,
       id,
       inputPosition = 'outside',
       inputProps,
@@ -1202,7 +1201,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         <div
           ref={nodeRef}
           className={cx(classes.host, {
-            [classes.hostFullWidth]: fullWidth,
             [classes.hostInsideClosed]: inputPosition === 'inside' && !open,
             [classes.hostMode(mode)]: mode,
           })}
@@ -1260,7 +1258,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               clearable={shouldForceClearable}
               disabled={isInputDisabled}
               error={error}
-              fullWidth={fullWidth}
+              fullWidth
               inputRef={composedInputRef}
               onClear={handleClear}
               placeholder={getPlaceholder()}
@@ -1280,7 +1278,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               className={className}
               clearable
               disabled={isInputDisabled}
-              fullWidth={fullWidth}
+              fullWidth
               isForceClearable={shouldForceClearable}
               inputRef={composedInputRef}
               mode={mode}
