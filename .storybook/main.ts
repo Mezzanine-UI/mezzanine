@@ -36,7 +36,12 @@ const config: StorybookConfig = {
     if (config.module && config.module.rules) {
       config.module.rules.push({
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          'resolve-url-loader',
+          { loader: 'sass-loader', options: { sourceMap: true } },
+        ],
       });
 
       // Handle font files
