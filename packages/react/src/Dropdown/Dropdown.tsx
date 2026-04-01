@@ -570,18 +570,21 @@ export default function Dropdown(props: DropdownProps) {
     return offset({ mainAxis: 4 });
   }, []);
 
-  // Set z-index for popper to ensure it appears above other elements
+  // Set z-index for popper only when explicitly provided via the `zIndex` prop.
+  // When not provided, do NOT apply any inline z-index so that elements inside
+  // the portal stack purely by DOM order — this ensures Modals opened from
+  // a Dropdown always appear on top without a z-index fight.
   const zIndexMiddleware = useMemo(() => {
-    const zIndexValue = zIndex ?? 1;
+    if (zIndex === undefined || zIndex === null) return null;
+
+    const zIndexNum =
+      typeof zIndex === 'number'
+        ? zIndex
+        : parseInt(zIndex as string, 10) || zIndex;
+
     return {
       name: 'zIndex',
       fn: ({ elements }: { elements: { floating: HTMLElement } }) => {
-        const zIndexNum =
-          typeof zIndexValue === 'number'
-            ? zIndexValue
-            : typeof zIndexValue === 'string'
-              ? parseInt(zIndexValue, 10) || zIndexValue
-              : 1;
         Object.assign(elements.floating.style, {
           zIndex: zIndexNum,
         });
@@ -1021,7 +1024,7 @@ export default function Dropdown(props: DropdownProps) {
             placement: popoverPlacement,
             middleware: [
               offsetMiddleware,
-              zIndexMiddleware,
+              ...(zIndexMiddleware ? [zIndexMiddleware] : []),
               ...(customWidthMiddleware ? [customWidthMiddleware] : []),
               ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
             ],
