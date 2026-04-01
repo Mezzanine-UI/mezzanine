@@ -2,6 +2,7 @@
 
 import {
   ChangeEventHandler,
+  KeyboardEvent,
   MouseEvent,
   Ref,
   forwardRef,
@@ -318,6 +319,27 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       prevIsCheckedRef.current = isChecked;
     }, [isChecked, shouldShowEditableInput]);
 
+    const handleChipHostClick = useCallback(
+      (e: MouseEvent<HTMLDivElement>) => {
+        if (disabled) return;
+        if (e.target === e.currentTarget) {
+          inputElementRef.current?.click();
+        }
+      },
+      [disabled],
+    );
+
+    const handleChipHostKeyDown = useCallback(
+      (e: KeyboardEvent<HTMLDivElement>) => {
+        if (disabled) return;
+        if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          inputElementRef.current?.click();
+        }
+      },
+      [disabled],
+    );
+
     const handleEditableInputMouseDown = useCallback(
       (event: MouseEvent<HTMLInputElement>) => {
         defaultEditableInput?.inputProps?.onMouseDown?.(event);
@@ -346,6 +368,8 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
           },
           classes.size(size),
         )}
+        onClick={mode === 'chip' ? handleChipHostClick : undefined}
+        onKeyDown={mode === 'chip' ? handleChipHostKeyDown : undefined}
       >
         <label ref={ref} {...rest} className={classes.labelContainer}>
           <div className={classes.inputContainer}>
