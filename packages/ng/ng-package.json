@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "dist",
+  "allowedNonPeerDependencies": [
+    "@mezzanine-ui/core",
+    "@mezzanine-ui/icons",
+    "@mezzanine-ui/system",
+    "tslib"
+  ],
+  "lib": {
+    "entryFile": "src/public-api.ts",
+    "styleIncludePaths": ["../system/src", "../core/src"]
+  }
+}

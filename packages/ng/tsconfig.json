@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "target": "es2022",
+    "paths": {
+      "@mezzanine-ui/icons": ["../icons/src"],
+      "@mezzanine-ui/system/*": ["../system/src/*"],
+      "@mezzanine-ui/core/*": ["../core/src/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "compilationMode": "partial",
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}
