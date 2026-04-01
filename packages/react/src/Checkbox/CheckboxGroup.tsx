@@ -317,7 +317,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       if (!name) {
         console.warn(
           'CheckboxGroup: The `name` prop is recommended, especially when integrating with react-hook-form. ' +
-            'All checkboxes in the group should share the same `name` attribute.',
+          'All checkboxes in the group should share the same `name` attribute.',
         );
       }
 
@@ -329,7 +329,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
             if (!checkboxProps.value) {
               console.warn(
                 `CheckboxGroup: Each Checkbox child should have a \`value\` prop. ` +
-                  `Checkbox at index ${index} is missing the \`value\` prop.`,
+                `Checkbox at index ${index} is missing the \`value\` prop.`,
               );
             }
           }
@@ -344,7 +344,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
           if (isValidElement(child) && child.type !== Checkbox) {
             console.warn(
               'CheckboxGroup: When using ReactNode (children) input, only Checkbox components are supported. ' +
-                `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
+              `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
             );
           }
         });
