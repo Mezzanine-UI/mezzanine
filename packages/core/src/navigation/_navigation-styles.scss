@@ -479,6 +479,15 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       .mzn-badge {
         display: none;
       }
+
+      &:not(:has(.#{$option-prefix}__icon)) {
+        justify-content: center;
+        padding-inline: 0;
+
+        .#{$option-prefix}__title-wrapper {
+          margin-right: 0;
+        }
+      }
     }
 
     &.#{$option-prefix}--active.#{$option-prefix}--open {
