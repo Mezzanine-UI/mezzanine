@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.8...@mezzanine-ui/core@1.0.0-rc.9) (2026-04-02)
+
+### Bug Fixes
+
+- **core/accordion:** remove min-width from buttons inside AccordionActions ([3d36910](https://github.com/Mezzanine-UI/mezzanine/commit/3d3691058850f8c4d329b6bac31bcd3f0b847965))
+- **core/autocomplete:** remove fullWidth modifier and default to full width ([c3419ef](https://github.com/Mezzanine-UI/mezzanine/commit/c3419efbdca3dc7a836baedac7bbfcdfa38db5de))
+- **core/card:** filetype center ([a275a4d](https://github.com/Mezzanine-UI/mezzanine/commit/a275a4d3ea73b325d529d30dc467a4caae6f3dd4))
+- **core/cascader:** correct scrollbar distance from panel edge ([b749522](https://github.com/Mezzanine-UI/mezzanine/commit/b749522b793467da5fa3c68cd0dd9d1196238824))
+- **core/checkbox:** apply stable spacing for nested chip level control ([2204c40](https://github.com/Mezzanine-UI/mezzanine/commit/2204c40369f50b7592ba1acca086abab4463d985))
+- **core/input:** fix CSS var interpolation and icon-neutral for action/select button ([957a54b](https://github.com/Mezzanine-UI/mezzanine/commit/957a54b94d0fb610161237252f5d37362ef8d62d))
+- **core/navigation:** flush scrollbar to right edge by moving padding-inline from content to list ([fa44ed7](https://github.com/Mezzanine-UI/mezzanine/commit/fa44ed7ef7f2bafe8081d3efc2d2e7c7fbfd1ca2))
+- **core/navigation:** hide horizontal padding and center text for icon-less options when collapsed ([27b4e11](https://github.com/Mezzanine-UI/mezzanine/commit/27b4e1155af809f94940fa80c913c0eaa75e230a))
+- **core/radio:** apply neutral-solid color to segmented selected state text and icon ([af2d605](https://github.com/Mezzanine-UI/mezzanine/commit/af2d6058223bfee90cb8ebb99a8c216945546278))
+- **core/stepper:** use error-subtle color for processing-error dot breathe animation ([138b0c9](https://github.com/Mezzanine-UI/mezzanine/commit/138b0c9ede8b005febf908be65a5de1c52b59448))
+
 # [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.7...@mezzanine-ui/core@1.0.0-rc.8) (2026-03-27)
 
 ### Bug Fixes
