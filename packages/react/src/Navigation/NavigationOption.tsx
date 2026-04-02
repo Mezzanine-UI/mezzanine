@@ -270,7 +270,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
               <span className={classes.titleWrapper}>
                 <Fade ref={titleRef} in={collapsed === false || !icon}>
-                  <span className={classes.title}>{title}</span>
+                  <span className={classes.title}>
+                    {collapsed && !icon ? Array.from(title).slice(0, 2).join('') : title}
+                  </span>
                 </Fade>
               </span>
 
