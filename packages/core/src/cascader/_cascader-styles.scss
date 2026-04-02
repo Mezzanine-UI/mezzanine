@@ -61,8 +61,7 @@
   width: spacing.semantic-variable(size, container, tight);
   max-height: spacing.semantic-variable(size, container, expanded);
   overflow: hidden;
-  padding: spacing.semantic-variable(padding, vertical, tight)
-    spacing.semantic-variable(padding, horizontal, tight);
+  padding: 0;
   box-sizing: border-box;
   animation: #{$prefix}-fade-in motion.duration(fast) motion.easing(standard) both;
 
@@ -73,7 +72,7 @@
   ul {
     list-style: none;
     margin: 0;
-    padding: 3px;
+    padding: spacing.semantic-variable(padding, horizontal, tight);
   }
 }
 
