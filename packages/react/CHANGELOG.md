@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.8...@mezzanine-ui/react@1.0.0) (2026-04-02)
+
+### Bug Fixes
+
+- **react/accordion:** remove deprecated fullWidth prop from AutoComplete usage ([e80121e](https://github.com/Mezzanine-UI/mezzanine/commit/e80121e385cfac18d96d59d53a146c31ce27cb05))
+- **react/autocomplete:** remove fullWidth prop and default to full width ([9b6cd29](https://github.com/Mezzanine-UI/mezzanine/commit/9b6cd29898870b98b62fd215deaeffbe4601349d))
+- **react/autocomplete:** remove the AutoCompleteInsideTrigger lint error ([918c1b1](https://github.com/Mezzanine-UI/mezzanine/commit/918c1b1d723bf68ff57a712936bb299fd8cb9fe5))
+- **react/checkbox:** make chip host area toggleable with keyboard support ([83d090d](https://github.com/Mezzanine-UI/mezzanine/commit/83d090d04914bc13f3cbb3cef9e6689607254232))
+- **react/dropdown:** dropdown action force zIndex to 0 ([e050308](https://github.com/Mezzanine-UI/mezzanine/commit/e050308d42bd8e2bc82826acaf945f8c43e9873f))
+- **react/dropdown:** remove default z-index:1 for dropdown unless props assigned ([9077303](https://github.com/Mezzanine-UI/mezzanine/commit/9077303127d0ed1885e4e7f687ce2e4a40f80859))
+- **react/navigation:** NavigationOption pr issue ([7b97969](https://github.com/Mezzanine-UI/mezzanine/commit/7b97969863d25bc6bdc55173547532dfc497ff31))
+- **react/navigation:** truncate title to first two chars for icon-less options when collapsed ([a1a23dd](https://github.com/Mezzanine-UI/mezzanine/commit/a1a23dd5662e00017c7465d24649b8bb7b95cc79))
+- **react/navigation:** wrap search input in container div for correct padding alignment ([27f1a5a](https://github.com/Mezzanine-UI/mezzanine/commit/27f1a5a8e3d9077753d7c0426a5f3737bd0a6bc8))
+- **react/selection-card:** correct story checked usage and selector names ([27d8c92](https://github.com/Mezzanine-UI/mezzanine/commit/27d8c9299bb6a02964dc950aef951b75e1b1f01f))
+- **react/text-field:** fix text field storybook password icon ([99d7690](https://github.com/Mezzanine-UI/mezzanine/commit/99d7690e1dab4acb9418d49c3cc5f3e44fe3b435))
+
 # [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.7...@mezzanine-ui/react@1.0.0-rc.8) (2026-03-27)
 
 **Note:** Version bump only for package @mezzanine-ui/react
