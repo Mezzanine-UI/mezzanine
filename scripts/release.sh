@@ -233,7 +233,22 @@ case $choice in
     echo -e "${RED}⚠️  警告: 你即將發布正式版本！${NC}"
     echo -e "${YELLOW}這將會更新 latest 標籤，所有用戶都會獲取此版本${NC}"
     echo ""
-    read -p "確認要繼續嗎？ (yes/no): " confirm
+
+    # 從 package.json 取得目前版本，去掉 prerelease suffix 得到 stable 版本號
+    CURRENT_VERSION=$(node -p "require('./packages/react/package.json').version" 2>/dev/null)
+    STABLE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-[a-zA-Z]*\.[0-9]*//')
+
+    echo -e "${BLUE}ℹ️  目前版本: ${CURRENT_VERSION}${NC}"
+    echo -e "${BLUE}ℹ️  即將發布: ${STABLE_VERSION}${NC}"
+    echo ""
+
+    read -p "版本號是否正確？如需修改請輸入新版本號，或直接按 Enter 使用 ${STABLE_VERSION}: " custom_version
+    if [ -n "$custom_version" ]; then
+      STABLE_VERSION="$custom_version"
+    fi
+
+    echo ""
+    read -p "確認要發布 ${STABLE_VERSION} 嗎？ (yes/no): " confirm
 
     if [ "$confirm" != "yes" ]; then
       echo -e "${YELLOW}❌ 已取消發布${NC}"
@@ -241,12 +256,14 @@ case $choice in
     fi
 
     echo ""
-    echo -e "${YELLOW}📦 準備發布 Stable 版本...${NC}"
+    echo -e "${YELLOW}📦 準備發布 Stable 版本 ${STABLE_VERSION}...${NC}"
     echo ""
 
-    # 發布
+    # 發布：明確指定版本號，避免 lerna 互動選單誤選 prerelease
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn release:stable
+    yarn lerna version "$STABLE_VERSION" --no-push --yes
+    yarn build
+    yarn lerna publish from-package --dist-tag latest --yes
 
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════╗${NC}"
