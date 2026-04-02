@@ -110,7 +110,7 @@
 | SelectTriggerTags         | `SelectTriggerTags`         | 多選 Select 的標籤顯示區域                                                               | —                                                         |
 | SelectionCard             | `SelectionCard`             | 可選取的卡片元件，作為 Checkbox/Radio 的卡片式替代                                       | —                                                         |
 | Slider                    | `Slider`                    | 滑桿元件，支援單點與範圍兩種模式                                                         | `useSlider`                                               |
-| Toggle                    | `Toggle`                    | 切換開關元件，用於表示開／關二元狀態                                                     | `useSwitchControlValue`                                   |
+| Toggle                    | `Toggle`                    | 切換開關元件，用於表示開／關二元狀態（原名為 Switch）                                    | `useSwitchControlValue`                                   |
 | Textarea                  | `Textarea`                  | 多行文字輸入框，支援自動調整高度與字數限制                                               | `useInputControlValue`                                    |
 | TextField                 | `TextField`                 | 文字欄位基底元件，提供通用的邊框/尺寸/狀態樣式                                           | —                                                         |
 | TimePicker                | `TimePicker`                | 時間選擇器，點擊觸發 TimePanel 面板選取時間                                              | `usePickerValue`                                          |
@@ -269,13 +269,12 @@
 
 ---
 
-## 已廢棄元件（Deprecated）
+## 內部元件（不建議使用）
 
-以下元件僅可透過 sub-path import 存取，不包含在主要 barrel export 中，未來版本可能移除。
+以下元件僅可透過 sub-path import 存取，為 mezzanine 內部使用。
 
-| 元件          | 替代方案                   | 說明                                       |
-| ------------- | -------------------------- | ------------------------------------------ |
-| Switch        | `Toggle`                   | 已被 Toggle 元件完全取代，提供更簡潔的 API |
-| ContentHeader | 自行組合 PageHeader 或自訂 | 頁面級別標頭，已從主要匯出移除             |
-| ClearActions  | 自行組合 Button            | 清除/關閉按鈕，已從主要匯出移除            |
-| Scrollbar     | 瀏覽器原生捲軸或自訂       | 自訂捲軸元件，已從主要匯出移除             |
+| 元件          | 替代方案                   | 說明          |
+| ------------- | -------------------------- | ------------- |
+| ContentHeader | 自行組合 PageHeader 或自訂 | 頁面級別標頭  |
+| ClearActions  | 自行組合 Button            | 清除/關閉按鈕 |
+| Scrollbar     | 瀏覽器原生捲軸或自訂       | 自訂捲軸元件  |
