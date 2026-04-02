@@ -1101,7 +1101,7 @@ export default function DropdownItem<
         </>
       )}
       {hasActions && (
-        <div ref={actionRef}>
+        <div ref={actionRef} style={{ position: 'relative', zIndex: 0 }}>
           <DropdownAction {...actionConfig} />
         </div>
       )}
