@@ -2,16 +2,16 @@
 
 A comprehensive React component library with a complete design system, built for modern web applications.
 
-## ⚠️ Current Status
+## 📦 Version
 
-This project is currently in **rc** (`1.0.0-rc.x`) and under active development for v2. While it has been widely utilized across various Rytass internal projects, please note that API changes may still occur before the stable release. We recommend pinning to specific versions in production environments.
+Current stable release: **v1.0.0**
 
 ```json
 {
-  "@mezzanine-ui/core": "1.0.0-rc.3",
-  "@mezzanine-ui/react": "1.0.0-rc.3",
-  "@mezzanine-ui/system": "1.0.0-rc.3",
-  "@mezzanine-ui/icons": "1.0.0-rc.3"
+  "@mezzanine-ui/core": "1.0.0",
+  "@mezzanine-ui/react": "1.0.0",
+  "@mezzanine-ui/system": "1.0.0",
+  "@mezzanine-ui/icons": "1.0.0"
 }
 ```
 
@@ -85,13 +85,13 @@ Create a `main.scss` file in your project:
 
 // Apply design system variables
 :root {
-  @include mzn-system.palette-variables(light);
+  @include mzn-system.colors(light);
   @include mzn-system.common-variables(default);
 }
 
 // Optional: Dark mode support
 [data-theme='dark'] {
-  @include mzn-system.palette-variables(dark);
+  @include mzn-system.colors(dark);
 }
 
 // Optional: Compact mode support
@@ -125,8 +125,7 @@ function App() {
   return (
     <div>
       <Typography variant="h1">Welcome to Mezzanine UI</Typography>
-      <Button variant="base-primary" size="main">
-        <PlusIcon />
+      <Button icon={PlusIcon} iconType="leading" size="main" variant="base-primary">
         Click Me
       </Button>
     </div>
@@ -287,11 +286,11 @@ $custom-palette: (
 );
 
 :root {
-  @include mzn-system.palette-variables(light, $custom-palette);
+  @include mzn-system.colors(light, $custom-palette);
 }
 
 [data-theme='dark'] {
-  @include mzn-system.palette-variables(dark, $custom-palette);
+  @include mzn-system.colors(dark, $custom-palette);
 }
 ```
 
@@ -410,8 +409,7 @@ import { PlusIcon } from '@mezzanine-ui/icons';
   Disabled Button
 </Button>
 
-<Button variant="outlined-primary" size="minor">
-  <PlusIcon />
+<Button icon={PlusIcon} iconType="leading" size="minor" variant="outlined-primary">
   With Icon
 </Button>
 ```
@@ -591,7 +589,6 @@ Mezzanine provides several utility hooks for common UI patterns:
 | `useDocumentEscapeKeyDown`  | Listen for ESC key press on document                                   |
 | `useDocumentTabKeyDown`     | Listen for Tab key press on document                                   |
 | `useDocumentEvents`         | Generic document event listener with cleanup                           |
-| `useElementHeight`          | Track an element's height with ResizeObserver                          |
 | `useIsomorphicLayoutEffect` | SSR-safe `useLayoutEffect` (uses `useEffect` on server)                |
 | `useLastCallback`           | Stable callback reference that always calls the latest version         |
 | `useLastValue`              | Ref that always holds the latest value                                 |
@@ -678,11 +675,11 @@ Mezzanine UI v2 has built-in support for light and dark modes:
 ```scss
 // In your SCSS
 :root {
-  @include mzn-system.palette-variables(light);
+  @include mzn-system.colors(light);
 }
 
 [data-theme='dark'] {
-  @include mzn-system.palette-variables(dark);
+  @include mzn-system.colors(dark);
 }
 ```
 
@@ -735,14 +732,15 @@ function DensityToggle() {
 Use icons from the `@mezzanine-ui/icons` package:
 
 ```jsx
-import { ChevronDownIcon, PlusIcon, CheckIcon } from '@mezzanine-ui/icons';
+import Icon from '@mezzanine-ui/react/Icon';
+import { CheckIcon, ChevronDownIcon, PlusIcon } from '@mezzanine-ui/icons';
 
 function Example() {
   return (
     <div>
-      <ChevronDownIcon />
-      <PlusIcon />
-      <CheckIcon />
+      <Icon icon={ChevronDownIcon} />
+      <Icon icon={PlusIcon} />
+      <Icon icon={CheckIcon} />
     </div>
   );
 }

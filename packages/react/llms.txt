@@ -43,8 +43,8 @@ import {
   NavigationUserMenu,
 } from '@mezzanine-ui/react/Navigation';
 
-// ContentHeader (page-level header with back button + action slots)
-import ContentHeader from '@mezzanine-ui/react/ContentHeader';
+// ContentHeader (deprecated — sub-path import only, not in main barrel export)
+// import ContentHeader from '@mezzanine-ui/react/ContentHeader';
 
 // Form layout tokens from core (used with FormField)
 import {
@@ -76,8 +76,8 @@ Required styles — create a `main.scss` and import it at your app entry point. 
 }
 
 /* Optional: light/dark palette theming */
-:root { @include mzn-system.palette-variables(light); }
-[data-theme='dark'] { @include mzn-system.palette-variables(dark); }
+:root { @include mzn-system.colors(light); }
+[data-theme='dark'] { @include mzn-system.colors(dark); }
 
 /* Optional: compact density */
 [data-density='compact'] { @include mzn-system.common-variables(compact); }
@@ -171,11 +171,25 @@ Message.error('操作失敗，請稍後再試');
 
 ## Common Pitfalls for AI Assistants
 
-**Typography `variant` is not h1–h6.** The prop is named `variant` but its type is `TypographySemanticType` — a design-system semantic scale, not HTML heading levels. Valid values are `h1`, `h2`, `h3` (no h4/h5/h6), then `body`, `body-highlight`, `body-mono`, `caption`, `caption-highlight`, `annotation`, `annotation-highlight`, `button`, `input`, `label-primary`, `label-secondary`, and a few others. Never use `h4`, `h5`, or `h6`.
+**Typography `variant` only has h1–h3, not h4–h6.** The prop type is `TypographySemanticType` — a design-system semantic scale, not HTML heading levels. The complete set of valid values is:
+
+| Group | Variants |
+|-------|---------|
+| Heading | `h1`, `h2`, `h3` |
+| Body | `body`, `body-highlight`, `body-mono`, `body-mono-highlight` |
+| Text link | `text-link-body`, `text-link-caption` |
+| Caption | `caption`, `caption-highlight` |
+| Annotation | `annotation`, `annotation-highlight` |
+| Button | `button`, `button-highlight` |
+| Input | `input`, `input-mono`, `input-highlight` |
+| Label | `label-primary`, `label-primary-highlight`, `label-secondary` |
+
+Never use `h4`, `h5`, or `h6` — they do not exist.
 ```tsx
-<Typography variant="h1">Title</Typography>      // ✅
-<Typography variant="body">Body text</Typography> // ✅
-<Typography variant="h5">Subtitle</Typography>    // ❌ h5 does not exist
+<Typography variant="h1">Title</Typography>            // ✅
+<Typography variant="body-highlight">Bold</Typography> // ✅
+<Typography variant="text-link-body">Link</Typography> // ✅
+<Typography variant="h5">Subtitle</Typography>         // ❌ h5 does not exist
 ```
 
 **Button icons use `icon` + `iconType`, not `prefix`/`suffix` JSX.** Pass an icon definition object (from `@mezzanine-ui/icons`) to the `icon` prop and set position via `iconType`: `"leading"` | `"trailing"` | `"icon-only"`. Do not wrap `<Icon />` in `prefix` or `suffix` props — those props do not exist on Button.
@@ -196,5 +210,6 @@ import { PlusIcon } from '@mezzanine-ui/icons';
 ## Further Reference
 
 - Full component index with descriptions: `packages/react/COMPONENTS.md`
+- Common UI pattern examples (Layout, Form, Table, Dialog, etc.): `packages/react/PATTERNS.md`
 - Complete prop types and JSDoc: `*.d.ts` files in the published package (or `packages/react/src/<ComponentName>/index.tsx`)
 - GitHub: https://github.com/Mezzanine-UI/mezzanine

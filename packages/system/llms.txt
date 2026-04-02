@@ -29,22 +29,28 @@ All tokens are emitted as CSS custom properties (e.g. `--mzn-color-primary`, `--
 
 ## Theme Setup
 
-The recommended way to apply the theme is via the `MezzanineProvider` from `@mezzanine-ui/react`, which injects the CSS variables automatically.
-
-For manual setup, apply the SCSS mixins in your global stylesheet:
+Apply the SCSS mixins in your global stylesheet:
 
 ```scss
-@use '@mezzanine-ui/system' as system;
+@use '@mezzanine-ui/system' as mzn-system;
 
 :root {
-  @include system.common-variables();
-  @include system.colors('light');
+  @include mzn-system.common-variables('default');
+  @include mzn-system.colors('light');
 }
 
 [data-theme='dark'] {
-  @include system.colors('dark');
+  @include mzn-system.colors('dark');
+}
+
+[data-density='compact'] {
+  @include mzn-system.common-variables('compact');
 }
 ```
+
+The two public mixins are:
+- `common-variables($mode, $options)` — emits spacing, typography, radius, motion, z-index, and effect tokens. `$mode` is `'default'` or `'compact'`.
+- `colors($mode, $semantic, $primitives)` — emits palette color tokens. `$mode` is `'light'` or `'dark'`.
 
 ## TypeScript Exports
 
@@ -57,6 +63,10 @@ import { toCssVar } from '@mezzanine-ui/system/css';
 - `Severity` — `'success' | 'warning' | 'error' | 'info'`
 - `Orientation` — `'horizontal' | 'vertical'`
 - `toCssVar(token)` — converts a token name to its `var(--mzn-...)` CSS variable string
+
+## Further Reference
+
+- Complete token values (hex colors, spacing scales, typography variants): `packages/system/DESIGN_TOKENS.md`
 
 ## Consumed By
 

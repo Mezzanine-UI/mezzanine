@@ -28,13 +28,12 @@ Create a `main.scss` and import it at your app entry point:
 
 :root {
   @include mzn-system.common-variables('default');
-  @include mzn-system.colors();
-  @include mzn-system.palette-variables(light);
+  @include mzn-system.colors(light);
 }
 
 /* Optional: dark mode */
 [data-theme='dark'] {
-  @include mzn-system.palette-variables(dark);
+  @include mzn-system.colors(dark);
 }
 
 /* Optional: compact density */

@@ -13,13 +13,25 @@ This package does **not** export React components. It is a styling and type laye
 
 ## Style Import Pattern
 
-Each component has its own style entry point. Import it once in your application (e.g. in your app entry file or a global CSS barrel):
+The recommended approach is to load all component styles at once via the SCSS barrel:
+
+```scss
+@use '@mezzanine-ui/system' as mzn-system;
+@use '@mezzanine-ui/core' as mzn-core;
+
+:root {
+  @include mzn-system.common-variables('default');
+  @include mzn-system.colors('light');
+}
+
+@include mzn-core.styles();
+```
+
+Per-component JS imports still work but are not the preferred approach:
 
 ```ts
 import '@mezzanine-ui/core/button/styles';
 import '@mezzanine-ui/core/input/styles';
-import '@mezzanine-ui/core/select/styles';
-import '@mezzanine-ui/core/modal/styles';
 ```
 
 Available style directories mirror component names: `accordion`, `alert-banner`, `anchor`, `backdrop`, `badge`, `breadcrumb`, `button`, `calendar`, `checkbox`, `drawer`, `empty`, `form`, `icon`, `inline-message`, `input`, `message`, `modal`, `navigation`, `page-footer`, `page-header`, `pagination`, `picker`, `portal`, `progress`, `radio`, `result-state`, `select`, `skeleton`, `slider`, `spin`, `stepper`, `tag`, `text-field`, `textarea`, `time-panel`, `toggle`, `tooltip`, `typography`, `upload`.

@@ -4,18 +4,18 @@
 
 ## General（基礎）
 
-| 元件             | 匯入名稱           | 說明                                                                                  |
-| ---------------- | ------------------ | ------------------------------------------------------------------------------------- |
-| Button           | `Button`           | 動作觸發按鈕，支援 primary / secondary / ghost / destructive / inverse 變體與多種尺寸 |
-| ButtonGroup      | `ButtonGroup`      | 將多個 Button 組合為群組，支援水平或垂直排列                                          |
-| Cropper          | `Cropper`          | 圖片裁切元件，支援自訂裁切區域與輸出尺寸                                              |
-| Icon             | `Icon`             | SVG 圖示元件，搭配 `@mezzanine-ui/icons` 使用，支援顏色與大小控制                     |
-| Layout           | `Layout`           | 頁面整體佈局容器，提供左側面板、主要內容區、右側面板的三欄結構                        |
-| LayoutLeftPanel  | `LayoutLeftPanel`  | 佈局左側面板區塊                                                                      |
-| LayoutMain       | `LayoutMain`       | 佈局主要內容區塊                                                                      |
-| LayoutRightPanel | `LayoutRightPanel` | 佈局右側面板區塊                                                                      |
-| Separator        | `Separator`        | 水平或垂直分隔線，用於視覺上區隔內容區塊                                              |
-| Typography       | `Typography`       | 文字排版元件，支援 h1–h6 / body / caption 等語意層級與顏色變體                        |
+| 元件             | 匯入名稱           | 說明                                                                                                                                                                                                  |
+| ---------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Button           | `Button`           | 動作觸發按鈕，支援 primary / secondary / ghost / destructive / inverse 變體與多種尺寸                                                                                                                 |
+| ButtonGroup      | `ButtonGroup`      | 將多個 Button 組合為群組，支援水平或垂直排列                                                                                                                                                          |
+| Cropper          | `Cropper`          | 圖片裁切元件，支援自訂裁切區域與輸出尺寸                                                                                                                                                              |
+| Icon             | `Icon`             | SVG 圖示元件，搭配 `@mezzanine-ui/icons` 使用，支援顏色與大小控制                                                                                                                                     |
+| Layout           | `Layout`           | 頁面整體佈局容器，提供左側面板、主要內容區、右側面板的三欄結構                                                                                                                                        |
+| LayoutLeftPanel  | `LayoutLeftPanel`  | 佈局左側面板區塊                                                                                                                                                                                      |
+| LayoutMain       | `LayoutMain`       | 佈局主要內容區塊                                                                                                                                                                                      |
+| LayoutRightPanel | `LayoutRightPanel` | 佈局右側面板區塊                                                                                                                                                                                      |
+| Separator        | `Separator`        | 水平或垂直分隔線，用於視覺上區隔內容區塊                                                                                                                                                              |
+| Typography       | `Typography`       | 文字排版元件，`variant` 為語意排版類型（`TypographySemanticType`），僅支援 `h1`、`h2`、`h3`（無 h4–h6），並提供 body / caption / annotation / button / input / label / text-link 系列共 21 種 variant |
 
 ## Navigation（導航）
 
@@ -180,6 +180,7 @@
 | Scale                  | `Scale`                  | 縮放動畫                                                                             |
 | Slide                  | `Slide`                  | 滑動動畫，Drawer 使用此元件進行進出場                                                |
 | Translate              | `Translate`              | 位移動畫                                                                             |
+| createNotifier         | `createNotifier`         | 工廠函式，建立通知管理器實例，用於指令式顯示 toast / 通知訊息                        |
 
 ---
 
@@ -265,3 +266,16 @@
 | `useTableSuperContext`         | 取得 Table 的上層 Context                             |
 | `useTableDataSource`           | 管理 Table 的資料來源、排序與篩選                     |
 | `useTableRowSelection`         | 管理 Table 的列選取狀態                               |
+
+---
+
+## 已廢棄元件（Deprecated）
+
+以下元件僅可透過 sub-path import 存取，不包含在主要 barrel export 中，未來版本可能移除。
+
+| 元件          | 替代方案                   | 說明                                       |
+| ------------- | -------------------------- | ------------------------------------------ |
+| Switch        | `Toggle`                   | 已被 Toggle 元件完全取代，提供更簡潔的 API |
+| ContentHeader | 自行組合 PageHeader 或自訂 | 頁面級別標頭，已從主要匯出移除             |
+| ClearActions  | 自行組合 Button            | 清除/關閉按鈕，已從主要匯出移除            |
+| Scrollbar     | 瀏覽器原生捲軸或自訂       | 自訂捲軸元件，已從主要匯出移除             |
