@@ -314,7 +314,7 @@ $file-icon-color: (
     flex: 1;
     display: flex;
     flex-flow: row;
-    align-items: flex-start;
+    align-items: center;
     gap: spacing.semantic-variable(gap, slim);
 
     &__filetype {
