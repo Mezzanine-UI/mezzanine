@@ -341,3 +341,54 @@ Layout component (`[mznLayout]`, `[mznLayoutMain]`, `[mznLayoutLeftPanel]`,
 `[mznLayoutRightPanel]`) is implemented and exported — verified by
 selector grep. Visual verification cascades from the Navigation fix.
 Logged to Phase 3A backlog alongside Navigation.
+
+### Transition directives (6/6) — PASS
+
+Verified one story per directive; each renders without error and
+applies the directive attribute:
+
+| Directive    | Story                                |
+| ------------ | ------------------------------------ |
+| mznFade      | `motion-transition--fade-story`      |
+| mznScale     | `motion-transition--scale-story`     |
+| mznSlide     | `motion-transition--slide-story`     |
+| mznTranslate | `motion-transition--translate-story` |
+| mznRotate    | `motion-transition--rotate-story`    |
+| mznCollapse  | `motion-transition--collapse-story`  |
+
+### Card skeleton family (4/4) — PASS with fixes
+
+2 component templates had orphan `</div>` from missing wrapper:
+
+- `MznSingleThumbnailCard` — missing `<div [class]="containerClass">` wrapper before tag/personalAction/ng-content/overlay group
+- `MznFourThumbnailCard` — missing `<div [class]="thumbnailGridClass">` wrapper before tag/personalAction/ng-content/emptySlot group
+- `MznSingleThumbnailCardSkeleton` — missing `<div [class]="singleThumbnailClass">` wrapper around the single skeleton div
+
+Fixed in commit `da1b1ea5` by restoring the wrapper divs to match
+React parity. `MznBaseCardSkeleton` and `MznQuickActionCardSkeleton`
+templates were already structurally sound.
+
+| Skeleton                       | Story                                                         |
+| ------------------------------ | ------------------------------------------------------------- |
+| base-card-skeleton             | `data-display-card-cardgroup--loading-base-card`              |
+| single-thumbnail-card-skeleton | `data-display-card-cardgroup--custom-thumbnail-skeleton-size` |
+| four-thumbnail-card-skeleton   | `data-display-card-cardgroup--custom-thumbnail-skeleton-size` |
+| quick-action-card-skeleton     | `data-display-card-cardgroup--loading-quick-action-card`      |
+
+### Empty sub-icon family (4/4) — PASS
+
+Verified via `feedback-empty--all-types`, which renders all 4 variants
+(initial-data / notification / result / system) in a single story.
+DOM contains 12 SVGs and `mzn-empty__icon` classes from every sub-icon
+directive. No port gaps.
+
+## Phase 3B Session 1 summary
+
+- **Covered**: Calendar (14), Date/Time picker (8), Navigation (6 BLOCKED),
+  Modal (4), Form (3), Layout (3 BLOCKED), Transition (6), Card skeleton (4),
+  Empty sub-icon (4) = **52 of 80 components**
+- **Pass**: 43 DOM-verified, 2 code-verified (calendar-quick-select, modal-body-container)
+- **Blocked**: 9 (Navigation 6 + Layout 3 — cascading from same port gap)
+- **Bugs fixed in code**: 3 (SingleThumbnailCard, FourThumbnailCard, SingleThumbnailCardSkeleton — orphan `</div>` templates)
+- **Port gaps discovered**: 1 (`MznNavigationOption` attribute-directive pattern breaks HTML5 `<li>` auto-close — Phase 3A backlog)
+- **Remaining Phase 3B**: Misc family (28 components) — next session
