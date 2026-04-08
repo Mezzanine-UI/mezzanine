@@ -34,27 +34,23 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  * ```
  */
 @Component({
-  selector: '[mznClearActions]',
+  selector: 'button[mznClearActions]',
   host: {
-    '[attr.type]': 'null',
+    '[attr.type]': "'button'",
+    '[attr.aria-label]': "'Close'",
     '[attr.variant]': 'null',
+    '[class]': 'hostClasses()',
+    '(click)': 'clicked.emit($event)',
   },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
   template: `
-    <button
-      aria-label="Close"
-      type="button"
-      [class]="hostClasses()"
-      (click)="clicked.emit($event)"
-    >
-      @if (type() === 'clearable') {
-        <i mznIcon [class]="iconClass" [icon]="dangerousIcon"></i>
-      } @else {
-        <i mznIcon [class]="iconClass" [icon]="closeIcon"></i>
-      }
-    </button>
+    @if (type() === 'clearable') {
+      <i mznIcon [class]="iconClass" [icon]="dangerousIcon"></i>
+    } @else {
+      <i mznIcon [class]="iconClass" [icon]="closeIcon"></i>
+    }
   `,
 })
 export class MznClearActions {
