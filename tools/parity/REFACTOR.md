@@ -32,6 +32,7 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 | P2-10    | `0d8263a6`  | tabs, tab-item, stepper, step, accordion(+title/content/actions/group), description(+title/content/group), filter-area, filter, filter-line | — | per-comp | 16 components; 8 at zero diffs; tab-item → <button>, description-content → <span> |
 | P2-11    | `0cdd6b7a`  | card family (12: base-card+skeleton, card-group, selection-card, single/four thumbnail cards +skeletons, quick-action-card+skeleton, thumbnail, thumbnail-card-info) | — | per-comp | selection-card → <label>, quick-action-card → <button>; 4 dynamic-wrapper collapses auto-applied; 6/12 at zero diffs |
 | P2-12    | `e4f54d66`  | upload family, cascader(+panel), table, cropper, transition directives (fade/scale/slide/translate/collapse), empty sub-icons | — | per-comp | 17 components; uploader → <label>; transitions + empty-icons are Angular-only; 82% total coverage reached |
+| P2-13    | `e6184cb2`  | calendar family (15: calendar, range-calendar, 13 sub-views) | — | 55/0×14 | script: splitHostEntries() helper to handle commas inside string values; 14/15 zero diffs; 90% total coverage |
 
 ## ⚠️ Diff-count masking — critical reading (mostly fixed in Phase 1)
 
