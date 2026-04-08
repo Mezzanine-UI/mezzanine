@@ -33,3 +33,9 @@ jobs:
 
       - name: Test
         run: yarn test
+
+      - name: Lint ng-content selectors (parity guard)
+        run: yarn parity:lint-ng-content
+
+      - name: Angular Storybook AOT build (catch template regressions)
+        run: yarn ng:build-storybook
