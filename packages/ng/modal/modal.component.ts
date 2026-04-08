@@ -104,25 +104,27 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
       (closed)="onBackdropClose()"
       (backdropClick)="backdropClick.emit()"
     >
-      @if (open()) {
-        <div [class]="hostClasses()" role="dialog" @mznScale>
-          @if (showModalHeader()) {
-            <ng-content select="mzn-modal-header" />
-          }
-          <ng-content />
-          @if (showModalFooter()) {
-            <ng-content select="mzn-modal-footer" />
-          }
-          @if (showDismissButton()) {
-            <button
-              mznClearActions
-              [class]="closeIconClass"
-              variant="base"
-              (clicked)="closed.emit()"
-            ></button>
-          }
-        </div>
-      }
+      <div [class]="contentWrapperClass">
+        @if (open()) {
+          <div [class]="hostClasses()" role="dialog" @mznScale>
+            @if (showModalHeader()) {
+              <ng-content select="mzn-modal-header" />
+            }
+            <ng-content />
+            @if (showModalFooter()) {
+              <ng-content select="mzn-modal-footer" />
+            }
+            @if (showDismissButton()) {
+              <button
+                mznClearActions
+                [class]="closeIconClass"
+                variant="base"
+                (clicked)="closed.emit()"
+              ></button>
+            }
+          </div>
+        }
+      </div>
     </div>
   `,
 })
@@ -195,6 +197,7 @@ export class MznModal {
   );
 
   protected readonly closeIconClass = classes.closeIcon;
+  protected readonly contentWrapperClass = classes.contentWrapper;
 
   constructor() {
     // Sync inputs to context for child components
