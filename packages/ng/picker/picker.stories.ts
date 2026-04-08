@@ -3,14 +3,13 @@ import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import {
-  MZN_CALENDAR_CONFIG,
-  createCalendarConfig,
-} from '@mezzanine-ui/ng/calendar';
+import { MznCalendarConfigProvider } from '@mezzanine-ui/ng/calendar';
 import { MznFormattedInput } from './formatted-input.component';
 import { MznPickerTrigger } from './picker-trigger.component';
 import { MznPickerTriggerWithSeparator } from './picker-trigger-with-separator.component';
 import { MznRangePickerTrigger } from './range-picker-trigger.component';
+
+const DayjsMethods = CalendarMethodsDayjs;
 
 const meta: Meta = {
   title: 'Internal/Picker',
@@ -21,13 +20,8 @@ const meta: Meta = {
         MznPickerTrigger,
         MznPickerTriggerWithSeparator,
         MznRangePickerTrigger,
+        MznCalendarConfigProvider,
         MznIcon,
-      ],
-      providers: [
-        {
-          provide: MZN_CALENDAR_CONFIG,
-          useValue: createCalendarConfig(CalendarMethodsDayjs),
-        },
       ],
     }),
   ],
@@ -42,9 +36,9 @@ export default meta;
 @Component({
   selector: 'story-formatted-input',
   standalone: true,
-  imports: [MznFormattedInput],
+  imports: [MznFormattedInput, MznCalendarConfigProvider],
   template: `
-    <div mznCalendarConfigProvider>
+    <div mznCalendarConfigProvider [methods]="DayjsMethods">
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
       <div
         mznFormattedInput
@@ -59,6 +53,8 @@ export default meta;
   `,
 })
 class FormattedInputStoryComponent {
+  readonly DayjsMethods = DayjsMethods;
+
   format = 'YYYY-MM-DD';
   placeholder: string | undefined = 'Select date';
   disabled = false;
@@ -75,7 +71,11 @@ class FormattedInputStoryComponent {
 }
 
 export const FormattedInputPlayground: StoryObj = {
-  decorators: [moduleMetadata({ imports: [FormattedInputStoryComponent] })],
+  decorators: [
+    moduleMetadata({
+      imports: [FormattedInputStoryComponent, MznCalendarConfigProvider],
+    }),
+  ],
   render: () => ({
     template: `<story-formatted-input />`,
   }),
@@ -84,8 +84,9 @@ export const FormattedInputPlayground: StoryObj = {
 export const FormattedInputDisabled: StoryObj = {
   parameters: { controls: { disable: true } },
   render: () => ({
+    props: { DayjsMethods },
     template: `
-      <div mznCalendarConfigProvider>
+      <div mznCalendarConfigProvider [methods]="DayjsMethods">
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div mznFormattedInput
             format="YYYY-MM-DD"
@@ -109,9 +110,9 @@ export const FormattedInputDisabled: StoryObj = {
 @Component({
   selector: 'story-picker-trigger',
   standalone: true,
-  imports: [MznPickerTrigger, MznIcon],
+  imports: [MznPickerTrigger, MznIcon, MznCalendarConfigProvider],
   template: `
-    <div mznCalendarConfigProvider>
+    <div mznCalendarConfigProvider [methods]="DayjsMethods">
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
       <div
         mznPickerTrigger
@@ -132,6 +133,8 @@ export const FormattedInputDisabled: StoryObj = {
   `,
 })
 class PickerTriggerStoryComponent {
+  readonly DayjsMethods = DayjsMethods;
+
   format = 'YYYY-MM-DD';
   placeholder: string | undefined = 'Select date';
   clearable = true;
@@ -156,7 +159,11 @@ class PickerTriggerStoryComponent {
 }
 
 export const PickerTriggerPlayground: StoryObj = {
-  decorators: [moduleMetadata({ imports: [PickerTriggerStoryComponent] })],
+  decorators: [
+    moduleMetadata({
+      imports: [PickerTriggerStoryComponent, MznCalendarConfigProvider],
+    }),
+  ],
   render: () => ({
     template: `<story-picker-trigger />`,
   }),
@@ -167,7 +174,7 @@ export const PickerTriggerStates: StoryObj = {
   render: () => ({
     props: { CalendarIcon },
     template: `
-      <div mznCalendarConfigProvider>
+      <div mznCalendarConfigProvider [methods]="DayjsMethods">
         <div style="display: flex; flex-direction: column; gap: 12px; min-width: 200px;">
           <div mznPickerTrigger
             format="YYYY-MM-DD"
@@ -210,9 +217,9 @@ export const PickerTriggerStates: StoryObj = {
 @Component({
   selector: 'story-picker-trigger-with-separator',
   standalone: true,
-  imports: [MznPickerTriggerWithSeparator, MznIcon],
+  imports: [MznPickerTriggerWithSeparator, MznIcon, MznCalendarConfigProvider],
   template: `
-    <div mznCalendarConfigProvider>
+    <div mznCalendarConfigProvider [methods]="DayjsMethods">
       <p style="margin: 0 0 8px 0"
         >Date: {{ dateValue() }} | Time: {{ timeValue() }}</p
       >
@@ -234,6 +241,8 @@ export const PickerTriggerStates: StoryObj = {
   `,
 })
 class PickerTriggerWithSeparatorStoryComponent {
+  readonly DayjsMethods = DayjsMethods;
+
   readonly calendarIcon = CalendarIcon;
   readonly dateValue = signal<string | undefined>(undefined);
   readonly timeValue = signal<string | undefined>(undefined);
@@ -254,7 +263,12 @@ class PickerTriggerWithSeparatorStoryComponent {
 
 export const PickerTriggerWithSeparatorPlayground: StoryObj = {
   decorators: [
-    moduleMetadata({ imports: [PickerTriggerWithSeparatorStoryComponent] }),
+    moduleMetadata({
+      imports: [
+        PickerTriggerWithSeparatorStoryComponent,
+        MznCalendarConfigProvider,
+      ],
+    }),
   ],
   render: () => ({
     template: `<story-picker-trigger-with-separator />`,
@@ -268,9 +282,9 @@ export const PickerTriggerWithSeparatorPlayground: StoryObj = {
 @Component({
   selector: 'story-range-picker-trigger',
   standalone: true,
-  imports: [MznRangePickerTrigger, MznIcon],
+  imports: [MznRangePickerTrigger, MznIcon, MznCalendarConfigProvider],
   template: `
-    <div mznCalendarConfigProvider>
+    <div mznCalendarConfigProvider [methods]="DayjsMethods">
       <p style="margin: 0 0 8px 0"
         >From: {{ fromValue() }} | To: {{ toValue() }}</p
       >
@@ -289,6 +303,8 @@ export const PickerTriggerWithSeparatorPlayground: StoryObj = {
   `,
 })
 class RangePickerTriggerStoryComponent {
+  readonly DayjsMethods = DayjsMethods;
+
   readonly fromValue = signal<string | undefined>(undefined);
   readonly toValue = signal<string | undefined>(undefined);
 
@@ -307,7 +323,11 @@ class RangePickerTriggerStoryComponent {
 }
 
 export const RangePickerTriggerPlayground: StoryObj = {
-  decorators: [moduleMetadata({ imports: [RangePickerTriggerStoryComponent] })],
+  decorators: [
+    moduleMetadata({
+      imports: [RangePickerTriggerStoryComponent, MznCalendarConfigProvider],
+    }),
+  ],
   render: () => ({
     template: `<story-range-picker-trigger />`,
   }),
@@ -316,8 +336,9 @@ export const RangePickerTriggerPlayground: StoryObj = {
 export const RangePickerTriggerStates: StoryObj = {
   parameters: { controls: { disable: true } },
   render: () => ({
+    props: { DayjsMethods },
     template: `
-      <div mznCalendarConfigProvider>
+      <div mznCalendarConfigProvider [methods]="DayjsMethods">
         <div style="display: flex; flex-direction: column; gap: 12px; min-width: 300px;">
           <div mznRangePickerTrigger
             format="YYYY-MM-DD"
