@@ -7,8 +7,8 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 | Metric             | Count | Percent |
 | ------------------ | ----- | ------- |
-| Attribute selector | 65    | 39%     |
-| Element selector   | 103   | 61%     |
+| Attribute selector | 73    | 43%     |
+| Element selector   | 95    | 57%     |
 | **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
@@ -108,10 +108,10 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp               | Status | Batch |
 | ------------------ | ------ | ----- |
-| dropdown           | ⬜     |       |
-| dropdown-item      | ⬜     |       |
-| dropdown-item-card | ⬜     |       |
-| dropdown-action    | ⬜     |       |
+| dropdown           | ✅     | P2-7  |
+| dropdown-item      | ✅     | P2-7  |
+| dropdown-item-card | ✅     | P2-7  |
+| dropdown-action    | ✅     | P2-7  |
 | dropdown-status    | ✅     | 3     |
 
 ### Select family
@@ -126,10 +126,10 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp                 | Status | Batch |
 | -------------------- | ------ | ----- |
-| pagination           | ⬜     |       |
-| pagination-item      | ⬜     |       |
-| pagination-jumper    | ⬜     |       |
-| pagination-page-size | ⬜     |       |
+| pagination           | ✅     | P2-7  |
+| pagination-item      | ✅     | P2-7  |
+| pagination-jumper    | ✅     | P2-7  |
+| pagination-page-size | ✅     | P2-7  |
 
 ### Navigation family
 

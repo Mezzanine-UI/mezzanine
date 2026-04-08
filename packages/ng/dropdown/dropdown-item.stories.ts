@@ -242,13 +242,13 @@ export const Playground: Story = {
       listboxId: 'dropdown-listbox',
     },
     template: `
-      <mzn-dropdown-item
+      <div mznDropdownItem
         [options]="options"
         [mode]="mode"
         [disabled]="disabled"
         [type]="type"
         [listboxId]="listboxId"
-      />
+      ></div>
     `,
   }),
 };
@@ -274,14 +274,14 @@ export const Basic: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px; position: relative;">
         <div style="font-size: 13px; font-weight: 600;">Icons Dropdown</div>
-        <mzn-dropdown-item
+        <div mznDropdownItem
           [options]="iconsOptions"
           mode="multiple"
           type="default"
           listboxId="icons-listbox"
-        />
+        ></div>
         <div style="font-size: 13px; font-weight: 600;">Actions Dropdown</div>
-        <mzn-dropdown-item
+        <div mznDropdownItem
           [options]="actionsOptions"
           [actionConfig]="actionConfig"
           mode="multiple"
@@ -290,7 +290,7 @@ export const Basic: Story = {
           [maxHeight]="'150px'"
           (actionCancelled)="onCancel()"
           (actionConfirmed)="onConfirm()"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -307,25 +307,27 @@ export const Basic: Story = {
       <div style="font-size: 13px; font-weight: 600;"
         >Single-Select Dropdown</div
       >
-      <mzn-dropdown-item
+      <div
+        mznDropdownItem
         [options]="treeOptions"
         mode="single"
         type="tree"
         listboxId="tree-single-listbox"
         [value]="singleValue()"
         (selected)="selectSingle($event)"
-      />
+      ></div>
       <div style="font-size: 13px; font-weight: 600;"
         >Multi-Select Dropdown</div
       >
-      <mzn-dropdown-item
+      <div
+        mznDropdownItem
         [options]="treeCheckedOptions"
         mode="multiple"
         type="tree"
         listboxId="tree-multi-listbox"
         [value]="multiValue()"
         (selected)="toggleMulti($event)"
-      />
+      ></div>
     </div>
   `,
 })
@@ -389,19 +391,19 @@ export const Grouped: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px; position: relative;">
         <div style="font-size: 13px; font-weight: 600;">Grouped Dropdown</div>
-        <mzn-dropdown-item
+        <div mznDropdownItem
           [options]="groupedOptions"
           mode="single"
           type="grouped"
           listboxId="grouped-listbox"
-        />
+        ></div>
         <div style="font-size: 13px; font-weight: 600;">Grouped Underline Dropdown</div>
-        <mzn-dropdown-item
+        <div mznDropdownItem
           [options]="groupedUnderlineOptions"
           mode="single"
           type="grouped"
           listboxId="grouped-underline-listbox"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -429,7 +431,8 @@ export const Grouped: Story = {
             <li
               style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px;"
             >
-              <mzn-dropdown-item-card
+              <div
+                mznDropdownItemCard
                 [mode]="'single'"
                 [label]="option.name"
                 [prependIcon]="option.icon"
@@ -438,7 +441,7 @@ export const Grouped: Story = {
                 checkSite="suffix"
                 style="flex: 1;"
                 (clicked)="selectedId.set(option.id)"
-              />
+              ></div>
               <span
                 style="font-size: 12px; color: #888; padding-right: 8px; white-space: nowrap;"
                 >{{ option.shortcutKeys[0] }}</span

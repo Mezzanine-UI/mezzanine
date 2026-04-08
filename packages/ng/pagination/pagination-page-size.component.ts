@@ -20,21 +20,26 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
  * ```html
  * import { MznPaginationPageSize } from '@mezzanine-ui/ng/pagination';
  *
- * <mzn-pagination-page-size
+ * <div mznPaginationPageSize
  *   label="每頁顯示："
  *   [options]="[10, 20, 50, 100]"
  *   [value]="pageSize"
  *   (pageSizeChanged)="onPageSizeChange($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-pagination-page-size',
+  selector: '[mznPaginationPageSize]',
   standalone: true,
   imports: [FormsModule, MznSelect, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.disabled]': 'null',
+    '[attr.label]': 'null',
+    '[attr.options]': 'null',
+    '[attr.renderOptionName]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     @if (label()) {

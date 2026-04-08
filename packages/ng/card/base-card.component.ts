@@ -102,14 +102,15 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
             >
               <i mznIcon [icon]="dotHorizontalIcon"></i>
             </button>
-            <mzn-dropdown
+            <div
+              mznDropdown
               [anchor]="overflowTrigger"
               [open]="overflowOpen()"
               [options]="options()"
               mode="single"
               (selected)="onOverflowOptionSelect($event)"
               (closed)="overflowOpen.set(false)"
-            />
+            ></div>
           </div>
         } @else if (type() === 'toggle') {
           <div [class]="headerActionClass">

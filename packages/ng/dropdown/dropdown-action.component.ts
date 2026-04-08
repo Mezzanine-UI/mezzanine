@@ -60,19 +60,28 @@ export interface DropdownActionProps {
  * ```html
  * import { MznDropdownAction } from '@mezzanine-ui/ng/dropdown';
  *
- * <mzn-dropdown-action
+ * <div mznDropdownAction
  *   [showActions]="true"
  *   cancelText="取消"
  *   confirmText="套用"
  *   (cancelled)="onCancel()"
  *   (confirmed)="onConfirm()"
- * />
+ * ></div>
  * ```
  *
  * @see MznDropdown
  */
 @Component({
-  selector: 'mzn-dropdown-action',
+  selector: '[mznDropdownAction]',
+  host: {
+    '[attr.actionText]': 'null',
+    '[attr.cancelText]': 'null',
+    '[attr.clearText]': 'null',
+    '[attr.confirmText]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.showActions]': 'null',
+    '[attr.showTopBar]': 'null',
+  },
   standalone: true,
   imports: [MznButton, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,

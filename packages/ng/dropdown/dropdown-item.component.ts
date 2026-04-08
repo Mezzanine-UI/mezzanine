@@ -49,12 +49,12 @@ export interface DropdownFlatTreeNode {
  * ```html
  * import { MznDropdownItem } from '@mezzanine-ui/ng/dropdown';
  *
- * <mzn-dropdown-item
+ * <div mznDropdownItem
  *   [options]="options"
  *   [value]="selected"
  *   mode="single"
  *   (selected)="onSelect($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznDropdown
@@ -62,7 +62,27 @@ export interface DropdownFlatTreeNode {
  * @see MznDropdownStatus
  */
 @Component({
-  selector: 'mzn-dropdown-item',
+  selector: '[mznDropdownItem]',
+  host: {
+    '[attr.actionConfig]': 'null',
+    '[attr.activeIndex]': 'null',
+    '[attr.customWidth]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.emptyIcon]': 'null',
+    '[attr.emptyText]': 'null',
+    '[attr.loadingPosition]': 'null',
+    '[attr.loadingText]': 'null',
+    '[attr.listboxLabel]': 'null',
+    '[attr.listboxId]': 'null',
+    '[attr.maxHeight]': 'null',
+    '[attr.minWidth]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.options]': 'null',
+    '[attr.showCheckIcon]': 'null',
+    '[attr.status]': 'null',
+    '[attr.type]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [MznDropdownAction, MznDropdownItemCard, MznDropdownStatus],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -100,7 +120,8 @@ export interface DropdownFlatTreeNode {
                   track option.id;
                   let i = $index
                 ) {
-                  <mzn-dropdown-item-card
+                  <div
+                    mznDropdownItemCard
                     [active]="isActive(groupedOptionIndex(group, i))"
                     [checked]="isSelected(option)"
                     [checkSite]="option.checkSite ?? 'suffix'"
@@ -111,12 +132,13 @@ export interface DropdownFlatTreeNode {
                     [showUnderline]="option.showUnderline ?? false"
                     [validate]="option.validate ?? 'default'"
                     (clicked)="onOptionClick(option)"
-                  />
+                  ></div>
                 }
               }
             } @else if (type() === 'tree') {
               @for (item of flattenedTreeOptions(); track item.option.id) {
-                <mzn-dropdown-item-card
+                <div
+                  mznDropdownItemCard
                   [active]="isActive(item.index)"
                   [checked]="isTreeNodeChecked(item.option)"
                   [checkSite]="
@@ -139,11 +161,12 @@ export interface DropdownFlatTreeNode {
                   [validate]="item.option.validate ?? 'default'"
                   (clicked)="onTreeOptionClick(item.option, item.hasChildren)"
                   (checkedChange)="onTreeCheckedChange(item.option)"
-                />
+                ></div>
               }
             } @else {
               @for (option of options(); track option.id; let i = $index) {
-                <mzn-dropdown-item-card
+                <div
+                  mznDropdownItemCard
                   [active]="isActive(i)"
                   [checked]="isSelected(option)"
                   [checkSite]="option.checkSite ?? 'suffix'"
@@ -155,7 +178,7 @@ export interface DropdownFlatTreeNode {
                   [showUnderline]="option.showUnderline ?? false"
                   [validate]="option.validate ?? 'default'"
                   (clicked)="onOptionClick(option)"
-                />
+                ></div>
               }
             }
             @if (shouldShowBottomLoading()) {
@@ -171,7 +194,8 @@ export interface DropdownFlatTreeNode {
           @if (actionConfig(); as ac) {
             @if (ac.showActions) {
               <div>
-                <mzn-dropdown-action
+                <div
+                  mznDropdownAction
                   [showActions]="ac.showActions ?? false"
                   [showTopBar]="ac.showTopBar ?? false"
                   [actionText]="ac.actionText"
@@ -183,7 +207,7 @@ export interface DropdownFlatTreeNode {
                   (confirmed)="actionConfirmed.emit()"
                   (cleared)="actionCleared.emit()"
                   (customClicked)="actionCustomClicked.emit()"
-                />
+                ></div>
               </div>
             }
           }
@@ -217,7 +241,8 @@ export interface DropdownFlatTreeNode {
                 track option.id;
                 let i = $index
               ) {
-                <mzn-dropdown-item-card
+                <div
+                  mznDropdownItemCard
                   [active]="isActive(groupedOptionIndex(group, i))"
                   [checked]="isSelected(option)"
                   [checkSite]="option.checkSite ?? 'suffix'"
@@ -228,12 +253,13 @@ export interface DropdownFlatTreeNode {
                   [showUnderline]="option.showUnderline ?? false"
                   [validate]="option.validate ?? 'default'"
                   (clicked)="onOptionClick(option)"
-                />
+                ></div>
               }
             }
           } @else if (type() === 'tree') {
             @for (item of flattenedTreeOptions(); track item.option.id) {
-              <mzn-dropdown-item-card
+              <div
+                mznDropdownItemCard
                 [active]="isActive(item.index)"
                 [checked]="isTreeNodeChecked(item.option)"
                 [checkSite]="
@@ -256,11 +282,12 @@ export interface DropdownFlatTreeNode {
                 [validate]="item.option.validate ?? 'default'"
                 (clicked)="onTreeOptionClick(item.option, item.hasChildren)"
                 (checkedChange)="onTreeCheckedChange(item.option)"
-              />
+              ></div>
             }
           } @else {
             @for (option of options(); track option.id; let i = $index) {
-              <mzn-dropdown-item-card
+              <div
+                mznDropdownItemCard
                 [active]="isActive(i)"
                 [checked]="isSelected(option)"
                 [checkSite]="option.checkSite ?? 'suffix'"
@@ -272,7 +299,7 @@ export interface DropdownFlatTreeNode {
                 [showUnderline]="option.showUnderline ?? false"
                 [validate]="option.validate ?? 'default'"
                 (clicked)="onOptionClick(option)"
-              />
+              ></div>
             }
           }
           @if (shouldShowBottomLoading()) {
@@ -288,7 +315,8 @@ export interface DropdownFlatTreeNode {
         @if (actionConfig(); as ac) {
           @if (ac.showActions) {
             <div>
-              <mzn-dropdown-action
+              <div
+                mznDropdownAction
                 [showActions]="ac.showActions ?? false"
                 [showTopBar]="ac.showTopBar ?? false"
                 [actionText]="ac.actionText"
@@ -300,7 +328,7 @@ export interface DropdownFlatTreeNode {
                 (confirmed)="actionConfirmed.emit()"
                 (cleared)="actionCleared.emit()"
                 (customClicked)="actionCustomClicked.emit()"
-              />
+              ></div>
             </div>
           }
         }

@@ -17,7 +17,8 @@ type Story = StoryObj;
   standalone: true,
   imports: [MznPagination],
   template: `
-    <mzn-pagination
+    <nav
+      mznPagination
       [boundaryCount]="boundaryCount()"
       [buttonText]="buttonText()"
       [current]="current()"
@@ -34,7 +35,7 @@ type Story = StoryObj;
       [total]="total()"
       (pageChanged)="current.set($event)"
       (pageSizeChanged)="pageSize.set($event)"
-    />
+    ></nav>
   `,
 })
 class PaginationPlaygroundComponent {
@@ -184,18 +185,20 @@ export const Playground: Story = {
     <div style="display: flex; flex-direction: column; gap: 24px;">
       <div>
         Basic
-        <mzn-pagination
+        <nav
+          mznPagination
           [current]="current()"
           [pageSize]="pageSize()"
           [pageSizeOptions]="[10, 20, 50, 100]"
           [total]="100"
           (pageChanged)="current.set($event)"
           (pageSizeChanged)="pageSize.set($event)"
-        />
+        ></nav>
       </div>
       <div>
         With Page Size Options
-        <mzn-pagination
+        <nav
+          mznPagination
           [showPageSizeOptions]="true"
           [current]="current()"
           [pageSize]="pageSize()"
@@ -204,11 +207,12 @@ export const Playground: Story = {
           [total]="100"
           (pageChanged)="current.set($event)"
           (pageSizeChanged)="pageSize.set($event)"
-        />
+        ></nav>
       </div>
       <div>
         With Jumper Options
-        <mzn-pagination
+        <nav
+          mznPagination
           [showJumper]="true"
           [current]="current()"
           [pageSize]="pageSize()"
@@ -218,11 +222,12 @@ export const Playground: Story = {
           [inputPlaceholder]="'1'"
           (pageChanged)="current.set($event)"
           (pageSizeChanged)="pageSize.set($event)"
-        />
+        ></nav>
       </div>
       <div>
         Full Featured
-        <mzn-pagination
+        <nav
+          mznPagination
           [showPageSizeOptions]="true"
           [showJumper]="true"
           [current]="current()"
@@ -236,17 +241,18 @@ export const Playground: Story = {
           [total]="100"
           (pageChanged)="current.set($event)"
           (pageSizeChanged)="pageSize.set($event)"
-        />
+        ></nav>
       </div>
       <div>
         Disabled
-        <mzn-pagination
+        <nav
+          mznPagination
           [current]="current()"
           [disabled]="true"
           [pageSize]="10"
           [total]="100"
           (pageChanged)="current.set($event)"
-        />
+        ></nav>
       </div>
     </div>
   `,

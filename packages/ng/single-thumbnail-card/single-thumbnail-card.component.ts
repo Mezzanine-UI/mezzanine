@@ -126,14 +126,15 @@ export interface SingleThumbnailCardDefaultOptions {
           >
             <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
           </button>
-          <mzn-dropdown
+          <div
+            mznDropdown
             [anchor]="overflowTrigger"
             [open]="overflowOpen()"
             [options]="actionOptionsForOverflow?.options"
             mode="single"
             (selected)="onOptionSelect($event)"
             (closed)="closeOverflow()"
-          />
+          ></div>
         </div>
       }
     </div>

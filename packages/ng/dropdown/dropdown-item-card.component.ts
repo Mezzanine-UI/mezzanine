@@ -29,18 +29,35 @@ import clsx from 'clsx';
  * ```html
  * import { MznDropdownItemCard } from '@mezzanine-ui/ng/dropdown';
  *
- * <mzn-dropdown-item-card
+ * <div mznDropdownItemCard
  *   label="Option A"
  *   mode="single"
  *   [checked]="isSelected"
  *   (clicked)="onSelect()"
- * />
+ * ></div>
  * ```
  *
  * @see MznDropdown
  */
 @Component({
-  selector: 'mzn-dropdown-item-card',
+  selector: '[mznDropdownItemCard]',
+  host: {
+    '[attr.active]': 'null',
+    '[attr.appendContent]': 'null',
+    '[attr.appendIcon]': 'null',
+    '[attr.checked]': 'null',
+    '[attr.checkSite]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.id]': 'null',
+    '[attr.indeterminate]': 'null',
+    '[attr.label]': 'null',
+    '[attr.level]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.prependIcon]': 'null',
+    '[attr.showUnderline]': 'null',
+    '[attr.subTitle]': 'null',
+    '[attr.validate]': 'null',
+  },
   standalone: true,
   imports: [MznCheckbox, MznIcon, MznSeparator, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,

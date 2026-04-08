@@ -27,13 +27,19 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
  * ```html
  * import { MznPaginationItem } from '@mezzanine-ui/ng/pagination';
  *
- * <mzn-pagination-item [page]="3" [active]="true" (itemClick)="onPageClick(3)" />
- * <mzn-pagination-item type="previous" [disabled]="true" />
- * <mzn-pagination-item type="ellipsis" />
+ * <div mznPaginationItem [page]="3" [active]="true" (itemClick)="onPageClick(3)" ></div>
+ * <div mznPaginationItem type="previous" [disabled]="true" ></div>
+ * <div mznPaginationItem type="ellipsis" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-pagination-item',
+  selector: '[mznPaginationItem]',
+  host: {
+    '[attr.active]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.page]': 'null',
+    '[attr.type]': 'null',
+  },
   standalone: true,
   imports: [MznIcon, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -75,7 +75,7 @@ export const Playground: Story = {
     },
     template: `
       <div style="background-color: #d3d3d3; height: 100px; width: 188px; display: flex; align-items: center;">
-        <mzn-dropdown-action
+        <div mznDropdownAction
           [showActions]="showActions"
           [showTopBar]="showTopBar"
           [mode]="mode"
@@ -83,7 +83,7 @@ export const Playground: Story = {
           [confirmText]="confirmText || undefined"
           (cancelled)="onCancel()"
           (confirmed)="onConfirm()"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -98,10 +98,10 @@ export const withCustomAction: Story = {
     },
     template: `
       <div style="background-color: #d3d3d3; height: 100px; width: 188px; display: flex; align-items: center;">
-        <mzn-dropdown-action
+        <div mznDropdownAction
           [showActions]="true"
           (confirmed)="onClick()"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -116,11 +116,11 @@ export const withClearAction: Story = {
     },
     template: `
       <div style="background-color: #d3d3d3; height: 100px; width: 188px; display: flex; align-items: center;">
-        <mzn-dropdown-action
+        <div mznDropdownAction
           [showActions]="true"
           mode="clear"
           (cleared)="onClear()"
-        />
+        ></div>
       </div>
     `,
   }),

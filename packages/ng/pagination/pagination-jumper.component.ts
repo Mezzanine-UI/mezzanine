@@ -18,23 +18,29 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
  * ```html
  * import { MznPaginationJumper } from '@mezzanine-ui/ng/pagination';
  *
- * <mzn-pagination-jumper
+ * <div mznPaginationJumper
  *   buttonText="確認"
  *   hintText="前往"
  *   inputPlaceholder="1"
  *   [pageSize]="10"
  *   [total]="100"
  *   (pageChanged)="onPageChange($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-pagination-jumper',
+  selector: '[mznPaginationJumper]',
   standalone: true,
   imports: [MznButton, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.buttonText]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.hintText]': 'null',
+    '[attr.inputPlaceholder]': 'null',
+    '[attr.pageSize]': 'null',
+    '[attr.total]': 'null',
   },
   template: `
     @if (hintText()) {

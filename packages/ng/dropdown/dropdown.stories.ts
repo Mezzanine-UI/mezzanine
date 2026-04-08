@@ -93,7 +93,8 @@ const usStatesOptions: DropdownOption[] = [
       <button #anchor mznButton variant="base-primary" (click)="toggle()">
         {{ selectedLabel() }}
       </button>
-      <mzn-dropdown
+      <div
+        mznDropdown
         [anchor]="anchor"
         [disabled]="disabled()"
         [open]="open()"
@@ -102,7 +103,7 @@ const usStatesOptions: DropdownOption[] = [
         [value]="value()"
         (selected)="onSelect($event)"
         (closed)="open.set(false)"
-      />
+      ></div>
     </div>
   `,
 })
@@ -197,14 +198,15 @@ export const Playground: Story = {
           placeholder="Type or select a state..."
           style="width: 100%; padding: 8px; box-sizing: border-box;"
         />
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor"
           [open]="open()"
           [options]="filteredOptions()"
           [value]="selectedId()"
           (selected)="onSelect($event)"
           (closed)="open.set(false)"
-        />
+        ></div>
       </div>
     </div>
   `,
@@ -265,14 +267,15 @@ export const AutoCompleteExample: Story = {
             placeholder="請選擇或輸入..."
             style="width: 100%; padding: 8px; box-sizing: border-box;"
           />
-          <mzn-dropdown
+          <div
+            mznDropdown
             [anchor]="anchor"
             [open]="open()"
             [options]="filteredOptions()"
             [value]="selectedId()"
             (selected)="onSelect($event)"
             (closed)="open.set(false)"
-          />
+          ></div>
         </div>
       </div>
     </div>
@@ -333,14 +336,15 @@ export const Inside: Story = {
           (click)="togglePlacement('top-start', anchor1)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor1"
           [open]="isOpen('top-start')"
           [options]="options"
           placement="top-start"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div
         style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
@@ -353,14 +357,15 @@ export const Inside: Story = {
           (click)="togglePlacement('top', anchor2)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor2"
           [open]="isOpen('top')"
           [options]="options"
           placement="top"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div
         style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
@@ -373,14 +378,15 @@ export const Inside: Story = {
           (click)="togglePlacement('top-end', anchor3)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor3"
           [open]="isOpen('top-end')"
           [options]="options"
           placement="top-end"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div></div>
       <div
@@ -394,14 +400,15 @@ export const Inside: Story = {
           (click)="togglePlacement('left-start', anchor4)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor4"
           [open]="isOpen('left-start')"
           [options]="options"
           placement="left-start"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div></div><div></div><div></div>
       <div
@@ -415,14 +422,15 @@ export const Inside: Story = {
           (click)="togglePlacement('right-start', anchor5)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor5"
           [open]="isOpen('right-start')"
           [options]="options"
           placement="right-start"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div
         style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
@@ -435,14 +443,15 @@ export const Inside: Story = {
           (click)="togglePlacement('left', anchor6)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor6"
           [open]="isOpen('left')"
           [options]="options"
           placement="left"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div></div><div></div><div></div>
       <div
@@ -456,14 +465,15 @@ export const Inside: Story = {
           (click)="togglePlacement('right', anchor7)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor7"
           [open]="isOpen('right')"
           [options]="options"
           placement="right"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div
         style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
@@ -476,14 +486,15 @@ export const Inside: Story = {
           (click)="togglePlacement('left-end', anchor8)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor8"
           [open]="isOpen('left-end')"
           [options]="options"
           placement="left-end"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div></div><div></div><div></div>
       <div
@@ -497,14 +508,15 @@ export const Inside: Story = {
           (click)="togglePlacement('right-end', anchor9)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor9"
           [open]="isOpen('right-end')"
           [options]="options"
           placement="right-end"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div></div>
       <div
@@ -518,14 +530,15 @@ export const Inside: Story = {
           (click)="togglePlacement('bottom-start', anchor10)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor10"
           [open]="isOpen('bottom-start')"
           [options]="options"
           placement="bottom-start"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div
         style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
@@ -538,14 +551,15 @@ export const Inside: Story = {
           (click)="togglePlacement('bottom', anchor11)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor11"
           [open]="isOpen('bottom')"
           [options]="options"
           placement="bottom"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div
         style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
@@ -558,14 +572,15 @@ export const Inside: Story = {
           (click)="togglePlacement('bottom-end', anchor12)"
           >...</button
         >
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor12"
           [open]="isOpen('bottom-end')"
           [options]="options"
           placement="bottom-end"
           (selected)="closeAll()"
           (closed)="closeAll()"
-        />
+        ></div>
       </div>
       <div></div>
     </div>
@@ -626,14 +641,15 @@ export const PlacementExample: Story = {
       <button #anchor mznButton variant="base-primary" (click)="toggle()">{{
         selectedLabel()
       }}</button>
-      <mzn-dropdown
+      <div
+        mznDropdown
         [anchor]="anchor"
         [open]="open()"
         [options]="options"
         [value]="value()"
         (selected)="onSelect($event)"
         (closed)="open.set(false)"
-      />
+      ></div>
     </div>
   `,
 })
@@ -679,7 +695,8 @@ export const ControlledVisibility: Story = {
         <button #anchor mznButton variant="base-primary" (click)="toggle()">{{
           selectedLabel()
         }}</button>
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="anchor"
           [open]="open()"
           [options]="options()"
@@ -692,7 +709,7 @@ export const ControlledVisibility: Story = {
           (selected)="onSelect($event)"
           (closed)="open.set(false)"
           (reachBottom)="loadMore()"
-        />
+        ></div>
       </div>
       @if (loading()) {
         <div style="font-size: 12px; color: #666;">正在載入更多選項...</div>

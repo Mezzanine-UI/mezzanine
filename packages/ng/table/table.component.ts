@@ -392,13 +392,14 @@ function nextSortOrder(current: SortOrder): SortOrder {
     </div>
     @if (pagination()) {
       <div [class]="paginationWrapperClass">
-        <mzn-pagination
+        <nav
+          mznPagination
           [current]="pagination()!.current ?? 1"
           [pageSize]="pagination()!.pageSize ?? 10"
           [total]="pagination()!.total"
           [disabled]="pagination()!.disabled ?? false"
           (pageChanged)="onPaginationChange($event)"
-        />
+        ></nav>
       </div>
     }
   `,

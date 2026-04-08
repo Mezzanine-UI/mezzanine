@@ -38,16 +38,16 @@ function range(start: number, end: number): ReadonlyArray<number> {
  * ```html
  * import { MznPagination } from '@mezzanine-ui/ng/pagination';
  *
- * <mzn-pagination
+ * <nav mznPagination
  *   [total]="200"
  *   [current]="currentPage"
  *   [pageSize]="10"
  *   (pageChanged)="currentPage = $event"
- * />
+ * ></nav>
  * ```
  */
 @Component({
-  selector: 'mzn-pagination',
+  selector: '[mznPagination]',
   standalone: true,
   imports: [
     MznTypography,
@@ -61,6 +61,21 @@ function range(start: number, end: number): ReadonlyArray<number> {
     role: 'navigation',
     'aria-label': 'pagination navigation',
     '[class]': 'hostClass',
+    '[attr.boundaryCount]': 'null',
+    '[attr.current]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.pageSize]': 'null',
+    '[attr.siblingCount]': 'null',
+    '[attr.total]': 'null',
+    '[attr.showJumper]': 'null',
+    '[attr.buttonText]': 'null',
+    '[attr.hintText]': 'null',
+    '[attr.inputPlaceholder]': 'null',
+    '[attr.showPageSizeOptions]': 'null',
+    '[attr.pageSizeLabel]': 'null',
+    '[attr.pageSizeOptions]': 'null',
+    '[attr.renderPageSizeOptionName]': 'null',
+    '[attr.renderResultSummary]': 'null',
   },
   template: `
     @if (renderResultSummary()) {
@@ -73,14 +88,15 @@ function range(start: number, end: number): ReadonlyArray<number> {
     }
     @if (showPageSizeOptions()) {
       <li [class]="pageSizeContainerClass">
-        <mzn-pagination-page-size
+        <div
+          mznPaginationPageSize
           [disabled]="disabled()"
           [label]="pageSizeLabel()"
           [options]="pageSizeOptions()"
           [renderOptionName]="renderPageSizeOptionName()"
           [value]="pageSize()"
           (pageSizeChanged)="pageSizeChanged.emit($event)"
-        />
+        ></div>
       </li>
     }
     <ul [class]="containerClass">
@@ -94,13 +110,14 @@ function range(start: number, end: number): ReadonlyArray<number> {
                   [ngTemplateOutletContext]="{ $implicit: item }"
                 />
               } @else {
-                <mzn-pagination-item
+                <div
+                  mznPaginationItem
                   [active]="item.active"
                   [disabled]="item.disabled"
                   [page]="item.page"
                   [type]="item.type"
                   (itemClick)="onItemClick(item)"
-                />
+                ></div>
               }
             </li>
           }
@@ -108,7 +125,8 @@ function range(start: number, end: number): ReadonlyArray<number> {
       </li>
       @if (showJumper()) {
         <li [class]="jumperContainerClass">
-          <mzn-pagination-jumper
+          <div
+            mznPaginationJumper
             [buttonText]="buttonText()"
             [disabled]="disabled()"
             [hintText]="hintText()"
@@ -116,7 +134,7 @@ function range(start: number, end: number): ReadonlyArray<number> {
             [pageSize]="pageSize()"
             [total]="total()"
             (pageChanged)="pageChanged.emit($event)"
-          />
+          ></div>
         </li>
       }
     </ul>

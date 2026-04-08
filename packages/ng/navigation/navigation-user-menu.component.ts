@@ -32,8 +32,8 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
  * <mzn-navigation-user-menu imgSrc="/avatar.png" placement="top-end">
  *   <span userName>John Doe</span>
  *   <ng-template #menuContent>
- *     <mzn-dropdown-item-card label="個人設定" />
- *     <mzn-dropdown-item-card label="登出" />
+ *     <div mznDropdownItemCard label="個人設定" ></div>
+ *     <div mznDropdownItemCard label="登出" ></div>
  *   </ng-template>
  * </mzn-navigation-user-menu>
  * ```
@@ -77,14 +77,15 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
         <i mznIcon [class]="classes.icon" [icon]="chevronDownIcon"></i>
       </span>
     </button>
-    <mzn-dropdown
+    <div
+      mznDropdown
       [anchor]="menuAnchor"
       [open]="isOpen()"
       [placement]="currentPlacement()"
       (closed)="handleClose()"
     >
       <ng-content select="[menuContent], ng-template" />
-    </mzn-dropdown>
+    </div>
   `,
 })
 export class MznNavigationUserMenu implements OnInit, OnDestroy {

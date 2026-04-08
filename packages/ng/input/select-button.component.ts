@@ -67,7 +67,8 @@ import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
       ></i>
     </button>
     @if (options()?.length) {
-      <mzn-dropdown
+      <div
+        mznDropdown
         [anchor]="buttonElRef()"
         [open]="open()"
         [options]="options()!"
@@ -78,7 +79,7 @@ import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
         [zIndex]="1000"
         (selected)="onOptionSelect($event)"
         (closed)="open.set(false)"
-      />
+      ></div>
     }
   `,
 })

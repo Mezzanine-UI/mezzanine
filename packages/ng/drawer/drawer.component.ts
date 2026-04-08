@@ -213,14 +213,15 @@ export interface DrawerFilterConfig {
                   >
                     <i mznIcon [icon]="dotHorizontalIcon"></i>
                   </button>
-                  <mzn-dropdown
+                  <div
+                    mznDropdown
                     [anchor]="filterDropdownAnchor"
                     [open]="filterDropdownOpen()"
                     [options]="filterConfig()!.options!"
                     placement="bottom-end"
                     (selected)="onFilterOptionSelected($event)"
                     (closed)="filterDropdownOpen.set(false)"
-                  />
+                  ></div>
                 } @else {
                   <button
                     mznButton

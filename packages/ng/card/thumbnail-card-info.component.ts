@@ -117,14 +117,15 @@ export type ThumbnailCardInfoType = 'default' | 'action' | 'overflow';
         >
           <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
         </button>
-        <mzn-dropdown
+        <div
+          mznDropdown
           [anchor]="overflowTrigger"
           [open]="overflowOpen()"
           [options]="resolvedOptions()"
           mode="single"
           (selected)="onOptionSelect($event)"
           (closed)="closeOverflow()"
-        />
+        ></div>
       </div>
     }
   `,

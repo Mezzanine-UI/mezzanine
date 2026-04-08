@@ -61,27 +61,58 @@ export interface DropdownActionConfig {
  * import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
  *
  * <button #anchor (click)="open = !open">Options</button>
- * <mzn-dropdown
+ * <div mznDropdown
  *   [anchor]="anchor"
  *   [open]="open"
  *   [options]="options"
  *   [value]="selected"
  *   (selected)="onSelect($event)"
  *   (closed)="open = false"
- * />
+ * ></div>
  * ```
  *
  * @see MznSelect
  * @see MznPopper
  */
 @Component({
-  selector: 'mzn-dropdown',
+  selector: '[mznDropdown]',
   standalone: true,
   imports: [MznPopper, MznDropdownItem],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [mznTranslateTopAnimation],
   host: {
     '[attr.name]': 'name() ?? null',
+    '[attr.actionCancelText]': 'null',
+    '[attr.actionClearText]': 'null',
+    '[attr.actionConfirmText]': 'null',
+    '[attr.actionConfig]': 'null',
+    '[attr.actionText]': 'null',
+    '[attr.activeIndex]': 'null',
+    '[attr.anchor]': 'null',
+    '[attr.customWidth]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.disableClickAway]': 'null',
+    '[attr.emptyIcon]': 'null',
+    '[attr.emptyText]': 'null',
+    '[attr.inputPosition]': 'null',
+    '[attr.loadingPosition]': 'null',
+    '[attr.loadingText]': 'null',
+    '[attr.listboxId]': 'null',
+    '[attr.listboxLabel]': 'null',
+    '[attr.maxHeight]': 'null',
+    '[attr.minWidth]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.open]': 'null',
+    '[attr.options]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.showActionShowTopBar]': 'null',
+    '[attr.showCheckIcon]': 'null',
+    '[attr.showDropdownActions]': 'null',
+    '[attr.showHeader]': 'null',
+    '[attr.status]': 'null',
+    '[attr.type]': 'null',
+    '[attr.value]': 'null',
+    '[attr.zIndex]': 'null',
   },
   template: `
     <div
@@ -101,7 +132,8 @@ export interface DropdownActionConfig {
               </div>
             </li>
           }
-          <mzn-dropdown-item
+          <div
+            mznDropdownItem
             [actionConfig]="resolvedActionConfig()"
             [activeIndex]="activeIndex()"
             [customWidth]="customWidth()"
@@ -127,7 +159,7 @@ export interface DropdownActionConfig {
             (leaveBottom)="leaveBottom.emit()"
             (reachBottom)="reachBottom.emit()"
             (selected)="onItemSelected($event)"
-          />
+          ></div>
         </div>
       }
     </div>

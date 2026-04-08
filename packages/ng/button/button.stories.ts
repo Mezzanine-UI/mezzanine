@@ -327,14 +327,15 @@ export const AsLink: Story = {
         (click)="toggle()"
         ><i mznIcon [icon]="DotHorizontalIcon" [size]="16"></i
       ></button>
-      <mzn-dropdown
+      <div
+        mznDropdown
         [anchor]="anchorEl"
         [open]="open()"
         [options]="options"
         placement="bottom-start"
         (closed)="open.set(false)"
         (selected)="onSelect($event)"
-      />
+      ></div>
     </div>
   `,
 })
