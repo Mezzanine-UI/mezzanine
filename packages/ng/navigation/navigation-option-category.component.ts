@@ -6,19 +6,20 @@ import { navigationOptionCategoryClasses as classes } from '@mezzanine-ui/core/n
  *
  * @example
  * ```html
- * <mzn-navigation-option-category title="管理">
- *   <mzn-navigation-option title="使用者" />
- *   <mzn-navigation-option title="角色" />
- * </mzn-navigation-option-category>
+ * <li mznNavigationOptionCategory title="管理">
+ *   <li mznNavigationOption title="使用者" ></li>
+ *   <li mznNavigationOption title="角色" ></li>
+ * </li>
  * ```
  */
 @Component({
-  selector: 'mzn-navigation-option-category',
+  selector: '[mznNavigationOptionCategory]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
     role: 'menuitem',
+    '[attr.title]': 'null',
   },
   template: `
     <span [class]="titleClass">{{ title() }}</span>

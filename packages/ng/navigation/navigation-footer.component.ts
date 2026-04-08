@@ -16,13 +16,13 @@ import {
  *
  * @example
  * ```html
- * <mzn-navigation-footer>
+ * <footer mznNavigationFooter>
  *   <button>設定</button>
- * </mzn-navigation-footer>
+ * </footer>
  * ```
  */
 @Component({
-  selector: 'mzn-navigation-footer',
+  selector: '[mznNavigationFooter]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

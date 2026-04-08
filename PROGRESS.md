@@ -7,8 +7,8 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 | Metric             | Count | Percent |
 | ------------------ | ----- | ------- |
-| Attribute selector | 73    | 43%     |
-| Element selector   | 95    | 57%     |
+| Attribute selector | 80    | 48%     |
+| Element selector   | 88    | 52%     |
 | **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
@@ -135,13 +135,13 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp                       | Status | Batch |
 | -------------------------- | ------ | ----- |
-| navigation                 | ⬜     |       |
-| navigation-header          | ⬜     |       |
-| navigation-footer          | ⬜     |       |
-| navigation-icon-button     | ⬜     |       |
-| navigation-option          | ⬜     |       |
-| navigation-option-category | ⬜     |       |
-| navigation-user-menu       | ⬜     |       |
+| navigation                 | ✅     | P2-8  |
+| navigation-header          | ✅     | P2-8  |
+| navigation-footer          | ✅     | P2-8  |
+| navigation-icon-button     | ✅     | P2-8  |
+| navigation-option          | ✅     | P2-8  |
+| navigation-option-category | ✅     | P2-8  |
+| navigation-user-menu       | ✅     | P2-8  |
 
 ### Anchor / Breadcrumb
 

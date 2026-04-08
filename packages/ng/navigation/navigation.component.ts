@@ -67,22 +67,22 @@ export type NavigationItemConfig =
  * ```html
  * import { MznNavigation, MznNavigationOption, MznNavigationHeader, MznNavigationFooter } from '@mezzanine-ui/ng/navigation';
  *
- * <mzn-navigation [collapsed]="isCollapsed" (collapseChange)="isCollapsed = $event">
- *   <mzn-navigation-header>
+ * <nav mznNavigation [collapsed]="isCollapsed" (collapseChange)="isCollapsed = $event">
+ *   <header mznNavigationHeader>
  *     <span title>My App</span>
- *   </mzn-navigation-header>
- *   <mzn-navigation-option title="首頁" href="/" [icon]="homeIcon" />
- *   <mzn-navigation-option title="設定" [icon]="settingsIcon" [hasChildren]="true">
- *     <mzn-navigation-option title="一般" href="/settings/general" />
- *   </mzn-navigation-option>
- *   <mzn-navigation-footer>
+ *   </header>
+ *   <li mznNavigationOption title="首頁" href="/" [icon]="homeIcon" ></li>
+ *   <li mznNavigationOption title="設定" [icon]="settingsIcon" [hasChildren]="true">
+ *     <li mznNavigationOption title="一般" href="/settings/general" ></li>
+ *   </li>
+ *   <footer mznNavigationFooter>
  *     <button>登出</button>
- *   </mzn-navigation-footer>
- * </mzn-navigation>
+ *   </footer>
+ * </nav>
  * ```
  */
 @Component({
-  selector: 'mzn-navigation',
+  selector: '[mznNavigation]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznNavigationOption, MznNavigationOptionCategory],
@@ -113,6 +113,12 @@ export type NavigationItemConfig =
   host: {
     '[class]': 'hostClasses()',
     role: 'navigation',
+    '[attr.activatedPath]': 'null',
+    '[attr.collapsed]': 'null',
+    '[attr.collapsedPlacement]': 'null',
+    '[attr.exactActivatedMatch]': 'null',
+    '[attr.filter]': 'null',
+    '[attr.items]': 'null',
   },
   template: `
     <ng-content select="mzn-navigation-header" />
@@ -121,9 +127,10 @@ export type NavigationItemConfig =
         @if (items(); as itemList) {
           @for (item of itemList; track item.title) {
             @if (isCategoryConfig(item)) {
-              <mzn-navigation-option-category [title]="item.title">
+              <li mznNavigationOptionCategory [title]="item.title">
                 @for (child of item.children ?? []; track child.title) {
-                  <mzn-navigation-option
+                  <li
+                    mznNavigationOption
                     [active]="child.active"
                     [defaultOpen]="child.defaultOpen ?? false"
                     [hasChildren]="(child.children?.length ?? 0) > 0"
@@ -136,7 +143,8 @@ export type NavigationItemConfig =
                       grandchild of child.children ?? [];
                       track grandchild.title
                     ) {
-                      <mzn-navigation-option
+                      <li
+                        mznNavigationOption
                         [active]="grandchild.active"
                         [defaultOpen]="grandchild.defaultOpen ?? false"
                         [hasChildren]="(grandchild.children?.length ?? 0) > 0"
@@ -146,11 +154,12 @@ export type NavigationItemConfig =
                         [title]="grandchild.title"
                       />
                     }
-                  </mzn-navigation-option>
+                  </li>
                 }
-              </mzn-navigation-option-category>
+              </li>
             } @else {
-              <mzn-navigation-option
+              <li
+                mznNavigationOption
                 [active]="item.active"
                 [defaultOpen]="item.defaultOpen ?? false"
                 [hasChildren]="(item.children?.length ?? 0) > 0"
@@ -160,7 +169,8 @@ export type NavigationItemConfig =
                 [title]="item.title"
               >
                 @for (child of item.children ?? []; track child.title) {
-                  <mzn-navigation-option
+                  <li
+                    mznNavigationOption
                     [active]="child.active"
                     [defaultOpen]="child.defaultOpen ?? false"
                     [hasChildren]="(child.children?.length ?? 0) > 0"
@@ -173,7 +183,8 @@ export type NavigationItemConfig =
                       grandchild of child.children ?? [];
                       track grandchild.title
                     ) {
-                      <mzn-navigation-option
+                      <li
+                        mznNavigationOption
                         [active]="grandchild.active"
                         [defaultOpen]="grandchild.defaultOpen ?? false"
                         [hasChildren]="(grandchild.children?.length ?? 0) > 0"
@@ -183,9 +194,9 @@ export type NavigationItemConfig =
                         [title]="grandchild.title"
                       />
                     }
-                  </mzn-navigation-option>
+                  </li>
                 }
-              </mzn-navigation-option>
+              </li>
             }
           }
         } @else {

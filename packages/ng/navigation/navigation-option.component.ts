@@ -31,15 +31,15 @@ import {
  *
  * @example
  * ```html
- * <mzn-navigation-option title="首頁" href="/" [icon]="homeIcon" />
- * <mzn-navigation-option title="設定" [icon]="settingsIcon">
- *   <mzn-navigation-option title="一般" href="/settings/general" />
- *   <mzn-navigation-option title="安全性" href="/settings/security" />
- * </mzn-navigation-option>
+ * <li mznNavigationOption title="首頁" href="/" [icon]="homeIcon" ></li>
+ * <li mznNavigationOption title="設定" [icon]="settingsIcon">
+ *   <li mznNavigationOption title="一般" href="/settings/general" ></li>
+ *   <li mznNavigationOption title="安全性" href="/settings/security" ></li>
+ * </li>
  * ```
  */
 @Component({
-  selector: 'mzn-navigation-option',
+  selector: '[mznNavigationOption]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
@@ -52,6 +52,13 @@ import {
   host: {
     '[class]': 'hostClasses()',
     '[attr.data-id]': 'currentKey()',
+    '[attr.active]': 'null',
+    '[attr.hasChildren]': 'null',
+    '[attr.href]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.optionId]': 'null',
+    '[attr.title]': 'null',
+    '[attr.defaultOpen]': 'null',
   },
   template: `
     <div

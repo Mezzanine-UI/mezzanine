@@ -18,7 +18,7 @@ import clsx from 'clsx';
  * import { MznLayout, MznLayoutMain, MznLayoutLeftPanel, MznLayoutRightPanel } from '@mezzanine-ui/ng/layout';
  *
  * <div mznLayout>
- *   <mzn-navigation>...</mzn-navigation>
+ *   <nav mznNavigation>...</nav>
  *   <mzn-layout-left-panel [open]="true">Side Content</mzn-layout-left-panel>
  *   <mzn-layout-main>Main Content</mzn-layout-main>
  *   <mzn-layout-right-panel [open]="true">Right Content</mzn-layout-right-panel>
@@ -59,7 +59,7 @@ export class MznLayout {
 
   /**
    * 附加至 navigation 包裝元素的額外 CSS class 名稱。
-   * 僅在有提供 `<mzn-navigation>` 子元件時有效。
+   * 僅在有提供 `<nav mznNavigation>` 子元件時有效。
    */
   readonly navigationClassName = input<string>();
 

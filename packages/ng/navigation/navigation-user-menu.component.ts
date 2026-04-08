@@ -29,25 +29,28 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
  * ```html
  * import { MznNavigationUserMenu } from '@mezzanine-ui/ng/navigation';
  *
- * <mzn-navigation-user-menu imgSrc="/avatar.png" placement="top-end">
+ * <button mznNavigationUserMenu imgSrc="/avatar.png" placement="top-end">
  *   <span userName>John Doe</span>
  *   <ng-template #menuContent>
  *     <div mznDropdownItemCard label="個人設定" ></div>
  *     <div mznDropdownItemCard label="登出" ></div>
  *   </ng-template>
- * </mzn-navigation-user-menu>
+ * </button>
  * ```
  *
  * @see MznNavigation
  * @see MznDropdown
  */
 @Component({
-  selector: 'mzn-navigation-user-menu',
+  selector: '[mznNavigationUserMenu]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon, MznDropdown, MznTooltip],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.imgSrc]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.collapsedPlacement]': 'null',
   },
   template: `
     <button

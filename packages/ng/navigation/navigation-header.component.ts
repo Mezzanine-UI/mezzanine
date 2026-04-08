@@ -24,20 +24,21 @@ import {
  *
  * @example
  * ```html
- * <mzn-navigation-header title="My App">
+ * <header mznNavigationHeader title="My App">
  *   <img src="logo.svg" alt="Logo" />
- * </mzn-navigation-header>
+ * </header>
  * ```
  *
  * @see MznNavigation
  */
 @Component({
-  selector: 'mzn-navigation-header',
+  selector: '[mznNavigationHeader]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.title]': 'null',
   },
   template: `
     <button

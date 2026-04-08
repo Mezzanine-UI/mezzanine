@@ -14,16 +14,18 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  *
  * @example
  * ```html
- * <mzn-navigation-icon-button [icon]="someIcon" [active]="true" />
+ * <button mznNavigationIconButton [icon]="someIcon" [active]="true" ></button>
  * ```
  */
 @Component({
-  selector: 'mzn-navigation-icon-button',
+  selector: '[mznNavigationIconButton]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.active]': 'null',
+    '[attr.icon]': 'null',
   },
   template: `
     <button type="button">
