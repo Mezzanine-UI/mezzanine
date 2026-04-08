@@ -60,18 +60,25 @@ const indicatorNumberIconList = [
  * ```html
  * import { MznStep } from '@mezzanine-ui/ng/stepper';
  *
- * <mzn-step title="填寫資料" description="請輸入基本資訊" />
- * <mzn-step title="確認內容" />
+ * <div mznStep title="填寫資料" description="請輸入基本資訊" ></div>
+ * <div mznStep title="確認內容" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-step',
+  selector: '[mznStep]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
   host: {
     '[class]': 'hostClasses()',
     '[style.--connect-line-distance]': 'connectLineDistance()',
+    '[attr.connectLineDistance]': 'null',
+    '[attr.description]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.index]': 'null',
+    '[attr.status]': 'null',
+    '[attr.title]': 'null',
   },
   template: `
     @if (_type() === 'number') {

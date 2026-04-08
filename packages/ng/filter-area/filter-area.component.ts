@@ -34,24 +34,24 @@ import { MznFilterLine } from './filter-line.component';
  * ```html
  * import { MznFilterArea, MznFilterLine, MznFilter } from '@mezzanine-ui/ng/filter-area';
  *
- * <mzn-filter-area
+ * <div mznFilterArea
  *   submitText="Search"
  *   resetText="Reset"
  *   (filterSubmit)="onSubmit()"
  *   (filterReset)="onReset()"
  * >
- *   <mzn-filter-line>
- *     <mzn-filter [span]="2">...</mzn-filter>
- *     <mzn-filter [span]="2">...</mzn-filter>
- *   </mzn-filter-line>
- * </mzn-filter-area>
+ *   <div mznFilterLine>
+ *     <div mznFilter [span]="2">...</div>
+ *     <div mznFilter [span]="2">...</div>
+ *   </div>
+ * </div>
  * ```
  *
  * @see {@link MznFilterLine} 用於組成 FilterArea 的單行條件列
  * @see {@link MznFilter} 包裝單一篩選欄位的元件
  */
 @Component({
-  selector: 'mzn-filter-area',
+  selector: '[mznFilterArea]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznButton],
@@ -69,6 +69,14 @@ import { MznFilterLine } from './filter-line.component';
   ],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.actionsAlign]': 'null',
+    '[attr.isDirty]': 'null',
+    '[attr.resetText]': 'null',
+    '[attr.rowAlign]': 'null',
+    '[attr.size]': 'null',
+    '[attr.submitText]': 'null',
+    '[attr.resetButtonType]': 'null',
+    '[attr.submitButtonType]': 'null',
   },
   template: `
     <!--

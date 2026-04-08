@@ -22,17 +22,22 @@ import { MZN_TABS_CONTEXT, TabsContext } from './tab-context';
  *
  * @example
  * ```html
- * <mzn-tab-item [key]="0">Tab 1</mzn-tab-item>
- * <mzn-tab-item [key]="1" [badgeCount]="99">通知</mzn-tab-item>
+ * <button mznTabItem [key]="0">Tab 1</button>
+ * <button mznTabItem [key]="1" [badgeCount]="99">通知</button>
  * ```
  */
 @Component({
-  selector: 'mzn-tab-item',
+  selector: '[mznTabItem]',
   standalone: true,
   imports: [MznIcon, MznBadge],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     style: 'display: contents',
+    '[attr.key]': 'null',
+    '[attr.badgeCount]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.icon]': 'null',
   },
   template: `
     <button

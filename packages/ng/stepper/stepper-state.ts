@@ -32,11 +32,11 @@ export interface MznStepperStateOptions {
  * readonly stepperState = new MznStepperState({ totalSteps: 3, defaultStep: 0 });
  *
  * // 在模板中使用
- * // <mzn-stepper [currentStep]="stepperState.currentStep()">
- * //   <mzn-step title="步驟一" />
- * //   <mzn-step title="步驟二" />
- * //   <mzn-step title="步驟三" />
- * // </mzn-stepper>
+ * // <div mznStepper [currentStep]="stepperState.currentStep()">
+ * //   <div mznStep title="步驟一" ></div>
+ * //   <div mznStep title="步驟二" ></div>
+ * //   <div mznStep title="步驟三" ></div>
+ * // </div>
  * // <button (click)="stepperState.prevStep()">上一步</button>
  * // <button (click)="stepperState.nextStep()">下一步</button>
  * ```

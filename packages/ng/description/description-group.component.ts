@@ -6,14 +6,14 @@ import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
  *
  * @example
  * ```html
- * <mzn-description-group>
- *   <mzn-description>...</mzn-description>
- *   <mzn-description>...</mzn-description>
- * </mzn-description-group>
+ * <div mznDescriptionGroup>
+ *   <div mznDescription>...</div>
+ *   <div mznDescription>...</div>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-description-group',
+  selector: '[mznDescriptionGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

@@ -11,21 +11,21 @@ import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
  * import { MznAccordionActions } from '@mezzanine-ui/ng/accordion';
  * import { MznButton } from '@mezzanine-ui/ng/button';
  *
- * <mzn-accordion>
- *   <mzn-accordion-title>
+ * <div mznAccordion>
+ *   <div mznAccordionTitle>
  *     標題
- *     <mzn-accordion-actions>
+ *     <div mznAccordionActions>
  *       <button mzn-button variant="outlined">編輯</button>
- *     </mzn-accordion-actions>
- *   </mzn-accordion-title>
- *   <mzn-accordion-content>內容</mzn-accordion-content>
- * </mzn-accordion>
+ *     </div>
+ *   </div>
+ *   <div mznAccordionContent>內容</div>
+ * </div>
  * ```
  *
  * @see MznAccordionTitle
  */
 @Component({
-  selector: 'mzn-accordion-actions',
+  selector: '[mznAccordionActions]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

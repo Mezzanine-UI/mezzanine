@@ -7,13 +7,13 @@ import { AccordionControl, MZN_ACCORDION_CONTROL } from './accordion-control';
  *
  * @example
  * ```html
- * <mzn-accordion-content>
+ * <div mznAccordionContent>
  *   <p>展開後顯示的內容。</p>
- * </mzn-accordion-content>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-accordion-content',
+  selector: '[mznAccordionContent]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

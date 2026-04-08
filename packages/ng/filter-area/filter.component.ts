@@ -25,23 +25,27 @@ import { MZN_FILTER_AREA_CONTEXT } from './filter-area-context';
  * ```html
  * import { MznFilter } from '@mezzanine-ui/ng/filter-area';
  *
- * <mzn-filter [span]="2">
+ * <div mznFilter [span]="2">
  *   <div mznTextField label="Name">
  *     <input mznInput placeholder="Enter name" />
  *   </div>
- * </mzn-filter>
+ * </div>
  * ```
  *
  * @see {@link MznFilterLine} 包含 MznFilter 的行容器
  * @see {@link MznFilterArea} 管理整個篩選器的容器
  */
 @Component({
-  selector: 'mzn-filter',
+  selector: '[mznFilter]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',
+    '[attr.align]': 'null',
+    '[attr.grow]': 'null',
+    '[attr.minWidth]': 'null',
+    '[attr.span]': 'null',
   },
   template: '<ng-content />',
 })

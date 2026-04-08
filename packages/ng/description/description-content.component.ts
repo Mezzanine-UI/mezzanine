@@ -27,19 +27,22 @@ import { MZN_DESCRIPTION_CONTEXT } from './description-context';
  *
  * @example
  * ```html
- * <mzn-description-content variant="statistic">12,345</mzn-description-content>
- * <mzn-description-content variant="with-icon" [icon]="CopyIcon" (clickIcon)="onCopy()">
+ * <span mznDescriptionContent variant="statistic">12,345</span>
+ * <span mznDescriptionContent variant="with-icon" [icon]="CopyIcon" (clickIcon)="onCopy()">
  *   rytass.com
- * </mzn-description-content>
+ * </span>
  * ```
  */
 @Component({
-  selector: 'mzn-description-content',
+  selector: '[mznDescriptionContent]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.icon]': 'null',
+    '[attr.size]': 'null',
+    '[attr.variant]': 'null',
   },
   template: `
     @if (variant() === 'trend-up') {

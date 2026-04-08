@@ -28,16 +28,16 @@ import { MznAccordionTitle } from './accordion-title.component';
  * ```html
  * import { MznAccordion, MznAccordionTitle, MznAccordionContent } from '@mezzanine-ui/ng/accordion';
  *
- * <mzn-accordion>
- *   <mzn-accordion-title>常見問題</mzn-accordion-title>
- *   <mzn-accordion-content>
+ * <div mznAccordion>
+ *   <div mznAccordionTitle>常見問題</div>
+ *   <div mznAccordionContent>
  *     <p>這裡是詳細說明。</p>
- *   </mzn-accordion-content>
- * </mzn-accordion>
+ *   </div>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-accordion',
+  selector: '[mznAccordion]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznAccordionTitle],
@@ -60,10 +60,15 @@ import { MznAccordionTitle } from './accordion-title.component';
   ],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.defaultExpanded]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.expanded]': 'null',
+    '[attr.size]': 'null',
+    '[attr.title]': 'null',
   },
   template: `
     @if (title()) {
-      <mzn-accordion-title>{{ title() }}</mzn-accordion-title>
+      <div mznAccordionTitle>{{ title() }}</div>
     }
     <ng-content />
   `,
@@ -96,7 +101,7 @@ export class MznAccordion implements OnInit {
 
   /**
    * 標題文字的快捷屬性。提供時會在內部自動渲染 `mzn-accordion-title`。
-   * 若需要客製化標題，請直接使用 `<mzn-accordion-title>` 子元件。
+   * 若需要客製化標題，請直接使用 `<div mznAccordionTitle>` 子元件。
    */
   readonly title = input<string>();
 

@@ -27,17 +27,24 @@ import { MZN_DESCRIPTION_CONTEXT } from './description-context';
  *
  * @example
  * ```html
- * <mzn-description-title widthType="narrow">欄位名稱</mzn-description-title>
- * <mzn-description-title badge="dot-success" text="訂單狀態" />
+ * <div mznDescriptionTitle widthType="narrow">欄位名稱</div>
+ * <div mznDescriptionTitle badge="dot-success" text="訂單狀態" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-description-title',
+  selector: '[mznDescriptionTitle]',
   standalone: true,
   imports: [MznBadge, MznIcon, MznTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.badge]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.size]': 'null',
+    '[attr.text]': 'null',
+    '[attr.tooltip]': 'null',
+    '[attr.tooltipPlacement]': 'null',
+    '[attr.widthType]': 'null',
   },
   template: `
     @if (badge()) {

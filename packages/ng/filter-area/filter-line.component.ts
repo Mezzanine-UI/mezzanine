@@ -19,17 +19,17 @@ import { MZN_FILTER_AREA_CONTEXT } from './filter-area-context';
  * ```html
  * import { MznFilterLine, MznFilter } from '@mezzanine-ui/ng/filter-area';
  *
- * <mzn-filter-line>
- *   <mzn-filter [span]="2">...</mzn-filter>
- *   <mzn-filter [span]="3">...</mzn-filter>
- * </mzn-filter-line>
+ * <div mznFilterLine>
+ *   <div mznFilter [span]="2">...</div>
+ *   <div mznFilter [span]="3">...</div>
+ * </div>
  * ```
  *
  * @see {@link MznFilterArea} 管理多個 MznFilterLine 的容器元件
  * @see {@link MznFilter} 包裝單一篩選欄位的元件
  */
 @Component({
-  selector: 'mzn-filter-line',
+  selector: '[mznFilterLine]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

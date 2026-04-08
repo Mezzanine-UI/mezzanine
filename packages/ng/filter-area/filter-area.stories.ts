@@ -62,7 +62,7 @@ export const Playground: Story = {
       onReset: (): void => console.log('reset'),
     },
     template: `
-      <mzn-filter-area
+      <div mznFilterArea
         [actionsAlign]="actionsAlign"
         [isDirty]="isDirty"
         [resetText]="resetText"
@@ -72,41 +72,41 @@ export const Playground: Story = {
         (filterSubmit)="onSubmit()"
         (filterReset)="onReset()"
       >
-        <mzn-filter-line>
-          <mzn-filter [span]="2">
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Name
               <input placeholder="Enter name" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Category
               <input placeholder="Select category" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Status
               <input placeholder="Select status" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-        <mzn-filter-line>
-          <mzn-filter [span]="3">
+          </div>
+        </div>
+        <div mznFilterLine>
+          <div mznFilter [span]="3">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Start Date
               <input type="date" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="3">
+          </div>
+          <div mznFilter [span]="3">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               End Date
               <input type="date" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-      </mzn-filter-area>
+          </div>
+        </div>
+      </div>
     `,
   }),
 };
@@ -118,42 +118,42 @@ export const Basic: Story = {
       onReset: (): void => console.log('reset'),
     },
     template: `
-      <mzn-filter-area
+      <div mznFilterArea
         actionsAlign="end"
         submitText="Search"
         resetText="Reset"
         (filterSubmit)="onSubmit()"
         (filterReset)="onReset()"
       >
-        <mzn-filter-line>
-          <mzn-filter [span]="2">
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="請選擇" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="Enter name" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-        <mzn-filter-line>
-          <mzn-filter [span]="3">
+          </div>
+        </div>
+        <div mznFilterLine>
+          <div mznFilter [span]="3">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="請輸入" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="請輸入" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-      </mzn-filter-area>
+          </div>
+        </div>
+      </div>
     `,
   }),
 };
@@ -165,34 +165,34 @@ export const SubSize: Story = {
       onReset: (): void => console.log('reset'),
     },
     template: `
-      <mzn-filter-area
+      <div mznFilterArea
         size="sub"
         (filterSubmit)="onSubmit()"
         (filterReset)="onReset()"
       >
-        <mzn-filter-line>
-          <mzn-filter [span]="2">
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Name
               <input placeholder="Enter name" style="padding: 4px 6px; font-size: 13px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Status
               <input placeholder="Select status" style="padding: 4px 6px; font-size: 13px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-        <mzn-filter-line>
-          <mzn-filter [span]="3" [grow]="true">
+          </div>
+        </div>
+        <div mznFilterLine>
+          <div mznFilter [span]="3" [grow]="true">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Description
               <input placeholder="Enter description" style="padding: 4px 6px; font-size: 13px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-      </mzn-filter-area>
+          </div>
+        </div>
+      </div>
     `,
   }),
 };
@@ -204,25 +204,25 @@ export const SingleLine: Story = {
       onReset: (): void => console.log('reset'),
     },
     template: `
-      <mzn-filter-area
+      <div mznFilterArea
         (filterSubmit)="onSubmit()"
         (filterReset)="onReset()"
       >
-        <mzn-filter-line>
-          <mzn-filter [span]="2">
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Keyword
               <input placeholder="Search..." style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Type
               <input placeholder="Select type" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-      </mzn-filter-area>
+          </div>
+        </div>
+      </div>
     `,
   }),
 };
@@ -235,28 +235,28 @@ export const IsDirty: Story = {
       onReset: (): void => console.log('reset'),
     },
     template: `
-      <mzn-filter-area
+      <div mznFilterArea
         submitText="Search"
         resetText="Reset"
         [isDirty]="isDirty"
         (filterSubmit)="onSubmit()"
         (filterReset)="onReset()"
       >
-        <mzn-filter-line>
-          <mzn-filter [span]="2">
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="Enter name" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="Enter remark" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-      </mzn-filter-area>
+          </div>
+        </div>
+      </div>
     `,
   }),
 };
@@ -268,7 +268,7 @@ export const VerticalLabel: Story = {
       onReset: (): void => console.log('reset'),
     },
     template: `
-      <mzn-filter-area
+      <div mznFilterArea
         actionsAlign="end"
         rowAlign="end"
         submitText="Search"
@@ -276,35 +276,35 @@ export const VerticalLabel: Story = {
         (filterSubmit)="onSubmit()"
         (filterReset)="onReset()"
       >
-        <mzn-filter-line>
-          <mzn-filter [span]="2">
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="請選擇" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="2">
+          </div>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="Enter name" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-        <mzn-filter-line>
-          <mzn-filter [span]="2">
+          </div>
+        </div>
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="請輸入" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-          <mzn-filter [span]="3">
+          </div>
+          <div mznFilter [span]="3">
             <label style="display: flex; flex-direction: column; gap: 4px;">
               Label
               <input placeholder="請輸入" style="padding: 6px 8px;" />
             </label>
-          </mzn-filter>
-        </mzn-filter-line>
-      </mzn-filter-area>
+          </div>
+        </div>
+      </div>
     `,
   }),
 };

@@ -29,20 +29,20 @@ import { MZN_TABS_CONTEXT } from './tab-context';
  * import { MznTabs, MznTabItem } from '@mezzanine-ui/ng/tab';
  *
  * // 受控模式
- * <mzn-tabs [(activeKey)]="currentTab" direction="horizontal">
- *   <mzn-tab-item [key]="0">首頁</mzn-tab-item>
- *   <mzn-tab-item [key]="1">設定</mzn-tab-item>
- * </mzn-tabs>
+ * <div mznTabs [(activeKey)]="currentTab" direction="horizontal">
+ *   <button mznTabItem [key]="0">首頁</button>
+ *   <button mznTabItem [key]="1">設定</button>
+ * </div>
  *
  * // 非受控模式
- * <mzn-tabs [defaultActiveKey]="0">
- *   <mzn-tab-item [key]="0">首頁</mzn-tab-item>
- *   <mzn-tab-item [key]="1">設定</mzn-tab-item>
- * </mzn-tabs>
+ * <div mznTabs [defaultActiveKey]="0">
+ *   <button mznTabItem [key]="0">首頁</button>
+ *   <button mznTabItem [key]="1">設定</button>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-tabs',
+  selector: '[mznTabs]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -55,6 +55,10 @@ import { MZN_TABS_CONTEXT } from './tab-context';
     '[class]': 'hostClasses()',
     '[style.--active-bar-length]': 'activeBarLengthVar()',
     '[style.--active-bar-shift]': 'activeBarShiftVar()',
+    '[attr.activeKey]': 'null',
+    '[attr.defaultActiveKey]': 'null',
+    '[attr.direction]': 'null',
+    '[attr.size]': 'null',
   },
   template: `
     <ng-content />

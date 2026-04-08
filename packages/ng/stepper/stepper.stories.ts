@@ -28,82 +28,82 @@ export const Status: Story = {
       <div style="display: grid; gap: 32px;">
         <p style="font-weight: 600;">Status</p>
         <div style="display: grid; gap: 24px;">
-          <mzn-stepper orientation="horizontal" type="number" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="succeeded" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="horizontal" type="number" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="horizontal" type="number" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing-error" [error]="true" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="horizontal" type="dot" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="succeeded" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="horizontal" type="dot" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="horizontal" type="dot" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing-error" [error]="true" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
+          <div mznStepper orientation="horizontal" type="number" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="horizontal" type="number" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="horizontal" type="number" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing-error" [error]="true" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="horizontal" type="dot" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="horizontal" type="dot" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="horizontal" type="dot" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing-error" [error]="true" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
         </div>
         <div style="display: flex; justify-content: space-around;">
-          <mzn-stepper orientation="vertical" type="number" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="succeeded" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="vertical" type="number" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="vertical" type="number" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing-error" [error]="true" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
+          <div mznStepper orientation="vertical" type="number" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="vertical" type="number" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="vertical" type="number" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing-error" [error]="true" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
         </div>
         <div style="display: flex; justify-content: space-around;">
-          <mzn-stepper orientation="vertical" type="dot" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="succeeded" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="vertical" type="dot" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
-          <mzn-stepper orientation="vertical" type="dot" [currentStep]="2">
-            <mzn-step title="succeeded" />
-            <mzn-step title="error" [error]="true" />
-            <mzn-step title="processing-error" [error]="true" />
-            <mzn-step title="pending" />
-          </mzn-stepper>
+          <div mznStepper orientation="vertical" type="dot" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="vertical" type="dot" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
+          <div mznStepper orientation="vertical" type="dot" [currentStep]="2">
+            <div mznStep title="succeeded" ></div>
+            <div mznStep title="error" [error]="true" ></div>
+            <div mznStep title="processing-error" [error]="true" ></div>
+            <div mznStep title="pending" ></div>
+          </div>
         </div>
       </div>
     `,
@@ -152,12 +152,12 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-stepper [currentStep]="currentStep" [orientation]="orientation" [type]="type">
-        <mzn-step title="步驟一" description="請輸入基本資訊" />
-        <mzn-step title="步驟二" description="核對填寫資料" />
-        <mzn-step title="步驟三" description="完成送出" />
-        <mzn-step title="步驟四" />
-      </mzn-stepper>
+      <div mznStepper [currentStep]="currentStep" [orientation]="orientation" [type]="type">
+        <div mznStep title="步驟一" description="請輸入基本資訊" ></div>
+        <div mznStep title="步驟二" description="核對填寫資料" ></div>
+        <div mznStep title="步驟三" description="完成送出" ></div>
+        <div mznStep title="步驟四" ></div>
+      </div>
     `,
   }),
 };
@@ -185,48 +185,52 @@ export const Playground: Story = {
         </div>
       </div>
       <div style="display: grid; gap: 24px;">
-        <mzn-stepper
+        <div
+          mznStepper
           orientation="horizontal"
           type="number"
           [currentStep]="state.currentStep()"
         >
-          <mzn-step title="步驟一" description="請輸入基本資訊" />
-          <mzn-step title="步驟二" description="核對填寫資料" />
-          <mzn-step title="步驟三" description="完成送出" />
-          <mzn-step title="步驟四" />
-        </mzn-stepper>
-        <mzn-stepper
+          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
+          <div mznStep title="步驟二" description="核對填寫資料"></div>
+          <div mznStep title="步驟三" description="完成送出"></div>
+          <div mznStep title="步驟四"></div>
+        </div>
+        <div
+          mznStepper
           orientation="horizontal"
           type="dot"
           [currentStep]="state.currentStep()"
         >
-          <mzn-step title="步驟一" description="請輸入基本資訊" />
-          <mzn-step title="步驟二" description="核對填寫資料" />
-          <mzn-step title="步驟三" description="完成送出" />
-          <mzn-step title="步驟四" />
-        </mzn-stepper>
+          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
+          <div mznStep title="步驟二" description="核對填寫資料"></div>
+          <div mznStep title="步驟三" description="完成送出"></div>
+          <div mznStep title="步驟四"></div>
+        </div>
       </div>
       <div style="display: flex; justify-content: space-around;">
-        <mzn-stepper
+        <div
+          mznStepper
           orientation="vertical"
           type="number"
           [currentStep]="state.currentStep()"
         >
-          <mzn-step title="步驟一" description="請輸入基本資訊" />
-          <mzn-step title="步驟二" description="核對填寫資料" />
-          <mzn-step title="步驟三" description="完成送出" />
-          <mzn-step title="步驟四" />
-        </mzn-stepper>
-        <mzn-stepper
+          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
+          <div mznStep title="步驟二" description="核對填寫資料"></div>
+          <div mznStep title="步驟三" description="完成送出"></div>
+          <div mznStep title="步驟四"></div>
+        </div>
+        <div
+          mznStepper
           orientation="vertical"
           type="dot"
           [currentStep]="state.currentStep()"
         >
-          <mzn-step title="步驟一" description="請輸入基本資訊" />
-          <mzn-step title="步驟二" description="核對填寫資料" />
-          <mzn-step title="步驟三" description="完成送出" />
-          <mzn-step title="步驟四" />
-        </mzn-stepper>
+          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
+          <div mznStep title="步驟二" description="核對填寫資料"></div>
+          <div mznStep title="步驟三" description="完成送出"></div>
+          <div mznStep title="步驟四"></div>
+        </div>
       </div>
     </div>
   `,

@@ -7,8 +7,8 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 | Metric             | Count | Percent |
 | ------------------ | ----- | ------- |
-| Attribute selector | 92    | 55%     |
-| Element selector   | 76    | 45%     |
+| Attribute selector | 108   | 64%     |
+| Element selector   | 60    | 36%     |
 | **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
@@ -156,32 +156,32 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp              | Status | Batch |
 | ----------------- | ------ | ----- |
-| tabs              | ⬜     |       |
-| tab-item          | ⬜     |       |
-| stepper           | ⬜     |       |
-| step              | ⬜     |       |
-| accordion         | ⬜     |       |
-| accordion-title   | ⬜     |       |
-| accordion-content | ⬜     |       |
-| accordion-actions | ⬜     |       |
-| accordion-group   | ⬜     |       |
+| tabs              | ✅     | P2-10 |
+| tab-item          | ✅     | P2-10 |
+| stepper           | ✅     | P2-10 |
+| step              | ✅     | P2-10 |
+| accordion         | ✅     | P2-10 |
+| accordion-title   | ✅     | P2-10 |
+| accordion-content | ✅     | P2-10 |
+| accordion-actions | ✅     | P2-10 |
+| accordion-group   | ✅     | P2-10 |
 
 ### Description family
 
 | Comp                | Status | Batch |
 | ------------------- | ------ | ----- |
-| description         | ⬜     |       |
-| description-title   | ⬜     |       |
-| description-content | ⬜     |       |
-| description-group   | ⬜     |       |
+| description         | ✅     | P2-10 |
+| description-title   | ✅     | P2-10 |
+| description-content | ✅     | P2-10 |
+| description-group   | ✅     | P2-10 |
 
 ### Filter
 
 | Comp        | Status | Batch |
 | ----------- | ------ | ----- |
-| filter-area | ⬜     |       |
-| filter-line | ⬜     |       |
-| filter      | ⬜     |       |
+| filter-area | ✅     | P2-10 |
+| filter-line | ✅     | P2-10 |
+| filter      | ✅     | P2-10 |
 
 ### Data display — tags / badges
 

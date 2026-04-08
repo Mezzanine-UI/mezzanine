@@ -15,7 +15,7 @@ import { MZN_STEPPER_CONTEXT, StepperContext } from './stepper-context';
 /**
  * 步驟進度指示器元件，以線性流程呈現多個步驟的完成狀態。
  *
- * 子元件必須為 `<mzn-step>`；`currentStep` 控制當前進行中的步驟（零基索引），
+ * 子元件必須為 `<div mznStep>`；`currentStep` 控制當前進行中的步驟（零基索引），
  * 之前的步驟自動標記為已完成，之後的步驟為待處理。支援水平與垂直排列，
  * 以及數字與圓點兩種指示器樣式。
  *
@@ -23,15 +23,15 @@ import { MZN_STEPPER_CONTEXT, StepperContext } from './stepper-context';
  * ```html
  * import { MznStepper, MznStep } from '@mezzanine-ui/ng/stepper';
  *
- * <mzn-stepper [currentStep]="1">
- *   <mzn-step title="填寫資料" description="請輸入基本資訊" />
- *   <mzn-step title="確認內容" />
- *   <mzn-step title="完成送出" />
- * </mzn-stepper>
+ * <div mznStepper [currentStep]="1">
+ *   <div mznStep title="填寫資料" description="請輸入基本資訊" ></div>
+ *   <div mznStep title="確認內容" ></div>
+ *   <div mznStep title="完成送出" ></div>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-stepper',
+  selector: '[mznStepper]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -57,6 +57,9 @@ import { MZN_STEPPER_CONTEXT, StepperContext } from './stepper-context';
   ],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.currentStep]': 'null',
+    '[attr.orientation]': 'null',
+    '[attr.type]': 'null',
   },
   template: `<ng-content />`,
 })

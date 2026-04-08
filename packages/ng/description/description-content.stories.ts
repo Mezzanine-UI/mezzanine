@@ -30,11 +30,11 @@ export const Playground: Story = {
       <div style="display: flex; flex-direction: column; gap: 12px; max-width: 160px;">
         <div>
           <p style="font-weight: 600;">Text Only</p>
-          <mzn-description-content>rytass.com</mzn-description-content>
+          <span mznDescriptionContent>rytass.com</span>
         </div>
         <div>
           <p style="font-weight: 600;">Text with Icon</p>
-          <mzn-description-content variant="with-icon" [icon]="copyIcon">rytass.com</mzn-description-content>
+          <span mznDescriptionContent variant="with-icon" [icon]="copyIcon">rytass.com</span>
         </div>
         <div>
           <p style="font-weight: 600;">Text Link Button</p>
@@ -42,11 +42,11 @@ export const Playground: Story = {
         </div>
         <div>
           <p style="font-weight: 600;">Trend-Up</p>
-          <mzn-description-content variant="trend-up">88%</mzn-description-content>
+          <span mznDescriptionContent variant="trend-up">88%</span>
         </div>
         <div>
           <p style="font-weight: 600;">Trend-Down</p>
-          <mzn-description-content variant="trend-down">88%</mzn-description-content>
+          <span mznDescriptionContent variant="trend-down">88%</span>
         </div>
         <div>
           <p style="font-weight: 600;">State</p>
@@ -54,7 +54,7 @@ export const Playground: Story = {
         </div>
         <div>
           <p style="font-weight: 600;">Statistic</p>
-          <mzn-description-content variant="statistic">98,888</mzn-description-content>
+          <span mznDescriptionContent variant="statistic">98,888</span>
         </div>
         <div>
           <p style="font-weight: 600;">Progress</p>
@@ -83,15 +83,15 @@ export const Sizes: Story = {
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Text Only</p>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <mzn-description-content size="main">Main Content</mzn-description-content>
-            <mzn-description-content size="sub">Sub Content</mzn-description-content>
+            <span mznDescriptionContent size="main">Main Content</span>
+            <span mznDescriptionContent size="sub">Sub Content</span>
           </div>
         </div>
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Text with Icon</p>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <mzn-description-content size="main" variant="with-icon" [icon]="copyIcon">Main Content</mzn-description-content>
-            <mzn-description-content size="sub" variant="with-icon" [icon]="copyIcon">Sub Content</mzn-description-content>
+            <span mznDescriptionContent size="main" variant="with-icon" [icon]="copyIcon">Main Content</span>
+            <span mznDescriptionContent size="sub" variant="with-icon" [icon]="copyIcon">Sub Content</span>
           </div>
         </div>
         <div>
@@ -104,15 +104,15 @@ export const Sizes: Story = {
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Trend-Up</p>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <mzn-description-content size="main" variant="trend-up">12.5%</mzn-description-content>
-            <mzn-description-content size="sub" variant="trend-up">12.5%</mzn-description-content>
+            <span mznDescriptionContent size="main" variant="trend-up">12.5%</span>
+            <span mznDescriptionContent size="sub" variant="trend-up">12.5%</span>
           </div>
         </div>
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Trend-Down</p>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <mzn-description-content size="main" variant="trend-down">8.3%</mzn-description-content>
-            <mzn-description-content size="sub" variant="trend-down">8.3%</mzn-description-content>
+            <span mznDescriptionContent size="main" variant="trend-down">8.3%</span>
+            <span mznDescriptionContent size="sub" variant="trend-down">8.3%</span>
           </div>
         </div>
         <div>
@@ -125,8 +125,8 @@ export const Sizes: Story = {
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Statistic</p>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <mzn-description-content size="main" variant="statistic">99,000</mzn-description-content>
-            <mzn-description-content size="sub" variant="statistic">99,000</mzn-description-content>
+            <span mznDescriptionContent size="main" variant="statistic">99,000</span>
+            <span mznDescriptionContent size="sub" variant="statistic">99,000</span>
           </div>
         </div>
       </div>

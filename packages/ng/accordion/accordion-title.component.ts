@@ -18,16 +18,16 @@ import { AccordionControl, MZN_ACCORDION_CONTROL } from './accordion-control';
  *
  * @example
  * ```html
- * <mzn-accordion-title>
+ * <div mznAccordionTitle>
  *   標題文字
  *   <div actions>
  *     <button>操作</button>
  *   </div>
- * </mzn-accordion-title>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-accordion-title',
+  selector: '[mznAccordionTitle]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],

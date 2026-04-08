@@ -31,13 +31,13 @@ import { MznDescriptionTitle } from './description-title.component';
  * ```html
  * import { MznDescription, MznDescriptionContent } from '@mezzanine-ui/ng/description';
  *
- * <mzn-description title="訂購日期" widthType="narrow">
- *   <mzn-description-content>2025-11-03</mzn-description-content>
- * </mzn-description>
+ * <div mznDescription title="訂購日期" widthType="narrow">
+ *   <span mznDescriptionContent>2025-11-03</span>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-description',
+  selector: '[mznDescription]',
   standalone: true,
   imports: [MznDescriptionTitle],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,9 +54,18 @@ import { MznDescriptionTitle } from './description-title.component';
   ],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.badge]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.orientation]': 'null',
+    '[attr.size]': 'null',
+    '[attr.title]': 'null',
+    '[attr.tooltip]': 'null',
+    '[attr.tooltipPlacement]': 'null',
+    '[attr.widthType]': 'null',
   },
   template: `
-    <mzn-description-title
+    <div
+      mznDescriptionTitle
       [badge]="badge()"
       [icon]="icon()"
       [size]="size()"
@@ -64,7 +73,7 @@ import { MznDescriptionTitle } from './description-title.component';
       [tooltip]="tooltip()"
       [tooltipPlacement]="tooltipPlacement()"
       [widthType]="widthType()"
-    />
+    ></div>
     <ng-content />
   `,
 })

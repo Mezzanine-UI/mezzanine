@@ -58,21 +58,21 @@ export const All: Story = {
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
           </header>
-          <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
-            <mzn-filter-line>
-              <mzn-filter [span]="2">
+          <div mznFilterArea actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
+            <div mznFilterLine>
+              <div mznFilter [span]="2">
                 <div mznInput placeholder="Enter" size="sub" ></div>
-              </mzn-filter>
-              <mzn-filter [span]="2">
+              </div>
+              <div mznFilter [span]="2">
                 <div mznInput placeholder="Enter" size="sub" ></div>
-              </mzn-filter>
-            </mzn-filter-line>
-          </mzn-filter-area>
-          <mzn-tabs>
-            <mzn-tab-item>TabItem 1</mzn-tab-item>
-            <mzn-tab-item>TabItem 2</mzn-tab-item>
-            <mzn-tab-item>TabItem 3</mzn-tab-item>
-          </mzn-tabs>
+              </div>
+            </div>
+          </div>
+          <div mznTabs>
+            <button mznTabItem>TabItem 1</button>
+            <button mznTabItem>TabItem 2</button>
+            <button mznTabItem>TabItem 3</button>
+          </div>
           ${sampleContent}
         </div>
 
@@ -82,13 +82,13 @@ export const All: Story = {
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
           </header>
-          <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
-            <mzn-filter-line>
-              <mzn-filter [span]="2">
+          <div mznFilterArea actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
+            <div mznFilterLine>
+              <div mznFilter [span]="2">
                 <div mznInput placeholder="Enter" size="sub" ></div>
-              </mzn-filter>
-            </mzn-filter-line>
-          </mzn-filter-area>
+              </div>
+            </div>
+          </div>
           ${sampleContent}
         </div>
 
@@ -98,28 +98,28 @@ export const All: Story = {
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
           </header>
-          <mzn-tabs>
-            <mzn-tab-item>TabItem 1</mzn-tab-item>
-            <mzn-tab-item>TabItem 2</mzn-tab-item>
-            <mzn-tab-item>TabItem 3</mzn-tab-item>
-          </mzn-tabs>
+          <div mznTabs>
+            <button mznTabItem>TabItem 1</button>
+            <button mznTabItem>TabItem 2</button>
+            <button mznTabItem>TabItem 3</button>
+          </div>
           ${sampleContent}
         </div>
 
         <!-- filterArea + tab -->
         <div mznSection>
-          <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
-            <mzn-filter-line>
-              <mzn-filter [span]="2">
+          <div mznFilterArea actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
+            <div mznFilterLine>
+              <div mznFilter [span]="2">
                 <div mznInput placeholder="Enter" size="sub" ></div>
-              </mzn-filter>
-            </mzn-filter-line>
-          </mzn-filter-area>
-          <mzn-tabs>
-            <mzn-tab-item>TabItem 1</mzn-tab-item>
-            <mzn-tab-item>TabItem 2</mzn-tab-item>
-            <mzn-tab-item>TabItem 3</mzn-tab-item>
-          </mzn-tabs>
+              </div>
+            </div>
+          </div>
+          <div mznTabs>
+            <button mznTabItem>TabItem 1</button>
+            <button mznTabItem>TabItem 2</button>
+            <button mznTabItem>TabItem 3</button>
+          </div>
           ${sampleContent}
         </div>
 
@@ -133,23 +133,23 @@ export const All: Story = {
 
         <!-- filterArea only -->
         <div mznSection>
-          <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
-            <mzn-filter-line>
-              <mzn-filter [span]="2">
+          <div mznFilterArea actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
+            <div mznFilterLine>
+              <div mznFilter [span]="2">
                 <div mznInput placeholder="Enter" size="sub" ></div>
-              </mzn-filter>
-            </mzn-filter-line>
-          </mzn-filter-area>
+              </div>
+            </div>
+          </div>
           ${sampleContent}
         </div>
 
         <!-- tab only -->
         <div mznSection>
-          <mzn-tabs>
-            <mzn-tab-item>TabItem 1</mzn-tab-item>
-            <mzn-tab-item>TabItem 2</mzn-tab-item>
-            <mzn-tab-item>TabItem 3</mzn-tab-item>
-          </mzn-tabs>
+          <div mznTabs>
+            <button mznTabItem>TabItem 1</button>
+            <button mznTabItem>TabItem 2</button>
+            <button mznTabItem>TabItem 3</button>
+          </div>
           ${sampleContent}
         </div>
 
@@ -197,18 +197,18 @@ export const SectionVerticalLayout: Story = {
               <button mznButton variant="base-secondary">Secondary</button>
               <button mznButton>Primary</button>
             </header>
-            <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
-              <mzn-filter-line>
-                <mzn-filter [span]="2">
+            <div mznFilterArea actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
+              <div mznFilterLine>
+                <div mznFilter [span]="2">
                   <div mznInput placeholder="Enter" size="sub" ></div>
-                </mzn-filter>
-              </mzn-filter-line>
-            </mzn-filter-area>
-            <mzn-tabs>
-              <mzn-tab-item>TabItem 1</mzn-tab-item>
-              <mzn-tab-item>TabItem 2</mzn-tab-item>
-              <mzn-tab-item>TabItem 3</mzn-tab-item>
-            </mzn-tabs>
+                </div>
+              </div>
+            </div>
+            <div mznTabs>
+              <button mznTabItem>TabItem 1</button>
+              <button mznTabItem>TabItem 2</button>
+              <button mznTabItem>TabItem 3</button>
+            </div>
             <div style="background-color: #F9FAFB; padding: 16px; min-height: 120px;">Content of Section</div>
           </div>
         </div>

@@ -21,14 +21,14 @@ import { MznAccordion } from './accordion.component';
  * ```html
  * import { MznAccordionGroup } from '@mezzanine-ui/ng/accordion';
  *
- * <mzn-accordion-group [exclusive]="true">
- *   <mzn-accordion>...</mzn-accordion>
- *   <mzn-accordion>...</mzn-accordion>
- * </mzn-accordion-group>
+ * <div mznAccordionGroup [exclusive]="true">
+ *   <div mznAccordion>...</div>
+ *   <div mznAccordion>...</div>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-accordion-group',
+  selector: '[mznAccordionGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -50,6 +50,8 @@ import { MznAccordion } from './accordion.component';
   ],
   host: {
     '[class]': 'hostClass',
+    '[attr.size]': 'null',
+    '[attr.exclusive]': 'null',
   },
   template: `<ng-content />`,
 })

@@ -71,11 +71,11 @@ export const TabAPI: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-tabs [activeKey]="activeKey" [direction]="direction" [size]="size">
-        <mzn-tab-item key="0">Tab 1</mzn-tab-item>
-        <mzn-tab-item key="1">Tab 2</mzn-tab-item>
-        <mzn-tab-item key="2">Tab 3</mzn-tab-item>
-      </mzn-tabs>
+      <div mznTabs [activeKey]="activeKey" [direction]="direction" [size]="size">
+        <button mznTabItem key="0">Tab 1</button>
+        <button mznTabItem key="1">Tab 2</button>
+        <button mznTabItem key="2">Tab 3</button>
+      </div>
     `,
   }),
 };
@@ -131,9 +131,9 @@ export const TabItemAPI: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-tabs activeKey="0">
-        <mzn-tab-item key="0" [disabled]="disabled" [error]="error">Tab 1</mzn-tab-item>
-      </mzn-tabs>
+      <div mznTabs activeKey="0">
+        <button mznTabItem key="0" [disabled]="disabled" [error]="error">Tab 1</button>
+      </div>
     `,
   }),
 };
@@ -145,48 +145,51 @@ export const TabItemAPI: Story = {
   template: `
     <div style="display: grid; gap: 40px;">
       Basic (Horizontal)
-      <mzn-tabs
+      <div
+        mznTabs
         [activeKey]="tabKey()"
         (activeKeyChange)="tabKey.set($event)"
         direction="horizontal"
       >
-        <mzn-tab-item [key]="'0'">TabItem 1</mzn-tab-item>
-        <mzn-tab-item [key]="'1'">TabItem 2</mzn-tab-item>
-        <mzn-tab-item [key]="'2'">TabItem 3</mzn-tab-item>
-      </mzn-tabs>
+        <button mznTabItem [key]="'0'">TabItem 1</button>
+        <button mznTabItem [key]="'1'">TabItem 2</button>
+        <button mznTabItem [key]="'2'">TabItem 3</button>
+      </div>
       WithIcon and Badge
-      <mzn-tabs
+      <div
+        mznTabs
         [activeKey]="tabKey()"
         (activeKeyChange)="tabKey.set($event)"
         direction="horizontal"
       >
-        <mzn-tab-item [key]="'0'" [icon]="folderIcon">TabItem 1</mzn-tab-item>
-        <mzn-tab-item [key]="'1'" [icon]="folderIcon">TabItem 2</mzn-tab-item>
-        <mzn-tab-item [key]="'2'" [icon]="folderIcon" [badgeCount]="99"
-          >TabItem 3</mzn-tab-item
+        <button mznTabItem [key]="'0'" [icon]="folderIcon">TabItem 1</button>
+        <button mznTabItem [key]="'1'" [icon]="folderIcon">TabItem 2</button>
+        <button mznTabItem [key]="'2'" [icon]="folderIcon" [badgeCount]="99"
+          >TabItem 3</button
         >
-      </mzn-tabs>
+      </div>
       Vertical
-      <mzn-tabs
+      <div
+        mznTabs
         [activeKey]="tabKey()"
         (activeKeyChange)="tabKey.set($event)"
         direction="vertical"
       >
-        <mzn-tab-item [key]="'0'" [icon]="folderIcon">TabItem 1</mzn-tab-item>
-        <mzn-tab-item [key]="'1'" [icon]="folderIcon">TabItem 2</mzn-tab-item>
-        <mzn-tab-item [key]="'2'" [icon]="folderIcon" [badgeCount]="99"
-          >TabItem 3</mzn-tab-item
+        <button mznTabItem [key]="'0'" [icon]="folderIcon">TabItem 1</button>
+        <button mznTabItem [key]="'1'" [icon]="folderIcon">TabItem 2</button>
+        <button mznTabItem [key]="'2'" [icon]="folderIcon" [badgeCount]="99"
+          >TabItem 3</button
         >
-        <mzn-tab-item [key]="'3'" [icon]="folderIcon" [disabled]="true"
-          >Disabled</mzn-tab-item
+        <button mznTabItem [key]="'3'" [icon]="folderIcon" [disabled]="true"
+          >Disabled</button
         >
-      </mzn-tabs>
+      </div>
       Uncontrolled (defaultActiveKey)
-      <mzn-tabs [defaultActiveKey]="'1'" direction="vertical">
-        <mzn-tab-item [key]="'0'" [icon]="folderIcon">TabItem 1</mzn-tab-item>
-        <mzn-tab-item [key]="'1'" [icon]="folderIcon">TabItem 2</mzn-tab-item>
-        <mzn-tab-item [key]="'2'" [icon]="folderIcon">TabItem 3</mzn-tab-item>
-      </mzn-tabs>
+      <div mznTabs [defaultActiveKey]="'1'" direction="vertical">
+        <button mznTabItem [key]="'0'" [icon]="folderIcon">TabItem 1</button>
+        <button mznTabItem [key]="'1'" [icon]="folderIcon">TabItem 2</button>
+        <button mznTabItem [key]="'2'" [icon]="folderIcon">TabItem 3</button>
+      </div>
     </div>
   `,
 })
@@ -209,37 +212,41 @@ export const All: Story = {
   template: `
     <div style="display: grid; gap: 40px;">
       Error (Horizontal)
-      <mzn-tabs
+      <div
+        mznTabs
         [activeKey]="tabKey()"
         (activeKeyChange)="tabKey.set($event)"
         direction="horizontal"
       >
-        <mzn-tab-item
+        <button
+          mznTabItem
           [key]="'0'"
           [icon]="folderIcon"
           [badgeCount]="99"
           [error]="true"
-          >Tab1</mzn-tab-item
+          >Tab1</button
         >
-        <mzn-tab-item [key]="'1'">Tab2</mzn-tab-item>
-        <mzn-tab-item [key]="'2'">Tab3</mzn-tab-item>
-      </mzn-tabs>
+        <button mznTabItem [key]="'1'">Tab2</button>
+        <button mznTabItem [key]="'2'">Tab3</button>
+      </div>
       Error (Vertical)
-      <mzn-tabs
+      <div
+        mznTabs
         [activeKey]="tabKey()"
         (activeKeyChange)="tabKey.set($event)"
         direction="vertical"
       >
-        <mzn-tab-item
+        <button
+          mznTabItem
           [key]="'0'"
           [icon]="folderIcon"
           [badgeCount]="99"
           [error]="true"
-          >Tab1</mzn-tab-item
+          >Tab1</button
         >
-        <mzn-tab-item [key]="'1'">Tab2</mzn-tab-item>
-        <mzn-tab-item [key]="'2'">Tab3</mzn-tab-item>
-      </mzn-tabs>
+        <button mznTabItem [key]="'1'">Tab2</button>
+        <button mznTabItem [key]="'2'">Tab3</button>
+      </div>
     </div>
   `,
 })
@@ -264,52 +271,56 @@ export const Error: Story = {
       分頁列尺寸（Tabs Size） 水平分頁列（Horizontal Tabs）
       <div style="display: grid; gap: 24px;">
         Main
-        <mzn-tabs
+        <div
+          mznTabs
           [activeKey]="tabKey()"
           (activeKeyChange)="tabKey.set($event)"
           direction="horizontal"
           size="main"
         >
           @for (t of horizontalTabs; track t) {
-            <mzn-tab-item [key]="t.key">{{ t.label }}</mzn-tab-item>
+            <button mznTabItem [key]="t.key">{{ t.label }}</button>
           }
-        </mzn-tabs>
+        </div>
         Sub
-        <mzn-tabs
+        <div
+          mznTabs
           [activeKey]="tabKey()"
           (activeKeyChange)="tabKey.set($event)"
           direction="horizontal"
           size="sub"
         >
           @for (t of horizontalTabs; track t) {
-            <mzn-tab-item [key]="t.key">{{ t.label }}</mzn-tab-item>
+            <button mznTabItem [key]="t.key">{{ t.label }}</button>
           }
-        </mzn-tabs>
+        </div>
       </div>
       垂直分頁列（Vertical Tabs）
       <div style="display: grid; gap: 24px;">
         Main
-        <mzn-tabs
+        <div
+          mznTabs
           [activeKey]="tabKey()"
           (activeKeyChange)="tabKey.set($event)"
           direction="vertical"
           size="main"
         >
           @for (t of verticalTabs; track t) {
-            <mzn-tab-item [key]="t.key">{{ t.label }}</mzn-tab-item>
+            <button mznTabItem [key]="t.key">{{ t.label }}</button>
           }
-        </mzn-tabs>
+        </div>
         Sub
-        <mzn-tabs
+        <div
+          mznTabs
           [activeKey]="tabKey()"
           (activeKeyChange)="tabKey.set($event)"
           direction="vertical"
           size="sub"
         >
           @for (t of verticalTabs; track t) {
-            <mzn-tab-item [key]="t.key">{{ t.label }}</mzn-tab-item>
+            <button mznTabItem [key]="t.key">{{ t.label }}</button>
           }
-        </mzn-tabs>
+        </div>
       </div>
     </div>
   `,
