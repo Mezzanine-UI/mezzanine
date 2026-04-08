@@ -30,20 +30,27 @@ import { MznIcon } from '../icon/icon.component';
   ],
   template: `
     <div mznLayout navigationClassName="foo" contentWrapperClassName="bar">
-      <nav mznNavigation
+      <nav
+        mznNavigation
         [activatedPath]="activatedPath()"
         (optionClick)="onOptionClick($event)"
       >
         <header mznNavigationHeader>
           <span title>Mezzanine</span>
         </header>
-        <li mznNavigationOption [icon]="HomeIcon" title="首頁" ></li>
-        <li mznNavigationOption [icon]="FileIcon" title="數據分析">
-          <li mznNavigationOption title="流量報表" ></li>
-          <li mznNavigationOption title="轉換率分析" ></li>
-        </li>
-        <li mznNavigationOption [icon]="UserIcon" title="會員管理" ></li>
-        <footer mznNavigationFooter ></footer>
+        <mzn-navigation-option
+          [icon]="HomeIcon"
+          title="首頁"
+        ></mzn-navigation-option>
+        <mzn-navigation-option [icon]="FileIcon" title="數據分析">
+          <mzn-navigation-option title="流量報表"></mzn-navigation-option>
+          <mzn-navigation-option title="轉換率分析"></mzn-navigation-option>
+        </mzn-navigation-option>
+        <mzn-navigation-option
+          [icon]="UserIcon"
+          title="會員管理"
+        ></mzn-navigation-option>
+        <footer mznNavigationFooter></footer>
       </nav>
       <div mznLayoutMain>
         <div style="height: 100vh; padding: var(--mzn-spacing-primitive-24);">
@@ -118,20 +125,27 @@ class LayoutPlaygroundComponent {
   ],
   template: `
     <div mznLayout>
-      <nav mznNavigation
+      <nav
+        mznNavigation
         [activatedPath]="activatedPath()"
         (optionClick)="onOptionClick($event)"
       >
         <header mznNavigationHeader>
           <span title>Mezzanine</span>
         </header>
-        <li mznNavigationOption [icon]="HomeIcon" title="首頁" ></li>
-        <li mznNavigationOption [icon]="FileIcon" title="數據分析">
-          <li mznNavigationOption title="流量報表" ></li>
-          <li mznNavigationOption title="轉換率分析" ></li>
-        </li>
-        <li mznNavigationOption [icon]="UserIcon" title="會員管理" ></li>
-        <footer mznNavigationFooter ></footer>
+        <mzn-navigation-option
+          [icon]="HomeIcon"
+          title="首頁"
+        ></mzn-navigation-option>
+        <mzn-navigation-option [icon]="FileIcon" title="數據分析">
+          <mzn-navigation-option title="流量報表"></mzn-navigation-option>
+          <mzn-navigation-option title="轉換率分析"></mzn-navigation-option>
+        </mzn-navigation-option>
+        <mzn-navigation-option
+          [icon]="UserIcon"
+          title="會員管理"
+        ></mzn-navigation-option>
+        <footer mznNavigationFooter></footer>
       </nav>
       <aside mznLayoutLeftPanel [defaultWidth]="240" [open]="leftOpen()">
         <div style="padding: var(--mzn-spacing-primitive-24);">

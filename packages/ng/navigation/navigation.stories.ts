@@ -51,21 +51,21 @@ export const Basic: Story = {
           <header mznNavigationHeader title="Mezzanine">
             <span aria-label="logo" style="background-color: #5D74E9; border-radius: 4px; height: 28px; width: 28px; display: block;"></span>
           </header>
-          <li mznNavigationOption title="首頁" href="/" [icon]="HomeIcon" ></li>
-          <li mznNavigationOption title="數據分析" [icon]="FileIcon" [hasChildren]="true">
-            <li mznNavigationOption title="流量報表" ></li>
-            <li mznNavigationOption title="轉換率分析" ></li>
-          </li>
-          <li mznNavigationOption title="訂單管理" [icon]="ListIcon" [hasChildren]="true">
-            <li mznNavigationOption title="待處理訂單" ></li>
-            <li mznNavigationOption title="已完成訂單" ></li>
-          </li>
-          <li mznNavigationOption title="會員管理" href="/members" [icon]="UserIcon" ></li>
+          <mzn-navigation-option title="首頁" href="/" [icon]="HomeIcon" ></mzn-navigation-option>
+          <mzn-navigation-option title="數據分析" [icon]="FileIcon" [hasChildren]="true">
+            <mzn-navigation-option title="流量報表" ></mzn-navigation-option>
+            <mzn-navigation-option title="轉換率分析" ></mzn-navigation-option>
+          </mzn-navigation-option>
+          <mzn-navigation-option title="訂單管理" [icon]="ListIcon" [hasChildren]="true">
+            <mzn-navigation-option title="待處理訂單" ></mzn-navigation-option>
+            <mzn-navigation-option title="已完成訂單" ></mzn-navigation-option>
+          </mzn-navigation-option>
+          <mzn-navigation-option title="會員管理" href="/members" [icon]="UserIcon" ></mzn-navigation-option>
           @for (i of items; track i) {
-            <li mznNavigationOption [title]="'專案 ' + i" [icon]="FolderIcon" [hasChildren]="true">
-              <li mznNavigationOption [title]="'專案設定 ' + i" ></li>
-              <li mznNavigationOption [title]="'成員管理 ' + i" ></li>
-            </li>
+            <mzn-navigation-option [title]="'專案 ' + i" [icon]="FolderIcon" [hasChildren]="true">
+              <mzn-navigation-option [title]="'專案設定 ' + i" ></mzn-navigation-option>
+              <mzn-navigation-option [title]="'成員管理 ' + i" ></mzn-navigation-option>
+            </mzn-navigation-option>
           }
           <footer mznNavigationFooter>
             <span>王小明</span>
@@ -92,7 +92,8 @@ export const Basic: Story = {
   ],
   template: `
     <div style="height: calc(100vh - 32px); display: grid;">
-      <nav mznNavigation
+      <nav
+        mznNavigation
         [activatedPath]="activatedPath()"
         (optionClick)="activatedPath.set($event)"
       >
@@ -102,42 +103,42 @@ export const Basic: Story = {
             style="background-color: #5D74E9; border-radius: 4px; height: 28px; width: 28px; display: block;"
           ></span>
         </header>
-        <li mznNavigationOption
+        <mzn-navigation-option
           title="首頁"
           [icon]="HomeIcon"
           href="http://localhost:6006/?path=/story/navigation-navigation--basic"
-        ></li>
-        <li mznNavigationOption
+        ></mzn-navigation-option>
+        <mzn-navigation-option
           title="數據分析"
           [icon]="FileIcon"
           [hasChildren]="true"
           [defaultOpen]="true"
         >
-          <li mznNavigationOption
+          <mzn-navigation-option
             title="流量報表"
             href="http://localhost:6006/?path=/story/navigation-navigation--custom-anchor-component#report1"
-          ></li>
-          <li mznNavigationOption
+          ></mzn-navigation-option>
+          <mzn-navigation-option
             title="轉換率分析"
             href="http://localhost:6006/?path=/story/navigation-navigation--custom-anchor-component#report2"
-          ></li>
-        </li>
-        <li mznNavigationOption
+          ></mzn-navigation-option>
+        </mzn-navigation-option>
+        <mzn-navigation-option
           title="訂單管理"
           [icon]="ListIcon"
           [hasChildren]="true"
         >
-          <li mznNavigationOption title="待處理訂單" ></li>
-          <li mznNavigationOption title="已完成訂單" ></li>
-        </li>
-        <li mznNavigationOption
+          <mzn-navigation-option title="待處理訂單"></mzn-navigation-option>
+          <mzn-navigation-option title="已完成訂單"></mzn-navigation-option>
+        </mzn-navigation-option>
+        <mzn-navigation-option
           title="會員管理"
           href="/members"
           [icon]="UserIcon"
-        ></li>
+        ></mzn-navigation-option>
         <footer mznNavigationFooter>
           <span>王小明</span>
-          <button mznNavigationIconButton [icon]="QuestionOutlineIcon" ></button>
+          <button mznNavigationIconButton [icon]="QuestionOutlineIcon"></button>
         </footer>
       </nav>
     </div>
@@ -172,16 +173,16 @@ export const Overflow: Story = {
           <header mznNavigationHeader title="Mezzanine">
             <span aria-label="logo" style="background-color: #5D74E9; border-radius: 4px; height: 28px; width: 28px; display: block;"></span>
           </header>
-          <li mznNavigationOption title="首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁" ></li>
-          <li mznNavigationOption title="數據分析" [hasChildren]="true">
-            <li mznNavigationOption title="流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表" ></li>
-            <li mznNavigationOption title="轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析" ></li>
-          </li>
+          <mzn-navigation-option title="首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁" ></mzn-navigation-option>
+          <mzn-navigation-option title="數據分析" [hasChildren]="true">
+            <mzn-navigation-option title="流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表" ></mzn-navigation-option>
+            <mzn-navigation-option title="轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析" ></mzn-navigation-option>
+          </mzn-navigation-option>
           @for (i of items; track i) {
-            <li mznNavigationOption [title]="'專案 ' + i" [hasChildren]="true">
-              <li mznNavigationOption [title]="'專案設定 ' + i" ></li>
-              <li mznNavigationOption [title]="'成員管理 ' + i" ></li>
-            </li>
+            <mzn-navigation-option [title]="'專案 ' + i" [hasChildren]="true">
+              <mzn-navigation-option [title]="'專案設定 ' + i" ></mzn-navigation-option>
+              <mzn-navigation-option [title]="'成員管理 ' + i" ></mzn-navigation-option>
+            </mzn-navigation-option>
           }
           <footer mznNavigationFooter>
             <span>Very long username Very long username Very long username</span>
@@ -208,7 +209,8 @@ export const Overflow: Story = {
   ],
   template: `
     <div style="display: flex; gap: 48px; height: calc(100vh - 32px);">
-      <nav mznNavigation
+      <nav
+        mznNavigation
         [activatedPath]="activatedPath()"
         (optionClick)="activatedPath.set($event)"
       >
@@ -218,54 +220,60 @@ export const Overflow: Story = {
             style="background-color: #5D74E9; border-radius: 4px; height: 28px; width: 28px; display: block;"
           ></span>
         </header>
-        <li mznNavigationOptionCategory title="主要功能">
-          <li mznNavigationOption title="儀表板" ></li>
-          <li mznNavigationOption title="數據分析" [hasChildren]="true">
-            <li mznNavigationOption title="銷售報表" href="/iframe.html" ></li>
-            <li mznNavigationOption title="流量分析" ></li>
-            <li mznNavigationOption title="用戶行為" ></li>
-          </li>
-          <li mznNavigationOption title="訂單管理" [hasChildren]="true">
-            <li mznNavigationOption title="全部訂單" ></li>
-            <li mznNavigationOption title="待出貨" ></li>
-            <li mznNavigationOption title="退換貨處理" ></li>
-          </li>
-        </li>
-        <li mznNavigationOptionCategory title="內容管理">
-          <li mznNavigationOption title="文章管理" [hasChildren]="true">
-            <li mznNavigationOption title="文章列表" [hasChildren]="true">
-              <li mznNavigationOption title="已發布" ></li>
-              <li mznNavigationOption title="草稿" ></li>
-            </li>
-            <li mznNavigationOption title="分類設定" ></li>
-          </li>
-          <li mznNavigationOption title="媒體庫" [hasChildren]="true">
-            <li mznNavigationOption title="圖片" ></li>
-            <li mznNavigationOption title="影片" ></li>
-            <li mznNavigationOption title="文件" ></li>
-          </li>
-        </li>
-        <li mznNavigationOptionCategory title="系統設定">
-          <li mznNavigationOption title="用戶管理" [hasChildren]="true">
-            <li mznNavigationOption title="用戶列表" [hasChildren]="true">
-              <li mznNavigationOption title="活躍用戶" ></li>
-              <li mznNavigationOption title="停用帳號" ></li>
-            </li>
-            <li mznNavigationOption title="角色權限" ></li>
-          </li>
-          <li mznNavigationOption title="系統設定" [hasChildren]="true">
-            <li mznNavigationOption title="基本設定" [hasChildren]="true">
-              <li mznNavigationOption title="網站資訊" ></li>
-              <li mznNavigationOption title="SEO 設定" ></li>
-            </li>
-            <li mznNavigationOption title="安全性設定" ></li>
-          </li>
-          <li mznNavigationOption title="下載中心" href="#download-center" ></li>
-        </li>
+        <mzn-navigation-option-category title="主要功能">
+          <mzn-navigation-option title="儀表板"></mzn-navigation-option>
+          <mzn-navigation-option title="數據分析" [hasChildren]="true">
+            <mzn-navigation-option
+              title="銷售報表"
+              href="/iframe.html"
+            ></mzn-navigation-option>
+            <mzn-navigation-option title="流量分析"></mzn-navigation-option>
+            <mzn-navigation-option title="用戶行為"></mzn-navigation-option>
+          </mzn-navigation-option>
+          <mzn-navigation-option title="訂單管理" [hasChildren]="true">
+            <mzn-navigation-option title="全部訂單"></mzn-navigation-option>
+            <mzn-navigation-option title="待出貨"></mzn-navigation-option>
+            <mzn-navigation-option title="退換貨處理"></mzn-navigation-option>
+          </mzn-navigation-option>
+        </mzn-navigation-option-category>
+        <mzn-navigation-option-category title="內容管理">
+          <mzn-navigation-option title="文章管理" [hasChildren]="true">
+            <mzn-navigation-option title="文章列表" [hasChildren]="true">
+              <mzn-navigation-option title="已發布"></mzn-navigation-option>
+              <mzn-navigation-option title="草稿"></mzn-navigation-option>
+            </mzn-navigation-option>
+            <mzn-navigation-option title="分類設定"></mzn-navigation-option>
+          </mzn-navigation-option>
+          <mzn-navigation-option title="媒體庫" [hasChildren]="true">
+            <mzn-navigation-option title="圖片"></mzn-navigation-option>
+            <mzn-navigation-option title="影片"></mzn-navigation-option>
+            <mzn-navigation-option title="文件"></mzn-navigation-option>
+          </mzn-navigation-option>
+        </mzn-navigation-option-category>
+        <mzn-navigation-option-category title="系統設定">
+          <mzn-navigation-option title="用戶管理" [hasChildren]="true">
+            <mzn-navigation-option title="用戶列表" [hasChildren]="true">
+              <mzn-navigation-option title="活躍用戶"></mzn-navigation-option>
+              <mzn-navigation-option title="停用帳號"></mzn-navigation-option>
+            </mzn-navigation-option>
+            <mzn-navigation-option title="角色權限"></mzn-navigation-option>
+          </mzn-navigation-option>
+          <mzn-navigation-option title="系統設定" [hasChildren]="true">
+            <mzn-navigation-option title="基本設定" [hasChildren]="true">
+              <mzn-navigation-option title="網站資訊"></mzn-navigation-option>
+              <mzn-navigation-option title="SEO 設定"></mzn-navigation-option>
+            </mzn-navigation-option>
+            <mzn-navigation-option title="安全性設定"></mzn-navigation-option>
+          </mzn-navigation-option>
+          <mzn-navigation-option
+            title="下載中心"
+            href="#download-center"
+          ></mzn-navigation-option>
+        </mzn-navigation-option-category>
         <footer mznNavigationFooter>
           <span>李經理</span>
           <!-- NOTE: NavigationUserMenu (avatar with dropdown) from React is not available in Angular. -->
-          <button mznNavigationIconButton [icon]="QuestionOutlineIcon" ></button>
+          <button mznNavigationIconButton [icon]="QuestionOutlineIcon"></button>
         </footer>
       </nav>
       <p style="height: 20px;">{{ activatedPath()?.join(' , ') }}</p>
