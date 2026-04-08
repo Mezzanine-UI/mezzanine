@@ -99,11 +99,11 @@ tags by default). They escaped the script because:
 
 ## Pre-existing breakages confirmed by revert testing
 
-| Story                         | Error                                                                                                                    | Pre-existing?                              |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| Calendar Playground           | `NG0950: Input is required but no value is available yet` from `MznCalendarConfigProvider.inputValueFn`                  | YES — verified by checkout to pre-batch-13 |
-| DatePicker Playground         | `NG0201: No provider found for InjectionToken MZN_CALENDAR_CONFIG`                                                       | YES — verified same way                    |
-| Modal stories visible content | ~~`MznPortalRegistry.getContainer('default')` returns null in storybook env~~ — **false diagnosis, see Phase 4.1 below** | partial                                    |
+| Story                         | Error                                                                                                                    | Status                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| Calendar Playground           | `NG0950: Input is required but no value is available yet` from `MznCalendarConfigProvider.inputValueFn`                  | **FIXED in Phase 4.2** (story-level)     |
+| DatePicker Playground         | `NG0201: No provider found for InjectionToken MZN_CALENDAR_CONFIG`                                                       | **FIXED in Phase 4.2** (story-level)     |
+| Modal stories visible content | ~~`MznPortalRegistry.getContainer('default')` returns null in storybook env~~ — **false diagnosis, see Phase 4.1 below** | **FIXED in Phase 4.1** (different cause) |
 
 These are all storybook-environment issues that the refactor surfaced
 into view but did not introduce. They are tracked as Phase 5 cleanup.
@@ -187,10 +187,29 @@ pre-existing issues that this Phase 2 made visible:
   accept Angular-only status
 - All the per-component descendant diffs (theme rgb noise, Typography
   `<p>` vs `<span>`, hostClasses() emission order drift, etc.)
-- **Port gaps discovered during Phase 4.1** (Phase 3A backlog — not
-  refactor work, these are features the original Angular port simply
-  did not implement):
-  - `MznCheckbox.withEditInput` / `editableInput` — React Checkbox can
-    render an inline editable input when checked; Angular has no such
-    prop. Affects `data-entry-checkbox--with-editable-input-and-form`.
+- **Port gaps discovered during Phase 4.1 / 4.2** (Phase 3A backlog —
+  not refactor work, these are features the original Angular port
+  either did not implement or implemented incorrectly):
+  - `MznCheckbox.withEditInput` / `editableInput` — React Checkbox
+    can render an inline editable input when checked; Angular has no
+    such prop. Affects
+    `data-entry-checkbox--with-editable-input-and-form`.
+  - `MznCalendarConfigProvider` component — unusable as written. Its
+    `@Component` definition has
+    `providers: [{ provide: MZN_CALENDAR_CONFIG, useFactory: (self) => ..., deps: [MznCalendarConfigProvider] }]`
+    where the factory reads `self.methods()` from a `input.required()`
+    signal. Angular resolves providers at injector construction time,
+    BEFORE input bindings are processed, so the factory always sees
+    an unbound required input and throws NG0950. Additionally, it is
+    a `@Component` with `<ng-content />` template — adds a real DOM
+    wrapper that React's `<CalendarConfigProvider>` (which is a
+    `Context.Provider` with zero DOM) never emits. Phase 4.2 worked
+    around it by providing `MZN_CALENDAR_CONFIG` directly in story
+    decorators and dropping the wrapper from story templates. A real
+    fix needs either (a) converting to `@Directive` with a lazy
+    provider factory that reads signals via `inject(self).methods()`
+    at first child-injection time (which happens after input binding),
+    or (b) keeping the token provided app-wide via `provideCalendarConfig()`
+    standalone helper. Affects any app that wants template-scoped
+    calendar config.
   - Verify other families for similar gaps (Phase 3B spot-check).
