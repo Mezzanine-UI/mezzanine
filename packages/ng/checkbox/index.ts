@@ -1,5 +1,6 @@
+// Phase 5: public API aligned to React's Checkbox index.ts.
+// MZN_CHECKBOX_GROUP and CheckboxGroupContextValue are Angular-only DI
+// plumbing (React uses hidden Context) and stay unexported.
 export { MznCheckAll } from './check-all.component';
 export { MznCheckbox } from './checkbox.component';
 export { MznCheckboxGroup } from './checkbox-group.component';
-export { MZN_CHECKBOX_GROUP } from './checkbox-group-context';
-export type { CheckboxGroupContextValue } from './checkbox-group-context';

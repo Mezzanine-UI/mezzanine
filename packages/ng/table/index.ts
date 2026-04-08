@@ -1,3 +1,6 @@
+// Phase 5: public API aligned to React's Table index.ts.
+// React exposes TableContext + TableContextValue, so the Angular equivalents
+// MZN_TABLE_CONTEXT + TableContextValue stay public as well.
 export { MznTable } from './table.component';
 export { MZN_TABLE_CONTEXT } from './table-context';
 export type { TableContextValue } from './table-context';

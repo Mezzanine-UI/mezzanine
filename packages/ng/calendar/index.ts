@@ -16,9 +16,11 @@ export { MznCalendarMonths } from './calendar-months.component';
 export { MznCalendarQuarters } from './calendar-quarters.component';
 export { MznCalendarWeeks } from './calendar-weeks.component';
 export { MznCalendarYears } from './calendar-years.component';
-export { MznCalendarFooterControl } from './calendar-footer-control.component';
-export {
-  MznCalendarQuickSelect,
-  type CalendarQuickSelectOption,
-} from './calendar-quick-select.component';
+// MznCalendarFooterControl and MznCalendarQuickSelect components stay
+// internal — React's Calendar index.ts does not expose its footer/quick-
+// select sub-components either. The CalendarQuickSelectOption *type*,
+// however, needs to be reachable from sibling pickers (date-range-picker,
+// date-time-range-picker) for their quick-select inputs, so the type-only
+// re-export is kept.
+export type { CalendarQuickSelectOption } from './calendar-quick-select.component';
 export { MznRangeCalendar } from './range-calendar.component';

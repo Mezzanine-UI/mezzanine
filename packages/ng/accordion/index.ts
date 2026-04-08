@@ -1,8 +1,7 @@
-export { AccordionControl, MZN_ACCORDION_CONTROL } from './accordion-control';
-export {
-  AccordionGroupControl,
-  MZN_ACCORDION_GROUP,
-} from './accordion-group-context';
+// Phase 5: public API aligned to React's Accordion index.ts.
+// Internal DI tokens (MZN_ACCORDION_CONTROL, MZN_ACCORDION_GROUP) and their
+// Angular-only types (AccordionControl, AccordionGroupControl) stay inside
+// the package — React manages the equivalent state via hidden Context.
 export { MznAccordion } from './accordion.component';
 export { MznAccordionActions } from './accordion-actions.component';
 export { MznAccordionContent } from './accordion-content.component';
