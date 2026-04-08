@@ -31,11 +31,12 @@ type Story = StoryObj;
             <p style="margin: 0; font-size: 14px; color: #666;"
               >建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。</p
             >
-            <mzn-cropper
+            <div
+              mznCropper
               [imageSrc]="pendingImageSrc()!"
               [aspectRatio]="1"
               (cropChange)="onCropChange($event)"
-            />
+            ></div>
             <div style="display: flex; gap: 8px; justify-content: flex-end;">
               <button
                 type="button"
@@ -53,7 +54,8 @@ type Story = StoryObj;
           </div>
         </div>
       }
-      <mzn-upload
+      <div
+        mznUpload
         accept="image/*"
         mode="cards"
         [files]="files()"
@@ -62,7 +64,7 @@ type Story = StoryObj;
         (fileSelect)="onFileSelect($event)"
       >
         <span>點擊或拖放圖片至此區域上傳</span>
-      </mzn-upload>
+      </div>
     </div>
   `,
 })
@@ -145,11 +147,12 @@ export const WithUploader: Story = {
             <p style="margin: 0; font-size: 14px; color: #666;"
               >建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。</p
             >
-            <mzn-cropper
+            <div
+              mznCropper
               imageSrc="https://rytass.com/logo.png"
               [aspectRatio]="4 / 3"
               (cropChange)="onCropChange($event)"
-            />
+            ></div>
             <div style="display: flex; gap: 8px; justify-content: flex-end;">
               <button
                 type="button"

@@ -44,17 +44,23 @@ const defaultEasing: TransitionEasing = {
  *
  * @example
  * ```html
- * <mzn-slide [in]="isVisible" from="right">
+ * <div mznSlide [in]="isVisible" from="right">
  *   <div>Sliding panel content</div>
- * </mzn-slide>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-slide',
+  selector: '[mznSlide]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[style.display]': '"contents"',
+    '[attr.delay]': 'null',
+    '[attr.duration]': 'null',
+    '[attr.easing]': 'null',
+    '[attr.from]': 'null',
+    '[attr.in]': 'null',
+    '[attr.keepMount]': 'null',
   },
   template: `
     <div

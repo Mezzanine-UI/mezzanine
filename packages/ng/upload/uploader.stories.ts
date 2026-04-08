@@ -20,13 +20,13 @@ export const Playground: Story = {
       },
     },
     template: `
-      <mzn-uploader
+      <label mznUploader
         accept=".pdf,.doc,.docx"
         [multiple]="true"
         (fileSelect)="onFileSelect($event)"
       >
         <span>點擊或拖放檔案至此區域上傳</span>
-      </mzn-uploader>
+      </label>
     `,
   }),
 };

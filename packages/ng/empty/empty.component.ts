@@ -83,16 +83,16 @@ const iconMap: Record<Exclude<EmptyType, 'custom'>, IconDefinition> = {
         @if (size() === 'main') {
           @switch (type()) {
             @case ('initial-data') {
-              <mzn-empty-main-initial-data-icon [class]="classes.icon" />
+              <div mznEmptyMainInitialDataIcon [class]="classes.icon"></div>
             }
             @case ('result') {
-              <mzn-empty-main-result-icon [class]="classes.icon" />
+              <div mznEmptyMainResultIcon [class]="classes.icon"></div>
             }
             @case ('system') {
-              <mzn-empty-main-system-icon [class]="classes.icon" />
+              <div mznEmptyMainSystemIcon [class]="classes.icon"></div>
             }
             @case ('notification') {
-              <mzn-empty-main-notification-icon [class]="classes.icon" />
+              <div mznEmptyMainNotificationIcon [class]="classes.icon"></div>
             }
           }
         } @else {

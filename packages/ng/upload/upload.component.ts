@@ -89,28 +89,47 @@ export interface UploadAriaLabels {
  * ```html
  * import { MznUpload } from '@mezzanine-ui/ng/upload';
  *
- * <mzn-upload
+ * <div mznUpload
  *   [files]="uploadedFiles"
  *   mode="list"
  *   accept=".pdf,.doc"
  *   (fileSelect)="onFileSelect($event)"
  *   (filesChange)="onFilesChange($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznUploader
  * @see MznUploadItem
  */
 @Component({
-  selector: 'mzn-upload',
+  selector: '[mznUpload]',
   standalone: true,
   imports: [MznUploader, MznUploadItem],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.accept]': 'null',
+    '[attr.ariaLabels]': 'null',
+    '[attr.currentCount]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.dropzoneHints]': 'null',
+    '[attr.errorIcon]': 'null',
+    '[attr.errorMessage]': 'null',
+    '[attr.files]': 'null',
+    '[attr.hints]': 'null',
+    '[attr.id]': 'null',
+    '[attr.maxFiles]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.multiple]': 'null',
+    '[attr.name]': 'null',
+    '[attr.showFileSize]': 'null',
+    '[attr.size]': 'null',
+    '[attr.uploaderIcon]': 'null',
+    '[attr.uploaderLabel]': 'null',
   },
   template: `
-    <mzn-uploader
+    <label
+      mznUploader
       [accept]="accept()"
       [disabled]="effectiveDisabled()"
       [externalHints]="resolvedHints()"
@@ -124,12 +143,13 @@ export interface UploadAriaLabels {
       (filesSelected)="onFilesSelected($event)"
     >
       <ng-content />
-    </mzn-uploader>
+    </label>
 
     @if (files().length > 0) {
       <div [class]="listClasses()">
         @for (file of files(); track file.id) {
-          <mzn-upload-item
+          <div
+            mznUploadItem
             [disabled]="disabled()"
             [errorIcon]="errorIcon()"
             [errorMessage]="file.errorMessage ?? errorMessage()"
@@ -140,7 +160,7 @@ export interface UploadAriaLabels {
             [status]="file.status"
             [thumbnailUrl]="file.thumbnailUrl"
             (remove)="onRemoveFile(file)"
-          />
+          ></div>
         }
       </div>
     }

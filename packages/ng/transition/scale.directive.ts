@@ -37,17 +37,24 @@ const defaultEasing: TransitionEasing = {
  *
  * @example
  * ```html
- * <mzn-scale [in]="isVisible">
+ * <div mznScale [in]="isVisible">
  *   <div>Scalable content</div>
- * </mzn-scale>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-scale',
+  selector: '[mznScale]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[style.display]': '"contents"',
+    '[attr.appear]': 'null',
+    '[attr.delay]': 'null',
+    '[attr.duration]': 'null',
+    '[attr.easing]': 'null',
+    '[attr.in]': 'null',
+    '[attr.keepMount]': 'null',
+    '[attr.transformOrigin]': 'null',
   },
   template: `
     <div

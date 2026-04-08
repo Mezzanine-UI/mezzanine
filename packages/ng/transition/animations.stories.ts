@@ -71,7 +71,8 @@ const defaultArgTypes = {
   imports: [FormsModule, MznToggle, MznFade],
   template: `
     <div mznToggle [(ngModel)]="checked" size="main"></div>
-    <mzn-fade
+    <div
+      mznFade
       [in]="checked"
       [duration]="{ enter: enterDuration, exit: exitDuration }"
       [easing]="{ enter: enterEasing, exit: exitEasing }"
@@ -79,7 +80,7 @@ const defaultArgTypes = {
       <div
         style="width: 200px; height: 200px; background: var(--mzn-color-background-brand);"
       ></div>
-    </mzn-fade>
+    </div>
   `,
 })
 class FadeStoryComponent implements OnChanges {
@@ -110,7 +111,8 @@ class FadeStoryComponent implements OnChanges {
   imports: [FormsModule, MznToggle, MznScale],
   template: `
     <div mznToggle [(ngModel)]="checked" size="main"></div>
-    <mzn-scale
+    <div
+      mznScale
       [in]="checked"
       [duration]="{ enter: enterDuration, exit: exitDuration }"
       [easing]="{ enter: enterEasing, exit: exitEasing }"
@@ -120,7 +122,7 @@ class FadeStoryComponent implements OnChanges {
       <div
         style="width: 200px; height: 200px; background: var(--mzn-color-background-brand);"
       ></div>
-    </mzn-scale>
+    </div>
   `,
 })
 class ScaleStoryComponent implements OnChanges {
@@ -153,7 +155,7 @@ class ScaleStoryComponent implements OnChanges {
   template: `
     <div style="display: flex; flex-direction: column; gap: 16px;">
       <div mznToggle [(ngModel)]="checked" size="main"></div>
-      <mzn-collapse [in]="checked" [collapsedHeight]="collapsedHeight">
+      <div mznCollapse [in]="checked" [collapsedHeight]="collapsedHeight">
         <div
           style="padding: 16px; background: var(--mzn-color-background-brand); color: white;"
         >
@@ -161,7 +163,7 @@ class ScaleStoryComponent implements OnChanges {
           <p>It measures its height automatically and animates smoothly.</p>
           <p>The duration is auto-calculated based on content height.</p>
         </div>
-      </mzn-collapse>
+      </div>
     </div>
   `,
 })
@@ -187,41 +189,41 @@ class CollapseStoryComponent {
           <p style="margin-bottom: 8px; font-size: 12px; color: #666;"
             >from = top</p
           >
-          <mzn-translate [in]="checked" from="top">
+          <div mznTranslate [in]="checked" from="top">
             <div
               style="width: 120px; height: 120px; background: var(--mzn-color-background-brand);"
             ></div>
-          </mzn-translate>
+          </div>
         </div>
         <div>
           <p style="margin-bottom: 8px; font-size: 12px; color: #666;"
             >from = bottom</p
           >
-          <mzn-translate [in]="checked" from="bottom">
+          <div mznTranslate [in]="checked" from="bottom">
             <div
               style="width: 120px; height: 120px; background: var(--mzn-color-background-brand);"
             ></div>
-          </mzn-translate>
+          </div>
         </div>
         <div>
           <p style="margin-bottom: 8px; font-size: 12px; color: #666;"
             >from = left</p
           >
-          <mzn-translate [in]="checked" from="left">
+          <div mznTranslate [in]="checked" from="left">
             <div
               style="width: 120px; height: 120px; background: var(--mzn-color-background-brand);"
             ></div>
-          </mzn-translate>
+          </div>
         </div>
         <div>
           <p style="margin-bottom: 8px; font-size: 12px; color: #666;"
             >from = right</p
           >
-          <mzn-translate [in]="checked" from="right">
+          <div mznTranslate [in]="checked" from="right">
             <div
               style="width: 120px; height: 120px; background: var(--mzn-color-background-brand);"
             ></div>
-          </mzn-translate>
+          </div>
         </div>
       </div>
     </div>
@@ -248,11 +250,11 @@ class TranslateStoryComponent {
             >Slide Right</p
           >
           <div style="overflow: hidden;">
-            <mzn-slide [in]="checked" from="right" [keepMount]="true">
+            <div mznSlide [in]="checked" from="right" [keepMount]="true">
               <div
                 style="width: 200px; height: 200px; background: var(--mzn-color-background-brand);"
               ></div>
-            </mzn-slide>
+            </div>
           </div>
         </div>
         <div>
@@ -260,11 +262,11 @@ class TranslateStoryComponent {
             >Slide Top</p
           >
           <div style="overflow: hidden;">
-            <mzn-slide [in]="checked" from="top" [keepMount]="true">
+            <div mznSlide [in]="checked" from="top" [keepMount]="true">
               <div
                 style="width: 200px; height: 200px; background: var(--mzn-color-background-brand);"
               ></div>
-            </mzn-slide>
+            </div>
           </div>
         </div>
       </div>

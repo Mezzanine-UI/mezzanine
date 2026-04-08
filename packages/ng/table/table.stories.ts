@@ -54,7 +54,7 @@ export const Basic: Story = {
       dataSource: basicData,
     },
     template: `
-      <mzn-table [columns]="columns" [dataSource]="dataSource" />
+      <div mznTable [columns]="columns" [dataSource]="dataSource" ></div>
     `,
   }),
 };
@@ -67,11 +67,11 @@ export const SubSize: Story = {
       dataSource: basicData,
     },
     template: `
-      <mzn-table
+      <div mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         size="sub"
-      />
+      ></div>
     `,
   }),
 };
@@ -106,12 +106,13 @@ export const SubSize: Story = {
           <option value="roomy">roomy</option>
         </select>
       </div>
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [size]="size()"
         [rowHeightPreset]="preset()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -143,12 +144,12 @@ export const DataStateRepresentation: Story = {
     template: `
       <div style="display: grid; gap: 16px;">
         <span>separatorAtRowIndexes: [3, 6], zebraStriping: true</span>
-        <mzn-table
+        <div mznTable
           [columns]="columns"
           [dataSource]="dataSource"
           [zebraStriping]="true"
           [separatorAtRowIndexes]="separatorAtRowIndexes"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -186,7 +187,7 @@ export const DataStateRepresentation: Story = {
           Add Row
         </button>
       </div>
-      <mzn-table [columns]="columns" [dataSource]="dataSource()" />
+      <div mznTable [columns]="columns" [dataSource]="dataSource()"></div>
     </div>
   `,
 })
@@ -233,11 +234,11 @@ export const CreateDeleteTransitionWithExpansion: Story = {
       dataSource: basicData,
     },
     template: `
-      <mzn-table
+      <div mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [expandable]="true"
-      />
+      ></div>
     `,
   }),
 };
@@ -270,10 +271,10 @@ export const WithSorting: Story = {
         dataSource: basicData,
       },
       template: `
-        <mzn-table
+        <div mznTable
           [columns]="columns"
           [dataSource]="dataSource"
-        />
+        ></div>
       `,
     };
   },
@@ -291,22 +292,24 @@ export const WithSorting: Story = {
         <span>Mode: checkbox</span>
         <span>Selected: [{{ selectedKeys().join(', ') }}]</span>
       </div>
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [rowSelection]="checkboxSelection()"
-      />
+      ></div>
       <div
         style="margin: 32px 0 16px; display: flex; flex-direction: column; gap: 4px;"
       >
         <span>Mode: radio</span>
         <span>Selected: {{ selectedRadioKey() }}</span>
       </div>
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [rowSelection]="radioSelection()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -372,11 +375,12 @@ export const WithRowSelection: Story = {
           </button>
         </div>
       }
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource()"
         [rowSelection]="checkboxSelection()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -422,11 +426,12 @@ export const WithBulkActions: Story = {
   standalone: true,
   imports: [MznTable],
   template: `
-    <mzn-table
+    <div
+      mznTable
       [columns]="columns"
       [dataSource]="paginated()"
       [pagination]="paginationConfig()"
-    />
+    ></div>
   `,
 })
 class WithPaginationStoryComponent {
@@ -472,11 +477,11 @@ export const WithExpansion: Story = {
       dataSource: basicData,
     },
     template: `
-      <mzn-table
+      <div mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [expandable]="true"
-      />
+      ></div>
     `,
   }),
 };
@@ -491,7 +496,7 @@ export const WithFixedColumns: Story = {
     },
     template: `
       <!-- NOTE: Fixed left/right columns (column.fixed) from React are not yet supported in Angular MznTable. -->
-      <mzn-table [columns]="columns" [dataSource]="dataSource" />
+      <div mznTable [columns]="columns" [dataSource]="dataSource" ></div>
     `,
   }),
 };
@@ -528,11 +533,11 @@ export const WithResizableColumns: Story = {
       dataSource: basicData,
     },
     template: `
-      <mzn-table
+      <div mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [resizable]="true"
-      />
+      ></div>
     `,
   }),
 };
@@ -548,7 +553,7 @@ export const WithCustomRender: Story = {
     template: `
       <!-- NOTE: Custom cell rendering (column.render() returning JSX) from React
            is not supported in Angular MznTable. Cells render string values via dataIndex. -->
-      <mzn-table [columns]="columns" [dataSource]="dataSource" />
+      <div mznTable [columns]="columns" [dataSource]="dataSource" ></div>
     `,
   }),
 };
@@ -560,12 +565,12 @@ export const Loading: Story = {
       columns: basicColumns,
     },
     template: `
-      <mzn-table
+      <div mznTable
         [columns]="columns"
         [dataSource]="[]"
         [loading]="true"
         emptyText="Loading..."
-      />
+      ></div>
     `,
   }),
 };
@@ -583,11 +588,11 @@ export const EmptyState: Story = {
       } satisfies TableEmptyProps,
     },
     template: `
-      <mzn-table
+      <div mznTable
         [columns]="columns"
         [dataSource]="[]"
         [emptyProps]="emptyProps"
-      />
+      ></div>
     `,
   }),
 };
@@ -608,11 +613,11 @@ export const VirtualScrolling: Story = {
     template: `
       <!-- NOTE: Virtual scrolling (virtualized mode) from React is not yet supported.
            Using scroll.y for a fixed-height scrollable container. -->
-      <mzn-table
+      <div mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [scroll]="{ y: 400 }"
-      />
+      ></div>
     `,
   }),
 };
@@ -624,11 +629,12 @@ export const VirtualScrolling: Story = {
   template: `
     <div>
       <p style="margin: 0 0 16px;">Drag rows to reorder them</p>
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource()"
         [draggable]="draggableConfig"
-      />
+      ></div>
     </div>
   `,
 })
@@ -669,12 +675,13 @@ export const DraggableRows: Story = {
       >
         Simulate Refetch
       </button>
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource()"
         [draggable]="draggableConfig"
         [loading]="loading()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -717,11 +724,12 @@ export const DraggableRowsWithRefetch: Story = {
       <p style="margin: 0 0 16px;"
         >Pinned rows: [{{ pinnedRowKeys().join(', ') }}]</p
       >
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [pinnable]="pinnableConfig()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -769,11 +777,12 @@ export const PinnableRows: Story = {
       <p style="margin: 0 0 16px;"
         >Toggled rows: [{{ toggledRowKeys().join(', ') }}]</p
       >
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [toggleable]="toggleableConfig()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -824,11 +833,12 @@ export const ToggleableRows: Story = {
       <p style="margin: 0 0 16px;"
         >Collected rows: [{{ collectedRowKeys().join(', ') }}]</p
       >
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [collectable]="collectableConfig()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -890,11 +900,11 @@ export const RowState: Story = {
         <div style="display: flex; gap: 16px; margin-bottom: 16px; font-size: 13px;">
           <span>rowState: age &gt;= 42 deleted, age &gt;= 33 disabled, age &lt; 25 added</span>
         </div>
-        <mzn-table
+        <div mznTable
           [columns]="columns"
           [dataSource]="dataSource"
           [rowState]="rowState"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -915,11 +925,12 @@ export const RowState: Story = {
           <option value="none">None</option>
         </select>
       </div>
-      <mzn-table
+      <div
+        mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [highlight]="mode()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -951,7 +962,8 @@ export const HighlightMode: Story = {
         <span>Toggled rows: [{{ toggledRowKeys().join(', ') }}]</span>
         <span>Collected rows: [{{ collectedRowKeys().join(', ') }}]</span>
       </div>
-      <mzn-table
+      <div
+        mznTable
         [actions]="actionsConfig"
         [collectable]="collectableConfig()"
         [columns]="columns"
@@ -964,7 +976,7 @@ export const HighlightMode: Story = {
         [rowSelection]="checkboxSelection()"
         [toggleable]="toggleableConfig()"
         [zebraStriping]="true"
-      />
+      ></div>
     </div>
   `,
 })

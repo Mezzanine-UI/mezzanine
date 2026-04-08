@@ -37,17 +37,23 @@ const defaultEasing: TransitionEasing = {
  *
  * @example
  * ```html
- * <mzn-fade [in]="isVisible">
+ * <div mznFade [in]="isVisible">
  *   <div style="width: 200px; height: 200px; background: blue;">Content</div>
- * </mzn-fade>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-fade',
+  selector: '[mznFade]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[style.display]': '"contents"',
+    '[attr.appear]': 'null',
+    '[attr.delay]': 'null',
+    '[attr.duration]': 'null',
+    '[attr.easing]': 'null',
+    '[attr.in]': 'null',
+    '[attr.keepMount]': 'null',
   },
   template: `
     <div

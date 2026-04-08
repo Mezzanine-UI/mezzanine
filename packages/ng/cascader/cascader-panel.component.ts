@@ -22,22 +22,26 @@ import { CascaderOption } from './cascader-option';
  * ```html
  * import { MznCascaderPanel } from '@mezzanine-ui/ng/cascader';
  *
- * <mzn-cascader-panel
+ * <div mznCascaderPanel
  *   [options]="options"
  *   [activeOptionId]="'option-1'"
  *   (optionSelect)="onSelect($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznCascader
  */
 @Component({
-  selector: 'mzn-cascader-panel',
+  selector: '[mznCascaderPanel]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.activeOptionId]': 'null',
+    '[attr.focusedOptionId]': 'null',
+    '[attr.options]': 'null',
+    '[attr.selectedOptionId]': 'null',
   },
   template: `
     @for (option of options(); track option.id) {

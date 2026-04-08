@@ -33,23 +33,36 @@ interface PanelDescriptor {
  * ```html
  * import { MznCascader } from '@mezzanine-ui/ng/cascader';
  *
- * <mzn-cascader
+ * <div mznCascader
  *   [options]="options"
  *   [value]="selectedPath"
  *   (valueChange)="onValueChange($event)"
  *   placeholder="請選擇"
- * />
+ * ></div>
  * ```
  *
  * @see MznCascaderPanel
  */
 @Component({
-  selector: 'mzn-cascader',
+  selector: '[mznCascader]',
   standalone: true,
   imports: [MznCascaderPanel, MznPortal, MznSelectTrigger],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.globalPortal]': 'null',
+    '[attr.menuMaxHeight]': 'null',
+    '[attr.options]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.size]': 'null',
+    '[attr.value]': 'null',
+    '[attr.required]': 'null',
+    '[attr.dropdownZIndex]': 'null',
   },
   template: `
     <div
@@ -72,12 +85,13 @@ interface PanelDescriptor {
       @if (isOpen()) {
         <div [class]="panelsClass">
           @for (panel of visiblePanels(); track $index) {
-            <mzn-cascader-panel
+            <div
+              mznCascaderPanel
               [options]="panel.options"
               [activeOptionId]="panel.activeId"
               [selectedOptionId]="selectedLeafId()"
               (optionSelect)="onOptionSelect($event, $index)"
-            />
+            ></div>
           }
         </div>
       }

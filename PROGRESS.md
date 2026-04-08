@@ -7,8 +7,8 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 | Metric             | Count | Percent |
 | ------------------ | ----- | ------- |
-| Attribute selector | 120   | 71%     |
-| Element selector   | 48    | 29%     |
+| Attribute selector | 137   | 82%     |
+| Element selector   | 31    | 18%     |
 | **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
@@ -69,7 +69,7 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 | notification-center         | ✅     | P2-4                     |
 | notifier (service-only)     | n/a    | —                        |
 | floating-button             | ✅     | pre-existing             |
-| cropper                     | ⬜     |                          |
+| cropper                     | ✅     | P2-12                    |
 
 ### Data entry — form atomics
 
@@ -216,23 +216,23 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp           | Status | Batch |
 | -------------- | ------ | ----- |
-| cascader       | ⬜     |       |
-| cascader-panel | ⬜     |       |
+| cascader       | ✅     | P2-12 |
+| cascader-panel | ✅     | P2-12 |
 
 ### Table
 
 | Comp  | Status | Batch |
 | ----- | ------ | ----- |
-| table | ⬜     |       |
+| table | ✅     | P2-12 |
 
 ### Upload family
 
 | Comp                | Status | Batch |
 | ------------------- | ------ | ----- |
-| upload              | ⬜     |       |
-| uploader            | ⬜     |       |
-| upload-item         | ⬜     |       |
-| upload-picture-card | ⬜     |       |
+| upload              | ✅     | P2-12 |
+| uploader            | ✅     | P2-12 |
+| upload-item         | ✅     | P2-12 |
+| upload-picture-card | ✅     | P2-12 |
 
 ### Calendar family (largest)
 
@@ -279,18 +279,18 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp                         | Status | Batch |
 | ---------------------------- | ------ | ----- |
-| empty-main-initial-data-icon | ⬜     |       |
-| empty-main-notification-icon | ⬜     |       |
-| empty-main-result-icon       | ⬜     |       |
-| empty-main-system-icon       | ⬜     |       |
+| empty-main-initial-data-icon | ✅     | P2-12 |
+| empty-main-notification-icon | ✅     | P2-12 |
+| empty-main-result-icon       | ✅     | P2-12 |
+| empty-main-system-icon       | ✅     | P2-12 |
 
 ### Transition directives
 
 | Comp      | Status | Batch        |
 | --------- | ------ | ------------ |
 | rotate    | ✅     | pre-existing |
-| fade      | ⬜     |              |
-| scale     | ⬜     |              |
-| slide     | ⬜     |              |
-| translate | ⬜     |              |
-| collapse  | ⬜     |              |
+| fade      | ✅     | P2-12        |
+| scale     | ✅     | P2-12        |
+| slide     | ✅     | P2-12        |
+| translate | ✅     | P2-12        |
+| collapse  | ✅     | P2-12        |

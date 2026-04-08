@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
  * @internal
  */
 @Component({
-  selector: 'mzn-empty-main-result-icon',
+  selector: '[mznEmptyMainResultIcon]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `

@@ -37,15 +37,15 @@ import {
  * ```html
  * import { MznUploader } from '@mezzanine-ui/ng/upload';
  *
- * <mzn-uploader accept=".pdf,.doc" [multiple]="true" (filesSelected)="onSelect($event)">
+ * <label mznUploader accept=".pdf,.doc" [multiple]="true" (filesSelected)="onSelect($event)">
  *   <span>點擊或拖放檔案至此</span>
- * </mzn-uploader>
+ * </label>
  * ```
  *
  * @see MznUpload
  */
 @Component({
-  selector: 'mzn-uploader',
+  selector: '[mznUploader]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +55,16 @@ import {
     '(dragover)': 'onDragOver($event)',
     '(dragleave)': 'onDragLeave($event)',
     '(drop)': 'onDrop($event)',
+    '[attr.accept]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.externalHints]': 'null',
+    '[attr.id]': 'null',
+    '[attr.fillWidth]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.label]': 'null',
+    '[attr.multiple]': 'null',
+    '[attr.name]': 'null',
+    '[attr.type]': 'null',
   },
   template: `
     <input

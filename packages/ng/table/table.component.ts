@@ -81,14 +81,14 @@ function nextSortOrder(current: SortOrder): SortOrder {
  * ```html
  * import { MznTable } from '@mezzanine-ui/ng/table';
  *
- * <mzn-table [columns]="columns" [dataSource]="data" />
+ * <div mznTable [columns]="columns" [dataSource]="data" ></div>
  * ```
  *
  * @see TableColumn
  * @see TableDataSource
  */
 @Component({
-  selector: 'mzn-table',
+  selector: '[mznTable]',
   standalone: true,
   imports: [
     CdkDropList,
@@ -128,6 +128,35 @@ function nextSortOrder(current: SortOrder): SortOrder {
   host: {
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',
+    '[attr.actions]': 'null',
+    '[attr.collectable]': 'null',
+    '[attr.columns]': 'null',
+    '[attr.dataSource]': 'null',
+    '[attr.draggable]': 'null',
+    '[attr.emptyProps]': 'null',
+    '[attr.emptyText]': 'null',
+    '[attr.expandable]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.highlight]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.loadingRowsCount]': 'null',
+    '[attr.minHeight]': 'null',
+    '[attr.nested]': 'null',
+    '[attr.pagination]': 'null',
+    '[attr.pinnable]': 'null',
+    '[attr.resizable]': 'null',
+    '[attr.scroll]': 'null',
+    '[attr.toggleable]': 'null',
+    '[attr.transitionState]': 'null',
+    '[attr.rowHeightPreset]': 'null',
+    '[attr.rowSelection]': 'null',
+    '[attr.rowState]': 'null',
+    '[attr.selectedRowKeys]': 'null',
+    '[attr.separatorAtRowIndexes]': 'null',
+    '[attr.showHeader]': 'null',
+    '[attr.size]': 'null',
+    '[attr.sticky]': 'null',
+    '[attr.zebraStriping]': 'null',
   },
   template: `
     <!-- scroll wrapper: applies max-height when scroll.y is set -->

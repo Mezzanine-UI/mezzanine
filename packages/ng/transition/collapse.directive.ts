@@ -38,24 +38,30 @@ const defaultEasing: TransitionEasing = {
  *
  * @example
  * ```html
- * <mzn-collapse [in]="isExpanded">
+ * <div mznCollapse [in]="isExpanded">
  *   <div>Collapsible content here</div>
- * </mzn-collapse>
+ * </div>
  * ```
  *
  * @example
  * ```html
- * <mzn-collapse [in]="isOpen" collapsedHeight="48px">
+ * <div mznCollapse [in]="isOpen" collapsedHeight="48px">
  *   <div>Partially visible when collapsed</div>
- * </mzn-collapse>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-collapse',
+  selector: '[mznCollapse]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[style.display]': '"contents"',
+    '[attr.collapsedHeight]': 'null',
+    '[attr.delay]': 'null',
+    '[attr.duration]': 'null',
+    '[attr.easing]': 'null',
+    '[attr.in]': 'null',
+    '[attr.keepMount]': 'null',
   },
   template: `
     <div

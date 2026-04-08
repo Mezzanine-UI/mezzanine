@@ -25,11 +25,12 @@ const DEFAULT_IMAGE_URL = 'https://rytass.com/logo.png';
     <div
       style="display: flex; flex-direction: column; gap: 1rem; width: min(100%, 32rem);"
     >
-      <mzn-cropper
+      <div
+        mznCropper
         [imageSrc]="imageSrc"
         [aspectRatio]="1"
         (cropChange)="onCropChange($event)"
-      />
+      ></div>
       @if (cropArea()) {
         <div style="font-size: 0.875rem;">
           <strong>裁切區域：</strong>
@@ -95,11 +96,12 @@ export const Basic: Story = {
           </span>
         }
       </div>
-      <mzn-cropper
+      <div
+        mznCropper
         [imageSrc]="imageSrc"
         [aspectRatio]="aspectRatio()"
         (cropChange)="onCropChange($event)"
-      />
+      ></div>
       @if (cropArea()) {
         <div style="font-size: 0.875rem;">
           <strong>裁切區域：</strong>
@@ -171,11 +173,12 @@ export const WithAspectRatio: Story = {
         (change)="onFileChange($any($event.target).files)"
       />
       @if (imageUrl()) {
-        <mzn-cropper
+        <div
+          mznCropper
           [imageSrc]="imageUrl()!"
           [aspectRatio]="16 / 9"
           (cropChange)="onCropChange($event)"
-        />
+        ></div>
       }
     </div>
   `,

@@ -68,158 +68,170 @@ export interface UploadPictureCardAriaLabels {
  * ```html
  * import { MznUploadPictureCard } from '@mezzanine-ui/ng/upload-picture-card';
  *
- * <mzn-upload-picture-card
+ * <div mznUploadPictureCard
  *   [file]="file"
  *   status="loading"
  *   size="main"
  *   (deleted)="onDelete($event)"
- * />
+ * ></div>
  *
- * <mzn-upload-picture-card
+ * <div mznUploadPictureCard
  *   [url]="'https://example.com/image.jpg'"
  *   status="done"
  *   [imageFit]="'cover'"
  *   (deleted)="onDelete($event)"
  *   (zoomed)="onZoom($event)"
  *   (downloaded)="onDownload($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-upload-picture-card',
+  selector: '[mznUploadPictureCard]',
+  host: {
+    '[class]': 'containerClass()',
+    '[attr.file]': 'null',
+    '[attr.url]': 'null',
+    '[attr.id]': 'null',
+    '[attr.status]': 'null',
+    '[attr.size]': 'null',
+    '[attr.imageFit]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.errorMessage]': 'null',
+    '[attr.errorIcon]': 'null',
+    '[attr.readable]': 'null',
+    '[attr.ariaLabels]': 'null',
+  },
   standalone: true,
   imports: [MznButton, MznIcon, MznSpin, MznClearActions, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [class]="containerClass()">
-      @if (isImageFile() && resolvedImageUrl() && status() !== 'error') {
-        <img
-          [class]="upc.content"
-          [src]="resolvedImageUrl()"
-          [alt]="fileName()"
-          [style]="imageStyle()"
-        />
-      }
+    @if (isImageFile() && resolvedImageUrl() && status() !== 'error') {
+      <img
+        [class]="upc.content"
+        [src]="resolvedImageUrl()"
+        [alt]="fileName()"
+        [style]="imageStyle()"
+      />
+    }
 
-      @if (status() === 'done' && size() !== 'minor' && !isImageFile()) {
-        <div [class]="upc.content">
-          <i mznIcon [icon]="fileIcon" color="brand" [size]="16"></i>
-          <span
-            [class]="upc.name"
-            mznTypography
-            variant="caption"
-            [ellipsis]="true"
-          >
-            {{ fileName() }}
-          </span>
-        </div>
-      }
-
-      @if (status() === 'error' && size() !== 'minor') {
-        <div [class]="upc.errorMessage" role="alert" aria-live="polite">
-          <i mznIcon [icon]="errorIconContent()" color="error" [size]="16"></i>
-          <span [class]="upc.errorMessageText" mznTypography variant="caption">
-            {{ errorMessageContent() }}
-          </span>
-        </div>
-      }
-
-      <div [class]="actionClasses()">
-        @if (status() === 'loading' && size() !== 'minor' && !readable()) {
-          <button
-            mznClearActions
-            type="embedded"
-            variant="contrast"
-            [ariaLabel]="resolvedAriaLabels().cancelUpload"
-            (clicked)="onDelete($event)"
-          ></button>
-          <div
-            [class]="upc.loadingIcon"
-            [attr.aria-label]="resolvedAriaLabels().uploading"
-          >
-            <div mznSpin [loading]="true" size="sub"></div>
-          </div>
-        }
-
-        @if (status() === 'done' && size() !== 'minor' && !readable()) {
-          <div [class]="upc.tools">
-            <div [class]="upc.toolsContent">
-              @if (zoomed) {
-                <button
-                  mznButton
-                  variant="base-secondary"
-                  size="minor"
-                  iconType="icon-only"
-                  [icon]="zoomInIcon"
-                  [tooltipText]="resolvedAriaLabels().zoomIn"
-                  type="button"
-                  (click)="onZoomIn($event)"
-                ></button>
-              }
-              @if (downloaded) {
-                <button
-                  mznButton
-                  variant="base-secondary"
-                  size="minor"
-                  iconType="icon-only"
-                  [icon]="downloadIcon"
-                  [tooltipText]="resolvedAriaLabels().download"
-                  type="button"
-                  (click)="onDownload($event)"
-                ></button>
-              }
-              <button
-                mznButton
-                variant="base-secondary"
-                size="minor"
-                iconType="icon-only"
-                [icon]="trashIcon"
-                [tooltipText]="resolvedAriaLabels().delete"
-                type="button"
-                (click)="onDelete($event)"
-              ></button>
-            </div>
-          </div>
-          @if (replaced) {
-            <span [class]="upc.replaceLabel">{{
-              resolvedAriaLabels().clickToReplace
-            }}</span>
-          }
-        }
-
-        @if (status() === 'error' && size() !== 'minor' && !readable()) {
-          <div [class]="upc.tools">
-            <div [class]="upc.toolsContent">
-              @if (reloaded) {
-                <button
-                  mznButton
-                  variant="base-secondary"
-                  size="minor"
-                  iconType="icon-only"
-                  [icon]="resetIcon"
-                  [tooltipText]="resolvedAriaLabels().reload"
-                  type="button"
-                  (click)="onReload($event)"
-                ></button>
-              }
-              <button
-                mznButton
-                variant="base-secondary"
-                size="minor"
-                iconType="icon-only"
-                [icon]="trashIcon"
-                [tooltipText]="resolvedAriaLabels().delete"
-                type="button"
-                (click)="onDelete($event)"
-              ></button>
-            </div>
-          </div>
-        }
-
-        @if (size() === 'minor' && !readable()) {
-          <i mznIcon [icon]="zoomInIcon" color="fixed-light" [size]="24"></i>
-        }
+    @if (status() === 'done' && size() !== 'minor' && !isImageFile()) {
+      <div [class]="upc.content">
+        <i mznIcon [icon]="fileIcon" color="brand" [size]="16"></i>
+        <span
+          [class]="upc.name"
+          mznTypography
+          variant="caption"
+          [ellipsis]="true"
+        >
+          {{ fileName() }}
+        </span>
       </div>
+    }
+
+    @if (status() === 'error' && size() !== 'minor') {
+      <div [class]="upc.errorMessage" role="alert" aria-live="polite">
+        <i mznIcon [icon]="errorIconContent()" color="error" [size]="16"></i>
+        <span [class]="upc.errorMessageText" mznTypography variant="caption">
+          {{ errorMessageContent() }}
+        </span>
+      </div>
+    }
+
+    <div [class]="actionClasses()">
+      @if (status() === 'loading' && size() !== 'minor' && !readable()) {
+        <button
+          mznClearActions
+          type="embedded"
+          variant="contrast"
+          [ariaLabel]="resolvedAriaLabels().cancelUpload"
+          (clicked)="onDelete($event)"
+        ></button>
+        <div
+          [class]="upc.loadingIcon"
+          [attr.aria-label]="resolvedAriaLabels().uploading"
+        >
+          <div mznSpin [loading]="true" size="sub"></div>
+        </div>
+      }
+
+      @if (status() === 'done' && size() !== 'minor' && !readable()) {
+        <div [class]="upc.tools">
+          <div [class]="upc.toolsContent">
+            @if (zoomed) {
+              <button
+                mznButton
+                variant="base-secondary"
+                size="minor"
+                iconType="icon-only"
+                [icon]="zoomInIcon"
+                [tooltipText]="resolvedAriaLabels().zoomIn"
+                type="button"
+                (click)="onZoomIn($event)"
+              ></button>
+            }
+            @if (downloaded) {
+              <button
+                mznButton
+                variant="base-secondary"
+                size="minor"
+                iconType="icon-only"
+                [icon]="downloadIcon"
+                [tooltipText]="resolvedAriaLabels().download"
+                type="button"
+                (click)="onDownload($event)"
+              ></button>
+            }
+            <button
+              mznButton
+              variant="base-secondary"
+              size="minor"
+              iconType="icon-only"
+              [icon]="trashIcon"
+              [tooltipText]="resolvedAriaLabels().delete"
+              type="button"
+              (click)="onDelete($event)"
+            ></button>
+          </div>
+        </div>
+        @if (replaced) {
+          <span [class]="upc.replaceLabel">{{
+            resolvedAriaLabels().clickToReplace
+          }}</span>
+        }
+      }
+
+      @if (status() === 'error' && size() !== 'minor' && !readable()) {
+        <div [class]="upc.tools">
+          <div [class]="upc.toolsContent">
+            @if (reloaded) {
+              <button
+                mznButton
+                variant="base-secondary"
+                size="minor"
+                iconType="icon-only"
+                [icon]="resetIcon"
+                [tooltipText]="resolvedAriaLabels().reload"
+                type="button"
+                (click)="onReload($event)"
+              ></button>
+            }
+            <button
+              mznButton
+              variant="base-secondary"
+              size="minor"
+              iconType="icon-only"
+              [icon]="trashIcon"
+              [tooltipText]="resolvedAriaLabels().delete"
+              type="button"
+              (click)="onDelete($event)"
+            ></button>
+          </div>
+        </div>
+      }
+
+      @if (size() === 'minor' && !readable()) {
+        <i mznIcon [icon]="zoomInIcon" color="fixed-light" [size]="24"></i>
+      }
     </div>
   `,
 })

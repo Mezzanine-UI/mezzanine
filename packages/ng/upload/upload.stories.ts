@@ -67,7 +67,7 @@ export const Playground: Story = {
       files: [] as UploadFile[],
     },
     template: `
-      <mzn-upload
+      <div mznUpload
         [accept]="accept"
         [disabled]="disabled"
         [files]="files"
@@ -75,7 +75,7 @@ export const Playground: Story = {
         [multiple]="multiple"
       >
         <span>點擊或拖放檔案至此區域上傳</span>
-      </mzn-upload>
+      </div>
     `,
   }),
 };
@@ -95,7 +95,8 @@ export const Playground: Story = {
           hints inside the dropzone, and hints to show hints below the
           uploader.</p
         >
-        <mzn-upload
+        <div
+          mznUpload
           mode="list"
           accept="image/*"
           [files]="files()"
@@ -103,7 +104,7 @@ export const Playground: Story = {
           (filesChange)="onFilesChange($event)"
         >
           <span>點擊或拖放檔案至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
       <div>
         <h3>Basic List Mode:</h3>
@@ -111,7 +112,8 @@ export const Playground: Story = {
           >Display files in list format without drag-and-drop (basic
           uploader).</p
         >
-        <mzn-upload
+        <div
+          mznUpload
           mode="basic-list"
           accept="image/*"
           [files]="files()"
@@ -119,12 +121,13 @@ export const Playground: Story = {
           (filesChange)="onFilesChange($event)"
         >
           <span>點擊或拖放檔案至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
       <div>
         <h3>Button List Mode:</h3>
         <p>Display files in button list format</p>
-        <mzn-upload
+        <div
+          mznUpload
           mode="button-list"
           accept="image/*"
           [files]="files()"
@@ -132,7 +135,7 @@ export const Playground: Story = {
           (filesChange)="onFilesChange($event)"
         >
           <span>選擇檔案</span>
-        </mzn-upload>
+        </div>
       </div>
       <div>
         <h3>Cards Mode:</h3>
@@ -140,7 +143,8 @@ export const Playground: Story = {
           >Display files in card format, images use UploadPictureCard, other
           files use UploadItem</p
         >
-        <mzn-upload
+        <div
+          mznUpload
           mode="cards"
           accept="image/*"
           [files]="files()"
@@ -148,14 +152,15 @@ export const Playground: Story = {
           (filesChange)="onFilesChange($event)"
         >
           <span>點擊或拖放檔案至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
       <div>
         <h3>Card Wall Mode:</h3>
         <p
           >Display files in card wall format, all files use UploadPictureCard</p
         >
-        <mzn-upload
+        <div
+          mznUpload
           mode="card-wall"
           accept="image/*"
           [files]="files()"
@@ -163,7 +168,7 @@ export const Playground: Story = {
           (filesChange)="onFilesChange($event)"
         >
           <span>點擊或拖放檔案至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
     </div>
   `,
@@ -196,7 +201,8 @@ export const Basic: Story = {
       (ngSubmit)="onSubmit()"
       style="display: flex; flex-direction: column; gap: 16px; width: 600px;"
     >
-      <mzn-upload
+      <div
+        mznUpload
         mode="card-wall"
         accept="image/*"
         [files]="files()"
@@ -204,7 +210,7 @@ export const Basic: Story = {
         (filesChange)="onFilesChange($event)"
       >
         <span>點擊或拖放圖片至此區域上傳</span>
-      </mzn-upload>
+      </div>
       <button
         type="submit"
         style="align-self: flex-start; padding: 8px 16px; cursor: pointer;"
@@ -264,7 +270,8 @@ export const FormBinding: Story = {
       <label for="storybook-upload-field" style="font-weight: 600;">
         Upload Author Cover (via id/name binding)
       </label>
-      <mzn-upload
+      <div
+        mznUpload
         id="storybook-upload-field"
         name="storybookUpload"
         mode="list"
@@ -275,7 +282,7 @@ export const FormBinding: Story = {
         (fileSelect)="onFileSelect($event)"
       >
         <span>點擊或拖放檔案至此區域上傳</span>
-      </mzn-upload>
+      </div>
       <div>
         <strong>input change log：</strong>
         <ul>
@@ -329,7 +336,8 @@ export const IdNameBinding: Story = {
           >Display preloaded image from URL in list format using UploadItem with
           thumbnail</p
         >
-        <mzn-upload
+        <div
+          mznUpload
           mode="list"
           accept="image/*"
           [files]="listFiles()"
@@ -337,7 +345,7 @@ export const IdNameBinding: Story = {
           (filesChange)="onListFilesChange($event)"
         >
           <span>點擊或拖放檔案至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
       <div>
         <h3>Cards Mode (Picture Card):</h3>
@@ -345,7 +353,8 @@ export const IdNameBinding: Story = {
           >Display preloaded image from URL in card format using
           UploadPictureCard</p
         >
-        <mzn-upload
+        <div
+          mznUpload
           mode="cards"
           accept="image/*"
           [files]="cardsFiles()"
@@ -353,7 +362,7 @@ export const IdNameBinding: Story = {
           (filesChange)="onCardsFilesChange($event)"
         >
           <span>點擊或拖放圖片至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
       <div>
         <h3>Card Wall Mode (Picture Card):</h3>
@@ -361,7 +370,8 @@ export const IdNameBinding: Story = {
           >Display preloaded image from URL in card wall format using
           UploadPictureCard</p
         >
-        <mzn-upload
+        <div
+          mznUpload
           mode="card-wall"
           accept="image/*"
           [files]="cardWallFiles()"
@@ -369,7 +379,7 @@ export const IdNameBinding: Story = {
           (filesChange)="onCardWallFilesChange($event)"
         >
           <span>點擊或拖放圖片至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
     </div>
   `,
@@ -428,7 +438,8 @@ export const PreloadedImageFromUrl: Story = {
     >
       <div>
         <h3>上傳一張照片的情境</h3>
-        <mzn-upload
+        <div
+          mznUpload
           mode="cards"
           accept="image/*"
           [files]="files()"
@@ -436,7 +447,7 @@ export const PreloadedImageFromUrl: Story = {
           (filesChange)="onFilesChange($event)"
         >
           <span>點擊或拖放圖片至此區域上傳</span>
-        </mzn-upload>
+        </div>
       </div>
     </div>
   `,

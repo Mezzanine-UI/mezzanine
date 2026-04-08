@@ -98,7 +98,7 @@ export const Playground: Story = {
       },
     },
     template: `
-      <mzn-cascader
+      <div mznCascader
         [clearable]="clearable"
         [disabled]="disabled"
         [fullWidth]="fullWidth"
@@ -106,7 +106,7 @@ export const Playground: Story = {
         [placeholder]="placeholder"
         [value]="value"
         (valueChange)="onValueChange($event)"
-      />
+      ></div>
     `,
   }),
 };
@@ -124,13 +124,13 @@ export const Basic: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px; max-width: 400px;">
         <div>
           <p style="margin-bottom: 8px;">三層選項（國家 / 城市 / 區域）</p>
-          <mzn-cascader
+          <div mznCascader
             [fullWidth]="true"
             [options]="options"
             [value]="value"
             placeholder="國家 / 城市 / 區域"
             (valueChange)="onValueChange($event)"
-          />
+          ></div>
         </div>
       </div>
     `,
@@ -175,13 +175,13 @@ export const TwoLevel: Story = {
     template: `
       <div style="max-width: 320px;">
         <p style="margin-bottom: 8px;">兩層選項（區域 / 縣市）</p>
-        <mzn-cascader
+        <div mznCascader
           [fullWidth]="true"
           [options]="options"
           [value]="value"
           placeholder="台灣 / 縣市"
           (valueChange)="onValueChange($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -201,27 +201,27 @@ export const States: Story = {
       <div style="display: grid; grid-template-columns: repeat(2, 280px); gap: 24px; align-items: start;">
         <div>
           <p style="margin-bottom: 8px;">預設（Default）</p>
-          <mzn-cascader [fullWidth]="true" [options]="options" placeholder="國家 / 城市 / 區域" />
+          <div mznCascader [fullWidth]="true" [options]="options" placeholder="國家 / 城市 / 區域" ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">已選取（Selected）</p>
-          <mzn-cascader [fullWidth]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" />
+          <div mznCascader [fullWidth]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">錯誤（Error）</p>
-          <mzn-cascader [fullWidth]="true" [error]="true" [options]="options" placeholder="國家 / 城市 / 區域" />
+          <div mznCascader [fullWidth]="true" [error]="true" [options]="options" placeholder="國家 / 城市 / 區域" ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">停用（Disabled）</p>
-          <mzn-cascader [fullWidth]="true" [disabled]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" />
+          <div mznCascader [fullWidth]="true" [disabled]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">唯讀（Read Only）</p>
-          <mzn-cascader [fullWidth]="true" [readOnly]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" />
+          <div mznCascader [fullWidth]="true" [readOnly]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">錯誤已選取（Error + Selected）</p>
-          <mzn-cascader [fullWidth]="true" [error]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" />
+          <div mznCascader [fullWidth]="true" [error]="true" [options]="options" [value]="preselectedValue" placeholder="國家 / 城市 / 區域" ></div>
         </div>
       </div>
     `,
@@ -237,11 +237,11 @@ export const Sizes: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px; max-width: 320px;">
         <div>
           <p style="margin-bottom: 8px;">主要（Main）</p>
-          <mzn-cascader [fullWidth]="true" [options]="options" placeholder="國家 / 城市 / 區域" size="main" />
+          <div mznCascader [fullWidth]="true" [options]="options" placeholder="國家 / 城市 / 區域" size="main" ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">次要（Sub）</p>
-          <mzn-cascader [fullWidth]="true" [options]="options" placeholder="國家 / 城市 / 區域" size="sub" />
+          <div mznCascader [fullWidth]="true" [options]="options" placeholder="國家 / 城市 / 區域" size="sub" ></div>
         </div>
       </div>
     `,
@@ -266,13 +266,13 @@ export const Controlled: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px; max-width: 400px;">
-        <mzn-cascader
+        <div mznCascader
           [fullWidth]="true"
           [options]="options"
           [value]="value"
           placeholder="國家 / 城市 / 區域"
           (valueChange)="onValueChange($event)"
-        />
+        ></div>
         <div style="padding: 12px; background-color: #f5f5f5; border-radius: 4px;">
           <p style="margin-bottom: 4px;">受控值（Controlled Value）：</p>
           <p *ngFor="let v of value; let i = index" style="font-size: 12px;">[{{ i }}] id: {{ v.id }} / name: {{ v.name }}</p>
@@ -297,12 +297,12 @@ export const Uncontrolled: Story = {
     template: `
       <div style="max-width: 320px;">
         <p style="margin-bottom: 8px;">非受控（Uncontrolled），預設值為台灣 / 北部 / 基隆市</p>
-        <mzn-cascader
+        <div mznCascader
           [fullWidth]="true"
           [options]="options"
           [value]="defaultValue"
           placeholder="國家 / 城市 / 區域"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -354,13 +354,13 @@ export const WithDisabledOptions: Story = {
     template: `
       <div style="max-width: 320px;">
         <p style="margin-bottom: 8px;">部分選項停用（中部、日本、新北市）</p>
-        <mzn-cascader
+        <div mznCascader
           [fullWidth]="true"
           [options]="options"
           [value]="value"
           placeholder="國家 / 城市 / 區域"
           (valueChange)="onValueChange($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -378,14 +378,14 @@ export const WithMenuMaxHeight: Story = {
     template: `
       <div style="max-width: 320px;">
         <p style="margin-bottom: 8px;">設定 menuMaxHeight=200，選項超出時可捲動</p>
-        <mzn-cascader
+        <div mznCascader
           [fullWidth]="true"
           [menuMaxHeight]="200"
           [options]="options"
           [value]="value"
           placeholder="國家 / 城市 / 區域"
           (valueChange)="onValueChange($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -405,22 +405,22 @@ export const InForm: Story = {
         <h3>商品資料</h3>
         <div>
           <p style="margin-bottom: 4px;">倉庫地區：</p>
-          <mzn-cascader
+          <div mznCascader
             [fullWidth]="true"
             [options]="options"
             [value]="value"
             placeholder="縣市 / 區域 / 街道"
             (valueChange)="onValueChange($event)"
-          />
+          ></div>
         </div>
         <div>
           <p style="margin-bottom: 4px;">品牌（已停用）：</p>
-          <mzn-cascader
+          <div mznCascader
             [disabled]="true"
             [fullWidth]="true"
             [options]="options"
             placeholder="請選擇品牌"
-          />
+          ></div>
         </div>
       </div>
     `,
@@ -466,13 +466,13 @@ export const MixedDepth: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px; max-width: 400px;">
         <p style="margin-bottom: 4px;">混合深度（部分選項僅第一層、部分第二層、部分第三層）</p>
-        <mzn-cascader
+        <div mznCascader
           [fullWidth]="true"
           [options]="options"
           [value]="value"
           placeholder="分類 / 子分類 / 品項"
           (valueChange)="onValueChange($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -495,36 +495,36 @@ export const Clearable: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px; max-width: 400px;">
         <div>
           <p style="margin-bottom: 8px;">可清除（Clearable）— 滑鼠移入時顯示清除按鈕</p>
-          <mzn-cascader
+          <div mznCascader
             [clearable]="true"
             [fullWidth]="true"
             [options]="options"
             [value]="value"
             placeholder="國家 / 城市 / 區域"
             (valueChange)="onValueChange($event)"
-          />
+          ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">停用時不顯示清除按鈕（Clearable + Disabled）</p>
-          <mzn-cascader
+          <div mznCascader
             [clearable]="true"
             [disabled]="true"
             [fullWidth]="true"
             [options]="options"
             [value]="value"
             placeholder="國家 / 城市 / 區域"
-          />
+          ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">唯讀時不顯示清除按鈕（Clearable + ReadOnly）</p>
-          <mzn-cascader
+          <div mznCascader
             [clearable]="true"
             [fullWidth]="true"
             [readOnly]="true"
             [options]="options"
             [value]="value"
             placeholder="國家 / 城市 / 區域"
-          />
+          ></div>
         </div>
       </div>
     `,
@@ -546,23 +546,23 @@ export const OverflowCollapse: Story = {
         <div>
           <p style="margin-bottom: 8px;">寬度不足時，中間路徑折疊為「...」，hover 顯示完整路徑 Tooltip（width: 160px）</p>
           <div style="width: 160px;">
-            <mzn-cascader
+            <div mznCascader
               [fullWidth]="true"
               [options]="options"
               [value]="preselectedValue"
               placeholder="國家 / 城市 / 區域"
-            />
+            ></div>
           </div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">寬度充足時不折疊，顯示完整路徑（width: 320px）</p>
           <div style="width: 320px;">
-            <mzn-cascader
+            <div mznCascader
               [fullWidth]="true"
               [options]="options"
               [value]="preselectedValue"
               placeholder="國家 / 城市 / 區域"
-            />
+            ></div>
           </div>
         </div>
       </div>

@@ -33,29 +33,40 @@ import {
  * ```html
  * import { MznUploadItem } from '@mezzanine-ui/ng/upload';
  *
- * <mzn-upload-item
+ * <div mznUploadItem
  *   fileName="report.pdf"
  *   status="done"
  *   (remove)="onRemove()"
- * />
+ * ></div>
  *
- * <mzn-upload-item
+ * <div mznUploadItem
  *   fileName="broken.csv"
  *   status="error"
  *   errorMessage="檔案格式錯誤"
  *   (remove)="onRemove()"
- * />
+ * ></div>
  * ```
  *
  * @see MznUpload
  */
 @Component({
-  selector: 'mzn-upload-item',
+  selector: '[mznUploadItem]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.disabled]': 'null',
+    '[attr.errorIcon]': 'null',
+    '[attr.errorMessage]': 'null',
+    '[attr.fileName]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.progress]': 'null',
+    '[attr.showFileSize]': 'null',
+    '[attr.size]': 'null',
+    '[attr.status]': 'null',
+    '[attr.thumbnailUrl]': 'null',
+    '[attr.url]': 'null',
   },
   template: `
     <div [class]="containerClass">

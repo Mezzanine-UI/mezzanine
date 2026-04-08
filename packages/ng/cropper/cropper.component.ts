@@ -81,22 +81,31 @@ interface CropHandle {
  * ```html
  * import { MznCropper } from '@mezzanine-ui/ng/cropper';
  *
- * <mzn-cropper
+ * <div mznCropper
  *   imageSrc="https://example.com/photo.jpg"
  *   [aspectRatio]="4/3"
  *   (cropChange)="onCrop($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznIcon
  */
 @Component({
-  selector: 'mzn-cropper',
+  selector: '[mznCropper]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.aspectRatio]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.imageSrc]': 'null',
+    '[attr.initialCropArea]': 'null',
+    '[attr.minHeight]': 'null',
+    '[attr.minWidth]': 'null',
+    '[attr.maxScale]': 'null',
+    '[attr.minScale]': 'null',
+    '[attr.size]': 'null',
   },
   template: `
     <div [class]="elementClass" #elementRef>

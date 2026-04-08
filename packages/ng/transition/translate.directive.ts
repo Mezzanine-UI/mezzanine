@@ -46,17 +46,23 @@ const defaultEasing: TransitionEasing = {
  *
  * @example
  * ```html
- * <mzn-translate [in]="isVisible" from="top">
+ * <div mznTranslate [in]="isVisible" from="top">
  *   <div>Dropdown content</div>
- * </mzn-translate>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-translate',
+  selector: '[mznTranslate]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[style.display]': '"contents"',
+    '[attr.delay]': 'null',
+    '[attr.duration]': 'null',
+    '[attr.easing]': 'null',
+    '[attr.from]': 'null',
+    '[attr.in]': 'null',
+    '[attr.keepMount]': 'null',
   },
   template: `
     <div

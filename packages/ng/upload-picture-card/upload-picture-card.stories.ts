@@ -92,7 +92,7 @@ export const Playground: Story = {
       onZoomed: () => {},
     },
     template: `
-      <mzn-upload-picture-card
+      <div mznUploadPictureCard
         [url]="imageUrl"
         [status]="status"
         [size]="size"
@@ -105,7 +105,7 @@ export const Playground: Story = {
         (reloaded)="onReloaded()"
         (replaced)="onReplaced()"
         (zoomed)="onZoomed()"
-      />
+      ></div>
     `,
     styles: [
       `
@@ -125,50 +125,55 @@ export const Playground: Story = {
     >
       <li>
         <p style="margin: 0 0 4px; font-weight: 600;">Uploading:</p>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="imageFile()"
           imageFit="contain"
           (deleted)="onDelete($event)"
-        />
+        ></div>
       </li>
       <li>
         <p style="margin: 8px 0 4px; font-weight: 600;"
           >Enable & Hover-Multiple Files:</p
         >
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [url]="imageUrl"
           imageFit="contain"
           status="done"
           (deleted)="onDelete($event)"
           (zoomed)="onZoom($event)"
           (downloaded)="onDownload($event)"
-        />
+        ></div>
       </li>
       <li>
         <p style="margin: 8px 0 4px; font-weight: 600;"
           >Hover-Limit Single File:</p
         >
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="imageFile()"
           status="done"
           [ariaLabels]="ariaLabels"
           (deleted)="onDelete($event)"
           (replaced)="onReplace($event)"
-        />
+        ></div>
       </li>
       <li>
         <p style="margin: 8px 0 4px; font-weight: 600;">Error:</p>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [url]="imageUrl"
           imageFit="contain"
           status="error"
           (deleted)="onDelete($event)"
           (reloaded)="onReload($event)"
-        />
+        ></div>
       </li>
       <li>
         <p style="margin: 8px 0 4px; font-weight: 600;">Disable:</p>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [url]="imageUrl"
           imageFit="contain"
           status="done"
@@ -176,11 +181,12 @@ export const Playground: Story = {
           (zoomed)="onZoom($event)"
           (downloaded)="onDownload($event)"
           (deleted)="onDelete($event)"
-        />
+        ></div>
       </li>
       <li>
         <p style="margin: 8px 0 4px; font-weight: 600;">Read Only:</p>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [url]="imageUrl"
           imageFit="contain"
           status="done"
@@ -188,7 +194,7 @@ export const Playground: Story = {
           (zoomed)="onZoom($event)"
           (downloaded)="onDownload($event)"
           (deleted)="onDelete($event)"
-        />
+        ></div>
       </li>
     </ul>
   `,
@@ -235,59 +241,65 @@ export const Basic: Story = {
       style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0; margin: 0;"
     >
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="pdfFile"
           status="loading"
           (deleted)="onDelete($event)"
-        />
+        ></div>
       </li>
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="docFile"
           status="done"
           (deleted)="onDelete($event)"
           (downloaded)="onDownload($event)"
           (zoomed)="onZoom($event)"
-        />
+        ></div>
       </li>
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="txtFile"
           status="error"
           errorMessage="Upload failed"
           (deleted)="onDelete($event)"
           (reloaded)="onReload($event)"
-        />
+        ></div>
       </li>
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="zipFile"
           status="done"
           [disabled]="true"
           (deleted)="onDelete($event)"
           (downloaded)="onDownload($event)"
           (zoomed)="onZoom($event)"
-        />
+        ></div>
       </li>
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="pdfFile"
           status="done"
           size="sub"
           (deleted)="onDelete($event)"
           (downloaded)="onDownload($event)"
           (zoomed)="onZoom($event)"
-        />
+        ></div>
       </li>
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="docFile"
           status="done"
           size="minor"
           (deleted)="onDelete($event)"
           (downloaded)="onDownload($event)"
           (zoomed)="onZoom($event)"
-        />
+        ></div>
       </li>
     </ul>
   `,
@@ -341,23 +353,25 @@ export const NonImageFiles: Story = {
       style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0; margin: 0;"
     >
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="pdfFile"
           status="done"
           (deleted)="onDelete($event)"
           (replaced)="onReplace($event)"
           [ariaLabels]="ariaLabels"
-        />
+        ></div>
       </li>
       <li>
-        <mzn-upload-picture-card
+        <div
+          mznUploadPictureCard
           [file]="pdfFile"
           status="done"
           size="sub"
           (deleted)="onDelete($event)"
           (replaced)="onReplace($event)"
           [ariaLabels]="ariaLabels"
-        />
+        ></div>
       </li>
     </ul>
   `,

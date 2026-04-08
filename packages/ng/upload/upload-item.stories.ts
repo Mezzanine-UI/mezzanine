@@ -76,14 +76,14 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-upload-item
+      <div mznUploadItem
         [disabled]="disabled"
         [errorMessage]="errorMessage"
         [fileName]="fileName"
         [size]="size"
         [status]="status"
         [thumbnailUrl]="thumbnailUrl"
-      />
+      ></div>
     `,
   }),
 };
@@ -95,30 +95,30 @@ export const Type: Story = {
         <div>
           <h3>Type: icon</h3>
           <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><mzn-upload-item fileName="document.pdf" status="loading" /></li>
-            <li><mzn-upload-item fileName="document.pdf" status="done" /></li>
-            <li><mzn-upload-item fileName="document.pdf" status="error" errorMessage="上傳失敗，請重試" /></li>
-            <li><mzn-upload-item fileName="document.pdf" status="done" [disabled]="true" /></li>
+            <li><div mznUploadItem fileName="document.pdf" status="loading" ></div></li>
+            <li><div mznUploadItem fileName="document.pdf" status="done" ></div></li>
+            <li><div mznUploadItem fileName="document.pdf" status="error" errorMessage="上傳失敗，請重試" ></div></li>
+            <li><div mznUploadItem fileName="document.pdf" status="done" [disabled]="true" ></div></li>
           </ul>
         </div>
         <div>
           <h3>Type: thumbnail (image)</h3>
           <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><mzn-upload-item fileName="example.jpg" status="loading" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="example.jpg" status="error" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" /></li>
-            <li><mzn-upload-item fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" [disabled]="true" /></li>
+            <li><div mznUploadItem fileName="example.jpg" status="loading" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="example.jpg" status="error" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" ></div></li>
+            <li><div mznUploadItem fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" [disabled]="true" ></div></li>
           </ul>
         </div>
         <div>
           <h3>Type: thumbnail (file)</h3>
           <p style="margin: 0 0 8px 0; color: #666; font-size: 14px;">Non-image files show a file icon in thumbnail mode</p>
           <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><mzn-upload-item fileName="document.pdf" status="loading" /></li>
-            <li><mzn-upload-item fileName="document.pdf" status="done" /></li>
-            <li><mzn-upload-item fileName="example.txt" status="done" /></li>
-            <li><mzn-upload-item fileName="document.pdf" status="error" errorMessage="上傳失敗，請重試" /></li>
-            <li><mzn-upload-item fileName="document.pdf" status="done" [disabled]="true" /></li>
+            <li><div mznUploadItem fileName="document.pdf" status="loading" ></div></li>
+            <li><div mznUploadItem fileName="document.pdf" status="done" ></div></li>
+            <li><div mznUploadItem fileName="example.txt" status="done" ></div></li>
+            <li><div mznUploadItem fileName="document.pdf" status="error" errorMessage="上傳失敗，請重試" ></div></li>
+            <li><div mznUploadItem fileName="document.pdf" status="done" [disabled]="true" ></div></li>
           </ul>
         </div>
       </div>
@@ -136,22 +136,22 @@ export const Status: Story = {
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="document.pdf" status="loading" size="main" /></li>
-                <li><mzn-upload-item fileName="document.pdf" status="loading" size="sub" /></li>
+                <li><div mznUploadItem fileName="document.pdf" status="loading" size="main" ></div></li>
+                <li><div mznUploadItem fileName="document.pdf" status="loading" size="sub" ></div></li>
               </ul>
             </div>
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="example.jpg" status="loading" size="main" thumbnailUrl="https://rytass.com/logo.png" /></li>
-                <li><mzn-upload-item fileName="example.jpg" status="loading" size="sub" thumbnailUrl="https://rytass.com/logo.png" /></li>
+                <li><div mznUploadItem fileName="example.jpg" status="loading" size="main" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+                <li><div mznUploadItem fileName="example.jpg" status="loading" size="sub" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
               </ul>
             </div>
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="document.pdf" status="loading" size="main" /></li>
-                <li><mzn-upload-item fileName="document.pdf" status="loading" size="sub" /></li>
+                <li><div mznUploadItem fileName="document.pdf" status="loading" size="main" ></div></li>
+                <li><div mznUploadItem fileName="document.pdf" status="loading" size="sub" ></div></li>
               </ul>
             </div>
           </div>
@@ -162,22 +162,22 @@ export const Status: Story = {
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="document.pdf" status="done" size="main" /></li>
-                <li><mzn-upload-item fileName="document.pdf" status="done" size="sub" /></li>
+                <li><div mznUploadItem fileName="document.pdf" status="done" size="main" ></div></li>
+                <li><div mznUploadItem fileName="document.pdf" status="done" size="sub" ></div></li>
               </ul>
             </div>
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="example.jpg" status="done" size="main" thumbnailUrl="https://rytass.com/logo.png" /></li>
-                <li><mzn-upload-item fileName="example.jpg" status="done" size="sub" thumbnailUrl="https://rytass.com/logo.png" /></li>
+                <li><div mznUploadItem fileName="example.jpg" status="done" size="main" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+                <li><div mznUploadItem fileName="example.jpg" status="done" size="sub" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
               </ul>
             </div>
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="document.pdf" status="done" size="main" /></li>
-                <li><mzn-upload-item fileName="document.pdf" status="done" size="sub" /></li>
+                <li><div mznUploadItem fileName="document.pdf" status="done" size="main" ></div></li>
+                <li><div mznUploadItem fileName="document.pdf" status="done" size="sub" ></div></li>
               </ul>
             </div>
           </div>
@@ -188,22 +188,22 @@ export const Status: Story = {
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="document.pdf" status="error" size="main" errorMessage="上傳失敗，請重試" /></li>
-                <li><mzn-upload-item fileName="document.pdf" status="error" size="sub" errorMessage="上傳失敗，請重試" /></li>
+                <li><div mznUploadItem fileName="document.pdf" status="error" size="main" errorMessage="上傳失敗，請重試" ></div></li>
+                <li><div mznUploadItem fileName="document.pdf" status="error" size="sub" errorMessage="上傳失敗，請重試" ></div></li>
               </ul>
             </div>
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="example.jpg" status="error" size="main" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" /></li>
-                <li><mzn-upload-item fileName="example.jpg" status="error" size="sub" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" /></li>
+                <li><div mznUploadItem fileName="example.jpg" status="error" size="main" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" ></div></li>
+                <li><div mznUploadItem fileName="example.jpg" status="error" size="sub" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" ></div></li>
               </ul>
             </div>
             <div>
               <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
               <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><mzn-upload-item fileName="document.pdf" status="error" size="main" errorMessage="上傳失敗，請重試" /></li>
-                <li><mzn-upload-item fileName="document.pdf" status="error" size="sub" errorMessage="上傳失敗，請重試" /></li>
+                <li><div mznUploadItem fileName="document.pdf" status="error" size="main" errorMessage="上傳失敗，請重試" ></div></li>
+                <li><div mznUploadItem fileName="document.pdf" status="error" size="sub" errorMessage="上傳失敗，請重試" ></div></li>
               </ul>
             </div>
           </div>
@@ -220,37 +220,37 @@ export const Size: Story = {
         <div>
           <h3>Icon Type - Main</h3>
           <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" /></li>
-            <li><mzn-upload-item fileName="example.jpg" status="done" /></li>
-            <li><mzn-upload-item fileName="failed-upload.txt" status="error" /></li>
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" [disabled]="true" /></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" ></div></li>
+            <li><div mznUploadItem fileName="example.jpg" status="done" ></div></li>
+            <li><div mznUploadItem fileName="failed-upload.txt" status="error" ></div></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" [disabled]="true" ></div></li>
           </ul>
         </div>
         <div>
           <h3>Icon Type - Sub</h3>
           <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" size="sub" /></li>
-            <li><mzn-upload-item fileName="example.jpg" status="done" size="sub" /></li>
-            <li><mzn-upload-item fileName="failed-upload.txt" status="error" size="sub" /></li>
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" size="sub" [disabled]="true" /></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" size="sub" ></div></li>
+            <li><div mznUploadItem fileName="example.jpg" status="done" size="sub" ></div></li>
+            <li><div mznUploadItem fileName="failed-upload.txt" status="error" size="sub" ></div></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" size="sub" [disabled]="true" ></div></li>
           </ul>
         </div>
         <div>
           <h3>Thumbnail Type - Main</h3>
           <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="failed-upload.txt" status="error" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" thumbnailUrl="https://rytass.com/logo.png" [disabled]="true" /></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="failed-upload.txt" status="error" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" thumbnailUrl="https://rytass.com/logo.png" [disabled]="true" ></div></li>
           </ul>
         </div>
         <div>
           <h3>Thumbnail Type - Sub</h3>
           <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" size="sub" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="example.jpg" status="done" size="sub" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="failed-upload.txt" status="error" size="sub" thumbnailUrl="https://rytass.com/logo.png" /></li>
-            <li><mzn-upload-item fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" size="sub" thumbnailUrl="https://rytass.com/logo.png" [disabled]="true" /></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="loading" size="sub" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="example.jpg" status="done" size="sub" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="failed-upload.txt" status="error" size="sub" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
+            <li><div mznUploadItem fileName="document-with-very-long-name-that-exceeds-normal-length-to-test-ellipsis-behavior-in-upload-item.pdf" status="done" size="sub" thumbnailUrl="https://rytass.com/logo.png" [disabled]="true" ></div></li>
           </ul>
         </div>
       </div>
