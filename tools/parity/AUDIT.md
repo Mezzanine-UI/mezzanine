@@ -515,3 +515,50 @@ Verified via `foundation-layout--with-dual-panels`:
   = **80/80 components verified**, 0 blocked.
 
 All Phase 3B work closed.
+
+## Phase 3A #2 — MznCalendarConfigProvider structural rewrite
+
+Port gap fixed in commit `a124d313`; picker stories converted
+from the Phase 4.2 decorator workaround to the real directive
+in `bbe7f77c`, serving as end-to-end proof.
+
+Previously the provider was a `@Component` with `<ng-content/>`
+(adds a DOM wrapper React's `CalendarConfigProvider` never
+emits) and a `useFactory` that called `self.methods()` inline,
+which blew up with `NG0950` because required input signals are
+unbound at directive construction. Phase 4.2 worked around it by
+providing `MZN_CALENDAR_CONFIG` directly in story decorators and
+leaving `<div mznCalendarConfigProvider>` as a bare attribute
+without importing the directive.
+
+**Rewrite**:
+
+- `@Component` → `@Directive` (no DOM, parity with React).
+- Expose a lazy `CalendarConfigs` as a `Proxy` whose only trap
+  is `get`; removed `ownKeys`/`has`/`getOwnPropertyDescriptor`
+  because Angular's devMode injector profiler introspects the
+  returned token eagerly and would re-trigger the NG0950 via
+  those traps at child construction time.
+- Wrap the `get` handler in `try/catch`; access during the brief
+  pre-binding window returns `undefined` instead of throwing.
+  Real consumers read config inside getters / computed / event
+  handlers after inputs have settled, so they see the correct
+  values.
+- `useFactory` switches from `deps: [MznCalendarConfigProvider]`
+  to `inject(MznCalendarConfigProvider)`, clearer and matches the
+  Angular v16+ `inject()` convention.
+
+**Verification**:
+
+- `internal-picker--picker-trigger-playground` compiles and
+  renders `mzn-picker mzn-text-field` trigger with the real
+  directive (no console errors).
+- `data-entry-datepicker--playground` still renders the full
+  picker + calendar subtree (len 17077) under its unchanged
+  decorator-level provider, confirming backward compatibility.
+- The six other picker/calendar story files still use the
+  decorator workaround; they continue to render unchanged and
+  can be migrated incrementally as a follow-up if full directive
+  parity is desired.
+
+Phase 3A backlog now: only CI-gate work remains (Phase 5).
