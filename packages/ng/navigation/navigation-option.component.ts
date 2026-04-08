@@ -29,17 +29,22 @@ import {
  * 從 `MZN_NAVIGATION_ACTIVATED` 與 `MZN_NAVIGATION_OPTION_LEVEL` 取得啟用與層級資訊。
  * 具有子選項時可展開/收合。
  *
+ * 使用 element selector 而非 attribute directive 以避免 HTML5 `<li>` 巢狀時
+ * auto-close 破壞 Angular template parse。Host 套 `display: contents`
+ * 讓 `<mzn-navigation-option>` 在 layout 上透明，內層 `<li>` 依然是 `<ul>`
+ * 的直接子項。
+ *
  * @example
  * ```html
- * <li mznNavigationOption title="首頁" href="/" [icon]="homeIcon" ></li>
- * <li mznNavigationOption title="設定" [icon]="settingsIcon">
- *   <li mznNavigationOption title="一般" href="/settings/general" ></li>
- *   <li mznNavigationOption title="安全性" href="/settings/security" ></li>
- * </li>
+ * <mzn-navigation-option title="首頁" href="/" [icon]="homeIcon" />
+ * <mzn-navigation-option title="設定" [icon]="settingsIcon" [hasChildren]="true">
+ *   <mzn-navigation-option title="一般" href="/settings/general" />
+ *   <mzn-navigation-option title="安全性" href="/settings/security" />
+ * </mzn-navigation-option>
  * ```
  */
 @Component({
-  selector: '[mznNavigationOption]',
+  selector: 'mzn-navigation-option',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
@@ -50,42 +55,36 @@ import {
     },
   ],
   host: {
-    '[class]': 'hostClasses()',
-    '[attr.data-id]': 'currentKey()',
-    '[attr.active]': 'null',
-    '[attr.hasChildren]': 'null',
-    '[attr.href]': 'null',
-    '[attr.icon]': 'null',
-    '[attr.optionId]': 'null',
-    '[attr.title]': 'null',
-    '[attr.defaultOpen]': 'null',
+    '[style.display]': "'contents'",
   },
   template: `
-    <div
-      [class]="contentClasses()"
-      role="menuitem"
-      tabindex="0"
-      (click)="onTriggerClick()"
-      (keydown.enter)="onTriggerClick()"
-      (keydown.space)="onTriggerClick(); $event.preventDefault()"
-    >
-      @if (icon()) {
-        <i mznIcon [class]="iconClass" [icon]="icon()!"></i>
-      }
-      <span [class]="titleWrapperClass">
-        <span [class]="titleClass">{{ title() }}</span>
-      </span>
-      @if (hasChildren()) {
-        <i mznIcon [class]="toggleIconClass" [icon]="toggleIcon()"></i>
-      }
-    </div>
-    @if (hasChildren() && open()) {
-      <div [class]="childrenWrapperClass">
-        <ul [class]="groupClass">
-          <ng-content />
-        </ul>
+    <li [class]="hostClasses()" [attr.data-id]="currentKey()">
+      <div
+        [class]="contentClasses()"
+        role="menuitem"
+        tabindex="0"
+        (click)="onTriggerClick()"
+        (keydown.enter)="onTriggerClick()"
+        (keydown.space)="onTriggerClick(); $event.preventDefault()"
+      >
+        @if (icon()) {
+          <i mznIcon [class]="iconClass" [icon]="icon()!"></i>
+        }
+        <span [class]="titleWrapperClass">
+          <span [class]="titleClass">{{ title() }}</span>
+        </span>
+        @if (hasChildren()) {
+          <i mznIcon [class]="toggleIconClass" [icon]="toggleIcon()"></i>
+        }
       </div>
-    }
+      @if (hasChildren() && open()) {
+        <div [class]="childrenWrapperClass">
+          <ul [class]="groupClass">
+            <ng-content />
+          </ul>
+        </div>
+      }
+    </li>
   `,
 })
 export class MznNavigationOption implements NavigationOptionLevel {

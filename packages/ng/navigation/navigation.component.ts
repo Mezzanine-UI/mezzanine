@@ -71,10 +71,10 @@ export type NavigationItemConfig =
  *   <header mznNavigationHeader>
  *     <span title>My App</span>
  *   </header>
- *   <li mznNavigationOption title="首頁" href="/" [icon]="homeIcon" ></li>
- *   <li mznNavigationOption title="設定" [icon]="settingsIcon" [hasChildren]="true">
- *     <li mznNavigationOption title="一般" href="/settings/general" ></li>
- *   </li>
+ *   <mzn-navigation-option title="首頁" href="/" [icon]="homeIcon" />
+ *   <mzn-navigation-option title="設定" [icon]="settingsIcon" [hasChildren]="true">
+ *     <mzn-navigation-option title="一般" href="/settings/general" />
+ *   </mzn-navigation-option>
  *   <footer mznNavigationFooter>
  *     <button>登出</button>
  *   </footer>
@@ -121,16 +121,15 @@ export type NavigationItemConfig =
     '[attr.items]': 'null',
   },
   template: `
-    <ng-content select="mzn-navigation-header" />
+    <ng-content select="[mznNavigationHeader]" />
     <div [class]="contentClass">
       <ul [class]="listClass">
         @if (items(); as itemList) {
           @for (item of itemList; track item.title) {
             @if (isCategoryConfig(item)) {
-              <li mznNavigationOptionCategory [title]="item.title">
+              <mzn-navigation-option-category [title]="item.title">
                 @for (child of item.children ?? []; track child.title) {
-                  <li
-                    mznNavigationOption
+                  <mzn-navigation-option
                     [active]="child.active"
                     [defaultOpen]="child.defaultOpen ?? false"
                     [hasChildren]="(child.children?.length ?? 0) > 0"
@@ -143,8 +142,7 @@ export type NavigationItemConfig =
                       grandchild of child.children ?? [];
                       track grandchild.title
                     ) {
-                      <li
-                        mznNavigationOption
+                      <mzn-navigation-option
                         [active]="grandchild.active"
                         [defaultOpen]="grandchild.defaultOpen ?? false"
                         [hasChildren]="(grandchild.children?.length ?? 0) > 0"
@@ -154,12 +152,11 @@ export type NavigationItemConfig =
                         [title]="grandchild.title"
                       />
                     }
-                  </li>
+                  </mzn-navigation-option>
                 }
-              </li>
+              </mzn-navigation-option-category>
             } @else {
-              <li
-                mznNavigationOption
+              <mzn-navigation-option
                 [active]="item.active"
                 [defaultOpen]="item.defaultOpen ?? false"
                 [hasChildren]="(item.children?.length ?? 0) > 0"
@@ -169,8 +166,7 @@ export type NavigationItemConfig =
                 [title]="item.title"
               >
                 @for (child of item.children ?? []; track child.title) {
-                  <li
-                    mznNavigationOption
+                  <mzn-navigation-option
                     [active]="child.active"
                     [defaultOpen]="child.defaultOpen ?? false"
                     [hasChildren]="(child.children?.length ?? 0) > 0"
@@ -183,8 +179,7 @@ export type NavigationItemConfig =
                       grandchild of child.children ?? [];
                       track grandchild.title
                     ) {
-                      <li
-                        mznNavigationOption
+                      <mzn-navigation-option
                         [active]="grandchild.active"
                         [defaultOpen]="grandchild.defaultOpen ?? false"
                         [hasChildren]="(grandchild.children?.length ?? 0) > 0"
@@ -194,9 +189,9 @@ export type NavigationItemConfig =
                         [title]="grandchild.title"
                       />
                     }
-                  </li>
+                  </mzn-navigation-option>
                 }
-              </li>
+              </mzn-navigation-option>
             }
           }
         } @else {
@@ -204,7 +199,7 @@ export type NavigationItemConfig =
         }
       </ul>
     </div>
-    <ng-content select="mzn-navigation-footer" />
+    <ng-content select="[mznNavigationFooter]" />
   `,
 })
 export class MznNavigation {
