@@ -20,19 +20,22 @@ import clsx from 'clsx';
  *
  * @example
  * ```html
- * <mzn-time-panel-column
+ * <div mznTimePanelColumn
  *   [units]="hourUnits"
  *   [activeUnit]="currentHour"
  *   (unitChanged)="onHourChange($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-time-panel-column',
+  selector: '[mznTimePanelColumn]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'columnClass',
+    '[attr.units]': 'null',
+    '[attr.activeUnit]': 'null',
+    '[attr.cellHeight]': 'null',
   },
   template: `
     <div

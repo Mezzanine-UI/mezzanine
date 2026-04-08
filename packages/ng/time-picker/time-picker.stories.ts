@@ -16,7 +16,8 @@ type Story = StoryObj;
   standalone: true,
   imports: [MznTimePicker],
   template: `
-    <mzn-time-picker
+    <div
+      mznTimePicker
       [clearable]="clearable"
       [disabled]="disabled"
       [error]="error"
@@ -33,7 +34,7 @@ type Story = StoryObj;
       [size]="size"
       [value]="value()"
       (timeChanged)="value.set($event)"
-    />
+    ></div>
   `,
 })
 class TimePickerPlaygroundComponent {
@@ -216,19 +217,19 @@ export const Basic: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Normal</strong></p>
-        <mzn-time-picker [(ngModel)]="time" />
+        <div mznTimePicker [(ngModel)]="time" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <mzn-time-picker [disabled]="true" />
+        <div mznTimePicker [disabled]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Error</strong></p>
-        <mzn-time-picker [error]="true" />
+        <div mznTimePicker [error]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Read only</strong></p>
-        <mzn-time-picker [readOnly]="true" />
+        <div mznTimePicker [readOnly]="true" ></div>
       </div>
     `,
   }),
@@ -243,11 +244,11 @@ export const Sizes: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Main (Default)</strong></p>
-        <mzn-time-picker [(ngModel)]="time1" size="main" />
+        <div mznTimePicker [(ngModel)]="time1" size="main" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Sub</strong></p>
-        <mzn-time-picker [(ngModel)]="time2" size="sub" />
+        <div mznTimePicker [(ngModel)]="time2" size="sub" ></div>
       </div>
     `,
   }),
@@ -262,11 +263,11 @@ export const DisplayColumn: Story = {
     template: `
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Hours, minutes, seconds</strong></p>
-        <mzn-time-picker [(ngModel)]="time1" format="HH:mm:ss" placeholder="HH:mm:ss" />
+        <div mznTimePicker [(ngModel)]="time1" format="HH:mm:ss" placeholder="HH:mm:ss" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Hours, minutes</strong></p>
-        <mzn-time-picker [(ngModel)]="time2" [hideSecond]="true" format="HH:mm" placeholder="HH:mm" />
+        <div mznTimePicker [(ngModel)]="time2" [hideSecond]="true" format="HH:mm" placeholder="HH:mm" ></div>
       </div>
     `,
   }),
@@ -282,15 +283,15 @@ export const Steps: Story = {
     template: `
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Hour step (15 minutes)</strong></p>
-        <mzn-time-picker [(ngModel)]="time1" [hourStep]="1" [minuteStep]="15" placeholder="HH:mm:ss" />
+        <div mznTimePicker [(ngModel)]="time1" [hourStep]="1" [minuteStep]="15" placeholder="HH:mm:ss" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Minute step (30 seconds)</strong></p>
-        <mzn-time-picker [(ngModel)]="time2" [minuteStep]="1" [secondStep]="30" placeholder="HH:mm:ss" />
+        <div mznTimePicker [(ngModel)]="time2" [minuteStep]="1" [secondStep]="30" placeholder="HH:mm:ss" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>All steps (6 hours, 15 minutes, 20 seconds)</strong></p>
-        <mzn-time-picker [(ngModel)]="time3" [hourStep]="6" [minuteStep]="15" [secondStep]="20" placeholder="HH:mm:ss" />
+        <div mznTimePicker [(ngModel)]="time3" [hourStep]="6" [minuteStep]="15" [secondStep]="20" placeholder="HH:mm:ss" ></div>
       </div>
     `,
   }),

@@ -20,21 +20,32 @@ import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
  * import { MznTimePickerPanel } from '@mezzanine-ui/ng/time-picker';
  *
  * <button #anchor>Open</button>
- * <mzn-time-picker-panel
+ * <div mznTimePickerPanel
  *   [anchor]="anchor"
  *   [open]="isOpen"
  *   [value]="pendingTime"
  *   (timeChanged)="onTimeChange($event)"
  *   (confirmed)="onConfirm()"
  *   (cancelled)="onCancel()"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznTimePicker} 時間選擇器元件
  * @see {@link MznTimePanel} 時間面板元件
  */
 @Component({
-  selector: 'mzn-time-picker-panel',
+  selector: '[mznTimePickerPanel]',
+  host: {
+    '[attr.anchor]': 'null',
+    '[attr.hideHour]': 'null',
+    '[attr.hideMinute]': 'null',
+    '[attr.hideSecond]': 'null',
+    '[attr.hourStep]': 'null',
+    '[attr.minuteStep]': 'null',
+    '[attr.open]': 'null',
+    '[attr.secondStep]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [MznPopper, MznTimePanel],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +57,8 @@ import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
       placement="bottom-start"
       [offsetOptions]="{ mainAxis: 4 }"
     >
-      <mzn-time-panel
+      <div
+        mznTimePanel
         [value]="value()"
         [hideHour]="hideHour()"
         [hideMinute]="hideMinute()"
@@ -57,7 +69,7 @@ import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
         (timeChanged)="timeChanged.emit($event)"
         (confirmed)="confirmed.emit()"
         (cancelled)="cancelled.emit()"
-      />
+      ></div>
     </div>
   `,
 })

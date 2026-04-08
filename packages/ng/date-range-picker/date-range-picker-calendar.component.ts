@@ -25,7 +25,7 @@ import {
  * ```html
  * import { MznDateRangePickerCalendar } from '@mezzanine-ui/ng/date-range-picker';
  *
- * <mzn-date-range-picker-calendar
+ * <div mznDateRangePickerCalendar
  *   [anchor]="triggerElRef"
  *   [open]="isOpen"
  *   [referenceDate]="refDate"
@@ -34,14 +34,45 @@ import {
  *   (rangeChanged)="onRangeChange($event)"
  *   (cellHover)="onHover($event)"
  *   (mouseLeave)="onLeave()"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznRangeCalendar} 雙日曆範圍選取核心元件
  * @see {@link MznDateRangePicker} 完整日期範圍選擇器
  */
 @Component({
-  selector: 'mzn-date-range-picker-calendar',
+  selector: '[mznDateRangePickerCalendar]',
+  host: {
+    '[attr.anchor]': 'null',
+    '[attr.offsetOptions]': 'null',
+    '[attr.open]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.disabledMonthSwitch]': 'null',
+    '[attr.disabledYearSwitch]': 'null',
+    '[attr.disableOnDoubleNext]': 'null',
+    '[attr.disableOnDoublePrev]': 'null',
+    '[attr.disableOnNext]': 'null',
+    '[attr.disableOnPrev]': 'null',
+    '[attr.displayMonthLocale]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.isDateInRange]': 'null',
+    '[attr.isHalfYearDisabled]': 'null',
+    '[attr.isHalfYearInRange]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.isMonthInRange]': 'null',
+    '[attr.isQuarterDisabled]': 'null',
+    '[attr.isQuarterInRange]': 'null',
+    '[attr.isWeekDisabled]': 'null',
+    '[attr.isWeekInRange]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.isYearInRange]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.quickSelect]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.showFooterActions]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [MznPopper, MznRangeCalendar],
   changeDetection: ChangeDetectionStrategy.OnPush,

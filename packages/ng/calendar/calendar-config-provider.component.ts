@@ -20,7 +20,7 @@ import {
  * import { MznCalendarConfigProvider } from '@mezzanine-ui/ng/calendar';
  *
  * <div mznCalendarConfigProvider [methods]="dayjsMethods" locale="zh-TW">
- *   <mzn-date-picker [(ngModel)]="date" />
+ *   <div mznDatePicker [(ngModel)]="date" ></div>
  * </div>
  * ```
  */

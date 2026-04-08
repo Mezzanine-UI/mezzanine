@@ -35,24 +35,52 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
  * ```html
  * import { MznDatePicker } from '@mezzanine-ui/ng/date-picker';
  *
- * <mzn-date-picker
+ * <div mznDatePicker
  *   [(ngModel)]="selectedDate"
  *   mode="day"
  *   placeholder="Select date"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznCalendar} 日曆元件
  * @see {@link MznDateRangePicker} 日期範圍選擇器
  */
 @Component({
-  selector: 'mzn-date-picker',
+  selector: '[mznDatePicker]',
+  host: {
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.disableOnDoubleNext]': 'null',
+    '[attr.disableOnDoublePrev]': 'null',
+    '[attr.disableOnNext]': 'null',
+    '[attr.disableOnPrev]': 'null',
+    '[attr.disabledMonthSwitch]': 'null',
+    '[attr.disabledYearSwitch]': 'null',
+    '[attr.displayMonthLocale]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
+    '[attr.error]': 'null',
+    '[attr.format]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.isHalfYearDisabled]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.isQuarterDisabled]': 'null',
+    '[attr.isWeekDisabled]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.size]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [MznDatePickerCalendar, MznIcon, MznPickerTrigger],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideValueAccessor(MznDatePicker)],
   template: `
-    <mzn-picker-trigger
+    <div
+      mznPickerTrigger
       #triggerEl
       [format]="resolvedFormat()"
       [value]="displayValue()"
@@ -76,8 +104,9 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
         [icon]="calendarIcon"
         (click)="toggleCalendar($event)"
       ></i>
-    </mzn-picker-trigger>
-    <mzn-date-picker-calendar
+    </div>
+    <div
+      mznDatePickerCalendar
       [anchor]="triggerElement()"
       [open]="isOpen()"
       [mode]="mode()"
@@ -98,7 +127,7 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
       [isWeekDisabled]="isWeekDisabled()"
       [isYearDisabled]="isYearDisabled()"
       (dateChanged)="onCalendarChange($event)"
-    />
+    ></div>
   `,
 })
 export class MznDatePicker implements ControlValueAccessor {

@@ -44,13 +44,13 @@ export interface DateValue {
  * ```html
  * import { MznMultipleDatePickerTrigger } from '@mezzanine-ui/ng/multiple-date-picker';
  *
- * <mzn-multiple-date-picker-trigger
+ * <div mznMultipleDatePickerTrigger
  *   [value]="selectedDateValues"
  *   [overflowStrategy]="'counter'"
  *   [clearable]="true"
  *   (tagClosed)="onTagClose($event)"
  *   (cleared)="onClear()"
- * />
+ * ></div>
  * ```
  *
  * @see MznMultipleDatePicker
@@ -58,12 +58,23 @@ export interface DateValue {
  * @see MznTagGroup
  */
 @Component({
-  selector: 'mzn-multiple-date-picker-trigger',
+  selector: '[mznMultipleDatePickerTrigger]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznTextField, MznTag, MznTagGroup, MznOverflowCounterTag],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.active]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.overflowStrategy]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.required]': 'null',
+    '[attr.size]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     <div

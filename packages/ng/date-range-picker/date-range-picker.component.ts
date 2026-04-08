@@ -33,23 +33,53 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
  * ```html
  * import { MznDateRangePicker } from '@mezzanine-ui/ng/date-range-picker';
  *
- * <mzn-date-range-picker
+ * <div mznDateRangePicker
  *   [(ngModel)]="dateRange"
  *   inputFromPlaceholder="Start Date"
  *   inputToPlaceholder="End Date"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznDatePicker} 單一日期選擇器
  */
 @Component({
-  selector: 'mzn-date-range-picker',
+  selector: '[mznDateRangePicker]',
+  host: {
+    '[attr.clearable]': 'null',
+    '[attr.confirmMode]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.disableOnDoubleNext]': 'null',
+    '[attr.disableOnDoublePrev]': 'null',
+    '[attr.disableOnNext]': 'null',
+    '[attr.disableOnPrev]': 'null',
+    '[attr.disabledMonthSwitch]': 'null',
+    '[attr.disabledYearSwitch]': 'null',
+    '[attr.displayMonthLocale]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
+    '[attr.error]': 'null',
+    '[attr.format]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.inputFromPlaceholder]': 'null',
+    '[attr.inputToPlaceholder]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.isHalfYearDisabled]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.isQuarterDisabled]': 'null',
+    '[attr.isWeekDisabled]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.size]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [MznDateRangePickerCalendar, MznRangePickerTrigger],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideValueAccessor(MznDateRangePicker)],
   template: `
-    <mzn-range-picker-trigger
+    <div
+      mznRangePickerTrigger
       #triggerEl
       [format]="resolvedFormat()"
       [inputFromValue]="inputFromValue()"
@@ -71,8 +101,9 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
       (cleared)="onClear()"
       (inputFromChanged)="onTriggerFromChange($event)"
       (inputToChanged)="onTriggerToChange($event)"
-    />
-    <mzn-date-range-picker-calendar
+    ></div>
+    <div
+      mznDateRangePickerCalendar
       [anchor]="triggerElement()"
       [open]="isOpen()"
       [referenceDate]="referenceRef()"
@@ -97,7 +128,7 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
       (confirmed)="onConfirm()"
       (cancelled)="onCancel()"
       (mouseLeave)="onMouseLeave()"
-    />
+    ></div>
   `,
 })
 export class MznDateRangePicker implements ControlValueAccessor {

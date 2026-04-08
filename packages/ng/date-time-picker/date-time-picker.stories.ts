@@ -17,7 +17,8 @@ type Story = StoryObj<MznDateTimePicker>;
   standalone: true,
   imports: [MznDateTimePicker],
   template: `
-    <mzn-date-time-picker
+    <div
+      mznDateTimePicker
       [clearable]="clearable"
       [disabled]="disabled"
       [error]="error"
@@ -32,7 +33,7 @@ type Story = StoryObj<MznDateTimePicker>;
       [secondStep]="secondStep"
       [value]="value()"
       (dateTimeChanged)="value.set($event)"
-    />
+    ></div>
   `,
 })
 class DateTimePickerPlaygroundComponent {
@@ -194,19 +195,19 @@ export const Basic: Story = {
     template: `
       <div style="width: 320px; margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Normal</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateTime" />
+        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
       </div>
       <div style="width: 320px; margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <mzn-date-time-picker [disabled]="true" />
+        <div mznDateTimePicker [disabled]="true" ></div>
       </div>
       <div style="width: 320px; margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Error</strong></p>
-        <mzn-date-time-picker [error]="true" />
+        <div mznDateTimePicker [error]="true" ></div>
       </div>
       <div style="width: 320px; margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Read only</strong></p>
-        <mzn-date-time-picker [readOnly]="true" />
+        <div mznDateTimePicker [readOnly]="true" ></div>
       </div>
     `,
   }),
@@ -218,15 +219,15 @@ export const Method: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>CalendarMethodsMoment</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateTime" />
+        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>CalendarMethodsDayjs</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateTime" />
+        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>CalendarMethodLuxon</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateTime" />
+        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
       </div>
     `,
   }),
@@ -241,11 +242,11 @@ export const Sizes: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Size: main</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateMain" />
+        <div mznDateTimePicker [(ngModel)]="dateMain" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Size: sub</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateSub" />
+        <div mznDateTimePicker [(ngModel)]="dateSub" ></div>
       </div>
     `,
   }),
@@ -260,11 +261,11 @@ export const DisplayColumn: Story = {
     template: `
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Hours, minutes, seconds</strong></p>
-        <mzn-date-time-picker [(ngModel)]="date1" />
+        <div mznDateTimePicker [(ngModel)]="date1" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Hours, minutes</strong></p>
-        <mzn-date-time-picker [(ngModel)]="date2" [hideSecond]="true" />
+        <div mznDateTimePicker [(ngModel)]="date2" [hideSecond]="true" ></div>
       </div>
     `,
   }),
@@ -276,11 +277,11 @@ export const CustomDisable: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>(mode='day') Disable navigation controls</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateTime" />
+        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>(mode='day') Custom disabled dates</strong></p>
-        <mzn-date-time-picker [(ngModel)]="dateTime" />
+        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
       </div>
     `,
   }),

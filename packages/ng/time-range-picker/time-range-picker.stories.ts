@@ -18,7 +18,8 @@ type Story = StoryObj<MznTimeRangePicker>;
   standalone: true,
   imports: [MznTimeRangePicker],
   template: `
-    <mzn-time-range-picker
+    <div
+      mznTimeRangePicker
       [clearable]="clearable"
       [disabled]="disabled"
       [error]="error"
@@ -34,7 +35,7 @@ type Story = StoryObj<MznTimeRangePicker>;
       [secondStep]="secondStep"
       [value]="value()"
       (rangeChanged)="value.set($event)"
-    />
+    ></div>
   `,
 })
 class TimeRangePickerPlaygroundComponent {
@@ -207,7 +208,7 @@ export const Basic: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Value: {{ range | json }}</strong></p>
-        <mzn-time-range-picker [(ngModel)]="range" />
+        <div mznTimeRangePicker [(ngModel)]="range" ></div>
       </div>
     `,
   }),
@@ -218,7 +219,7 @@ export const HideSecond: Story = {
     props: { range: undefined },
     template: `
       <p style="margin: 0 0 12px 0"><strong>Hide Second (HH:mm format)</strong></p>
-      <mzn-time-range-picker [(ngModel)]="range" format="HH:mm" [hideSecond]="true" />
+      <div mznTimeRangePicker [(ngModel)]="range" format="HH:mm" [hideSecond]="true" ></div>
     `,
   }),
 };
@@ -228,7 +229,7 @@ export const WithSteps: Story = {
     props: { range: undefined },
     template: `
       <p style="margin: 0 0 12px 0"><strong>With Steps (Hour: 2, Minute: 15, Second: 30)</strong></p>
-      <mzn-time-range-picker [(ngModel)]="range" [hourStep]="2" [minuteStep]="15" [secondStep]="30" />
+      <div mznTimeRangePicker [(ngModel)]="range" [hourStep]="2" [minuteStep]="15" [secondStep]="30" ></div>
     `,
   }),
 };
@@ -239,15 +240,15 @@ export const States: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <mzn-time-range-picker [disabled]="true" />
+        <div mznTimeRangePicker [disabled]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Read Only</strong></p>
-        <mzn-time-range-picker [readOnly]="true" />
+        <div mznTimeRangePicker [readOnly]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>With Error State</strong></p>
-        <mzn-time-range-picker [error]="true" />
+        <div mznTimeRangePicker [error]="true" ></div>
       </div>
     `,
   }),
@@ -261,9 +262,9 @@ export const Sizes: Story = {
     },
     template: `
       <p style="margin: 12px 0"><strong>Size: Main</strong></p>
-      <mzn-time-range-picker [(ngModel)]="range1" />
+      <div mznTimeRangePicker [(ngModel)]="range1" ></div>
       <p style="margin: 12px 0"><strong>Size: Sub</strong></p>
-      <mzn-time-range-picker [(ngModel)]="range2" />
+      <div mznTimeRangePicker [(ngModel)]="range2" ></div>
     `,
   }),
 };

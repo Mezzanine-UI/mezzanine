@@ -35,19 +35,19 @@ import {
  *
  * @example
  * ```html
- * <mzn-range-picker-trigger
+ * <div mznRangePickerTrigger
  *   [format]="'YYYY-MM-DD'"
  *   [inputFromValue]="fromValue"
  *   [inputToValue]="toValue"
  *   (inputFromChanged)="onFromChange($event)"
  *   (inputToChanged)="onToChange($event)"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznFormattedInput}
  */
 @Component({
-  selector: 'mzn-range-picker-trigger',
+  selector: '[mznRangePickerTrigger]',
   standalone: true,
   imports: [MznIcon, MznFormattedInput],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +55,25 @@ import {
     '[class]': 'hostClasses()',
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.errorMessagesFrom]': 'null',
+    '[attr.errorMessagesTo]': 'null',
+    '[attr.format]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.hostClassModifier]': 'null',
+    '[attr.hoverFromValue]': 'null',
+    '[attr.hoverToValue]': 'null',
+    '[attr.inputFromPlaceholder]': 'null',
+    '[attr.inputFromValue]': 'null',
+    '[attr.inputToPlaceholder]': 'null',
+    '[attr.inputToValue]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.required]': 'null',
+    '[attr.size]': 'null',
+    '[attr.validateFrom]': 'null',
+    '[attr.validateTo]': 'null',
   },
   template: `
     <div

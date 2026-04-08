@@ -23,7 +23,8 @@ type Story = StoryObj<MznDatePicker>;
   standalone: true,
   imports: [MznDatePicker],
   template: `
-    <mzn-date-picker
+    <div
+      mznDatePicker
       [clearable]="clearable"
       [disabled]="disabled"
       [error]="error"
@@ -34,7 +35,7 @@ type Story = StoryObj<MznDatePicker>;
       [size]="size"
       [value]="value()"
       (dateChanged)="value.set($event)"
-    />
+    ></div>
   `,
 })
 class DatePickerPlaygroundComponent {
@@ -157,19 +158,19 @@ export const Basic: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Normal</strong></p>
-        <mzn-date-picker [(ngModel)]="date" />
+        <div mznDatePicker [(ngModel)]="date" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <mzn-date-picker [disabled]="true" />
+        <div mznDatePicker [disabled]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Error</strong></p>
-        <mzn-date-picker [error]="true" />
+        <div mznDatePicker [error]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Read only</strong></p>
-        <mzn-date-picker [readOnly]="true" />
+        <div mznDatePicker [readOnly]="true" ></div>
       </div>
     `,
   }),
@@ -181,15 +182,15 @@ export const Method: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>CalendarMethodsMoment</strong></p>
-        <mzn-date-picker [(ngModel)]="date" />
+        <div mznDatePicker [(ngModel)]="date" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>CalendarMethodsDayjs</strong></p>
-        <mzn-date-picker [(ngModel)]="date" />
+        <div mznDatePicker [(ngModel)]="date" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>CalendarMethodsLuxon</strong></p>
-        <mzn-date-picker [(ngModel)]="date" />
+        <div mznDatePicker [(ngModel)]="date" ></div>
       </div>
     `,
   }),
@@ -204,11 +205,11 @@ export const Sizes: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Size: Main</strong></p>
-        <mzn-date-picker [(ngModel)]="dateMain" size="main" />
+        <div mznDatePicker [(ngModel)]="dateMain" size="main" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Size: Sub</strong></p>
-        <mzn-date-picker [(ngModel)]="dateSub" size="sub" />
+        <div mznDatePicker [(ngModel)]="dateSub" size="sub" ></div>
       </div>
     `,
   }),
@@ -227,27 +228,27 @@ export const Modes: Story = {
     template: `
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Day</strong></p>
-        <mzn-date-picker [(ngModel)]="dateD" mode="day" placeholder="輸入日期" />
+        <div mznDatePicker [(ngModel)]="dateD" mode="day" placeholder="輸入日期" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Week</strong></p>
-        <mzn-date-picker [(ngModel)]="dateW" mode="week" placeholder="輸入日期" />
+        <div mznDatePicker [(ngModel)]="dateW" mode="week" placeholder="輸入日期" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Month</strong></p>
-        <mzn-date-picker [(ngModel)]="dateM" mode="month" placeholder="輸入日期" />
+        <div mznDatePicker [(ngModel)]="dateM" mode="month" placeholder="輸入日期" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Year</strong></p>
-        <mzn-date-picker [(ngModel)]="dateY" mode="year" placeholder="輸入日期" />
+        <div mznDatePicker [(ngModel)]="dateY" mode="year" placeholder="輸入日期" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Quarter</strong></p>
-        <mzn-date-picker [(ngModel)]="dateQ" mode="quarter" placeholder="輸入日期" />
+        <div mznDatePicker [(ngModel)]="dateQ" mode="quarter" placeholder="輸入日期" ></div>
       </div>
       <div style="margin: 0 0 32px 0">
         <p style="margin: 0 0 8px 0"><strong>Half year</strong></p>
-        <mzn-date-picker [(ngModel)]="dateH" mode="half-year" placeholder="輸入日期" />
+        <div mznDatePicker [(ngModel)]="dateH" mode="half-year" placeholder="輸入日期" ></div>
       </div>
     `,
   }),
@@ -260,18 +261,18 @@ export const CustomDisable: Story = {
       <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
         <p style="margin: 0 0 16px 0"><strong>1. Disable Navigation Controls</strong></p>
         <p style="margin: 0 0 12px 0">Disable month/year switching buttons and navigation arrows.</p>
-        <mzn-date-picker
+        <div mznDatePicker
           [(ngModel)]="date"
           mode="day"
           [fullWidth]="true"
           placeholder="Date"
-        />
+        ></div>
       </div>
       <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
         <p style="margin: 0 0 16px 0"><strong>2. Mode-specific Disable Examples</strong></p>
         <div style="margin: 0 0 32px 0">
           <p style="margin: 0 0 8px 0"><strong>Day: Custom disabled dates</strong></p>
-          <mzn-date-picker [(ngModel)]="date" mode="day" placeholder="Date" />
+          <div mznDatePicker [(ngModel)]="date" mode="day" placeholder="Date" ></div>
         </div>
       </div>
     `,
@@ -290,14 +291,14 @@ export const CalendarIntegration: Story = {
         <p style="margin: 0 0 12px 0">Display additional information on each date cell via calendarProps.</p>
         <div style="margin: 0 0 32px 0">
           <p style="margin: 0 0 12px 0">Example: Stock market daily changes</p>
-          <mzn-date-picker [(ngModel)]="dateAnnotation" mode="day" placeholder="Date" />
+          <div mznDatePicker [(ngModel)]="dateAnnotation" mode="day" placeholder="Date" ></div>
         </div>
       </div>
       <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
         <p style="margin: 0 0 16px 0"><strong>2. Quick Select Options</strong></p>
         <p style="margin: 0 0 12px 0">Provide shortcut buttons for commonly selected dates via calendarProps.</p>
         <div style="margin: 0 0 32px 0">
-          <mzn-date-picker [(ngModel)]="dateQuickSelect" mode="day" placeholder="Date" />
+          <div mznDatePicker [(ngModel)]="dateQuickSelect" mode="day" placeholder="Date" ></div>
         </div>
       </div>
     `,

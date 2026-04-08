@@ -32,14 +32,35 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
  * ```html
  * import { MznDateTimePicker } from '@mezzanine-ui/ng/date-time-picker';
  *
- * <mzn-date-time-picker
+ * <div mznDateTimePicker
  *   [(ngModel)]="selectedDateTime"
  *   placeholder="Select date and time"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-date-time-picker',
+  selector: '[mznDateTimePicker]',
+  host: {
+    '[attr.placeholder]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.error]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.hideHour]': 'null',
+    '[attr.hideMinute]': 'null',
+    '[attr.hideSecond]': 'null',
+    '[attr.hourStep]': 'null',
+    '[attr.minuteStep]': 'null',
+    '[attr.secondStep]': 'null',
+    '[attr.format]': 'null',
+    '[attr.formatDate]': 'null',
+    '[attr.formatTime]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.required]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [
     MznCalendar,
@@ -52,7 +73,8 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideValueAccessor(MznDateTimePicker)],
   template: `
-    <mzn-picker-trigger
+    <div
+      mznPickerTrigger
       #triggerEl
       [format]="resolvedFormat()"
       [value]="displayValue()"
@@ -76,7 +98,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
         [icon]="calendarIcon"
         (click)="togglePanel($event)"
       ></i>
-    </mzn-picker-trigger>
+    </div>
     <div
       mznPopper
       [anchor]="triggerElement()"
@@ -94,7 +116,8 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           [disabledFooterControl]="true"
           (dateChanged)="onDateSelect($event)"
         ></div>
-        <mzn-time-panel
+        <div
+          mznTimePanel
           [value]="pendingValue()"
           [hideHour]="hideHour()"
           [hideMinute]="hideMinute()"
@@ -105,7 +128,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           (timeChanged)="onTimeChange($event)"
           (confirmed)="onConfirm()"
           (cancelled)="onCancel()"
-        />
+        ></div>
       </div>
     </div>
   `,

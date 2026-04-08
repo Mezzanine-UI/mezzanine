@@ -19,7 +19,8 @@ type Story = StoryObj<MznTimePanel>;
     <div style="display: flex; flex-flow: row; gap: 32px;">
       <div style="display: flex; flex-flow: column;">
         Default
-        <mzn-time-panel
+        <div
+          mznTimePanel
           [hourStep]="hourStep()"
           [minuteStep]="minuteStep()"
           [secondStep]="secondStep()"
@@ -27,11 +28,12 @@ type Story = StoryObj<MznTimePanel>;
           (timeChanged)="val1.set($event)"
           (confirmed)="val1.set(val1())"
           (cancelled)="val1.set(undefined)"
-        />
+        ></div>
       </div>
       <div style="display: flex; flex-flow: column;">
         Hide Second
-        <mzn-time-panel
+        <div
+          mznTimePanel
           [hideSecond]="true"
           [hourStep]="hourStep()"
           [minuteStep]="minuteStep()"
@@ -40,11 +42,12 @@ type Story = StoryObj<MznTimePanel>;
           (timeChanged)="val2.set($event)"
           (confirmed)="val2.set(val2())"
           (cancelled)="val2.set(undefined)"
-        />
+        ></div>
       </div>
       <div style="display: flex; flex-flow: column;">
         Custom Steps (1h, 5m, 10s)
-        <mzn-time-panel
+        <div
+          mznTimePanel
           [hourStep]="1"
           [minuteStep]="5"
           [secondStep]="10"
@@ -52,7 +55,7 @@ type Story = StoryObj<MznTimePanel>;
           (timeChanged)="val3.set($event)"
           (confirmed)="val3.set(val3())"
           (cancelled)="val3.set(undefined)"
-        />
+        ></div>
       </div>
     </div>
   `,

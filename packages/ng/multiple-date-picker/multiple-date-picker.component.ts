@@ -39,16 +39,33 @@ import {
  * ```html
  * import { MznMultipleDatePicker } from '@mezzanine-ui/ng/multiple-date-picker';
  *
- * <mzn-multiple-date-picker
+ * <div mznMultipleDatePicker
  *   [(ngModel)]="selectedDates"
  *   placeholder="Select dates"
- * />
+ * ></div>
  * ```
  *
  * @see MznMultipleDatePickerTrigger
  */
 @Component({
-  selector: 'mzn-multiple-date-picker',
+  selector: '[mznMultipleDatePicker]',
+  host: {
+    '[attr.active]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.format]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.maxSelections]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.overflowStrategy]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.required]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [
     MznCalendar,
@@ -60,7 +77,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideValueAccessor(MznMultipleDatePicker)],
   template: `
-    <mzn-multiple-date-picker-trigger
+    <div
+      mznMultipleDatePickerTrigger
       #triggerEl
       [active]="isOpen()"
       [clearable]="clearable()"
@@ -83,7 +101,7 @@ import {
         [icon]="calendarIcon"
         (click)="toggleCalendar($event)"
       ></i>
-    </mzn-multiple-date-picker-trigger>
+    </div>
     <div
       mznPopper
       [anchor]="triggerElement()"

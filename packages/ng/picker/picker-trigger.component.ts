@@ -31,7 +31,7 @@ import {
  *
  * @example
  * ```html
- * <mzn-picker-trigger
+ * <div mznPickerTrigger
  *   [format]="'YYYY-MM-DD'"
  *   [value]="displayValue"
  *   [placeholder]="'Select date'"
@@ -41,13 +41,13 @@ import {
  *   (cleared)="onClear()"
  * >
  *   <i mznIcon suffix [icon]="calendarIcon" ></i>
- * </mzn-picker-trigger>
+ * </div>
  * ```
  *
  * @see {@link MznFormattedInput}
  */
 @Component({
-  selector: 'mzn-picker-trigger',
+  selector: '[mznPickerTrigger]',
   standalone: true,
   imports: [MznIcon, MznFormattedInput],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +55,20 @@ import {
     '[class]': 'hostClasses()',
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.errorMessages]': 'null',
+    '[attr.error]': 'null',
+    '[attr.format]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.hostClassModifier]': 'null',
+    '[attr.hoverValue]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.required]': 'null',
+    '[attr.size]': 'null',
+    '[attr.validate]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     <div

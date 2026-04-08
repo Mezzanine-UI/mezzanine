@@ -31,20 +31,20 @@ import {
  *
  * @example
  * ```html
- * <mzn-picker-trigger-with-separator
+ * <div mznPickerTriggerWithSeparator
  *   [formatLeft]="'YYYY-MM-DD'"
  *   [formatRight]="'HH:mm:ss'"
  *   [valueLeft]="dateValue"
  *   [valueRight]="timeValue"
  *   (leftChanged)="onDateChange($event)"
  *   (rightChanged)="onTimeChange($event)"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznFormattedInput}
  */
 @Component({
-  selector: 'mzn-picker-trigger-with-separator',
+  selector: '[mznPickerTriggerWithSeparator]',
   standalone: true,
   imports: [MznIcon, MznFormattedInput],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,6 +52,25 @@ import {
     '[class]': 'hostClasses()',
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.errorMessagesLeft]': 'null',
+    '[attr.errorMessagesRight]': 'null',
+    '[attr.formatLeft]': 'null',
+    '[attr.formatRight]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.hoverValueLeft]': 'null',
+    '[attr.hostClassModifier]': 'null',
+    '[attr.placeholderLeft]': 'null',
+    '[attr.placeholderRight]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.required]': 'null',
+    '[attr.size]': 'null',
+    '[attr.validateLeft]': 'null',
+    '[attr.validateRight]': 'null',
+    '[attr.valueLeft]': 'null',
+    '[attr.valueRight]': 'null',
   },
   template: `
     <div [class]="separatorInputsClass">

@@ -18,7 +18,8 @@ type Story = StoryObj<MznMultipleDatePicker>;
   standalone: true,
   imports: [MznMultipleDatePicker],
   template: `
-    <mzn-multiple-date-picker
+    <div
+      mznMultipleDatePicker
       [clearable]="clearable"
       [disabled]="disabled"
       [error]="error"
@@ -27,7 +28,7 @@ type Story = StoryObj<MznMultipleDatePicker>;
       [readOnly]="readOnly"
       [value]="value()"
       (datesChanged)="value.set($event)"
-    />
+    ></div>
   `,
 })
 class MultipleDatePickerPlaygroundComponent {
@@ -125,7 +126,7 @@ export const Basic: Story = {
         <p style="margin: 0 0 12px 0"><strong>Basic Multiple Date Picker</strong></p>
         <p style="margin: 0 0 12px 0">Click on dates to select/deselect. Click Confirm to apply changes.</p>
         <div style="width: 400px">
-          <mzn-multiple-date-picker [(ngModel)]="dates" placeholder="Select multiple dates" />
+          <div mznMultipleDatePicker [(ngModel)]="dates" placeholder="Select multiple dates" ></div>
         </div>
       </div>
       <div style="margin: 0 0 24px 0">
@@ -143,7 +144,7 @@ export const MaxSelections: Story = {
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Max 3 Selections</strong></p>
         <p style="margin: 0 0 12px 0">You can only select up to 3 dates. Once reached, other dates become disabled.</p>
-        <mzn-multiple-date-picker [(ngModel)]="dates" [maxSelections]="3" placeholder="Select up to 3 dates" />
+        <div mznMultipleDatePicker [(ngModel)]="dates" [maxSelections]="3" placeholder="Select up to 3 dates" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p>Selected: {{ dates.length }}/3</p>
@@ -175,14 +176,14 @@ export const OverflowStrategies: Story = {
         <p style="margin: 0 0 12px 0"><strong>Overflow Strategy: counter (default)</strong></p>
         <p style="margin: 0 0 12px 0">Shows visible tags with a counter for hidden ones.</p>
         <div style="max-width: 300px">
-          <mzn-multiple-date-picker [(ngModel)]="counterDates" overflowStrategy="counter" />
+          <div mznMultipleDatePicker [(ngModel)]="counterDates" overflowStrategy="counter" ></div>
         </div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Overflow Strategy: wrap</strong></p>
         <p style="margin: 0 0 12px 0">Wraps tags to multiple lines.</p>
         <div style="max-width: 300px">
-          <mzn-multiple-date-picker [(ngModel)]="wrapDates" overflowStrategy="wrap" />
+          <div mznMultipleDatePicker [(ngModel)]="wrapDates" overflowStrategy="wrap" ></div>
         </div>
       </div>
     `,
@@ -195,19 +196,19 @@ export const States: Story = {
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <mzn-multiple-date-picker [disabled]="true" [value]="['2025-01-01', '2025-01-15']" />
+        <div mznMultipleDatePicker [disabled]="true" [value]="['2025-01-01', '2025-01-15']" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Read Only</strong></p>
-        <mzn-multiple-date-picker [readOnly]="true" [value]="['2025-01-01', '2025-01-15']" />
+        <div mznMultipleDatePicker [readOnly]="true" [value]="['2025-01-01', '2025-01-15']" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Error</strong></p>
-        <mzn-multiple-date-picker [error]="true" [value]="['2025-01-01', '2025-01-15']" />
+        <div mznMultipleDatePicker [error]="true" [value]="['2025-01-01', '2025-01-15']" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Full Width</strong></p>
-        <mzn-multiple-date-picker [fullWidth]="true" [value]="['2025-01-01', '2025-01-15']" />
+        <div mznMultipleDatePicker [fullWidth]="true" [value]="['2025-01-01', '2025-01-15']" ></div>
       </div>
     `,
   }),
@@ -220,7 +221,7 @@ export const CustomActions: Story = {
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Custom Action Button Text</strong></p>
         <p style="margin: 0 0 12px 0">Override confirm/cancel button text via actions prop.</p>
-        <mzn-multiple-date-picker [(ngModel)]="dates" placeholder="選擇日期" />
+        <div mznMultipleDatePicker [(ngModel)]="dates" placeholder="選擇日期" ></div>
       </div>
     `,
   }),
@@ -240,11 +241,11 @@ export const DisabledDates: Story = {
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Disabled Dates (Weekends)</strong></p>
         <p style="margin: 0 0 12px 0">Weekends (Saturday and Sunday) are disabled.</p>
-        <mzn-multiple-date-picker
+        <div mznMultipleDatePicker
           [(ngModel)]="dates"
           [isDateDisabled]="isWeekendDisabled"
           placeholder="Select weekdays only"
-        />
+        ></div>
       </div>
     `,
   }),

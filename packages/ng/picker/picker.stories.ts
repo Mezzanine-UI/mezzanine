@@ -104,7 +104,8 @@ export const FormattedInputDisabled: StoryObj = {
   template: `
     <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
-      <mzn-picker-trigger
+      <div
+        mznPickerTrigger
         [format]="format"
         [value]="value()"
         [placeholder]="placeholder"
@@ -117,7 +118,7 @@ export const FormattedInputDisabled: StoryObj = {
         (cleared)="onCleared()"
       >
         <i mznIcon suffix [icon]="calendarIcon"></i>
-      </mzn-picker-trigger>
+      </div>
     </div>
   `,
 })
@@ -159,34 +160,34 @@ export const PickerTriggerStates: StoryObj = {
     template: `
       <div mznCalendarConfigProvider>
         <div style="display: flex; flex-direction: column; gap: 12px; min-width: 200px;">
-          <mzn-picker-trigger
+          <div mznPickerTrigger
             format="YYYY-MM-DD"
             placeholder="Default"
           >
             <i mznIcon suffix [icon]="CalendarIcon" ></i>
-          </mzn-picker-trigger>
-          <mzn-picker-trigger
+          </div>
+          <div mznPickerTrigger
             format="YYYY-MM-DD"
             placeholder="Disabled"
             [disabled]="true"
           >
             <i mznIcon suffix [icon]="CalendarIcon" ></i>
-          </mzn-picker-trigger>
-          <mzn-picker-trigger
+          </div>
+          <div mznPickerTrigger
             format="YYYY-MM-DD"
             placeholder="ReadOnly"
             [readOnly]="true"
             value="2024-01-15"
           >
             <i mznIcon suffix [icon]="CalendarIcon" ></i>
-          </mzn-picker-trigger>
-          <mzn-picker-trigger
+          </div>
+          <div mznPickerTrigger
             format="YYYY-MM-DD"
             placeholder="Error"
             [error]="true"
           >
             <i mznIcon suffix [icon]="CalendarIcon" ></i>
-          </mzn-picker-trigger>
+          </div>
         </div>
       </div>
     `,
@@ -206,7 +207,8 @@ export const PickerTriggerStates: StoryObj = {
       <p style="margin: 0 0 8px 0"
         >Date: {{ dateValue() }} | Time: {{ timeValue() }}</p
       >
-      <mzn-picker-trigger-with-separator
+      <div
+        mznPickerTriggerWithSeparator
         formatLeft="YYYY-MM-DD"
         formatRight="HH:mm:ss"
         [valueLeft]="dateValue()"
@@ -218,7 +220,7 @@ export const PickerTriggerStates: StoryObj = {
         (cleared)="onCleared()"
       >
         <i mznIcon suffix [icon]="calendarIcon"></i>
-      </mzn-picker-trigger-with-separator>
+      </div>
     </div>
   `,
 })
@@ -263,7 +265,8 @@ export const PickerTriggerWithSeparatorPlayground: StoryObj = {
       <p style="margin: 0 0 8px 0"
         >From: {{ fromValue() }} | To: {{ toValue() }}</p
       >
-      <mzn-range-picker-trigger
+      <div
+        mznRangePickerTrigger
         format="YYYY-MM-DD"
         [inputFromValue]="fromValue()"
         [inputToValue]="toValue()"
@@ -272,7 +275,7 @@ export const PickerTriggerWithSeparatorPlayground: StoryObj = {
         (inputFromChanged)="onFromChange($event)"
         (inputToChanged)="onToChange($event)"
         (cleared)="onCleared()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -307,23 +310,23 @@ export const RangePickerTriggerStates: StoryObj = {
     template: `
       <div mznCalendarConfigProvider>
         <div style="display: flex; flex-direction: column; gap: 12px; min-width: 300px;">
-          <mzn-range-picker-trigger
+          <div mznRangePickerTrigger
             format="YYYY-MM-DD"
             inputFromPlaceholder="Start date"
             inputToPlaceholder="End date"
-          />
-          <mzn-range-picker-trigger
+          ></div>
+          <div mznRangePickerTrigger
             format="YYYY-MM-DD"
             inputFromPlaceholder="Disabled"
             inputToPlaceholder="Disabled"
             [disabled]="true"
-          />
-          <mzn-range-picker-trigger
+          ></div>
+          <div mznRangePickerTrigger
             format="YYYY-MM-DD"
             inputFromPlaceholder="Error"
             inputToPlaceholder="Error"
             [error]="true"
-          />
+          ></div>
         </div>
       </div>
     `,

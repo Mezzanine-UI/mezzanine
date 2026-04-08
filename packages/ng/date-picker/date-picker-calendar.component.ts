@@ -21,14 +21,14 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
  * ```html
  * import { MznDatePickerCalendar } from '@mezzanine-ui/ng/date-picker';
  *
- * <mzn-date-picker-calendar
+ * <div mznDatePickerCalendar
  *   [anchor]="triggerElement"
  *   [open]="isOpen"
  *   [mode]="'day'"
  *   [referenceDate]="refDate"
  *   [value]="selectedDate"
  *   (dateChanged)="onSelect($event)"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznDatePicker} 完整日期選擇器
@@ -36,7 +36,29 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
  * @see {@link MznPopper} 浮動定位元件
  */
 @Component({
-  selector: 'mzn-date-picker-calendar',
+  selector: '[mznDatePickerCalendar]',
+  host: {
+    '[attr.anchor]': 'null',
+    '[attr.open]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.disableOnDoubleNext]': 'null',
+    '[attr.disableOnDoublePrev]': 'null',
+    '[attr.disableOnNext]': 'null',
+    '[attr.disableOnPrev]': 'null',
+    '[attr.disabledMonthSwitch]': 'null',
+    '[attr.disabledYearSwitch]': 'null',
+    '[attr.displayMonthLocale]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.isHalfYearDisabled]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.isQuarterDisabled]': 'null',
+    '[attr.isWeekDisabled]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.popperOffsetOptions]': 'null',
+  },
   standalone: true,
   imports: [MznCalendar, MznPopper],
   changeDetection: ChangeDetectionStrategy.OnPush,

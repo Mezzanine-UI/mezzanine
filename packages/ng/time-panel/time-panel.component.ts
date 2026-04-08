@@ -26,47 +26,58 @@ import { MznTimePanelColumn } from './time-panel-column.component';
  * ```html
  * import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
  *
- * <mzn-time-panel
+ * <div mznTimePanel
  *   [value]="pendingTime"
  *   (timeChanged)="onTimeChange($event)"
  *   (confirmed)="onConfirm()"
  *   (cancelled)="onCancel()"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-time-panel',
+  selector: '[mznTimePanel]',
   standalone: true,
   imports: [MznTimePanelColumn, MznCalendarFooterActions],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.hideHour]': 'null',
+    '[attr.hideMinute]': 'null',
+    '[attr.hideSecond]': 'null',
+    '[attr.hourStep]': 'null',
+    '[attr.minuteStep]': 'null',
+    '[attr.secondStep]': 'null',
+    '[attr.cellHeight]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     <div [class]="columnsClass">
       @if (!hideHour()) {
-        <mzn-time-panel-column
+        <div
+          mznTimePanelColumn
           [units]="hourUnits()"
           [activeUnit]="activeHour()"
           [cellHeight]="cellHeight()"
           (unitChanged)="onColumnChange('hour', $event)"
-        />
+        ></div>
       }
       @if (!hideMinute()) {
-        <mzn-time-panel-column
+        <div
+          mznTimePanelColumn
           [units]="minuteUnits()"
           [activeUnit]="activeMinute()"
           [cellHeight]="cellHeight()"
           (unitChanged)="onColumnChange('minute', $event)"
-        />
+        ></div>
       }
       @if (!hideSecond()) {
-        <mzn-time-panel-column
+        <div
+          mznTimePanelColumn
           [units]="secondUnits()"
           [activeUnit]="activeSecond()"
           [cellHeight]="cellHeight()"
           (unitChanged)="onColumnChange('second', $event)"
-        />
+        ></div>
       }
     </div>
     <div

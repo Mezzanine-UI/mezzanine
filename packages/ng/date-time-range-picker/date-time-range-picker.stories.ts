@@ -18,7 +18,8 @@ type Story = StoryObj<MznDateTimeRangePicker>;
   standalone: true,
   imports: [MznDateTimeRangePicker],
   template: `
-    <mzn-date-time-range-picker
+    <div
+      mznDateTimeRangePicker
       [clearable]="clearable"
       [disabled]="disabled"
       [error]="error"
@@ -28,7 +29,7 @@ type Story = StoryObj<MznDateTimeRangePicker>;
       [readOnly]="readOnly"
       [value]="value()"
       (rangeChanged)="value.set($event)"
-    />
+    ></div>
   `,
 })
 class DateTimeRangePickerPlaygroundComponent {
@@ -137,12 +138,12 @@ export const Direction: Story = {
     },
     template: `
       <p style="margin: 0 0 12px 0"><strong>Row Direction (default)</strong></p>
-      <mzn-date-time-range-picker [(ngModel)]="rangeRow" direction="row" />
+      <div mznDateTimeRangePicker [(ngModel)]="rangeRow" direction="row" ></div>
 
       <div style="margin-top: 32px"></div>
 
       <p style="margin: 0 0 12px 0"><strong>Column Direction</strong></p>
-      <mzn-date-time-range-picker [(ngModel)]="rangeCol" direction="column" />
+      <div mznDateTimeRangePicker [(ngModel)]="rangeCol" direction="column" ></div>
     `,
   }),
 };
@@ -153,19 +154,19 @@ export const States: Story = {
     template: `
       <div style="margin-bottom: 24px">
         <p style="margin: 0 0 12px 0"><strong>Normal</strong></p>
-        <mzn-date-time-range-picker />
+        <div mznDateTimeRangePicker ></div>
       </div>
       <div style="margin-bottom: 24px">
         <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <mzn-date-time-range-picker [disabled]="true" />
+        <div mznDateTimeRangePicker [disabled]="true" ></div>
       </div>
       <div style="margin-bottom: 24px">
         <p style="margin: 0 0 12px 0"><strong>Error</strong></p>
-        <mzn-date-time-range-picker [error]="true" />
+        <div mznDateTimeRangePicker [error]="true" ></div>
       </div>
       <div style="margin-bottom: 24px">
         <p style="margin: 0 0 12px 0"><strong>Read Only</strong></p>
-        <mzn-date-time-range-picker [readOnly]="true" />
+        <div mznDateTimeRangePicker [readOnly]="true" ></div>
       </div>
     `,
   }),
@@ -177,11 +178,11 @@ export const Sizes: Story = {
     template: `
       <div style="margin-bottom: 24px">
         <p style="margin: 0 0 12px 0"><strong>Size: main (default)</strong></p>
-        <mzn-date-time-range-picker size="main" />
+        <div mznDateTimeRangePicker size="main" ></div>
       </div>
       <div style="margin-bottom: 24px">
         <p style="margin: 0 0 12px 0"><strong>Size: sub</strong></p>
-        <mzn-date-time-range-picker size="sub" />
+        <div mznDateTimeRangePicker size="sub" ></div>
       </div>
     `,
   }),

@@ -30,22 +30,41 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
  * ```html
  * import { MznTimePicker } from '@mezzanine-ui/ng/time-picker';
  *
- * <mzn-time-picker
+ * <div mznTimePicker
  *   [(ngModel)]="selectedTime"
  *   placeholder="Select time"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznTimePanel} 時間面板元件
  */
 @Component({
-  selector: 'mzn-time-picker',
+  selector: '[mznTimePicker]',
+  host: {
+    '[attr.placeholder]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.error]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.hideHour]': 'null',
+    '[attr.hideMinute]': 'null',
+    '[attr.hideSecond]': 'null',
+    '[attr.hourStep]': 'null',
+    '[attr.minuteStep]': 'null',
+    '[attr.secondStep]': 'null',
+    '[attr.size]': 'null',
+    '[attr.format]': 'null',
+    '[attr.required]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [MznIcon, MznPickerTrigger, MznTimePickerPanel],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideValueAccessor(MznTimePicker)],
   template: `
-    <mzn-picker-trigger
+    <div
+      mznPickerTrigger
       #triggerEl
       [format]="resolvedFormat()"
       [value]="displayValue()"
@@ -63,8 +82,9 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       (valueChanged)="onTriggerValueChange($event)"
     >
       <i mznIcon suffix [icon]="clockIcon" (click)="togglePanel($event)"></i>
-    </mzn-picker-trigger>
-    <mzn-time-picker-panel
+    </div>
+    <div
+      mznTimePickerPanel
       [anchor]="triggerElement()"
       [open]="isOpen()"
       [value]="pendingValue()"
@@ -77,7 +97,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       (timeChanged)="onPanelChange($event)"
       (confirmed)="onConfirm()"
       (cancelled)="onCancel()"
-    />
+    ></div>
   `,
 })
 export class MznTimePicker implements ControlValueAccessor {
