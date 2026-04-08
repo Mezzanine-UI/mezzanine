@@ -13,10 +13,12 @@ import {
   CheckboxSeverity,
   CheckboxSize,
 } from '@mezzanine-ui/core/checkbox';
+import { TypographyColor } from '@mezzanine-ui/core/typography';
 import { inputCheckClasses } from '@mezzanine-ui/core/_internal/input-check';
 import { CheckedIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import {
   MZN_CHECKBOX_GROUP,
   CheckboxGroupContextValue,
@@ -41,7 +43,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 @Component({
   selector: '[mznCheckbox]',
   standalone: true,
-  imports: [MznIcon],
+  imports: [MznIcon, MznTypography],
   providers: [provideValueAccessor(MznCheckbox)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -60,41 +62,62 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.value]': 'null',
   },
   template: `
-    <label [class]="labelWrapClass">
-      <span [class]="controlWrapperClasses()">
-        <input
-          type="checkbox"
-          [class]="inputClass"
-          [checked]="resolvedChecked()"
-          [disabled]="resolvedDisabled()"
-          [indeterminate]="indeterminate()"
-          [name]="resolvedName()"
-          [value]="value()"
-          (change)="onInputChange($event)"
-          (focus)="onTouched()"
-        />
-        @if (resolvedMode() === 'default') {
-          <span [class]="inputContentClass">
+    <label [class]="labelContainerClass">
+      <div [class]="inputContainerClass">
+        <div [class]="inputContentClass">
+          <input
+            type="checkbox"
+            [class]="inputClass"
+            [checked]="resolvedChecked()"
+            [disabled]="resolvedDisabled()"
+            [indeterminate]="indeterminate()"
+            [name]="resolvedName()"
+            [value]="value()"
+            (change)="onInputChange($event)"
+            (focus)="onTouched()"
+          />
+          @if (resolvedMode() === 'chip') {
+            @if (resolvedChecked()) {
+              <i mznIcon [icon]="checkIcon" [class]="chipIconClass"></i>
+            }
+          } @else {
             @if (indeterminate()) {
               <span [class]="indeterminateLineClass"></span>
             } @else if (resolvedChecked()) {
               <i mznIcon [icon]="checkIcon" [class]="iconClass"></i>
             }
-          </span>
-        } @else if (resolvedChecked()) {
-          <i mznIcon [icon]="checkIcon" [class]="chipIconClass"></i>
-        }
-      </span>
-      <span [class]="labelClass">
-        @if (label()) {
-          {{ label() }}
-        }
-        <ng-content />
+          }
+        </div>
+      </div>
+      <span [class]="textContainerClass">
+        <span
+          mznTypography
+          variant="label-primary"
+          [color]="labelColor()"
+          [class]="labelClass"
+        >
+          @if (label()) {
+            {{ label() }}
+          }
+          <ng-content />
+        </span>
         @if (description() && resolvedMode() !== 'chip') {
-          <span [class]="descriptionClass">{{ description() }}</span>
+          <span
+            mznTypography
+            variant="caption"
+            color="text-neutral"
+            [class]="descriptionClass"
+            >{{ description() }}</span
+          >
         }
         @if (hint()) {
-          <span [class]="hintClass">{{ hint() }}</span>
+          <span
+            mznTypography
+            variant="caption"
+            color="text-neutral"
+            [class]="hintClass"
+            >{{ hint() }}</span
+          >
         }
       </span>
     </label>
@@ -201,19 +224,18 @@ export class MznCheckbox implements ControlValueAccessor {
     );
   });
 
-  protected readonly controlWrapperClasses = computed((): string => {
-    if (this.resolvedMode() === 'chip') {
-      return classes.inputContent;
-    }
+  protected readonly labelColor = computed(
+    (): TypographyColor =>
+      this.resolvedDisabled() ? 'text-neutral-light' : 'text-neutral-solid',
+  );
 
-    return clsx(inputCheckClasses.control, classes.inputContainer);
-  });
-
-  protected readonly labelClass = inputCheckClasses.label;
-  protected readonly labelWrapClass = classes.labelContainer;
+  protected readonly labelContainerClass = classes.labelContainer;
+  protected readonly inputContainerClass = classes.inputContainer;
+  protected readonly inputContentClass = classes.inputContent;
+  protected readonly textContainerClass = classes.textContainer;
+  protected readonly labelClass = classes.label;
   protected readonly descriptionClass = classes.description;
   protected readonly hintClass = inputCheckClasses.hint;
-  protected readonly inputContentClass = classes.inputContent;
   protected readonly inputClass = classes.input;
   protected readonly iconClass = classes.icon;
   protected readonly chipIconClass = clsx(classes.icon, classes.chipIcon);
