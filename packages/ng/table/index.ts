@@ -14,6 +14,7 @@ export type {
   TableDataSource,
   TableDraggable,
   TableEmptyProps,
+  TableExpandable,
   TablePagination,
   TablePinnable,
   TableRowSelection,

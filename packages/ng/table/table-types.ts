@@ -293,6 +293,54 @@ export interface TableActions {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Expandable                                                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * 展開列設定，對應 React 的 `TableExpandable<T>`。
+ *
+ * Angular 版以 `TemplateRef` 取代 React 的 `expandedRowRender` function
+ * prop：消費端宣告 `<ng-template #tpl let-record>…</ng-template>` 後
+ * 將其傳入 `template`。`$implicit` 會綁到當前 row 資料。
+ *
+ * @example
+ * ```html
+ * <ng-template #expandedTpl let-record>
+ *   <div>Details for {{ record.name }}</div>
+ * </ng-template>
+ *
+ * <div mznTable
+ *   [columns]="columns"
+ *   [dataSource]="data"
+ *   [expandable]="{
+ *     template: expandedTpl,
+ *     expandedRowKeys: openKeys,
+ *     onExpand: handleExpand,
+ *   }"
+ * ></div>
+ * ```
+ */
+export interface TableExpandable<T extends TableDataSource = TableDataSource> {
+  /** 展開列內容模板。row 資料透過 `$implicit` 綁定。 */
+  readonly template?: import('@angular/core').TemplateRef<{
+    $implicit: T;
+  }>;
+  /** 受控的展開列 key 陣列。未提供則元件內部自行管理 state。 */
+  readonly expandedRowKeys?: readonly string[];
+  /**
+   * 展開圖示欄位是否固定於左側。
+   * @default false
+   */
+  readonly fixed?: boolean;
+  /** 單列展開狀態變更的回呼。 */
+  readonly onExpand?: (expanded: boolean, record: T) => void;
+  /** 展開列集合變更的回呼。 */
+  readonly onExpandedRowsChange?: (expandedRowKeys: readonly string[]) => void;
+  /** 判斷某列是否允許展開。回傳 false 的列會隱藏展開圖示。 */
+  readonly rowExpandable?: (record: T) => boolean;
+}
+
+/* ------------------------------------------------------------------ */
 /*  Empty Props (mirrors React's EmptyProps subset used in Table)      */
 /* ------------------------------------------------------------------ */
 

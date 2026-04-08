@@ -469,20 +469,57 @@ export const WithPagination: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-table-expansion',
+  standalone: true,
+  imports: [MznTable],
+  template: `
+    <ng-template #expandedTpl let-record>
+      <div style="padding: 16px 24px; background: #fafafa;">
+        <strong>{{ record.name }}</strong>
+        <p style="margin: 8px 0 0;">
+          Age {{ record.age }} ·
+          <a [href]="'mailto:' + record.email">{{ record.email }}</a>
+        </p>
+      </div>
+    </ng-template>
+
+    <div
+      mznTable
+      [columns]="columns"
+      [dataSource]="dataSource"
+      [expandable]="{
+        template: expandedTpl,
+        rowExpandable: canExpand,
+        onExpand: onExpand,
+      }"
+    ></div>
+  `,
+})
+class ExpansionStoryComponent {
+  readonly columns = basicColumns;
+  readonly dataSource = basicData;
+
+  // Only rows with age >= 30 are expandable; others hide the chevron.
+  readonly canExpand = (record: TableDataSource): boolean =>
+    (record['age'] as number) >= 30;
+
+  readonly onExpand = (expanded: boolean, record: TableDataSource): void => {
+    // Demo hook: log expand events. Real consumers wire this to analytics.
+    // eslint-disable-next-line no-console
+    console.log('[expand]', {
+      expanded,
+      key: record.key,
+      name: record['name'],
+    });
+  };
+}
+
 export const WithExpansion: Story = {
   parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [ExpansionStoryComponent] })],
   render: () => ({
-    props: {
-      columns: basicColumns,
-      dataSource: basicData,
-    },
-    template: `
-      <div mznTable
-        [columns]="columns"
-        [dataSource]="dataSource"
-        [expandable]="true"
-      ></div>
-    `,
+    template: `<story-table-expansion />`,
   }),
 };
 
@@ -597,8 +634,17 @@ export const EmptyState: Story = {
   }),
 };
 
-export const VirtualScrolling: Story = {
-  name: 'Virtual Scrolling',
+/**
+ * Placeholder story for virtualized scrolling (React `scroll.virtualized: true`).
+ *
+ * Status: **In Development (Phase 6)**. Angular port will integrate
+ * `@angular/cdk/scrolling` `CdkVirtualScrollViewport` to match the
+ * React API. Currently the scroll input still supports a plain
+ * `scroll.y` max-height and falls back to normal DOM rendering for
+ * all rows; passing `{ virtualized: true }` is a no-op.
+ */
+export const VirtualScrollingInDevelopment: Story = {
+  name: 'Virtual Scrolling (In Development)',
   parameters: { controls: { disable: true } },
   render: () => ({
     props: {
@@ -611,8 +657,23 @@ export const VirtualScrolling: Story = {
       })),
     },
     template: `
-      <!-- NOTE: Virtual scrolling (virtualized mode) from React is not yet supported.
-           Using scroll.y for a fixed-height scrollable container. -->
+      <div style="
+        background: var(--mzn-color-warning-50, #fff7e6);
+        border: 1px solid var(--mzn-color-warning-30, #ffd591);
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        color: var(--mzn-color-text-primary, #1f1f1f);
+      ">
+        <strong>🚧 In Development — Phase 6</strong>
+        <p style="margin: 8px 0 0;">
+          React 的 <code>scroll.virtualized: true</code> 模式在 Angular 版尚未
+          實作。未來會透過 <code>@angular/cdk/scrolling</code> 的
+          <code>CdkVirtualScrollViewport</code> 補齊，保持 API 對齊。
+          目前以 <code>scroll.y</code> fixed-height container 作為近似
+          fallback，所有列仍全量渲染至 DOM。
+        </p>
+      </div>
       <div mznTable
         [columns]="columns"
         [dataSource]="dataSource"

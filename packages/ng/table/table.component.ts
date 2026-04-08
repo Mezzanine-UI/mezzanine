@@ -2,12 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  TemplateRef,
   computed,
+  effect,
   inject,
   input,
   output,
   signal,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -41,6 +44,7 @@ import {
   type TableDataSource,
   type TableDraggable,
   type TableEmptyProps,
+  type TableExpandable,
   type TablePagination,
   type TablePinnable,
   type TableRowSelection,
@@ -98,6 +102,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
     MznIcon,
     MznPagination,
     MznToggle,
+    NgTemplateOutlet,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -187,7 +192,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
                   }
                 </th>
               }
-              @if (expandable()) {
+              @if (isExpandableEnabled()) {
                 <th [class]="expandCellClass"></th>
               }
               @for (col of columns(); track col.key; let colIndex = $index) {
@@ -334,12 +339,14 @@ function nextSortOrder(current: SortOrder): SortOrder {
                   }
                 </td>
               }
-              @if (expandable()) {
+              @if (isExpandableEnabled()) {
                 <td
                   [class]="expandCellClass"
-                  (click)="onToggleExpansion(record); $event.stopPropagation()"
+                  (click)="onExpandCellClick($event, record)"
                 >
-                  <span [class]="getExpandIconClasses(record)">&#9654;</span>
+                  @if (canExpandRow(record)) {
+                    <span [class]="getExpandIconClasses(record)">&#9654;</span>
+                  }
                 </td>
               }
               @for (col of columns(); track col.key; let colIndex = $index) {
@@ -404,14 +411,18 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </td>
               }
             </tr>
-            @if (expandable() && isExpanded(record)) {
+            @if (isExpandableEnabled() && isExpanded(record)) {
               <tr [class]="expandedRowClass">
                 <td
                   [attr.colspan]="totalColumns()"
                   [class]="expandedRowCellClass"
                 >
                   <div [class]="expandedContentClass">
-                    <!-- Expanded content placeholder -->
+                    @if (expandedTemplate(); as tpl) {
+                      <ng-container
+                        *ngTemplateOutlet="tpl; context: { $implicit: record }"
+                      />
+                    }
                   </div>
                 </td>
               </tr>
@@ -474,10 +485,56 @@ export class MznTable {
   readonly emptyText = input('No data');
 
   /**
-   * 是否啟用展開列功能。
+   * 展開列設定。
+   *
+   * 相容兩種型別：
+   * - `boolean` — 啟用展開列但不渲染自訂內容（僅保留 toggle）。
+   *   等同於 React 未提供 `expandedRowRender` 的情況。
+   * - `TableExpandable<T>` — 完整設定：提供 `template` 以客製展開
+   *   內容、`expandedRowKeys` 受控、`onExpand` / `onExpandedRowsChange`
+   *   事件、以及 `rowExpandable` 決定哪些列可展開。
+   *
    * @default false
    */
-  readonly expandable = input(false);
+  readonly expandable = input<TableExpandable | boolean>(false);
+
+  /**
+   * 解析後的展開設定物件；`true` 會轉成空物件，`false`/`undefined`
+   * 則回傳 `null`。內部邏輯統一從這邊讀取設定。
+   */
+  protected readonly expandableConfig = computed((): TableExpandable | null => {
+    const value = this.expandable();
+    if (value === false || value == null) return null;
+    if (value === true) return {};
+    return value;
+  });
+
+  /** 展開列功能是否啟用（展開圖示欄位是否顯示）。 */
+  protected readonly isExpandableEnabled = computed(
+    (): boolean => this.expandableConfig() !== null,
+  );
+
+  /** 展開列內容模板（若未提供則回傳 null，不渲染自訂內容）。 */
+  protected readonly expandedTemplate = computed(
+    (): TemplateRef<{ $implicit: TableDataSource }> | null =>
+      this.expandableConfig()?.template ?? null,
+  );
+
+  constructor() {
+    // Sync controlled expandedRowKeys → internal signal whenever input changes.
+    effect(() => {
+      const controlled = this.expandableConfig()?.expandedRowKeys;
+      if (!controlled) return;
+      const next = new Set(controlled);
+      const current = this.internalExpandedKeys();
+      if (
+        next.size !== current.size ||
+        [...next].some((k) => !current.has(k))
+      ) {
+        this.internalExpandedKeys.set(next);
+      }
+    });
+  }
 
   /**
    * 是否讓表格填滿容器寬度。
@@ -535,7 +592,14 @@ export class MznTable {
 
   /**
    * 捲動設定。設定 y 高度上限以啟用垂直捲動。
-   * 注意：React 的 virtualized 模式尚未在 Angular 實作 — 如需虛擬捲動請追蹤 TODO。
+   *
+   * **TODO (virtualized scroll)**：React 的 `scroll.virtualized` 模式
+   * 尚未在 Angular 版實作。未來會透過 `@angular/cdk/scrolling` 的
+   * `CdkVirtualScrollViewport` 補上，以保持 API 對齊。目前傳入
+   * `scroll.virtualized: true` 會被忽略，table 會 fallback 到一般
+   * DOM 渲染；Storybook 中的 `Virtualized (In Development)` 故事會明
+   * 顯標示此狀態。追蹤項目：Phase 6。
+   *
    * @default undefined
    */
   readonly scroll = input<TableScroll>();
@@ -597,9 +661,9 @@ export class MznTable {
 
   /**
    * 是否啟用 sticky header。
-   * @default false
+   * @default true (對齊 React 版預設值)
    */
-  readonly sticky = input(false);
+  readonly sticky = input(true);
 
   /**
    * 是否啟用斑馬紋。
@@ -769,7 +833,7 @@ export class MznTable {
 
     if (this.isDragEnabled() || this.isPinEnabled()) count += 1;
     if (this.hasSelection()) count += 1;
-    if (this.expandable()) count += 1;
+    if (this.isExpandableEnabled()) count += 1;
     if (this.collectable()?.enabled) count += 1;
     if (this.toggleable()?.enabled) count += 1;
     if (this.actions()) count += 1;
@@ -1096,17 +1160,39 @@ export class MznTable {
   }
 
   onToggleExpansion(record: TableDataSource): void {
+    if (!this.canExpandRow(record)) return;
+
     const key = getRowKey(record);
     const current = new Set(this.internalExpandedKeys());
+    const willExpand = !current.has(key);
 
-    if (current.has(key)) {
-      current.delete(key);
-    } else {
+    if (willExpand) {
       current.add(key);
+    } else {
+      current.delete(key);
     }
 
     this.internalExpandedKeys.set(current);
-    this.expandedRowKeysChange.emit([...current]);
+    const nextKeys = [...current];
+    this.expandedRowKeysChange.emit(nextKeys);
+
+    const config = this.expandableConfig();
+    config?.onExpand?.(willExpand, record);
+    config?.onExpandedRowsChange?.(nextKeys);
+  }
+
+  /** Phase 3A #3: respect `TableExpandable.rowExpandable` predicate. */
+  protected canExpandRow(record: TableDataSource): boolean {
+    const config = this.expandableConfig();
+    if (!config) return false;
+    return config.rowExpandable?.(record) ?? true;
+  }
+
+  /** Click handler for the expand cell; guards on `canExpandRow`. */
+  protected onExpandCellClick(event: Event, record: TableDataSource): void {
+    if (!this.canExpandRow(record)) return;
+    event.stopPropagation();
+    this.onToggleExpansion(record);
   }
 
   protected onRowClick(_record: TableDataSource): void {
