@@ -122,7 +122,19 @@ function diffTree(
   }
   if (a.tag !== b.tag) {
     out.push({ story, path: pathStr, kind: 'tag', react: a.tag, ng: b.tag });
-    return;
+    // Soft-continue: if the two nodes share the same `class` attribute,
+    // they almost certainly represent the same logical element rendered as
+    // a different tag (e.g. React `<p class="x">` vs Angular `<span class="x">`,
+    // or Angular's pre-refactor `<mzn-empty>` vs React's `<div>` host). Keep
+    // walking the subtree so descendant diffs are not silently masked.
+    // Otherwise (different class or text node etc.), preserve the original
+    // early-return so genuinely-divergent subtrees do not explode the report.
+    const aClass = a.attrs.class ?? '';
+    const bClass = b.attrs.class ?? '';
+    if (a.tag === '#text' || b.tag === '#text' || aClass !== bClass) {
+      return;
+    }
+    // fall through to attrs/styles/children walk
   }
   if (a.tag === '#text') {
     if (a.text !== b.text)

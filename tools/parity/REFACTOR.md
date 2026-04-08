@@ -19,12 +19,17 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 | 1        | _(pending)_ | separator                                         | 6866         | ~6866       | trial; proves pipeline but separator diffs are story-side not tag |
 | 2        | `843cd5f5`  | empty                                             | 38           | 539         | **EXPECTED** — see "Diff-count masking" below                     |
 | 3        | `0021e7e5`  | layout, anchor-group, form-group, dropdown-status | —            | 2/0/64/19   | auto attr-null injection added to script; 0 attribute leakage     |
+| Phase 1  | _(pending)_ | compare.ts walker softening                       | 6866         | 23742       | full unmask via class-aware soft-continue (no element refactor)   |
 
-## ⚠️ Diff-count masking — critical reading
+## ⚠️ Diff-count masking — critical reading (mostly fixed in Phase 1)
 
-`tools/parity/compare.ts:123-126` on tag mismatch does `return;` — **the walker stops descending**. So before refactor, `mzn-empty` (custom element) vs `div` produced 1 root-level tag diff per story and **all descendants were hidden**. After refactor, host is `<div>`, tags match, walker descends, and every pre-existing per-descendant diff becomes visible. Empty went 38 → 539 not because we broke it but because we unmasked existing component-level gaps (missing ButtonGroup wrapper, theme rgb token, sub-component element selectors).
+Originally `tools/parity/compare.ts:123-126` returned immediately on tag mismatch, hiding the entire subtree. Phase 1 softened this: when the two mismatched tags share the same `class` attribute, the walker records the tag diff and **continues walking**. This unmasked the bulk of pre-existing descendant issues at once — new full baseline is **23 742 diffs**, the honest number.
 
-**Therefore the "total diff count" column is NOT a refactor success metric.** Per-batch success is judged on:
+The original early-return is preserved when the tags differ AND the class attribute differs, so genuinely divergent subtrees (e.g. completely wrong template) still bail out and don't explode the report.
+
+Empty went 38 → 539 not because we broke it but because we unmasked existing component-level gaps. The unmasking is now done globally — future refactor batches will produce stable, comparable diff counts.
+
+**Per-batch success is still judged categorically, not by total count alone.** Criteria:
 
 1. No new `[ATTR] @title` / `@type` / `@size` / `@description` (or other HTML-reflected input names) on the refactored host — proves attribute-null pattern works.
 2. Root tag matches React root (no more `mzn-x` vs `div` at `/`).

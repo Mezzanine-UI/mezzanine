@@ -23,10 +23,99 @@ import { dirname, join, resolve, relative } from 'node:path';
 
 const REPO_ROOT = resolve(process.cwd());
 const NG_ROOT = resolve(REPO_ROOT, 'packages/ng');
+const REACT_ROOT = resolve(REPO_ROOT, 'packages/react/src');
 
 function kebabToCamel(kebab) {
   // mzn-foo-bar → mznFooBar
   return kebab.replace(/-(\w)/g, (_, c) => c.toUpperCase());
+}
+
+function kebabToPascal(kebab) {
+  // mzn-foo-bar → FooBar  (drop the mzn- prefix)
+  return kebab
+    .replace(/^mzn-/, '')
+    .split('-')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join('');
+}
+
+/**
+ * Map a `HTMLXxxElement` interface name to its lowercase HTML tag.
+ * Returns null when the interface is generic (HTMLElement) or unknown.
+ */
+const HTML_INTERFACE_TAG = {
+  HTMLDivElement: 'div',
+  HTMLSpanElement: 'span',
+  HTMLAnchorElement: 'a',
+  HTMLParagraphElement: 'p',
+  HTMLButtonElement: 'button',
+  HTMLUListElement: 'ul',
+  HTMLOListElement: 'ol',
+  HTMLDListElement: 'dl',
+  HTMLLIElement: 'li',
+  HTMLLabelElement: 'label',
+  HTMLTableElement: 'table',
+  HTMLTableSectionElement: 'tbody',
+  HTMLTableRowElement: 'tr',
+  HTMLTableCellElement: 'td',
+  HTMLImageElement: 'img',
+  HTMLInputElement: 'input',
+  HTMLTextAreaElement: 'textarea',
+  HTMLFormElement: 'form',
+  HTMLFieldSetElement: 'fieldset',
+  HTMLLegendElement: 'legend',
+  HTMLSelectElement: 'select',
+  HTMLOptionElement: 'option',
+  HTMLHRElement: 'hr',
+  HTMLBRElement: 'br',
+  HTMLPreElement: 'pre',
+  HTMLQuoteElement: 'blockquote',
+  HTMLHeadingElement: 'h2',
+};
+
+/**
+ * Look in packages/react/src/<PascalName>/<PascalName>.tsx for the
+ * forwardRef<HTMLXxxElement, ...> generic and infer the tag.
+ * Returns { tag, source } or null if no match.
+ */
+function detectReactRootTag(elementSelector) {
+  const pascal = kebabToPascal(elementSelector);
+  // Primary location: packages/react/src/<Pascal>/<Pascal>.tsx
+  // Fallback: sub-component sitting under a parent folder, e.g.
+  // Form/FormGroup.tsx, Card/CardGroup.tsx, Anchor/AnchorGroup.tsx.
+  const candidates = [join(REACT_ROOT, pascal, `${pascal}.tsx`)];
+  try {
+    for (const parent of readdirSync(REACT_ROOT)) {
+      if (!/^[A-Z]/.test(parent) || parent === pascal) continue;
+      candidates.push(join(REACT_ROOT, parent, `${pascal}.tsx`));
+    }
+  } catch {
+    // ignore
+  }
+  for (const path of candidates) {
+    let text;
+    try {
+      text = readFileSync(path, 'utf-8');
+    } catch {
+      continue;
+    }
+    // forwardRef<HTMLXxxElement, ...>  — most reliable signal
+    const m = text.match(/forwardRef<\s*(HTML\w+Element)/);
+    if (m && m[1] !== 'HTMLElement') {
+      const iface = m[1];
+      const tag = HTML_INTERFACE_TAG[iface];
+      if (tag) return { tag, source: `${pascal}.tsx forwardRef<${iface}>` };
+    }
+    // Fall back to JSX root after the first `return (`. Reject custom
+    // components (PascalCase) and Fragments — only accept lowercase HTML tags.
+    const ret = text.match(/return\s*\(\s*<([a-zA-Z][\w-]*)/);
+    if (ret) {
+      const tag = ret[1];
+      if (/^[a-z]/.test(tag))
+        return { tag, source: `${pascal}.tsx JSX root <${tag}>` };
+    }
+  }
+  return null;
 }
 
 /**
@@ -134,6 +223,80 @@ function rewriteConsumerText(text, tag, host, attr) {
  *
  * Returns { text, templateRewritten, warnings }.
  */
+/**
+ * Remove one level of leading indentation from each non-empty line. Used
+ * when collapsing an outer wrapper — the inner content was indented one
+ * level deeper inside the wrapper, so we strip 2 spaces (Angular template
+ * convention) per line.
+ */
+function dedent(block) {
+  return block
+    .split('\n')
+    .map((l) => (l.startsWith('  ') ? l.slice(2) : l))
+    .join('\n');
+}
+
+/**
+ * Inject `'[class]': <expr>` into the @Component host metadata block.
+ * Creates a fresh `host: { ... }` block if none exists. If a host block
+ * exists with NO `[class]` binding, prepends one. If a host block exists
+ * WITH a `[class]` binding, leaves it alone and warns.
+ *
+ * `apply` is a setter that receives the new full file text — done this way
+ * to keep the call-site mutation explicit.
+ */
+function injectHostClassBinding(text, apply, classExpr, warnings) {
+  const componentBlockRe = /@Component\(\{([\s\S]*?)\n\}\)/;
+  const cm = text.match(componentBlockRe);
+  if (!cm) {
+    warnings.push('could not locate @Component({...}) for host class injection');
+    return;
+  }
+  const meta = cm[1];
+  const hostBlockRe = /host:\s*\{([^{}]*)\}/;
+  const hm = meta.match(hostBlockRe);
+  if (hm) {
+    if (/\[class\]/.test(hm[1])) {
+      warnings.push(
+        'host already has [class] binding — leaving wrapper class alone',
+      );
+      return;
+    }
+    const newMeta = meta.replace(hostBlockRe, (_, body) => {
+      const trimmed = body.trim();
+      const lines = trimmed
+        ? trimmed
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean)
+            .map((s) => `    ${s},`)
+            .join('\n')
+        : '';
+      return `host: {\n    '[class]': ${quoteClassExpr(classExpr)},\n${lines}\n  }`;
+    });
+    apply(text.replace(componentBlockRe, `@Component({${newMeta}\n})`));
+    return;
+  }
+  // No host block yet — inject right after selector.
+  const newMeta = meta.replace(
+    /(selector:\s*'[^']*'\s*,)/,
+    `$1\n  host: {\n    '[class]': ${quoteClassExpr(classExpr)},\n  },`,
+  );
+  apply(text.replace(componentBlockRe, `@Component({${newMeta}\n})`));
+}
+
+/**
+ * Wrap a class expression as the value side of an Angular host binding:
+ *   - bare identifier / call → as-is, single-quoted as a string expression
+ *     so Angular evaluates it (e.g. `'statusClass'` → `statusClass`)
+ *   - already quoted string literal → keep
+ */
+function quoteClassExpr(expr) {
+  const trimmed = expr.trim();
+  if (/^['"`].*['"`]$/.test(trimmed)) return trimmed;
+  return `'${trimmed}'`;
+}
+
 function rewriteComponentFile(text, elementSelector, attrName) {
   const warnings = [];
   // 1. Selector.
@@ -163,38 +326,49 @@ function rewriteComponentFile(text, elementSelector, attrName) {
     const wm = trimmed.match(wrapperRe);
     if (wm) {
       const [, wrapperTag, wrapperAttrs, inner] = wm;
-      const classMatch = wrapperAttrs.match(
-        /\[?class\]?\s*=\s*['"]([^'"]*)['"]/,
+      // Static `class="..."` (NOT `[class]`)
+      const staticClassMatch = wrapperAttrs.match(
+        /(?<!\[)class\s*=\s*['"]([^'"]*)['"]/,
+      );
+      // Dynamic `[class]="..."` only
+      const dynamicClassMatch = wrapperAttrs.match(
+        /\[class\]\s*=\s*"([^"]+)"/,
       );
       const hostClassBindingPresent =
         /host:\s*\{[\s\S]*?\[class\]/.test(next);
       const staticClassContainsSelector =
-        classMatch && classMatch[1].includes(elementSelector);
+        staticClassMatch && staticClassMatch[1].includes(elementSelector);
       if (staticClassContainsSelector && !hostClassBindingPresent) {
-        // Safe to collapse: move class to host binding, drop wrapper.
-        const newBody = `\n${inner
-          .split('\n')
-          .map((l) => (l.length ? `  ${l}` : l))
-          .join('\n')}\n  `;
+        // Safe to collapse: move static class to host binding, drop wrapper.
+        const newBody = `\n${dedent(inner)}\n  `;
         next = next.replace(templateRe, `template: \`${newBody}\``);
-        // Inject host class binding into @Component metadata.
-        const componentBlockRe = /@Component\(\{([\s\S]*?)\}\)/;
-        const cm = next.match(componentBlockRe);
-        if (cm) {
-          const meta = cm[1];
-          if (!/host:\s*\{/.test(meta)) {
-            const injected = meta.replace(
-              /(selector:\s*'[^']*'\s*,)/,
-              `$1\n  host: {\n    '[class]': \`'${classMatch[1]}'\`,\n  },`,
-            );
-            next = next.replace(componentBlockRe, `@Component({${injected}})`);
-          } else {
-            warnings.push(
-              'existing host metadata — host class binding not auto-injected; add manually',
-            );
-          }
-        }
+        injectHostClassBinding(
+          next,
+          (newText) => (next = newText),
+          `'${staticClassMatch[1]}'`,
+          warnings,
+        );
         templateRewritten = true;
+      } else if (
+        dynamicClassMatch &&
+        !hostClassBindingPresent &&
+        !staticClassMatch /* skip if both static + dynamic — too risky */
+      ) {
+        // Dynamic class wrapper. Move the expression to host '[class]' binding
+        // and drop the wrapper. This matches the dropdown-status pattern.
+        const expr = dynamicClassMatch[1];
+        const newBody = `\n${dedent(inner)}\n  `;
+        next = next.replace(templateRe, `template: \`${newBody}\``);
+        injectHostClassBinding(
+          next,
+          (newText) => (next = newText),
+          expr,
+          warnings,
+        );
+        templateRewritten = true;
+        warnings.push(
+          `lifted dynamic [class]="${expr}" wrapper into host binding`,
+        );
       } else if (hostClassBindingPresent) {
         warnings.push(
           'host class binding already present — leaving template alone',
@@ -302,10 +476,27 @@ function main() {
   }
 
   const attrName = kebabToCamel(elementSelector);
-  const host = hostOverride ?? 'div';
+  let host = hostOverride;
+  let hostSource = 'cli arg';
+  if (!host) {
+    const detected = detectReactRootTag(elementSelector);
+    if (detected) {
+      host = detected.tag;
+      hostSource = detected.source;
+      if (detected.unknown) {
+        console.log(`  WARN: ${detected.source}`);
+      }
+    } else {
+      host = 'div';
+      hostSource = 'fallback (no React file found)';
+      console.log(
+        `  WARN: could not detect React root tag for ${elementSelector}; defaulting to <div>`,
+      );
+    }
+  }
 
   console.log(
-    `[${elementSelector}] → attribute [${attrName}], host=<${host}>`,
+    `[${elementSelector}] → attribute [${attrName}], host=<${host}> (${hostSource})`,
   );
 
   // 1. Rewrite the component file.
