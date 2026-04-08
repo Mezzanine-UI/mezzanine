@@ -109,7 +109,7 @@ export interface FourThumbnailCardDefaultOptions {
           <i mznIcon [icon]="currentPersonalActionIcon()" [size]="16"></i>
         </button>
       }
-      <ng-content select="mzn-thumbnail" />
+      <ng-content select="[mznThumbnail]" />
       @for (empty of emptySlots(); track $index) {
         <div [class]="emptySlotClass"></div>
       }

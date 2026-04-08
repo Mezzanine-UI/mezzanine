@@ -108,11 +108,11 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
         @if (open()) {
           <div [class]="hostClasses()" role="dialog" @mznScale>
             @if (showModalHeader()) {
-              <ng-content select="mzn-modal-header" />
+              <ng-content select="[mznModalHeader]" />
             }
             <ng-content />
             @if (showModalFooter()) {
-              <ng-content select="mzn-modal-footer" />
+              <ng-content select="[mznModalFooter]" />
             }
             @if (showDismissButton()) {
               <button

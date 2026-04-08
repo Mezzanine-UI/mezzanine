@@ -30,9 +30,9 @@ import { sectionClasses as classes } from '@mezzanine-ui/core/section';
     '[class]': 'hostClasses()',
   },
   template: `
-    <ng-content select="mzn-content-header" />
-    <ng-content select="mzn-filter-area" />
-    <ng-content select="mzn-tabs, [sectionTab]" />
+    <ng-content select="[mznContentHeader]" />
+    <ng-content select="[mznFilterArea]" />
+    <ng-content select="[mznTabs], [sectionTab]" />
     <div [class]="contentClass">
       <ng-content />
     </div>

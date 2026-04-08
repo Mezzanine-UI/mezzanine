@@ -40,12 +40,12 @@ import clsx from 'clsx';
   },
   template: `
     <div [class]="navigationClasses()">
-      <ng-content select="mzn-navigation" />
+      <ng-content select="[mznNavigation]" />
     </div>
     <div [class]="contentWrapperClasses()">
-      <ng-content select="mzn-layout-left-panel" />
-      <ng-content select="mzn-layout-main" />
-      <ng-content select="mzn-layout-right-panel" />
+      <ng-content select="[mznLayoutLeftPanel]" />
+      <ng-content select="[mznLayoutMain]" />
+      <ng-content select="[mznLayoutRightPanel]" />
     </div>
   `,
 })
