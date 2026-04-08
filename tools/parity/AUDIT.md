@@ -213,3 +213,36 @@ pre-existing issues that this Phase 2 made visible:
     standalone helper. Affects any app that wants template-scoped
     calendar config.
   - Verify other families for similar gaps (Phase 3B spot-check).
+
+## Phase 3B progress — spot-check of 86 untested components
+
+Methodology: batch-render parent stories in Angular Storybook (:6007),
+inspect live DOM via Chrome DevTools MCP, confirm host-class presence
+(`mzn-<component>*`) + sub-component directive attributes match React
+structure. Mode-gated sub-components exercised via URL `&args=mode:<x>`.
+
+### Calendar family (14/14) — PASS
+
+Sample: 6 previously validated + now +14 calendar components. Exercised
+`internal-calendar--calendar-playground` across modes `day`, `week`,
+`month`, `year`, `quarter`, `half-year`, plus
+`internal-calendar--range-calendar-playground`.
+
+| Component                | Verification                                                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| calendar-cell            | `mzn-calendar-cell` + `--mode-{day,week,month,…}`                                                                                                |
+| calendar-config-provider | DI token live (Phase 4.2 fix; calendar renders)                                                                                                  |
+| calendar-controls        | `mzn-calendar-controls` + `__actions`/`__main`/`__button`                                                                                        |
+| calendar-day-of-week     | `mzn-calendar-row` (day header row)                                                                                                              |
+| calendar-days            | `mzn-calendar-days-grid`                                                                                                                         |
+| calendar-weeks           | `mzn-calendar-week` + `__row` (week mode)                                                                                                        |
+| calendar-months          | `mzn-calendar-twelve-grid` + `cell--mode-month`                                                                                                  |
+| calendar-quarters        | `mzn-calendar--quarter` + `cell--mode-quarter`                                                                                                   |
+| calendar-half-years      | `mzn-calendar--half-year` + `cell--mode-half-year`                                                                                               |
+| calendar-years           | `mzn-calendar--year` + `cell--mode-year`                                                                                                         |
+| calendar-footer-actions  | `[mznCalendarFooterActions]` in range-calendar story                                                                                             |
+| calendar-footer-control  | `mzn-calendar-footer-control` in calendar-playground                                                                                             |
+| range-calendar           | `mzn-calendar-main-range-calendar-wrapper`                                                                                                       |
+| calendar-quick-select    | ⚠️ code-verified only — conditional on `[quickSelect]` input; no default story wires it. Move to Phase 3A backlog if visual verification needed. |
+
+No port gaps or DI errors found. Calendar family mature.
