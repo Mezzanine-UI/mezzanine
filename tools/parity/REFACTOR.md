@@ -29,6 +29,7 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 | P2-7     | `09da7d22`  | dropdown(+item/item-card/action), pagination(+item/jumper/page-size)                                                                           | —            | per-comp    | pagination host auto-detected as `<nav>` via JSX root; dropdown-\* sub-components fall back to div (Angular-only)                                                                                                                                                                          |
 | P2-8     | `7b6525bb`  | navigation family (navigation + header/footer/icon-button/option/option-category/user-menu) | — | 7/0/0/0/0/0/0 | semantic landmarks correctly detected: nav/header/footer/button/button/li/li |
 | P2-9     | `a3c47b4e`  | page-header/footer, content-header-responsive, layout-left/main/right-panel, anchor-item, breadcrumb(+item), form-field/label/hint-text | — | per-comp | 12 structural atomics; 9 at zero diffs; semantic landmarks (header/aside/nav/label) auto-picked |
+| P2-10    | `0d8263a6`  | tabs, tab-item, stepper, step, accordion(+title/content/actions/group), description(+title/content/group), filter-area, filter, filter-line | — | per-comp | 16 components; 8 at zero diffs; tab-item → <button>, description-content → <span> |
 
 ## ⚠️ Diff-count masking — critical reading (mostly fixed in Phase 1)
 
