@@ -20,12 +20,12 @@ import clsx from 'clsx';
  * ```html
  * import { MznSeparator } from '@mezzanine-ui/ng/separator';
  *
- * <mzn-separator />
- * <mzn-separator orientation="vertical" />
+ * <hr mznSeparator  />
+ * <hr mznSeparator orientation="vertical"  />
  * ```
  */
 @Component({
-  selector: 'mzn-separator',
+  selector: '[mznSeparator]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

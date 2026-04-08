@@ -24,7 +24,7 @@ export const Playground: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<mzn-separator [orientation]="orientation" />`,
+    template: `<hr mznSeparator [orientation]="orientation"  />`,
   }),
 };
 
@@ -33,7 +33,7 @@ export const Horizontal: Story = {
     template: `
       <div>
         <p>Content above</p>
-        <mzn-separator />
+        <hr mznSeparator  />
         <p>Content below</p>
       </div>
     `,
@@ -45,7 +45,7 @@ export const Vertical: Story = {
     template: `
       <div style="display: flex; align-items: center; gap: 16px; height: 40px;">
         <span>Left</span>
-        <mzn-separator orientation="vertical" />
+        <hr mznSeparator orientation="vertical"  />
         <span>Right</span>
       </div>
     `,
@@ -59,7 +59,7 @@ export const Examples: Story = {
         <div>
           <h3 style="margin-bottom: 16px;">Horizontal Separator</h3>
           <p style="margin-bottom: 16px;">Content above the separator</p>
-          <mzn-separator orientation="horizontal" />
+          <hr mznSeparator orientation="horizontal"  />
           <p style="margin-top: 16px;">Content below the separator</p>
         </div>
 
@@ -67,9 +67,9 @@ export const Examples: Story = {
           <h3 style="margin-bottom: 16px;">Vertical Separator</h3>
           <div style="display: flex; align-items: center; gap: 16px;">
             <span>Left</span>
-            <mzn-separator orientation="vertical" />
+            <hr mznSeparator orientation="vertical"  />
             <span>Middle</span>
-            <mzn-separator orientation="vertical" />
+            <hr mznSeparator orientation="vertical"  />
             <span>Right</span>
           </div>
         </div>
