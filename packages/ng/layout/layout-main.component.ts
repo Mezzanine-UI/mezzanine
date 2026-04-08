@@ -18,20 +18,26 @@ import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
  * import { MznLayout, MznLayoutMain } from '@mezzanine-ui/ng/layout';
  *
  * <div mznLayout>
- *   <mzn-layout-main>
+ *   <div mznLayoutMain>
  *     <h1>Page Content</h1>
- *   </mzn-layout-main>
+ *   </div>
  * </div>
  * ```
  *
  * @see MznLayout
  */
 @Component({
-  selector: 'mzn-layout-main',
+  selector: '[mznLayoutMain]',
   standalone: true,
   imports: [MznScrollbar],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { '[class]': 'hostClasses()' },
+  host: {
+    '[class]': 'hostClasses()',
+    '[attr.className]': 'null',
+    '[attr.scrollbarDisabled]': 'null',
+    '[attr.scrollbarMaxHeight]': 'null',
+    '[attr.scrollbarMaxWidth]': 'null',
+  },
   template: `
     <div
       mznScrollbar

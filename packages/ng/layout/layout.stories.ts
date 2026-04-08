@@ -45,7 +45,7 @@ import { MznIcon } from '../icon/icon.component';
         <li mznNavigationOption [icon]="UserIcon" title="會員管理" ></li>
         <footer mznNavigationFooter ></footer>
       </nav>
-      <mzn-layout-main>
+      <div mznLayoutMain>
         <div style="height: 100vh; padding: var(--mzn-spacing-primitive-24);">
           <h1>Main Content</h1>
           <p
@@ -66,14 +66,14 @@ import { MznIcon } from '../icon/icon.component';
             <i mznIcon [icon]="PlusIcon" [size]="16"></i>
           </button>
         </mzn-floating-button>
-      </mzn-layout-main>
-      <mzn-layout-right-panel [defaultWidth]="320" [open]="rightOpen()">
+      </div>
+      <aside mznLayoutRightPanel [defaultWidth]="320" [open]="rightOpen()">
         <div style="padding: var(--mzn-spacing-primitive-24);">
           <h2>Right Panel</h2>
           <p>This panel is in-flow and scrolls independently.</p>
           <button (click)="rightOpen.set(false)">Close</button>
         </div>
-      </mzn-layout-right-panel>
+      </aside>
     </div>
   `,
   styles: [
@@ -133,14 +133,14 @@ class LayoutPlaygroundComponent {
         <li mznNavigationOption [icon]="UserIcon" title="會員管理" ></li>
         <footer mznNavigationFooter ></footer>
       </nav>
-      <mzn-layout-left-panel [defaultWidth]="240" [open]="leftOpen()">
+      <aside mznLayoutLeftPanel [defaultWidth]="240" [open]="leftOpen()">
         <div style="padding: var(--mzn-spacing-primitive-24);">
           <h2>Left Panel</h2>
           <p>Sidebar content, navigation trees, filters, etc.</p>
           <button (click)="leftOpen.set(false)">Close</button>
         </div>
-      </mzn-layout-left-panel>
-      <mzn-layout-main>
+      </aside>
+      <div mznLayoutMain>
         <div style="height: 100vh; padding: var(--mzn-spacing-primitive-24);">
           <h1>Main Content</h1>
           <p>The main area fills remaining space and scrolls independently.</p>
@@ -153,14 +153,14 @@ class LayoutPlaygroundComponent {
             }
           </div>
         </div>
-      </mzn-layout-main>
-      <mzn-layout-right-panel [defaultWidth]="320" [open]="rightOpen()">
+      </div>
+      <aside mznLayoutRightPanel [defaultWidth]="320" [open]="rightOpen()">
         <div style="padding: var(--mzn-spacing-primitive-24);">
           <h2>Right Panel</h2>
           <p>Detail view, preview, contextual actions, etc.</p>
           <button (click)="rightOpen.set(false)">Close</button>
         </div>
-      </mzn-layout-right-panel>
+      </aside>
     </div>
   `,
   styles: [

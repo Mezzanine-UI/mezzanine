@@ -43,7 +43,8 @@ import { AnchorItemData } from './typings';
   },
   template: `
     @for (item of anchors(); track item.id) {
-      <mzn-anchor-item
+      <div
+        mznAnchorItem
         [autoScrollTo]="item.autoScrollTo"
         [disabled]="item.disabled"
         [href]="item.href"
@@ -52,7 +53,7 @@ import { AnchorItemData } from './typings';
         [clickHandler]="item.onClick"
         [subAnchors]="item.children"
         [itemTitle]="item.title"
-      />
+      ></div>
     }
   `,
 })

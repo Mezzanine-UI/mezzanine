@@ -139,7 +139,7 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-form-field
+      <div mznFormField
         name="playground-field"
         [controlFieldSlotLayout]="controlFieldSlotLayout"
         [counterColor]="counterColor"
@@ -155,7 +155,7 @@ export const Playground: Story = {
         [showHintTextIcon]="showHintTextIcon"
       >
         <input placeholder="請輸入內容" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -164,7 +164,7 @@ export const HorizontalBase: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         density="${FormFieldDensity.BASE}"
         hintText="Label and input on the same row with base spacing"
         label="Username"
@@ -172,7 +172,7 @@ export const HorizontalBase: Story = {
         name="username-h-base"
       >
         <input placeholder="Enter username" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -181,7 +181,7 @@ export const HorizontalTight: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         density="${FormFieldDensity.TIGHT}"
         hintText="Label and input on the same row with tight spacing"
         label="Email"
@@ -189,7 +189,7 @@ export const HorizontalTight: Story = {
         name="email-h-tight"
       >
         <input placeholder="Enter email" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -198,7 +198,7 @@ export const HorizontalNarrow: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         density="${FormFieldDensity.NARROW}"
         hintText="Label and input on the same row with narrow spacing"
         label="Phone"
@@ -206,7 +206,7 @@ export const HorizontalNarrow: Story = {
         name="phone-h-narrow"
       >
         <input placeholder="Enter phone" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -215,7 +215,7 @@ export const HorizontalWide: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         density="${FormFieldDensity.WIDE}"
         hintText="Label and input on the same row with wide spacing"
         label="Address"
@@ -223,7 +223,7 @@ export const HorizontalWide: Story = {
         name="address-h-wide"
       >
         <input placeholder="Enter address" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -232,7 +232,7 @@ export const StretchTight: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         density="${FormFieldDensity.TIGHT}"
         hintText="Compact vertical spacing between label and input"
         label="First Name"
@@ -240,7 +240,7 @@ export const StretchTight: Story = {
         name="firstname-s-tight"
       >
         <input placeholder="Enter first name" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -249,7 +249,7 @@ export const StretchNarrow: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         density="${FormFieldDensity.NARROW}"
         hintText="Standard vertical spacing between label and input"
         label="Last Name"
@@ -257,7 +257,7 @@ export const StretchNarrow: Story = {
         name="lastname-s-narrow"
       >
         <input placeholder="Enter last name" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -266,7 +266,7 @@ export const StretchWide: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         density="${FormFieldDensity.WIDE}"
         hintText="Spacious vertical spacing between label and input"
         label="Company"
@@ -274,7 +274,7 @@ export const StretchWide: Story = {
         name="company-s-wide"
       >
         <input placeholder="Enter company name" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -283,7 +283,7 @@ export const Vertical: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-field
+      <div mznFormField
         hintText="Default vertical layout with standard spacing"
         label="Name"
         layout="${FormFieldLayout.VERTICAL}"
@@ -291,7 +291,7 @@ export const Vertical: Story = {
         [required]="true"
       >
         <input placeholder="Enter your name" />
-      </mzn-form-field>
+      </div>
     `,
   }),
 };
@@ -301,14 +301,14 @@ export const ControlFieldSlotColumnsExample: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px;">
-        <mzn-form-field
+        <div mznFormField
           label="持卡人姓名："
           layout="${FormFieldLayout.VERTICAL}"
           name="cardholder-name"
         >
           <input placeholder="請輸入姓名" />
-        </mzn-form-field>
-        <mzn-form-field
+        </div>
+        <div mznFormField
           [controlFieldSlotColumns]="4"
           label="信用卡號："
           layout="${FormFieldLayout.VERTICAL}"
@@ -318,8 +318,8 @@ export const ControlFieldSlotColumnsExample: Story = {
           <input placeholder="0000" />
           <input placeholder="0000" />
           <input placeholder="0000" />
-        </mzn-form-field>
-        <mzn-form-field
+        </div>
+        <div mznFormField
           [controlFieldSlotColumns]="2"
           label="信用卡到期日："
           layout="${FormFieldLayout.VERTICAL}"
@@ -327,14 +327,14 @@ export const ControlFieldSlotColumnsExample: Story = {
         >
           <input placeholder="mm" />
           <input placeholder="yy" />
-        </mzn-form-field>
-        <mzn-form-field
+        </div>
+        <div mznFormField
           label="信用卡檢查碼："
           layout="${FormFieldLayout.VERTICAL}"
           name="card-cvv"
         >
           <input placeholder="請輸入檢查碼" />
-        </mzn-form-field>
+        </div>
       </div>
     `,
   }),
@@ -358,14 +358,14 @@ export const CreditCardRecipeExample: Story = {
       <div style="max-width: 480px;">
         <div style="margin-bottom: 16px; font-weight: bold; font-size: 16px;">信用卡資訊</div>
         <div style="display: flex; flex-direction: column; gap: 16px;">
-          <mzn-form-field
+          <div mznFormField
             label="持卡人姓名："
             layout="${FormFieldLayout.VERTICAL}"
             name="cardholder-name"
           >
             <input [(ngModel)]="name" name="name" placeholder="請輸入姓名" />
-          </mzn-form-field>
-          <mzn-form-field
+          </div>
+          <div mznFormField
             [controlFieldSlotColumns]="4"
             label="信用卡號："
             layout="${FormFieldLayout.VERTICAL}"
@@ -375,8 +375,8 @@ export const CreditCardRecipeExample: Story = {
             <input [(ngModel)]="card2" name="card2" placeholder="0000" maxlength="4" />
             <input [(ngModel)]="card3" name="card3" placeholder="0000" maxlength="4" />
             <input [(ngModel)]="card4" name="card4" placeholder="0000" maxlength="4" />
-          </mzn-form-field>
-          <mzn-form-field
+          </div>
+          <div mznFormField
             [controlFieldSlotColumns]="2"
             label="有效期限："
             layout="${FormFieldLayout.VERTICAL}"
@@ -384,14 +384,14 @@ export const CreditCardRecipeExample: Story = {
           >
             <input [(ngModel)]="month" name="month" placeholder="MM" maxlength="2" />
             <input [(ngModel)]="year" name="year" placeholder="YY" maxlength="2" />
-          </mzn-form-field>
-          <mzn-form-field
+          </div>
+          <div mznFormField
             label="檢查碼："
             layout="${FormFieldLayout.VERTICAL}"
             name="card-cvv"
           >
             <input [(ngModel)]="cvv" name="cvv" placeholder="CVV" maxlength="4" />
-          </mzn-form-field>
+          </div>
         </div>
         <div style="margin-top: 16px;">
           <button (click)="submitted = true" type="button">送出</button>

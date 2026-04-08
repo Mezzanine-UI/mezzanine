@@ -39,8 +39,8 @@ export const Default: Story = {
     template: `
       <div style="display: grid; gap: 24px;">
         <div>
-          <mzn-page-header>
-            <mzn-breadcrumb [items]="breadcrumbItems" />
+          <header mznPageHeader>
+            <nav mznBreadcrumb [items]="breadcrumbItems" ></nav>
 
             <header mznContentHeader title="Page Title" description="This is a Description.">
               <a contentHeaderBackButton href="./" title="back">
@@ -59,7 +59,7 @@ export const Default: Story = {
                 </button>
               </div>
             </header>
-          </mzn-page-header>
+          </header>
         </div>
       </div>
     `,

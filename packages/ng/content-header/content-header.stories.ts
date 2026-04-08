@@ -94,17 +94,17 @@ export const MainSize: Story = {
             <input placeholder="請輸入料號或產品名稱..." style="border: 1px solid #ccc; padding: 4px 8px;" />
           </div>
           <div mznButtonGroup contentHeaderActions>
-            <mzn-content-header-responsive breakpoint="above1080px">
+            <div mznContentHeaderResponsive breakpoint="above1080px">
               <button mznButton variant="destructive-secondary">批次刪除</button>
-            </mzn-content-header-responsive>
+            </div>
             <button mznButton>查詢料號</button>
           </div>
           <div contentHeaderUtilities>
-            <mzn-content-header-responsive breakpoint="above680px">
+            <div mznContentHeaderResponsive breakpoint="above680px">
               <button mznButton variant="base-secondary" iconType="icon-only">
                 <i mznIcon [icon]="PlusIcon" ></i>
               </button>
-            </mzn-content-header-responsive>
+            </div>
             <button mznButton variant="base-secondary" iconType="icon-only">
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
             </button>
@@ -167,9 +167,9 @@ export const SubSize: Story = {
           size="sub"
         >
           <div contentHeaderFilter>
-            <mzn-content-header-responsive breakpoint="above1080px">
+            <div mznContentHeaderResponsive breakpoint="above1080px">
               <input placeholder="搜尋待辦事項..." style="border: 1px solid #ccc; padding: 4px 8px;" />
-            </mzn-content-header-responsive>
+            </div>
           </div>
           <div mznButtonGroup contentHeaderActions>
             <button mznButton>篩選查詢</button>

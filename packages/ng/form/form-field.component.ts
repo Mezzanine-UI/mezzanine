@@ -29,18 +29,18 @@ import { MznFormHintText } from './form-hint-text.component';
  * ```html
  * import { MznFormField } from '@mezzanine-ui/ng/form';
  *
- * <mzn-form-field name="username" label="使用者名稱">
+ * <div mznFormField name="username" label="使用者名稱">
  *   <input mznInput placeholder="請輸入" />
- * </mzn-form-field>
+ * </div>
  *
- * <mzn-form-field name="email" label="電子郵件" layout="vertical" severity="error"
+ * <div mznFormField name="email" label="電子郵件" layout="vertical" severity="error"
  *   hintText="格式不正確">
  *   <input mznInput placeholder="請輸入" />
- * </mzn-form-field>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-form-field',
+  selector: '[mznFormField]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznFormLabel, MznFormHintText],
@@ -66,17 +66,37 @@ import { MznFormHintText } from './form-hint-text.component';
   ],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.controlFieldSlotColumns]': 'null',
+    '[attr.controlFieldSlotLayout]': 'null',
+    '[attr.counter]': 'null',
+    '[attr.counterColor]': 'null',
+    '[attr.density]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.hintText]': 'null',
+    '[attr.hintTextIcon]': 'null',
+    '[attr.label]': 'null',
+    '[attr.labelInformationIcon]': 'null',
+    '[attr.labelInformationText]': 'null',
+    '[attr.labelOptionalMarker]': 'null',
+    '[attr.labelSpacing]': 'null',
+    '[attr.layout]': 'null',
+    '[attr.name]': 'null',
+    '[attr.required]': 'null',
+    '[attr.severity]': 'null',
+    '[attr.showHintTextIcon]': 'null',
   },
   template: `
     @if (label()) {
-      <mzn-form-label
+      <label
+        mznFormLabel
         [class]="labelAreaClasses()"
         [htmlFor]="name()"
         [informationIcon]="labelInformationIcon()"
         [informationText]="labelInformationText()"
         [labelText]="label()!"
         [optionalMarker]="labelOptionalMarker()"
-      />
+      ></label>
     }
     <div [class]="classes.dataEntry">
       <div [class]="controlFieldSlotClasses()">
@@ -85,12 +105,13 @@ import { MznFormHintText } from './form-hint-text.component';
       @if (hintText() || hintTextIcon() || counter()) {
         <div [class]="hintAreaClasses()">
           @if (hintText() || hintTextIcon()) {
-            <mzn-form-hint-text
+            <span
+              mznFormHintText
               [hintText]="hintText()"
               [hintTextIcon]="hintTextIcon()"
               [severity]="severity()"
               [showHintTextIcon]="showHintTextIcon()"
-            />
+            ></span>
           }
           @if (counter()) {
             <span [class]="counterClasses()">{{ counter() }}</span>

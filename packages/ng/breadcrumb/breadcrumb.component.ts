@@ -38,17 +38,17 @@ export interface BreadcrumbItemData {
  * ```html
  * import { MznBreadcrumb } from '@mezzanine-ui/ng/breadcrumb';
  *
- * <mzn-breadcrumb [items]="[
+ * <nav mznBreadcrumb [items]="[
  *   { name: '首頁', href: '/' },
  *   { name: '產品', href: '/products' },
  *   { name: '目前頁面' }
- * ]" />
+ * ]" ></nav>
  *
- * <mzn-breadcrumb [condensed]="true" [items]="breadcrumbItems" />
+ * <nav mznBreadcrumb [condensed]="true" [items]="breadcrumbItems" ></nav>
  * ```
  */
 @Component({
-  selector: 'mzn-breadcrumb',
+  selector: '[mznBreadcrumb]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon, MznBreadcrumbItem],
@@ -56,6 +56,8 @@ export interface BreadcrumbItemData {
     '[class]': 'hostClass',
     'aria-label': 'Breadcrumb',
     role: 'navigation',
+    '[attr.condensed]': 'null',
+    '[attr.items]': 'null',
   },
   template: `
     @for (
@@ -67,13 +69,14 @@ export interface BreadcrumbItemData {
       @if (idx > 0) {
         <i mznIcon [icon]="slashIcon" [size]="14"></i>
       }
-      <mzn-breadcrumb-item
+      <span
+        mznBreadcrumbItem
         [current]="last"
         [href]="item.href"
         [name]="item.name"
         [target]="item.target"
         (itemClick)="item.onClick?.()"
-      />
+      ></span>
     }
   `,
 })

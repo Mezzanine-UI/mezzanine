@@ -168,17 +168,17 @@ export const SectionVerticalLayout: Story = {
   render: () => ({
     template: `
       <div style="background-color: #F3F4F6; display: flex; flex-direction: column; gap: var(--mzn-spacing-gap-calm, 16px); padding: 16px;">
-        <mzn-page-header>
-          <mzn-breadcrumb>
-            <mzn-breadcrumb-item name="Home" href="/" />
-            <mzn-breadcrumb-item name="Page" href="/1" />
-            <mzn-breadcrumb-item name="History" href="/" />
-          </mzn-breadcrumb>
+        <header mznPageHeader>
+          <nav mznBreadcrumb>
+            <span mznBreadcrumbItem name="Home" href="/" ></span>
+            <span mznBreadcrumbItem name="Page" href="/1" ></span>
+            <span mznBreadcrumbItem name="History" href="/" ></span>
+          </nav>
           <header mznContentHeader title="Page Title">
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
           </header>
-        </mzn-page-header>
+        </header>
 
         <div mznSectionGroup>
           <div mznSectionGroup direction="horizontal">
@@ -223,9 +223,9 @@ export const ContentVerticalLayout: Story = {
   render: () => ({
     template: `
       <div style="background-color: #F3F4F6; display: flex; flex-direction: column; gap: var(--mzn-spacing-gap-calm, 16px); padding: 16px;">
-        <mzn-page-header>
+        <header mznPageHeader>
           <header mznContentHeader title="Page Title" ></header>
-        </mzn-page-header>
+        </header>
 
         <div mznSection>
           <header mznContentHeader title="Section Title" description="This is a Description." size="sub" ></header>

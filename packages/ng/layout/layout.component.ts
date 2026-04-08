@@ -19,9 +19,9 @@ import clsx from 'clsx';
  *
  * <div mznLayout>
  *   <nav mznNavigation>...</nav>
- *   <mzn-layout-left-panel [open]="true">Side Content</mzn-layout-left-panel>
- *   <mzn-layout-main>Main Content</mzn-layout-main>
- *   <mzn-layout-right-panel [open]="true">Right Content</mzn-layout-right-panel>
+ *   <aside mznLayoutLeftPanel [open]="true">Side Content</aside>
+ *   <div mznLayoutMain>Main Content</div>
+ *   <aside mznLayoutRightPanel [open]="true">Right Content</aside>
  * </div>
  * ```
  *

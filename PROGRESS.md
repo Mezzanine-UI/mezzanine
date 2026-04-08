@@ -7,8 +7,8 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 | Metric             | Count | Percent |
 | ------------------ | ----- | ------- |
-| Attribute selector | 80    | 48%     |
-| Element selector   | 88    | 52%     |
+| Attribute selector | 92    | 55%     |
+| Element selector   | 76    | 45%     |
 | **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
@@ -35,15 +35,15 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 | Comp                      | Status | Batch |
 | ------------------------- | ------ | ----- |
 | layout                    | ✅     | 3     |
-| layout-left-panel         | ⬜     |       |
-| layout-main               | ⬜     |       |
-| layout-right-panel        | ⬜     |       |
+| layout-left-panel         | ✅     | P2-9  |
+| layout-main               | ✅     | P2-9  |
+| layout-right-panel        | ✅     | P2-9  |
 | section                   | ✅     | P2-2  |
 | section-group             | ✅     | P2-2  |
-| page-header               | ⬜     |       |
-| page-footer               | ⬜     |       |
+| page-header               | ✅     | P2-9  |
+| page-footer               | ✅     | P2-9  |
 | content-header            | ✅     | P2-2  |
-| content-header-responsive | ⬜     |       |
+| content-header-responsive | ✅     | P2-9  |
 
 ### Feedback / overlay
 
@@ -100,9 +100,9 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 | Comp           | Status | Batch |
 | -------------- | ------ | ----- |
 | form-group     | ✅     | 3     |
-| form-field     | ⬜     |       |
-| form-label     | ⬜     |       |
-| form-hint-text | ⬜     |       |
+| form-field     | ✅     | P2-9  |
+| form-label     | ✅     | P2-9  |
+| form-hint-text | ✅     | P2-9  |
 
 ### Dropdown family
 
@@ -148,9 +148,9 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 | Comp            | Status | Batch |
 | --------------- | ------ | ----- |
 | anchor-group    | ✅     | 3     |
-| anchor-item     | ⬜     |       |
-| breadcrumb      | ⬜     |       |
-| breadcrumb-item | ⬜     |       |
+| anchor-item     | ✅     | P2-9  |
+| breadcrumb      | ✅     | P2-9  |
+| breadcrumb-item | ✅     | P2-9  |
 
 ### Tab / Stepper / Accordion
 

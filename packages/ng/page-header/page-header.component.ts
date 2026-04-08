@@ -8,14 +8,14 @@ import { pageHeaderClasses as classes } from '@mezzanine-ui/core/page-header';
  * ```html
  * import { MznPageHeader } from '@mezzanine-ui/ng/page-header';
  *
- * <mzn-page-header>
- *   <mzn-breadcrumb>...</mzn-breadcrumb>
+ * <header mznPageHeader>
+ *   <nav mznBreadcrumb>...</nav>
  *   <header mznContentHeader>...</header>
- * </mzn-page-header>
+ * </header>
  * ```
  */
 @Component({
-  selector: 'mzn-page-header',
+  selector: '[mznPageHeader]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

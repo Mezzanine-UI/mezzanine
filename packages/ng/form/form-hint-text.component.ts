@@ -18,23 +18,28 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  *
  * @example
  * ```html
- * <mzn-form-hint-text hintText="請輸入有效的電子郵件" severity="error" />
+ * <span mznFormHintText hintText="請輸入有效的電子郵件" severity="error" ></span>
  * ```
  */
 @Component({
-  selector: 'mzn-form-hint-text',
+  selector: '[mznFormHintText]',
+  host: {
+    '[class]': 'hostClasses()',
+    '[attr.hintText]': 'null',
+    '[attr.hintTextIcon]': 'null',
+    '[attr.severity]': 'null',
+    '[attr.showHintTextIcon]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
   template: `
-    <span [class]="hostClasses()">
-      @if (showHintTextIcon()) {
-        @if (resolvedIcon(); as icon) {
-          <i mznIcon [class]="classes.hintTextIcon" [icon]="icon"></i>
-        }
+    @if (showHintTextIcon()) {
+      @if (resolvedIcon(); as icon) {
+        <i mznIcon [class]="classes.hintTextIcon" [icon]="icon"></i>
       }
-      {{ hintText() }}
-    </span>
+    }
+    {{ hintText() }}
   `,
 })
 export class MznFormHintText {

@@ -34,7 +34,7 @@ export type PageFooterType = 'standard' | 'overflow' | 'information';
  * import { MznButton } from '@mezzanine-ui/ng/button';
  *
  * <!-- standard type -->
- * <mzn-page-footer
+ * <div mznPageFooter
  *   type="standard"
  *   supportingActionName="查看發佈紀錄"
  *   warningMessage="部分內容未通過驗證"
@@ -43,28 +43,36 @@ export type PageFooterType = 'standard' | 'overflow' | 'information';
  *     <button mznButton variant="base-secondary">儲存草稿</button>
  *     <button mznButton variant="base-primary">發佈</button>
  *   </div>
- * </mzn-page-footer>
+ * </div>
  *
  * <!-- information type -->
- * <mzn-page-footer
+ * <div mznPageFooter
  *   type="information"
  *   annotation="發佈後將無法編輯，請確認內容無誤"
  * >
  *   <div actions>
  *     <button mznButton variant="base-primary">發佈</button>
  *   </div>
- * </mzn-page-footer>
+ * </div>
  * ```
  *
  * @see MznButton
  */
 @Component({
-  selector: 'mzn-page-footer',
+  selector: '[mznPageFooter]',
   standalone: true,
   imports: [MznButton, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.annotation]': 'null',
+    '[attr.hostClass]': 'null',
+    '[attr.supportingActionIcon]': 'null',
+    '[attr.supportingActionName]': 'null',
+    '[attr.supportingActionType]': 'null',
+    '[attr.supportingActionVariant]': 'null',
+    '[attr.type]': 'null',
+    '[attr.warningMessage]': 'null',
   },
   template: `
     <div [class]="annotationClass">

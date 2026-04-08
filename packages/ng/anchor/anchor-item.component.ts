@@ -21,7 +21,21 @@ const MAX_NESTING_LEVEL = 3;
  * 此為內部元件，由 MznAnchorGroup 使用。
  */
 @Component({
-  selector: 'mzn-anchor-item',
+  selector: '[mznAnchorItem]',
+  host: {
+    '[attr.autoScrollTo]': 'null',
+    '[attr.className]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.href]': 'null',
+    '[attr.itemId]': 'null',
+    '[attr.itemTitle]': 'null',
+    '[attr.level]': 'null',
+    '[attr.name]': 'null',
+    '[attr.clickHandler]': 'null',
+    '[attr.parentAutoScrollTo]': 'null',
+    '[attr.parentDisabled]': 'null',
+    '[attr.subAnchors]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [forwardRef(() => MznAnchorItem), MznTypography],
@@ -41,7 +55,8 @@ const MAX_NESTING_LEVEL = 3;
     @if (renderableChildren(); as children) {
       <div [class]="classes.nested">
         @for (child of children; track child.id) {
-          <mzn-anchor-item
+          <div
+            mznAnchorItem
             [autoScrollTo]="child.autoScrollTo"
             [className]="childClasses()"
             [disabled]="child.disabled"
@@ -54,7 +69,7 @@ const MAX_NESTING_LEVEL = 3;
             [parentDisabled]="isDisabled()"
             [subAnchors]="child.children"
             [itemTitle]="child.title"
-          />
+          ></div>
         }
       </div>
     }

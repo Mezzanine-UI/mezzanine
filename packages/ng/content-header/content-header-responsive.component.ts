@@ -27,9 +27,9 @@ export type { ResponsiveBreakpoint };
  * <header mznContentHeader title="標題">
  *   <div contentHeaderActions>
  *     <!-- 僅在 1080px 以上顯示批次刪除按鈕 -->
- *     <mzn-content-header-responsive breakpoint="above1080px">
+ *     <div mznContentHeaderResponsive breakpoint="above1080px">
  *       <button mznButton variant="destructive-secondary">批次刪除</button>
- *     </mzn-content-header-responsive>
+ *     </div>
  *     <button mznButton variant="base-primary">查詢</button>
  *   </div>
  * </header>
@@ -38,11 +38,12 @@ export type { ResponsiveBreakpoint };
  * @see MznContentHeader
  */
 @Component({
-  selector: 'mzn-content-header-responsive',
+  selector: '[mznContentHeaderResponsive]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass()',
+    '[attr.breakpoint]': 'null',
   },
   template: `<ng-content />`,
 })

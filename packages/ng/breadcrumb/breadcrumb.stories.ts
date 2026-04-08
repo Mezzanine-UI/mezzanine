@@ -39,7 +39,7 @@ export const Playground: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<mzn-breadcrumb [condensed]="condensed" [items]="items" />`,
+    template: `<nav mznBreadcrumb [condensed]="condensed" [items]="items" ></nav>`,
   }),
 };
 
@@ -55,41 +55,41 @@ export const Basic: Story = {
 
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">3 items</span>
-            <mzn-breadcrumb [items]="[
+            <nav mznBreadcrumb [items]="[
               { id: 'home', name: 'Home', href: '/' },
               { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
               { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' }
-            ]" />
+            ]" ></nav>
           </div>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">4 items</span>
-            <mzn-breadcrumb [items]="[
+            <nav mznBreadcrumb [items]="[
               { id: 'home', name: 'Home', href: '/' },
               { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
               { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
               { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' }
-            ]" />
+            ]" ></nav>
           </div>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">5 items</span>
-            <mzn-breadcrumb [items]="[
+            <nav mznBreadcrumb [items]="[
               { id: 'home', name: 'Home', href: '/' },
               { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
               { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
               { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
               { id: 'detail', name: 'Detail', href: '/Category/Subcategory/Tab/Detail' }
-            ]" />
+            ]" ></nav>
           </div>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">6 items</span>
-            <mzn-breadcrumb [items]="[
+            <nav mznBreadcrumb [items]="[
               { id: 'home', name: 'Home', href: '/' },
               { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
               { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
               { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
               { id: 'detail', name: 'Detail', href: '/Category/Subcategory/Tab/Detail' },
               { id: 'history', name: 'History', href: '/Category/Subcategory/Tab/Detail/History' }
-            ]" />
+            ]" ></nav>
           </div>
         </div>
 
@@ -97,21 +97,21 @@ export const Basic: Story = {
           <h2 mznTypography variant="h2">Condensed</h2>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">condensed (5 items → shows last 2)</span>
-            <mzn-breadcrumb [condensed]="true" [items]="[
+            <nav mznBreadcrumb [condensed]="true" [items]="[
               { id: 'home', name: 'Home', href: '/' },
               { id: 'category', name: 'Category', href: '/Category' },
               { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory' },
               { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
               { id: 'detail', name: 'Detail' }
-            ]" />
+            ]" ></nav>
           </div>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">condensed (3 items → shows last 2)</span>
-            <mzn-breadcrumb [condensed]="true" [items]="[
+            <nav mznBreadcrumb [condensed]="true" [items]="[
               { id: 'home', name: 'Home', href: '/' },
               { id: 'category', name: 'Category', href: '/Category' },
               { id: 'current', name: 'Current Page' }
-            ]" />
+            ]" ></nav>
           </div>
           <!-- NOTE: Overflow dropdown for collapsed middle items is planned for a future release. -->
         </div>
@@ -136,28 +136,28 @@ export const WithDropdown: Story = {
                are not yet supported in Angular MznBreadcrumb. Items with options
                are shown as plain non-linked breadcrumb items below. -->
 
-          <mzn-breadcrumb [items]="[
+          <nav mznBreadcrumb [items]="[
             { id: 'home', name: 'Home', href: '/' },
             { id: 'list', name: 'List', href: '/' },
             { id: 'history', name: 'History', href: '/' },
             { id: '01', name: '01' }
-          ]" />
+          ]" ></nav>
 
-          <mzn-breadcrumb [items]="[
+          <nav mznBreadcrumb [items]="[
             { id: 'home', name: 'Home', href: '/' },
             { id: 'list', name: 'List', href: '/' },
             { id: 'tab', name: 'Tab' },
             { id: 'history', name: 'History' },
             { id: '01', name: '01' }
-          ]" />
+          ]" ></nav>
 
-          <mzn-breadcrumb [items]="[
+          <nav mznBreadcrumb [items]="[
             { id: 'home', name: '首頁', href: withDropdownHref },
             { id: 'cms', name: '內容管理' },
             { id: 'arch', name: '建築', href: withDropdownHref }
-          ]" />
+          ]" ></nav>
 
-          <mzn-breadcrumb [items]="[
+          <nav mznBreadcrumb [items]="[
             { id: 'home', name: '首頁', href: withDropdownHref },
             { id: 'cms', name: '內容管理', href: withDropdownHref },
             { id: 'news', name: '相關新聞', href: withDropdownHref },
@@ -165,16 +165,16 @@ export const WithDropdown: Story = {
             { id: 'event', name: '活動新訊', href: withDropdownHref },
             { id: 'article', name: '文章列表', href: withDropdownHref },
             { id: 'arch', name: '建築', href: withDropdownHref }
-          ]" />
+          ]" ></nav>
 
           <h2 mznTypography variant="h2">Condensed</h2>
           <!-- NOTE: condensed=true shows last 2 items; overflow dropdown planned for future release. -->
-          <mzn-breadcrumb [condensed]="true" [items]="[
+          <nav mznBreadcrumb [condensed]="true" [items]="[
             { id: 'home', name: '首頁', href: withDropdownHref },
             { id: 'project', name: '建案管理' },
             { id: 'category', name: '分類管理' },
             { id: 'article', name: '文章列表', href: withDropdownHref }
-          ]" />
+          ]" ></nav>
         </div>
       </div>
     `,

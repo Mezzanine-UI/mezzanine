@@ -17,17 +17,24 @@ import { FormControl, MZN_FORM_CONTROL } from './form-control';
  *
  * @example
  * ```html
- * <mzn-form-label htmlFor="email" labelText="電子郵件" />
- * <mzn-form-label
+ * <label mznFormLabel htmlFor="email" labelText="電子郵件" ></label>
+ * <label mznFormLabel
  *   htmlFor="email"
  *   labelText="電子郵件"
  *   [informationIcon]="InfoOutlineIcon"
  *   informationText="請輸入有效的電子郵件"
- * />
+ * ></label>
  * ```
  */
 @Component({
-  selector: 'mzn-form-label',
+  selector: '[mznFormLabel]',
+  host: {
+    '[attr.htmlFor]': 'null',
+    '[attr.labelText]': 'null',
+    '[attr.informationIcon]': 'null',
+    '[attr.informationText]': 'null',
+    '[attr.optionalMarker]': 'null',
+  },
   standalone: true,
   imports: [MznIcon, MznTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush,

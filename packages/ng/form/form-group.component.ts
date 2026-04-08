@@ -14,8 +14,8 @@ import { formGroupClasses as classes } from '@mezzanine-ui/core/form';
  * import { MznFormGroup } from '@mezzanine-ui/ng/form';
  *
  * <div mznFormGroup title="基本資料">
- *   <mzn-form-field name="name" label="姓名">...</mzn-form-field>
- *   <mzn-form-field name="email" label="信箱">...</mzn-form-field>
+ *   <div mznFormField name="name" label="姓名">...</div>
+ *   <div mznFormField name="email" label="信箱">...</div>
  * </div>
  * ```
  */

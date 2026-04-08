@@ -19,15 +19,15 @@ export const Basic: Story = {
   render: () => ({
     template: `
       <div mznFormGroup title="Group Title">
-        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
+        <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
           <input placeholder="Placeholder" />
-        </mzn-form-field>
-        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
+        </div>
+        <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
           <input placeholder="Placeholder" />
-        </mzn-form-field>
-        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field3">
+        </div>
+        <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field3">
           <input placeholder="Placeholder" />
-        </mzn-form-field>
+        </div>
       </div>
     `,
   }),
@@ -39,23 +39,23 @@ export const MultipleGroups: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 32px;">
         <div mznFormGroup title="Group Title">
-          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field1">
+          <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field1">
             <input placeholder="Placeholder" />
-          </mzn-form-field>
-          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field2">
+          </div>
+          <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field2">
             <input placeholder="Placeholder" />
-          </mzn-form-field>
-          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field3">
+          </div>
+          <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field3">
             <input placeholder="Placeholder" />
-          </mzn-form-field>
+          </div>
         </div>
         <div mznFormGroup title="Group Title">
-          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field1">
+          <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field1">
             <input placeholder="Placeholder" />
-          </mzn-form-field>
-          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field2">
+          </div>
+          <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field2">
             <input placeholder="Placeholder" />
-          </mzn-form-field>
+          </div>
         </div>
       </div>
     `,
@@ -67,12 +67,12 @@ export const CustomFieldsContainerClassName: Story = {
   render: () => ({
     template: `
       <div mznFormGroup fieldsContainerClassName="custom-gap" title="Group Title with Custom Gap">
-        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
+        <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
           <input placeholder="Placeholder" />
-        </mzn-form-field>
-        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
+        </div>
+        <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
           <input placeholder="Placeholder" />
-        </mzn-form-field>
+        </div>
       </div>
     `,
   }),

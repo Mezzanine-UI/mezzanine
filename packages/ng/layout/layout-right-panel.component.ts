@@ -30,10 +30,10 @@ const ARROW_KEY_STEP = 10;
  * import { MznLayout, MznLayoutMain, MznLayoutRightPanel } from '@mezzanine-ui/ng/layout';
  *
  * <div mznLayout>
- *   <mzn-layout-main>Main Content</mzn-layout-main>
- *   <mzn-layout-right-panel [open]="true" [defaultWidth]="280">
+ *   <div mznLayoutMain>Main Content</div>
+ *   <aside mznLayoutRightPanel [open]="true" [defaultWidth]="280">
  *     <p>Right panel content</p>
- *   </mzn-layout-right-panel>
+ *   </aside>
  * </div>
  * ```
  *
@@ -41,13 +41,18 @@ const ARROW_KEY_STEP = 10;
  * @see MznLayoutLeftPanel
  */
 @Component({
-  selector: 'mzn-layout-right-panel',
+  selector: '[mznLayoutRightPanel]',
   standalone: true,
   imports: [MznScrollbar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
     '[style.inline-size.px]': 'open() ? width() : null',
+    '[attr.defaultWidth]': 'null',
+    '[attr.open]': 'null',
+    '[attr.scrollbarDisabled]': 'null',
+    '[attr.scrollbarMaxHeight]': 'null',
+    '[attr.scrollbarMaxWidth]': 'null',
   },
   template: `
     @if (open()) {

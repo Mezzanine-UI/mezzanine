@@ -16,16 +16,20 @@ import clsx from 'clsx';
  *
  * @example
  * ```html
- * <mzn-breadcrumb-item name="首頁" href="/" />
- * <mzn-breadcrumb-item name="目前頁面" [current]="true" />
+ * <span mznBreadcrumbItem name="首頁" href="/" ></span>
+ * <span mznBreadcrumbItem name="目前頁面" [current]="true" ></span>
  * ```
  */
 @Component({
-  selector: 'mzn-breadcrumb-item',
+  selector: '[mznBreadcrumbItem]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.current]': 'null',
+    '[attr.href]': 'null',
+    '[attr.name]': 'null',
+    '[attr.target]': 'null',
   },
   template: `
     @if (!current() && href()) {
