@@ -12,12 +12,12 @@ import { buttonClasses } from '@mezzanine-ui/core/button';
  *
  * @example
  * ```html
- * <mzn-calendar-footer-actions
+ * <div mznCalendarFooterActions
  *   [cancelText]="'Cancel'"
  *   [confirmText]="'Ok'"
  *   (cancelled)="onCancel()"
  *   (confirmed)="onConfirm()"
- * />
+ * ></div>
  * ```
  */
 @Component({

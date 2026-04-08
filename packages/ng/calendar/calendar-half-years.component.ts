@@ -22,29 +22,34 @@ import { MznCalendarCell } from './calendar-cell.component';
  *
  * @example
  * ```html
- * <mzn-calendar-half-years
+ * <div mznCalendarHalfYears
  *   [referenceDate]="refDate"
  *   [value]="selectedDates"
  *   (halfYearClick)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-half-years',
+  selector: '[mznCalendarHalfYears]',
   standalone: true,
   imports: [MznCalendarCell],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'boardClass',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.isHalfYearDisabled]': 'null',
+    '[attr.isHalfYearInRange]': 'null',
   },
   template: `
     @for (yearRow of yearRows(); track yearRow.year; let yearIdx = $index) {
       <div [class]="yearRow.rowClass">
-        <mzn-calendar-cell [disabled]="true" mode="half-year">
+        <div mznCalendarCell [disabled]="true" mode="half-year">
           {{ yearRow.year }}
-        </mzn-calendar-cell>
+        </div>
         @for (item of yearRow.halfYears; track item.halfYear) {
-          <mzn-calendar-cell
+          <div
+            mznCalendarCell
             mode="half-year"
             [today]="item.isCurrentHalfYear"
             [active]="item.active"
@@ -62,7 +67,7 @@ import { MznCalendarCell } from './calendar-cell.component';
               (mouseenter)="halfYearHover.emit(item.date)"
               >H{{ item.halfYear }}</button
             >
-          </mzn-calendar-cell>
+          </div>
         }
       </div>
     }

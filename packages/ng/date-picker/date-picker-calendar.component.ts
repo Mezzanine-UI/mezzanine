@@ -48,7 +48,8 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
       placement="bottom-start"
       [offsetOptions]="popperOffsetOptions()"
     >
-      <mzn-calendar
+      <div
+        mznCalendar
         [referenceDate]="referenceDate()"
         [value]="value()"
         [mode]="mode()"
@@ -67,7 +68,7 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
         [isWeekDisabled]="isWeekDisabled()"
         [isYearDisabled]="isYearDisabled()"
         (dateChanged)="dateChanged.emit($event)"
-      />
+      ></div>
     </div>
   `,
 })

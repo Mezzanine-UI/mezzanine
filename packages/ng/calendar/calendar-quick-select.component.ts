@@ -20,19 +20,21 @@ export interface CalendarQuickSelectOption {
  *
  * @example
  * ```html
- * <mzn-calendar-quick-select
+ * <div mznCalendarQuickSelect
  *   [activeId]="activeQuickId"
  *   [options]="quickOptions"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-quick-select',
+  selector: '[mznCalendarQuickSelect]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.activeId]': 'null',
+    '[attr.options]': 'null',
   },
   template: `
     @for (option of options(); track option.id) {

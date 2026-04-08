@@ -11,15 +11,16 @@ import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
  *
  * @example
  * ```html
- * <mzn-calendar-footer-control label="Today" (click)="goToToday()" />
+ * <div mznCalendarFooterControl label="Today" (click)="goToToday()" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-footer-control',
+  selector: '[mznCalendarFooterControl]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.label]': 'null',
   },
   template: `
     <button

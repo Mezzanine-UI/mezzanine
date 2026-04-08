@@ -18,7 +18,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  *
  * @example
  * ```html
- * <mzn-calendar-controls
+ * <div mznCalendarControls
  *   [showPrev]="true"
  *   [showNext]="true"
  *   (prev)="onPrev()"
@@ -26,16 +26,24 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  * >
  *   <button>Jan</button>
  *   <button>2024</button>
- * </mzn-calendar-controls>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-controls',
+  selector: '[mznCalendarControls]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'controlsClass',
+    '[attr.disableOnNext]': 'null',
+    '[attr.disableOnDoubleNext]': 'null',
+    '[attr.disableOnPrev]': 'null',
+    '[attr.disableOnDoublePrev]': 'null',
+    '[attr.showPrev]': 'null',
+    '[attr.showDoublePrev]': 'null',
+    '[attr.showNext]': 'null',
+    '[attr.showDoubleNext]': 'null',
   },
   template: `
     <div [class]="actionsClass">

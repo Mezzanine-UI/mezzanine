@@ -25,18 +25,19 @@ type Story = StoryObj<MznCalendar>;
   standalone: true,
   imports: [MznCalendar, MznCalendarConfigProvider],
   template: `
-    <mzn-calendar-config-provider [methods]="methods">
+    <div mznCalendarConfigProvider [methods]="methods">
       <p style="margin: 0 0 12px 0"
         >original value: {{ value() }}, formatted value: {{ value() }}</p
       >
-      <mzn-calendar
+      <div
+        mznCalendar
         [mode]="mode"
         [referenceDate]="referenceDate()"
         [value]="value()"
         [renderAnnotations]="showAnnotations ? annotationFn : undefined"
         (dateChanged)="onDateChanged($event)"
-      />
-    </mzn-calendar-config-provider>
+      ></div>
+    </div>
   `,
 })
 class CalendarPlaygroundComponent {
@@ -102,14 +103,15 @@ export const CalendarPlayground: Story = {
   standalone: true,
   imports: [MznRangeCalendar, MznCalendarConfigProvider],
   template: `
-    <mzn-calendar-config-provider [methods]="methods">
+    <div mznCalendarConfigProvider [methods]="methods">
       <p style="margin: 0 0 12px 0">
         Confirmed Range: {{ startVal() }} ~ {{ endVal() }}
       </p>
       <p style="margin: 0 0 12px 0; color: #999">
         Current Selection: {{ tempStartVal() }} ~ {{ tempEndVal() }}
       </p>
-      <mzn-range-calendar
+      <div
+        mznRangeCalendar
         [mode]="mode"
         [referenceDate]="referenceDate()"
         [value]="selectedValues()"
@@ -123,8 +125,8 @@ export const CalendarPlayground: Story = {
         (rangeChanged)="onRangeChanged($event)"
         (confirmed)="onOk()"
         (cancelled)="onCancel()"
-      />
-    </mzn-calendar-config-provider>
+      ></div>
+    </div>
   `,
 })
 class RangeCalendarPlaygroundComponent {

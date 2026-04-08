@@ -11,20 +11,24 @@ import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
  *
  * @example
  * ```html
- * <mzn-calendar-footer-actions
+ * <div mznCalendarFooterActions
  *   [cancelText]="'Cancel'"
  *   [confirmText]="'Ok'"
  *   (cancelled)="onCancel()"
  *   (confirmed)="onConfirm()"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-footer-actions',
+  selector: '[mznCalendarFooterActions]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.cancelText]': 'null',
+    '[attr.confirmText]': 'null',
+    '[attr.cancelDisabled]': 'null',
+    '[attr.confirmDisabled]': 'null',
   },
   template: `
     <button

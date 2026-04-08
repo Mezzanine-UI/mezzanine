@@ -54,7 +54,8 @@ import {
       [offsetOptions]="offsetOptions()"
     >
       <div (mouseleave)="mouseLeave.emit()">
-        <mzn-range-calendar
+        <div
+          mznRangeCalendar
           [referenceDate]="referenceDate()"
           [value]="value()"
           [mode]="mode()"
@@ -84,7 +85,7 @@ import {
           (cellHover)="cellHover.emit($event)"
           (confirmed)="confirmed.emit()"
           (cancelled)="cancelled.emit()"
-        />
+        ></div>
       </div>
     </div>
   `,

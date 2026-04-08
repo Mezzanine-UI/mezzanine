@@ -19,13 +19,19 @@ import {
  * ```html
  * import { MznCalendarConfigProvider } from '@mezzanine-ui/ng/calendar';
  *
- * <mzn-calendar-config-provider [methods]="dayjsMethods" locale="zh-TW">
+ * <div mznCalendarConfigProvider [methods]="dayjsMethods" locale="zh-TW">
  *   <mzn-date-picker [(ngModel)]="date" />
- * </mzn-calendar-config-provider>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-config-provider',
+  selector: '[mznCalendarConfigProvider]',
+  host: {
+    '[attr.methods]': 'null',
+    '[attr.defaultDateFormat]': 'null',
+    '[attr.defaultTimeFormat]': 'null',
+    '[attr.locale]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [

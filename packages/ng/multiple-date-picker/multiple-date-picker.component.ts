@@ -91,18 +91,20 @@ import {
       placement="bottom-start"
       [offsetOptions]="{ mainAxis: 4 }"
     >
-      <mzn-calendar
+      <div
+        mznCalendar
         [referenceDate]="internalReferenceDate()"
         [value]="pendingValue()"
         [mode]="mode()"
         [isDateDisabled]="resolvedIsDateDisabled()"
         (dateChanged)="onCalendarChange($event)"
-      />
-      <mzn-calendar-footer-actions
+      ></div>
+      <div
+        mznCalendarFooterActions
         [confirmDisabled]="pendingValue().length === 0"
         (confirmed)="onConfirm()"
         (cancelled)="onCancel()"
-      />
+      ></div>
     </div>
   `,
 })

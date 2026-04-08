@@ -28,30 +28,40 @@ export interface CalendarDayAnnotation {
  *
  * @example
  * ```html
- * <mzn-calendar-days
+ * <div mznCalendarDays
  *   [referenceDate]="refDate"
  *   [value]="selectedDates"
  *   (dateClick)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-days',
+  selector: '[mznCalendarDays]',
   standalone: true,
   imports: [MznCalendarCell, MznCalendarDayOfWeek, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'boardClass',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.isDateInRange]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
+    '[attr.renderAnnotations]': 'null',
   },
   template: `
     <div [class]="daysGridClass">
-      <mzn-calendar-day-of-week
+      <div
+        mznCalendarDayOfWeek
         [displayWeekDayLocale]="displayWeekDayLocale()"
-      />
+      ></div>
       @for (week of grid(); track weekIdx; let weekIdx = $index) {
         <div [class]="rowClass">
           @for (day of week; track dayIdx; let dayIdx = $index) {
-            <mzn-calendar-cell
+            <div
+              mznCalendarCell
               [active]="day.active"
               [disabled]="day.isPrevMonth || day.isNextMonth"
               [isRangeStart]="day.isRangeStart"
@@ -84,7 +94,7 @@ export interface CalendarDayAnnotation {
                   >
                 }
               </button>
-            </mzn-calendar-cell>
+            </div>
           }
         </div>
       }

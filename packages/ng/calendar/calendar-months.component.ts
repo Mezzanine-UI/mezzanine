@@ -20,25 +20,32 @@ import { MznCalendarCell } from './calendar-cell.component';
  *
  * @example
  * ```html
- * <mzn-calendar-months
+ * <div mznCalendarMonths
  *   [referenceDate]="refDate"
  *   [value]="selectedDates"
  *   (monthClick)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-months',
+  selector: '[mznCalendarMonths]',
   standalone: true,
   imports: [MznCalendarCell],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'boardClass',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.displayMonthLocale]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.isMonthInRange]': 'null',
+    '[attr.isYearDisabled]': 'null',
   },
   template: `
     <div [class]="gridClass">
       @for (item of monthItems(); track item.month) {
-        <mzn-calendar-cell
+        <div
+          mznCalendarCell
           mode="month"
           [today]="item.isCurrentMonth"
           [active]="item.active"
@@ -55,7 +62,7 @@ import { MznCalendarCell } from './calendar-cell.component';
             (mouseenter)="monthHover.emit(item.date)"
             >{{ item.name }}</button
           >
-        </mzn-calendar-cell>
+        </div>
       }
     </div>
   `,

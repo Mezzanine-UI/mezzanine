@@ -21,25 +21,30 @@ import { MznCalendarCell } from './calendar-cell.component';
  *
  * @example
  * ```html
- * <mzn-calendar-years
+ * <div mznCalendarYears
  *   [referenceDate]="refDate"
  *   [value]="selectedDates"
  *   (yearClick)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-years',
+  selector: '[mznCalendarYears]',
   standalone: true,
   imports: [MznCalendarCell],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'boardClass',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.isYearInRange]': 'null',
   },
   template: `
     <div [class]="gridClass">
       @for (item of yearItems(); track item.year) {
-        <mzn-calendar-cell
+        <div
+          mznCalendarCell
           mode="year"
           [today]="item.isCurrentYear"
           [active]="item.active"
@@ -56,7 +61,7 @@ import { MznCalendarCell } from './calendar-cell.component';
             (mouseenter)="yearHover.emit(item.date)"
             >{{ item.year }}</button
           >
-        </mzn-calendar-cell>
+        </div>
       }
     </div>
   `,

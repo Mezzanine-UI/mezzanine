@@ -69,12 +69,13 @@ import { MznTimePanelColumn } from './time-panel-column.component';
         />
       }
     </div>
-    <mzn-calendar-footer-actions
+    <div
+      mznCalendarFooterActions
       cancelText="Cancel"
       confirmText="Ok"
       (cancelled)="cancelled.emit()"
       (confirmed)="confirmed.emit()"
-    />
+    ></div>
   `,
 })
 export class MznTimePanel {

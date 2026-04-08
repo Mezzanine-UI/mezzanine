@@ -20,35 +20,43 @@ import { MznCalendarDayOfWeek } from './calendar-day-of-week.component';
  *
  * @example
  * ```html
- * <mzn-calendar-weeks
+ * <div mznCalendarWeeks
  *   [referenceDate]="refDate"
  *   [value]="selectedWeeks"
  *   (weekClick)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-weeks',
+  selector: '[mznCalendarWeeks]',
   standalone: true,
   imports: [MznCalendarCell, MznCalendarDayOfWeek],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'boardClass',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.isWeekDisabled]': 'null',
+    '[attr.isWeekInRange]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
   },
   template: `
     <div [class]="weekColumnClass">
       @for (item of weekItems(); track item.weekFirstDate) {
         <div [class]="weekRowClass">
-          <mzn-calendar-cell [disabled]="true">
+          <div mznCalendarCell [disabled]="true">
             {{ item.weekNum }}
-          </mzn-calendar-cell>
+          </div>
         </div>
       }
     </div>
     <div [class]="daysGridClass">
-      <mzn-calendar-day-of-week
+      <div
+        mznCalendarDayOfWeek
         [displayWeekDayLocale]="displayWeekDayLocale()"
-      />
+      ></div>
       @for (item of weekItems(); track weekIdx; let weekIdx = $index) {
         <button
           type="button"
@@ -61,7 +69,8 @@ import { MznCalendarDayOfWeek } from './calendar-day-of-week.component';
           (mouseenter)="weekHover.emit(item.weekFirstDate)"
         >
           @for (day of item.days; track dayIdx; let dayIdx = $index) {
-            <mzn-calendar-cell
+            <div
+              mznCalendarCell
               mode="week"
               [active]="day.cellActive"
               [disabled]="day.cellDisabled"
@@ -76,7 +85,7 @@ import { MznCalendarDayOfWeek } from './calendar-day-of-week.component';
               >
                 {{ day.dateNum }}
               </div>
-            </mzn-calendar-cell>
+            </div>
           }
         </button>
       }

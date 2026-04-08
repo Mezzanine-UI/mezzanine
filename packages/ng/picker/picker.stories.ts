@@ -35,7 +35,7 @@ export default meta;
   standalone: true,
   imports: [MznCalendarConfigProvider, MznFormattedInput],
   template: `
-    <mzn-calendar-config-provider>
+    <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
       <div
         mznFormattedInput
@@ -46,7 +46,7 @@ export default meta;
         (valueChanged)="onValueChanged($event)"
         (valueCleared)="onValueCleared()"
       ></div>
-    </mzn-calendar-config-provider>
+    </div>
   `,
 })
 class FormattedInputStoryComponent {
@@ -76,7 +76,7 @@ export const FormattedInputDisabled: StoryObj = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-calendar-config-provider>
+      <div mznCalendarConfigProvider>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div mznFormattedInput
             format="YYYY-MM-DD"
@@ -88,7 +88,7 @@ export const FormattedInputDisabled: StoryObj = {
             placeholder="Time format"
           ></div>
         </div>
-      </mzn-calendar-config-provider>
+      </div>
     `,
   }),
 };
@@ -102,7 +102,7 @@ export const FormattedInputDisabled: StoryObj = {
   standalone: true,
   imports: [MznCalendarConfigProvider, MznPickerTrigger, MznIcon],
   template: `
-    <mzn-calendar-config-provider>
+    <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
       <mzn-picker-trigger
         [format]="format"
@@ -118,7 +118,7 @@ export const FormattedInputDisabled: StoryObj = {
       >
         <i mznIcon suffix [icon]="calendarIcon"></i>
       </mzn-picker-trigger>
-    </mzn-calendar-config-provider>
+    </div>
   `,
 })
 class PickerTriggerStoryComponent {
@@ -157,7 +157,7 @@ export const PickerTriggerStates: StoryObj = {
   render: () => ({
     props: { CalendarIcon },
     template: `
-      <mzn-calendar-config-provider>
+      <div mznCalendarConfigProvider>
         <div style="display: flex; flex-direction: column; gap: 12px; min-width: 200px;">
           <mzn-picker-trigger
             format="YYYY-MM-DD"
@@ -188,7 +188,7 @@ export const PickerTriggerStates: StoryObj = {
             <i mznIcon suffix [icon]="CalendarIcon" ></i>
           </mzn-picker-trigger>
         </div>
-      </mzn-calendar-config-provider>
+      </div>
     `,
   }),
 };
@@ -202,7 +202,7 @@ export const PickerTriggerStates: StoryObj = {
   standalone: true,
   imports: [MznCalendarConfigProvider, MznPickerTriggerWithSeparator, MznIcon],
   template: `
-    <mzn-calendar-config-provider>
+    <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0"
         >Date: {{ dateValue() }} | Time: {{ timeValue() }}</p
       >
@@ -219,7 +219,7 @@ export const PickerTriggerStates: StoryObj = {
       >
         <i mznIcon suffix [icon]="calendarIcon"></i>
       </mzn-picker-trigger-with-separator>
-    </mzn-calendar-config-provider>
+    </div>
   `,
 })
 class PickerTriggerWithSeparatorStoryComponent {
@@ -259,7 +259,7 @@ export const PickerTriggerWithSeparatorPlayground: StoryObj = {
   standalone: true,
   imports: [MznCalendarConfigProvider, MznRangePickerTrigger, MznIcon],
   template: `
-    <mzn-calendar-config-provider>
+    <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0"
         >From: {{ fromValue() }} | To: {{ toValue() }}</p
       >
@@ -273,7 +273,7 @@ export const PickerTriggerWithSeparatorPlayground: StoryObj = {
         (inputToChanged)="onToChange($event)"
         (cleared)="onCleared()"
       />
-    </mzn-calendar-config-provider>
+    </div>
   `,
 })
 class RangePickerTriggerStoryComponent {
@@ -305,7 +305,7 @@ export const RangePickerTriggerStates: StoryObj = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-calendar-config-provider>
+      <div mznCalendarConfigProvider>
         <div style="display: flex; flex-direction: column; gap: 12px; min-width: 300px;">
           <mzn-range-picker-trigger
             format="YYYY-MM-DD"
@@ -325,7 +325,7 @@ export const RangePickerTriggerStates: StoryObj = {
             [error]="true"
           />
         </div>
-      </mzn-calendar-config-provider>
+      </div>
     `,
   }),
 };

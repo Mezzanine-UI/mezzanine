@@ -280,10 +280,7 @@ function injectHostClassBinding(text, apply, classExpr, warnings) {
     const newMeta = meta.replace(hostBlockRe, (_, body) => {
       const trimmed = body.trim();
       const lines = trimmed
-        ? trimmed
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean)
+        ? splitHostEntries(trimmed)
             .map((s) => `    ${s},`)
             .join('\n')
         : '';
@@ -298,6 +295,49 @@ function injectHostClassBinding(text, apply, classExpr, warnings) {
     `$1\n  host: {\n    '[class]': ${quoteClassExpr(classExpr)},\n  },`,
   );
   apply(text.replace(componentBlockRe, `@Component({${newMeta}\n})`));
+}
+
+/**
+ * Split an Angular host metadata body into individual binding entries.
+ * Cannot just split on `,` because string values can contain commas
+ * (e.g. `'[attr.aria-label]': '"Calendar, " + view + " view"'`). Use a
+ * tiny scanner that tracks string and bracket nesting and only treats
+ * commas at depth 0 outside of strings as separators.
+ */
+function splitHostEntries(body) {
+  const entries = [];
+  let buf = '';
+  let depth = 0;
+  let inStr = null;
+  let prev = '';
+  for (const ch of body) {
+    if (inStr) {
+      buf += ch;
+      if (ch === inStr && prev !== '\\') inStr = null;
+      prev = ch;
+      continue;
+    }
+    if (ch === "'" || ch === '"' || ch === '`') {
+      inStr = ch;
+      buf += ch;
+      prev = ch;
+      continue;
+    }
+    if (ch === '(' || ch === '[' || ch === '{') depth += 1;
+    if (ch === ')' || ch === ']' || ch === '}') depth -= 1;
+    if (ch === ',' && depth === 0) {
+      const t = buf.trim();
+      if (t) entries.push(t);
+      buf = '';
+      prev = ch;
+      continue;
+    }
+    buf += ch;
+    prev = ch;
+  }
+  const tail = buf.trim();
+  if (tail) entries.push(tail);
+  return entries;
 }
 
 /**
@@ -440,10 +480,7 @@ function rewriteComponentFile(text, elementSelector, attrName) {
           );
           const filtered = inputNames.filter((n) => !present.has(n));
           const existingLines = existing
-            ? existing
-                .split(',')
-                .map((s) => s.trim())
-                .filter(Boolean)
+            ? splitHostEntries(existing)
                 .map((s) => `    ${s},`)
                 .join('\n')
             : '';

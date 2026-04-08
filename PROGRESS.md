@@ -7,8 +7,8 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 | Metric             | Count | Percent |
 | ------------------ | ----- | ------- |
-| Attribute selector | 137   | 82%     |
-| Element selector   | 31    | 18%     |
+| Attribute selector | 152   | 90%     |
+| Element selector   | 16    | 10%     |
 | **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
@@ -238,21 +238,21 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp                     | Status | Batch |
 | ------------------------ | ------ | ----- |
-| calendar                 | ⬜     |       |
-| range-calendar           | ⬜     |       |
-| calendar-cell            | ⬜     |       |
-| calendar-config-provider | ⬜     |       |
-| calendar-controls        | ⬜     |       |
-| calendar-day-of-week     | ⬜     |       |
-| calendar-days            | ⬜     |       |
-| calendar-weeks           | ⬜     |       |
-| calendar-months          | ⬜     |       |
-| calendar-quarters        | ⬜     |       |
-| calendar-half-years      | ⬜     |       |
-| calendar-years           | ⬜     |       |
-| calendar-quick-select    | ⬜     |       |
-| calendar-footer-actions  | ⬜     |       |
-| calendar-footer-control  | ⬜     |       |
+| calendar                 | ✅     | P2-13 |
+| range-calendar           | ✅     | P2-13 |
+| calendar-cell            | ✅     | P2-13 |
+| calendar-config-provider | ✅     | P2-13 |
+| calendar-controls        | ✅     | P2-13 |
+| calendar-day-of-week     | ✅     | P2-13 |
+| calendar-days            | ✅     | P2-13 |
+| calendar-weeks           | ✅     | P2-13 |
+| calendar-months          | ✅     | P2-13 |
+| calendar-quarters        | ✅     | P2-13 |
+| calendar-half-years      | ✅     | P2-13 |
+| calendar-years           | ✅     | P2-13 |
+| calendar-quick-select    | ✅     | P2-13 |
+| calendar-footer-actions  | ✅     | P2-13 |
+| calendar-footer-control  | ✅     | P2-13 |
 
 ### Date / Time picker family
 

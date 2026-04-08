@@ -10,17 +10,26 @@ import clsx from 'clsx';
  *
  * @example
  * ```html
- * <mzn-calendar-cell [active]="true" [today]="true" mode="day">
+ * <div mznCalendarCell [active]="true" [today]="true" mode="day">
  *   <button>15</button>
- * </mzn-calendar-cell>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-cell',
+  selector: '[mznCalendarCell]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.active]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.today]': 'null',
+    '[attr.isRangeStart]': 'null',
+    '[attr.isRangeEnd]': 'null',
+    '[attr.isWeekend]': 'null',
+    '[attr.withAnnotation]': 'null',
+    '[attr.role]': 'null',
   },
   template: `<span [class]="innerClass"><ng-content /></span>`,
 })

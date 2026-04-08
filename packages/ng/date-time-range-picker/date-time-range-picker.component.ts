@@ -89,22 +89,24 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           [style.display]="'flex'"
           [style.flex-direction]="direction() === 'column' ? 'column' : 'row'"
         >
-          <mzn-calendar
+          <div
+            mznCalendar
             [referenceDate]="firstRef()"
             [value]="calendarValue()"
             mode="day"
             [isDateDisabled]="isDateDisabled()"
             [disabledFooterControl]="true"
             (dateChanged)="onCalendarClick($event)"
-          />
-          <mzn-calendar
+          ></div>
+          <div
+            mznCalendar
             [referenceDate]="secondRef()"
             [value]="calendarValue()"
             mode="day"
             [isDateDisabled]="isDateDisabled()"
             [disabledFooterControl]="true"
             (dateChanged)="onCalendarClick($event)"
-          />
+          ></div>
         </div>
         <div style="display: flex; justify-content: space-around">
           <mzn-time-panel
@@ -132,10 +134,11 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
             (cancelled)="onCancel()"
           />
         </div>
-        <mzn-calendar-footer-actions
+        <div
+          mznCalendarFooterActions
           (confirmed)="onConfirm()"
           (cancelled)="onCancel()"
-        />
+        ></div>
       </div>
     </div>
   `,

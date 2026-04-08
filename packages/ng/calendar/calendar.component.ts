@@ -47,16 +47,16 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
  * ```html
  * import { MznCalendar } from '@mezzanine-ui/ng/calendar';
  *
- * <mzn-calendar
+ * <div mznCalendar
  *   [referenceDate]="refDate"
  *   [value]="selected"
  *   mode="day"
  *   (dateChanged)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar',
+  selector: '[mznCalendar]',
   standalone: true,
   imports: [
     MznCalendarControls,
@@ -74,18 +74,47 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
     role: 'application',
     '[attr.aria-label]': '"Calendar, " + currentMode() + " view"',
     '[class]': 'hostClasses()',
+    '[attr.mode]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.disabledFooterControl]': 'null',
+    '[attr.disabledMonthSwitch]': 'null',
+    '[attr.disabledYearSwitch]': 'null',
+    '[attr.disableOnNext]': 'null',
+    '[attr.disableOnDoubleNext]': 'null',
+    '[attr.disableOnPrev]': 'null',
+    '[attr.disableOnDoublePrev]': 'null',
+    '[attr.noShadow]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.isDateInRange]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.isMonthInRange]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.isYearInRange]': 'null',
+    '[attr.isWeekDisabled]': 'null',
+    '[attr.isWeekInRange]': 'null',
+    '[attr.isQuarterDisabled]': 'null',
+    '[attr.isQuarterInRange]': 'null',
+    '[attr.isHalfYearDisabled]': 'null',
+    '[attr.isHalfYearInRange]': 'null',
+    '[attr.quickSelect]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
+    '[attr.displayMonthLocale]': 'null',
+    '[attr.renderAnnotations]': 'null',
   },
   template: `
     @if (quickSelect()) {
-      <mzn-calendar-quick-select
+      <div
+        mznCalendarQuickSelect
         [activeId]="quickSelect()!.activeId"
         [options]="quickSelect()!.options"
-      />
+      ></div>
     }
     <div [class]="mainWithFooterClass">
       <div [class]="mainClass">
         <!-- Controls -->
-        <mzn-calendar-controls
+        <div
+          mznCalendarControls
           [showPrev]="controlConfig().showPrev"
           [showDoublePrev]="controlConfig().showDoublePrev"
           [showNext]="controlConfig().showNext"
@@ -135,12 +164,13 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
               {{ displayYearRange() }}
             </button>
           }
-        </mzn-calendar-controls>
+        </div>
 
         <!-- Board -->
         @switch (currentMode()) {
           @case ('day') {
-            <mzn-calendar-days
+            <div
+              mznCalendarDays
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isDateDisabled]="isDateDisabled()"
@@ -151,10 +181,11 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
               [renderAnnotations]="renderAnnotations()"
               (dateClick)="onCellClick($event)"
               (dateHover)="cellHover.emit($event)"
-            />
+            ></div>
           }
           @case ('week') {
-            <mzn-calendar-weeks
+            <div
+              mznCalendarWeeks
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isWeekDisabled]="isWeekDisabled()"
@@ -164,10 +195,11 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
               [displayWeekDayLocale]="displayWeekDayLocale()"
               (weekClick)="onCellClick($event)"
               (weekHover)="cellHover.emit($event)"
-            />
+            ></div>
           }
           @case ('month') {
-            <mzn-calendar-months
+            <div
+              mznCalendarMonths
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isMonthDisabled]="isMonthDisabled()"
@@ -176,47 +208,51 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
               [displayMonthLocale]="displayMonthLocale()"
               (monthClick)="onCellClick($event)"
               (monthHover)="cellHover.emit($event)"
-            />
+            ></div>
           }
           @case ('year') {
-            <mzn-calendar-years
+            <div
+              mznCalendarYears
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isYearDisabled]="isYearDisabled()"
               [isYearInRange]="isYearInRange()"
               (yearClick)="onCellClick($event)"
               (yearHover)="cellHover.emit($event)"
-            />
+            ></div>
           }
           @case ('quarter') {
-            <mzn-calendar-quarters
+            <div
+              mznCalendarQuarters
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isQuarterDisabled]="isQuarterDisabled()"
               [isQuarterInRange]="isQuarterInRange()"
               (quarterClick)="onCellClick($event)"
               (quarterHover)="cellHover.emit($event)"
-            />
+            ></div>
           }
           @case ('half-year') {
-            <mzn-calendar-half-years
+            <div
+              mznCalendarHalfYears
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isHalfYearDisabled]="isHalfYearDisabled()"
               [isHalfYearInRange]="isHalfYearInRange()"
               (halfYearClick)="onCellClick($event)"
               (halfYearHover)="cellHover.emit($event)"
-            />
+            ></div>
           }
         }
       </div>
 
       <!-- Footer control -->
       @if (!disabledFooterControl() && footerLabel()) {
-        <mzn-calendar-footer-control
+        <div
+          mznCalendarFooterControl
           [label]="footerLabel()!"
           (footerClick)="onFooterClick()"
-        />
+        ></div>
       }
     </div>
   `,

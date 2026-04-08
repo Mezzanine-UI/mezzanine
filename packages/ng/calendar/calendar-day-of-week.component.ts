@@ -14,11 +14,11 @@ import { MznCalendarCell } from './calendar-cell.component';
  *
  * @example
  * ```html
- * <mzn-calendar-day-of-week />
+ * <div mznCalendarDayOfWeek ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-day-of-week',
+  selector: '[mznCalendarDayOfWeek]',
   standalone: true,
   imports: [MznCalendarCell],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,12 +26,13 @@ import { MznCalendarCell } from './calendar-cell.component';
     role: 'row',
     'aria-label': 'Days of the week',
     '[class]': 'rowClass',
+    '[attr.displayWeekDayLocale]': 'null',
   },
   template: `
     @for (item of dayItems(); track item.name) {
-      <mzn-calendar-cell role="columnheader" [isWeekend]="item.isWeekend">
+      <div mznCalendarCell role="columnheader" [isWeekend]="item.isWeekend">
         {{ item.name }}
-      </mzn-calendar-cell>
+      </div>
     }
   `,
 })

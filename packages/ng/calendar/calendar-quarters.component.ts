@@ -22,29 +22,34 @@ import { MznCalendarCell } from './calendar-cell.component';
  *
  * @example
  * ```html
- * <mzn-calendar-quarters
+ * <div mznCalendarQuarters
  *   [referenceDate]="refDate"
  *   [value]="selectedDates"
  *   (quarterClick)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-quarters',
+  selector: '[mznCalendarQuarters]',
   standalone: true,
   imports: [MznCalendarCell],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'boardClass',
+    '[attr.referenceDate]': 'null',
+    '[attr.value]': 'null',
+    '[attr.isQuarterDisabled]': 'null',
+    '[attr.isQuarterInRange]': 'null',
   },
   template: `
     @for (yearRow of yearRows(); track yearRow.year; let yearIdx = $index) {
       <div [class]="yearRow.rowClass">
-        <mzn-calendar-cell [disabled]="true" mode="quarter">
+        <div mznCalendarCell [disabled]="true" mode="quarter">
           {{ yearRow.year }}
-        </mzn-calendar-cell>
+        </div>
         @for (item of yearRow.quarters; track item.quarter) {
-          <mzn-calendar-cell
+          <div
+            mznCalendarCell
             mode="quarter"
             [today]="item.isCurrentQuarter"
             [active]="item.active"
@@ -62,7 +67,7 @@ import { MznCalendarCell } from './calendar-cell.component';
               (mouseenter)="quarterHover.emit(item.date)"
               >Q{{ item.quarter }}</button
             >
-          </mzn-calendar-cell>
+          </div>
         }
       </div>
     }

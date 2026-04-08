@@ -39,18 +39,18 @@ export { CalendarQuickSelectOption };
  * ```html
  * import { MznRangeCalendar } from '@mezzanine-ui/ng/calendar';
  *
- * <mzn-range-calendar
+ * <div mznRangeCalendar
  *   [referenceDate]="refDate"
  *   [value]="selectedRange"
  *   mode="day"
  *   (rangeChanged)="onRangeChange($event)"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MznCalendar} 單日曆元件
  */
 @Component({
-  selector: 'mzn-range-calendar',
+  selector: '[mznRangeCalendar]',
   standalone: true,
   imports: [MznCalendar, MznCalendarFooterActions, MznCalendarQuickSelect],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,17 +58,45 @@ export { CalendarQuickSelectOption };
     role: 'application',
     '[attr.aria-label]': '"Range calendar, " + mode() + " view"',
     '[class]': 'hostClass',
+    '[attr.disabledMonthSwitch]': 'null',
+    '[attr.disabledYearSwitch]': 'null',
+    '[attr.disableOnDoubleNext]': 'null',
+    '[attr.disableOnDoublePrev]': 'null',
+    '[attr.disableOnNext]': 'null',
+    '[attr.disableOnPrev]': 'null',
+    '[attr.displayMonthLocale]': 'null',
+    '[attr.displayWeekDayLocale]': 'null',
+    '[attr.isDateDisabled]': 'null',
+    '[attr.isDateInRange]': 'null',
+    '[attr.isHalfYearDisabled]': 'null',
+    '[attr.isHalfYearInRange]': 'null',
+    '[attr.isMonthDisabled]': 'null',
+    '[attr.isMonthInRange]': 'null',
+    '[attr.isQuarterDisabled]': 'null',
+    '[attr.isQuarterInRange]': 'null',
+    '[attr.isWeekDisabled]': 'null',
+    '[attr.isWeekInRange]': 'null',
+    '[attr.isYearDisabled]': 'null',
+    '[attr.isYearInRange]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.quickSelect]': 'null',
+    '[attr.referenceDate]': 'null',
+    '[attr.renderAnnotations]': 'null',
+    '[attr.showFooterActions]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     @if (quickSelect()) {
-      <mzn-calendar-quick-select
+      <div
+        mznCalendarQuickSelect
         [activeId]="quickSelect()!.activeId"
         [options]="quickSelect()!.options"
-      />
+      ></div>
     }
     <div [class]="mainWithFooterClass">
       <div [class]="rangeWrapperClass">
-        <mzn-calendar
+        <div
+          mznCalendar
           [referenceDate]="firstRef()"
           [value]="calendarValue()"
           [mode]="currentMode()"
@@ -101,8 +129,9 @@ export { CalendarQuickSelectOption };
           (doublePrevClicked)="onFirstDoublePrev()"
           (monthControlClicked)="onMonthControlClick()"
           (yearControlClicked)="onYearControlClick()"
-        />
-        <mzn-calendar
+        ></div>
+        <div
+          mznCalendar
           [referenceDate]="secondRef()"
           [value]="calendarValue()"
           [mode]="currentMode()"
@@ -135,13 +164,14 @@ export { CalendarQuickSelectOption };
           (doubleNextClicked)="onSecondDoubleNext()"
           (monthControlClicked)="onMonthControlClick()"
           (yearControlClicked)="onYearControlClick()"
-        />
+        ></div>
       </div>
       @if (showFooterActions()) {
-        <mzn-calendar-footer-actions
+        <div
+          mznCalendarFooterActions
           (confirmed)="confirmed.emit()"
           (cancelled)="onCancelledInternal()"
-        />
+        ></div>
       }
     </div>
   `,

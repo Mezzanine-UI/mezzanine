@@ -85,14 +85,15 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       [offsetOptions]="{ mainAxis: 4 }"
     >
       <div style="display: flex">
-        <mzn-calendar
+        <div
+          mznCalendar
           [referenceDate]="internalReferenceDate()"
           [value]="pendingValue()"
           mode="day"
           [isDateDisabled]="isDateDisabled()"
           [disabledFooterControl]="true"
           (dateChanged)="onDateSelect($event)"
-        />
+        ></div>
         <mzn-time-panel
           [value]="pendingValue()"
           [hideHour]="hideHour()"
