@@ -11,17 +11,17 @@ import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
 /**
  * 佈局主內容區域，自動包裹於 scrollable 容器中。
  *
- * 必須作為 `<mzn-layout>` 的子元件使用，會被投射至 content-wrapper 中央。
+ * 必須作為 `<div mznLayout>` 的子元件使用，會被投射至 content-wrapper 中央。
  *
  * @example
  * ```html
  * import { MznLayout, MznLayoutMain } from '@mezzanine-ui/ng/layout';
  *
- * <mzn-layout>
+ * <div mznLayout>
  *   <mzn-layout-main>
  *     <h1>Page Content</h1>
  *   </mzn-layout-main>
- * </mzn-layout>
+ * </div>
  * ```
  *
  * @see MznLayout

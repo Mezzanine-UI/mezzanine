@@ -22,26 +22,31 @@ import { MznSpin } from '@mezzanine-ui/ng/spin';
  * ```html
  * import { MznDropdownStatus } from '@mezzanine-ui/ng/dropdown';
  *
- * <mzn-dropdown-status status="loading" />
- * <mzn-dropdown-status status="empty" emptyText="找不到任何選項。" />
+ * <div mznDropdownStatus status="loading" ></div>
+ * <div mznDropdownStatus status="empty" emptyText="找不到任何選項。" ></div>
  * ```
  *
  * @see MznDropdown
  */
 @Component({
-  selector: 'mzn-dropdown-status',
+  selector: '[mznDropdownStatus]',
+  host: {
+    '[class]': 'statusClass',
+    '[attr.emptyIcon]': 'null',
+    '[attr.emptyText]': 'null',
+    '[attr.loadingText]': 'null',
+    '[attr.status]': 'null',
+  },
   standalone: true,
   imports: [MznIcon, MznSpin],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [class]="statusClass">
-      @if (status() === 'loading') {
-        <mzn-spin [loading]="true" size="minor" />
-      } @else {
-        <i mznIcon [icon]="resolvedEmptyIcon()" [size]="16"></i>
-      }
-      <span [class]="statusTextClass">{{ displayText() }}</span>
-    </div>
+    @if (status() === 'loading') {
+      <mzn-spin [loading]="true" size="minor" />
+    } @else {
+      <i mznIcon [icon]="resolvedEmptyIcon()" [size]="16"></i>
+    }
+    <span [class]="statusTextClass">{{ displayText() }}</span>
   `,
 })
 export class MznDropdownStatus {

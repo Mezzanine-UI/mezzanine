@@ -84,12 +84,13 @@ export interface DropdownFlatTreeNode {
           [tabIndex]="-1"
         >
           @if (status() && shouldShowFullStatus()) {
-            <mzn-dropdown-status
+            <div
+              mznDropdownStatus
               [status]="status()!"
               [emptyIcon]="emptyIcon()"
               [emptyText]="resolvedEmptyText()"
               [loadingText]="resolvedLoadingText()"
-            />
+            ></div>
           } @else {
             @if (type() === 'grouped') {
               @for (group of options(); track group.id) {
@@ -159,10 +160,11 @@ export interface DropdownFlatTreeNode {
             }
             @if (shouldShowBottomLoading()) {
               <li [class]="loadingMoreClass" aria-live="polite" role="status">
-                <mzn-dropdown-status
+                <div
+                  mznDropdownStatus
                   status="loading"
                   [loadingText]="resolvedLoadingText()"
-                />
+                ></div>
               </li>
             }
           }
@@ -199,12 +201,13 @@ export interface DropdownFlatTreeNode {
         (scroll)="onListWrapperScroll($event)"
       >
         @if (status() && shouldShowFullStatus()) {
-          <mzn-dropdown-status
+          <div
+            mznDropdownStatus
             [status]="status()!"
             [emptyIcon]="emptyIcon()"
             [emptyText]="resolvedEmptyText()"
             [loadingText]="resolvedLoadingText()"
-          />
+          ></div>
         } @else {
           @if (type() === 'grouped') {
             @for (group of options(); track group.id) {
@@ -274,10 +277,11 @@ export interface DropdownFlatTreeNode {
           }
           @if (shouldShowBottomLoading()) {
             <li [class]="loadingMoreClass" aria-live="polite" role="status">
-              <mzn-dropdown-status
+              <div
+                mznDropdownStatus
                 status="loading"
                 [loadingText]="resolvedLoadingText()"
-              />
+              ></div>
             </li>
           }
         }

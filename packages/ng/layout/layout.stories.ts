@@ -29,7 +29,7 @@ import { MznIcon } from '../icon/icon.component';
     MznIcon,
   ],
   template: `
-    <mzn-layout navigationClassName="foo" contentWrapperClassName="bar">
+    <div mznLayout navigationClassName="foo" contentWrapperClassName="bar">
       <mzn-navigation
         [activatedPath]="activatedPath()"
         (optionClick)="onOptionClick($event)"
@@ -74,7 +74,7 @@ import { MznIcon } from '../icon/icon.component';
           <button (click)="rightOpen.set(false)">Close</button>
         </div>
       </mzn-layout-right-panel>
-    </mzn-layout>
+    </div>
   `,
   styles: [
     `
@@ -117,7 +117,7 @@ class LayoutPlaygroundComponent {
     MznNavigationFooter,
   ],
   template: `
-    <mzn-layout>
+    <div mznLayout>
       <mzn-navigation
         [activatedPath]="activatedPath()"
         (optionClick)="onOptionClick($event)"
@@ -161,7 +161,7 @@ class LayoutPlaygroundComponent {
           <button (click)="rightOpen.set(false)">Close</button>
         </div>
       </mzn-layout-right-panel>
-    </mzn-layout>
+    </div>
   `,
   styles: [
     `

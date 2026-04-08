@@ -161,7 +161,7 @@ export const Playground: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<mzn-anchor-group [anchors]="anchors" [className]="className" />`,
+    template: `<div mznAnchorGroup [anchors]="anchors" [className]="className" ></div>`,
   }),
 };
 
@@ -176,8 +176,8 @@ export const All: Story = {
     },
     template: `
       <div style="display: flex; flex-flow: column; gap: 24px;">
-        <mzn-anchor-group [anchors]="childrenAnchors" />
-        <mzn-anchor-group [anchors]="anchors" />
+        <div mznAnchorGroup [anchors]="childrenAnchors" ></div>
+        <div mznAnchorGroup [anchors]="anchors" ></div>
       </div>
     `,
   }),

@@ -19,7 +19,7 @@ import { AnchorItemData } from './typings';
  * ```html
  * import { MznAnchorGroup } from '@mezzanine-ui/ng/anchor';
  *
- * <mzn-anchor-group [anchors]="anchorData" />
+ * <div mznAnchorGroup [anchors]="anchorData" ></div>
  * ```
  *
  * ```typescript
@@ -32,12 +32,14 @@ import { AnchorItemData } from './typings';
  * ```
  */
 @Component({
-  selector: 'mzn-anchor-group',
+  selector: '[mznAnchorGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznAnchorItem],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.anchors]': 'null',
+    '[attr.className]': 'null',
   },
   template: `
     @for (item of anchors(); track item.id) {

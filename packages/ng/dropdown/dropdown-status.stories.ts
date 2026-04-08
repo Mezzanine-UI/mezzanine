@@ -50,11 +50,11 @@ export const Playground: Story = {
     props: args,
     template: `
       <div style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
-        <mzn-dropdown-status
+        <div mznDropdownStatus
           [status]="status"
           [loadingText]="loadingText"
           [emptyText]="emptyText"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -64,7 +64,7 @@ export const Loading: Story = {
   render: () => ({
     template: `
       <div style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
-        <mzn-dropdown-status status="loading" loadingText="搜尋中..." />
+        <div mznDropdownStatus status="loading" loadingText="搜尋中..." ></div>
       </div>
     `,
   }),
@@ -75,7 +75,7 @@ export const Empty: Story = {
     props: { emptyIcon: FolderIcon },
     template: `
       <div style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
-        <mzn-dropdown-status status="empty" [emptyIcon]="emptyIcon" emptyText="找不到任何選項。" />
+        <div mznDropdownStatus status="empty" [emptyIcon]="emptyIcon" emptyText="找不到任何選項。" ></div>
       </div>
     `,
   }),

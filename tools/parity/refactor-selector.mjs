@@ -211,6 +211,67 @@ function rewriteComponentFile(text, elementSelector, attrName) {
     warnings.push('no template literal found');
   }
 
+  // 3. Inject `[attr.X]: null` host bindings for every input() name.
+  // After the selector switch the host becomes a real DOM element and any
+  // static-string consumer attribute (e.g. title="..." / type="..."/ size="...")
+  // is left on the element by the HTML parser. React strips these via
+  // destructure + {...rest}; Angular has no equivalent, so we explicitly null
+  // them out. Inputs that are bracket-bound stay as-is — `[attr.X]: null`
+  // only affects the DOM attribute, not the @Input value.
+  const inputNames = [
+    ...next.matchAll(
+      /\b(?:readonly\s+|protected\s+|public\s+|private\s+)*([a-zA-Z_$][\w$]*)\s*=\s*input(?:\.required)?\s*[<(]/g,
+    ),
+  ].map((m) => m[1]);
+  if (inputNames.length > 0) {
+    const componentBlockRe = /@Component\(\{([\s\S]*?)\n\}\)/;
+    const cm = next.match(componentBlockRe);
+    if (cm) {
+      const meta = cm[1];
+      const attrLines = inputNames
+        .map((n) => `    '[attr.${n}]': 'null',`)
+        .join('\n');
+      // Match either multi-line `host: { ... \n  }` or single-line
+      // `host: { '[class]': 'foo' }`. Capture body between first `{` and
+      // its matching `}` non-greedily, then normalize to multi-line.
+      const hostBlockRe = /host:\s*\{([^{}]*)\}/;
+      if (hostBlockRe.test(meta)) {
+        const newMeta = meta.replace(hostBlockRe, (_, body) => {
+          const existing = body.trim();
+          const present = new Set(
+            [...existing.matchAll(/\[attr\.([\w$]+)\]/g)].map((m) => m[1]),
+          );
+          const filtered = inputNames.filter((n) => !present.has(n));
+          const existingLines = existing
+            ? existing
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean)
+                .map((s) => `    ${s},`)
+                .join('\n')
+            : '';
+          const newLines = filtered
+            .map((n) => `    '[attr.${n}]': 'null',`)
+            .join('\n');
+          const all = [existingLines, newLines].filter(Boolean).join('\n');
+          return `host: {\n${all}\n  }`;
+        });
+        next = next.replace(componentBlockRe, `@Component({${newMeta}\n})`);
+      } else {
+        // Inject a fresh host block right after selector.
+        const newMeta = meta.replace(
+          /(selector:\s*'[^']*'\s*,)/,
+          `$1\n  host: {\n${attrLines}\n  },`,
+        );
+        next = next.replace(componentBlockRe, `@Component({${newMeta}\n})`);
+      }
+    } else {
+      warnings.push(
+        'could not locate @Component({...}) block to inject [attr.X] bindings',
+      );
+    }
+  }
+
   return { text: next, templateRewritten, warnings };
 }
 

@@ -17,12 +17,12 @@ import clsx from 'clsx';
  * ```html
  * import { MznLayout, MznLayoutMain, MznLayoutLeftPanel, MznLayoutRightPanel } from '@mezzanine-ui/ng/layout';
  *
- * <mzn-layout>
+ * <div mznLayout>
  *   <mzn-navigation>...</mzn-navigation>
  *   <mzn-layout-left-panel [open]="true">Side Content</mzn-layout-left-panel>
  *   <mzn-layout-main>Main Content</mzn-layout-main>
  *   <mzn-layout-right-panel [open]="true">Right Content</mzn-layout-right-panel>
- * </mzn-layout>
+ * </div>
  * ```
  *
  * @see MznLayoutMain
@@ -30,10 +30,14 @@ import clsx from 'clsx';
  * @see MznLayoutRightPanel
  */
 @Component({
-  selector: 'mzn-layout',
+  selector: '[mznLayout]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { '[class]': 'hostClass' },
+  host: {
+    '[class]': 'hostClass',
+    '[attr.contentWrapperClassName]': 'null',
+    '[attr.navigationClassName]': 'null',
+  },
   template: `
     <div [class]="navigationClasses()">
       <ng-content select="mzn-navigation" />

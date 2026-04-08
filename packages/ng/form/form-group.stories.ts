@@ -18,7 +18,7 @@ export const Basic: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-group title="Group Title">
+      <div mznFormGroup title="Group Title">
         <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
           <input placeholder="Placeholder" />
         </mzn-form-field>
@@ -28,7 +28,7 @@ export const Basic: Story = {
         <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field3">
           <input placeholder="Placeholder" />
         </mzn-form-field>
-      </mzn-form-group>
+      </div>
     `,
   }),
 };
@@ -38,7 +38,7 @@ export const MultipleGroups: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 32px;">
-        <mzn-form-group title="Group Title">
+        <div mznFormGroup title="Group Title">
           <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field1">
             <input placeholder="Placeholder" />
           </mzn-form-field>
@@ -48,15 +48,15 @@ export const MultipleGroups: Story = {
           <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field3">
             <input placeholder="Placeholder" />
           </mzn-form-field>
-        </mzn-form-group>
-        <mzn-form-group title="Group Title">
+        </div>
+        <div mznFormGroup title="Group Title">
           <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field1">
             <input placeholder="Placeholder" />
           </mzn-form-field>
           <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field2">
             <input placeholder="Placeholder" />
           </mzn-form-field>
-        </mzn-form-group>
+        </div>
       </div>
     `,
   }),
@@ -66,14 +66,14 @@ export const CustomFieldsContainerClassName: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <mzn-form-group fieldsContainerClassName="custom-gap" title="Group Title with Custom Gap">
+      <div mznFormGroup fieldsContainerClassName="custom-gap" title="Group Title with Custom Gap">
         <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
           <input placeholder="Placeholder" />
         </mzn-form-field>
         <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
           <input placeholder="Placeholder" />
         </mzn-form-field>
-      </mzn-form-group>
+      </div>
     `,
   }),
 };

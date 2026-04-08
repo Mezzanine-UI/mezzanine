@@ -13,11 +13,12 @@ Progress tracker for converting all `@Component({ selector: 'mzn-xxx' })` declar
 
 _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 
-| Batch    | Commit      | Components | Total Before | Total After | Notes                                                             |
-| -------- | ----------- | ---------- | ------------ | ----------- | ----------------------------------------------------------------- |
-| baseline | `c15a7030`  | —          | 8416         | 6866        | start of refactor phase                                           |
-| 1        | _(pending)_ | separator  | 6866         | ~6866       | trial; proves pipeline but separator diffs are story-side not tag |
-| 2        | _(pending)_ | empty      | 38           | 539         | **EXPECTED** — see "Diff-count masking" below                     |
+| Batch    | Commit      | Components                                        | Total Before | Total After | Notes                                                             |
+| -------- | ----------- | ------------------------------------------------- | ------------ | ----------- | ----------------------------------------------------------------- |
+| baseline | `c15a7030`  | —                                                 | 8416         | 6866        | start of refactor phase                                           |
+| 1        | _(pending)_ | separator                                         | 6866         | ~6866       | trial; proves pipeline but separator diffs are story-side not tag |
+| 2        | `843cd5f5`  | empty                                             | 38           | 539         | **EXPECTED** — see "Diff-count masking" below                     |
+| 3        | _(pending)_ | layout, anchor-group, form-group, dropdown-status | —            | 2/0/64/19   | auto attr-null injection added to script; 0 attribute leakage     |
 
 ## ⚠️ Diff-count masking — critical reading
 

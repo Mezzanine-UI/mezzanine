@@ -13,18 +13,20 @@ import { formGroupClasses as classes } from '@mezzanine-ui/core/form';
  * ```html
  * import { MznFormGroup } from '@mezzanine-ui/ng/form';
  *
- * <mzn-form-group title="基本資料">
+ * <div mznFormGroup title="基本資料">
  *   <mzn-form-field name="name" label="姓名">...</mzn-form-field>
  *   <mzn-form-field name="email" label="信箱">...</mzn-form-field>
- * </mzn-form-group>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-form-group',
+  selector: '[mznFormGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.fieldsContainerClassName]': 'null',
+    '[attr.title]': 'null',
   },
   template: `
     <div [class]="titleClass">{{ title() }}</div>

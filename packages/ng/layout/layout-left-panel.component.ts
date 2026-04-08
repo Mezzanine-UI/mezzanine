@@ -29,12 +29,12 @@ const ARROW_KEY_STEP = 10;
  * ```html
  * import { MznLayout, MznLayoutMain, MznLayoutLeftPanel } from '@mezzanine-ui/ng/layout';
  *
- * <mzn-layout>
+ * <div mznLayout>
  *   <mzn-layout-left-panel [open]="true" [defaultWidth]="320" (widthChange)="onWidthChange($event)">
  *     <p>Side panel content</p>
  *   </mzn-layout-left-panel>
  *   <mzn-layout-main>Main Content</mzn-layout-main>
- * </mzn-layout>
+ * </div>
  * ```
  *
  * @see MznLayout
