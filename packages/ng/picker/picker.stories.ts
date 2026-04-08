@@ -1,8 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { CalendarIcon } from '@mezzanine-ui/icons';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import { MznCalendarConfigProvider } from '@mezzanine-ui/ng/calendar';
+import {
+  MZN_CALENDAR_CONFIG,
+  createCalendarConfig,
+} from '@mezzanine-ui/ng/calendar';
 import { MznFormattedInput } from './formatted-input.component';
 import { MznPickerTrigger } from './picker-trigger.component';
 import { MznPickerTriggerWithSeparator } from './picker-trigger-with-separator.component';
@@ -13,12 +17,17 @@ const meta: Meta = {
   decorators: [
     moduleMetadata({
       imports: [
-        MznCalendarConfigProvider,
         MznFormattedInput,
         MznPickerTrigger,
         MznPickerTriggerWithSeparator,
         MznRangePickerTrigger,
         MznIcon,
+      ],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsDayjs),
+        },
       ],
     }),
   ],
@@ -33,7 +42,7 @@ export default meta;
 @Component({
   selector: 'story-formatted-input',
   standalone: true,
-  imports: [MznCalendarConfigProvider, MznFormattedInput],
+  imports: [MznFormattedInput],
   template: `
     <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
@@ -100,7 +109,7 @@ export const FormattedInputDisabled: StoryObj = {
 @Component({
   selector: 'story-picker-trigger',
   standalone: true,
-  imports: [MznCalendarConfigProvider, MznPickerTrigger, MznIcon],
+  imports: [MznPickerTrigger, MznIcon],
   template: `
     <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
@@ -201,7 +210,7 @@ export const PickerTriggerStates: StoryObj = {
 @Component({
   selector: 'story-picker-trigger-with-separator',
   standalone: true,
-  imports: [MznCalendarConfigProvider, MznPickerTriggerWithSeparator, MznIcon],
+  imports: [MznPickerTriggerWithSeparator, MznIcon],
   template: `
     <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0"
@@ -259,7 +268,7 @@ export const PickerTriggerWithSeparatorPlayground: StoryObj = {
 @Component({
   selector: 'story-range-picker-trigger',
   standalone: true,
-  imports: [MznCalendarConfigProvider, MznRangePickerTrigger, MznIcon],
+  imports: [MznRangePickerTrigger, MznIcon],
   template: `
     <div mznCalendarConfigProvider>
       <p style="margin: 0 0 8px 0"
