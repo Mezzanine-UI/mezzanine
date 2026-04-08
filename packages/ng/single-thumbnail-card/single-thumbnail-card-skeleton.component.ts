@@ -16,34 +16,39 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
  * ```html
  * import { MznSingleThumbnailCardSkeleton } from '@mezzanine-ui/ng/single-thumbnail-card';
  *
- * <mzn-single-thumbnail-card-skeleton />
- * <mzn-single-thumbnail-card-skeleton thumbnailAspectRatio="4/3" thumbnailWidth="200px" />
+ * <div mznSingleThumbnailCardSkeleton ></div>
+ * <div mznSingleThumbnailCardSkeleton thumbnailAspectRatio="4/3" thumbnailWidth="200px" ></div>
  * ```
  *
  * @see MznSingleThumbnailCard
  */
 @Component({
-  selector: 'mzn-single-thumbnail-card-skeleton',
+  selector: '[mznSingleThumbnailCardSkeleton]',
+  host: {
+    '[class]': 'singleThumbnailClass',
+    '[attr.thumbnailAspectRatio]': 'null',
+    '[attr.thumbnailWidth]': 'null',
+  },
   standalone: true,
   imports: [MznSkeleton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [class]="singleThumbnailClass">
-      <div
-        mznSkeleton
-        height="100%"
-        [style.aspectRatio]="thumbnailAspectRatio()"
-        [width]="thumbnailWidth()"
-      ></div>
-    </div>
-    <div [class]="infoClass">
-      <div [class]="infoMainClass">
-        <div [class]="infoContentClass" style="width: 100%">
-          <div mznSkeleton [height]="20" width="100%"></div>
-          <div mznSkeleton [height]="16" width="100%"></div>
-        </div>
+
+    <div
+      mznSkeleton
+      height="100%"
+      [style.aspectRatio]="thumbnailAspectRatio()"
+      [width]="thumbnailWidth()"
+    ></div>
+  </div>
+  <div [class]="infoClass">
+    <div [class]="infoMainClass">
+      <div [class]="infoContentClass" style="width: 100%">
+        <div mznSkeleton [height]="20" width="100%"></div>
+        <div mznSkeleton [height]="16" width="100%"></div>
       </div>
     </div>
+  
   `,
 })
 export class MznSingleThumbnailCardSkeleton {

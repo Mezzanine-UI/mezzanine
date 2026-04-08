@@ -10,19 +10,20 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
  * ```html
  * import { MznFourThumbnailCardSkeleton } from '@mezzanine-ui/ng/four-thumbnail-card';
  *
- * <mzn-four-thumbnail-card-skeleton />
- * <mzn-four-thumbnail-card-skeleton [thumbnailWidth]="160" />
+ * <div mznFourThumbnailCardSkeleton ></div>
+ * <div mznFourThumbnailCardSkeleton [thumbnailWidth]="160" ></div>
  * ```
  *
  * @see MznFourThumbnailCard
  */
 @Component({
-  selector: 'mzn-four-thumbnail-card-skeleton',
+  selector: '[mznFourThumbnailCardSkeleton]',
   standalone: true,
   imports: [MznSkeleton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.thumbnailWidth]': 'null',
   },
   template: `
     <div [class]="thumbnailGridClass">

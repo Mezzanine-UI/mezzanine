@@ -46,33 +46,43 @@ export type ThumbnailCardInfoType = 'default' | 'action' | 'overflow';
  * import { MznThumbnailCardInfo } from '@mezzanine-ui/ng/card';
  *
  * <!-- 預設（無操作） -->
- * <mzn-thumbnail-card-info title="Report.pdf" subtitle="2.4 MB" filetype="pdf" />
+ * <div mznThumbnailCardInfo title="Report.pdf" subtitle="2.4 MB" filetype="pdf" ></div>
  *
  * <!-- Action 模式 -->
- * <mzn-thumbnail-card-info
+ * <div mznThumbnailCardInfo
  *   title="Report.pdf"
  *   subtitle="2.4 MB"
  *   filetype="pdf"
  *   type="action"
  *   actionName="下載"
  *   (actionClick)="onDownload($event)"
- * />
+ * ></div>
  *
  * <!-- Overflow 模式 -->
- * <mzn-thumbnail-card-info
+ * <div mznThumbnailCardInfo
  *   title="Report.pdf"
  *   subtitle="2.4 MB"
  *   filetype="pdf"
  *   type="overflow"
  *   [options]="menuOptions"
  *   (optionSelect)="onOptionSelect($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznFourThumbnailCard
  */
 @Component({
-  selector: 'mzn-thumbnail-card-info',
+  selector: '[mznThumbnailCardInfo]',
+  host: {
+    '[attr.actionName]': 'null',
+    '[attr.actionVariant]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.filetype]': 'null',
+    '[attr.options]': 'null',
+    '[attr.subtitle]': 'null',
+    '[attr.title]': 'null',
+    '[attr.type]': 'null',
+  },
   standalone: true,
   imports: [MznButton, MznDropdown, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,

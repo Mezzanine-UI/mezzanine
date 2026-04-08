@@ -52,14 +52,14 @@ export const Playground: Story = {
     },
     template: `
       <div style="width: 280px;">
-        <mzn-quick-action-card
+        <button mznQuickActionCard
           [icon]="icon"
           [mode]="mode"
           [title]="title"
           [subtitle]="subtitle"
           [disabled]="disabled"
           [readOnly]="readOnly"
-        />
+        ></button>
       </div>
     `,
   }),
@@ -75,17 +75,17 @@ export const ModeHorizontal: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px; width: 280px;">
-        <mzn-quick-action-card
+        <button mznQuickActionCard
           [icon]="calendarIcon"
           subtitle="Set up a new meeting"
           title="Schedule Meeting"
-        />
-        <mzn-quick-action-card
+        ></button>
+        <button mznQuickActionCard
           [icon]="fileIcon"
           subtitle="Start a new document"
           title="Create Document"
-        />
-        <mzn-quick-action-card [icon]="userIcon" title="Add Contact" />
+        ></button>
+        <button mznQuickActionCard [icon]="userIcon" title="Add Contact" ></button>
       </div>
     `,
   }),
@@ -102,23 +102,23 @@ export const ModeVertical: Story = {
     template: `
       <div style="display: flex; gap: 16px;">
         <div style="width: 160px;">
-          <mzn-quick-action-card
+          <button mznQuickActionCard
             [icon]="calendarIcon"
             mode="vertical"
             subtitle="View schedule"
             title="Calendar"
-          />
+          ></button>
         </div>
         <div style="width: 160px;">
-          <mzn-quick-action-card
+          <button mznQuickActionCard
             [icon]="folderIcon"
             mode="vertical"
             subtitle="Browse files"
             title="Files"
-          />
+          ></button>
         </div>
         <div style="width: 160px;">
-          <mzn-quick-action-card [icon]="fileIcon" mode="vertical" title="Settings" />
+          <button mznQuickActionCard [icon]="fileIcon" mode="vertical" title="Settings" ></button>
         </div>
       </div>
     `,
@@ -131,23 +131,23 @@ export const States: Story = {
     props: { calendarIcon: CalendarIcon },
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px; width: 280px;">
-        <mzn-quick-action-card
+        <button mznQuickActionCard
           [icon]="calendarIcon"
           subtitle="Interactive card"
           title="Default State"
-        />
-        <mzn-quick-action-card
+        ></button>
+        <button mznQuickActionCard
           [disabled]="true"
           [icon]="calendarIcon"
           subtitle="Non-interactive"
           title="Disabled State"
-        />
-        <mzn-quick-action-card
+        ></button>
+        <button mznQuickActionCard
           [icon]="calendarIcon"
           [readOnly]="true"
           subtitle="View only"
           title="Read Only State"
-        />
+        ></button>
       </div>
     `,
   }),
@@ -160,11 +160,11 @@ export const AsLink: Story = {
     template: `
       <div style="display: flex; gap: 16px;">
         <div style="width: 280px;">
-          <mzn-quick-action-card
+          <button mznQuickActionCard
             [icon]="fileIcon"
             subtitle="Opens in new tab"
             title="External Link"
-          />
+          ></button>
         </div>
       </div>
     `,
@@ -180,23 +180,23 @@ export const InCardGroup: Story = {
       userIcon: UserIcon,
     },
     template: `
-      <mzn-card-group>
-        <mzn-quick-action-card
+      <div mznCardGroup>
+        <button mznQuickActionCard
           [icon]="calendarIcon"
           subtitle="View your schedule"
           title="Calendar"
-        />
-        <mzn-quick-action-card
+        ></button>
+        <button mznQuickActionCard
           [icon]="fileIcon"
           subtitle="Browse files"
           title="Documents"
-        />
-        <mzn-quick-action-card
+        ></button>
+        <button mznQuickActionCard
           [icon]="userIcon"
           subtitle="Manage contacts"
           title="Contacts"
-        />
-      </mzn-card-group>
+        ></button>
+      </div>
     `,
   }),
 };

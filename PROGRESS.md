@@ -7,8 +7,8 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 | Metric             | Count | Percent |
 | ------------------ | ----- | ------- |
-| Attribute selector | 108   | 64%     |
-| Element selector   | 60    | 36%     |
+| Attribute selector | 120   | 71%     |
+| Element selector   | 48    | 29%     |
 | **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
@@ -199,18 +199,18 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 | Comp                           | Status | Batch |
 | ------------------------------ | ------ | ----- |
-| base-card                      | ⬜     |       |
-| base-card-skeleton             | ⬜     |       |
-| card-group                     | ⬜     |       |
-| selection-card                 | ⬜     |       |
-| single-thumbnail-card          | ⬜     |       |
-| single-thumbnail-card-skeleton | ⬜     |       |
-| four-thumbnail-card            | ⬜     |       |
-| four-thumbnail-card-skeleton   | ⬜     |       |
-| quick-action-card              | ⬜     |       |
-| quick-action-card-skeleton     | ⬜     |       |
-| thumbnail                      | ⬜     |       |
-| thumbnail-card-info            | ⬜     |       |
+| base-card                      | ✅     | P2-11 |
+| base-card-skeleton             | ✅     | P2-11 |
+| card-group                     | ✅     | P2-11 |
+| selection-card                 | ✅     | P2-11 |
+| single-thumbnail-card          | ✅     | P2-11 |
+| single-thumbnail-card-skeleton | ✅     | P2-11 |
+| four-thumbnail-card            | ✅     | P2-11 |
+| four-thumbnail-card-skeleton   | ✅     | P2-11 |
+| quick-action-card              | ✅     | P2-11 |
+| quick-action-card-skeleton     | ✅     | P2-11 |
+| thumbnail                      | ✅     | P2-11 |
+| thumbnail-card-info            | ✅     | P2-11 |
 
 ### Cascader
 

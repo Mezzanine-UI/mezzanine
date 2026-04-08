@@ -15,19 +15,20 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
  * ```html
  * import { MznBaseCardSkeleton } from '@mezzanine-ui/ng/card';
  *
- * <mzn-base-card-skeleton />
- * <mzn-base-card-skeleton [showContent]="false" />
+ * <div mznBaseCardSkeleton ></div>
+ * <div mznBaseCardSkeleton [showContent]="false" ></div>
  * ```
  *
  * @see MznBaseCard
  */
 @Component({
-  selector: 'mzn-base-card-skeleton',
+  selector: '[mznBaseCardSkeleton]',
   standalone: true,
   imports: [MznSkeleton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.showContent]': 'null',
   },
   template: `
     <div [class]="classes.baseHeader">

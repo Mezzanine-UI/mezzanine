@@ -23,26 +23,33 @@ const OVERLAY_CLASS = classes.fourThumbnailOverlay;
  * import { MznThumbnail } from '@mezzanine-ui/ng/thumbnail';
  *
  * <!-- 靜態模式（預設） -->
- * <mzn-thumbnail title="Photo 1">
+ * <div mznThumbnail title="Photo 1">
  *   <img alt="thumbnail" src="..." />
- * </mzn-thumbnail>
+ * </div>
  *
  * <!-- 按鈕模式 -->
- * <mzn-thumbnail hostComponent="button" title="Click me" (clicked)="onClick($event)">
+ * <div mznThumbnail hostComponent="button" title="Click me" (clicked)="onClick($event)">
  *   <img alt="..." src="..." />
- * </mzn-thumbnail>
+ * </div>
  *
  * <!-- 連結模式 -->
- * <mzn-thumbnail hostComponent="a" href="https://example.com" target="_blank" title="Link">
+ * <div mznThumbnail hostComponent="a" href="https://example.com" target="_blank" title="Link">
  *   <img alt="..." src="..." />
- * </mzn-thumbnail>
+ * </div>
  * ```
  *
  * @see MznFourThumbnailCard
  * @see MznSingleThumbnailCard
  */
 @Component({
-  selector: 'mzn-thumbnail',
+  selector: '[mznThumbnail]',
+  host: {
+    '[attr.hostComponent]': 'null',
+    '[attr.title]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.href]': 'null',
+    '[attr.target]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `

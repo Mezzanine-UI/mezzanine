@@ -32,11 +32,11 @@ export const LoadingBaseCard: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px;">
         <div>
           <h4 style="margin: 0 0 16px 0;">Loading State (3 skeletons)</h4>
-          <mzn-card-group [loading]="true" [loadingCount]="3" cardType="base">
-            <mzn-base-card description="A simple card" title="Card 1">
+          <div mznCardGroup [loading]="true" [loadingCount]="3" cardType="base">
+            <div mznBaseCard description="A simple card" title="Card 1">
               Content for card 1
-            </mzn-base-card>
-          </mzn-card-group>
+            </div>
+          </div>
         </div>
       </div>
     `,
@@ -51,13 +51,13 @@ export const LoadingQuickActionCard: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px;">
         <div>
           <h4 style="margin: 0 0 16px 0;">Loading State (3 skeletons)</h4>
-          <mzn-card-group [loading]="true" [loadingCount]="3" cardType="quick-action">
-            <mzn-quick-action-card
+          <div mznCardGroup [loading]="true" [loadingCount]="3" cardType="quick-action">
+            <button mznQuickActionCard
               [icon]="calendarIcon"
               subtitle="Set up a new meeting"
               title="Schedule Meeting"
-            />
-          </mzn-card-group>
+            ></button>
+          </div>
         </div>
       </div>
     `,
@@ -71,14 +71,14 @@ export const LoadingSingleThumbnailCard: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px;">
         <div>
           <h4 style="margin: 0 0 16px 0;">Loading State (3 skeletons)</h4>
-          <mzn-card-group
+          <div mznCardGroup
             [loading]="true"
             [loadingCount]="3"
             cardType="single-thumbnail"
             [loadingThumbnailWidth]="360"
             loadingThumbnailAspectRatio="360/240"
           >
-            <mzn-single-thumbnail-card
+            <div mznSingleThumbnailCard
               subtitle="Uploaded yesterday"
               title="Product Image 1"
             >
@@ -87,8 +87,8 @@ export const LoadingSingleThumbnailCard: Story = {
                 src="https://picsum.photos/seed/1/360/240"
                 style="display: block; height: 100%; object-fit: cover; width: 100%;"
               />
-            </mzn-single-thumbnail-card>
-          </mzn-card-group>
+            </div>
+          </div>
         </div>
       </div>
     `,
@@ -102,30 +102,30 @@ export const LoadingFourThumbnailCard: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px;">
         <div>
           <h4 style="margin: 0 0 16px 0;">Loading State (3 skeletons)</h4>
-          <mzn-card-group
+          <div mznCardGroup
             [loading]="true"
             [loadingCount]="3"
             cardType="four-thumbnail"
             [loadingThumbnailWidth]="160"
           >
-            <mzn-four-thumbnail-card
+            <div mznFourThumbnailCard
               subtitle="4 items"
               title="Photo Album A"
             >
-              <mzn-thumbnail>
+              <div mznThumbnail>
                 <img alt="Album A - Item 1" src="https://picsum.photos/seed/a1/160/160" />
-              </mzn-thumbnail>
-              <mzn-thumbnail>
+              </div>
+              <div mznThumbnail>
                 <img alt="Album A - Item 2" src="https://picsum.photos/seed/a2/160/160" />
-              </mzn-thumbnail>
-              <mzn-thumbnail>
+              </div>
+              <div mznThumbnail>
                 <img alt="Album A - Item 3" src="https://picsum.photos/seed/a3/160/160" />
-              </mzn-thumbnail>
-              <mzn-thumbnail>
+              </div>
+              <div mznThumbnail>
                 <img alt="Album A - Item 4" src="https://picsum.photos/seed/a4/160/160" />
-              </mzn-thumbnail>
-            </mzn-four-thumbnail-card>
-          </mzn-card-group>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `,
@@ -139,15 +139,15 @@ export const LoadingCountVariations: Story = {
       <div style="display: flex; flex-direction: column; gap: 32px;">
         <div>
           <h4 style="margin: 0 0 16px 0;">loadingCount: 1</h4>
-          <mzn-card-group [loading]="true" [loadingCount]="1" cardType="quick-action" />
+          <div mznCardGroup [loading]="true" [loadingCount]="1" cardType="quick-action" ></div>
         </div>
         <div>
           <h4 style="margin: 0 0 16px 0;">loadingCount: 3 (default)</h4>
-          <mzn-card-group [loading]="true" [loadingCount]="3" cardType="quick-action" />
+          <div mznCardGroup [loading]="true" [loadingCount]="3" cardType="quick-action" ></div>
         </div>
         <div>
           <h4 style="margin: 0 0 16px 0;">loadingCount: 6</h4>
-          <mzn-card-group [loading]="true" [loadingCount]="6" cardType="quick-action" />
+          <div mznCardGroup [loading]="true" [loadingCount]="6" cardType="quick-action" ></div>
         </div>
       </div>
     `,
@@ -161,22 +161,22 @@ export const CustomThumbnailSkeletonSize: Story = {
       <div style="display: flex; flex-direction: column; gap: 32px;">
         <div>
           <h4 style="margin: 0 0 16px 0;">SingleThumbnail: Custom width (160px) and aspect ratio (4/3)</h4>
-          <mzn-card-group
+          <div mznCardGroup
             [loading]="true"
             [loadingCount]="2"
             loadingThumbnailAspectRatio="4/3"
             [loadingThumbnailWidth]="160"
             cardType="single-thumbnail"
-          />
+          ></div>
         </div>
         <div>
           <h4 style="margin: 0 0 16px 0;">FourThumbnail: Custom width (100px)</h4>
-          <mzn-card-group
+          <div mznCardGroup
             [loading]="true"
             [loadingCount]="2"
             [loadingThumbnailWidth]="100"
             cardType="four-thumbnail"
-          />
+          ></div>
         </div>
       </div>
     `,

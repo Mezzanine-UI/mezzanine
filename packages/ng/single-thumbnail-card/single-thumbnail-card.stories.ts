@@ -95,7 +95,7 @@ export const Playground: Story = {
     },
     template: `
       <div style="width: 320px;">
-        <mzn-single-thumbnail-card
+        <div mznSingleThumbnailCard
           [filetype]="filetype"
           [personalActionActive]="personalActionActive"
           [personalActionIcon]="personalActionIcon"
@@ -105,7 +105,7 @@ export const Playground: Story = {
           [title]="title"
         >
           ${sampleImage}
-        </mzn-single-thumbnail-card>
+        </div>
       </div>
     `,
   }),
@@ -116,13 +116,13 @@ export const TypeDefault: Story = {
   render: () => ({
     template: `
       <div style="width: 320px;">
-        <mzn-single-thumbnail-card
+        <div mznSingleThumbnailCard
           filetype="jpg"
           subtitle="1920x1080"
           title="landscape-photo.jpg"
         >
           ${sampleImage}
-        </mzn-single-thumbnail-card>
+        </div>
       </div>
     `,
   }),
@@ -134,14 +134,15 @@ export const TypeDefault: Story = {
   imports: [MznSingleThumbnailCard],
   template: `
     <div style="width: 320px;">
-      <mzn-single-thumbnail-card
+      <div
+        mznSingleThumbnailCard
         [actionOptions]="actionOptions()"
         filetype="pdf"
         subtitle="2.4 MB"
         title="report-2024.pdf"
       >
         ${sampleImage}
-      </mzn-single-thumbnail-card>
+      </div>
     </div>
   `,
 })
@@ -170,14 +171,15 @@ export const TypeAction: Story = {
   imports: [MznSingleThumbnailCard],
   template: `
     <div style="width: 320px;">
-      <mzn-single-thumbnail-card
+      <div
+        mznSingleThumbnailCard
         [actionOptions]="actionOptions()"
         filetype="zip"
         subtitle="15.2 MB"
         title="project-files.zip"
       >
         ${sampleImage}
-      </mzn-single-thumbnail-card>
+      </div>
     </div>
   `,
 })
@@ -209,13 +211,13 @@ export const WithTag: Story = {
   render: () => ({
     template: `
       <div style="width: 320px;">
-        <mzn-single-thumbnail-card
+        <div mznSingleThumbnailCard
           subtitle="Duration: 5:30"
           tag="Featured"
           title="promotional-video.mp4"
         >
           ${sampleImage}
-        </mzn-single-thumbnail-card>
+        </div>
       </div>
     `,
   }),
@@ -227,7 +229,8 @@ export const WithTag: Story = {
   imports: [MznSingleThumbnailCard],
   template: `
     <div style="width: 320px;">
-      <mzn-single-thumbnail-card
+      <div
+        mznSingleThumbnailCard
         [personalActionActive]="isFavorite()"
         [personalActionIcon]="starOutlineIcon"
         [personalActionActiveIcon]="starFilledIcon"
@@ -236,7 +239,7 @@ export const WithTag: Story = {
         title="artwork.png"
       >
         ${sampleImage}
-      </mzn-single-thumbnail-card>
+      </div>
     </div>
   `,
 })
@@ -269,13 +272,13 @@ export const FiletypeVariants: Story = {
       <div style="display: flex; flex-wrap: wrap; gap: 16px;">
         @for (item of items; track item.filetype) {
           <div style="width: 200px;">
-            <mzn-single-thumbnail-card
+            <div mznSingleThumbnailCard
               [filetype]="item.filetype"
               [subtitle]="item.subtitle"
               [title]="item.title"
             >
               ${sampleImage}
-            </mzn-single-thumbnail-card>
+            </div>
           </div>
         }
       </div>
@@ -300,7 +303,8 @@ export const FiletypeVariants: Story = {
   imports: [MznSingleThumbnailCard],
   template: `
     <div style="width: 320px;">
-      <mzn-single-thumbnail-card
+      <div
+        mznSingleThumbnailCard
         [actionOptions]="actionOptions()"
         [personalActionActive]="isFavorite()"
         [personalActionIcon]="starOutlineIcon"
@@ -312,7 +316,7 @@ export const FiletypeVariants: Story = {
         title="quarterly-report-q4-2024.pdf"
       >
         ${sampleImage}
-      </mzn-single-thumbnail-card>
+      </div>
     </div>
   `,
 })
@@ -346,36 +350,36 @@ export const InCardGroup: Story = {
   name: 'In Card Group',
   render: () => ({
     template: `
-      <mzn-card-group>
-        <mzn-single-thumbnail-card
+      <div mznCardGroup>
+        <div mznSingleThumbnailCard
           filetype="jpg"
           subtitle="1920x1080"
           title="landscape.jpg"
         >
           ${sampleImage}
-        </mzn-single-thumbnail-card>
-        <mzn-single-thumbnail-card
+        </div>
+        <div mznSingleThumbnailCard
           filetype="png"
           subtitle="800x600"
           title="portrait.png"
         >
           ${sampleImage}
-        </mzn-single-thumbnail-card>
-        <mzn-single-thumbnail-card
+        </div>
+        <div mznSingleThumbnailCard
           filetype="gif"
           subtitle="400x300"
           title="animation.gif"
         >
           ${sampleImage}
-        </mzn-single-thumbnail-card>
-        <mzn-single-thumbnail-card
+        </div>
+        <div mznSingleThumbnailCard
           filetype="webp"
           subtitle="1200x800"
           title="optimized.webp"
         >
           ${sampleImage}
-        </mzn-single-thumbnail-card>
-      </mzn-card-group>
+        </div>
+      </div>
     `,
   }),
 };
@@ -386,13 +390,13 @@ export const AsLink: Story = {
     template: `
       <div style="display: flex; gap: 16px;">
         <div style="width: 320px;">
-          <mzn-single-thumbnail-card
+          <div mznSingleThumbnailCard
             filetype="pdf"
             subtitle="Click to open in new tab"
             title="external-link.pdf"
           >
             ${sampleImage}
-          </mzn-single-thumbnail-card>
+          </div>
         </div>
       </div>
     `,

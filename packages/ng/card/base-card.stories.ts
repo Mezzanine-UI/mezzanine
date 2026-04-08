@@ -50,14 +50,14 @@ export const Playground: Story = {
     props: args,
     template: `
       <div style="width: 320px;">
-        <mzn-base-card
+        <div mznBaseCard
           [title]="title"
           [description]="description"
           [disabled]="disabled"
           [readOnly]="readOnly"
         >
           This is the card content area. You can put any content here.
-        </mzn-base-card>
+        </div>
       </div>
     `,
   }),
@@ -69,9 +69,9 @@ export const TypeDefault: Story = {
   render: () => ({
     template: `
       <div style="width: 320px;">
-        <mzn-base-card title="Default Card" description="A simple card with no header action">
+        <div mznBaseCard title="Default Card" description="A simple card with no header action">
           The default type shows only the title and description without any action element in the header.
-        </mzn-base-card>
+        </div>
       </div>
     `,
   }),
@@ -84,17 +84,17 @@ export const TypeAction: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div style="width: 320px;">
-          <mzn-base-card
+          <div mznBaseCard
             title="Action Card"
             description="Card with a text-link action button"
             type="action"
             actionName="Edit"
           >
             Click the Edit button in the header to trigger an action.
-          </mzn-base-card>
+          </div>
         </div>
         <div style="width: 320px;">
-          <mzn-base-card
+          <div mznBaseCard
             title="Destructive Action"
             description="Card with a destructive action"
             type="action"
@@ -102,7 +102,7 @@ export const TypeAction: Story = {
             actionVariant="destructive-text-link"
           >
             The action button can use destructive-text-link variant.
-          </mzn-base-card>
+          </div>
         </div>
       </div>
     `,
@@ -123,14 +123,14 @@ export const TypeOverflow: Story = {
     },
     template: `
       <div style="width: 320px;">
-        <mzn-base-card
+        <div mznBaseCard
           title="Overflow Card"
           description="Card with dropdown menu"
           type="overflow"
           [options]="dropdownOptions"
         >
           Click the three-dot icon to see more options in a dropdown menu.
-        </mzn-base-card>
+        </div>
       </div>
     `,
   }),
@@ -143,16 +143,16 @@ export const TypeToggle: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div style="width: 320px;">
-          <mzn-base-card
+          <div mznBaseCard
             title="Toggle Card"
             description="Card with a toggle switch"
             type="toggle"
           >
             Use the toggle in the card header to switch the state.
-          </mzn-base-card>
+          </div>
         </div>
         <div style="width: 320px;">
-          <mzn-base-card
+          <div mznBaseCard
             title="Toggle with Label"
             description="Toggle with label and supporting text"
             type="toggle"
@@ -160,7 +160,7 @@ export const TypeToggle: Story = {
             toggleSupportingText="Turn this feature on or off"
           >
             The toggle can have its own label and supporting text.
-          </mzn-base-card>
+          </div>
         </div>
       </div>
     `,
@@ -173,30 +173,30 @@ export const WithCardGroup: Story = {
   render: () => ({
     template: `
       <div style="width: 100%;">
-        <mzn-card-group>
-          <mzn-base-card
+        <div mznCardGroup>
+          <div mznBaseCard
             description="Basic settings and preferences"
             title="Settings"
             type="action"
             actionName="Configure"
           >
             Manage your account settings and preferences.
-          </mzn-base-card>
-          <mzn-base-card
+          </div>
+          <div mznBaseCard
             description="Toggle this feature on or off"
             title="Feature A"
             type="toggle"
           >
             Use the toggle to enable or disable this feature.
-          </mzn-base-card>
-          <mzn-base-card
+          </div>
+          <div mznBaseCard
             description="Another toggleable feature"
             title="Feature B"
             type="toggle"
           >
             Use the toggle to enable or disable this feature.
-          </mzn-base-card>
-        </mzn-card-group>
+          </div>
+        </div>
       </div>
     `,
   }),
@@ -208,17 +208,17 @@ export const States: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px; width: 320px;">
-        <mzn-base-card title="Normal Card" description="Normal interactive card">
+        <div mznBaseCard title="Normal Card" description="Normal interactive card">
           This card is fully interactive.
-        </mzn-base-card>
+        </div>
 
-        <mzn-base-card title="Disabled Card" description="This card is disabled" [disabled]="true">
+        <div mznBaseCard title="Disabled Card" description="This card is disabled" [disabled]="true">
           The card and its action are disabled.
-        </mzn-base-card>
+        </div>
 
-        <mzn-base-card title="Read Only Card" description="This card is read-only" [readOnly]="true">
+        <div mznBaseCard title="Read Only Card" description="This card is read-only" [readOnly]="true">
           The card cannot be interacted with.
-        </mzn-base-card>
+        </div>
       </div>
     `,
   }),
@@ -231,9 +231,9 @@ export const AsLink: Story = {
     template: `
       <div style="display: flex; gap: 16px;">
         <div style="width: 280px;">
-          <mzn-base-card title="Link Card" description="Click anywhere to navigate">
+          <div mznBaseCard title="Link Card" description="Click anywhere to navigate">
             This entire card is a clickable link (not implemented in Angular).
-          </mzn-base-card>
+          </div>
         </div>
       </div>
     `,
@@ -245,9 +245,9 @@ export const NoHeaderContent: Story = {
   render: () => ({
     template: `
       <div style="width: 280px;">
-        <mzn-base-card>
+        <div mznBaseCard>
           This card has no title or description, so the header is completely hidden.
-        </mzn-base-card>
+        </div>
       </div>
     `,
   }),

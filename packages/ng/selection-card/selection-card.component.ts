@@ -28,17 +28,33 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
  * ```html
  * import { MznSelectionCard } from '@mezzanine-ui/ng/selection-card';
  *
- * <mzn-selection-card
+ * <label mznSelectionCard
  *   selector="radio"
  *   text="選項 A"
  *   supportingText="說明文字"
  *   [(ngModel)]="selected"
  *   value="a"
- * />
+ * ></label>
  * ```
  */
 @Component({
-  selector: 'mzn-selection-card',
+  selector: '[mznSelectionCard]',
+  host: {
+    '[attr.checked]': 'null',
+    '[attr.customIcon]': 'null',
+    '[attr.direction]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.image]': 'null',
+    '[attr.imageObjectFit]': 'null',
+    '[attr.name]': 'null',
+    '[attr.readonly]': 'null',
+    '[attr.selector]': 'null',
+    '[attr.supportingText]': 'null',
+    '[attr.supportingTextMaxWidth]': 'null',
+    '[attr.text]': 'null',
+    '[attr.textMaxWidth]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   imports: [MznIcon],
   providers: [provideValueAccessor(MznSelectionCard)],

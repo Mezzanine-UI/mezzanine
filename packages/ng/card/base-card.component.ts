@@ -45,18 +45,18 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
  * ```html
  * import { MznBaseCard } from '@mezzanine-ui/ng/card';
  *
- * <mzn-base-card title="卡片標題" description="卡片描述">
+ * <div mznBaseCard title="卡片標題" description="卡片描述">
  *   <p>卡片內容</p>
- * </mzn-base-card>
+ * </div>
  *
- * <mzn-base-card title="含動作按鈕" type="action" actionName="查看詳情">
+ * <div mznBaseCard title="含動作按鈕" type="action" actionName="查看詳情">
  *   <p>卡片內容</p>
- * </mzn-base-card>
+ * </div>
  * ```
  * @see MznCardGroup
  */
 @Component({
-  selector: 'mzn-base-card',
+  selector: '[mznBaseCard]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, MznButton, MznDropdown, MznIcon, MznToggle],
@@ -64,6 +64,20 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
     '[class]': 'hostClasses()',
     '[attr.aria-disabled]': 'disabled() || undefined',
     '[attr.aria-readonly]': 'readOnly() || undefined',
+    '[attr.actionName]': 'null',
+    '[attr.actionVariant]': 'null',
+    '[attr.active]': 'null',
+    '[attr.checked]': 'null',
+    '[attr.description]': 'null',
+    '[attr.defaultChecked]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.options]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.title]': 'null',
+    '[attr.toggleLabel]': 'null',
+    '[attr.toggleSize]': 'null',
+    '[attr.toggleSupportingText]': 'null',
+    '[attr.type]': 'null',
   },
   template: `
     @if (title() || description()) {

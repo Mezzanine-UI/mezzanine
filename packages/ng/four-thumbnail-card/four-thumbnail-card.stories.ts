@@ -93,7 +93,7 @@ export const Playground: Story = {
     },
     template: `
       <div style="width: 320px;">
-        <mzn-four-thumbnail-card
+        <div mznFourThumbnailCard
           [filetype]="filetype"
           [personalActionActive]="personalActionActive"
           [personalActionIcon]="personalActionIcon"
@@ -102,11 +102,11 @@ export const Playground: Story = {
           [tag]="tag"
           [title]="title"
         >
-          <mzn-thumbnail title="Photo 1">${createSampleImage(1)}</mzn-thumbnail>
-          <mzn-thumbnail title="Photo 2">${createSampleImage(2)}</mzn-thumbnail>
-          <mzn-thumbnail title="Photo 3">${createSampleImage(3)}</mzn-thumbnail>
-          <mzn-thumbnail title="Photo 4">${createSampleImage(4)}</mzn-thumbnail>
-        </mzn-four-thumbnail-card>
+          <div mznThumbnail title="Photo 1">${createSampleImage(1)}</div>
+          <div mznThumbnail title="Photo 2">${createSampleImage(2)}</div>
+          <div mznThumbnail title="Photo 3">${createSampleImage(3)}</div>
+          <div mznThumbnail title="Photo 4">${createSampleImage(4)}</div>
+        </div>
       </div>
     `,
   }),
@@ -117,16 +117,16 @@ export const TypeDefault: Story = {
   render: () => ({
     template: `
       <div style="width: 320px;">
-        <mzn-four-thumbnail-card
+        <div mznFourThumbnailCard
           filetype="jpg"
           subtitle="4 photos"
           title="Vacation Photos"
         >
-          <mzn-thumbnail title="Beach">${createSampleImage(10)}</mzn-thumbnail>
-          <mzn-thumbnail title="Mountain">${createSampleImage(11)}</mzn-thumbnail>
-          <mzn-thumbnail title="City">${createSampleImage(12)}</mzn-thumbnail>
-          <mzn-thumbnail title="Forest">${createSampleImage(13)}</mzn-thumbnail>
-        </mzn-four-thumbnail-card>
+          <div mznThumbnail title="Beach">${createSampleImage(10)}</div>
+          <div mznThumbnail title="Mountain">${createSampleImage(11)}</div>
+          <div mznThumbnail title="City">${createSampleImage(12)}</div>
+          <div mznThumbnail title="Forest">${createSampleImage(13)}</div>
+        </div>
       </div>
     `,
   }),
@@ -138,19 +138,18 @@ export const TypeDefault: Story = {
   imports: [MznFourThumbnailCard, MznThumbnail],
   template: `
     <div style="width: 320px;">
-      <mzn-four-thumbnail-card
+      <div
+        mznFourThumbnailCard
         [actionOptions]="actionOptions()"
         filetype="png"
         subtitle="4 images"
         title="Design Assets"
       >
-        <mzn-thumbnail title="Logo">${createSampleImage(20)}</mzn-thumbnail>
-        <mzn-thumbnail title="Banner">${createSampleImage(21)}</mzn-thumbnail>
-        <mzn-thumbnail title="Icon">${createSampleImage(22)}</mzn-thumbnail>
-        <mzn-thumbnail title="Background"
-          >${createSampleImage(23)}</mzn-thumbnail
-        >
-      </mzn-four-thumbnail-card>
+        <div mznThumbnail title="Logo">${createSampleImage(20)}</div>
+        <div mznThumbnail title="Banner">${createSampleImage(21)}</div>
+        <div mznThumbnail title="Icon">${createSampleImage(22)}</div>
+        <div mznThumbnail title="Background">${createSampleImage(23)}</div>
+      </div>
     </div>
   `,
 })
@@ -179,17 +178,18 @@ export const TypeAction: Story = {
   imports: [MznFourThumbnailCard, MznThumbnail],
   template: `
     <div style="width: 320px;">
-      <mzn-four-thumbnail-card
+      <div
+        mznFourThumbnailCard
         [actionOptions]="actionOptions()"
         filetype="zip"
         subtitle="4 files"
         title="Project Archive"
       >
-        <mzn-thumbnail title="File 1">${createSampleImage(30)}</mzn-thumbnail>
-        <mzn-thumbnail title="File 2">${createSampleImage(31)}</mzn-thumbnail>
-        <mzn-thumbnail title="File 3">${createSampleImage(32)}</mzn-thumbnail>
-        <mzn-thumbnail title="File 4">${createSampleImage(33)}</mzn-thumbnail>
-      </mzn-four-thumbnail-card>
+        <div mznThumbnail title="File 1">${createSampleImage(30)}</div>
+        <div mznThumbnail title="File 2">${createSampleImage(31)}</div>
+        <div mznThumbnail title="File 3">${createSampleImage(32)}</div>
+        <div mznThumbnail title="File 4">${createSampleImage(33)}</div>
+      </div>
     </div>
   `,
 })
@@ -220,16 +220,16 @@ export const WithTag: Story = {
   render: () => ({
     template: `
       <div style="width: 320px;">
-        <mzn-four-thumbnail-card
+        <div mznFourThumbnailCard
           subtitle="4 videos"
           tag="Featured"
           title="Video Album"
         >
-          <mzn-thumbnail title="Intro">${createSampleImage(40)}</mzn-thumbnail>
-          <mzn-thumbnail title="Main">${createSampleImage(41)}</mzn-thumbnail>
-          <mzn-thumbnail title="Outro">${createSampleImage(42)}</mzn-thumbnail>
-          <mzn-thumbnail title="Bonus">${createSampleImage(43)}</mzn-thumbnail>
-        </mzn-four-thumbnail-card>
+          <div mznThumbnail title="Intro">${createSampleImage(40)}</div>
+          <div mznThumbnail title="Main">${createSampleImage(41)}</div>
+          <div mznThumbnail title="Outro">${createSampleImage(42)}</div>
+          <div mznThumbnail title="Bonus">${createSampleImage(43)}</div>
+        </div>
       </div>
     `,
   }),
@@ -241,7 +241,8 @@ export const WithTag: Story = {
   imports: [MznFourThumbnailCard, MznThumbnail],
   template: `
     <div style="width: 320px;">
-      <mzn-four-thumbnail-card
+      <div
+        mznFourThumbnailCard
         [personalActionActive]="isFavorite()"
         [personalActionIcon]="starOutlineIcon"
         [personalActionActiveIcon]="starFilledIcon"
@@ -249,19 +250,11 @@ export const WithTag: Story = {
         subtitle="4 artworks"
         title="Art Collection"
       >
-        <mzn-thumbnail title="Painting 1"
-          >${createSampleImage(50)}</mzn-thumbnail
-        >
-        <mzn-thumbnail title="Painting 2"
-          >${createSampleImage(51)}</mzn-thumbnail
-        >
-        <mzn-thumbnail title="Painting 3"
-          >${createSampleImage(52)}</mzn-thumbnail
-        >
-        <mzn-thumbnail title="Painting 4"
-          >${createSampleImage(53)}</mzn-thumbnail
-        >
-      </mzn-four-thumbnail-card>
+        <div mznThumbnail title="Painting 1">${createSampleImage(50)}</div>
+        <div mznThumbnail title="Painting 2">${createSampleImage(51)}</div>
+        <div mznThumbnail title="Painting 3">${createSampleImage(52)}</div>
+        <div mznThumbnail title="Painting 4">${createSampleImage(53)}</div>
+      </div>
     </div>
   `,
 })
@@ -295,36 +288,24 @@ export const WithPersonalAction: Story = {
     <div style="display: flex; flex-direction: column; gap: 24px;">
       <div style="width: 320px;">
         <h4 style="margin-bottom: 8px;">3 Thumbnails</h4>
-        <mzn-four-thumbnail-card subtitle="3 photos" title="Three Photos">
-          <mzn-thumbnail title="Photo 1"
-            >${createSampleImage(60)}</mzn-thumbnail
-          >
-          <mzn-thumbnail title="Photo 2"
-            >${createSampleImage(61)}</mzn-thumbnail
-          >
-          <mzn-thumbnail title="Photo 3"
-            >${createSampleImage(62)}</mzn-thumbnail
-          >
-        </mzn-four-thumbnail-card>
+        <div mznFourThumbnailCard subtitle="3 photos" title="Three Photos">
+          <div mznThumbnail title="Photo 1">${createSampleImage(60)}</div>
+          <div mznThumbnail title="Photo 2">${createSampleImage(61)}</div>
+          <div mznThumbnail title="Photo 3">${createSampleImage(62)}</div>
+        </div>
       </div>
       <div style="width: 320px;">
         <h4 style="margin-bottom: 8px;">2 Thumbnails</h4>
-        <mzn-four-thumbnail-card subtitle="2 photos" title="Two Photos">
-          <mzn-thumbnail title="Photo 1"
-            >${createSampleImage(70)}</mzn-thumbnail
-          >
-          <mzn-thumbnail title="Photo 2"
-            >${createSampleImage(71)}</mzn-thumbnail
-          >
-        </mzn-four-thumbnail-card>
+        <div mznFourThumbnailCard subtitle="2 photos" title="Two Photos">
+          <div mznThumbnail title="Photo 1">${createSampleImage(70)}</div>
+          <div mznThumbnail title="Photo 2">${createSampleImage(71)}</div>
+        </div>
       </div>
       <div style="width: 320px;">
         <h4 style="margin-bottom: 8px;">1 Thumbnail</h4>
-        <mzn-four-thumbnail-card subtitle="1 photo" title="One Photo">
-          <mzn-thumbnail title="Photo 1"
-            >${createSampleImage(80)}</mzn-thumbnail
-          >
-        </mzn-four-thumbnail-card>
+        <div mznFourThumbnailCard subtitle="1 photo" title="One Photo">
+          <div mznThumbnail title="Photo 1">${createSampleImage(80)}</div>
+        </div>
       </div>
     </div>
   `,
@@ -378,15 +359,15 @@ export const FiletypeVariants: Story = {
       <div style="display: flex; flex-wrap: wrap; gap: 16px;">
         @for (item of items; track item.title) {
           <div style="width: 300px;">
-            <mzn-four-thumbnail-card
+            <div mznFourThumbnailCard
               [filetype]="item.filetype"
               [subtitle]="item.subtitle"
               [title]="item.title"
             >
               @for (image of item.images; track image) {
-                <mzn-thumbnail [innerHTML]="image" />
+                <div mznThumbnail [innerHTML]="image" ></div>
               }
-            </mzn-four-thumbnail-card>
+            </div>
           </div>
         }
       </div>
@@ -400,7 +381,8 @@ export const FiletypeVariants: Story = {
   imports: [MznFourThumbnailCard, MznThumbnail],
   template: `
     <div style="width: 320px;">
-      <mzn-four-thumbnail-card
+      <div
+        mznFourThumbnailCard
         [actionOptions]="actionOptions()"
         [personalActionActive]="isFavorite()"
         [personalActionIcon]="starOutlineIcon"
@@ -411,39 +393,43 @@ export const FiletypeVariants: Story = {
         tag="Important"
         title="Q4 2024 Marketing Assets"
       >
-        <mzn-thumbnail
+        <div
+          mznThumbnail
           hostComponent="a"
           href="https://rytass.com/about"
           target="_blank"
           title="Link 1"
         >
           ${createSampleImage(200)}
-        </mzn-thumbnail>
-        <mzn-thumbnail
+        </div>
+        <div
+          mznThumbnail
           hostComponent="a"
           href="https://rytass.com/projects/NTCH"
           target="_blank"
           title="Link 2"
         >
           ${createSampleImage(201)}
-        </mzn-thumbnail>
-        <mzn-thumbnail
+        </div>
+        <div
+          mznThumbnail
           hostComponent="a"
           href="https://rytass.com/projects/TASA"
           target="_blank"
           title="Link 3"
         >
           ${createSampleImage(202)}
-        </mzn-thumbnail>
-        <mzn-thumbnail
+        </div>
+        <div
+          mznThumbnail
           hostComponent="a"
           href="https://rytass.com/projects/ICC"
           target="_blank"
           title="Link 4"
         >
           ${createSampleImage(203)}
-        </mzn-thumbnail>
-      </mzn-four-thumbnail-card>
+        </div>
+      </div>
     </div>
   `,
 })
@@ -478,26 +464,26 @@ export const InCardGroup: Story = {
   name: 'In Card Group',
   render: () => ({
     template: `
-      <mzn-card-group>
-        <mzn-four-thumbnail-card filetype="jpg" subtitle="4 photos" title="Album 1">
-          <mzn-thumbnail title="Photo 1">${createSampleImage(300)}</mzn-thumbnail>
-          <mzn-thumbnail title="Photo 2">${createSampleImage(301)}</mzn-thumbnail>
-          <mzn-thumbnail title="Photo 3">${createSampleImage(302)}</mzn-thumbnail>
-          <mzn-thumbnail title="Photo 4">${createSampleImage(303)}</mzn-thumbnail>
-        </mzn-four-thumbnail-card>
-        <mzn-four-thumbnail-card filetype="png" subtitle="4 images" title="Album 2">
-          <mzn-thumbnail title="Image 1">${createSampleImage(310)}</mzn-thumbnail>
-          <mzn-thumbnail title="Image 2">${createSampleImage(311)}</mzn-thumbnail>
-          <mzn-thumbnail title="Image 3">${createSampleImage(312)}</mzn-thumbnail>
-          <mzn-thumbnail title="Image 4">${createSampleImage(313)}</mzn-thumbnail>
-        </mzn-four-thumbnail-card>
-        <mzn-four-thumbnail-card filetype="gif" subtitle="4 gifs" title="Album 3">
-          <mzn-thumbnail title="GIF 1">${createSampleImage(320)}</mzn-thumbnail>
-          <mzn-thumbnail title="GIF 2">${createSampleImage(321)}</mzn-thumbnail>
-          <mzn-thumbnail title="GIF 3">${createSampleImage(322)}</mzn-thumbnail>
-          <mzn-thumbnail title="GIF 4">${createSampleImage(323)}</mzn-thumbnail>
-        </mzn-four-thumbnail-card>
-      </mzn-card-group>
+      <div mznCardGroup>
+        <div mznFourThumbnailCard filetype="jpg" subtitle="4 photos" title="Album 1">
+          <div mznThumbnail title="Photo 1">${createSampleImage(300)}</div>
+          <div mznThumbnail title="Photo 2">${createSampleImage(301)}</div>
+          <div mznThumbnail title="Photo 3">${createSampleImage(302)}</div>
+          <div mznThumbnail title="Photo 4">${createSampleImage(303)}</div>
+        </div>
+        <div mznFourThumbnailCard filetype="png" subtitle="4 images" title="Album 2">
+          <div mznThumbnail title="Image 1">${createSampleImage(310)}</div>
+          <div mznThumbnail title="Image 2">${createSampleImage(311)}</div>
+          <div mznThumbnail title="Image 3">${createSampleImage(312)}</div>
+          <div mznThumbnail title="Image 4">${createSampleImage(313)}</div>
+        </div>
+        <div mznFourThumbnailCard filetype="gif" subtitle="4 gifs" title="Album 3">
+          <div mznThumbnail title="GIF 1">${createSampleImage(320)}</div>
+          <div mznThumbnail title="GIF 2">${createSampleImage(321)}</div>
+          <div mznThumbnail title="GIF 3">${createSampleImage(322)}</div>
+          <div mznThumbnail title="GIF 4">${createSampleImage(323)}</div>
+        </div>
+      </div>
     `,
   }),
 };
@@ -507,24 +493,24 @@ export const ThumbnailAsLink: Story = {
   render: () => ({
     template: `
       <div style="width: 320px;">
-        <mzn-four-thumbnail-card
+        <div mznFourThumbnailCard
           filetype="jpg"
           subtitle="Click each thumbnail"
           title="Clickable Thumbnails"
         >
-          <mzn-thumbnail hostComponent="a" href="https://rytass.com/projects/TASA" target="_blank" title="Link 1">
+          <div mznThumbnail hostComponent="a" href="https://rytass.com/projects/TASA" target="_blank" title="Link 1">
             ${createSampleImage(400)}
-          </mzn-thumbnail>
-          <mzn-thumbnail hostComponent="a" href="https://rytass.com" target="_blank" title="Link 2">
+          </div>
+          <div mznThumbnail hostComponent="a" href="https://rytass.com" target="_blank" title="Link 2">
             ${createSampleImage(401)}
-          </mzn-thumbnail>
-          <mzn-thumbnail hostComponent="a" href="https://rytass.com" target="_blank" title="Link 3">
+          </div>
+          <div mznThumbnail hostComponent="a" href="https://rytass.com" target="_blank" title="Link 3">
             ${createSampleImage(402)}
-          </mzn-thumbnail>
-          <mzn-thumbnail hostComponent="a" href="https://rytass.com" target="_blank" title="Link 4">
+          </div>
+          <div mznThumbnail hostComponent="a" href="https://rytass.com" target="_blank" title="Link 4">
             ${createSampleImage(403)}
-          </mzn-thumbnail>
-        </mzn-four-thumbnail-card>
+          </div>
+        </div>
       </div>
     `,
   }),
@@ -536,40 +522,45 @@ export const ThumbnailAsLink: Story = {
   imports: [MznFourThumbnailCard, MznThumbnail],
   template: `
     <div style="width: 320px;">
-      <mzn-four-thumbnail-card
+      <div
+        mznFourThumbnailCard
         filetype="jpg"
         subtitle="Click each thumbnail"
         title="Button Thumbnails"
       >
-        <mzn-thumbnail
+        <div
+          mznThumbnail
           hostComponent="button"
           (clicked)="onClicked(1, $event)"
           title="Button 1"
         >
           ${createSampleImage(500)}
-        </mzn-thumbnail>
-        <mzn-thumbnail
+        </div>
+        <div
+          mznThumbnail
           hostComponent="button"
           (clicked)="onClicked(2, $event)"
           title="Button 2"
         >
           ${createSampleImage(501)}
-        </mzn-thumbnail>
-        <mzn-thumbnail
+        </div>
+        <div
+          mznThumbnail
           hostComponent="button"
           (clicked)="onClicked(3, $event)"
           title="Button 3"
         >
           ${createSampleImage(502)}
-        </mzn-thumbnail>
-        <mzn-thumbnail
+        </div>
+        <div
+          mznThumbnail
           hostComponent="button"
           (clicked)="onClicked(4, $event)"
           title="Button 4"
         >
           ${createSampleImage(503)}
-        </mzn-thumbnail>
-      </mzn-four-thumbnail-card>
+        </div>
+      </div>
     </div>
   `,
 })
@@ -597,24 +588,24 @@ export const CardAsLink: Story = {
     template: `
       <div style="display: flex; gap: 16px;">
         <div style="width: 320px;">
-          <mzn-four-thumbnail-card
+          <div mznFourThumbnailCard
             filetype="jpg"
             subtitle="Click the card"
             title="External Link Card"
           >
-            <mzn-thumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 1">
+            <div mznThumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 1">
               ${createSampleImage(600)}
-            </mzn-thumbnail>
-            <mzn-thumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 2">
+            </div>
+            <div mznThumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 2">
               ${createSampleImage(601)}
-            </mzn-thumbnail>
-            <mzn-thumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 3">
+            </div>
+            <div mznThumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 3">
               ${createSampleImage(602)}
-            </mzn-thumbnail>
-            <mzn-thumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 4">
+            </div>
+            <div mznThumbnail hostComponent="a" href="https://rytass.com/" target="_blank" title="Photo 4">
               ${createSampleImage(603)}
-            </mzn-thumbnail>
-          </mzn-four-thumbnail-card>
+            </div>
+          </div>
         </div>
       </div>
     `,

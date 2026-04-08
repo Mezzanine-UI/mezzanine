@@ -18,12 +18,12 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  * ```html
  * import { MznQuickActionCard } from '@mezzanine-ui/ng/card';
  *
- * <mzn-quick-action-card [icon]="someIcon" title="新增項目" />
- * <mzn-quick-action-card title="設定" mode="vertical" />
+ * <button mznQuickActionCard [icon]="someIcon" title="新增項目" ></button>
+ * <button mznQuickActionCard title="設定" mode="vertical" ></button>
  * ```
  */
 @Component({
-  selector: 'mzn-quick-action-card',
+  selector: '[mznQuickActionCard]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
@@ -31,6 +31,12 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
     '[class]': 'hostClasses()',
     '[attr.aria-disabled]': 'disabled() || undefined',
     '[attr.aria-readonly]': 'readOnly() || undefined',
+    '[attr.disabled]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.subtitle]': 'null',
+    '[attr.title]': 'null',
   },
   template: `
     @if (icon()) {

@@ -17,19 +17,20 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
  * ```html
  * import { MznQuickActionCardSkeleton } from '@mezzanine-ui/ng/card';
  *
- * <mzn-quick-action-card-skeleton />
- * <mzn-quick-action-card-skeleton mode="vertical" />
+ * <div mznQuickActionCardSkeleton ></div>
+ * <div mznQuickActionCardSkeleton mode="vertical" ></div>
  * ```
  *
  * @see MznQuickActionCard
  */
 @Component({
-  selector: 'mzn-quick-action-card-skeleton',
+  selector: '[mznQuickActionCardSkeleton]',
   standalone: true,
   imports: [MznSkeleton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.mode]': 'null',
   },
   template: `
     <div mznSkeleton [circle]="true" [height]="24" [width]="24"></div>

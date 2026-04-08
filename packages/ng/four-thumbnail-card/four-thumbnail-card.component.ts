@@ -67,95 +67,106 @@ export interface FourThumbnailCardDefaultOptions {
  * import { MznFourThumbnailCard } from '@mezzanine-ui/ng/four-thumbnail-card';
  * import { MznThumbnail } from '@mezzanine-ui/ng/thumbnail';
  *
- * <mzn-four-thumbnail-card title="Photo Collection" subtitle="4 photos">
- *   <mzn-thumbnail title="Photo 1"><img alt="..." src="..." /></mzn-thumbnail>
- *   <mzn-thumbnail title="Photo 2"><img alt="..." src="..." /></mzn-thumbnail>
- *   <mzn-thumbnail title="Photo 3"><img alt="..." src="..." /></mzn-thumbnail>
- *   <mzn-thumbnail title="Photo 4"><img alt="..." src="..." /></mzn-thumbnail>
- * </mzn-four-thumbnail-card>
+ * <div mznFourThumbnailCard title="Photo Collection" subtitle="4 photos">
+ *   <div mznThumbnail title="Photo 1"><img alt="..." src="..." /></div>
+ *   <div mznThumbnail title="Photo 2"><img alt="..." src="..." /></div>
+ *   <div mznThumbnail title="Photo 3"><img alt="..." src="..." /></div>
+ *   <div mznThumbnail title="Photo 4"><img alt="..." src="..." /></div>
+ * </div>
  * ```
  *
  * @see MznThumbnail
  * @see MznSingleThumbnailCard
  */
 @Component({
-  selector: 'mzn-four-thumbnail-card',
+  selector: '[mznFourThumbnailCard]',
+  host: {
+    '[class]': 'thumbnailGridClass',
+    '[attr.filetype]': 'null',
+    '[attr.personalActionIcon]': 'null',
+    '[attr.personalActionActiveIcon]': 'null',
+    '[attr.personalActionActive]': 'null',
+    '[attr.subtitle]': 'null',
+    '[attr.tag]': 'null',
+    '[attr.title]': 'null',
+    '[attr.actionOptions]': 'null',
+  },
   standalone: true,
   imports: [MznButton, MznDropdown, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [class]="thumbnailGridClass">
-      @if (tag()) {
-        <div [class]="tagClass">{{ tag() }}</div>
+
+    @if (tag()) {
+      <div [class]="tagClass">{{ tag() }}</div>
+    }
+    @if (personalActionIcon()) {
+      <button
+        type="button"
+        [class]="personalActionClass"
+        [attr.aria-label]="'Personal Action'"
+        (click)="onPersonalActionClick($event)"
+      >
+        <i mznIcon [icon]="currentPersonalActionIcon()" [size]="16"></i>
+      </button>
+    }
+    <ng-content select="mzn-thumbnail" />
+    @for (empty of emptySlots(); track $index) {
+      <div [class]="emptySlotClass"></div>
+    }
+  </div>
+  <div [class]="infoClass">
+    <div [class]="infoMainClass">
+      @if (filetype()) {
+        <div [class]="filetypeClass()">{{ filetype()!.toUpperCase() }}</div>
       }
-      @if (personalActionIcon()) {
-        <button
-          type="button"
-          [class]="personalActionClass"
-          [attr.aria-label]="'Personal Action'"
-          (click)="onPersonalActionClick($event)"
-        >
-          <i mznIcon [icon]="currentPersonalActionIcon()" [size]="16"></i>
-        </button>
-      }
-      <ng-content select="mzn-thumbnail" />
-      @for (empty of emptySlots(); track $index) {
-        <div [class]="emptySlotClass"></div>
-      }
-    </div>
-    <div [class]="infoClass">
-      <div [class]="infoMainClass">
-        @if (filetype()) {
-          <div [class]="filetypeClass()">{{ filetype()!.toUpperCase() }}</div>
+      <div [class]="infoContentClass">
+        @if (title()) {
+          <span [class]="infoTitleClass">{{ title() }}</span>
         }
-        <div [class]="infoContentClass">
-          @if (title()) {
-            <span [class]="infoTitleClass">{{ title() }}</span>
-          }
-          @if (subtitle()) {
-            <span [class]="infoSubtitleClass">{{ subtitle() }}</span>
-          }
-        </div>
+        @if (subtitle()) {
+          <span [class]="infoSubtitleClass">{{ subtitle() }}</span>
+        }
       </div>
-      @if (actionType === 'action') {
-        <div [class]="infoActionClass">
-          <button
-            mznButton
-            [variant]="
-              actionOptionsForAction?.actionVariant ?? 'base-text-link'
-            "
-            size="sub"
-            type="button"
-            (click)="onActionClick($event)"
-          >
-            {{ actionOptionsForAction?.actionName }}
-          </button>
-        </div>
-      }
-      @if (actionType === 'overflow') {
-        <div [class]="infoActionClass">
-          <button
-            #overflowTrigger
-            mznButton
-            variant="base-text-link"
-            size="sub"
-            type="button"
-            (click)="toggleOverflow()"
-          >
-            <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
-          </button>
-          <div
-            mznDropdown
-            [anchor]="overflowTrigger"
-            [open]="overflowOpen()"
-            [options]="actionOptionsForOverflow?.options"
-            mode="single"
-            (selected)="onOptionSelect($event)"
-            (closed)="closeOverflow()"
-          ></div>
-        </div>
-      }
     </div>
+    @if (actionType === 'action') {
+      <div [class]="infoActionClass">
+        <button
+          mznButton
+          [variant]="
+            actionOptionsForAction?.actionVariant ?? 'base-text-link'
+          "
+          size="sub"
+          type="button"
+          (click)="onActionClick($event)"
+        >
+          {{ actionOptionsForAction?.actionName }}
+        </button>
+      </div>
+    }
+    @if (actionType === 'overflow') {
+      <div [class]="infoActionClass">
+        <button
+          #overflowTrigger
+          mznButton
+          variant="base-text-link"
+          size="sub"
+          type="button"
+          (click)="toggleOverflow()"
+        >
+          <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
+        </button>
+        <div
+          mznDropdown
+          [anchor]="overflowTrigger"
+          [open]="overflowOpen()"
+          [options]="actionOptionsForOverflow?.options"
+          mode="single"
+          (selected)="onOptionSelect($event)"
+          (closed)="closeOverflow()"
+        ></div>
+      </div>
+    }
+  
   `,
 })
 export class MznFourThumbnailCard implements AfterContentInit {

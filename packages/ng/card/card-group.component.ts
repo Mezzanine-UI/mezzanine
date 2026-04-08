@@ -28,18 +28,18 @@ export type CardGroupType =
  * ```html
  * import { MznCardGroup, MznBaseCard } from '@mezzanine-ui/ng/card';
  *
- * <mzn-card-group cardType="base">
- *   <mzn-base-card title="卡片一">內容</mzn-base-card>
- *   <mzn-base-card title="卡片二">內容</mzn-base-card>
- * </mzn-card-group>
+ * <div mznCardGroup cardType="base">
+ *   <div mznBaseCard title="卡片一">內容</div>
+ *   <div mznBaseCard title="卡片二">內容</div>
+ * </div>
  *
- * <mzn-card-group cardType="base" [loading]="true" [loadingCount]="4" />
+ * <div mznCardGroup cardType="base" [loading]="true" [loadingCount]="4" ></div>
  * ```
  * @see MznBaseCard
  * @see MznQuickActionCard
  */
 @Component({
-  selector: 'mzn-card-group',
+  selector: '[mznCardGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -51,6 +51,11 @@ export type CardGroupType =
   host: {
     '[class]': 'hostClasses()',
     '[attr.aria-busy]': 'loading() || undefined',
+    '[attr.cardType]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.loadingCount]': 'null',
+    '[attr.loadingThumbnailAspectRatio]': 'null',
+    '[attr.loadingThumbnailWidth]': 'null',
   },
   template: `
     @if (!loading()) {
@@ -59,23 +64,25 @@ export type CardGroupType =
       @for (item of skeletonItems(); track $index) {
         @switch (cardType()) {
           @case ('quick-action') {
-            <mzn-quick-action-card-skeleton aria-hidden="true" />
+            <div mznQuickActionCardSkeleton aria-hidden="true"></div>
           }
           @case ('single-thumbnail') {
-            <mzn-single-thumbnail-card-skeleton
+            <div
+              mznSingleThumbnailCardSkeleton
               aria-hidden="true"
               [thumbnailAspectRatio]="loadingThumbnailAspectRatio() ?? '16/9'"
               [thumbnailWidth]="
                 loadingThumbnailWidth() ??
                 'var(--mzn-spacing-size-container-slim)'
               "
-            />
+            ></div>
           }
           @case ('four-thumbnail') {
-            <mzn-four-thumbnail-card-skeleton
+            <div
+              mznFourThumbnailCardSkeleton
               aria-hidden="true"
               [thumbnailWidth]="loadingThumbnailWidth() ?? 200"
-            />
+            ></div>
           }
           @default {
             <div [class]="baseSkeletonClass" aria-hidden="true">
