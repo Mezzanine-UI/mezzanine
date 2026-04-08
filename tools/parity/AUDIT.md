@@ -459,3 +459,59 @@ Grand total: 63 DOM-verified + 8 code-verified + 9 blocked = 80.
 
 Phase 3B complete. Next actions belong to Phase 3A (fix Navigation
 port gap → unblocks Layout family too).
+
+## Phase 3A #1 — Navigation port gap resolved
+
+Port gap fixed in commits `c9cf176f` (component conversion),
+`82bcdb63` (story migration) and `6564b9fe` (ng-content selectors).
+Approach: convert `MznNavigationOption` and `MznNavigationOptionCategory`
+from attribute directives on author-provided `<li>` to element
+selectors `mzn-navigation-option[-category]`. Host uses
+`display: contents` so the custom elements are layout-transparent;
+the inner `<li>` emitted from the component template wraps content
+and hosts the ng-content projection for children. Custom element
+names bypass the HTML5 `<li>` auto-close rule entirely.
+
+Two adjacent pre-existing bugs surfaced once the JIT compile
+passed and were fixed in the same batch:
+
+1. `<ng-content select="mzn-navigation-header|footer" />` in
+   `MznNavigation` referenced tag names for what are attribute
+   directives (`[mznNavigationHeader]`). Silent drop of header/footer
+   was hidden because the surrounding stories never compiled.
+2. `MznLayout`, `MznModal`, `MznSection`, `MznFourThumbnailCard`
+   had the same class of typo in their ng-content selectors. Modal
+   stories appeared to work only because a fallback default
+   `<ng-content />` caught the header/footer content at the wrong
+   position; layout silently dropped everything. Switched all to
+   `[mznXxx]` attribute form.
+
+### Navigation family (6/6) — now PASS
+
+| Component                  | Evidence                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| navigation-option          | `<mzn-navigation-option>` × 9 in `navigation-navigation--basic` (len=13697)   |
+| navigation-option-category | `<mzn-navigation-option-category>` × 3 in `navigation-navigation--all`        |
+| navigation-header          | `[mznNavigationHeader]` + `mzn-navigation-header` class                       |
+| navigation-footer          | `[mznNavigationFooter]` + `mzn-navigation-footer` class                       |
+| navigation-icon-button     | `mzn-navigation-icon-button` class in footer                                  |
+| navigation-user-menu       | port-skipped in Phase 2 (noted in story); Angular has no equivalent component |
+
+### Layout family (3/3) — now PASS
+
+Verified via `foundation-layout--with-dual-panels`:
+
+| Component          | Evidence                                               |
+| ------------------ | ------------------------------------------------------ |
+| layout-main        | `[mznLayoutMain]` projected into content-wrapper slot  |
+| layout-left-panel  | `[mznLayoutLeftPanel]` projected into content-wrapper  |
+| layout-right-panel | `[mznLayoutRightPanel]` projected into content-wrapper |
+
+## Phase 3B Final tally (post Phase 3A #1)
+
+63 + 6 (Navigation) + 3 (Layout) = **72 DOM-verified**
+
+- 8 code-verified
+  = **80/80 components verified**, 0 blocked.
+
+All Phase 3B work closed.
