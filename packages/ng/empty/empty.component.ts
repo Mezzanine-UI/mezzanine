@@ -41,19 +41,19 @@ const iconMap: Record<Exclude<EmptyType, 'custom'>, IconDefinition> = {
  * ```html
  * import { MznEmpty } from '@mezzanine-ui/ng/empty';
  *
- * <mzn-empty type="initial-data" title="尚無資料" description="請先建立第一筆資料" />
+ * <div mznEmpty type="initial-data" title="尚無資料" description="請先建立第一筆資料" ></div>
  *
- * <mzn-empty type="result" title="搜尋無結果" size="sub">
+ * <div mznEmpty type="result" title="搜尋無結果" size="sub">
  *   <button mznButton variant="base-secondary" actions>重新搜尋</button>
- * </mzn-empty>
+ * </div>
  *
  * <!-- 自訂 pictogram -->
  * <ng-template #customPic><img src="..." alt="" /></ng-template>
- * <mzn-empty [pictogram]="customPic" title="自訂圖示" />
+ * <div mznEmpty [pictogram]="customPic" title="自訂圖示" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-empty',
+  selector: '[mznEmpty]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -66,6 +66,10 @@ const iconMap: Record<Exclude<EmptyType, 'custom'>, IconDefinition> = {
   ],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.title]': 'null',
+    '[attr.type]': 'null',
+    '[attr.size]': 'null',
+    '[attr.description]': 'null',
   },
   template: `
     <div [class]="classes.container">

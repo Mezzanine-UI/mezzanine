@@ -17,24 +17,25 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 | -------- | ----------- | ---------- | ------------ | ----------- | ----------------------------------------------------------------- |
 | baseline | `c15a7030`  | —          | 8416         | 6866        | start of refactor phase                                           |
 | 1        | _(pending)_ | separator  | 6866         | ~6866       | trial; proves pipeline but separator diffs are story-side not tag |
+| 2        | _(pending)_ | empty      | 38           | 539         | **EXPECTED** — see "Diff-count masking" below                     |
 
-## Session Handoff — 2026-04-08 (continuation)
+## ⚠️ Diff-count masking — critical reading
 
-### Fixed this session
+`tools/parity/compare.ts:123-126` on tag mismatch does `return;` — **the walker stops descending**. So before refactor, `mzn-empty` (custom element) vs `div` produced 1 root-level tag diff per story and **all descendants were hidden**. After refactor, host is `<div>`, tags match, walker descends, and every pre-existing per-descendant diff becomes visible. Empty went 38 → 539 not because we broke it but because we unmasked existing component-level gaps (missing ButtonGroup wrapper, theme rgb token, sub-component element selectors).
 
-- **Script boundary bug**: `rewriteConsumerText` used `<${tag}\\b` which, because `-` is non-word, matched `mzn-empty` inside `mzn-empty-main-initial-data-icon` (word→non-word boundary between `y` and `-`). Replaced `\b` with negative lookahead `(?![-\\w])` so the tag name must not be followed by another tag-name character. Verified on `empty` — sub-component tags are no longer corrupted.
+**Therefore the "total diff count" column is NOT a refactor success metric.** Per-batch success is judged on:
 
-### Blocker discovered on `empty` — DO NOT skip next time
+1. No new `[ATTR] @title` / `@type` / `@size` / `@description` (or other HTML-reflected input names) on the refactored host — proves attribute-null pattern works.
+2. Root tag matches React root (no more `mzn-x` vs `div` at `/`).
+3. Any new diffs introduced below the host are either (a) pre-existing issues newly exposed, or (b) verifiably caused by the refactor — the latter must be fixed before committing.
 
-Attempted `empty` (selector-only, baseline 38 diffs). Post-refactor: **577 diffs** — huge regression. Reverted. Two concerns to investigate before proceeding with any more components that have plain string input bindings:
+Separator (already refactored) shows the same pervasive `rgb(5, 6, 6)` descendant diff — confirms it's Angular-storybook-wide theme/CSS-variable noise independent of this refactor.
 
-1. **Attribute leakage**: with an attribute selector, the host becomes a real DOM element (`<div>`), so static attributes like `title="..."`, `type="..."`, `size="..."` in consumer templates end up as HTML attributes on the div. Parity sees them as `[ATTR] //div[0]@title` etc. Fix options:
-   - Use `@HostBinding('attr.title')` set to `null` on each conflicting input, OR
-   - Force bracket syntax in every consumer (`[title]="..."`)
-   - Pick a convention before batching more components.
-2. **Mystery style regression**: all descendants shifted from `rgb(1, 1, 1)` to `rgb(3, 3, 3)` and heights changed (e.g. 856→780px). The core `.mzn-empty` class selectors in `_empty-styles.scss` should match either element/attribute form. Not yet diagnosed — may be CSS variable inheritance or a second instance of core styles loading. **Diagnose first** by comparing computed-style trees on one story before batching.
+### Resolved this session
 
-Until both are understood, further refactor batches are likely to regress parity.
+- **Script boundary bug**: `rewriteConsumerText` used `<${tag}\\b` which, because `-` is non-word, matched `mzn-empty` inside `mzn-empty-main-initial-data-icon`. Replaced `\b` with negative lookahead `(?![-\\w])`.
+- **Attribute leakage convention**: add `'[attr.X]': 'null'` to `host` metadata for every `input()` whose name overlaps a reflected HTML attribute (`title`, `type`, `size`, `description`, `value`, `name`, `disabled`, `href`, `id`, `hidden`, `lang`, ...). No consumer template changes required. Verified on `empty` — 0 remaining `[ATTR] @title` etc.
+- **"Mystery" rgb(1,1,1)→rgb(3,3,3) style regression**: was not a regression — it was subtree un-masking (see above). Storybook HMR plus `compare.ts` early-return on tag diff hid it.
 
 ### Original handoff (still valid)
 

@@ -17,42 +17,42 @@ export const AllTypes: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 48px;">
-        <mzn-empty description="Here is some additional information about this state." size="main" title="Initial Data" type="initial-data">
+        <div mznEmpty description="Here is some additional information about this state." size="main" title="Initial Data" type="initial-data">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="Your operation has been completed successfully." size="main" title="Result" type="result">
+        </div>
+        <div mznEmpty description="Your operation has been completed successfully." size="main" title="Result" type="result">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="Need assistance? Click the button below to get help." size="main" title="System" type="system">
+        </div>
+        <div mznEmpty description="Need assistance? Click the button below to get help." size="main" title="System" type="system">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="Please review the notification message before proceeding." size="main" title="Notification" type="notification">
+        </div>
+        <div mznEmpty description="Please review the notification message before proceeding." size="main" title="Notification" type="notification">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="Here is some additional information about this state." size="sub" title="Initial Data" type="initial-data">
+        </div>
+        <div mznEmpty description="Here is some additional information about this state." size="sub" title="Initial Data" type="initial-data">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="Your operation has been completed successfully." size="sub" title="Result" type="result">
+        </div>
+        <div mznEmpty description="Your operation has been completed successfully." size="sub" title="Result" type="result">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="Need assistance? Click the button below to get help." size="sub" title="System" type="system">
+        </div>
+        <div mznEmpty description="Need assistance? Click the button below to get help." size="sub" title="System" type="system">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="Please review the notification message before proceeding." size="sub" title="Notification" type="notification">
+        </div>
+        <div mznEmpty description="Please review the notification message before proceeding." size="sub" title="Notification" type="notification">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty size="minor" title="Initial Data" type="initial-data" />
-        <mzn-empty size="minor" title="Result" type="result" />
-        <mzn-empty size="minor" title="System" type="system" />
-        <mzn-empty size="minor" title="Notification" type="notification" />
+        </div>
+        <div mznEmpty size="minor" title="Initial Data" type="initial-data" ></div>
+        <div mznEmpty size="minor" title="Result" type="result" ></div>
+        <div mznEmpty size="minor" title="System" type="system" ></div>
+        <div mznEmpty size="minor" title="Notification" type="notification" ></div>
       </div>
     `,
   }),
@@ -62,14 +62,14 @@ export const WithButtons: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 48px;">
-        <mzn-empty description="secondaryButtonProps and primaryButtonProps" size="main" title="System" type="system">
+        <div mznEmpty description="secondaryButtonProps and primaryButtonProps" size="main" title="System" type="system">
           <button mznButton variant="base-secondary" actions>Secondary</button>
           <button mznButton variant="base-primary" actions>Primary</button>
-        </mzn-empty>
-        <mzn-empty description="only secondaryButtonProps" size="main" title="System" type="system">
+        </div>
+        <div mznEmpty description="only secondaryButtonProps" size="main" title="System" type="system">
           <button mznButton variant="base-secondary" actions>Secondary</button>
-        </mzn-empty>
-        <mzn-empty description="no actions" size="main" title="System" type="system" />
+        </div>
+        <div mznEmpty description="no actions" size="main" title="System" type="system" ></div>
       </div>
     `,
   }),
@@ -79,27 +79,27 @@ export const ActionProp: Story = {
   render: () => ({
     template: `
       <div>
-        <mzn-empty
+        <div mznEmpty
           description="Using ButtonProps object with children property"
           size="main"
           title="ButtonProps - Single Button"
           type="initial-data"
-        />
-        <mzn-empty
+        ></div>
+        <div mznEmpty
           description="Using ButtonProps objects for both primary and secondary buttons"
           size="main"
           title="ButtonProps - Two Buttons"
           type="initial-data"
-        />
-        <mzn-empty
+        ></div>
+        <div mznEmpty
           description="Using ng-content directly as actions"
           size="main"
           title="NgContent - Single Button"
           type="initial-data"
         >
           <button mznButton actions>Button 1</button>
-        </mzn-empty>
-        <mzn-empty
+        </div>
+        <div mznEmpty
           description="Using ng-content for both primary and secondary buttons"
           size="main"
           title="NgContent - Two Buttons"
@@ -107,7 +107,7 @@ export const ActionProp: Story = {
         >
           <button mznButton actions>Button 1</button>
           <button mznButton actions>Button 2</button>
-        </mzn-empty>
+        </div>
       </div>
     `,
   }),
@@ -139,12 +139,12 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-empty
+      <div mznEmpty
         [title]="title"
         [type]="type"
         [size]="size"
         [description]="description"
-      />
+      ></div>
     `,
   }),
 };
