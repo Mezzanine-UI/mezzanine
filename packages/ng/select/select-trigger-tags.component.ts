@@ -64,20 +64,22 @@ export interface SelectTriggerTagValue {
       @for (item of value(); track item.id) {
         <span>
           @if (readOnly()) {
-            <mzn-tag
+            <span
+              mznTag
               type="static"
               [size]="size()"
               [label]="item.name"
               [readOnly]="true"
-            />
+            ></span>
           } @else {
-            <mzn-tag
+            <span
+              mznTag
               type="dismissable"
               [disabled]="disabled()"
               [label]="item.name"
               [size]="size()"
               (close)="onTagClose($event, item)"
-            />
+            ></span>
           }
         </span>
       }
@@ -86,30 +88,33 @@ export interface SelectTriggerTagValue {
         <mzn-tag-group>
           @for (item of visibleItems(); track item.id) {
             @if (readOnly()) {
-              <mzn-tag
+              <span
+                mznTag
                 type="static"
                 [size]="size()"
                 [label]="item.name"
                 [readOnly]="true"
-              />
+              ></span>
             } @else {
-              <mzn-tag
+              <span
+                mznTag
                 type="dismissable"
                 [disabled]="disabled()"
                 [label]="item.name"
                 [size]="size()"
                 (close)="onTagClose($event, item)"
-              />
+              ></span>
             }
           }
           @if (overflowCount() > 0) {
-            <mzn-tag
+            <span
+              mznTag
               type="overflow-counter"
               [count]="overflowCount()"
               [disabled]="disabled()"
               [size]="size()"
               (tagClick)="$event.stopPropagation()"
-            />
+            ></span>
           }
         </mzn-tag-group>
 
@@ -117,7 +122,12 @@ export interface SelectTriggerTagValue {
         <div [class]="fakeTagsClasses()" aria-hidden="true">
           <mzn-tag-group>
             @for (item of value(); track item.id) {
-              <mzn-tag type="static" [size]="size()" [label]="item.name" />
+              <span
+                mznTag
+                type="static"
+                [size]="size()"
+                [label]="item.name"
+              ></span>
             }
           </mzn-tag-group>
         </div>

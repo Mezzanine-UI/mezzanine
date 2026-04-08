@@ -83,19 +83,21 @@ export interface DateValue {
             <mzn-tag-group>
               @for (item of visibleValues(); track item.id) {
                 @if (readOnly()) {
-                  <mzn-tag
+                  <span
+                    mznTag
                     type="static"
                     [label]="item.name"
                     [size]="tagSize()"
-                  />
+                  ></span>
                 } @else {
-                  <mzn-tag
+                  <span
+                    mznTag
                     type="dismissable"
                     [disabled]="disabled()"
                     [label]="item.name"
                     [size]="tagSize()"
                     (close)="onTagClose($event, item.date)"
-                  />
+                  ></span>
                 }
               }
               @if (

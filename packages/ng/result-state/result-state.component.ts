@@ -41,20 +41,24 @@ const iconMap: Record<ResultStateType, IconDefinition> = {
  * ```html
  * import { MznResultState } from '@mezzanine-ui/ng/result-state';
  *
- * <mzn-result-state type="success" title="操作成功" description="您的資料已儲存" />
+ * <div mznResultState type="success" title="操作成功" description="您的資料已儲存" ></div>
  *
- * <mzn-result-state type="error" title="操作失敗" size="sub">
+ * <div mznResultState type="error" title="操作失敗" size="sub">
  *   <button actions>重試</button>
- * </mzn-result-state>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-result-state',
+  selector: '[mznResultState]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznButtonGroup, MznIcon],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.description]': 'null',
+    '[attr.size]': 'null',
+    '[attr.title]': 'null',
+    '[attr.type]': 'null',
   },
   template: `
     <div [class]="classes.container">

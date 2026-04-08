@@ -136,7 +136,7 @@ export interface UploadPictureCardAriaLabels {
             [class]="upc.loadingIcon"
             [attr.aria-label]="resolvedAriaLabels().uploading"
           >
-            <mzn-spin [loading]="true" size="sub" />
+            <div mznSpin [loading]="true" size="sub"></div>
           </div>
         }
 

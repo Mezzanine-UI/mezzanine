@@ -50,7 +50,7 @@ import { messageTimerController } from './message-timer-controller';
   template: `
     @if (severity() === 'loading') {
       <span [class]="iconClass">
-        <mzn-spin [loading]="true" size="minor" />
+        <div mznSpin [loading]="true" size="minor"></div>
       </span>
     } @else if (resolvedIcon(); as icon) {
       <i mznIcon [icon]="icon" [class]="iconClass"></i>

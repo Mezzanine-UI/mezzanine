@@ -83,7 +83,7 @@ export const Playground: Story = {
     props: args,
     template: `
       <div style="width: 400px;">
-        <mzn-progress [percent]="percent" [type]="type" [status]="status" [tick]="tick" />
+        <div mznProgress [percent]="percent" [type]="type" [status]="status" [tick]="tick" ></div>
       </div>
     `,
   }),
@@ -98,15 +98,15 @@ export const Line: Story = {
           <div style="display: flex; gap: 36px; align-items: flex-start;">
             <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; background-color: #F3F4F6; padding: 32px;">
               <span>Progress</span>
-              <mzn-progress [percent]="40" />
+              <div mznProgress [percent]="40" ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; background-color: #F3F4F6; padding: 32px;">
               <span>Without Progress Status</span>
-              <mzn-progress [percent]="50" type="percent" />
+              <div mznProgress [percent]="50" type="percent" ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; background-color: #F3F4F6; padding: 32px;">
               <span>With Icon</span>
-              <mzn-progress [percent]="100" status="success" type="icon" />
+              <div mznProgress [percent]="100" status="success" type="icon" ></div>
             </div>
           </div>
         </div>
@@ -118,11 +118,11 @@ export const Line: Story = {
               <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div>
                   <p>Without Progress Status</p>
-                  <mzn-progress [percent]="45" status="enabled" [tick]="20" />
+                  <div mznProgress [percent]="45" status="enabled" [tick]="20" ></div>
                 </div>
                 <div>
                   <p>With Percent</p>
-                  <mzn-progress [percent]="45" status="enabled" type="percent" />
+                  <div mznProgress [percent]="45" status="enabled" type="percent" ></div>
                 </div>
               </div>
             </div>
@@ -131,15 +131,15 @@ export const Line: Story = {
               <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div>
                   <p>Without Progress Status</p>
-                  <mzn-progress [percent]="100" status="success" [tick]="90" />
+                  <div mznProgress [percent]="100" status="success" [tick]="90" ></div>
                 </div>
                 <div>
                   <p>With Percent</p>
-                  <mzn-progress [percent]="100" status="success" type="percent" />
+                  <div mznProgress [percent]="100" status="success" type="percent" ></div>
                 </div>
                 <div>
                   <p>With Icon</p>
-                  <mzn-progress [percent]="100" status="success" type="icon" />
+                  <div mznProgress [percent]="100" status="success" type="icon" ></div>
                 </div>
               </div>
             </div>
@@ -148,15 +148,15 @@ export const Line: Story = {
               <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div>
                   <p>Without Progress Status</p>
-                  <mzn-progress [percent]="60" status="error" [tick]="90" />
+                  <div mznProgress [percent]="60" status="error" [tick]="90" ></div>
                 </div>
                 <div>
                   <p>With Percent</p>
-                  <mzn-progress [percent]="60" status="error" type="percent" />
+                  <div mznProgress [percent]="60" status="error" type="percent" ></div>
                 </div>
                 <div>
                   <p>With Icon</p>
-                  <mzn-progress [percent]="60" status="error" type="icon" />
+                  <div mznProgress [percent]="60" status="error" type="icon" ></div>
                 </div>
               </div>
             </div>

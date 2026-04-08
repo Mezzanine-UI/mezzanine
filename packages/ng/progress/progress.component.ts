@@ -51,19 +51,27 @@ export interface ProgressPercentProps {
  * ```html
  * import { MznProgress } from '@mezzanine-ui/ng/progress';
  *
- * <mzn-progress [percent]="60" />
- * <mzn-progress [percent]="75" type="percent" />
- * <mzn-progress [percent]="40" status="error" type="icon" />
- * <mzn-progress [percent]="60" [tick]="80" />
+ * <div mznProgress [percent]="60" ></div>
+ * <div mznProgress [percent]="75" type="percent" ></div>
+ * <div mznProgress [percent]="40" status="error" type="icon" ></div>
+ * <div mznProgress [percent]="60" [tick]="80" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-progress',
+  selector: '[mznProgress]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon, MznTypography],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.error]': 'null',
+    '[attr.icons]': 'null',
+    '[attr.percent]': 'null',
+    '[attr.percentProps]': 'null',
+    '[attr.status]': 'null',
+    '[attr.success]': 'null',
+    '[attr.tick]': 'null',
+    '[attr.type]': 'null',
   },
   template: `
     <div #lineRef [class]="classes.lineVariant">

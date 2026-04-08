@@ -15,7 +15,7 @@ type Story = StoryObj;
 export const Basic: Story = {
   render: () => ({
     template: `
-      <mzn-inline-message severity="info" content="系統正在處理您的請求，請稍候。" />
+      <div mznInlineMessage severity="info" content="系統正在處理您的請求，請稍候。" ></div>
     `,
   }),
 };
@@ -23,7 +23,7 @@ export const Basic: Story = {
 export const InlineMessageWarning: Story = {
   render: () => ({
     template: `
-      <mzn-inline-message severity="warning" content="系統正在處理您的請求，請稍候。" />
+      <div mznInlineMessage severity="warning" content="系統正在處理您的請求，請稍候。" ></div>
     `,
   }),
 };
@@ -31,7 +31,7 @@ export const InlineMessageWarning: Story = {
 export const InlineMessageError: Story = {
   render: () => ({
     template: `
-      <mzn-inline-message severity="error" content="系統正在處理您的請求，請稍候。" />
+      <div mznInlineMessage severity="error" content="系統正在處理您的請求，請稍候。" ></div>
     `,
   }),
 };
@@ -39,9 +39,9 @@ export const InlineMessageError: Story = {
 export const MultipleInlineMessages: Story = {
   render: () => ({
     template: `
-      <mzn-inline-message severity="info" content="系統正在處理您的請求，請稍候。" />
-      <mzn-inline-message severity="warning" content="系統正在處理您的請求，請稍候。" />
-      <mzn-inline-message severity="error" content="系統正在處理您的請求，請稍候。" />
+      <div mznInlineMessage severity="info" content="系統正在處理您的請求，請稍候。" ></div>
+      <div mznInlineMessage severity="warning" content="系統正在處理您的請求，請稍候。" ></div>
+      <div mznInlineMessage severity="error" content="系統正在處理您的請求，請稍候。" ></div>
     `,
   }),
 };

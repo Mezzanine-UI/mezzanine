@@ -26,14 +26,14 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
  * ```html
  * import { MznInlineMessage } from '@mezzanine-ui/ng/inline-message';
  *
- * <mzn-inline-message
+ * <div mznInlineMessage
  *   severity="error"
  *   content="此欄位為必填"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-inline-message',
+  selector: '[mznInlineMessage]',
   standalone: true,
   imports: [MznIcon, MznClearActions],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,6 +41,9 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
     '[class]': 'hostClasses()',
     role: 'status',
     'aria-live': 'polite',
+    '[attr.severity]': 'null',
+    '[attr.content]': 'null',
+    '[attr.icon]': 'null',
   },
   template: `
     @if (visible()) {

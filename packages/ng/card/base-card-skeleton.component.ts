@@ -32,14 +32,19 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
   template: `
     <div [class]="classes.baseHeader">
       <div [class]="classes.baseHeaderContentWrapper">
-        <mzn-skeleton [height]="20" width="60%" />
-        <mzn-skeleton [height]="16" width="40%" />
+        <div mznSkeleton [height]="20" width="60%"></div>
+        <div mznSkeleton [height]="16" width="40%"></div>
       </div>
     </div>
     @if (showContent()) {
       <div [class]="classes.baseContent">
-        <mzn-skeleton [height]="16" width="100%" />
-        <mzn-skeleton [height]="16" width="80%" style="margin-top: 8px" />
+        <div mznSkeleton [height]="16" width="100%"></div>
+        <div
+          mznSkeleton
+          [height]="16"
+          width="80%"
+          style="margin-top: 8px"
+        ></div>
       </div>
     }
   `,

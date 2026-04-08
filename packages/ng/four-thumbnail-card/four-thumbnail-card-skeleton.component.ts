@@ -27,18 +27,19 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
   template: `
     <div [class]="thumbnailGridClass">
       @for (item of thumbnailSlots; track $index) {
-        <mzn-skeleton
+        <div
+          mznSkeleton
           [class]="thumbnailItemClass"
           [width]="thumbnailWidth()"
           [style.aspect-ratio]="'4/3'"
-        />
+        ></div>
       }
     </div>
     <div [class]="infoClass">
       <div [class]="infoMainClass">
         <div [class]="infoContentClass" style="width: 100%;">
-          <mzn-skeleton [height]="20" width="100%" />
-          <mzn-skeleton [height]="16" width="100%" />
+          <div mznSkeleton [height]="20" width="100%"></div>
+          <div mznSkeleton [height]="16" width="100%"></div>
         </div>
       </div>
     </div>

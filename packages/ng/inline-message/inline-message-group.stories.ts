@@ -45,10 +45,10 @@ export const Basic: Story = {
       },
     },
     template: `
-      <mzn-inline-message-group
+      <div mznInlineMessageGroup
         [items]="items"
         (itemClose)="onItemClose($event)"
-      />
+      ></div>
     `,
   }),
 };

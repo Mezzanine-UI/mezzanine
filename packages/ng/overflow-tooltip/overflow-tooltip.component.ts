@@ -87,19 +87,21 @@ const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
         >
           @for (tag of tags(); track $index) {
             @if (readOnly()) {
-              <mzn-tag
+              <span
+                mznTag
                 type="static"
                 [label]="tag"
                 [readOnly]="true"
                 [size]="tagSize()"
-              />
+              ></span>
             } @else {
-              <mzn-tag
+              <span
+                mznTag
                 type="dismissable"
                 [label]="tag"
                 [size]="tagSize()"
                 (close)="tagDismiss.emit($index)"
-              />
+              ></span>
             }
           }
         </div>

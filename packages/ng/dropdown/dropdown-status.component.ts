@@ -42,7 +42,7 @@ import { MznSpin } from '@mezzanine-ui/ng/spin';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (status() === 'loading') {
-      <mzn-spin [loading]="true" size="minor" />
+      <div mznSpin [loading]="true" size="minor"></div>
     } @else {
       <i mznIcon [icon]="resolvedEmptyIcon()" [size]="16"></i>
     }

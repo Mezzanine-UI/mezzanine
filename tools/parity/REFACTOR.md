@@ -13,13 +13,14 @@ Progress tracker for converting all `@Component({ selector: 'mzn-xxx' })` declar
 
 _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 
-| Batch    | Commit      | Components                                        | Total Before | Total After | Notes                                                             |
-| -------- | ----------- | ------------------------------------------------- | ------------ | ----------- | ----------------------------------------------------------------- |
-| baseline | `c15a7030`  | —                                                 | 8416         | 6866        | start of refactor phase                                           |
-| 1        | _(pending)_ | separator                                         | 6866         | ~6866       | trial; proves pipeline but separator diffs are story-side not tag |
-| 2        | `843cd5f5`  | empty                                             | 38           | 539         | **EXPECTED** — see "Diff-count masking" below                     |
-| 3        | `0021e7e5`  | layout, anchor-group, form-group, dropdown-status | —            | 2/0/64/19   | auto attr-null injection added to script; 0 attribute leakage     |
-| Phase 1  | _(pending)_ | compare.ts walker softening                       | 6866         | 23742       | full unmask via class-aware soft-continue (no element refactor)   |
+| Batch    | Commit      | Components                                                                        | Total Before | Total After | Notes                                                             |
+| -------- | ----------- | --------------------------------------------------------------------------------- | ------------ | ----------- | ----------------------------------------------------------------- |
+| baseline | `c15a7030`  | —                                                                                 | 8416         | 6866        | start of refactor phase                                           |
+| 1        | _(pending)_ | separator                                                                         | 6866         | ~6866       | trial; proves pipeline but separator diffs are story-side not tag |
+| 2        | `843cd5f5`  | empty                                                                             | 38           | 539         | **EXPECTED** — see "Diff-count masking" below                     |
+| 3        | `0021e7e5`  | layout, anchor-group, form-group, dropdown-status                                 | —            | 2/0/64/19   | auto attr-null injection added to script; 0 attribute leakage     |
+| Phase 1  | `1bddc833`  | compare.ts walker softening                                                       | 6866         | 23742       | full unmask via class-aware soft-continue (no element refactor)   |
+| P2-1     | _(pending)_ | tag, inline-message(+group), alert-banner, progress, spin, skeleton, result-state | —            | per-comp    | first Tier A batch; 0 attribute leakage                           |
 
 ## ⚠️ Diff-count masking — critical reading (mostly fixed in Phase 1)
 

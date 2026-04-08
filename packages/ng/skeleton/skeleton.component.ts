@@ -18,18 +18,22 @@ import clsx from 'clsx';
  * ```html
  * import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
  *
- * <mzn-skeleton variant="h3" />
- * <mzn-skeleton [circle]="true" width="40px" height="40px" />
- * <mzn-skeleton width="200px" height="16px" />
+ * <div mznSkeleton variant="h3" ></div>
+ * <div mznSkeleton [circle]="true" width="40px" height="40px" ></div>
+ * <div mznSkeleton width="200px" height="16px" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-skeleton',
+  selector: '[mznSkeleton]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',
+    '[attr.circle]': 'null',
+    '[attr.height]': 'null',
+    '[attr.variant]': 'null',
+    '[attr.width]': 'null',
   },
   template: `
     @if (isStripMode()) {

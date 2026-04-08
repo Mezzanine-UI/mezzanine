@@ -25,20 +25,27 @@ import { MznBadge } from '@mezzanine-ui/ng/badge';
  * ```html
  * import { MznTag } from '@mezzanine-ui/ng/tag';
  *
- * <mzn-tag type="static" label="設計" />
- * <mzn-tag type="counter" label="待處理" [count]="3" />
- * <mzn-tag type="dismissable" label="React" (close)="removeTag('React')" />
- * <mzn-tag type="addable" label="新增標籤" (click)="handleAdd()" />
+ * <span mznTag type="static" label="設計" ></span>
+ * <span mznTag type="counter" label="待處理" [count]="3" ></span>
+ * <span mznTag type="dismissable" label="React" (close)="removeTag('React')" ></span>
+ * <span mznTag type="addable" label="新增標籤" (click)="handleAdd()" ></span>
  * ```
  */
 @Component({
-  selector: 'mzn-tag',
+  selector: '[mznTag]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon, MznBadge],
   host: {
     '[class]': 'hostClasses()',
     '[attr.aria-disabled]': 'disabled() || null',
+    '[attr.type]': 'null',
+    '[attr.label]': 'null',
+    '[attr.size]': 'null',
+    '[attr.count]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.active]': 'null',
+    '[attr.readOnly]': 'null',
   },
   template: `
     @switch (type()) {

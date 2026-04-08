@@ -1212,19 +1212,21 @@ export const BulkCreate: Story = {
           style="display: flex; flex-wrap: wrap; gap: 4px; width: 100%; margin-block: 8px;"
         >
           @for (id of selections; track id) {
-            <mzn-tag
+            <span
+              mznTag
               type="dismissable"
               [label]="getOptionName(id)"
               (close)="removeSelection(id)"
-            />
+            ></span>
           }
         </div>
-        <mzn-tag
+        <span
+          mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        />
+        ></span>
         <mzn-autocomplete
           mode="multiple"
           inputPosition="inside"
@@ -1326,19 +1328,21 @@ export const InputPositionInside: Story = {
           style="display: flex; flex-wrap: wrap; gap: 4px; width: 100%; margin-block: 8px;"
         >
           @for (id of selections; track id) {
-            <mzn-tag
+            <span
+              mznTag
               type="dismissable"
               [label]="getOptionName(id)"
               (close)="removeSelection(id)"
-            />
+            ></span>
           }
         </div>
-        <mzn-tag
+        <span
+          mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        />
+        ></span>
         <mzn-autocomplete
           mode="multiple"
           inputPosition="inside"
@@ -1427,12 +1431,13 @@ export const InsideBulkCreate: Story = {
     >
       <div>
         <h3>inside 多選模式 - 單選風格 checked icon + empty</h3>
-        <mzn-tag
+        <span
+          mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        />
+        ></span>
         <mzn-autocomplete
           mode="multiple"
           inputPosition="inside"
@@ -1483,12 +1488,13 @@ export const InsideEmpty: Story = {
     >
       <div>
         <h3>inside 多選模式 - 單選風格 checked icon + loading</h3>
-        <mzn-tag
+        <span
+          mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        />
+        ></span>
         <mzn-autocomplete
           mode="multiple"
           inputPosition="inside"
@@ -1539,9 +1545,10 @@ export const InsideLoading: Story = {
     <div
       style="display: flex; flex-direction: column; gap: 12px; max-width: 320px;"
     >
-      <mzn-tag
+      <span
+        mznTag
         [label]="'已載入 ' + options().length + ' / ' + totalCount + ' 個選項'"
-      />
+      ></span>
       <div style="display: flex; gap: 8px; align-items: center;">
         <mzn-autocomplete
           [disabledOptionsFilter]="true"
@@ -1720,7 +1727,7 @@ export const LoadMoreOnReachBottom: Story = {
             </p>
             <div style="display: flex; flex-wrap: wrap; gap: 4px;">
               @for (item of submittedItems; track $index) {
-                <mzn-tag type="static" size="sub" [label]="item" />
+                <span mznTag type="static" size="sub" [label]="item"></span>
               }
             </div>
           </div>

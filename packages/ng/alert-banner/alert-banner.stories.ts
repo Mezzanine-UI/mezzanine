@@ -13,11 +13,12 @@ import { MznButton } from '../button/button.directive';
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
-      <mzn-alert-banner
+      <div
+        mznAlertBanner
         severity="info"
         message="傳達一般提示、系統狀態或輔助性資訊。"
         [actions]="actions"
-      />
+      ></div>
       <button mznButton variant="base-primary" (click)="addBanner()">
         新增 Info AlertBanner
       </button>
@@ -51,11 +52,12 @@ class AlertBannerInfoDemoComponent {
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
-      <mzn-alert-banner
+      <div
+        mznAlertBanner
         severity="warning"
         message="您的帳號即將到期，部分功能將在期限屆滿後暫時停用。為確保服務不中斷，請於到期日前完成續約或更新付款資訊。"
         [actions]="actions"
-      />
+      ></div>
       <button mznButton variant="base-primary" (click)="addBanner()">
         新增 Warning AlertBanner
       </button>
@@ -95,11 +97,12 @@ class AlertBannerWarningDemoComponent {
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
-      <mzn-alert-banner
+      <div
+        mznAlertBanner
         severity="error"
         message="傳達錯誤、失敗或需立即處理的問題。"
         [actions]="actions"
-      />
+      ></div>
       <button mznButton variant="base-primary" (click)="addBanner()">
         新增 Error AlertBanner
       </button>

@@ -27,14 +27,14 @@ export interface InlineMessageGroupItem {
  * ```html
  * import { MznInlineMessageGroup } from '@mezzanine-ui/ng/inline-message';
  *
- * <mzn-inline-message-group
+ * <div mznInlineMessageGroup
  *   [items]="messages"
  *   (itemClose)="onItemClose($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-inline-message-group',
+  selector: '[mznInlineMessageGroup]',
   standalone: true,
   imports: [MznInlineMessage],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,15 +42,17 @@ export interface InlineMessageGroupItem {
     '[class]': 'hostClass',
     'aria-live': 'polite',
     role: 'region',
+    '[attr.items]': 'null',
   },
   template: `
     @for (item of items(); track item.key) {
-      <mzn-inline-message
+      <div
+        mznInlineMessage
         [content]="item.content"
         [icon]="item.icon"
         [severity]="item.severity"
         (closed)="handleItemClose(item.key)"
-      />
+      ></div>
     }
   `,
 })

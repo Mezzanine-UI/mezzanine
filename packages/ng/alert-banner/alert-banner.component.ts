@@ -41,16 +41,25 @@ export interface AlertBannerAction {
  * ```html
  * import { MznAlertBanner } from '@mezzanine-ui/ng/alert-banner';
  *
- * <mzn-alert-banner
+ * <div mznAlertBanner
  *   severity="warning"
  *   message="系統將於 30 分鐘後維護"
  *   [closable]="true"
  *   (closed)="onClose()"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-alert-banner',
+  selector: '[mznAlertBanner]',
+  host: {
+    '[attr.severity]': 'null',
+    '[attr.message]': 'null',
+    '[attr.actions]': 'null',
+    '[attr.createdAt]': 'null',
+    '[attr.closable]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.reference]': 'null',
+  },
   standalone: true,
   imports: [MznIcon, MznButton, MznClearActions],
   changeDetection: ChangeDetectionStrategy.OnPush,

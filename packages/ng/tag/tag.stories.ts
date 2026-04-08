@@ -47,7 +47,7 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-tag
+      <span mznTag
         [type]="type"
         [label]="label"
         [size]="size"
@@ -55,7 +55,7 @@ export const Playground: Story = {
         [disabled]="disabled"
         [active]="active"
         [readOnly]="readOnly"
-      />
+      ></span>
     `,
   }),
 };
@@ -69,11 +69,11 @@ export const Types: Story = {
           <h2>Static</h2>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="static" label="Tag" size="main" />
+              <span mznTag type="static" label="Tag" size="main" ></span>
               <span style="font-size: 12px; color: #6b7280;">Enabled</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="static" label="Tag" size="main" [readOnly]="true" />
+              <span mznTag type="static" label="Tag" size="main" [readOnly]="true" ></span>
               <span style="font-size: 12px; color: #6b7280;">Read Only</span>
             </div>
           </div>
@@ -81,22 +81,22 @@ export const Types: Story = {
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
           <h2>Counter</h2>
-          <mzn-tag type="counter" label="Tag" size="main" [count]="5" />
+          <span mznTag type="counter" label="Tag" size="main" [count]="5" ></span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
           <h2>Overflow Counter</h2>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="overflow-counter" size="main" [count]="5" />
+              <span mznTag type="overflow-counter" size="main" [count]="5" ></span>
               <span style="font-size: 12px; color: #6b7280;">Enabled</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="overflow-counter" size="main" [count]="5" [disabled]="true" />
+              <span mznTag type="overflow-counter" size="main" [count]="5" [disabled]="true" ></span>
               <span style="font-size: 12px; color: #6b7280;">Disabled</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="overflow-counter" size="main" [count]="5" [readOnly]="true" />
+              <span mznTag type="overflow-counter" size="main" [count]="5" [readOnly]="true" ></span>
               <span style="font-size: 12px; color: #6b7280;">Read Only</span>
             </div>
           </div>
@@ -106,19 +106,19 @@ export const Types: Story = {
           <h2>Dismissable</h2>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="dismissable" label="Tag" size="main" />
+              <span mznTag type="dismissable" label="Tag" size="main" ></span>
               <span style="font-size: 12px; color: #6b7280;">Enabled</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag class="is-hover" type="dismissable" label="Tag" size="main" />
+              <span mznTag class="is-hover" type="dismissable" label="Tag" size="main" ></span>
               <span style="font-size: 12px; color: #6b7280;">Hover</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="dismissable" label="Tag" size="main" [active]="true" />
+              <span mznTag type="dismissable" label="Tag" size="main" [active]="true" ></span>
               <span style="font-size: 12px; color: #6b7280;">Active</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="dismissable" label="Tag" size="main" [disabled]="true" />
+              <span mznTag type="dismissable" label="Tag" size="main" [disabled]="true" ></span>
               <span style="font-size: 12px; color: #6b7280;">Disabled</span>
             </div>
           </div>
@@ -128,19 +128,19 @@ export const Types: Story = {
           <h2>Addable</h2>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="addable" label="Tag" size="main" />
+              <span mznTag type="addable" label="Tag" size="main" ></span>
               <span style="font-size: 12px; color: #6b7280;">Enabled</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag class="is-hover" type="addable" label="Tag" size="main" />
+              <span mznTag class="is-hover" type="addable" label="Tag" size="main" ></span>
               <span style="font-size: 12px; color: #6b7280;">Hover</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="addable" label="Tag" size="main" [active]="true" />
+              <span mznTag type="addable" label="Tag" size="main" [active]="true" ></span>
               <span style="font-size: 12px; color: #6b7280;">Active</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <mzn-tag type="addable" label="Tag" size="main" [disabled]="true" />
+              <span mznTag type="addable" label="Tag" size="main" [disabled]="true" ></span>
               <span style="font-size: 12px; color: #6b7280;">Disabled</span>
             </div>
           </div>
@@ -160,15 +160,15 @@ export const Sizes: Story = {
             <h2>Static</h2>
             <div style="display: flex; gap: 36px; align-items: flex-end;">
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="static" label="Tag" size="main" />
+                <span mznTag type="static" label="Tag" size="main" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Main</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="static" label="Tag" size="sub" />
+                <span mznTag type="static" label="Tag" size="sub" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Sub</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="static" label="Tag" size="minor" />
+                <span mznTag type="static" label="Tag" size="minor" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Minor</span>
               </div>
             </div>
@@ -178,15 +178,15 @@ export const Sizes: Story = {
             <h2>Counter</h2>
             <div style="display: flex; gap: 36px; align-items: flex-end;">
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="counter" label="Tag" size="main" [count]="5" />
+                <span mznTag type="counter" label="Tag" size="main" [count]="5" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Main</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="counter" label="Tag" size="sub" [count]="5" />
+                <span mznTag type="counter" label="Tag" size="sub" [count]="5" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Sub</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="counter" label="Tag" size="minor" [count]="5" />
+                <span mznTag type="counter" label="Tag" size="minor" [count]="5" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Minor</span>
               </div>
             </div>
@@ -196,15 +196,15 @@ export const Sizes: Story = {
             <h2>Overflow Counter</h2>
             <div style="display: flex; gap: 36px; align-items: flex-end;">
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="overflow-counter" size="main" [count]="5" />
+                <span mznTag type="overflow-counter" size="main" [count]="5" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Main</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="overflow-counter" size="sub" [count]="5" />
+                <span mznTag type="overflow-counter" size="sub" [count]="5" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Sub</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="overflow-counter" size="minor" [count]="5" />
+                <span mznTag type="overflow-counter" size="minor" [count]="5" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Minor</span>
               </div>
             </div>
@@ -216,15 +216,15 @@ export const Sizes: Story = {
             <h2>Dismissable</h2>
             <div style="display: flex; gap: 36px; align-items: flex-end;">
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="dismissable" label="Tag" size="main" />
+                <span mznTag type="dismissable" label="Tag" size="main" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Main</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="dismissable" label="Tag" size="sub" />
+                <span mznTag type="dismissable" label="Tag" size="sub" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Sub</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="dismissable" label="Tag" size="minor" />
+                <span mznTag type="dismissable" label="Tag" size="minor" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Minor</span>
               </div>
             </div>
@@ -234,15 +234,15 @@ export const Sizes: Story = {
             <h2>Addable</h2>
             <div style="display: flex; gap: 36px; align-items: flex-end;">
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="addable" label="Tag" size="main" />
+                <span mznTag type="addable" label="Tag" size="main" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Main</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="addable" label="Tag" size="sub" />
+                <span mznTag type="addable" label="Tag" size="sub" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Sub</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <mzn-tag type="addable" label="Tag" size="minor" />
+                <span mznTag type="addable" label="Tag" size="minor" ></span>
                 <span style="font-size: 12px; color: #6b7280;">Minor</span>
               </div>
             </div>
@@ -263,24 +263,31 @@ export const Sizes: Story = {
         style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"
       >
         @for (tag of tags(); track tag) {
-          <mzn-tag type="dismissable" [label]="tag" (close)="removeTag(tag)" />
+          <span
+            mznTag
+            type="dismissable"
+            [label]="tag"
+            (close)="removeTag(tag)"
+          ></span>
         }
-        <mzn-tag
+        <span
+          mznTag
           type="addable"
           [label]="open() ? '收起選單' : '新增標籤'"
           (tagClick)="toggleOpen()"
-        />
+        ></span>
       </div>
       @if (open()) {
         <div
           style="display: flex; gap: 8px; flex-wrap: wrap; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px;"
         >
           @for (option of availableOptions(); track option) {
-            <mzn-tag
+            <span
+              mznTag
               type="addable"
               [label]="option"
               (tagClick)="addTag(option)"
-            />
+            ></span>
           }
         </div>
       }
@@ -346,7 +353,12 @@ export const Addable_Interactive: Story = {
         style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; max-width: 320px;"
       >
         @for (tag of tags(); track tag; let i = $index) {
-          <mzn-tag type="dismissable" [label]="tag" (close)="removeTag(i)" />
+          <span
+            mznTag
+            type="dismissable"
+            [label]="tag"
+            (close)="removeTag(i)"
+          ></span>
         }
       </div>
     </div>

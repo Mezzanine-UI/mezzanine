@@ -58,16 +58,16 @@ export const Playground: Story = {
         </div>
         <div>
           <p style="font-weight: 600;">Progress</p>
-          <mzn-progress [percent]="70" type="percent" />
+          <div mznProgress [percent]="70" type="percent" ></div>
         </div>
         <div>
           <p style="font-weight: 600;">Tag</p>
           <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-            <mzn-tag label="Tag" />
-            <mzn-tag label="Tag" />
-            <mzn-tag label="Tag" />
-            <mzn-tag label="Tag" />
-            <mzn-tag label="Tag" />
+            <span mznTag label="Tag" ></span>
+            <span mznTag label="Tag" ></span>
+            <span mznTag label="Tag" ></span>
+            <span mznTag label="Tag" ></span>
+            <span mznTag label="Tag" ></span>
           </div>
         </div>
       </div>

@@ -56,16 +56,16 @@ export const Playground: Story = {
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Progress</p>
           <mzn-description title="訂單進度" widthType="narrow">
-            <mzn-progress [percent]="80" type="percent" />
+            <div mznProgress [percent]="80" type="percent" ></div>
           </mzn-description>
         </div>
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Tags</p>
           <mzn-description title="訂單標籤" widthType="narrow">
             <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-              <mzn-tag label="快速" />
-              <mzn-tag label="冷藏" />
-              <mzn-tag label="特價" />
+              <span mznTag label="快速" ></span>
+              <span mznTag label="冷藏" ></span>
+              <span mznTag label="特價" ></span>
             </div>
           </mzn-description>
         </div>

@@ -81,17 +81,18 @@ export type CardGroupType =
             <div [class]="baseSkeletonClass" aria-hidden="true">
               <div [class]="baseSkeletonHeaderClass">
                 <div [class]="baseSkeletonHeaderContentClass">
-                  <mzn-skeleton [height]="20" width="60%" />
-                  <mzn-skeleton [height]="16" width="40%" />
+                  <div mznSkeleton [height]="20" width="60%"></div>
+                  <div mznSkeleton [height]="16" width="40%"></div>
                 </div>
               </div>
               <div [class]="baseSkeletonContentClass">
-                <mzn-skeleton [height]="16" width="100%" />
-                <mzn-skeleton
+                <div mznSkeleton [height]="16" width="100%"></div>
+                <div
+                  mznSkeleton
                   [height]="16"
                   width="80%"
                   style="margin-top: 8px;"
-                />
+                ></div>
               </div>
             </div>
           }

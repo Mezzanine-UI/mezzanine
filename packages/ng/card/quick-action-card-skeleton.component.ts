@@ -32,10 +32,10 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
     '[class]': 'hostClasses()',
   },
   template: `
-    <mzn-skeleton [circle]="true" [height]="24" [width]="24" />
+    <div mznSkeleton [circle]="true" [height]="24" [width]="24"></div>
     <div [class]="contentClass">
-      <mzn-skeleton [height]="20" width="70%" />
-      <mzn-skeleton [height]="16" width="50%" />
+      <div mznSkeleton [height]="20" width="70%"></div>
+      <div mznSkeleton [height]="16" width="50%"></div>
     </div>
   `,
 })

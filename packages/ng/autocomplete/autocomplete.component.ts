@@ -158,29 +158,32 @@ export function getFullParsedList(
               >
                 @for (item of visibleTagValues(); track item.id) {
                   @if (readOnly()) {
-                    <mzn-tag
+                    <span
+                      mznTag
                       type="static"
                       [size]="size()"
                       [label]="item.name"
                       [readOnly]="true"
-                    />
+                    ></span>
                   } @else {
-                    <mzn-tag
+                    <span
+                      mznTag
                       type="dismissable"
                       [disabled]="disabled()"
                       [label]="item.name"
                       [size]="size()"
                       (close)="onTagClose(item); $event.stopPropagation()"
-                    />
+                    ></span>
                   }
                 }
                 @if (counterOverflowCount() > 0) {
-                  <mzn-tag
+                  <span
+                    mznTag
                     type="overflow-counter"
                     [count]="counterOverflowCount()"
                     [disabled]="disabled()"
                     [size]="size()"
-                  />
+                  ></span>
                 }
                 <!-- Fake tags for measurement (hidden, uses triggerTags WITHOUT --ellipsis so tags don't shrink) -->
                 <div
@@ -190,20 +193,22 @@ export function getFullParsedList(
                 >
                   @for (item of selectedTagValues(); track item.id) {
                     <span class="mzn-select-trigger__fake-tag">
-                      <mzn-tag
+                      <span
+                        mznTag
                         type="dismissable"
                         [disabled]="true"
                         [size]="size()"
                         [label]="item.name"
-                      />
+                      ></span>
                     </span>
                   }
                   <span class="mzn-select-trigger__fake-ellipsis">
-                    <mzn-tag
+                    <span
+                      mznTag
                       type="overflow-counter"
                       [count]="99"
                       [size]="size()"
-                    />
+                    ></span>
                   </span>
                 </div>
               </div>
@@ -212,20 +217,22 @@ export function getFullParsedList(
               @for (item of selectedTagValues(); track item.id) {
                 <span>
                   @if (readOnly()) {
-                    <mzn-tag
+                    <span
+                      mznTag
                       type="static"
                       [size]="size()"
                       [label]="item.name"
                       [readOnly]="true"
-                    />
+                    ></span>
                   } @else {
-                    <mzn-tag
+                    <span
+                      mznTag
                       type="dismissable"
                       [disabled]="disabled()"
                       [label]="item.name"
                       [size]="size()"
                       (close)="onTagClose(item); $event.stopPropagation()"
-                    />
+                    ></span>
                   }
                 </span>
               }

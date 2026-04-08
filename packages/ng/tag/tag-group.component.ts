@@ -18,8 +18,8 @@ import clsx from 'clsx';
  * import { MznTag } from '@mezzanine-ui/ng/tag';
  *
  * <mzn-tag-group>
- *   <mzn-tag type="static" label="標籤一" />
- *   <mzn-tag type="static" label="標籤二" />
+ *   <span mznTag type="static" label="標籤一" ></span>
+ *   <span mznTag type="static" label="標籤二" ></span>
  * </mzn-tag-group>
  * ```
  *

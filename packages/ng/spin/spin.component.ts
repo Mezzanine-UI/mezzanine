@@ -34,23 +34,31 @@ export interface SpinBackdropProps {
  * import { MznSpin } from '@mezzanine-ui/ng/spin';
  *
  * <!-- 獨立模式 -->
- * <mzn-spin [loading]="true" />
- * <mzn-spin [loading]="isLoading" size="sub" description="載入中..." />
- * <mzn-spin [loading]="true" color="#1890ff" trackColor="rgba(0,0,0,0.1)" />
+ * <div mznSpin [loading]="true" ></div>
+ * <div mznSpin [loading]="isLoading" size="sub" description="載入中..." ></div>
+ * <div mznSpin [loading]="true" color="#1890ff" trackColor="rgba(0,0,0,0.1)" ></div>
  *
  * <!-- 巢狀模式（以遮罩覆蓋子內容） -->
- * <mzn-spin [loading]="isLoading" description="載入中...">
+ * <div mznSpin [loading]="isLoading" description="載入中...">
  *   <div style="width: 300px; height: 300px;">Content here</div>
- * </mzn-spin>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-spin',
+  selector: '[mznSpin]',
   standalone: true,
   imports: [MznBackdrop],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.backdropProps]': 'null',
+    '[attr.color]': 'null',
+    '[attr.description]': 'null',
+    '[attr.descriptionClassName]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.size]': 'null',
+    '[attr.stretch]': 'null',
+    '[attr.trackColor]': 'null',
   },
   template: `
     <mzn-backdrop
