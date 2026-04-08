@@ -261,3 +261,49 @@ No port gaps or DI errors found. Calendar family mature.
 | time-panel-column             | `data-entry-datetimepicker--playground`                     | `[mznTimePanelColumn]` + `mzn-time-panel-column*`                     |
 
 No port gaps or DI errors found. Picker family mature.
+
+### Navigation family (0/6) — BLOCKED by port gap
+
+All 6 navigation sub-components (navigation-header, navigation-footer,
+navigation-icon-button, navigation-option, navigation-option-category,
+navigation-user-menu) cannot be visually verified because every
+`navigation-navigation--*` story fails to compile.
+
+**Root cause** — nested `<li>` auto-close in Angular template parser.
+`MznNavigationOption` is an attribute directive (`[mznNavigationOption]`)
+applied to author-provided `<li>` tags. Stories nest child options
+inside parent options:
+
+```html
+<li mznNavigationOption title="parent" [hasChildren]="true">
+  <li mznNavigationOption title="child"></li>
+</li>
+```
+
+Angular's template parser applies HTML5 auto-closing: when it sees an
+opening `<li>` while already inside an unclosed `<li>`, it implicitly
+closes the parent. The explicit `</li>` then has no matching open tag
+and JIT compilation throws `Unexpected closing tag "li"`. Error trace:
+`parseJitTemplate → CompilerFacadeImpl.compileComponent → assertComponentDef`.
+Every `navigation-navigation--*` story renders an empty root (`len=33`).
+
+React parity: React's `<NavigationOption>` is a component that emits
+`<li>` itself — JSX is not HTML, so nesting `<NavigationOption>` in
+`<NavigationOption>` bypasses HTML5 parser rules entirely.
+
+**Proper fix (Phase 3A backlog — deferred, structural)**:
+Convert `MznNavigationOption` from attribute directive on `<li>` to an
+element-selector component (`mzn-navigation-option`) whose template
+owns an inner `<li>` wrapper. Custom elements are not subject to HTML5
+`<li>` auto-close, so nesting works. Alternatively, keep the attribute
+selector but drop the requirement that host be `<li>` — use any tag
+with `role="listitem"`. Either path requires updating the component,
+all stories, and any consumer code. Too large for a spot-check commit.
+
+**Scope**: affects ALL 6 navigation sub-components. Consumers using
+nested navigation will hit the same compile error. Not a regression —
+Phase 2 batch 13/14 never verified these because parity tooling runs
+against compiled stories and silently skipped them.
+
+Logged to Phase 3A backlog. Phase 3B marks this family BLOCKED and
+moves on.
