@@ -25,23 +25,36 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
  * ```html
  * import { MznModalFooter } from '@mezzanine-ui/ng/modal';
  *
- * <mzn-modal-footer
+ * <div mznModalFooter
  *   confirmText="確認"
  *   cancelText="取消"
  *   (confirmed)="onConfirm()"
  *   (cancelled)="onCancel()"
- * />
+ * ></div>
  * ```
  *
  * @see MznModal
  */
 @Component({
-  selector: 'mzn-modal-footer',
+  selector: '[mznModalFooter]',
   standalone: true,
   imports: [FormsModule, MznButton, MznButtonGroup, MznCheckbox, MznToggle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.actionsButtonLayout]': 'null',
+    '[attr.annotation]': 'null',
+    '[attr.auxiliaryContentButtonText]': 'null',
+    '[attr.auxiliaryContentChecked]': 'null',
+    '[attr.auxiliaryContentLabel]': 'null',
+    '[attr.auxiliaryContentType]': 'null',
+    '[attr.cancelText]': 'null',
+    '[attr.confirmButtonVariant]': 'null',
+    '[attr.confirmText]': 'null',
+    '[attr.passwordButtonText]': 'null',
+    '[attr.passwordChecked]': 'null',
+    '[attr.passwordCheckedLabel]': 'null',
+    '[attr.showCancelButton]': 'null',
   },
   template: `
     @if (auxiliaryContentType() === 'password') {
@@ -97,7 +110,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
       </div>
     }
 
-    <mzn-button-group [class]="actionsButtonContainerClasses()">
+    <div mznButtonGroup [class]="actionsButtonContainerClasses()">
       @if (showCancelButton()) {
         <button
           mznButton
@@ -116,7 +129,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
         (click)="confirmed.emit()"
         >{{ confirmText() }}</button
       >
-    </mzn-button-group>
+    </div>
 
     <ng-content />
   `,

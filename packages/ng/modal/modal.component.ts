@@ -34,7 +34,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
  * ```html
  * import { MznModal, MznModalHeader, MznModalFooter } from '@mezzanine-ui/ng/modal';
  *
- * <mzn-modal [open]="isOpen" (closed)="isOpen = false">
+ * <div mznModal [open]="isOpen" (closed)="isOpen = false">
  *   <mzn-modal-header title="確認刪除" supportingText="此操作無法復原" />
  *   <div class="mzn-modal__body-container">
  *     <p>確定要刪除嗎？</p>
@@ -43,7 +43,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
  *     <button mznButton variant="base-secondary" (click)="isOpen = false">取消</button>
  *     <button mznButton variant="base-primary" (click)="onConfirm()">確認</button>
  *   </mzn-modal-footer>
- * </mzn-modal>
+ * </div>
  * ```
  *
  * @see MznModalHeader
@@ -51,7 +51,22 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
  * @see MznBackdrop
  */
 @Component({
-  selector: 'mzn-modal',
+  selector: '[mznModal]',
+  host: {
+    '[attr.backdropClassName]': 'null',
+    '[attr.disableCloseOnBackdropClick]': 'null',
+    '[attr.disableCloseOnEscapeKeyDown]': 'null',
+    '[attr.disablePortal]': 'null',
+    '[attr.fullScreen]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.modalStatusType]': 'null',
+    '[attr.modalType]': 'null',
+    '[attr.open]': 'null',
+    '[attr.showDismissButton]': 'null',
+    '[attr.showModalFooter]': 'null',
+    '[attr.showModalHeader]': 'null',
+    '[attr.size]': 'null',
+  },
   standalone: true,
   imports: [MznBackdrop, MznClearActions],
   changeDetection: ChangeDetectionStrategy.OnPush,

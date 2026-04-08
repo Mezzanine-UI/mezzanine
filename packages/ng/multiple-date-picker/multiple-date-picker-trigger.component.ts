@@ -103,13 +103,14 @@ export interface DateValue {
               @if (
                 overflowStrategy() === 'counter' && overflowValues().length > 0
               ) {
-                <mzn-overflow-counter-tag
+                <span
+                  mznOverflowCounterTag
                   [disabled]="disabled()"
                   [readOnly]="readOnly()"
                   [tagSize]="tagSize()"
                   [tags]="overflowNames()"
                   (tagDismiss)="onOverflowTagDismiss($event)"
-                />
+                ></span>
               }
             </div>
           </div>

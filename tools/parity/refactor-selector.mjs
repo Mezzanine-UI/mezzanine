@@ -358,7 +358,15 @@ function rewriteComponentFile(text, elementSelector, attrName) {
       } else if (
         dynamicClassMatch &&
         !hostClassBindingPresent &&
-        !staticClassMatch /* skip if both static + dynamic — too risky */
+        !staticClassMatch /* skip if both static + dynamic — too risky */ &&
+        // Refuse to collapse a wrapper that has any Angular directive
+        // attribute on it (e.g. `mznBackdrop`, `mznPopper`, `*ngIf`,
+        // `(event)`, `[property]` bindings other than [class]). These
+        // wrappers are functional elements, not purely presentational,
+        // and collapsing them would silently drop behavior.
+        !/\s(?:mzn[A-Z]\w*|\*\w+|\(\w+\)|\[(?!class\])\w+\])/.test(
+          wrapperAttrs,
+        )
       ) {
         // Dynamic class wrapper. Move the expression to host '[class]' binding
         // and drop the wrapper. This matches the dropdown-status pattern.

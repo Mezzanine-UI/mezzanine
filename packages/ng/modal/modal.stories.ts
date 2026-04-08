@@ -1,5 +1,6 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, Input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznButtonGroup } from '@mezzanine-ui/ng/button';
@@ -13,6 +14,7 @@ const meta: Meta = {
   decorators: [
     moduleMetadata({
       imports: [
+        BrowserAnimationsModule,
         FormsModule,
         MznButton,
         MznButtonGroup,
@@ -37,7 +39,8 @@ type Story = StoryObj;
     <button mznButton variant="base-primary" (click)="open.set(true)"
       >open</button
     >
-    <mzn-modal
+    <div
+      mznModal
       [open]="open()"
       [disableCloseOnBackdropClick]="disableCloseOnBackdropClick"
       [disableCloseOnEscapeKeyDown]="disableCloseOnEscapeKeyDown"
@@ -51,18 +54,20 @@ type Story = StoryObj;
       [size]="size"
       (closed)="open.set(false)"
     >
-      <mzn-modal-header
+      <div
+        mznModalHeader
         [title]="title"
         [supportingText]="supportingText"
         [showStatusTypeIcon]="showStatusTypeIcon"
         [statusTypeIconLayout]="statusTypeIconLayout"
         [titleAlign]="titleAlign"
         [supportingTextAlign]="supportingTextAlign"
-      />
+      ></div>
       <div class="mzn-modal__body-container">
         <p>{{ body }}</p>
       </div>
-      <mzn-modal-footer
+      <div
+        mznModalFooter
         [confirmText]="confirmText"
         [cancelText]="cancelText"
         [showCancelButton]="showCancelButton"
@@ -77,55 +82,58 @@ type Story = StoryObj;
         [passwordCheckedLabel]="passwordCheckedLabel"
         (confirmed)="open.set(false)"
         (cancelled)="open.set(false)"
-      />
-    </mzn-modal>
+      ></div>
+    </div>
   `,
 })
 class ModalPlaygroundComponent {
   readonly open = signal(false);
-  actionsButtonLayout: 'fill' | 'fixed' = 'fixed';
-  annotation = 'Annotation text';
-  auxiliaryContentButtonText = 'Reset';
-  auxiliaryContentChecked = false;
-  auxiliaryContentLabel = 'Control label';
-  auxiliaryContentType:
+  @Input() actionsButtonLayout: 'fill' | 'fixed' = 'fixed';
+  @Input() annotation = 'Annotation text';
+  @Input() auxiliaryContentButtonText = 'Reset';
+  @Input() auxiliaryContentChecked = false;
+  @Input() auxiliaryContentLabel = 'Control label';
+  @Input() auxiliaryContentType:
     | 'annotation'
     | 'button'
     | 'checkbox'
     | 'password'
     | 'toggle'
     | undefined;
-  body =
+  @Input() body =
     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum illum neque soluta atque. Eum dolores placeat unde, molestias exercitationem tempore perspiciatis quia porro sapiente vero impedit consequatur recusandae excepturi cumque.';
-  cancelText = 'Cancel';
-  confirmText = 'Confirm';
-  disableCloseOnBackdropClick = false;
-  disableCloseOnEscapeKeyDown = false;
-  fullScreen = false;
-  loading = false;
-  modalStatusType:
+  @Input() cancelText = 'Cancel';
+  @Input() confirmText = 'Confirm';
+  @Input() disableCloseOnBackdropClick = false;
+  @Input() disableCloseOnEscapeKeyDown = false;
+  @Input() fullScreen = false;
+  @Input() loading = false;
+  @Input() modalStatusType:
     | 'info'
     | 'error'
     | 'warning'
     | 'success'
     | 'email'
     | 'delete' = 'info';
-  modalType: 'standard' | 'extended' | 'extendedSplit' | 'verification' =
-    'standard';
-  passwordButtonText = 'Forgot password?';
-  passwordChecked = false;
-  passwordCheckedLabel = 'Remember me';
-  showCancelButton = true;
-  showDismissButton = true;
-  showModalFooter = true;
-  showModalHeader = true;
-  showStatusTypeIcon = false;
-  size: 'tight' | 'narrow' | 'regular' | 'wide' = 'regular';
-  statusTypeIconLayout: 'vertical' | 'horizontal' = 'vertical';
-  supportingText = 'This is a supporting text';
-  supportingTextAlign: 'left' | 'center' = 'left';
-  title = 'Title';
-  titleAlign: 'left' | 'center' = 'left';
+  @Input() modalType:
+    | 'standard'
+    | 'extended'
+    | 'extendedSplit'
+    | 'verification' = 'standard';
+  @Input() passwordButtonText = 'Forgot password?';
+  @Input() passwordChecked = false;
+  @Input() passwordCheckedLabel = 'Remember me';
+  @Input() showCancelButton = true;
+  @Input() showDismissButton = true;
+  @Input() showModalFooter = true;
+  @Input() showModalHeader = true;
+  @Input() showStatusTypeIcon = false;
+  @Input() size: 'tight' | 'narrow' | 'regular' | 'wide' = 'regular';
+  @Input() statusTypeIconLayout: 'vertical' | 'horizontal' = 'vertical';
+  @Input() supportingText = 'This is a supporting text';
+  @Input() supportingTextAlign: 'left' | 'center' = 'left';
+  @Input() title = 'Title';
+  @Input() titleAlign: 'left' | 'center' = 'left';
 }
 
 export const Playground: Story = {
@@ -354,7 +362,7 @@ export const ModalHeaderStatusTypes: Story = {
         <button mznButton variant="base-primary" (click)="openDelete.set(true)">Delete</button>
       </div>
 
-      <mzn-modal
+      <div mznModal
         [open]="openInfo()"
         modalStatusType="info"
         modalType="standard"
@@ -362,20 +370,20 @@ export const ModalHeaderStatusTypes: Story = {
         [showModalFooter]="true"
         (closed)="openInfo.set(false)"
       >
-        <mzn-modal-header
+        <div mznModalHeader
           title="Information"
           supportingText="This is an informational message"
           [showStatusTypeIcon]="true"
-        />
-        <mzn-modal-footer
+        ></div>
+        <div mznModalFooter
           confirmText="OK"
           cancelText="Close"
           (confirmed)="openInfo.set(false)"
           (cancelled)="openInfo.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal
+      <div mznModal
         [open]="openError()"
         modalStatusType="error"
         modalType="standard"
@@ -383,20 +391,20 @@ export const ModalHeaderStatusTypes: Story = {
         [showModalFooter]="true"
         (closed)="openError.set(false)"
       >
-        <mzn-modal-header
+        <div mznModalHeader
           title="Error"
           supportingText="An error has occurred during the operation"
           [showStatusTypeIcon]="true"
-        />
-        <mzn-modal-footer
+        ></div>
+        <div mznModalFooter
           confirmText="OK"
           cancelText="Close"
           (confirmed)="openError.set(false)"
           (cancelled)="openError.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal
+      <div mznModal
         [open]="openWarning()"
         modalStatusType="warning"
         modalType="standard"
@@ -404,20 +412,20 @@ export const ModalHeaderStatusTypes: Story = {
         [showModalFooter]="true"
         (closed)="openWarning.set(false)"
       >
-        <mzn-modal-header
+        <div mznModalHeader
           title="Warning"
           supportingText="Please proceed with caution"
           [showStatusTypeIcon]="true"
-        />
-        <mzn-modal-footer
+        ></div>
+        <div mznModalFooter
           confirmText="OK"
           cancelText="Close"
           (confirmed)="openWarning.set(false)"
           (cancelled)="openWarning.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal
+      <div mznModal
         [open]="openSuccess()"
         modalStatusType="success"
         modalType="standard"
@@ -425,20 +433,20 @@ export const ModalHeaderStatusTypes: Story = {
         [showModalFooter]="true"
         (closed)="openSuccess.set(false)"
       >
-        <mzn-modal-header
+        <div mznModalHeader
           title="Success"
           supportingText="Operation completed successfully"
           [showStatusTypeIcon]="true"
-        />
-        <mzn-modal-footer
+        ></div>
+        <div mznModalFooter
           confirmText="OK"
           cancelText="Close"
           (confirmed)="openSuccess.set(false)"
           (cancelled)="openSuccess.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal
+      <div mznModal
         [open]="openEmail()"
         modalStatusType="email"
         modalType="standard"
@@ -446,20 +454,20 @@ export const ModalHeaderStatusTypes: Story = {
         [showModalFooter]="true"
         (closed)="openEmail.set(false)"
       >
-        <mzn-modal-header
+        <div mznModalHeader
           title="Email Notification"
           supportingText="You have new messages in your inbox"
           [showStatusTypeIcon]="true"
-        />
-        <mzn-modal-footer
+        ></div>
+        <div mznModalFooter
           confirmText="OK"
           cancelText="Close"
           (confirmed)="openEmail.set(false)"
           (cancelled)="openEmail.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal
+      <div mznModal
         [open]="openDelete()"
         modalStatusType="delete"
         modalType="standard"
@@ -467,19 +475,19 @@ export const ModalHeaderStatusTypes: Story = {
         [showModalFooter]="true"
         (closed)="openDelete.set(false)"
       >
-        <mzn-modal-header
+        <div mznModalHeader
           title="Delete Confirmation"
           supportingText="This action cannot be undone"
           [showStatusTypeIcon]="true"
-        />
-        <mzn-modal-footer
+        ></div>
+        <div mznModalFooter
           confirmText="Delete"
           cancelText="Cancel"
           confirmButtonVariant="destructive-primary"
           (confirmed)="openDelete.set(false)"
           (cancelled)="openDelete.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
     `,
   }),
 };
@@ -520,101 +528,101 @@ export const ModalHeaderCombinations: Story = {
       </div>
 
       <!-- No Icon -->
-      <mzn-modal [open]="openIndex() === 0" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Title Only" />
+      <div mznModal [open]="openIndex() === 0" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Title Only" ></div>
         <div class="mzn-modal__body-container"><p>Modal body content.</p></div>
-        <mzn-modal-footer
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openIndex() === 1" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Title Only (Center)" titleAlign="center" />
+      <div mznModal [open]="openIndex() === 1" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Title Only (Center)" titleAlign="center" ></div>
         <div class="mzn-modal__body-container"><p>Modal body content.</p></div>
-        <mzn-modal-footer
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openIndex() === 2" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Title + Supporting" supportingText="Supporting text displayed below the title." />
+      <div mznModal [open]="openIndex() === 2" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Title + Supporting" supportingText="Supporting text displayed below the title." ></div>
         <div class="mzn-modal__body-container"><p>Modal body content.</p></div>
-        <mzn-modal-footer
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openIndex() === 3" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Both Center" titleAlign="center" supportingText="Supporting text aligned center." supportingTextAlign="center" />
+      <div mznModal [open]="openIndex() === 3" modalType="standard" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Both Center" titleAlign="center" supportingText="Supporting text aligned center." supportingTextAlign="center" ></div>
         <div class="mzn-modal__body-container"><p>Modal body content.</p></div>
-        <mzn-modal-footer
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
       <!-- Vertical Icon -->
-      <mzn-modal [open]="openIndex() === 4" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Vertical Icon" [showStatusTypeIcon]="true" />
-        <mzn-modal-footer
+      <div mznModal [open]="openIndex() === 4" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Vertical Icon" [showStatusTypeIcon]="true" ></div>
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openIndex() === 5" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Vertical Icon (Center)" titleAlign="center" [showStatusTypeIcon]="true" />
-        <mzn-modal-footer
+      <div mznModal [open]="openIndex() === 5" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Vertical Icon (Center)" titleAlign="center" [showStatusTypeIcon]="true" ></div>
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openIndex() === 6" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Vertical Icon + Supporting" supportingText="Supporting text displayed below the title." [showStatusTypeIcon]="true" />
-        <mzn-modal-footer
+      <div mznModal [open]="openIndex() === 6" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Vertical Icon + Supporting" supportingText="Supporting text displayed below the title." [showStatusTypeIcon]="true" ></div>
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openIndex() === 7" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Vertical Icon + Both Center" titleAlign="center" supportingText="Supporting text aligned center." supportingTextAlign="center" [showStatusTypeIcon]="true" />
-        <mzn-modal-footer
+      <div mznModal [open]="openIndex() === 7" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Vertical Icon + Both Center" titleAlign="center" supportingText="Supporting text aligned center." supportingTextAlign="center" [showStatusTypeIcon]="true" ></div>
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
       <!-- Horizontal Icon -->
-      <mzn-modal [open]="openIndex() === 8" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Horizontal Icon" [showStatusTypeIcon]="true" statusTypeIconLayout="horizontal" />
-        <mzn-modal-footer
+      <div mznModal [open]="openIndex() === 8" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Horizontal Icon" [showStatusTypeIcon]="true" statusTypeIconLayout="horizontal" ></div>
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openIndex() === 9" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
-        <mzn-modal-header title="Horizontal Icon + Supporting" supportingText="Supporting text displayed below the title." [showStatusTypeIcon]="true" statusTypeIconLayout="horizontal" />
-        <mzn-modal-footer
+      <div mznModal [open]="openIndex() === 9" modalType="standard" modalStatusType="info" [showModalHeader]="true" [showModalFooter]="true" (closed)="openIndex.set(null)">
+        <div mznModalHeader title="Horizontal Icon + Supporting" supportingText="Supporting text displayed below the title." [showStatusTypeIcon]="true" statusTypeIconLayout="horizontal" ></div>
+        <div mznModalFooter
           confirmText="OK"
           [showCancelButton]="false"
           (confirmed)="openIndex.set(null)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
     `,
   }),
 };
@@ -632,33 +640,33 @@ export const ModalFooterButtonLayout: Story = {
         <button mznButton variant="base-primary" (click)="openFill.set(true)">Fill Layout</button>
       </div>
 
-      <mzn-modal [open]="openFixed()" modalType="standard" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openFixed.set(false)">
-        <mzn-modal-header title="Fixed Layout" />
+      <div mznModal [open]="openFixed()" modalType="standard" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openFixed.set(false)">
+        <div mznModalHeader title="Fixed Layout" ></div>
         <div class="mzn-modal__body-container">
           <p>This modal uses fixed width buttons (default behavior). The buttons maintain a consistent width.</p>
         </div>
-        <mzn-modal-footer
+        <div mznModalFooter
           actionsButtonLayout="fixed"
           confirmText="Confirm"
           cancelText="Cancel"
           (confirmed)="openFixed.set(false)"
           (cancelled)="openFixed.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openFill()" modalType="standard" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openFill.set(false)">
-        <mzn-modal-header title="Fill Layout" />
+      <div mznModal [open]="openFill()" modalType="standard" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openFill.set(false)">
+        <div mznModalHeader title="Fill Layout" ></div>
         <div class="mzn-modal__body-container">
           <p>This modal uses fill layout. The buttons expand to fill the available space equally. Note: This only works when there is no control on the left side.</p>
         </div>
-        <mzn-modal-footer
+        <div mznModalFooter
           actionsButtonLayout="fill"
           confirmText="Confirm"
           cancelText="Cancel"
           (confirmed)="openFill.set(false)"
           (cancelled)="openFill.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
     `,
   }),
 };
@@ -671,14 +679,15 @@ export const ModalFooterButtonLayout: Story = {
     <button mznButton variant="base-primary" (click)="open.set(true)"
       >Login Modal</button
     >
-    <mzn-modal
+    <div
+      mznModal
       [open]="open()"
       modalType="standard"
       [showModalHeader]="true"
       [showModalFooter]="true"
       (closed)="open.set(false)"
     >
-      <mzn-modal-header title="Login" />
+      <div mznModalHeader title="Login"></div>
       <div class="mzn-modal__body-container">
         <p
           >This modal uses the password type auxiliary content. It displays a
@@ -686,7 +695,8 @@ export const ModalFooterButtonLayout: Story = {
           a special password mode layout.</p
         >
       </div>
-      <mzn-modal-footer
+      <div
+        mznModalFooter
         auxiliaryContentType="password"
         confirmText="Login"
         cancelText="Cancel"
@@ -697,8 +707,8 @@ export const ModalFooterButtonLayout: Story = {
         (passwordClicked)="onForgotPassword()"
         (confirmed)="onLogin()"
         (cancelled)="open.set(false)"
-      />
-    </mzn-modal>
+      ></div>
+    </div>
   `,
 })
 class ModalFooterWithPasswordComponent {
@@ -739,7 +749,8 @@ export const ModalFooterWithPassword: Story = {
         >Sidebar Left</button
       >
     </div>
-    <mzn-modal
+    <div
+      mznModal
       [open]="open()"
       modalType="extendedSplit"
       size="wide"
@@ -748,7 +759,7 @@ export const ModalFooterWithPassword: Story = {
       [showModalFooter]="true"
       (closed)="open.set(false)"
     >
-      <mzn-modal-header title="檢視專案" />
+      <div mznModalHeader title="檢視專案"></div>
       <div [class]="splitContainerClasses()">
         <div class="mzn-modal__body-container__extended-split-right">
           <div
@@ -772,15 +783,16 @@ export const ModalFooterWithPassword: Story = {
           >
             <span>Left Side Content (Slot)</span>
           </div>
-          <mzn-modal-footer
+          <div
+            mznModalFooter
             confirmText="開始資料校正"
             cancelText="匯出 CSV"
             (confirmed)="open.set(false)"
             (cancelled)="open.set(false)"
-          />
+          ></div>
         </div>
       </div>
-    </mzn-modal>
+    </div>
   `,
 })
 class ExtendedSplitComponent {
@@ -836,33 +848,33 @@ export const BodySeparator: Story = {
         <button mznButton variant="base-primary" (click)="openExtended.set(true)">Extended (Always Visible)</button>
       </div>
 
-      <mzn-modal [open]="openStandard()" modalType="standard" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openStandard.set(false)">
-        <mzn-modal-header title="Scroll-based Separator" />
+      <div mznModal [open]="openStandard()" modalType="standard" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openStandard.set(false)">
+        <div mznModalHeader title="Scroll-based Separator" ></div>
         <div class="mzn-modal__body-container">
           @for (p of longBodyParagraphs; track $index) {
             <p style="margin: 0 0 12px;">{{ p }}</p>
           }
         </div>
-        <mzn-modal-footer
+        <div mznModalFooter
           confirmText="Confirm"
           cancelText="Cancel"
           (confirmed)="openStandard.set(false)"
           (cancelled)="openStandard.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
 
-      <mzn-modal [open]="openExtended()" modalType="extended" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openExtended.set(false)">
-        <mzn-modal-header title="Extended (Always Visible)" />
+      <div mznModal [open]="openExtended()" modalType="extended" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openExtended.set(false)">
+        <div mznModalHeader title="Extended (Always Visible)" ></div>
         <div class="mzn-modal__body-container">
           <p>Both separators are always visible in Extended Modal.</p>
         </div>
-        <mzn-modal-footer
+        <div mznModalFooter
           confirmText="Confirm"
           cancelText="Cancel"
           (confirmed)="openExtended.set(false)"
           (cancelled)="openExtended.set(false)"
-        />
-      </mzn-modal>
+        ></div>
+      </div>
     `,
   }),
 };
@@ -887,7 +899,8 @@ export const BodySeparator: Story = {
       >
     </div>
 
-    <mzn-modal
+    <div
+      mznModal
       [open]="open4Digit()"
       modalType="verification"
       modalStatusType="email"
@@ -896,14 +909,16 @@ export const BodySeparator: Story = {
       [showModalFooter]="true"
       (closed)="onClose4()"
     >
-      <mzn-modal-header
+      <div
+        mznModalHeader
         title="電子郵件驗證"
         titleAlign="center"
         supportingText="請輸入我們寄送至您信箱的驗證碼"
         supportingTextAlign="center"
         [showStatusTypeIcon]="true"
-      />
-      <mzn-modal-body-for-verification
+      ></div>
+      <div
+        mznModalBodyForVerification
         [length]="4"
         [value]="code4()"
         resendPrompt="收不到驗證碼？"
@@ -911,16 +926,18 @@ export const BodySeparator: Story = {
         (valueChange)="code4.set($event)"
         (completed)="onComplete4($event)"
         (resent)="onResend()"
-      />
-      <mzn-modal-footer
+      ></div>
+      <div
+        mznModalFooter
         confirmText="驗證"
         cancelText="取消"
         (confirmed)="onVerify4()"
         (cancelled)="onClose4()"
-      />
-    </mzn-modal>
+      ></div>
+    </div>
 
-    <mzn-modal
+    <div
+      mznModal
       [open]="open6Digit()"
       modalType="verification"
       modalStatusType="info"
@@ -929,14 +946,16 @@ export const BodySeparator: Story = {
       [showModalFooter]="true"
       (closed)="onClose6()"
     >
-      <mzn-modal-header
+      <div
+        mznModalHeader
         title="雙重驗證 (2FA)"
         titleAlign="center"
         supportingText="請輸入6位數驗證碼以完成雙重驗證"
         supportingTextAlign="center"
         [showStatusTypeIcon]="true"
-      />
-      <mzn-modal-body-for-verification
+      ></div>
+      <div
+        mznModalBodyForVerification
         [length]="6"
         [value]="code6()"
         resendPrompt="沒收到驗證碼？"
@@ -944,14 +963,15 @@ export const BodySeparator: Story = {
         (valueChange)="code6.set($event)"
         (completed)="onComplete6($event)"
         (resent)="onResend()"
-      />
-      <mzn-modal-footer
+      ></div>
+      <div
+        mznModalFooter
         confirmText="驗證"
         cancelText="取消"
         (confirmed)="onVerify6()"
         (cancelled)="onClose6()"
-      />
-    </mzn-modal>
+      ></div>
+    </div>
   `,
 })
 class VerificationCodeInputComponent {
@@ -1021,7 +1041,8 @@ export const VerificationCodeInput: Story = {
     <button mznButton variant="base-primary" (click)="open.set(true)"
       >open</button
     >
-    <mzn-modal
+    <div
+      mznModal
       [open]="open()"
       modalType="standard"
       modalStatusType="success"
@@ -1030,13 +1051,15 @@ export const VerificationCodeInput: Story = {
       [showModalFooter]="true"
       (closed)="open.set(false)"
     >
-      <mzn-modal-header
+      <div
+        mznModalHeader
         title="儲存完成"
         supportingText="變更已成功儲存，您可以繼續編輯或返回列表頁面。"
         [showStatusTypeIcon]="true"
         statusTypeIconLayout="horizontal"
-      />
-      <mzn-modal-footer
+      ></div>
+      <div
+        mznModalFooter
         auxiliaryContentType="checkbox"
         [auxiliaryContentChecked]="checked()"
         auxiliaryContentLabel="不再顯示此訊息"
@@ -1045,8 +1068,8 @@ export const VerificationCodeInput: Story = {
         (auxiliaryContentChanged)="checked.set($event)"
         (confirmed)="open.set(false)"
         (cancelled)="open.set(false)"
-      />
-    </mzn-modal>
+      ></div>
+    </div>
   `,
 })
 class SaveSuccessWithCheckboxComponent {

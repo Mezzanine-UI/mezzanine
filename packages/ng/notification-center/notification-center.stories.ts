@@ -80,13 +80,13 @@ export const Playground: Story = {
     },
     template: `
       <div style="position: relative; display: inline-block;">
-        <mzn-notification-center
+        <div mznNotificationCenter
           [notifications]="notifications"
           [open]="open"
           [title]="title"
           (openChange)="onOpenChange($event); open = $event"
           (notificationClick)="onNotificationClick($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -144,36 +144,36 @@ export const Severity: Story = {
     template: `
       <div style="display: grid; grid-gap: 16px; grid-template-columns: repeat(4, auto); justify-content: start;">
         <div style="position: relative; display: inline-block;">
-          <mzn-notification-center
+          <div mznNotificationCenter
             [notifications]="successNotifications"
             [open]="openSuccess()"
             title="Success"
             (openChange)="openSuccess.set($event)"
-          />
+          ></div>
         </div>
         <div style="position: relative; display: inline-block;">
-          <mzn-notification-center
+          <div mznNotificationCenter
             [notifications]="warningNotifications"
             [open]="openWarning()"
             title="Warning"
             (openChange)="openWarning.set($event)"
-          />
+          ></div>
         </div>
         <div style="position: relative; display: inline-block;">
-          <mzn-notification-center
+          <div mznNotificationCenter
             [notifications]="errorNotifications"
             [open]="openError()"
             title="Error"
             (openChange)="openError.set($event)"
-          />
+          ></div>
         </div>
         <div style="position: relative; display: inline-block;">
-          <mzn-notification-center
+          <div mznNotificationCenter
             [notifications]="infoNotifications"
             [open]="openInfo()"
             title="Info"
             (openChange)="openInfo.set($event)"
-          />
+          ></div>
         </div>
       </div>
     `,
@@ -214,12 +214,13 @@ export const Severity: Story = {
         </button>
       </div>
       <div style="position: relative; display: inline-block;">
-        <mzn-notification-center
+        <div
+          mznNotificationCenter
           [notifications]="notifications()"
           [open]="open()"
           title="通知中心"
           (openChange)="open.set($event)"
-        />
+        ></div>
       </div>
     </div>
   `,
@@ -352,12 +353,12 @@ export const DrawerWithChildren: Story = {
         <button (click)="open.set(true)" style="padding: 8px 16px; background: #1976d2; color: white; border: none; cursor: pointer; border-radius: 4px;">
           開啟通知中心
         </button>
-        <mzn-notification-center
+        <div mznNotificationCenter
           [notifications]="notifications"
           [open]="open()"
           title="通知中心"
           (openChange)="open.set($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -418,12 +419,12 @@ export const DrawerWithNotificationList: Story = {
         <button (click)="open.set(true)" style="padding: 8px 16px; background: #1976d2; color: white; border: none; cursor: pointer; border-radius: 4px;">
           開啟通知中心（使用 notificationList）
         </button>
-        <mzn-notification-center
+        <div mznNotificationCenter
           [notifications]="notificationList"
           [open]="open()"
           title="通知中心"
           (openChange)="open.set($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -440,12 +441,12 @@ export const DrawerEmpty: Story = {
         <button (click)="open.set(true)" style="padding: 8px 16px; background: #1976d2; color: white; border: none; cursor: pointer; border-radius: 4px;">
           開啟通知中心（空狀態）
         </button>
-        <mzn-notification-center
+        <div mznNotificationCenter
           [notifications]="[]"
           [open]="open()"
           title="通知中心"
           (openChange)="open.set($event)"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -525,12 +526,12 @@ export const DrawerTimeStamp: Story = {
           <button (click)="open.set(true)" style="padding: 8px 16px; background: #1976d2; color: white; border: none; cursor: pointer; border-radius: 4px;">
             開啟通知中心（時間戳記範例）
           </button>
-          <mzn-notification-center
+          <div mznNotificationCenter
             [notifications]="notifications"
             [open]="open()"
             title="通知中心 - 時間戳記顯示範例"
             (openChange)="open.set($event)"
-          />
+          ></div>
         </div>
       `,
     };
@@ -576,12 +577,12 @@ export const DrawerWithFilterOptions: Story = {
         <button (click)="open.set(true)" style="padding: 8px 16px; background: #1976d2; color: white; border: none; cursor: pointer; border-radius: 4px;">
           開啟通知中心（含篩選 Dropdown）
         </button>
-        <mzn-notification-center
+        <div mznNotificationCenter
           [notifications]="notificationList"
           [open]="open()"
           title="通知中心"
           (openChange)="open.set($event)"
-        />
+        ></div>
       </div>
     `,
   }),

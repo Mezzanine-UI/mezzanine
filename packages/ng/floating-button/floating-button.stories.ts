@@ -105,12 +105,17 @@ export const AutoHideWhenOpen: Story = {
     <div mznFloatingButton [open]="open()" (click)="open.set(true)">
       Open Modal
     </div>
-    <mzn-modal [open]="open()" modalType="standard" (closed)="open.set(false)">
-      <mzn-modal-header title="Modal Title" />
+    <div
+      mznModal
+      [open]="open()"
+      modalType="standard"
+      (closed)="open.set(false)"
+    >
+      <div mznModalHeader title="Modal Title"></div>
       <div class="mzn-modal__body-container">
         <p>Modal Content</p>
       </div>
-    </mzn-modal>
+    </div>
   `,
 })
 class WithModalComponent {

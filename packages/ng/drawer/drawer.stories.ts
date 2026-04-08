@@ -264,19 +264,20 @@ export const WithCustomButtonVariants: Story = {
         </div>
       </div>
     </div>
-    <mzn-modal
+    <div
+      mznModal
       [open]="modalOpen()"
       modalType="standard"
       modalStatusType="info"
       size="regular"
       (closed)="modalOpen.set(false)"
     >
-      <mzn-modal-header title="基本 Modal" />
+      <div mznModalHeader title="基本 Modal"></div>
       <div class="mzn-modal__body-container">
         <p>這是一個從 Drawer 中打開的基本 Modal。</p>
         <p>測試 z-index 和背景遮罩是否正常運作。</p>
       </div>
-      <mzn-modal-footer>
+      <div mznModalFooter>
         <div mznButtonGroup>
           <button
             mznButton
@@ -291,8 +292,8 @@ export const WithCustomButtonVariants: Story = {
             >確認</button
           >
         </div>
-      </mzn-modal-footer>
-    </mzn-modal>
+      </div>
+    </div>
   `,
 })
 class WithModalWhileDrawerOpenComponent {

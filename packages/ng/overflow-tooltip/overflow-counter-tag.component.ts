@@ -29,22 +29,28 @@ import { MznOverflowTooltip } from './overflow-tooltip.component';
  * ```html
  * import { MznOverflowCounterTag } from '@mezzanine-ui/ng/overflow-tooltip';
  *
- * <mzn-overflow-counter-tag
+ * <span mznOverflowCounterTag
  *   [tags]="overflowTags"
  *   placement="top-start"
  *   (tagDismiss)="onDismiss($event)"
- * />
+ * ></span>
  * ```
  *
  * @see MznOverflowTooltip
  */
 @Component({
-  selector: 'mzn-overflow-counter-tag',
+  selector: '[mznOverflowCounterTag]',
   standalone: true,
   imports: [MznTag, MznOverflowTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.className]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.tagSize]': 'null',
+    '[attr.tags]': 'null',
   },
   template: `
     <span #triggerEl>
@@ -58,7 +64,8 @@ import { MznOverflowTooltip } from './overflow-tooltip.component';
         (tagClick)="toggle()"
       ></span>
     </span>
-    <mzn-overflow-tooltip
+    <div
+      mznOverflowTooltip
       [anchor]="triggerElementRef()!"
       [className]="className()"
       [open]="open()"
@@ -67,7 +74,7 @@ import { MznOverflowTooltip } from './overflow-tooltip.component';
       [tagSize]="tagSize()"
       [tags]="tags()"
       (tagDismiss)="tagDismiss.emit($event)"
-    />
+    ></div>
   `,
 })
 export class MznOverflowCounterTag {

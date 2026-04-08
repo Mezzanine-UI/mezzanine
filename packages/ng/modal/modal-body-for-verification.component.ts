@@ -23,54 +23,63 @@ import clsx from 'clsx';
  * ```html
  * import { MznModalBodyForVerification } from '@mezzanine-ui/ng/modal';
  *
- * <mzn-modal-body-for-verification
+ * <div mznModalBodyForVerification
  *   [length]="6"
  *   [autoFocus]="true"
  *   resendText="點此重新寄送"
  *   (valueChange)="onCodeChange($event)"
  *   (completed)="onComplete($event)"
  *   (resent)="onResend()"
- * />
+ * ></div>
  * ```
  *
  * @see MznModal
  * @see MznModalFooter
  */
 @Component({
-  selector: 'mzn-modal-body-for-verification',
+  selector: '[mznModalBodyForVerification]',
+  host: {
+    '[class]': 'verificationClass',
+    '[attr.autoFocus]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.length]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.resendPrompt]': 'null',
+    '[attr.resendText]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [class]="verificationClass">
-      <div [class]="inputsClass()">
-        @for (code of codes(); track $index) {
-          <input
-            #codeInput
-            [class]="inputClass()"
-            type="text"
-            inputMode="numeric"
-            maxlength="1"
-            autocomplete="off"
-            [value]="code"
-            [disabled]="disabled()"
-            [readOnly]="readOnly()"
-            (input)="onInput($index, $event)"
-            (keydown)="onKeyDown($index, $event)"
-            (paste)="onPaste($index, $event)"
-          />
-        }
-      </div>
-      @if (resendText()) {
-        <div [class]="resendClass">
-          <span class="mzn-typography--caption mzn-typography--text-neutral">{{
-            resendPrompt()
-          }}</span>
-          <a [class]="resendLinkClass" (click)="onResendClick()">{{
-            resendText()
-          }}</a>
-        </div>
+    <div [class]="inputsClass()">
+      @for (code of codes(); track $index) {
+        <input
+          #codeInput
+          [class]="inputClass()"
+          type="text"
+          inputMode="numeric"
+          maxlength="1"
+          autocomplete="off"
+          [value]="code"
+          [disabled]="disabled()"
+          [readOnly]="readOnly()"
+          (input)="onInput($index, $event)"
+          (keydown)="onKeyDown($index, $event)"
+          (paste)="onPaste($index, $event)"
+        />
       }
     </div>
+    @if (resendText()) {
+      <div [class]="resendClass">
+        <span class="mzn-typography--caption mzn-typography--text-neutral">{{
+          resendPrompt()
+        }}</span>
+        <a [class]="resendLinkClass" (click)="onResendClick()">{{
+          resendText()
+        }}</a>
+      </div>
+    }
   `,
 })
 export class MznModalBodyForVerification {

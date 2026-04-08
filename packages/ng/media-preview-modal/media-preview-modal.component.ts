@@ -33,36 +33,47 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
  * ```html
  * import { MznMediaPreviewModal } from '@mezzanine-ui/ng/media-preview-modal';
  *
- * <mzn-media-preview-modal
+ * <div mznMediaPreviewModal
  *   [open]="isOpen"
  *   [mediaItems]="['url1.jpg', 'url2.jpg', 'url3.jpg']"
  *   [defaultIndex]="0"
  *   [showPaginationIndicator]="true"
  *   (closed)="isOpen = false"
  *   (indexChange)="onIndexChange($event)"
- * />
+ * ></div>
  * ```
  *
  * Controlled mode:
  * ```html
- * <mzn-media-preview-modal
+ * <div mznMediaPreviewModal
  *   [open]="isOpen"
  *   [mediaItems]="images"
  *   [currentIndex]="currentIndex"
  *   (closed)="isOpen = false"
  *   (next)="onNext()"
  *   (prev)="onPrev()"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-media-preview-modal',
+  selector: '[mznMediaPreviewModal]',
   standalone: true,
   imports: [MznBackdrop, MznClearActions, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [mznScaleAnimation, mznFadeAnimation],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.open]': 'null',
+    '[attr.mediaItems]': 'null',
+    '[attr.defaultIndex]': 'null',
+    '[attr.currentIndex]': 'null',
+    '[attr.disableNext]': 'null',
+    '[attr.disablePrev]': 'null',
+    '[attr.enableCircularNavigation]': 'null',
+    '[attr.showPaginationIndicator]': 'null',
+    '[attr.disableCloseOnBackdropClick]': 'null',
+    '[attr.disableCloseOnEscapeKeyDown]': 'null',
+    '[attr.disablePortal]': 'null',
   },
   template: `
     <div

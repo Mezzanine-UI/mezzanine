@@ -15,20 +15,20 @@ import { MZN_MODAL_CONTEXT } from './modal-context';
  * 套用在 Modal body 容器元素上的 attribute directive。
  *
  * 自動掛載 `mzn-modal__body-container` class，並依據實際捲動狀態切換上下分隔線。
- * 當父層 `<mzn-modal>` 的 `modalType` 為 `extended` 時，強制兩條分隔線都顯示。
+ * 當父層 `<div mznModal>` 的 `modalType` 為 `extended` 時，強制兩條分隔線都顯示。
  *
  * 對應 React `Modal` 內 `handleBodyContainerRef` 的行為。Angular 因為無法
  * introspect 投影內容，所以由 consumer 顯式套用本 directive 來啟用此邏輯。
  *
  * @example
  * ```html
- * <mzn-modal [open]="isOpen">
- *   <mzn-modal-header title="Title" />
+ * <div mznModal [open]="isOpen">
+ *   <div mznModalHeader title="Title" ></div>
  *   <div mznModalBodyContainer>
  *     <p>長內容…</p>
  *   </div>
- *   <mzn-modal-footer>...</mzn-modal-footer>
- * </mzn-modal>
+ *   <div mznModalFooter>...</div>
+ * </div>
  * ```
  */
 @Directive({

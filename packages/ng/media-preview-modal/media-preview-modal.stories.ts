@@ -78,7 +78,7 @@ export const Playground: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Media Preview
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="sampleImages"
         [defaultIndex]="defaultIndex"
@@ -88,7 +88,7 @@ export const Playground: Story = {
         [showPaginationIndicator]="showPaginationIndicator"
         (closed)="open.set(false)"
         (indexChange)="onIndexChange($event)"
-      />
+      ></div>
     `,
   }),
 };
@@ -111,13 +111,13 @@ export const TrackingIndexChanges: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Gallery (Track Index Changes)
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="sampleImages"
         [defaultIndex]="2"
         (closed)="open.set(false)"
         (indexChange)="lastIndex.set($event)"
-      />
+      ></div>
     `,
   }),
 };
@@ -134,11 +134,11 @@ export const SingleImage: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Single Image
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="singleImage"
         (closed)="open.set(false)"
-      />
+      ></div>
     `,
   }),
 };
@@ -155,12 +155,12 @@ export const CircularNavigation: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Gallery (Circular Navigation - Uncontrolled)
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="sampleImages"
         [enableCircularNavigation]="true"
         (closed)="open.set(false)"
-      />
+      ></div>
     `,
   }),
 };
@@ -176,14 +176,15 @@ export const CircularNavigation: Story = {
     <button mznButton variant="base-primary" (click)="open.set(true)">
       Open Gallery (Circular Navigation - Controlled)
     </button>
-    <mzn-media-preview-modal
+    <div
+      mznMediaPreviewModal
       [open]="open()"
       [mediaItems]="sampleImages"
       [currentIndex]="currentIndex()"
       (closed)="open.set(false)"
       (next)="onNext()"
       (prev)="onPrev()"
-    />
+    ></div>
   `,
 })
 class MediaPreviewModalControlledComponent {
@@ -237,11 +238,11 @@ export const CustomMedia: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Custom Media
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="customMediaItems"
         (closed)="open.set(false)"
-      />
+      ></div>
     `,
   }),
 };
@@ -258,12 +259,12 @@ export const WithPaginationIndicator: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Gallery with Pagination Indicator
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="sampleImages"
         [showPaginationIndicator]="true"
         (closed)="open.set(false)"
-      />
+      ></div>
     `,
   }),
 };
@@ -280,12 +281,12 @@ export const HidePaginationIndicator: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Gallery without Pagination Indicator
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="sampleImages"
         [showPaginationIndicator]="false"
         (closed)="open.set(false)"
-      />
+      ></div>
     `,
   }),
 };
@@ -308,12 +309,12 @@ export const MixedOrientations: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)">
         Open Mixed Aspect Ratios
       </button>
-      <mzn-media-preview-modal
+      <div mznMediaPreviewModal
         [open]="open()"
         [mediaItems]="mixedImages"
         [defaultIndex]="2"
         (closed)="open.set(false)"
-      />
+      ></div>
     `,
   }),
 };
@@ -339,12 +340,13 @@ export const MixedOrientations: Story = {
         預覽已上傳圖片（{{ blobUrls().length }} 張）
       </button>
     </div>
-    <mzn-media-preview-modal
+    <div
+      mznMediaPreviewModal
       [open]="open()"
       [mediaItems]="blobUrls()"
       [enableCircularNavigation]="true"
       (closed)="open.set(false)"
-    />
+    ></div>
   `,
 })
 class LocalFileUploadComponent {
@@ -383,11 +385,12 @@ export const LocalFileUpload: Story = {
     <button mznButton variant="base-primary" (click)="open.set(true)">
       Open with Next/Image (Mock)
     </button>
-    <mzn-media-preview-modal
+    <div
+      mznMediaPreviewModal
       [open]="open()"
       [mediaItems]="imageUrls"
       (closed)="open.set(false)"
-    />
+    ></div>
   `,
 })
 class WithNextImageComponentComponent {

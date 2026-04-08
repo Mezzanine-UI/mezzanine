@@ -76,25 +76,35 @@ function getTimeGroup(timestamp: Date | undefined, now: Date): TimeGroup {
  * ```html
  * import { MznNotificationCenter } from '@mezzanine-ui/ng/notification-center';
  *
- * <mzn-notification-center
+ * <div mznNotificationCenter
  *   [notifications]="items"
  *   [open]="isPanelOpen"
  *   title="通知中心"
  *   (openChange)="isPanelOpen = $event"
  *   (notificationClick)="onNotificationClick($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznIcon
  * @see MznBadge
  */
 @Component({
-  selector: 'mzn-notification-center',
+  selector: '[mznNotificationCenter]',
   standalone: true,
   imports: [MznIcon, MznBadge],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.drawerSize]': 'null',
+    '[attr.earlierLabel]': 'null',
+    '[attr.emptyNotificationDescription]': 'null',
+    '[attr.emptyNotificationTitle]': 'null',
+    '[attr.notifications]': 'null',
+    '[attr.open]': 'null',
+    '[attr.past7DaysLabel]': 'null',
+    '[attr.title]': 'null',
+    '[attr.todayLabel]': 'null',
+    '[attr.yesterdayLabel]': 'null',
   },
   template: `
     <button type="button" [class]="triggerClasses()" (click)="toggleOpen()">

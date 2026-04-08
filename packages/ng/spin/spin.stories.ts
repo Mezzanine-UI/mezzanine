@@ -88,8 +88,8 @@ export const Nested: Story = {
     <button mznButton variant="base-primary" (click)="open.set(true)"
       >OPEN</button
     >
-    <mzn-modal [open]="open()" (closed)="open.set(false)">
-      <mzn-modal-header title="Hi" />
+    <div mznModal [open]="open()" (closed)="open.set(false)">
+      <div mznModalHeader title="Hi"></div>
       <div class="mzn-modal__body-container">
         <div
           mznSpin
@@ -101,7 +101,7 @@ export const Nested: Story = {
           <div style="width: 100%; height: 200px;"></div>
         </div>
       </div>
-    </mzn-modal>
+    </div>
   `,
 })
 class SpinOnModalDemoComponent {

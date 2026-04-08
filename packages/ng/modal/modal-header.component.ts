@@ -25,22 +25,28 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
  * ```html
  * import { MznModalHeader } from '@mezzanine-ui/ng/modal';
  *
- * <mzn-modal-header
+ * <div mznModalHeader
  *   title="確認刪除"
  *   supportingText="此操作無法復原"
  *   [showStatusTypeIcon]="true"
- * />
+ * ></div>
  * ```
  *
  * @see MznModal
  */
 @Component({
-  selector: 'mzn-modal-header',
+  selector: '[mznModalHeader]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.title]': 'null',
+    '[attr.showStatusTypeIcon]': 'null',
+    '[attr.statusTypeIconLayout]': 'null',
+    '[attr.supportingText]': 'null',
+    '[attr.supportingTextAlign]': 'null',
+    '[attr.titleAlign]': 'null',
   },
   template: `
     @if (showStatusTypeIcon()) {

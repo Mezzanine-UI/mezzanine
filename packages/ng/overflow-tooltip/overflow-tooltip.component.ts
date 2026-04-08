@@ -53,18 +53,27 @@ const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
  * import { MznOverflowTooltip } from '@mezzanine-ui/ng/overflow-tooltip';
  *
  * <div #anchor style="width: 32px; height: 32px;"></div>
- * <mzn-overflow-tooltip
+ * <div mznOverflowTooltip
  *   [anchor]="anchor"
  *   [open]="isOpen"
  *   [tags]="['Tag 1', 'Tag 2', 'Tag 3']"
  *   (tagDismiss)="onDismiss($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznOverflowCounterTag
  */
 @Component({
-  selector: 'mzn-overflow-tooltip',
+  selector: '[mznOverflowTooltip]',
+  host: {
+    '[attr.anchor]': 'null',
+    '[attr.className]': 'null',
+    '[attr.open]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.tagSize]': 'null',
+    '[attr.tags]': 'null',
+  },
   standalone: true,
   imports: [MznPopper, MznTag],
   changeDetection: ChangeDetectionStrategy.OnPush,

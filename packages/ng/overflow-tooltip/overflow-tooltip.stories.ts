@@ -26,7 +26,8 @@ type Story = StoryObj;
         #anchorEl
         style="width: 32px; height: 32px; border-radius: 999px; background: white;"
       ></div>
-      <mzn-overflow-tooltip
+      <div
+        mznOverflowTooltip
         [anchor]="anchorElRef()!"
         [className]="className"
         [open]="open"
@@ -35,7 +36,7 @@ type Story = StoryObj;
         [tagSize]="tagSize"
         [tags]="tags"
         (tagDismiss)="onDismiss($event)"
-      />
+      ></div>
     </div>
   `,
 })
@@ -147,12 +148,13 @@ export const Playground: Story = {
         >
           <span style="font-size: 18px; font-weight: 700;">Dismissable</span>
         </div>
-        <mzn-overflow-tooltip
+        <div
+          mznOverflowTooltip
           [anchor]="anchor1ElRef()!"
           [open]="true"
           [tags]="tags"
           (tagDismiss)="onDismiss($event)"
-        />
+        ></div>
       </div>
       <div>
         <div
@@ -161,13 +163,14 @@ export const Playground: Story = {
         >
           <span style="font-size: 18px; font-weight: 700;">Read Only</span>
         </div>
-        <mzn-overflow-tooltip
+        <div
+          mznOverflowTooltip
           [anchor]="anchor2ElRef()!"
           [open]="true"
           [readOnly]="true"
           [tags]="tags"
           (tagDismiss)="onDismiss($event)"
-        />
+        ></div>
       </div>
     </div>
   `,
@@ -223,13 +226,14 @@ export const States: Story = {
           >
             Tag 1 &times;&nbsp;<strong>+ 3</strong>
           </div>
-          <mzn-overflow-tooltip
+          <div
+            mznOverflowTooltip
             [anchor]="triggerEl"
             [open]="true"
             [placement]="item.placement"
             [tags]="tags"
             (tagDismiss)="noop()"
-          />
+          ></div>
         </div>
       }
     </div>
@@ -295,12 +299,13 @@ export const Placement: Story = {
               >
                 Option 1 &times;
               </span>
-              <mzn-overflow-counter-tag
+              <span
+                mznOverflowCounterTag
                 [placement]="item.placement"
                 [tags]="tags"
                 tagSize="main"
                 (tagDismiss)="noop()"
-              />
+              ></span>
             </div>
             <span style="color: #8c8c8c; flex-shrink: 0; font-size: 12px;"
               >&#8964;</span
@@ -346,12 +351,13 @@ export const PlacementOnClick: Story = {
         #anchorEl
         style="width: 32px; height: 32px; border-radius: 999px; background: white;"
       ></div>
-      <mzn-overflow-tooltip
+      <div
+        mznOverflowTooltip
         [anchor]="anchorElRef()!"
         [open]="true"
         [tags]="['Tag 1']"
         (tagDismiss)="noop()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -381,12 +387,13 @@ export const SingleTag: Story = {
         #anchorEl
         style="width: 32px; height: 32px; border-radius: 999px; background: white;"
       ></div>
-      <mzn-overflow-tooltip
+      <div
+        mznOverflowTooltip
         [anchor]="anchorElRef()!"
         [open]="true"
         [tags]="tags()"
         (tagDismiss)="dismiss($event)"
-      />
+      ></div>
     </div>
   `,
 })
@@ -476,14 +483,14 @@ export const OverflowCounterTagPlayground: Story = {
     props: args,
     template: `
       <div style="padding: 100px;">
-        <mzn-overflow-counter-tag
+        <span mznOverflowCounterTag
           [className]="className"
           [disabled]="disabled"
           [placement]="placement"
           [readOnly]="readOnly"
           [tagSize]="tagSize"
           [tags]="tags"
-        />
+        ></span>
       </div>
     `,
   }),
