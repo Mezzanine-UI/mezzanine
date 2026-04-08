@@ -593,3 +593,102 @@ Storybook compiles those at runtime. Catching them would require
 running Storybook's test-runner under a headless browser in CI,
 which is heavy for the marginal benefit. Document it as a known
 gap; revisit if inline template regressions recur.
+
+## Phase 5 — component inventory follow-ups
+
+Working from the component parity inventory report, three user-picked
+follow-ups were closed:
+
+### Popconfirm removal (`878ddc36`)
+
+NG had a day-1 `mzn-popconfirm` component with no React counterpart
+and zero consumers inside the monorepo (verified via grep across
+`packages/react`, `packages/core/src`, `packages/ng`). Per user
+decision the divergence was removed cleanly rather than logged as a
+DEVIATIONS entry: the folder, the tsconfig.spec entry, and all refs
+were deleted in a single commit, and both `ng:build-storybook` and
+`parity:lint-ng-content` stayed green afterwards.
+
+### Table — expandable config + virtualized stub (`0e8b002c`)
+
+Phase 5 research showed NG Table covered ~24/26 React props, with two
+real feature gaps behind a mostly-matching input surface:
+
+1. `expandable` was just a `boolean`, with the expanded row rendering
+   only a placeholder `<!-- -->` comment. React accepts a
+   `TableExpandable<T>` object with `expandedRowRender`, controlled
+   `expandedRowKeys`, `onExpand` / `onExpandedRowsChange` callbacks,
+   and a `rowExpandable` predicate.
+2. `scroll.virtualized` was entirely unimplemented and the TODO hid
+   inside a single-line comment.
+
+**Closed**: a new `TableExpandable<T>` type mirrors the React core
+type but uses `TemplateRef<{ $implicit: T }>` in place of the React
+function prop, which is the idiomatic Angular equivalent. The
+`expandable` input now accepts `TableExpandable<T> | boolean`; boolean
+keeps the original behavior. Internal helpers `expandableConfig`,
+`isExpandableEnabled`, `expandedTemplate`, `canExpandRow`,
+`onExpandCellClick` wire the new object shape. `effect()` syncs
+controlled `expandedRowKeys` to the internal signal.
+`sticky` default flipped from `false` to `true` for React parity.
+The `WithExpansion` story now demonstrates TemplateRef, predicate
+gating, and event hooks.
+
+**Deferred**: virtualized scroll is still a placeholder, but the
+scroll input's doc-comment is now an explicit Phase 6 TODO targeting
+`@angular/cdk/scrolling` / `CdkVirtualScrollViewport`. The Storybook
+story `Virtual Scrolling (In Development)` surfaces a prominent
+warning banner so the status is visible in the sidebar.
+
+### NavigationUserMenu — rewrite + story (`76641dda`)
+
+Originally logged in Phase 3B as "port-skipped", but a stub file
+already existed with three latent bugs that kept it unusable:
+
+1. attribute directive on `<button>` whose template added a nested
+   `<button>` (invalid HTML + broken click handling),
+2. `<ng-content select="[menuContent], ng-template" />` projection
+   though `MznDropdown` has no default content slot (items never
+   rendered),
+3. `tooltipTitle` computed dead code, duplicated `hostClasses` /
+   `buttonClasses`, and a `ngOnInit`-scoped `ResizeObserver` outside
+   the signal lifecycle.
+
+**Closed**: rewrite to an element selector
+`<mzn-navigation-user-menu>` with `display: contents` host (matching
+Phase 3A #1 pattern used for `mzn-navigation-option`). Inner
+`<button>` + sibling `<div mznDropdown>` renders properly; the
+dropdown is driven by a new `options: DropdownOption[]` input that
+reuses the design system's existing menu vocabulary. New
+`optionSelected` output fires on item click; existing
+`visibilityChange` / `closed` outputs preserved. `ResizeObserver`
+moved inside an `effect()` with `onCleanup`. A `NavigationWithUserMenu`
+story exercises the full flow and the two "not available in Angular"
+comments that existed in Phase 2 stories were removed.
+
+### Public API alignment (`1846f68c`)
+
+Ten secondary entry points were narrowed to match the React surface:
+`accordion`, `calendar`, `checkbox`, `dropdown`, `filter-area`,
+`modal`, `navigation`, `picker`, `stepper`, `table`. Removed exports
+are DI tokens / context interfaces / internal sub-components / parser
+utilities that React never published. Intra-package consumers already
+used relative paths, so no compile breakage — the only adjustment
+needed was keeping `CalendarQuickSelectOption` as a _type_-only
+re-export from `calendar/index.ts` because sibling date-range-picker
+packages type their quick-select payload against it.
+
+Explicitly kept:
+
+- `description`: `MZN_DESCRIPTION_CONTEXT` / `DescriptionContextValue`
+  mirror React's `DescriptionContext` + `DescriptionContextValue`
+- `table`: `MZN_TABLE_CONTEXT` / `TableContextValue` mirror React's
+  `TableContext` + `TableContextValue`
+- `form`: `FormControl` + `MZN_FORM_CONTROL` mirror React's
+  `FormControl` + `FormControlContext`
+- `notifier` / `alert-banner`: Angular-idiomatic services are kept as
+  the valid equivalents of React's hook / provider patterns, not as
+  over-exposed components
+
+Both `yarn ng:build-storybook` and `yarn parity:lint-ng-content` pass
+after the alignment.
