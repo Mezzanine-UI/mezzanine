@@ -14,6 +14,7 @@ import {
   SystemIcon,
 } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
+import { MznButtonGroup } from '@mezzanine-ui/ng/button';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { NgTemplateOutlet } from '@angular/common';
 import { EmptyType } from './typings';
@@ -57,6 +58,7 @@ const iconMap: Record<Exclude<EmptyType, 'custom'>, IconDefinition> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    MznButtonGroup,
     MznIcon,
     NgTemplateOutlet,
     MznEmptyMainInitialDataIcon,
@@ -105,9 +107,9 @@ const iconMap: Record<Exclude<EmptyType, 'custom'>, IconDefinition> = {
       }
 
       @if (size() !== 'minor') {
-        <div [class]="classes.actions">
+        <mzn-button-group [class]="classes.actions">
           <ng-content select="[actions]" />
-        </div>
+        </mzn-button-group>
       }
     </div>
   `,

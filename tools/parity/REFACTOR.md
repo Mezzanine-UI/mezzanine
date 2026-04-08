@@ -37,6 +37,27 @@ Empty went 38 → 539 not because we broke it but because we unmasked existing c
 2. Root tag matches React root (no more `mzn-x` vs `div` at `/`).
 3. Any new diffs introduced below the host are either (a) pre-existing issues newly exposed, or (b) verifiably caused by the refactor — the latter must be fixed before committing.
 
+## Refactor batch responsibility scope
+
+A refactor batch should NOT be treated as "selector switch only and nothing else." The batch is the right moment to fix any port-time omission that's visible to a human user. Concretely:
+
+**In scope — fix during the batch:**
+
+- Selector element → attribute switch
+- Input-name attribute leakage (`[attr.X]: null`)
+- Host tag alignment with React root
+- **Missing wrappers / sub-components that the Angular port skipped.** Example: empty's React source wraps actions in `<ButtonGroup>` for gap spacing; the Angular port used a plain `<div>`, so two buttons had no spacing between them. This is NOT a pre-existing theme noise issue — it is visible at a glance — and must be fixed in the same commit that touches the component. Discovered 2026-04-08 on empty; see commit referencing this note.
+- Obvious template structural gaps that produce hand-visible UX breakage
+
+**Out of scope — leave for Phase 5 cleanup:**
+
+- Angular Storybook theme CSS variable drift (e.g. `rgb(5, 6, 6)` vs `rgb(0, 0, 0)` everywhere)
+- `hostClasses()` emitting modifier classes in a slightly different order than React's `cx()`
+- `<p>` vs `<span>` where React's `Typography` defaults differ from the Angular template tag
+- Invisible computed-style differences (1px nudges, sub-pixel color rounding)
+
+**Decision rule**: open the story, look at it for one second. If you can point at something wrong without consulting the diff report, fix it in this commit. If you can only see it by reading the report, defer to Phase 5.
+
 Separator (already refactored) shows the same pervasive `rgb(5, 6, 6)` descendant diff — confirms it's Angular-storybook-wide theme/CSS-variable noise independent of this refactor.
 
 ### Resolved this session
