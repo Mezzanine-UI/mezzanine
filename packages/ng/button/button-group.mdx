@@ -1,0 +1,14 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ButtonGroupStories from './button-group.stories';
+
+<Meta of={ButtonGroupStories} />
+
+# ButtonGroup
+
+將多個 `[mznButton]` 水平或垂直排列為群組。
+
+透過 DI 向子按鈕提供預設的 `variant`、`size`、`disabled`，子按鈕若自行指定則優先使用自身值。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/button/button-group.component.ts)
+
+<ArgTypes of={ButtonGroupStories.Playground} />

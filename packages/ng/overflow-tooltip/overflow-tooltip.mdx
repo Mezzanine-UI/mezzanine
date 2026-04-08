@@ -1,0 +1,41 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as OverflowTooltipStories from './overflow-tooltip.stories';
+
+<Meta of={OverflowTooltipStories} />
+
+# OverflowTooltip
+
+本模組提供兩個元件：
+
+- **`MznOverflowTooltip`** — 浮動標籤面板，由外部控制 `open` 狀態。
+- **`MznOverflowCounterTag`** — 複合觸發器，整合計數標籤按鈕與浮動面板，點擊後展開，點擊外部自動關閉。
+
+## MznOverflowTooltip
+
+### Playground
+
+<ArgTypes of={OverflowTooltipStories.Playground} />
+
+### States
+
+Dismissable 模式（預設）：每個標籤帶有關閉按鈕。`readOnly` 模式：標籤僅作展示用途。
+
+### Placement
+
+支援 6 種定位方向。
+
+### SingleTag
+
+單一標籤時仍可正常顯示。
+
+### DismissableTags
+
+可互動移除標籤，標籤數量為零時面板自動清空。
+
+---
+
+## MznOverflowCounterTag
+
+### Playground
+
+<ArgTypes of={OverflowTooltipStories.OverflowCounterTagPlayground} />

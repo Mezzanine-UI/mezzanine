@@ -13,6 +13,6 @@
       "@mezzanine-ui/ng/*": ["ng/*"]
     }
   },
-  "include": ["./**/*.ts", "../packages/ng/**/*.ts"],
+  "include": ["./preview.ts", "../packages/ng/**/*.stories.ts"],
   "exclude": ["../packages/ng/**/*.spec.ts"]
 }

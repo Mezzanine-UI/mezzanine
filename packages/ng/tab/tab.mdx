@@ -1,0 +1,27 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TabStories from './tab.stories';
+
+<Meta of={TabStories} />
+
+# Tab
+
+頁籤導航元件，透過底部滑動指示條標示當前選取的頁籤。
+
+以 `MznTabItem` 作為子元件定義每個頁籤項目，支援水平（`horizontal`）與垂直（`vertical`）
+兩種排列方向。可透過 `activeKey`（受控）或 `defaultActiveKey`（非受控）指定當前頁籤，
+`activeKeyChange` 事件在切換時發射新的 key。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/tab/tabs.component.ts)
+
+<ArgTypes of={TabStories.TabAPI} />
+
+# TabItem
+
+單一 Tab 項目元件。
+
+由父 `MznTabs` 的 `activeKey` 決定是否為使用中狀態，支援圖示、徽章計數、
+錯誤與禁用狀態。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/tab/tab-item.component.ts)
+
+<ArgTypes of={TabStories.TabItemAPI} />

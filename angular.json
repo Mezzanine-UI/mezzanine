@@ -33,7 +33,10 @@
             "index": "",
             "main": "",
             "tsConfig": ".storybook-ng/tsconfig.json",
-            "styles": [".storybook-ng/global.scss"],
+            "styles": [
+              ".storybook-ng/global.scss",
+              "node_modules/overlayscrollbars/styles/overlayscrollbars.css"
+            ],
             "scripts": [],
             "stylePreprocessorOptions": {
               "includePaths": ["packages/system/src", "packages/core/src"]
@@ -42,5 +45,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

@@ -1,0 +1,31 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SingleThumbnailCardStories from './single-thumbnail-card.stories';
+
+<Meta of={SingleThumbnailCardStories} />
+
+# SingleThumbnailCard
+
+Displays a single image thumbnail with optional tag, personal action, and info section.
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/single-thumbnail-card/single-thumbnail-card.component.ts)
+
+## Overview
+
+SingleThumbnailCard displays a single image thumbnail with optional tag, personal action, and info section.
+The card width is determined by the image child element.
+
+## Features
+
+- **Thumbnail Display**: Renders a single image with hover overlay effect
+- **Tag**: Optional label displayed on top-left of the thumbnail
+- **Personal Action**: Optional favorite/bookmark button on top-right (supports active/inactive states)
+- **Filetype Badge**: Shows file extension with color-coded background based on file type
+- **Action Types**: Supports three action modes in the info section
+
+## Action Types
+
+- **default**: No action button in the info section
+- **action**: Displays a text button with customizable label
+- **overflow**: Displays a dropdown menu with options
+
+<ArgTypes of={SingleThumbnailCardStories.Playground} />

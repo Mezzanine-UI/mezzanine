@@ -1,0 +1,79 @@
+import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { FormFieldLayout } from '@mezzanine-ui/core/form';
+import { MznFormField } from './form-field.component';
+import { MznFormGroup } from './form-group.component';
+
+export default {
+  title: 'Data Entry/Form/FormGroup',
+  decorators: [
+    moduleMetadata({
+      imports: [MznFormField, MznFormGroup],
+    }),
+  ],
+} satisfies Meta;
+
+type Story = StoryObj;
+
+export const Basic: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => ({
+    template: `
+      <mzn-form-group title="Group Title">
+        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
+          <input placeholder="Placeholder" />
+        </mzn-form-field>
+        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
+          <input placeholder="Placeholder" />
+        </mzn-form-field>
+        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field3">
+          <input placeholder="Placeholder" />
+        </mzn-form-field>
+      </mzn-form-group>
+    `,
+  }),
+};
+
+export const MultipleGroups: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => ({
+    template: `
+      <div style="display: flex; flex-direction: column; gap: 32px;">
+        <mzn-form-group title="Group Title">
+          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field1">
+            <input placeholder="Placeholder" />
+          </mzn-form-field>
+          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field2">
+            <input placeholder="Placeholder" />
+          </mzn-form-field>
+          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field3">
+            <input placeholder="Placeholder" />
+          </mzn-form-field>
+        </mzn-form-group>
+        <mzn-form-group title="Group Title">
+          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field1">
+            <input placeholder="Placeholder" />
+          </mzn-form-field>
+          <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field2">
+            <input placeholder="Placeholder" />
+          </mzn-form-field>
+        </mzn-form-group>
+      </div>
+    `,
+  }),
+};
+
+export const CustomFieldsContainerClassName: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => ({
+    template: `
+      <mzn-form-group fieldsContainerClassName="custom-gap" title="Group Title with Custom Gap">
+        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
+          <input placeholder="Placeholder" />
+        </mzn-form-field>
+        <mzn-form-field label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
+          <input placeholder="Placeholder" />
+        </mzn-form-field>
+      </mzn-form-group>
+    `,
+  }),
+};

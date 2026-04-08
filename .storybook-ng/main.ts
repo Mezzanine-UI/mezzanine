@@ -11,9 +11,9 @@ const CORE_PATH = resolve(PACKAGES_PATH, 'core');
 const ICONS_PATH = resolve(PACKAGES_PATH, 'icons');
 
 const config: StorybookConfig = {
-  stories: ['../packages/ng/**/*.stories.ts'],
+  stories: ['../packages/ng/**/*.@(mdx|stories.ts)'],
 
-  addons: [],
+  addons: [getAbsolutePath('@storybook/addon-docs')],
 
   framework: getAbsolutePath('@storybook/angular'),
 
@@ -28,8 +28,19 @@ const config: StorybookConfig = {
         '@mezzanine-ui/system': resolve(SYSTEM_PATH, 'src'),
         '@mezzanine-ui/core': resolve(CORE_PATH, 'src'),
         '@mezzanine-ui/icons': resolve(ICONS_PATH, 'src'),
+        react: resolve(ROOT_PATH, 'node_modules/react'),
+        'react-dom': resolve(ROOT_PATH, 'node_modules/react-dom'),
+        'react-dom/client': resolve(ROOT_PATH, 'node_modules/react-dom/client'),
+        'react/jsx-runtime': resolve(
+          ROOT_PATH,
+          'node_modules/react/jsx-runtime',
+        ),
       };
     }
+
+    // NOTE: Do NOT filter/deduplicate DefinePlugin instances.
+    // @storybook/angular injects STORYBOOK_ANGULAR_OPTIONS via its own
+    // DefinePlugin. Removing it causes a runtime ReferenceError.
 
     return config;
   },

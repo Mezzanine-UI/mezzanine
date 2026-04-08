@@ -15,6 +15,8 @@ import clsx from 'clsx';
 /**
  * 渲染來自 `@mezzanine-ui/icons` 的 SVG 圖示元件。
  *
+ * 使用 attribute selector `[mznIcon]` 套用於 `<i>` 元素，host element 為 `<i>`
+ * 以對齊 React `<Icon>` 渲染為 `<i class="mzn-icon">` 的結構。
  * 透過 `icon` input 傳入圖示定義物件，支援調整顏色、尺寸與旋轉動畫。
  * 可透過 `title` input 提供無障礙標題文字。
  *
@@ -23,13 +25,13 @@ import clsx from 'clsx';
  * import { MznIcon } from '@mezzanine-ui/ng/icon';
  * import { SearchIcon, LoadingIcon } from '@mezzanine-ui/icons';
  *
- * <mzn-icon [icon]="SearchIcon" />
- * <mzn-icon [icon]="LoadingIcon" [spin]="true" />
- * <mzn-icon [icon]="SearchIcon" color="success" [size]="24" title="搜尋" />
+ * <i mznIcon [icon]="SearchIcon"></i>
+ * <i mznIcon [icon]="LoadingIcon" [spin]="true"></i>
+ * <i mznIcon [icon]="SearchIcon" color="success" [size]="24" title="搜尋"></i>
  * ```
  */
 @Component({
-  selector: 'mzn-icon',
+  selector: '[mznIcon]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -62,6 +64,12 @@ export class MznIcon {
   /** 來自 `@mezzanine-ui/icons` 的圖示定義物件。 */
   readonly icon = input.required<IconDefinition>();
 
+  /**
+   * 是否為可點擊圖示，設為 true 時游標顯示為 pointer。
+   * @default false
+   */
+  readonly clickable = input(false);
+
   /** 圖示顏色，對應 palette 語意色。 */
   readonly color = input<IconColor>();
 
@@ -86,11 +94,13 @@ export class MznIcon {
   );
 
   protected readonly hostStyles = computed(
-    (): Record<string, string> =>
-      toIconCssVars({
+    (): Record<string, string> => ({
+      ...(toIconCssVars({
         color: this.color(),
         size: this.size(),
-      }) as Record<string, string>,
+      }) as Record<string, string>),
+      ...(this.clickable() ? { '--mzn-icon-cursor': 'pointer' } : {}),
+    }),
   );
 
   protected readonly svgAttrs = computed(() => {

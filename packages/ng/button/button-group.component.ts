@@ -31,7 +31,7 @@ import { MZN_BUTTON_GROUP, MznButtonGroupContext } from './button-group.token';
  * ```
  */
 @Component({
-  selector: 'mzn-button-group',
+  selector: `mzn-button-group`,
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [

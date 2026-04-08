@@ -1,0 +1,33 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as FourThumbnailCardStories from './four-thumbnail-card.stories';
+
+<Meta of={FourThumbnailCardStories} />
+
+# FourThumbnailCard
+
+Displays a 2x2 grid of image thumbnails with optional tag, personal action, and info section.
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/four-thumbnail-card/four-thumbnail-card.component.ts)
+
+## Overview
+
+FourThumbnailCard displays a 2x2 grid of image thumbnails with optional tag, personal action, and info section.
+Each thumbnail can display an overlay with title on hover.
+
+## Features
+
+- **2x2 Grid Layout**: Displays up to 4 thumbnails in a grid pattern
+- **Auto-fill Empty Slots**: If less than 4 thumbnails are provided, empty slots are automatically rendered
+- **Thumbnail Component**: Each thumbnail must be wrapped in a `mzn-thumbnail` component
+- **Tag**: Optional label displayed on top-left of the thumbnail grid
+- **Personal Action**: Optional favorite/bookmark button on top-right (supports active/inactive states)
+- **Filetype Badge**: Shows file extension with color-coded background based on file type
+- **Action Types**: Supports three action modes in the info section
+
+## Action Types
+
+- **default**: No action button in the info section
+- **action**: Displays a text button with customizable label
+- **overflow**: Displays a dropdown menu with options
+
+<ArgTypes of={FourThumbnailCardStories.Playground} />

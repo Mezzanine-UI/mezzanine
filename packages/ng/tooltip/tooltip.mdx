@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TooltipStories from './tooltip.stories';
+
+<Meta of={TooltipStories} />
+
+# Tooltip
+
+滑鼠懸停時顯示的提示框 directive。
+
+使用 `[mznTooltip]` attribute 套用於任意 host element，內部使用 `@floating-ui/dom` 進行定位，
+支援自動翻轉、偏移調整，以及可選的箭頭指示器。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/tooltip/tooltip.directive.ts)
+
+<ArgTypes of={TooltipStories} />

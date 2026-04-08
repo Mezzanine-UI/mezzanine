@@ -1,9 +1,10 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
-import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
+import { Component, signal } from '@angular/core';
+import { DotHorizontalIcon, PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
 import { MznButton } from './button.directive';
-import { MznButtonGroup } from './button-group.component';
 import { MznIcon } from '../icon/icon.component';
+import { MznDropdown } from '../dropdown/dropdown.component';
 
 const sizes: ButtonSize[] = ['main', 'sub', 'minor'];
 const variants: ButtonVariant[] = [
@@ -25,7 +26,7 @@ export default {
   title: 'Foundation/Button',
   decorators: [
     moduleMetadata({
-      imports: [MznButton, MznButtonGroup, MznIcon],
+      imports: [MznButton, MznIcon],
     }),
   ],
 } satisfies Meta;
@@ -37,16 +38,81 @@ export const Playground: Story = {
     variant: {
       options: variants,
       control: { type: 'select' },
+      description: 'The variant of button.',
+      table: {
+        type: { summary: variants.map((v) => `'${v}'`).join(' | ') },
+        defaultValue: { summary: "'base-primary'" },
+      },
     },
     size: {
       options: sizes,
       control: { type: 'select' },
+      description: 'The size of button.',
+      table: {
+        type: { summary: "'main' | 'sub' | 'minor'" },
+        defaultValue: { summary: "'main'" },
+      },
     },
     disabled: {
       control: { type: 'boolean' },
+      description: 'If true, button will be disabled.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
     },
     loading: {
       control: { type: 'boolean' },
+      description: 'If true, show loading state with spinner icon.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    icon: {
+      control: false,
+      description: 'The icon to display.',
+      table: {
+        type: { summary: 'IconDefinition' },
+        defaultValue: { summary: '-' },
+      },
+    },
+    iconType: {
+      options: [undefined, 'leading', 'trailing', 'icon-only'],
+      control: { type: 'select' },
+      description: 'The type of the icon relative to the text.',
+      table: {
+        type: { summary: "'leading' | 'trailing' | 'icon-only'" },
+        defaultValue: { summary: '-' },
+      },
+    },
+    tooltipText: {
+      control: { type: 'text' },
+      description:
+        'Tooltip text for icon-only buttons. Only applies when iconType is `icon-only`.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '-' },
+      },
+    },
+    disabledTooltip: {
+      control: { type: 'boolean' },
+      description:
+        'If true, disable the tooltip for icon-only buttons. Only applies when iconType is `icon-only`.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    tooltipPosition: {
+      options: [undefined, 'top', 'bottom', 'left', 'right'],
+      control: { type: 'select' },
+      description:
+        'The position of the tooltip. Only applies when iconType is `icon-only`.',
+      table: {
+        type: { summary: "'top' | 'bottom' | 'left' | 'right'" },
+        defaultValue: { summary: "'bottom'" },
+      },
     },
   },
   args: {
@@ -55,6 +121,7 @@ export const Playground: Story = {
     size: 'main',
     disabled: false,
     loading: false,
+    disabledTooltip: false,
   },
   render: (args) => ({
     props: args,
@@ -123,21 +190,71 @@ export const WithIcons: Story = {
       SearchIcon,
     },
     template: `
-      <div style="display: inline-grid; grid-template-columns: repeat(3, min-content); gap: 16px; align-items: center;">
+      <div style="display: inline-grid; grid-template-columns: repeat(4, min-content); gap: 16px; align-items: center;">
         <!-- Leading icons -->
-        <button mznButton variant="base-primary" iconType="leading" [icon]="PlusIcon">Leading Icon</button>
-        <button mznButton variant="base-secondary" iconType="leading" [icon]="PlusIcon">Leading Icon</button>
-        <button mznButton variant="destructive-primary" iconType="leading" [icon]="PlusIcon">Leading Icon</button>
+        <button mznButton variant="base-primary" iconType="leading"><i mznIcon [icon]="PlusIcon" [size]="16" ></i>Leading Icon</button>
+        <button mznButton variant="base-secondary" iconType="leading"><i mznIcon [icon]="PlusIcon" [size]="16" ></i>Leading Icon</button>
+        <button mznButton variant="destructive-primary" iconType="leading"><i mznIcon [icon]="PlusIcon" [size]="16" ></i>Leading Icon</button>
+        <button mznButton variant="base-primary" iconType="leading" [disabled]="true"><i mznIcon [icon]="PlusIcon" [size]="16" ></i>Disabled</button>
 
         <!-- Trailing icons -->
-        <button mznButton variant="base-primary" iconType="trailing" [icon]="SearchIcon">Trailing Icon</button>
-        <button mznButton variant="base-secondary" iconType="trailing" [icon]="SearchIcon">Trailing Icon</button>
-        <button mznButton variant="base-secondary" iconType="trailing" [icon]="SearchIcon" size="sub">Sub Size</button>
+        <button mznButton variant="base-primary" iconType="trailing">Trailing Icon<i mznIcon [icon]="SearchIcon" [size]="16" ></i></button>
+        <button mznButton variant="base-secondary" iconType="trailing">Trailing Icon<i mznIcon [icon]="SearchIcon" [size]="16" ></i></button>
+        <button mznButton variant="destructive-primary" iconType="trailing">Trailing Icon<i mznIcon [icon]="SearchIcon" [size]="16" ></i></button>
+        <button mznButton variant="base-primary" iconType="trailing" size="sub">Sub Size<i mznIcon [icon]="SearchIcon" [size]="16" ></i></button>
 
-        <!-- Icon only -->
-        <button mznButton variant="base-primary" iconType="icon-only" [icon]="PlusIcon"></button>
-        <button mznButton variant="base-secondary" iconType="icon-only" [icon]="SearchIcon"></button>
-        <button mznButton variant="destructive-primary" iconType="icon-only" [icon]="PlusIcon"></button>
+        <!-- Icon only with tooltip (default behavior) -->
+        <button mznButton variant="base-primary" iconType="icon-only"><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
+        <button mznButton variant="base-secondary" iconType="icon-only"><i mznIcon [icon]="SearchIcon" [size]="16" ></i></button>
+        <button mznButton variant="destructive-primary" iconType="icon-only"><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
+        <button mznButton variant="base-primary" iconType="icon-only" size="minor"><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
+      </div>
+    `,
+  }),
+};
+
+export const IconOnlyWithTooltip: Story = {
+  render: () => ({
+    props: {
+      PlusIcon,
+      SearchIcon,
+    },
+    template: `
+      <div style="display: inline-grid; grid-template-columns: repeat(4, min-content); gap: 16px; align-items: center; padding: 60px;">
+        <!-- Default tooltip (bottom) -->
+        <button mznButton variant="base-primary" iconType="icon-only"
+          tooltipText="Add new item"
+        ><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
+
+        <!-- Tooltip on top -->
+        <button mznButton variant="base-secondary" iconType="icon-only"
+          tooltipText="Search" tooltipPosition="top"
+        ><i mznIcon [icon]="SearchIcon" [size]="16" ></i></button>
+
+        <!-- Disabled tooltip (no tooltip shown) -->
+        <button mznButton variant="base-primary" iconType="icon-only"
+          tooltipText="This tooltip is disabled" [disabledTooltip]="true"
+        ><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
+
+        <!-- Without tooltipText - no tooltip -->
+        <button mznButton variant="base-secondary" iconType="icon-only"
+        ><i mznIcon [icon]="SearchIcon" [size]="16" ></i></button>
+      </div>
+    `,
+  }),
+};
+
+export const Loading: Story = {
+  render: () => ({
+    props: {
+      PlusIcon,
+    },
+    template: `
+      <div style="display: inline-grid; grid-template-columns: repeat(4, min-content); gap: 16px; align-items: center;">
+        <button mznButton variant="base-primary" [loading]="true">Loading</button>
+        <button mznButton variant="base-secondary" [loading]="true">Loading</button>
+        <button mznButton variant="base-primary" iconType="leading" [loading]="true"><i mznIcon [icon]="PlusIcon" [size]="16" ></i>With Icon</button>
+        <button mznButton variant="base-primary" iconType="icon-only" [loading]="true"><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
       </div>
     `,
   }),
@@ -165,8 +282,12 @@ export const States: Story = {
 
 export const AsLink: Story = {
   render: () => ({
+    props: {
+      SearchIcon,
+    },
     template: `
       <div style="display: inline-grid; grid-template-columns: repeat(2, min-content); gap: 16px; align-items: center;">
+        <!-- Native <a> tag -->
         <a mznButton variant="base-primary"
            href="https://github.com/Mezzanine-UI/mezzanine"
            target="_blank" rel="noopener noreferrer">
@@ -178,9 +299,10 @@ export const AsLink: Story = {
         </a>
 
         <a mznButton variant="base-text-link"
+           iconType="trailing"
            href="https://www.npmjs.com/package/@mezzanine-ui/react"
            target="_blank" rel="noopener noreferrer">
-          NPM Package
+          NPM Package<i mznIcon [icon]="SearchIcon" [size]="16" ></i>
         </a>
 
         <a mznButton variant="base-primary" [disabled]="true" href="#disabled-link">
@@ -191,59 +313,96 @@ export const AsLink: Story = {
   }),
 };
 
-export const ButtonGroupStory: Story = {
-  name: 'ButtonGroup',
+@Component({
+  selector: 'story-button-with-dropdown',
+  standalone: true,
+  imports: [MznButton, MznIcon, MznDropdown],
+  template: `
+    <div>
+      <button
+        #anchorEl
+        mznButton
+        variant="base-secondary"
+        iconType="icon-only"
+        (click)="toggle()"
+        ><i mznIcon [icon]="DotHorizontalIcon" [size]="16"></i
+      ></button>
+      <mzn-dropdown
+        [anchor]="anchorEl"
+        [open]="open()"
+        [options]="options"
+        placement="bottom-start"
+        (closed)="open.set(false)"
+        (selected)="onSelect($event)"
+      />
+    </div>
+  `,
+})
+class ButtonWithDropdownComponent {
+  readonly DotHorizontalIcon = DotHorizontalIcon;
+  readonly open = signal(false);
+  readonly options = [
+    { id: '1', name: 'Option 1' },
+    { id: '2', name: 'Option 2' },
+    { id: '3', name: 'Option 3' },
+  ];
+
+  toggle(): void {
+    this.open.set(!this.open());
+  }
+
+  onSelect(_option: { id: string; name: string }): void {
+    this.open.set(false);
+  }
+}
+
+export const WithDropdown: Story = {
+  decorators: [
+    moduleMetadata({
+      imports: [ButtonWithDropdownComponent],
+    }),
+  ],
   render: () => ({
+    template: `<story-button-with-dropdown />`,
+  }),
+};
+
+@Component({
+  selector: 'story-custom-link',
+  standalone: true,
+  template: `<a [href]="href" (click)="onClick($event)"><ng-content /></a>`,
+})
+class CustomLinkComponent {
+  href = '';
+
+  onClick(e: Event): void {
+    e.preventDefault();
+    alert(`Navigating to: ${this.href}`);
+  }
+}
+
+export const CustomComponent: Story = {
+  decorators: [
+    moduleMetadata({
+      imports: [MznButton, MznIcon, CustomLinkComponent],
+    }),
+  ],
+  render: () => ({
+    props: { PlusIcon },
     template: `
-      <div style="display: flex; flex-direction: column; gap: 24px;">
-        <!-- Horizontal (default) -->
-        <div>
-          <p style="margin-bottom: 8px; font-size: 14px; opacity: 0.7;">Horizontal (default)</p>
-          <mzn-button-group variant="base-secondary">
-            <button mznButton>Button 1</button>
-            <button mznButton>Button 2</button>
-            <button mznButton>Button 3</button>
-          </mzn-button-group>
-        </div>
+      <div style="display: inline-grid; grid-template-columns: repeat(2, min-content); gap: 16px; align-items: center;">
+        <a mznButton variant="base-primary"
+           href="/dashboard"
+           (click)="$event.preventDefault(); alert('Navigating to: /dashboard')">
+          Custom Link Component
+        </a>
 
-        <!-- Different variants -->
-        <div>
-          <p style="margin-bottom: 8px; font-size: 14px; opacity: 0.7;">Group variant: destructive-primary, size: sub</p>
-          <mzn-button-group variant="destructive-primary" size="sub">
-            <button mznButton>Delete</button>
-            <button mznButton>Remove</button>
-          </mzn-button-group>
-        </div>
-
-        <!-- Vertical -->
-        <div>
-          <p style="margin-bottom: 8px; font-size: 14px; opacity: 0.7;">Vertical orientation</p>
-          <mzn-button-group variant="base-secondary" orientation="vertical">
-            <button mznButton>Top</button>
-            <button mznButton>Middle</button>
-            <button mznButton>Bottom</button>
-          </mzn-button-group>
-        </div>
-
-        <!-- Full width -->
-        <div>
-          <p style="margin-bottom: 8px; font-size: 14px; opacity: 0.7;">Full width</p>
-          <mzn-button-group variant="base-primary" [fullWidth]="true">
-            <button mznButton>Left</button>
-            <button mznButton>Center</button>
-            <button mznButton>Right</button>
-          </mzn-button-group>
-        </div>
-
-        <!-- Child override -->
-        <div>
-          <p style="margin-bottom: 8px; font-size: 14px; opacity: 0.7;">Child overrides group variant</p>
-          <mzn-button-group variant="base-secondary">
-            <button mznButton>Default</button>
-            <button mznButton variant="destructive-primary">Override</button>
-            <button mznButton>Default</button>
-          </mzn-button-group>
-        </div>
+        <a mznButton variant="base-secondary"
+           iconType="leading"
+           href="/profile"
+           (click)="$event.preventDefault(); alert('Navigating to: /profile')">
+          <i mznIcon [icon]="PlusIcon" [size]="16" ></i>With Icon
+        </a>
       </div>
     `,
   }),

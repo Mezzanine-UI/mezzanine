@@ -1,0 +1,55 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AnimationsStories from './animations.stories';
+
+<Meta of={AnimationsStories} />
+
+# Transition
+
+Angular 動畫元件與 trigger 集合，對應 React 版的 `Collapse`、`Fade`、`Scale`、`Slide`、`Translate`、`Rotate` 元件。
+
+提供兩種使用方式：
+
+1. **Directive/Component wrappers** — `MznCollapse`、`MznFade`、`MznScale`、`MznSlide`、`MznTranslate`、`MznRotate`，支援完整的 inputs（`duration`、`easing`、`delay`、lifecycle callbacks）。
+2. **Animation triggers** — `mznFadeAnimation`、`mznCollapseAnimation` 等，適合簡單的 `:enter`/`:leave` 場景。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/transition/)
+
+<ArgTypes of={AnimationsStories} />
+
+## Fade
+
+淡入/淡出動畫。使用 `<mzn-fade [in]="boolean">` 控制進出。
+
+<ArgTypes of={AnimationsStories.FadeStory} />
+
+## Scale
+
+縮放動畫。從 95% 放大至 100%，搭配 opacity。
+
+<ArgTypes of={AnimationsStories.ScaleStory} />
+
+## Collapse
+
+高度摺疊動畫。使用 `<mzn-collapse [in]="boolean">` 控制展開與收合，
+自動測量內容高度並平滑動畫。支援 `collapsedHeight` 保持部分內容可見。
+
+<ArgTypes of={AnimationsStories.CollapseStory} />
+
+## Translate
+
+位移動畫，有 `top`、`bottom`、`left`、`right` 四個方向，4px 偏移搭配 opacity。
+
+<ArgTypes of={AnimationsStories.TranslateStory} />
+
+## Slide
+
+滑入/滑出動畫。支援 `right`（從右側進場）與 `top`（從頂部進場）兩個方向。
+
+<ArgTypes of={AnimationsStories.SlideStory} />
+
+## Rotate
+
+旋轉動畫。使用 `<span mznRotate [in]="boolean">` attribute directive，
+用於箭頭指示器等場景。不會 unmount 元素，僅���轉。
+
+<ArgTypes of={AnimationsStories.RotateStory} />

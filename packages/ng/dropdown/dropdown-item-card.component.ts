@@ -1,0 +1,215 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
+import {
+  dropdownClasses as classes,
+  DropdownCheckPosition,
+  DropdownItemLevel,
+  DropdownItemValidate,
+  DropdownMode,
+} from '@mezzanine-ui/core/dropdown';
+import { CheckedIcon, IconDefinition } from '@mezzanine-ui/icons';
+import { MznCheckbox } from '@mezzanine-ui/ng/checkbox';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznSeparator } from '@mezzanine-ui/ng/separator';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
+import clsx from 'clsx';
+
+/**
+ * Dropdown 選項卡片元件，渲染單一選項列表項目。
+ *
+ * 支援單選/多選模式的勾選圖示、前置/後置圖示、副標題、
+ * 層級縮排與危險驗證樣式。多選模式下 `checkSite='prefix'` 會顯示 Checkbox。
+ *
+ * @example
+ * ```html
+ * import { MznDropdownItemCard } from '@mezzanine-ui/ng/dropdown';
+ *
+ * <mzn-dropdown-item-card
+ *   label="Option A"
+ *   mode="single"
+ *   [checked]="isSelected"
+ *   (clicked)="onSelect()"
+ * />
+ * ```
+ *
+ * @see MznDropdown
+ */
+@Component({
+  selector: 'mzn-dropdown-item-card',
+  standalone: true,
+  imports: [MznCheckbox, MznIcon, MznSeparator, MznTypography],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <li
+      role="option"
+      [id]="id() ?? null"
+      [class]="hostClasses()"
+      [attr.aria-selected]="checked()"
+      [attr.aria-disabled]="disabled() || null"
+      [tabIndex]="-1"
+      (click)="onClick()"
+    >
+      <div [class]="containerClass">
+        @if (showPrependContent()) {
+          <div [class]="prependClass">
+            @if (prependIcon()) {
+              <i mznIcon [icon]="prependIcon()!"></i>
+            }
+            @if (checkSite() === 'prefix' && mode() === 'multiple') {
+              <mzn-checkbox
+                [checked]="checked()"
+                [disabled]="disabled()"
+                [indeterminate]="indeterminate()"
+                (click)="$event.stopPropagation()"
+                (mousedown)="$event.stopPropagation()"
+                (change)="onCheckedChange()"
+              />
+            }
+            @if (checkSite() === 'prefix' && mode() === 'single' && checked()) {
+              <i mznIcon [icon]="checkedIcon" [size]="16"></i>
+            }
+          </div>
+        }
+        <div [class]="bodyClass">
+          @if (label()) {
+            <span [class]="titleClass">{{ label() }}</span>
+          }
+          @if (subTitle()) {
+            <span [class]="descriptionClass">{{ subTitle() }}</span>
+          }
+        </div>
+        @if (showAppendContent()) {
+          <div [class]="appendClass">
+            @if (appendContent()) {
+              <span mznTypography color="text-neutral-light">{{
+                appendContent()
+              }}</span>
+            }
+            @if (appendIcon()) {
+              <i mznIcon [icon]="appendIcon()!" [size]="16"></i>
+            }
+            @if (checkSite() === 'suffix' && checked()) {
+              <i mznIcon [icon]="checkedIcon" [size]="16"></i>
+            }
+          </div>
+        }
+      </div>
+    </li>
+    @if (showUnderline()) {
+      <li role="presentation" aria-hidden="true">
+        <mzn-separator orientation="horizontal" [class]="underlineClass" />
+      </li>
+    }
+  `,
+})
+export class MznDropdownItemCard {
+  /** 是否為鍵盤導航高亮狀態。 @default false */
+  readonly active = input(false);
+
+  /** 後置文字內容。 */
+  readonly appendContent = input<string>();
+
+  /** 後置圖示。 */
+  readonly appendIcon = input<IconDefinition>();
+
+  /** 是否被選取。 @default false */
+  readonly checked = input(false);
+
+  /** 勾選圖示顯示位置。 @default 'suffix' */
+  readonly checkSite = input<DropdownCheckPosition>('suffix');
+
+  /** 是否禁用。 @default false */
+  readonly disabled = input(false);
+
+  /** DOM id，用於 aria-activedescendant。 */
+  readonly id = input<string>();
+
+  /** 是否為不確定狀態（部分子項目被選取）。 @default false */
+  readonly indeterminate = input(false);
+
+  /** 選項文字標籤。 */
+  readonly label = input<string>();
+
+  /** 層級深度（影響縮排）。 @default 0 */
+  readonly level = input<DropdownItemLevel>(0);
+
+  /** 選取模式。 */
+  readonly mode = input.required<DropdownMode>();
+
+  /** 前置圖示。 */
+  readonly prependIcon = input<IconDefinition>();
+
+  /** 是否在選項下方顯示分隔線。 @default false */
+  readonly showUnderline = input(false);
+
+  /** 副標題文字。 */
+  readonly subTitle = input<string>();
+
+  /** 驗證樣式。 @default 'default' */
+  readonly validate = input<DropdownItemValidate>('default');
+
+  /** 點擊事件。 */
+  readonly clicked = output<void>();
+
+  /** 勾選狀態變更事件（多選 prefix 模式）。 */
+  readonly checkedChange = output<void>();
+
+  protected readonly checkedIcon = CheckedIcon;
+  protected readonly containerClass = classes.cardContainer;
+  protected readonly bodyClass = classes.cardBody;
+  protected readonly titleClass = classes.cardTitle;
+  protected readonly descriptionClass = classes.cardDescription;
+  protected readonly prependClass = classes.cardPrependContent;
+  protected readonly appendClass = classes.cardAppendContent;
+  protected readonly underlineClass = classes.cardUnderline;
+
+  protected readonly hostClasses = computed((): string =>
+    clsx(classes.card, classes.cardLevel(this.level()), {
+      [classes.cardActive]: this.active() || this.checked(),
+      [classes.cardKeyboardActive]: this.active(),
+      [classes.cardDisabled]: this.disabled(),
+      [classes.cardDanger]: this.validate() === 'danger',
+    }),
+  );
+
+  protected readonly showPrependContent = computed((): boolean => {
+    const prependIcon = this.prependIcon();
+    const checkSite = this.checkSite();
+    const mode = this.mode();
+    const checked = this.checked();
+
+    return (
+      !!prependIcon ||
+      (checkSite === 'prefix' && mode === 'multiple') ||
+      (checkSite === 'prefix' && mode === 'single' && checked)
+    );
+  });
+
+  protected readonly showAppendContent = computed((): boolean => {
+    const appendContent = this.appendContent();
+    const appendIcon = this.appendIcon();
+    const checkSite = this.checkSite();
+    const checked = this.checked();
+
+    return (
+      !!appendContent || !!appendIcon || (checkSite === 'suffix' && checked)
+    );
+  });
+
+  protected onClick(): void {
+    if (this.disabled()) return;
+
+    this.clicked.emit();
+  }
+
+  protected onCheckedChange(): void {
+    if (this.disabled()) return;
+
+    this.checkedChange.emit();
+  }
+}

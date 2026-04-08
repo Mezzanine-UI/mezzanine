@@ -2,7 +2,7 @@ import type { Preview } from '@storybook/angular';
 
 const preview: Preview = {
   parameters: {
-    docs: { page: null },
+    docs: {},
     backgrounds: {
       grid: {
         disable: false,
@@ -22,6 +22,8 @@ const preview: Preview = {
           'Data Display',
           'Feedback',
           'Others',
+          'Internal',
+          'V1',
         ],
       },
     },

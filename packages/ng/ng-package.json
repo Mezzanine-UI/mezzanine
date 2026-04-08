@@ -2,9 +2,13 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "dist",
   "allowedNonPeerDependencies": [
+    "@floating-ui/dom",
+    "@floating-ui/core",
+    "@floating-ui/utils",
     "@mezzanine-ui/core",
     "@mezzanine-ui/icons",
     "@mezzanine-ui/system",
+    "overlayscrollbars",
     "tslib"
   ],
   "lib": {

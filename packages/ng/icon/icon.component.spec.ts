@@ -8,16 +8,19 @@ import { IconColor } from '@mezzanine-ui/core/icon';
 @Component({
   standalone: true,
   imports: [MznIcon],
-  template: `<mzn-icon
+  template: `<i
+    mznIcon
     [icon]="icon"
+    [clickable]="clickable"
     [color]="color"
     [size]="size"
     [spin]="spin"
     [title]="title"
-  />`,
+  ></i>`,
 })
 class TestHostComponent {
   icon: IconDefinition = PlusIcon;
+  clickable = false;
   color?: IconColor;
   size?: number;
   spin = false;
@@ -39,7 +42,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getIconElement: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-icon')!,
+      fixture.nativeElement.querySelector('i[mznIcon]')!,
   };
 }
 
@@ -74,6 +77,14 @@ describe('MznIcon', () => {
       const { getIconElement } = createFixture({ size: 36 });
 
       expect(getIconElement().classList.contains('mzn-icon--size')).toBe(true);
+    });
+
+    it('should set --mzn-icon-size CSS variable when size is given', () => {
+      const { getIconElement } = createFixture({ size: 36 });
+
+      expect(getIconElement().style.getPropertyValue('--mzn-icon-size')).toBe(
+        '36px',
+      );
     });
   });
 
@@ -110,11 +121,34 @@ describe('MznIcon', () => {
 
       it(message, () => {
         const { getIconElement } = createFixture({ color });
+        const el = getIconElement();
 
-        expect(getIconElement().classList.contains('mzn-icon--color')).toBe(
-          !!color,
-        );
+        expect(el.classList.contains('mzn-icon--color')).toBe(!!color);
+
+        if (color === 'inherit') {
+          expect(el.style.getPropertyValue('--mzn-icon-color')).toBe('inherit');
+        } else if (color) {
+          expect(el.style.getPropertyValue('--mzn-icon-color')).toBeTruthy();
+        }
       });
+    });
+  });
+
+  describe('input: clickable', () => {
+    it('should not set --mzn-icon-cursor when clickable is false', () => {
+      const { getIconElement } = createFixture({ clickable: false });
+
+      expect(getIconElement().style.getPropertyValue('--mzn-icon-cursor')).toBe(
+        '',
+      );
+    });
+
+    it('should set --mzn-icon-cursor to pointer when clickable is true', () => {
+      const { getIconElement } = createFixture({ clickable: true });
+
+      expect(getIconElement().style.getPropertyValue('--mzn-icon-cursor')).toBe(
+        'pointer',
+      );
     });
   });
 
@@ -131,6 +165,24 @@ describe('MznIcon', () => {
           spin,
         );
       });
+    });
+  });
+
+  describe('svg structure', () => {
+    it('should render svg with viewBox from icon definition', () => {
+      const { getIconElement } = createFixture();
+      const svg = getIconElement().querySelector('svg');
+
+      expect(svg?.getAttribute('viewBox')).toBe(
+        PlusIcon.definition.svg?.viewBox,
+      );
+    });
+
+    it('should render path with d attribute from icon definition', () => {
+      const { getIconElement } = createFixture();
+      const path = getIconElement().querySelector('path');
+
+      expect(path?.getAttribute('d')).toBe(PlusIcon.definition.path?.d);
     });
   });
 

@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import { IconDefinition } from '@mezzanine-ui/icons';
@@ -7,6 +12,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
+import type { Placement } from '@floating-ui/dom';
 import { MznButton } from './button.directive';
 
 @Component({
@@ -20,6 +26,9 @@ import { MznButton } from './button.directive';
     [loading]="loading"
     [icon]="icon"
     [iconType]="iconType"
+    [tooltipText]="tooltipText"
+    [disabledTooltip]="disabledTooltip"
+    [tooltipPosition]="tooltipPosition"
     (click)="onClick()"
     >{{ text }}</button
   >`,
@@ -31,6 +40,9 @@ class TestHostComponent {
   loading = false;
   icon?: IconDefinition;
   iconType?: ButtonIconType;
+  tooltipText?: string;
+  disabledTooltip = false;
+  tooltipPosition: Placement = 'bottom';
   text = '';
   onClick = jest.fn();
 }
@@ -168,6 +180,35 @@ describe('MznButton', () => {
     });
   });
 
+  describe('aria-disabled override', () => {
+    it('aria-disabled from host binding should reflect disabled=true even if template sets false', () => {
+      const { getButton } = createFixture({ disabled: true });
+
+      expect(getButton().getAttribute('aria-disabled')).toBe('true');
+    });
+  });
+
+  describe('input: loading spin rendering', () => {
+    it('should render a spin element inside host when loading=true', () => {
+      const { getButton } = createFixture({ loading: true, text: 'Hello' });
+      const spin = getButton().querySelector('.mzn-spin__spin');
+
+      expect(spin).not.toBeNull();
+    });
+
+    it('should hide original children and show spin when loading=true with icon', () => {
+      const { getButton } = createFixture({
+        loading: true,
+        icon: PlusIcon,
+        iconType: 'leading',
+        text: 'Hello',
+      });
+      const el = getButton();
+
+      expect(el.querySelector('.mzn-spin__spin')).not.toBeNull();
+    });
+  });
+
   describe('input: loading', () => {
     [false, true].forEach((loading) => {
       const message = loading
@@ -280,6 +321,92 @@ describe('MznButton', () => {
       expect(el.classList.contains('mzn-button--sub')).toBe(true);
       expect(el.classList.contains('mzn-button--disabled')).toBe(true);
       expect(el.classList.contains('mzn-button--icon-trailing')).toBe(true);
+    });
+  });
+
+  describe('tooltip (icon-only)', () => {
+    afterEach(() => {
+      // Clean up any tooltip elements left in the DOM
+      document.querySelectorAll('.mzn-tooltip').forEach((el) => el.remove());
+    });
+
+    it('should show tooltip on hover when iconType is icon-only and tooltipText is provided', fakeAsync(() => {
+      const { getButton } = createFixture({
+        icon: PlusIcon,
+        iconType: 'icon-only',
+        tooltipText: 'Add item',
+      });
+
+      getButton().dispatchEvent(new MouseEvent('mouseenter'));
+
+      const tooltip = document.querySelector('.mzn-tooltip');
+
+      expect(tooltip).toBeTruthy();
+      expect(tooltip!.textContent).toContain('Add item');
+      expect((tooltip as HTMLElement).style.display).not.toBe('none');
+
+      getButton().dispatchEvent(new MouseEvent('mouseleave'));
+      tick(150);
+
+      expect((tooltip as HTMLElement).style.display).toBe('none');
+    }));
+
+    it('should not show tooltip when disabledTooltip is true', () => {
+      const { getButton } = createFixture({
+        icon: PlusIcon,
+        iconType: 'icon-only',
+        tooltipText: 'Add item',
+        disabledTooltip: true,
+      });
+
+      getButton().dispatchEvent(new MouseEvent('mouseenter'));
+
+      const tooltip = document.querySelector('.mzn-tooltip');
+
+      expect(tooltip).toBeNull();
+    });
+
+    it('should not show tooltip when iconType is not icon-only', () => {
+      const { getButton } = createFixture({
+        icon: PlusIcon,
+        iconType: 'leading',
+        tooltipText: 'Add item',
+      });
+
+      getButton().dispatchEvent(new MouseEvent('mouseenter'));
+
+      const tooltip = document.querySelector('.mzn-tooltip');
+
+      expect(tooltip).toBeNull();
+    });
+
+    it('should not show tooltip when tooltipText is empty', () => {
+      const { getButton } = createFixture({
+        icon: PlusIcon,
+        iconType: 'icon-only',
+      });
+
+      getButton().dispatchEvent(new MouseEvent('mouseenter'));
+
+      const tooltip = document.querySelector('.mzn-tooltip');
+
+      expect(tooltip).toBeNull();
+    });
+
+    it('should clean up tooltip element on destroy', () => {
+      const { fixture, getButton } = createFixture({
+        icon: PlusIcon,
+        iconType: 'icon-only',
+        tooltipText: 'Add item',
+      });
+
+      getButton().dispatchEvent(new MouseEvent('mouseenter'));
+
+      expect(document.querySelector('.mzn-tooltip')).toBeTruthy();
+
+      fixture.destroy();
+
+      expect(document.querySelector('.mzn-tooltip')).toBeNull();
     });
   });
 });

@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as IconStories from './icon.stories';
+
+<Meta of={IconStories} />
+
+# Icon
+
+渲染來自 `@mezzanine-ui/icons` 的 SVG 圖示元件。
+
+透過 `icon` input 傳入圖示定義物件，支援調整顏色、尺寸與旋轉動畫。
+可透過 `title` input 提供無障礙標題文字。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/icon/icon.component.ts)
+
+<ArgTypes of={IconStories.Playground} />
