@@ -95,78 +95,78 @@ export interface FourThumbnailCardDefaultOptions {
   imports: [MznButton, MznDropdown, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-
-    @if (tag()) {
-      <div [class]="tagClass">{{ tag() }}</div>
-    }
-    @if (personalActionIcon()) {
-      <button
-        type="button"
-        [class]="personalActionClass"
-        [attr.aria-label]="'Personal Action'"
-        (click)="onPersonalActionClick($event)"
-      >
-        <i mznIcon [icon]="currentPersonalActionIcon()" [size]="16"></i>
-      </button>
-    }
-    <ng-content select="mzn-thumbnail" />
-    @for (empty of emptySlots(); track $index) {
-      <div [class]="emptySlotClass"></div>
-    }
-  </div>
-  <div [class]="infoClass">
-    <div [class]="infoMainClass">
-      @if (filetype()) {
-        <div [class]="filetypeClass()">{{ filetype()!.toUpperCase() }}</div>
+    <div [class]="thumbnailGridClass">
+      @if (tag()) {
+        <div [class]="tagClass">{{ tag() }}</div>
       }
-      <div [class]="infoContentClass">
-        @if (title()) {
-          <span [class]="infoTitleClass">{{ title() }}</span>
-        }
-        @if (subtitle()) {
-          <span [class]="infoSubtitleClass">{{ subtitle() }}</span>
-        }
-      </div>
+      @if (personalActionIcon()) {
+        <button
+          type="button"
+          [class]="personalActionClass"
+          [attr.aria-label]="'Personal Action'"
+          (click)="onPersonalActionClick($event)"
+        >
+          <i mznIcon [icon]="currentPersonalActionIcon()" [size]="16"></i>
+        </button>
+      }
+      <ng-content select="mzn-thumbnail" />
+      @for (empty of emptySlots(); track $index) {
+        <div [class]="emptySlotClass"></div>
+      }
     </div>
-    @if (actionType === 'action') {
-      <div [class]="infoActionClass">
-        <button
-          mznButton
-          [variant]="
-            actionOptionsForAction?.actionVariant ?? 'base-text-link'
-          "
-          size="sub"
-          type="button"
-          (click)="onActionClick($event)"
-        >
-          {{ actionOptionsForAction?.actionName }}
-        </button>
+    <div [class]="infoClass">
+      <div [class]="infoMainClass">
+        @if (filetype()) {
+          <div [class]="filetypeClass()">{{ filetype()!.toUpperCase() }}</div>
+        }
+        <div [class]="infoContentClass">
+          @if (title()) {
+            <span [class]="infoTitleClass">{{ title() }}</span>
+          }
+          @if (subtitle()) {
+            <span [class]="infoSubtitleClass">{{ subtitle() }}</span>
+          }
+        </div>
       </div>
-    }
-    @if (actionType === 'overflow') {
-      <div [class]="infoActionClass">
-        <button
-          #overflowTrigger
-          mznButton
-          variant="base-text-link"
-          size="sub"
-          type="button"
-          (click)="toggleOverflow()"
-        >
-          <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
-        </button>
-        <div
-          mznDropdown
-          [anchor]="overflowTrigger"
-          [open]="overflowOpen()"
-          [options]="actionOptionsForOverflow?.options"
-          mode="single"
-          (selected)="onOptionSelect($event)"
-          (closed)="closeOverflow()"
-        ></div>
-      </div>
-    }
-  
+      @if (actionType === 'action') {
+        <div [class]="infoActionClass">
+          <button
+            mznButton
+            [variant]="
+              actionOptionsForAction?.actionVariant ?? 'base-text-link'
+            "
+            size="sub"
+            type="button"
+            (click)="onActionClick($event)"
+          >
+            {{ actionOptionsForAction?.actionName }}
+          </button>
+        </div>
+      }
+      @if (actionType === 'overflow') {
+        <div [class]="infoActionClass">
+          <button
+            #overflowTrigger
+            mznButton
+            variant="base-text-link"
+            size="sub"
+            type="button"
+            (click)="toggleOverflow()"
+          >
+            <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
+          </button>
+          <div
+            mznDropdown
+            [anchor]="overflowTrigger"
+            [open]="overflowOpen()"
+            [options]="actionOptionsForOverflow?.options"
+            mode="single"
+            (selected)="onOptionSelect($event)"
+            (closed)="closeOverflow()"
+          ></div>
+        </div>
+      }
+    </div>
   `,
 })
 export class MznFourThumbnailCard implements AfterContentInit {

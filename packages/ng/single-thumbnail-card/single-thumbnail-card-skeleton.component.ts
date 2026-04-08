@@ -33,22 +33,22 @@ import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
   imports: [MznSkeleton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-
-    <div
-      mznSkeleton
-      height="100%"
-      [style.aspectRatio]="thumbnailAspectRatio()"
-      [width]="thumbnailWidth()"
-    ></div>
-  </div>
-  <div [class]="infoClass">
-    <div [class]="infoMainClass">
-      <div [class]="infoContentClass" style="width: 100%">
-        <div mznSkeleton [height]="20" width="100%"></div>
-        <div mznSkeleton [height]="16" width="100%"></div>
+    <div [class]="singleThumbnailClass">
+      <div
+        mznSkeleton
+        height="100%"
+        [style.aspectRatio]="thumbnailAspectRatio()"
+        [width]="thumbnailWidth()"
+      ></div>
+    </div>
+    <div [class]="infoClass">
+      <div [class]="infoMainClass">
+        <div [class]="infoContentClass" style="width: 100%">
+          <div mznSkeleton [height]="20" width="100%"></div>
+          <div mznSkeleton [height]="16" width="100%"></div>
+        </div>
       </div>
     </div>
-  
   `,
 })
 export class MznSingleThumbnailCardSkeleton {
