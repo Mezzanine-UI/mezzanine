@@ -28,3 +28,12 @@ Detailed how-to guides are stored in `.claude/skills/` — read the relevant fil
 
 - **Adding a new icon** → `.claude/skills/add-icon.md`
 - **Adding a spacing token** → `.claude/skills/add-spacing-token.md`
+
+## React → Angular Parity
+
+Angular 元件移植以「同時跑兩邊 Storybook、用 `tools/parity/` 比對 DOM / computed style / argTypes」為唯一驗證機制。Diff 是規格，無 diff 即完成。流程：
+
+1. `npm run react:storybook`（:6006）+ `npm run ng:storybook`（:6007）
+2. `npm run parity -- <component>` → 讀 `tools/parity/.out/<component>/report.txt`
+3. 修 `packages/ng/<component>/*` → 重跑直到 exit 0
+4. 平台差異無法 parity 時：**停下來向使用者說明、取得核可後**寫入 repo 根 `DEVIATIONS.md`，harness 只抑制明列的 `(component, story, kind)` 三元組

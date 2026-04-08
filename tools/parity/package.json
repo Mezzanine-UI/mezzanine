@@ -1,0 +1,6 @@
+{
+  "name": "@mezzanine-ui/parity",
+  "private": true,
+  "type": "module",
+  "description": "Side-by-side React/Angular Storybook parity harness."
+}
