@@ -33,6 +33,7 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 | P2-11    | `0cdd6b7a`  | card family (12: base-card+skeleton, card-group, selection-card, single/four thumbnail cards +skeletons, quick-action-card+skeleton, thumbnail, thumbnail-card-info) | — | per-comp | selection-card → <label>, quick-action-card → <button>; 4 dynamic-wrapper collapses auto-applied; 6/12 at zero diffs |
 | P2-12    | `e4f54d66`  | upload family, cascader(+panel), table, cropper, transition directives (fade/scale/slide/translate/collapse), empty sub-icons | — | per-comp | 17 components; uploader → <label>; transitions + empty-icons are Angular-only; 82% total coverage reached |
 | P2-13    | `e6184cb2`  | calendar family (15: calendar, range-calendar, 13 sub-views) | — | 55/0×14 | script: splitHostEntries() helper to handle commas inside string values; 14/15 zero diffs; 90% total coverage |
+| P2-14    | `d20e59d6`  | date/time picker family (16: date-picker(+cal), date-range-picker(+cal), date-time-(range-)picker, multiple-date-picker(+trigger), time-picker(+panel), time-range-picker, time-panel(+column), picker-trigger(+with-separator), range-picker-trigger) | — | per-comp | **PHASE 2 COMPLETE — 169/169 = 100%**; 8/16 zero diffs; PROGRESS.md removed |
 
 ## ⚠️ Diff-count masking — critical reading (mostly fixed in Phase 1)
 
