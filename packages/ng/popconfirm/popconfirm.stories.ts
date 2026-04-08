@@ -35,7 +35,7 @@ export const Basic: Story = {
         <button #anchor mznButton variant="base-secondary" (click)="toggle()">
           Delete Item
         </button>
-        <mzn-popconfirm
+        <div mznPopconfirm
           [anchor]="anchor"
           [open]="open"
           title="Are you sure you want to delete?"
@@ -44,7 +44,7 @@ export const Basic: Story = {
           (confirmed)="onConfirm()"
           (cancelled)="onCancel()"
           (closed)="onCancel()"
-        />
+        ></div>
       </div>
     `,
   }),

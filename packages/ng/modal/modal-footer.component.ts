@@ -46,12 +46,13 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
   template: `
     @if (auxiliaryContentType() === 'password') {
       <div [class]="passwordContainerClass">
-        <mzn-checkbox
+        <div
+          mznCheckbox
           [checked]="passwordChecked()"
           [label]="passwordCheckedLabel()"
           (ngModelChange)="passwordCheckedChanged.emit($event)"
           [ngModel]="passwordChecked()"
-        />
+        ></div>
         <button
           mznButton
           variant="base-text-link"
@@ -77,12 +78,13 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
           >
         }
         @if (auxiliaryContentType() === 'checkbox') {
-          <mzn-checkbox
+          <div
+            mznCheckbox
             [checked]="auxiliaryContentChecked()"
             [label]="auxiliaryContentLabel()"
             (ngModelChange)="auxiliaryContentChanged.emit($event)"
             [ngModel]="auxiliaryContentChecked()"
-          />
+          ></div>
         }
         @if (auxiliaryContentType() === 'toggle') {
           <mzn-toggle

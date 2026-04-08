@@ -47,11 +47,11 @@ export const MainSize: Story = {
           <div contentHeaderFilter>
             <input placeholder="搜尋商品名稱或 SKU..." style="border: 1px solid #ccc; padding: 4px 8px;" />
           </div>
-          <mzn-button-group contentHeaderActions>
+          <div mznButtonGroup contentHeaderActions>
             <button mznButton variant="destructive-secondary">刪除</button>
             <button mznButton variant="base-secondary">儲存草稿</button>
             <button mznButton>發布商品</button>
-          </mzn-button-group>
+          </div>
           <div contentHeaderUtilities>
             <button mznButton variant="base-secondary" iconType="icon-only">
               <i mznIcon [icon]="PlusIcon" ></i>
@@ -71,9 +71,9 @@ export const MainSize: Story = {
           <div contentHeaderFilter>
             <input placeholder="請輸入料號或產品名稱..." style="border: 1px solid #ccc; padding: 4px 8px;" />
           </div>
-          <mzn-button-group contentHeaderActions>
+          <div mznButtonGroup contentHeaderActions>
             <button mznButton>查詢料號</button>
-          </mzn-button-group>
+          </div>
           <div contentHeaderUtilities>
             <button mznButton variant="base-secondary" iconType="icon-only">
               <i mznIcon [icon]="PlusIcon" ></i>
@@ -93,12 +93,12 @@ export const MainSize: Story = {
           <div contentHeaderFilter>
             <input placeholder="請輸入料號或產品名稱..." style="border: 1px solid #ccc; padding: 4px 8px;" />
           </div>
-          <mzn-button-group contentHeaderActions>
+          <div mznButtonGroup contentHeaderActions>
             <mzn-content-header-responsive breakpoint="above1080px">
               <button mznButton variant="destructive-secondary">批次刪除</button>
             </mzn-content-header-responsive>
             <button mznButton>查詢料號</button>
-          </mzn-button-group>
+          </div>
           <div contentHeaderUtilities>
             <mzn-content-header-responsive breakpoint="above680px">
               <button mznButton variant="base-secondary" iconType="icon-only">
@@ -128,11 +128,11 @@ export const SubSize: Story = {
               <input type="checkbox" /> 預覽模式
             </label>
           </div>
-          <mzn-button-group contentHeaderActions>
+          <div mznButtonGroup contentHeaderActions>
             <button mznButton variant="destructive-secondary">刪除文章</button>
             <button mznButton variant="base-secondary">儲存草稿</button>
             <button mznButton>發布文章</button>
-          </mzn-button-group>
+          </div>
           <div contentHeaderUtilities>
             <button mznButton variant="base-secondary" iconType="icon-only">
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
@@ -148,9 +148,9 @@ export const SubSize: Story = {
           <div contentHeaderFilter>
             <input placeholder="搜尋待辦事項..." style="border: 1px solid #ccc; padding: 4px 8px;" />
           </div>
-          <mzn-button-group contentHeaderActions>
+          <div mznButtonGroup contentHeaderActions>
             <button mznButton>篩選查詢</button>
-          </mzn-button-group>
+          </div>
           <div contentHeaderUtilities>
             <button mznButton variant="base-secondary" iconType="icon-only">
               <i mznIcon [icon]="PlusIcon" ></i>
@@ -171,9 +171,9 @@ export const SubSize: Story = {
               <input placeholder="搜尋待辦事項..." style="border: 1px solid #ccc; padding: 4px 8px;" />
             </mzn-content-header-responsive>
           </div>
-          <mzn-button-group contentHeaderActions>
+          <div mznButtonGroup contentHeaderActions>
             <button mznButton>篩選查詢</button>
-          </mzn-button-group>
+          </div>
           <div contentHeaderUtilities>
             <button mznButton variant="base-secondary" iconType="icon-only">
               <i mznIcon [icon]="PlusIcon" ></i>

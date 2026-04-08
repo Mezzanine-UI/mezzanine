@@ -80,7 +80,7 @@ export interface DateValue {
       <div #tagsContainerEl [class]="tagsWrapperClasses()">
         @if (hasValue()) {
           <div #tagsEl [class]="tagsClasses()">
-            <mzn-tag-group>
+            <div mznTagGroup>
               @for (item of visibleValues(); track item.id) {
                 @if (readOnly()) {
                   <span
@@ -111,7 +111,7 @@ export interface DateValue {
                   (tagDismiss)="onOverflowTagDismiss($event)"
                 />
               }
-            </mzn-tag-group>
+            </div>
           </div>
           <input
             [attr.aria-disabled]="disabled()"

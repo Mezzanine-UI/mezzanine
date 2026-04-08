@@ -28,14 +28,14 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
  * ```html
  * import { MznCheckboxGroup, MznCheckbox } from '@mezzanine-ui/ng/checkbox';
  *
- * <mzn-checkbox-group [(ngModel)]="selectedValues" name="fruits">
- *   <mzn-checkbox value="apple">蘋果</mzn-checkbox>
- *   <mzn-checkbox value="banana">香蕉</mzn-checkbox>
- * </mzn-checkbox-group>
+ * <div mznCheckboxGroup [(ngModel)]="selectedValues" name="fruits">
+ *   <div mznCheckbox value="apple">蘋果</div>
+ *   <div mznCheckbox value="banana">香蕉</div>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-checkbox-group',
+  selector: '[mznCheckboxGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -47,6 +47,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
   ],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.layout]': 'null',
   },
   template: `<ng-content />`,
 })

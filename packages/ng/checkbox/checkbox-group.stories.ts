@@ -48,7 +48,7 @@ export const Playground: Story = {
       groupValues: ['a'],
     },
     template: `
-      <mzn-checkbox-group
+      <div mznCheckboxGroup
         [(ngModel)]="groupValues"
         name="demo"
         [disabled]="disabled"
@@ -56,10 +56,10 @@ export const Playground: Story = {
         [mode]="mode"
         [size]="size"
       >
-        <mzn-checkbox value="a">Option A</mzn-checkbox>
-        <mzn-checkbox value="b">Option B</mzn-checkbox>
-        <mzn-checkbox value="c">Option C</mzn-checkbox>
-      </mzn-checkbox-group>
+        <div mznCheckbox value="a">Option A</div>
+        <div mznCheckbox value="b">Option B</div>
+        <div mznCheckbox value="c">Option C</div>
+      </div>
       <p>selected: {{ groupValues }}</p>
     `,
   }),
@@ -72,18 +72,18 @@ export const Horizontal: Story = {
       values: [] as string[],
     },
     template: `
-      <mzn-checkbox-group [(ngModel)]="values" name="horizontal-group" layout="horizontal">
-        <mzn-checkbox value="1">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="2">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="3" [disabled]="true">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="4">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="5">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="6">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="7">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="8">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="9">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="10">Checkbox Label</mzn-checkbox>
-      </mzn-checkbox-group>
+      <div mznCheckboxGroup [(ngModel)]="values" name="horizontal-group" layout="horizontal">
+        <div mznCheckbox value="1">Checkbox Label</div>
+        <div mznCheckbox value="2">Checkbox Label</div>
+        <div mznCheckbox value="3" [disabled]="true">Checkbox Label</div>
+        <div mznCheckbox value="4">Checkbox Label</div>
+        <div mznCheckbox value="5">Checkbox Label</div>
+        <div mznCheckbox value="6">Checkbox Label</div>
+        <div mznCheckbox value="7">Checkbox Label</div>
+        <div mznCheckbox value="8">Checkbox Label</div>
+        <div mznCheckbox value="9">Checkbox Label</div>
+        <div mznCheckbox value="10">Checkbox Label</div>
+      </div>
       <p>selected: {{ values }}</p>
     `,
   }),
@@ -96,18 +96,18 @@ export const Vertical: Story = {
       values: [] as string[],
     },
     template: `
-      <mzn-checkbox-group [(ngModel)]="values" name="vertical-group" layout="vertical">
-        <mzn-checkbox value="1">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="2">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="3" [disabled]="true">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="4">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="5">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="6">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="7">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="8">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="9">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="10">Checkbox Label</mzn-checkbox>
-      </mzn-checkbox-group>
+      <div mznCheckboxGroup [(ngModel)]="values" name="vertical-group" layout="vertical">
+        <div mznCheckbox value="1">Checkbox Label</div>
+        <div mznCheckbox value="2">Checkbox Label</div>
+        <div mznCheckbox value="3" [disabled]="true">Checkbox Label</div>
+        <div mznCheckbox value="4">Checkbox Label</div>
+        <div mznCheckbox value="5">Checkbox Label</div>
+        <div mznCheckbox value="6">Checkbox Label</div>
+        <div mznCheckbox value="7">Checkbox Label</div>
+        <div mznCheckbox value="8">Checkbox Label</div>
+        <div mznCheckbox value="9">Checkbox Label</div>
+        <div mznCheckbox value="10">Checkbox Label</div>
+      </div>
       <p>selected: {{ values }}</p>
     `,
   }),
@@ -120,16 +120,16 @@ export const HorizontalChips: Story = {
       values: [] as string[],
     },
     template: `
-      <mzn-checkbox-group [(ngModel)]="values" name="horizontal-chips-group" layout="horizontal" mode="chip">
-        <mzn-checkbox value="1" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="2" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="3" mode="chip" [disabled]="true">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="4" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="5" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="6" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="7" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="8" mode="chip">Checkbox Label</mzn-checkbox>
-      </mzn-checkbox-group>
+      <div mznCheckboxGroup [(ngModel)]="values" name="horizontal-chips-group" layout="horizontal" mode="chip">
+        <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="3" mode="chip" [disabled]="true">Checkbox Label</div>
+        <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+      </div>
       <p>selected: {{ values }}</p>
     `,
   }),
@@ -142,16 +142,16 @@ export const VerticalChips: Story = {
       values: [] as string[],
     },
     template: `
-      <mzn-checkbox-group [(ngModel)]="values" name="vertical-chips-group" layout="vertical" mode="chip">
-        <mzn-checkbox value="1" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="2" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="3" mode="chip" [disabled]="true">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="4" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="5" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="6" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="7" mode="chip">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="8" mode="chip">Checkbox Label</mzn-checkbox>
-      </mzn-checkbox-group>
+      <div mznCheckboxGroup [(ngModel)]="values" name="vertical-chips-group" layout="vertical" mode="chip">
+        <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="3" mode="chip" [disabled]="true">Checkbox Label</div>
+        <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+      </div>
       <p>selected: {{ values }}</p>
     `,
   }),
@@ -167,16 +167,16 @@ export const ChipsWithLevelControl: Story = {
       <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;">
         <p style="margin: 0; font-weight: bold;">Chip 模式搭配 Level 控制範例</p>
         <p style="margin: 0; color: #6b7280; font-size: 14px;">使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能。</p>
-        <mzn-checkbox-group [(ngModel)]="values" name="chips-level-group" layout="horizontal" mode="chip">
-          <mzn-checkbox value="1" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="2" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="3" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="4" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="5" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="6" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="7" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="8" mode="chip">Checkbox Label</mzn-checkbox>
-        </mzn-checkbox-group>
+        <div mznCheckboxGroup [(ngModel)]="values" name="chips-level-group" layout="horizontal" mode="chip">
+          <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+        </div>
         <p>selected: {{ values }}</p>
       </div>
     `,
@@ -193,16 +193,16 @@ export const ChipsWithLevelControlVertical: Story = {
       <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;">
         <p style="margin: 0; font-weight: bold;">Chip 模式搭配 Level 控制範例（垂直佈局）</p>
         <p style="margin: 0; color: #6b7280; font-size: 14px;">使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能，垂直排列。</p>
-        <mzn-checkbox-group [(ngModel)]="values" name="chips-level-group-vertical" layout="vertical" mode="chip">
-          <mzn-checkbox value="1" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="2" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="3" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="4" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="5" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="6" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="7" mode="chip">Checkbox Label</mzn-checkbox>
-          <mzn-checkbox value="8" mode="chip">Checkbox Label</mzn-checkbox>
-        </mzn-checkbox-group>
+        <div mznCheckboxGroup [(ngModel)]="values" name="chips-level-group-vertical" layout="vertical" mode="chip">
+          <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+        </div>
         <p>selected: {{ values }}</p>
       </div>
     `,
@@ -216,18 +216,18 @@ export const WithLevelControlCustomization: Story = {
       values: ['2', '4'] as string[],
     },
     template: `
-      <mzn-checkbox-group [(ngModel)]="values" name="level-control-group">
-        <mzn-checkbox value="1">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="2">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="3">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="4">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="5">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="6">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="7">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="8">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="9">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="10">Checkbox Label</mzn-checkbox>
-      </mzn-checkbox-group>
+      <div mznCheckboxGroup [(ngModel)]="values" name="level-control-group">
+        <div mznCheckbox value="1">Checkbox Label</div>
+        <div mznCheckbox value="2">Checkbox Label</div>
+        <div mznCheckbox value="3">Checkbox Label</div>
+        <div mznCheckbox value="4">Checkbox Label</div>
+        <div mznCheckbox value="5">Checkbox Label</div>
+        <div mznCheckbox value="6">Checkbox Label</div>
+        <div mznCheckbox value="7">Checkbox Label</div>
+        <div mznCheckbox value="8">Checkbox Label</div>
+        <div mznCheckbox value="9">Checkbox Label</div>
+        <div mznCheckbox value="10">Checkbox Label</div>
+      </div>
       <p>selected: {{ values }}</p>
     `,
   }),
@@ -240,18 +240,18 @@ export const WithChildren: Story = {
       values: [] as string[],
     },
     template: `
-      <mzn-checkbox-group [(ngModel)]="values" name="children-group">
-        <mzn-checkbox value="1">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="2">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="3" [disabled]="true">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="4">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="5">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="6">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="7">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="8">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="9">Checkbox Label</mzn-checkbox>
-        <mzn-checkbox value="10">Checkbox Label</mzn-checkbox>
-      </mzn-checkbox-group>
+      <div mznCheckboxGroup [(ngModel)]="values" name="children-group">
+        <div mznCheckbox value="1">Checkbox Label</div>
+        <div mznCheckbox value="2">Checkbox Label</div>
+        <div mznCheckbox value="3" [disabled]="true">Checkbox Label</div>
+        <div mznCheckbox value="4">Checkbox Label</div>
+        <div mznCheckbox value="5">Checkbox Label</div>
+        <div mznCheckbox value="6">Checkbox Label</div>
+        <div mznCheckbox value="7">Checkbox Label</div>
+        <div mznCheckbox value="8">Checkbox Label</div>
+        <div mznCheckbox value="9">Checkbox Label</div>
+        <div mznCheckbox value="10">Checkbox Label</div>
+      </div>
       <p>selected: {{ values }}</p>
     `,
   }),
@@ -268,12 +268,12 @@ export const WithEditableInput: Story = {
       <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;">
         <p style="margin: 0; font-weight: bold;">CheckboxGroup 可編輯輸入範例</p>
         <p style="margin: 0; color: #6b7280; font-size: 14px;">選擇「其他」選項後，會顯示輸入框讓您輸入自訂內容。</p>
-        <mzn-checkbox-group [(ngModel)]="values" name="editable-group" layout="vertical">
-          <mzn-checkbox value="option1">選項 1</mzn-checkbox>
-          <mzn-checkbox value="option2">選項 2</mzn-checkbox>
-          <mzn-checkbox value="other">其他</mzn-checkbox>
-          <mzn-checkbox value="option3">選項 3</mzn-checkbox>
-        </mzn-checkbox-group>
+        <div mznCheckboxGroup [(ngModel)]="values" name="editable-group" layout="vertical">
+          <div mznCheckbox value="option1">選項 1</div>
+          <div mznCheckbox value="option2">選項 2</div>
+          <div mznCheckbox value="other">其他</div>
+          <div mznCheckbox value="option3">選項 3</div>
+        </div>
         <input
           *ngIf="values.includes('other')"
           type="text"
@@ -303,8 +303,8 @@ export const WithEditableInputMultiple: Story = {
       <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;">
         <p style="margin: 0; font-weight: bold;">多個可編輯輸入範例</p>
         <p style="margin: 0; color: #6b7280; font-size: 14px;">多個選項都可以有可編輯輸入框，勾選後會自動顯示。</p>
-        <mzn-checkbox-group [(ngModel)]="values" name="multiple-editable-group" layout="vertical">
-          <mzn-checkbox value="custom1">自訂選項 1</mzn-checkbox>
+        <div mznCheckboxGroup [(ngModel)]="values" name="multiple-editable-group" layout="vertical">
+          <div mznCheckbox value="custom1">自訂選項 1</div>
           <input
             *ngIf="values.includes('custom1')"
             type="text"
@@ -313,7 +313,7 @@ export const WithEditableInputMultiple: Story = {
             placeholder="請輸入自訂選項 1 內容"
             style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; margin-left: 24px;"
           />
-          <mzn-checkbox value="custom2">自訂選項 2</mzn-checkbox>
+          <div mznCheckbox value="custom2">自訂選項 2</div>
           <input
             *ngIf="values.includes('custom2')"
             type="text"
@@ -322,8 +322,8 @@ export const WithEditableInputMultiple: Story = {
             placeholder="請輸入自訂選項 2 內容"
             style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; margin-left: 24px;"
           />
-          <mzn-checkbox value="normal">一般選項</mzn-checkbox>
-          <mzn-checkbox value="other">其他</mzn-checkbox>
+          <div mznCheckbox value="normal">一般選項</div>
+          <div mznCheckbox value="other">其他</div>
           <input
             *ngIf="values.includes('other')"
             type="text"
@@ -332,7 +332,7 @@ export const WithEditableInputMultiple: Story = {
             placeholder="請輸入其他內容"
             style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; margin-left: 24px;"
           />
-        </mzn-checkbox-group>
+        </div>
         <div *ngIf="values.length > 0" style="padding: 12px; background-color: #f3f4f6; border-radius: 4px;">
           <span style="font-size: 12px; color: #6b7280;">已選擇：{{ values.join(', ') }}</span>
         </div>

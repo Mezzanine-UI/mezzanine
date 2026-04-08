@@ -85,7 +85,7 @@ export interface SelectTriggerTagValue {
       }
     } @else {
       <div #tagsContainer [class]="tagsContainerClasses()">
-        <mzn-tag-group>
+        <div mznTagGroup>
           @for (item of visibleItems(); track item.id) {
             @if (readOnly()) {
               <span
@@ -116,11 +116,11 @@ export interface SelectTriggerTagValue {
               (tagClick)="$event.stopPropagation()"
             ></span>
           }
-        </mzn-tag-group>
+        </div>
 
         <!-- Fake tags for measurement: rendered off-screen, used by ResizeObserver -->
         <div [class]="fakeTagsClasses()" aria-hidden="true">
-          <mzn-tag-group>
+          <div mznTagGroup>
             @for (item of value(); track item.id) {
               <span
                 mznTag
@@ -129,7 +129,7 @@ export interface SelectTriggerTagValue {
                 [label]="item.name"
               ></span>
             }
-          </mzn-tag-group>
+          </div>
         </div>
       </div>
     }

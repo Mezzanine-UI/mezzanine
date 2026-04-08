@@ -19,31 +19,37 @@ import { MZN_CHECKBOX_GROUP } from './checkbox-group-context';
  * ```html
  * import { MznCheckAll, MznCheckboxGroup, MznCheckbox } from '@mezzanine-ui/ng/checkbox';
  *
- * <mzn-check-all [options]="options" label="全選">
- *   <mzn-checkbox-group [(ngModel)]="selected" name="items">
+ * <div mznCheckAll [options]="options" label="全選">
+ *   <div mznCheckboxGroup [(ngModel)]="selected" name="items">
  *     @for (opt of options; track opt.value) {
- *       <mzn-checkbox [value]="opt.value">{{ opt.label }}</mzn-checkbox>
+ *       <div mznCheckbox [value]="opt.value">{{ opt.label }}</div>
  *     }
- *   </mzn-checkbox-group>
- * </mzn-check-all>
+ *   </div>
+ * </div>
  * ```
  *
  * @see MznCheckboxGroup
  */
 @Component({
-  selector: 'mzn-check-all',
+  selector: '[mznCheckAll]',
+  host: {
+    '[attr.options]': 'null',
+    '[attr.label]': 'null',
+    '[attr.disabled]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznCheckbox],
   template: `
-    <mzn-checkbox
+    <div
+      mznCheckbox
       [checked]="checked()"
       [disabled]="disabled()"
       [indeterminate]="indeterminate()"
       (change)="handleCheckAllChange()"
     >
       {{ label() }}
-    </mzn-checkbox>
+    </div>
     <ng-content />
   `,
 })

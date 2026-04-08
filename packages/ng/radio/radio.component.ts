@@ -48,17 +48,27 @@ export interface RadioWithInputConfig {
  * ```html
  * import { MznRadio } from '@mezzanine-ui/ng/radio';
  *
- * <mzn-radio [(ngModel)]="selected" value="a">選項 A</mzn-radio>
+ * <div mznRadio [(ngModel)]="selected" value="a">選項 A</div>
  * ```
  */
 @Component({
-  selector: 'mzn-radio',
+  selector: '[mznRadio]',
   standalone: true,
   imports: [MznIcon, MznInput],
   providers: [provideValueAccessor(MznRadio)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.checked]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.hint]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.withInputConfig]': 'null',
+    '[attr.name]': 'null',
+    '[attr.size]': 'null',
+    '[attr.type]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     <label>

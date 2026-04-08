@@ -113,13 +113,14 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
           </div>
         } @else if (type() === 'toggle') {
           <div [class]="headerActionClass">
-            <mzn-toggle
+            <div
+              mznToggle
               [disabled]="disabled()"
               [label]="toggleLabel()"
               [(ngModel)]="toggleChecked"
               [size]="toggleSize()"
               [supportingText]="toggleSupportingText()"
-            />
+            ></div>
           </div>
         } @else {
           <div [class]="headerActionClass">

@@ -49,10 +49,10 @@ export const Default: Story = {
                 </button>
               </a>
 
-              <mzn-button-group contentHeaderActions>
+              <div mznButtonGroup contentHeaderActions>
                 <button mznButton variant="base-secondary">Secondary</button>
                 <button mznButton>Primary</button>
-              </mzn-button-group>
+              </div>
               <div contentHeaderUtilities>
                 <button mznButton variant="base-secondary" iconType="icon-only">
                   <i mznIcon [icon]="MenuIcon" ></i>

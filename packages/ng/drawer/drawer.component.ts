@@ -98,7 +98,7 @@ export interface DrawerFilterConfig {
  * import { MznDrawer } from '@mezzanine-ui/ng/drawer';
  *
  * <!-- 使用 config inputs 宣告式設定底部按鈕 -->
- * <mzn-drawer
+ * <div mznDrawer
  *   [open]="isOpen"
  *   headerTitle="編輯資料"
  *   [bottomPrimaryAction]="{ text: '確認', variant: 'base-primary' }"
@@ -108,22 +108,37 @@ export interface DrawerFilterConfig {
  *   (closed)="isOpen = false"
  * >
  *   <p>Drawer 內容</p>
- * </mzn-drawer>
+ * </div>
  *
  * <!-- 使用 ng-content slot（Angular 慣用方式） -->
- * <mzn-drawer [open]="isOpen" headerTitle="詳細資料" (closed)="isOpen = false">
+ * <div mznDrawer [open]="isOpen" headerTitle="詳細資料" (closed)="isOpen = false">
  *   <p>抽屜內容</p>
  *   <div mznDrawerBottom>
  *     <button mznButton variant="base-primary">確認</button>
  *   </div>
- * </mzn-drawer>
+ * </div>
  * ```
  *
  * @see MznModal
  * @see MznBackdrop
  */
 @Component({
-  selector: 'mzn-drawer',
+  selector: '[mznDrawer]',
+  host: {
+    '[attr.bottomGhostAction]': 'null',
+    '[attr.bottomPrimaryAction]': 'null',
+    '[attr.bottomSecondaryAction]': 'null',
+    '[attr.contentKey]': 'null',
+    '[attr.disableCloseOnBackdropClick]': 'null',
+    '[attr.disableCloseOnEscapeKeyDown]': 'null',
+    '[attr.disablePortal]': 'null',
+    '[attr.filterConfig]': 'null',
+    '[attr.headerTitle]': 'null',
+    '[attr.isBottomDisplay]': 'null',
+    '[attr.isHeaderDisplay]': 'null',
+    '[attr.open]': 'null',
+    '[attr.size]': 'null',
+  },
   standalone: true,
   imports: [
     FormsModule,
@@ -158,31 +173,32 @@ export interface DrawerFilterConfig {
           @if (hasFilterConfig()) {
             <div [class]="filterAreaClass()">
               @if (hasFilterRadios()) {
-                <mzn-radio-group
+                <div
+                  mznRadioGroup
                   size="minor"
                   type="segment"
                   [ngModel]="resolvedFilterValue()"
                   (valueChange)="onFilterRadioChange($event)"
                 >
                   @if (filterConfig()?.allRadioLabel) {
-                    <mzn-radio type="segment" value="all">{{
+                    <div mznRadio type="segment" value="all">{{
                       filterConfig()?.allRadioLabel
-                    }}</mzn-radio>
+                    }}</div>
                   }
                   @if (filterConfig()?.readRadioLabel) {
-                    <mzn-radio type="segment" value="read">{{
+                    <div mznRadio type="segment" value="read">{{
                       filterConfig()?.readRadioLabel
-                    }}</mzn-radio>
+                    }}</div>
                   }
                   @if (
                     filterConfig()?.showUnreadButton &&
                     filterConfig()?.unreadRadioLabel
                   ) {
-                    <mzn-radio type="segment" value="unread">{{
+                    <div mznRadio type="segment" value="unread">{{
                       filterConfig()?.unreadRadioLabel
-                    }}</mzn-radio>
+                    }}</div>
                   }
-                </mzn-radio-group>
+                </div>
               }
               @if (hasFilterButton()) {
                 @if (filterConfig()?.options?.length) {

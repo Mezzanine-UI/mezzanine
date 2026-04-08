@@ -87,7 +87,7 @@ export const Playground: Story = {
       secondaryAction: { text: '取消', variant: 'base-secondary' },
     },
     template: `
-      <mzn-drawer
+      <div mznDrawer
         [open]="open"
         [disableCloseOnBackdropClick]="disableCloseOnBackdropClick"
         [disableCloseOnEscapeKeyDown]="disableCloseOnEscapeKeyDown"
@@ -104,7 +104,7 @@ export const Playground: Story = {
         (closed)="open = false"
       >
         <p>Drawer content goes here.</p>
-      </mzn-drawer>
+      </div>
     `,
   }),
 };
@@ -120,7 +120,7 @@ export const WithControlBar: Story = {
       <button mznButton variant="base-text-link" (click)="open.set(true)">
         開啟 Drawer (預設控制列)
       </button>
-      <mzn-drawer
+      <div mznDrawer
         [open]="open()"
         headerTitle="內容篩選器"
         size="narrow"
@@ -137,7 +137,7 @@ export const WithControlBar: Story = {
           <button mznButton variant="base-secondary" (click)="open.set(false)">取消</button>
           <button mznButton variant="base-primary" (click)="open.set(false)">套用</button>
         </div>
-      </mzn-drawer>
+      </div>
     `,
   }),
 };
@@ -152,7 +152,7 @@ export const WithControlBarButtonOnly: Story = {
       <button mznButton variant="base-text-link" (click)="open.set(true)">
         開啟 Drawer (僅控制列按鈕)
       </button>
-      <mzn-drawer
+      <div mznDrawer
         [open]="open()"
         headerTitle="設定"
         size="narrow"
@@ -164,7 +164,7 @@ export const WithControlBarButtonOnly: Story = {
         <div style="padding: 16px;">
           <p>這個 Drawer 的控制列只有按鈕，沒有 Radio Group</p>
         </div>
-      </mzn-drawer>
+      </div>
     `,
     component: undefined,
   }),
@@ -181,7 +181,7 @@ export const WithBottomActionStates: Story = {
       <button mznButton variant="base-text-link" (click)="open.set(true)">
         開啟 Drawer (按鈕狀態控制)
       </button>
-      <mzn-drawer
+      <div mznDrawer
         [open]="open()"
         headerTitle="表單提交"
         size="medium"
@@ -196,7 +196,7 @@ export const WithBottomActionStates: Story = {
           <button mznButton variant="base-ghost" [disabled]="loading()" (click)="open.set(false)">取消</button>
           <button mznButton variant="base-primary" [disabled]="loading()" (click)="open.set(false)">提交</button>
         </div>
-      </mzn-drawer>
+      </div>
     `,
   }),
 };
@@ -211,7 +211,7 @@ export const WithCustomButtonVariants: Story = {
       <button mznButton variant="base-text-link" (click)="open.set(true)">
         開啟 Drawer (自訂按鈕樣式)
       </button>
-      <mzn-drawer
+      <div mznDrawer
         [open]="open()"
         headerTitle="自訂按鈕"
         size="medium"
@@ -225,7 +225,7 @@ export const WithCustomButtonVariants: Story = {
           <button mznButton variant="base-secondary" size="minor" (click)="open.set(false)">返回</button>
           <button mznButton variant="base-primary" size="minor" (click)="open.set(false)">確認</button>
         </div>
-      </mzn-drawer>
+      </div>
     `,
   }),
 };
@@ -245,7 +245,8 @@ export const WithCustomButtonVariants: Story = {
     <button mznButton variant="base-text-link" (click)="drawerOpen.set(true)">
       開啟 Drawer (測試 Modal 互動)
     </button>
-    <mzn-drawer
+    <div
+      mznDrawer
       [open]="drawerOpen()"
       headerTitle="Drawer 與 Modal 互動測試"
       size="medium"
@@ -262,7 +263,7 @@ export const WithCustomButtonVariants: Story = {
           >
         </div>
       </div>
-    </mzn-drawer>
+    </div>
     <mzn-modal
       [open]="modalOpen()"
       modalType="standard"
@@ -276,7 +277,7 @@ export const WithCustomButtonVariants: Story = {
         <p>測試 z-index 和背景遮罩是否正常運作。</p>
       </div>
       <mzn-modal-footer>
-        <mzn-button-group>
+        <div mznButtonGroup>
           <button
             mznButton
             variant="base-secondary"
@@ -289,7 +290,7 @@ export const WithCustomButtonVariants: Story = {
             (click)="modalOpen.set(false)"
             >確認</button
           >
-        </mzn-button-group>
+        </div>
       </mzn-modal-footer>
     </mzn-modal>
   `,
@@ -327,7 +328,7 @@ export const WithFilterBarDropdown: Story = {
       <button mznButton variant="base-text-link" (click)="open.set(true)">
         開啟 Drawer (篩選 Dropdown)
       </button>
-      <mzn-drawer
+      <div mznDrawer
         [open]="open()"
         headerTitle="篩選器 Dropdown 示範"
         size="narrow"
@@ -344,7 +345,7 @@ export const WithFilterBarDropdown: Story = {
         <div style="padding: 16px;">
           <p>已選擇篩選：{{ selected() || '（尚未選擇）' }}</p>
         </div>
-      </mzn-drawer>
+      </div>
     `,
   }),
 };
@@ -360,7 +361,7 @@ export const WithFilterAreaOnCustomButton: Story = {
       <button mznButton variant="base-text-link" (click)="open.set(true)">
         開啟 Drawer (篩選 Dropdown)
       </button>
-      <mzn-drawer
+      <div mznDrawer
         [open]="open()"
         headerTitle="篩選器 Dropdown 示範"
         size="narrow"
@@ -369,7 +370,7 @@ export const WithFilterAreaOnCustomButton: Story = {
         <div mznDrawerFilter style="padding: 8px 16px; display: flex; justify-content: flex-end; border-bottom: 1px solid var(--mzn-color-neutral-20);">
           <button mznButton variant="base-secondary" (click)="onClear()">清除篩選</button>
         </div>
-      </mzn-drawer>
+      </div>
     `,
   }),
 };
@@ -385,7 +386,7 @@ export const WithContentKeyAutoFallback: Story = {
       <button mznButton variant="base-text-link" (click)="open.set(true)">
         開啟 Drawer (自動清理機制測試)
       </button>
-      <mzn-drawer
+      <div mznDrawer
         [open]="open()"
         headerTitle="自動清理機制測試"
         size="medium"
@@ -414,7 +415,7 @@ export const WithContentKeyAutoFallback: Story = {
             3. 應該只會看到 3 個項目
           </p>
         </div>
-      </mzn-drawer>
+      </div>
     `,
   }),
 };

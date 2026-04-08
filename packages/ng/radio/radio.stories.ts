@@ -44,8 +44,8 @@ export const Playground: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <mzn-radio value="plain" [disabled]="disabled" [error]="error" [size]="size">Radio Button Label</mzn-radio>
-        <mzn-radio value="hint" hint="Support text" [disabled]="disabled" [error]="error" [size]="size">Radio Button Label</mzn-radio>
+        <div mznRadio value="plain" [disabled]="disabled" [error]="error" [size]="size">Radio Button Label</div>
+        <div mznRadio value="hint" hint="Support text" [disabled]="disabled" [error]="error" [size]="size">Radio Button Label</div>
       </div>
     `,
   }),
@@ -56,10 +56,10 @@ export const Standalone: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <mzn-radio value="normal">Normal</mzn-radio>
-        <mzn-radio value="error" [error]="true">Error</mzn-radio>
-        <mzn-radio value="disabled-checked" [disabled]="true" [checked]="true">Disabled Checked</mzn-radio>
-        <mzn-radio value="disabled" [disabled]="true">Disabled</mzn-radio>
+        <div mznRadio value="normal">Normal</div>
+        <div mznRadio value="error" [error]="true">Error</div>
+        <div mznRadio value="disabled-checked" [disabled]="true" [checked]="true">Disabled Checked</div>
+        <div mznRadio value="disabled" [disabled]="true">Disabled</div>
       </div>
     `,
   }),
@@ -70,8 +70,8 @@ export const Sizes: Story = {
   render: () => ({
     template: `
       <div style="width: fit-content; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;">
-        <mzn-radio value="sub" size="sub">Sub</mzn-radio>
-        <mzn-radio value="main" size="main">Main</mzn-radio>
+        <div mznRadio value="sub" size="sub">Sub</div>
+        <div mznRadio value="main" size="main">Main</div>
       </div>
     `,
   }),
@@ -111,20 +111,20 @@ export const Group: Story = {
       <div style="display: flex; flex-direction: column; gap: 24px;">
         <div>
           <h2 style="margin: 0 0 8px 0;">From children</h2>
-          <mzn-radio-group [(ngModel)]="selected" name="group-children" [orientation]="orientation" [size]="size" [disabled]="disabled">
-            <mzn-radio value="option-1">Option 1</mzn-radio>
-            <mzn-radio value="option-2" hint="option2 support text">Option 2</mzn-radio>
-            <mzn-radio value="option-disabled" [disabled]="true">Option 3</mzn-radio>
-            <mzn-radio value="option-error" [error]="true">Option 4</mzn-radio>
-          </mzn-radio-group>
+          <div mznRadioGroup [(ngModel)]="selected" name="group-children" [orientation]="orientation" [size]="size" [disabled]="disabled">
+            <div mznRadio value="option-1">Option 1</div>
+            <div mznRadio value="option-2" hint="option2 support text">Option 2</div>
+            <div mznRadio value="option-disabled" [disabled]="true">Option 3</div>
+            <div mznRadio value="option-error" [error]="true">Option 4</div>
+          </div>
         </div>
         <div>
           <h2 style="margin: 0 0 8px 0;">From options</h2>
-          <mzn-radio-group [(ngModel)]="selected" name="group-options" [options]="options" [orientation]="orientation" [size]="size" [disabled]="disabled" />
+          <div mznRadioGroup [(ngModel)]="selected" name="group-options" [options]="options" [orientation]="orientation" [size]="size" [disabled]="disabled" ></div>
         </div>
         <div>
           <h2 style="margin: 0 0 8px 0;">Vertical</h2>
-          <mzn-radio-group [(ngModel)]="selected" name="group-vertical" orientation="vertical" [size]="size" [disabled]="disabled" [options]="options" />
+          <div mznRadioGroup [(ngModel)]="selected" name="group-vertical" orientation="vertical" [size]="size" [disabled]="disabled" [options]="options" ></div>
         </div>
         <p>selected: {{ selected }}</p>
       </div>
@@ -143,29 +143,29 @@ export const Segmented: Story = {
       <div style="width: fit-content; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px;">
         <div>
           <h2 style="margin: 0 0 4px 0;">Main</h2>
-          <mzn-radio-group [(ngModel)]="selected" name="segment-main" type="segment">
-            <mzn-radio value="op1" type="segment" [icon]="LightIcon">Option1</mzn-radio>
-            <mzn-radio value="op2" type="segment" [icon]="LightIcon">Option2</mzn-radio>
-            <mzn-radio value="op3" type="segment" [icon]="LightIcon">Option3</mzn-radio>
-            <mzn-radio value="op4" type="segment" [icon]="LightIcon" [disabled]="true">Option4</mzn-radio>
-          </mzn-radio-group>
+          <div mznRadioGroup [(ngModel)]="selected" name="segment-main" type="segment">
+            <div mznRadio value="op1" type="segment" [icon]="LightIcon">Option1</div>
+            <div mznRadio value="op2" type="segment" [icon]="LightIcon">Option2</div>
+            <div mznRadio value="op3" type="segment" [icon]="LightIcon">Option3</div>
+            <div mznRadio value="op4" type="segment" [icon]="LightIcon" [disabled]="true">Option4</div>
+          </div>
         </div>
         <div>
           <h2 style="margin: 0 0 4px 0;">Sub</h2>
-          <mzn-radio-group [(ngModel)]="selected" name="segment-sub" type="segment" size="sub">
-            <mzn-radio value="op1" type="segment">全部</mzn-radio>
-            <mzn-radio value="op2" type="segment">已發佈</mzn-radio>
-            <mzn-radio value="op3" type="segment">未發佈</mzn-radio>
-          </mzn-radio-group>
+          <div mznRadioGroup [(ngModel)]="selected" name="segment-sub" type="segment" size="sub">
+            <div mznRadio value="op1" type="segment">全部</div>
+            <div mznRadio value="op2" type="segment">已發佈</div>
+            <div mznRadio value="op3" type="segment">未發佈</div>
+          </div>
         </div>
         <div>
           <h2 style="margin: 0 0 4px 0;">Minor</h2>
-          <mzn-radio-group [(ngModel)]="selected" name="segment-minor" type="segment" size="minor">
-            <mzn-radio value="op1" type="segment">Option1</mzn-radio>
-            <mzn-radio value="op2" type="segment">Option2</mzn-radio>
-            <mzn-radio value="op3" type="segment">Option3</mzn-radio>
-            <mzn-radio value="op4" type="segment" [disabled]="true">Option4</mzn-radio>
-          </mzn-radio-group>
+          <div mznRadioGroup [(ngModel)]="selected" name="segment-minor" type="segment" size="minor">
+            <div mznRadio value="op1" type="segment">Option1</div>
+            <div mznRadio value="op2" type="segment">Option2</div>
+            <div mznRadio value="op3" type="segment">Option3</div>
+            <div mznRadio value="op4" type="segment" [disabled]="true">Option4</div>
+          </div>
         </div>
         <p>selected: {{ selected }}</p>
       </div>

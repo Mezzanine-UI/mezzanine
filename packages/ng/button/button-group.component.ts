@@ -23,15 +23,15 @@ import { MZN_BUTTON_GROUP, MznButtonGroupContext } from './button-group.token';
  * ```html
  * import { MznButtonGroup, MznButton } from '@mezzanine-ui/ng/button';
  *
- * <mzn-button-group variant="base-secondary" size="sub">
+ * <div mznButtonGroup variant="base-secondary" size="sub">
  *   <button mznButton>按鈕 1</button>
  *   <button mznButton>按鈕 2</button>
  *   <button mznButton>按鈕 3</button>
- * </mzn-button-group>
+ * </div>
  * ```
  */
 @Component({
-  selector: `mzn-button-group`,
+  selector: '[mznButtonGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -55,6 +55,11 @@ import { MZN_BUTTON_GROUP, MznButtonGroupContext } from './button-group.token';
     role: 'group',
     '[class]': 'hostClasses()',
     '[attr.aria-orientation]': 'orientation()',
+    '[attr.variant]': 'null',
+    '[attr.size]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.orientation]': 'null',
   },
   template: '<ng-content />',
 })

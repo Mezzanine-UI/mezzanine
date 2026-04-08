@@ -29,7 +29,7 @@ const popconfirmPrefix = 'mzn-popconfirm';
  * import { MznPopconfirm } from '@mezzanine-ui/ng/popconfirm';
  *
  * <button #anchor (click)="showConfirm = !showConfirm">Delete</button>
- * <mzn-popconfirm
+ * <div mznPopconfirm
  *   [anchor]="anchor"
  *   [open]="showConfirm"
  *   title="確定要刪除嗎？"
@@ -38,13 +38,24 @@ const popconfirmPrefix = 'mzn-popconfirm';
  *   (confirmed)="onConfirm()"
  *   (cancelled)="showConfirm = false"
  *   (closed)="showConfirm = false"
- * />
+ * ></div>
  * ```
  *
  * @see MznPopper
  */
 @Component({
-  selector: 'mzn-popconfirm',
+  selector: '[mznPopconfirm]',
+  host: {
+    '[attr.anchor]': 'null',
+    '[attr.cancelText]': 'null',
+    '[attr.confirmText]': 'null',
+    '[attr.disableClickAway]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.open]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.title]': 'null',
+  },
   standalone: true,
   imports: [MznPopper, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,

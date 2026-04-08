@@ -23,17 +23,22 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
  * ```html
  * import { MznToggle } from '@mezzanine-ui/ng/toggle';
  *
- * <mzn-toggle [(ngModel)]="enabled" label="啟用通知" />
+ * <div mznToggle [(ngModel)]="enabled" label="啟用通知" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-toggle',
+  selector: '[mznToggle]',
   standalone: true,
   imports: [MznTypography],
   providers: [provideValueAccessor(MznToggle)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.checked]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.label]': 'null',
+    '[attr.size]': 'null',
+    '[attr.supportingText]': 'null',
   },
   template: `
     <span [class]="inputContainerClass">

@@ -342,12 +342,13 @@ function nextSortOrder(current: SortOrder): SortOrder {
               }
               @if (toggleable()?.enabled) {
                 <td style="width: 80px;">
-                  <mzn-toggle
+                  <div
+                    mznToggle
                     [checked]="isToggled(record)"
                     [disabled]="isToggleDisabled(record)"
                     size="sub"
                     (click)="onToggleClick(record, $event)"
-                  />
+                  ></div>
                 </td>
               }
               @if (actions(); as act) {

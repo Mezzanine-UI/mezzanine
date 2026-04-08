@@ -50,14 +50,14 @@ export interface RadioGroupOption {
  * ```html
  * import { MznRadioGroup, MznRadio } from '@mezzanine-ui/ng/radio';
  *
- * <mzn-radio-group [(ngModel)]="selected" name="color">
- *   <mzn-radio value="red">Red</mzn-radio>
- *   <mzn-radio value="blue">Blue</mzn-radio>
- * </mzn-radio-group>
+ * <div mznRadioGroup [(ngModel)]="selected" name="color">
+ *   <div mznRadio value="red">Red</div>
+ *   <div mznRadio value="blue">Blue</div>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-radio-group',
+  selector: '[mznRadioGroup]',
   standalone: true,
   imports: [MznRadio],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,14 +75,15 @@ export interface RadioGroupOption {
   },
   template: `
     @for (option of options(); track option.id) {
-      <mzn-radio
+      <div
+        mznRadio
         [value]="option.id"
         [disabled]="option.disabled ?? false"
         [error]="option.error ?? false"
         [icon]="option.icon"
         [hint]="option.hint"
         [withInputConfig]="option.withInputConfig"
-        >{{ option.name }}</mzn-radio
+        >{{ option.name }}</div
       >
     }
     <ng-content />

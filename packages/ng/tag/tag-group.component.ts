@@ -17,20 +17,21 @@ import clsx from 'clsx';
  * import { MznTagGroup } from '@mezzanine-ui/ng/tag';
  * import { MznTag } from '@mezzanine-ui/ng/tag';
  *
- * <mzn-tag-group>
+ * <div mznTagGroup>
  *   <span mznTag type="static" label="標籤一" ></span>
  *   <span mznTag type="static" label="標籤二" ></span>
- * </mzn-tag-group>
+ * </div>
  * ```
  *
  * @see MznTag
  */
 @Component({
-  selector: 'mzn-tag-group',
+  selector: '[mznTagGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.transition]': 'null',
   },
   template: `<ng-content />`,
 })

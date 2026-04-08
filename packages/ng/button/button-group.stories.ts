@@ -98,7 +98,7 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-button-group
+      <div mznButtonGroup
         [variant]="variant"
         [size]="size"
         [orientation]="orientation"
@@ -108,7 +108,7 @@ export const Playground: Story = {
         <button mznButton>One</button>
         <button mznButton>Two</button>
         <button mznButton>Three</button>
-      </mzn-button-group>
+      </div>
     `,
   }),
 };
@@ -117,29 +117,29 @@ export const Variants: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 24px;">
-        <mzn-button-group variant="base-primary">
+        <div mznButtonGroup variant="base-primary">
           <button mznButton>One</button>
           <button mznButton>Two</button>
           <button mznButton>Three</button>
-        </mzn-button-group>
+        </div>
 
-        <mzn-button-group variant="base-secondary">
+        <div mznButtonGroup variant="base-secondary">
           <button mznButton>One</button>
           <button mznButton>Two</button>
           <button mznButton>Three</button>
-        </mzn-button-group>
+        </div>
 
-        <mzn-button-group variant="base-tertiary">
+        <div mznButtonGroup variant="base-tertiary">
           <button mznButton>One</button>
           <button mznButton>Two</button>
           <button mznButton>Three</button>
-        </mzn-button-group>
+        </div>
 
-        <mzn-button-group variant="destructive-primary">
+        <div mznButtonGroup variant="destructive-primary">
           <button mznButton>Delete</button>
           <button mznButton>Remove</button>
           <button mznButton>Clear</button>
-        </mzn-button-group>
+        </div>
       </div>
     `,
   }),
@@ -152,16 +152,16 @@ export const WithIcons: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 24px;">
-        <mzn-button-group variant="base-primary">
+        <div mznButtonGroup variant="base-primary">
           <button mznButton iconType="leading"><i mznIcon [icon]="PlusIcon" [size]="16" ></i>Create</button>
           <button mznButton iconType="leading"><i mznIcon [icon]="PlusIcon" [size]="16" ></i>New</button>
-        </mzn-button-group>
+        </div>
 
-        <mzn-button-group variant="base-secondary">
+        <div mznButtonGroup variant="base-secondary">
           <button mznButton iconType="icon-only"><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
           <button mznButton iconType="icon-only"><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
           <button mznButton iconType="icon-only"><i mznIcon [icon]="PlusIcon" [size]="16" ></i></button>
-        </mzn-button-group>
+        </div>
       </div>
     `,
   }),
@@ -171,17 +171,17 @@ export const Orientation: Story = {
   render: () => ({
     template: `
       <div style="display: flex; gap: 48px;">
-        <mzn-button-group variant="base-primary" orientation="horizontal">
+        <div mznButtonGroup variant="base-primary" orientation="horizontal">
           <button mznButton>One</button>
           <button mznButton>Two</button>
           <button mznButton>Three</button>
-        </mzn-button-group>
+        </div>
 
-        <mzn-button-group variant="base-secondary" orientation="vertical">
+        <div mznButtonGroup variant="base-secondary" orientation="vertical">
           <button mznButton>One</button>
           <button mznButton>Two</button>
           <button mznButton>Three</button>
-        </mzn-button-group>
+        </div>
       </div>
     `,
   }),
@@ -191,16 +191,16 @@ export const FullWidth: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 24px;">
-        <mzn-button-group variant="base-primary" [fullWidth]="true">
+        <div mznButtonGroup variant="base-primary" [fullWidth]="true">
           <button mznButton>One</button>
           <button mznButton>Two</button>
           <button mznButton>Three</button>
-        </mzn-button-group>
+        </div>
 
-        <mzn-button-group variant="base-secondary" [fullWidth]="true">
+        <div mznButtonGroup variant="base-secondary" [fullWidth]="true">
           <button mznButton>One</button>
           <button mznButton>Two</button>
-        </mzn-button-group>
+        </div>
       </div>
     `,
   }),
@@ -210,17 +210,17 @@ export const States: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 24px;">
-        <mzn-button-group variant="base-primary">
+        <div mznButtonGroup variant="base-primary">
           <button mznButton variant="base-secondary">Normal</button>
           <button mznButton variant="base-tertiary" [disabled]="true">Disabled</button>
           <button mznButton [loading]="true">Loading</button>
-        </mzn-button-group>
+        </div>
 
-        <mzn-button-group variant="base-primary" [disabled]="true">
+        <div mznButtonGroup variant="base-primary" [disabled]="true">
           <button mznButton>All</button>
           <button mznButton>Disabled</button>
           <button mznButton>Group</button>
-        </mzn-button-group>
+        </div>
       </div>
     `,
   }),

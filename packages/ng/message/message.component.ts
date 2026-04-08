@@ -27,13 +27,13 @@ import { messageTimerController } from './message-timer-controller';
  *
  * @example
  * ```html
- * <mzn-message severity="success" message="操作成功！" />
+ * <div mznMessage severity="success" message="操作成功！" ></div>
  * ```
  *
  * @see MznMessageService
  */
 @Component({
-  selector: 'mzn-message',
+  selector: '[mznMessage]',
   standalone: true,
   imports: [MznIcon, MznSpin],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,6 +46,12 @@ import { messageTimerController } from './message-timer-controller';
     '(mouseleave)': 'onHoverEnd()',
     '(focus)': 'onHoverStart()',
     '(blur)': 'onHoverEnd()',
+    '[attr.duration]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.message]': 'null',
+    '[attr.messageKey]': 'null',
+    '[attr.reference]': 'null',
+    '[attr.severity]': 'null',
   },
   template: `
     @if (severity() === 'loading') {

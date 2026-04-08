@@ -37,18 +37,30 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
  * ```html
  * import { MznCheckbox } from '@mezzanine-ui/ng/checkbox';
  *
- * <mzn-checkbox [(ngModel)]="checked">同意條款</mzn-checkbox>
- * <mzn-checkbox mode="chip" size="minor">標籤選項</mzn-checkbox>
+ * <div mznCheckbox [(ngModel)]="checked">同意條款</div>
+ * <div mznCheckbox mode="chip" size="minor">標籤選項</div>
  * ```
  */
 @Component({
-  selector: 'mzn-checkbox',
+  selector: '[mznCheckbox]',
   standalone: true,
   imports: [MznIcon],
   providers: [provideValueAccessor(MznCheckbox)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.checked]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.hint]': 'null',
+    '[attr.indeterminate]': 'null',
+    '[attr.label]': 'null',
+    '[attr.description]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.name]': 'null',
+    '[attr.severity]': 'null',
+    '[attr.size]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     <label [class]="labelWrapClass">

@@ -107,9 +107,9 @@ const iconMap: Record<Exclude<EmptyType, 'custom'>, IconDefinition> = {
       }
 
       @if (size() !== 'minor') {
-        <mzn-button-group [class]="classes.actions">
+        <div mznButtonGroup [class]="classes.actions">
           <ng-content select="[actions]" />
-        </mzn-button-group>
+        </div>
       }
     </div>
   `,

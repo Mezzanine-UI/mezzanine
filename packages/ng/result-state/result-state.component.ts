@@ -67,9 +67,9 @@ const iconMap: Record<ResultStateType, IconDefinition> = {
       @if (description()) {
         <p [class]="classes.description">{{ description() }}</p>
       }
-      <mzn-button-group [class]="classes.actions">
+      <div mznButtonGroup [class]="classes.actions">
         <ng-content select="[actions]" />
-      </mzn-button-group>
+      </div>
     </div>
   `,
 })

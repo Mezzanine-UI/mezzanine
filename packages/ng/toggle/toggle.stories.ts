@@ -26,31 +26,31 @@ export const All: Story = {
         Size: main
         <div style="display: flex; gap: 16px; align-items: center;">
           enable
-          <mzn-toggle [(ngModel)]="mainEnabled" />
-          <mzn-toggle [(ngModel)]="mainChecked" />
+          <div mznToggle [(ngModel)]="mainEnabled" ></div>
+          <div mznToggle [(ngModel)]="mainChecked" ></div>
           disabled
-          <mzn-toggle [disabled]="true" />
-          <mzn-toggle [disabled]="true" [(ngModel)]="mainChecked" />
+          <div mznToggle [disabled]="true" ></div>
+          <div mznToggle [disabled]="true" [(ngModel)]="mainChecked" ></div>
         </div>
         <br />
         Size: sub
         <div style="display: flex; gap: 16px; align-items: center;">
           enable
-          <mzn-toggle size="sub" [(ngModel)]="subEnabled" />
-          <mzn-toggle size="sub" [(ngModel)]="subChecked" />
+          <div mznToggle size="sub" [(ngModel)]="subEnabled" ></div>
+          <div mznToggle size="sub" [(ngModel)]="subChecked" ></div>
           disabled
-          <mzn-toggle size="sub" [disabled]="true" />
-          <mzn-toggle size="sub" [disabled]="true" [(ngModel)]="subChecked" />
+          <div mznToggle size="sub" [disabled]="true" ></div>
+          <div mznToggle size="sub" [disabled]="true" [(ngModel)]="subChecked" ></div>
         </div>
         <br />
         With text content
         <div style="display: flex; gap: 16px; align-items: center;">
-          <mzn-toggle label="Toggle Label" supportingText="Toggle Supporting Text" />
-          <mzn-toggle label="Toggle Label" />
+          <div mznToggle label="Toggle Label" supportingText="Toggle Supporting Text" ></div>
+          <div mznToggle label="Toggle Label" ></div>
         </div>
         <div style="display: flex; gap: 16px; align-items: center;">
-          <mzn-toggle [disabled]="true" label="Toggle Label" supportingText="Toggle Supporting Text" />
-          <mzn-toggle [disabled]="true" label="Toggle Label" />
+          <div mznToggle [disabled]="true" label="Toggle Label" supportingText="Toggle Supporting Text" ></div>
+          <div mznToggle [disabled]="true" label="Toggle Label" ></div>
         </div>
       </div>
     `,
@@ -85,12 +85,12 @@ export const Playground: Story = {
       enabled: args['checked'] ?? false,
     },
     template: `
-      <mzn-toggle
+      <div mznToggle
         [disabled]="disabled"
         [label]="label"
         [(ngModel)]="enabled"
         [size]="size"
-      />
+      ></div>
       <p>enabled: {{ enabled }}</p>
     `,
   }),

@@ -49,7 +49,7 @@ const SIDE_TO_ROTATION: Record<string, number> = {
  * 實現與 React 版 `component` prop 等效的多型態功能。
  *
  * 透過 `variant` 控制外觀、`size` 控制尺寸、`iconType` 決定圖示排列方式。
- * 若放在 `<mzn-button-group>` 內部，會自動繼承 group 的 variant / size / disabled（除非自行指定）。
+ * 若放在 `<div mznButtonGroup>` 內部，會自動繼承 group 的 variant / size / disabled（除非自行指定）。
  *
  * 當 `iconType` 為 `'icon-only'` 且提供 `tooltipText` 時，hover 時會自動顯示 tooltip，
  * 與 React 版 Button 的 `children` + `<Tooltip>` 包裹行為等效。

@@ -123,7 +123,8 @@ function detectReactRootTag(elementSelector) {
  * Returns the first element-selector (not attribute, not class) or null.
  */
 function parseElementSelector(source) {
-  const m = source.match(/selector:\s*['"]([^'"]+)['"]/);
+  // Accept single quotes, double quotes, or template-literal backticks.
+  const m = source.match(/selector:\s*['"`]([^'"`]+)['"`]/);
   if (!m) return null;
   const raw = m[1];
   if (raw.startsWith('[') || raw.startsWith('.')) return null;
@@ -210,7 +211,12 @@ function rewriteConsumerText(text, tag, host, attr) {
   const opening = new RegExp(`<${tag}${boundary}`, 'g');
   out = out.replace(opening, `<${host} ${attr}`);
   // Closing tag (only emit if host is not void).
-  const closing = new RegExp(`</${tag}>`, 'g');
+  // Angular templates sometimes break a closing tag across lines, e.g.
+  //   >{{ foo }}</mzn-radio
+  //   >
+  // Allow whitespace (including newlines) between the tag name and the
+  // trailing `>`.
+  const closing = new RegExp(`</${tag}\\s*>`, 'gs');
   out = out.replace(closing, isVoid ? '' : `</${host}>`);
   return out;
 }
@@ -279,7 +285,7 @@ function injectHostClassBinding(text, apply, classExpr, warnings) {
   }
   // No host block yet — inject right after selector.
   const newMeta = meta.replace(
-    /(selector:\s*'[^']*'\s*,)/,
+    /(selector:\s*['"`][^'"`]*['"`]\s*,)/,
     `$1\n  host: {\n    '[class]': ${quoteClassExpr(classExpr)},\n  },`,
   );
   apply(text.replace(componentBlockRe, `@Component({${newMeta}\n})`));
@@ -301,7 +307,7 @@ function rewriteComponentFile(text, elementSelector, attrName) {
   const warnings = [];
   // 1. Selector.
   const selectorRe = new RegExp(
-    `selector:\\s*['"]${elementSelector}['"]`,
+    `selector:\\s*['"\`]${elementSelector}['"\`]`,
   );
   if (!selectorRe.test(text)) {
     warnings.push('selector string not found');
@@ -434,7 +440,7 @@ function rewriteComponentFile(text, elementSelector, attrName) {
       } else {
         // Inject a fresh host block right after selector.
         const newMeta = meta.replace(
-          /(selector:\s*'[^']*'\s*,)/,
+          /(selector:\s*['"`][^'"`]*['"`]\s*,)/,
           `$1\n  host: {\n${attrLines}\n  },`,
         );
         next = next.replace(componentBlockRe, `@Component({${newMeta}\n})`);

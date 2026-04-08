@@ -60,9 +60,9 @@ export const Basic: Story = {
   render: () => ({
     template: `
       <mzn-page-footer>
-        <mzn-button-group actions>
+        <div mznButtonGroup actions>
           <button mznButton variant="base-primary">Button</button>
-        </mzn-button-group>
+        </div>
       </mzn-page-footer>
     `,
   }),
@@ -82,10 +82,10 @@ export const StandardType: Story = {
         [supportingActionName]="supportingActionName"
         [supportingActionVariant]="supportingActionVariant"
       >
-        <mzn-button-group actions>
+        <div mznButtonGroup actions>
           <button mznButton variant="base-secondary">儲存草稿</button>
           <button mznButton variant="base-primary">發佈</button>
-        </mzn-button-group>
+        </div>
       </mzn-page-footer>
     `,
   }),
@@ -105,10 +105,10 @@ export const WithWarningMessage: Story = {
         [supportingActionName]="supportingActionName"
         [warningMessage]="warningMessage"
       >
-        <mzn-button-group actions>
+        <div mznButtonGroup actions>
           <button mznButton variant="base-secondary">儲存草稿</button>
           <button mznButton variant="base-primary">發佈</button>
-        </mzn-button-group>
+        </div>
       </mzn-page-footer>
     `,
   }),
@@ -122,10 +122,10 @@ export const OverflowType: Story = {
     props: args,
     template: `
       <mzn-page-footer [type]="type">
-        <mzn-button-group actions>
+        <div mznButtonGroup actions>
           <button mznButton variant="base-secondary">儲存草稿</button>
           <button mznButton variant="base-primary">發佈</button>
-        </mzn-button-group>
+        </div>
       </mzn-page-footer>
     `,
   }),
@@ -140,10 +140,10 @@ export const InformationType: Story = {
     props: args,
     template: `
       <mzn-page-footer [type]="type" [annotation]="annotation">
-        <mzn-button-group actions>
+        <div mznButtonGroup actions>
           <button mznButton variant="base-secondary">儲存草稿</button>
           <button mznButton variant="base-primary">發佈</button>
-        </mzn-button-group>
+        </div>
       </mzn-page-footer>
     `,
   }),
@@ -163,10 +163,10 @@ export const LoadingState: Story = {
         [supportingActionName]="supportingActionName"
         [warningMessage]="warningMessage"
       >
-        <mzn-button-group actions>
+        <div mznButtonGroup actions>
           <button mznButton variant="base-secondary" [disabled]="true">Cancel</button>
           <button mznButton variant="base-primary" [loading]="true">Saving...</button>
-        </mzn-button-group>
+        </div>
       </mzn-page-footer>
     `,
   }),
@@ -186,10 +186,10 @@ export const DangerAction: Story = {
         [annotation]="annotation"
         [warningMessage]="warningMessage"
       >
-        <mzn-button-group actions>
+        <div mznButtonGroup actions>
           <button mznButton variant="base-secondary">Cancel</button>
           <button mznButton variant="destructive-primary">Delete</button>
-        </mzn-button-group>
+        </div>
       </mzn-page-footer>
     `,
   }),

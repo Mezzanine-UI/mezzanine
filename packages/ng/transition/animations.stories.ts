@@ -70,7 +70,7 @@ const defaultArgTypes = {
   standalone: true,
   imports: [FormsModule, MznToggle, MznFade],
   template: `
-    <mzn-toggle [(ngModel)]="checked" size="main" />
+    <div mznToggle [(ngModel)]="checked" size="main"></div>
     <mzn-fade
       [in]="checked"
       [duration]="{ enter: enterDuration, exit: exitDuration }"
@@ -109,7 +109,7 @@ class FadeStoryComponent implements OnChanges {
   standalone: true,
   imports: [FormsModule, MznToggle, MznScale],
   template: `
-    <mzn-toggle [(ngModel)]="checked" size="main" />
+    <div mznToggle [(ngModel)]="checked" size="main"></div>
     <mzn-scale
       [in]="checked"
       [duration]="{ enter: enterDuration, exit: exitDuration }"
@@ -152,7 +152,7 @@ class ScaleStoryComponent implements OnChanges {
   imports: [FormsModule, MznToggle, MznCollapse],
   template: `
     <div style="display: flex; flex-direction: column; gap: 16px;">
-      <mzn-toggle [(ngModel)]="checked" size="main" />
+      <div mznToggle [(ngModel)]="checked" size="main"></div>
       <mzn-collapse [in]="checked" [collapsedHeight]="collapsedHeight">
         <div
           style="padding: 16px; background: var(--mzn-color-background-brand); color: white;"
@@ -179,7 +179,7 @@ class CollapseStoryComponent {
   imports: [FormsModule, MznToggle, MznTranslate],
   template: `
     <div style="display: flex; flex-direction: column; gap: 16px;">
-      <mzn-toggle [(ngModel)]="checked" size="main" />
+      <div mznToggle [(ngModel)]="checked" size="main"></div>
       <div
         style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: start;"
       >
@@ -239,7 +239,7 @@ class TranslateStoryComponent {
   imports: [FormsModule, MznToggle, MznSlide],
   template: `
     <div style="display: flex; flex-direction: column; gap: 16px;">
-      <mzn-toggle [(ngModel)]="checked" size="main" />
+      <div mznToggle [(ngModel)]="checked" size="main"></div>
       <div
         style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; align-items: start;"
       >

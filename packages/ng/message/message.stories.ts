@@ -63,14 +63,15 @@ import { MznButton } from '../button/button.directive';
         style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 9999;"
       >
         @for (n of notifier.displayed(); track n.key) {
-          <mzn-message
+          <div
+            mznMessage
             [messageKey]="n.key"
             [message]="$any(n).message ?? ''"
             [severity]="$any(n).severity"
             [icon]="$any(n).icon"
             [duration]="$any(n).duration ?? 3000"
             (closed)="notifier.remove($event)"
-          />
+          ></div>
         }
       </div>
     </div>
@@ -117,14 +118,15 @@ class MessageBasicDemoComponent {
         style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 9999;"
       >
         @for (n of notifier.displayed(); track n.key) {
-          <mzn-message
+          <div
+            mznMessage
             [messageKey]="n.key"
             [message]="$any(n).message ?? ''"
             [severity]="$any(n).severity"
             [icon]="$any(n).icon"
             [duration]="$any(n).duration ?? 3000"
             (closed)="notifier.remove($event)"
-          />
+          ></div>
         }
       </div>
     </div>

@@ -61,14 +61,15 @@ import clsx from 'clsx';
               <i mznIcon [icon]="prependIcon()!"></i>
             }
             @if (checkSite() === 'prefix' && mode() === 'multiple') {
-              <mzn-checkbox
+              <div
+                mznCheckbox
                 [checked]="checked()"
                 [disabled]="disabled()"
                 [indeterminate]="indeterminate()"
                 (click)="$event.stopPropagation()"
                 (mousedown)="$event.stopPropagation()"
                 (change)="onCheckedChange()"
-              />
+              ></div>
             }
             @if (checkSite() === 'prefix' && mode() === 'single' && checked()) {
               <i mznIcon [icon]="checkedIcon" [size]="16"></i>
