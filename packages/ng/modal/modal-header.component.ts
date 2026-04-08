@@ -13,6 +13,7 @@ import {
 import clsx from 'clsx';
 import { IconColor } from '@mezzanine-ui/core/icon';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
 
 /**
@@ -37,7 +38,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
 @Component({
   selector: '[mznModalHeader]',
   standalone: true,
-  imports: [MznIcon],
+  imports: [MznIcon, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -60,9 +61,22 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
       </div>
     }
     <div [class]="titleContainerClass">
-      <h2 [class]="titleClasses()" [title]="title()">{{ title() }}</h2>
+      <h2
+        mznTypography
+        variant="h2"
+        color="text-neutral-solid"
+        [class]="titleClasses()"
+        [title]="title()"
+        >{{ title() }}</h2
+      >
       @if (supportingText()) {
-        <p [class]="supportingTextClasses()">{{ supportingText() }}</p>
+        <p
+          mznTypography
+          variant="body"
+          color="text-neutral-strong"
+          [class]="supportingTextClasses()"
+          >{{ supportingText() }}</p
+        >
       }
     </div>
   `,
