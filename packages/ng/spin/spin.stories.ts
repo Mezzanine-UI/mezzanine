@@ -83,13 +83,7 @@ export const Nested: Story = {
 @Component({
   selector: 'mzn-spin-on-modal-demo',
   standalone: true,
-  imports: [
-    MznSpin,
-    MznModal,
-    MznModalHeader,
-    MznButton,
-    BrowserAnimationsModule,
-  ],
+  imports: [MznSpin, MznModal, MznModalHeader, MznButton],
   template: `
     <button mznButton variant="base-primary" (click)="open.set(true)"
       >OPEN</button
