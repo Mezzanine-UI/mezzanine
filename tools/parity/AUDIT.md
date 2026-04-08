@@ -307,3 +307,14 @@ against compiled stories and silently skipped them.
 
 Logged to Phase 3A backlog. Phase 3B marks this family BLOCKED and
 moves on.
+
+### Modal family (4/4) — PASS
+
+| Component                   | Verification                                                                                               |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| modal-header                | `[mznModalHeader]` + `mzn-modal__header` (feedback-modal--playground, click open)                          |
+| modal-footer                | `[mznModalFooter]` + `mzn-modal__footer` (feedback-modal--playground, click open)                          |
+| modal-body-for-verification | `[mznModalBodyForVerification]` + `mzn-modal__body-verification` (feedback-modal--verification-code-input) |
+| modal-body-container        | ⚠️ code-verified only — opt-in helper directive, no story/template uses it (exported from package index)   |
+
+No port gaps found. Modal family mature.
