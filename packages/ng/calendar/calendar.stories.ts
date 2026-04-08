@@ -3,7 +3,7 @@ import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import { MznCalendar, CalendarDayAnnotation } from './calendar.component';
-import { MznCalendarConfigProvider } from './calendar-config-provider.component';
+import { MZN_CALENDAR_CONFIG, createCalendarConfig } from './calendar-config';
 import { MznRangeCalendar } from './range-calendar.component';
 
 const meta: Meta<MznCalendar> = {
@@ -11,7 +11,12 @@ const meta: Meta<MznCalendar> = {
   component: MznCalendar,
   decorators: [
     moduleMetadata({
-      providers: [],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsDayjs),
+        },
+      ],
     }),
   ],
 };
@@ -23,28 +28,25 @@ type Story = StoryObj<MznCalendar>;
 @Component({
   selector: 'story-calendar-playground',
   standalone: true,
-  imports: [MznCalendar, MznCalendarConfigProvider],
+  imports: [MznCalendar],
   template: `
-    <div mznCalendarConfigProvider [methods]="methods">
-      <p style="margin: 0 0 12px 0"
-        >original value: {{ value() }}, formatted value: {{ value() }}</p
-      >
-      <div
-        mznCalendar
-        [mode]="mode"
-        [referenceDate]="referenceDate()"
-        [value]="value()"
-        [renderAnnotations]="showAnnotations ? annotationFn : undefined"
-        (dateChanged)="onDateChanged($event)"
-      ></div>
-    </div>
+    <p style="margin: 0 0 12px 0"
+      >original value: {{ value() }}, formatted value: {{ value() }}</p
+    >
+    <div
+      mznCalendar
+      [mode]="mode"
+      [referenceDate]="referenceDate()"
+      [value]="value()"
+      [renderAnnotations]="showAnnotations ? annotationFn : undefined"
+      (dateChanged)="onDateChanged($event)"
+    ></div>
   `,
 })
 class CalendarPlaygroundComponent {
   @Input() mode: CalendarMode = 'day';
   @Input() showAnnotations = false;
 
-  readonly methods = CalendarMethodsDayjs;
   readonly value = signal<DateType | undefined>(undefined);
   readonly referenceDate = signal<DateType>(new Date().toISOString());
 
@@ -101,38 +103,35 @@ export const CalendarPlayground: Story = {
 @Component({
   selector: 'story-range-calendar-playground',
   standalone: true,
-  imports: [MznRangeCalendar, MznCalendarConfigProvider],
+  imports: [MznRangeCalendar],
   template: `
-    <div mznCalendarConfigProvider [methods]="methods">
-      <p style="margin: 0 0 12px 0">
-        Confirmed Range: {{ startVal() }} ~ {{ endVal() }}
-      </p>
-      <p style="margin: 0 0 12px 0; color: #999">
-        Current Selection: {{ tempStartVal() }} ~ {{ tempEndVal() }}
-      </p>
-      <div
-        mznRangeCalendar
-        [mode]="mode"
-        [referenceDate]="referenceDate()"
-        [value]="selectedValues()"
-        [isDateInRange]="isDateInRange"
-        [isMonthInRange]="isDateInRange"
-        [isWeekInRange]="isDateInRange"
-        [isYearInRange]="isDateInRange"
-        [isQuarterInRange]="isDateInRange"
-        [isHalfYearInRange]="isDateInRange"
-        [showFooterActions]="true"
-        (rangeChanged)="onRangeChanged($event)"
-        (confirmed)="onOk()"
-        (cancelled)="onCancel()"
-      ></div>
-    </div>
+    <p style="margin: 0 0 12px 0">
+      Confirmed Range: {{ startVal() }} ~ {{ endVal() }}
+    </p>
+    <p style="margin: 0 0 12px 0; color: #999">
+      Current Selection: {{ tempStartVal() }} ~ {{ tempEndVal() }}
+    </p>
+    <div
+      mznRangeCalendar
+      [mode]="mode"
+      [referenceDate]="referenceDate()"
+      [value]="selectedValues()"
+      [isDateInRange]="isDateInRange"
+      [isMonthInRange]="isDateInRange"
+      [isWeekInRange]="isDateInRange"
+      [isYearInRange]="isDateInRange"
+      [isQuarterInRange]="isDateInRange"
+      [isHalfYearInRange]="isDateInRange"
+      [showFooterActions]="true"
+      (rangeChanged)="onRangeChanged($event)"
+      (confirmed)="onOk()"
+      (cancelled)="onCancel()"
+    ></div>
   `,
 })
 class RangeCalendarPlaygroundComponent {
   @Input() mode: CalendarMode = 'day';
 
-  readonly methods = CalendarMethodsDayjs;
   readonly startVal = signal<DateType | undefined>(undefined);
   readonly endVal = signal<DateType | undefined>(undefined);
   readonly tempStartVal = signal<DateType | undefined>(undefined);

@@ -1,12 +1,27 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import {
+  MZN_CALENDAR_CONFIG,
+  createCalendarConfig,
+} from '@mezzanine-ui/ng/calendar';
 import { MznDateTimePicker } from './date-time-picker.component';
 
 const meta: Meta<MznDateTimePicker> = {
   title: 'Data Entry/DateTimePicker',
   component: MznDateTimePicker,
-  decorators: [moduleMetadata({ imports: [FormsModule] })],
+  decorators: [
+    moduleMetadata({
+      imports: [FormsModule],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsDayjs),
+        },
+      ],
+    }),
+  ],
 };
 
 export default meta;

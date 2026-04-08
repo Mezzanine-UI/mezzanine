@@ -1,13 +1,28 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
+import {
+  MZN_CALENDAR_CONFIG,
+  createCalendarConfig,
+} from '@mezzanine-ui/ng/calendar';
 import { MznDateTimeRangePicker } from './date-time-range-picker.component';
 
 const meta: Meta<MznDateTimeRangePicker> = {
   title: 'Data Entry/DateTimeRangePicker',
   component: MznDateTimeRangePicker,
-  decorators: [moduleMetadata({ imports: [FormsModule] })],
+  decorators: [
+    moduleMetadata({
+      imports: [FormsModule],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsDayjs),
+        },
+      ],
+    }),
+  ],
 };
 
 export default meta;

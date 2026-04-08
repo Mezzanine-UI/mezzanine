@@ -2,6 +2,11 @@ import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { CalendarMode } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import {
+  MZN_CALENDAR_CONFIG,
+  createCalendarConfig,
+} from '@mezzanine-ui/ng/calendar';
 import { MznDatePicker } from './date-picker.component';
 
 const meta: Meta<MznDatePicker> = {
@@ -10,6 +15,12 @@ const meta: Meta<MznDatePicker> = {
   decorators: [
     moduleMetadata({
       imports: [FormsModule],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsDayjs),
+        },
+      ],
     }),
   ],
 };
