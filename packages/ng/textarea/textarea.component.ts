@@ -31,20 +31,29 @@ export type TextareaResize = 'none' | 'both' | 'horizontal' | 'vertical';
  * ```html
  * import { MznTextarea } from '@mezzanine-ui/ng/textarea';
  *
- * <mzn-textarea placeholder="請輸入內容..." [rows]="4" />
- * <mzn-textarea resize="vertical" [rows]="3" />
- * <mzn-textarea type="error" placeholder="此欄位有誤" />
- * <mzn-textarea [disabled]="true" placeholder="已停用" />
+ * <div mznTextarea placeholder="請輸入內容..." [rows]="4" ></div>
+ * <div mznTextarea resize="vertical" [rows]="3" ></div>
+ * <div mznTextarea type="error" placeholder="此欄位有誤" ></div>
+ * <div mznTextarea [disabled]="true" placeholder="已停用" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-textarea',
+  selector: '[mznTextarea]',
+  host: {
+    '[attr.disabled]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.readonly]': 'null',
+    '[attr.resize]': 'null',
+    '[attr.rows]': 'null',
+    '[attr.type]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznTextField, MznIcon],
   providers: [provideValueAccessor(MznTextarea)],
   template: `
-    <mzn-text-field
+    <div
+      mznTextField
       [class]="hostClasses()"
       [disabled]="isDisabled()"
       [error]="type() === 'error'"
@@ -66,7 +75,7 @@ export type TextareaResize = 'none' | 'both' | 'horizontal' | 'vertical';
       @if (resize() !== 'none') {
         <i mznIcon [class]="resizerClass" [icon]="resizeIcon" [size]="16"></i>
       }
-    </mzn-text-field>
+    </div>
   `,
 })
 export class MznTextarea implements ControlValueAccessor {

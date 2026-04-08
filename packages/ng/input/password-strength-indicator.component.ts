@@ -29,17 +29,21 @@ export interface PasswordHintText {
  * ```html
  * import { MznPasswordStrengthIndicator } from '@mezzanine-ui/ng/input';
  *
- * <mzn-password-strength-indicator strength="medium" />
- * <mzn-password-strength-indicator strength="strong" [hintTexts]="hints" />
+ * <div mznPasswordStrengthIndicator strength="medium" ></div>
+ * <div mznPasswordStrengthIndicator strength="strong" [hintTexts]="hints" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-password-strength-indicator',
+  selector: '[mznPasswordStrengthIndicator]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.hintTexts]': 'null',
+    '[attr.strength]': 'null',
+    '[attr.strengthText]': 'null',
+    '[attr.strengthTextPrefix]': 'null',
   },
   template: `
     <div [class]="barClasses()"></div>

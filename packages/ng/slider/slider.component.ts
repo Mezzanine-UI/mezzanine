@@ -42,17 +42,17 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
  * import { MznSlider } from '@mezzanine-ui/ng/slider';
  *
  * <!-- 單值滑桿 -->
- * <mzn-slider [(ngModel)]="volume" [min]="0" [max]="100" [step]="1" />
+ * <div mznSlider [(ngModel)]="volume" [min]="0" [max]="100" [step]="1" ></div>
  *
  * <!-- 範圍滑桿 -->
- * <mzn-slider [value]="[20, 80]" (valueChange)="onRangeChange($event)" />
+ * <div mznSlider [value]="[20, 80]" (valueChange)="onRangeChange($event)" ></div>
  *
  * <!-- 附加圖示 -->
- * <mzn-slider [(ngModel)]="volume" [prefixIcon]="MinusIcon" [suffixIcon]="PlusIcon" />
+ * <div mznSlider [(ngModel)]="volume" [prefixIcon]="MinusIcon" [suffixIcon]="PlusIcon" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-slider',
+  selector: '[mznSlider]',
   standalone: true,
   imports: [MznIcon, MznInput],
   providers: [provideValueAccessor(MznSlider)],
@@ -60,16 +60,27 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
   host: {
     '[class]': 'hostClasses()',
     '[style]': 'hostStyles()',
+    '[attr.disabled]': 'null',
+    '[attr.max]': 'null',
+    '[attr.min]': 'null',
+    '[attr.prefixIcon]': 'null',
+    '[attr.step]': 'null',
+    '[attr.suffixIcon]': 'null',
+    '[attr.withInput]': 'null',
+    '[attr.withTick]': 'null',
+    '[attr.onPrefixIconClick]': 'null',
+    '[attr.onSuffixIconClick]': 'null',
   },
   template: `
     @if (withInput() && isRange()) {
-      <mzn-input
+      <div
+        mznInput
         [class]="inputClass"
         [inputType]="'number'"
         [value]="startInputValue()"
         (valueChange)="onStartInputValueChange($event)"
         [disabled]="disabled()"
-      />
+      ></div>
     }
     @if (prefixIcon()) {
       <span
@@ -165,13 +176,14 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       }
     </div>
     @if (withInput()) {
-      <mzn-input
+      <div
+        mznInput
         [class]="inputClass"
         [inputType]="'number'"
         [value]="endInputValue()"
         (valueChange)="onEndInputValueChange($event)"
         [disabled]="disabled()"
-      />
+      ></div>
     }
     @if (suffixIcon()) {
       <span

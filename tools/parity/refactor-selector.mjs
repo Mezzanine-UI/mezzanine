@@ -99,20 +99,24 @@ function detectReactRootTag(elementSelector) {
     } catch {
       continue;
     }
-    // forwardRef<HTMLXxxElement, ...>  — most reliable signal
+    // Prefer the JSX root tag (the element the component actually renders
+    // at its outermost position). Previously we preferred forwardRef's
+    // HTMLXxxElement generic, but that points to whichever inner element
+    // the `ref` is composed to, which in several components (checkbox,
+    // formatted-input, radio) is a descendant, not the root.
+    const ret = text.match(/return\s*\(\s*<([a-zA-Z][\w-]*)/);
+    if (ret) {
+      const tag = ret[1];
+      if (/^[a-z]/.test(tag) && !['template', 'script'].includes(tag))
+        return { tag, source: `${pascal}.tsx JSX root <${tag}>` };
+    }
+    // Fall back to forwardRef<HTMLXxxElement, ...> if JSX root is a
+    // PascalCase component or Fragment that we can't match.
     const m = text.match(/forwardRef<\s*(HTML\w+Element)/);
     if (m && m[1] !== 'HTMLElement') {
       const iface = m[1];
       const tag = HTML_INTERFACE_TAG[iface];
       if (tag) return { tag, source: `${pascal}.tsx forwardRef<${iface}>` };
-    }
-    // Fall back to JSX root after the first `return (`. Reject custom
-    // components (PascalCase) and Fragments — only accept lowercase HTML tags.
-    const ret = text.match(/return\s*\(\s*<([a-zA-Z][\w-]*)/);
-    if (ret) {
-      const tag = ret[1];
-      if (/^[a-z]/.test(tag))
-        return { tag, source: `${pascal}.tsx JSX root <${tag}>` };
     }
   }
   return null;
@@ -124,13 +128,18 @@ function detectReactRootTag(elementSelector) {
  */
 function parseElementSelector(source) {
   // Accept single quotes, double quotes, or template-literal backticks.
-  const m = source.match(/selector:\s*['"`]([^'"`]+)['"`]/);
-  if (!m) return null;
-  const raw = m[1];
-  if (raw.startsWith('[') || raw.startsWith('.')) return null;
-  // Single-selector (no comma) only for this script's scope.
-  if (raw.includes(',')) return null;
-  return raw;
+  // A file may declare multiple @Component blocks (e.g. autocomplete
+  // has an existing [mznAutocompletePrefix] directive alongside a new
+  // mzn-autocomplete component). Find the first ELEMENT-form selector,
+  // skipping attribute or class selectors.
+  const matches = [...source.matchAll(/selector:\s*['"`]([^'"`]+)['"`]/g)];
+  for (const m of matches) {
+    const raw = m[1];
+    if (raw.startsWith('[') || raw.startsWith('.')) continue;
+    if (raw.includes(',')) continue;
+    return raw;
+  }
+  return null;
 }
 
 /**

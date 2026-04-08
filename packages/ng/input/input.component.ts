@@ -51,15 +51,15 @@ export type InputVariant =
  * ```html
  * import { MznInput } from '@mezzanine-ui/ng/input';
  *
- * <mzn-input placeholder="請輸入" />
- * <mzn-input variant="search" placeholder="搜尋" />
- * <mzn-input variant="password" placeholder="密碼" />
- * <mzn-input variant="affix" prefixText="$" suffixText=".00" />
- * <mzn-input variant="measure" suffixText="px" [showSpinner]="true" />
+ * <div mznInput placeholder="請輸入" ></div>
+ * <div mznInput variant="search" placeholder="搜尋" ></div>
+ * <div mznInput variant="password" placeholder="密碼" ></div>
+ * <div mznInput variant="affix" prefixText="$" suffixText=".00" ></div>
+ * <div mznInput variant="measure" suffixText="px" [showSpinner]="true" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-input',
+  selector: '[mznInput]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -74,6 +74,38 @@ export type InputVariant =
   host: {
     '[class]': 'containerClasses()',
     '[style.display]': '"block"',
+    '[attr.externalValue]': 'null',
+    '[attr.active]': 'null',
+    '[attr.actionButton]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.defaultValue]': 'null',
+    '[attr.selectButton]': 'null',
+    '[attr.selectOptions]': 'null',
+    '[attr.dropdownWidth]': 'null',
+    '[attr.dropdownMaxHeight]': 'null',
+    '[attr.dropdownPlacement]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.formatter]': 'null',
+    '[attr.inputId]': 'null',
+    '[attr.inputName]': 'null',
+    '[attr.inputType]': 'null',
+    '[attr.max]': 'null',
+    '[attr.min]': 'null',
+    '[attr.parser]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.prefixIcon]': 'null',
+    '[attr.prefixText]': 'null',
+    '[attr.passwordStrengthIndicator]': 'null',
+    '[attr.readonlyState]': 'null',
+    '[attr.size]': 'null',
+    '[attr.showPasswordStrengthIndicator]': 'null',
+    '[attr.showSpinner]': 'null',
+    '[attr.step]': 'null',
+    '[attr.suffixText]': 'null',
+    '[attr.typing]': 'null',
+    '[attr.variant]': 'null',
   },
   template: `
     <div [class]="hostClasses()">
@@ -100,7 +132,8 @@ export type InputVariant =
           (selected)="onSelectOption($event)"
         />
       }
-      <mzn-text-field
+      <div
+        mznTextField
         [active]="active()"
         [class]="fieldClasses()"
         [clearable]="isClearable()"
@@ -188,7 +221,7 @@ export type InputVariant =
             }
           </span>
         }
-      </mzn-text-field>
+      </div>
       @if (actionButtonPosition() === 'suffix') {
         <mzn-input-action-button
           [disabled]="actionButtonDisabled()"
@@ -215,14 +248,15 @@ export type InputVariant =
     </div>
     @if (showPasswordStrengthIndicator() && variant() === 'password') {
       <div [class]="classes.indicatorContainer">
-        <mzn-password-strength-indicator
+        <div
+          mznPasswordStrengthIndicator
           [strength]="passwordStrengthIndicator()?.strength ?? 'weak'"
           [strengthText]="passwordStrengthIndicator()?.strengthText"
           [strengthTextPrefix]="
             passwordStrengthIndicator()?.strengthTextPrefix ?? '密碼強度：'
           "
           [hintTexts]="passwordStrengthIndicator()?.hintTexts"
-        />
+        ></div>
       </div>
     }
   `,

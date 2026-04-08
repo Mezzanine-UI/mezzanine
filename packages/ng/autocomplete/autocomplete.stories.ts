@@ -476,47 +476,53 @@ const manyOptions: DropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
       <div
         style="display: inline-grid; grid-template-columns: repeat(4, 240px); gap: 16px; align-items: center;"
       >
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="單選"
           [required]="true"
-        />
-        <mzn-autocomplete
+        ></div>
+        <div
+          mznAutocomplete
           mode="multiple"
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="多選"
           [required]="true"
           [(ngModel)]="multipleSelections"
-        />
-        <mzn-autocomplete
+        ></div>
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="錯誤"
           [error]="true"
           [required]="true"
-        />
-        <mzn-autocomplete
+        ></div>
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="已禁用"
           [disabled]="true"
           [required]="true"
-        />
+        ></div>
       </div>
       <!-- Row 2: sub size -->
       <div
         style="display: inline-grid; grid-template-columns: repeat(4, 240px); gap: 16px; align-items: center;"
       >
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="單選"
           size="sub"
           [required]="true"
-        />
-        <mzn-autocomplete
+        ></div>
+        <div
+          mznAutocomplete
           mode="multiple"
           [options]="options"
           [menuMaxHeight]="140"
@@ -524,37 +530,41 @@ const manyOptions: DropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
           size="sub"
           [required]="true"
           [(ngModel)]="multipleSelections"
-        />
-        <mzn-autocomplete
+        ></div>
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="錯誤"
           size="sub"
           [error]="true"
           [required]="true"
-        />
-        <mzn-autocomplete
+        ></div>
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="已禁用"
           size="sub"
           [disabled]="true"
           [required]="true"
-        />
+        ></div>
       </div>
       <!-- Row 3: prefix icon -->
       <div
         style="display: inline-grid; grid-template-columns: repeat(4, 240px); gap: 16px; align-items: center;"
       >
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="單選"
           [required]="true"
         >
           <i mznIcon mznAutocompletePrefix [icon]="searchIcon"></i>
-        </mzn-autocomplete>
-        <mzn-autocomplete
+        </div>
+        <div
+          mznAutocomplete
           [options]="options"
           [menuMaxHeight]="140"
           placeholder="單選 sub 尺寸"
@@ -562,8 +572,9 @@ const manyOptions: DropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
           [required]="true"
         >
           <i mznIcon mznAutocompletePrefix [icon]="searchIcon"></i>
-        </mzn-autocomplete>
-        <mzn-autocomplete
+        </div>
+        <div
+          mznAutocomplete
           mode="multiple"
           [options]="options"
           [menuMaxHeight]="140"
@@ -572,8 +583,9 @@ const manyOptions: DropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
           [(ngModel)]="multipleSelections"
         >
           <i mznIcon mznAutocompletePrefix [icon]="searchIcon"></i>
-        </mzn-autocomplete>
-        <mzn-autocomplete
+        </div>
+        <div
+          mznAutocomplete
           mode="multiple"
           [options]="options"
           [menuMaxHeight]="140"
@@ -583,7 +595,7 @@ const manyOptions: DropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
           [(ngModel)]="multipleSelections"
         >
           <i mznIcon mznAutocompletePrefix [icon]="searchIcon"></i>
-        </mzn-autocomplete>
+        </div>
       </div>
     </div>
   `,
@@ -614,7 +626,8 @@ export const Basic: Story = {
     <div
       style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;"
     >
-      <mzn-autocomplete
+      <div
+        mznAutocomplete
         [asyncData]="true"
         [disabledOptionsFilter]="true"
         [loading]="loading()"
@@ -624,7 +637,7 @@ export const Basic: Story = {
         loadingText="載入中..."
         placeholder="Placeholder"
         (searchChange)="onSearch($event)"
-      />
+      ></div>
     </div>
   `,
 })
@@ -671,14 +684,15 @@ export const SingleModeAsyncSearch: Story = {
     <div
       style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;"
     >
-      <mzn-autocomplete
+      <div
+        mznAutocomplete
         [disabledOptionsFilter]="true"
         [menuMaxHeight]="200"
         [options]="options()"
         emptyText="沒有符合的選項"
         placeholder="Placeholder"
         (searchChange)="onSearch($event)"
-      />
+      ></div>
     </div>
   `,
 })
@@ -724,7 +738,8 @@ export const SingleModeSyncSearch: Story = {
         <div
           style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;"
         >
-          <mzn-autocomplete
+          <div
+            mznAutocomplete
             [clearSearchText]="false"
             [disabledOptionsFilter]="true"
             [menuMaxHeight]="200"
@@ -732,15 +747,16 @@ export const SingleModeSyncSearch: Story = {
             emptyText="沒有符合的選項"
             placeholder="失焦後保留文字"
             (searchChange)="onSingleSearch($event)"
-          />
-          <mzn-autocomplete
+          ></div>
+          <div
+            mznAutocomplete
             [disabledOptionsFilter]="true"
             [menuMaxHeight]="200"
             [options]="singleOptions()"
             emptyText="沒有符合的選項"
             placeholder="失焦後清空"
             (searchChange)="onSingleSearch($event)"
-          />
+          ></div>
         </div>
       </div>
       <div>
@@ -748,7 +764,8 @@ export const SingleModeSyncSearch: Story = {
         <div
           style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;"
         >
-          <mzn-autocomplete
+          <div
+            mznAutocomplete
             mode="multiple"
             [clearSearchText]="false"
             [disabledOptionsFilter]="true"
@@ -758,8 +775,9 @@ export const SingleModeSyncSearch: Story = {
             placeholder="失焦後保留文字"
             [(ngModel)]="multipleSelections"
             (searchChange)="onMultipleSearch($event)"
-          />
-          <mzn-autocomplete
+          ></div>
+          <div
+            mznAutocomplete
             mode="multiple"
             [disabledOptionsFilter]="true"
             [menuMaxHeight]="200"
@@ -768,7 +786,7 @@ export const SingleModeSyncSearch: Story = {
             placeholder="失焦後清空"
             [(ngModel)]="multipleAutoClearSelections"
             (searchChange)="onMultipleSearch($event)"
-          />
+          ></div>
         </div>
       </div>
     </div>
@@ -829,13 +847,14 @@ export const KeepSearchTextOnBlur: Story = {
     <div
       style="display: inline-grid; grid-template-columns: repeat(2, 500px); gap: 16px; align-items: center;"
     >
-      <mzn-autocomplete
+      <div
+        mznAutocomplete
         mode="multiple"
         [options]="options"
         placeholder="Placeholder"
         [required]="true"
         [(ngModel)]="selections"
-      />
+      ></div>
     </div>
   `,
 })
@@ -870,14 +889,15 @@ export const Multiple: Story = {
           當標籤過多時，會顯示部分標籤並用 "+ N" 計數器表示剩餘數量
         </p>
         <div style="max-width: 300px;">
-          <mzn-autocomplete
+          <div
+            mznAutocomplete
             mode="multiple"
             overflowStrategy="counter"
             [disabledOptionsFilter]="true"
             [options]="options"
             placeholder="選擇多個選項..."
             [(ngModel)]="counterSelections"
-          />
+          ></div>
         </div>
         <p style="margin-top: 8px; font-size: 12px; color: #666;"
           >已選擇: {{ counterSelections.length }} 個</p
@@ -889,14 +909,15 @@ export const Multiple: Story = {
           當標籤過多時，會自動換行顯示所有標籤
         </p>
         <div style="max-width: 300px;">
-          <mzn-autocomplete
+          <div
+            mznAutocomplete
             mode="multiple"
             overflowStrategy="wrap"
             [disabledOptionsFilter]="true"
             [options]="options"
             placeholder="選擇多個選項..."
             [(ngModel)]="wrapSelections"
-          />
+          ></div>
         </div>
         <p style="margin-top: 8px; font-size: 12px; color: #666;"
           >已選擇: {{ wrapSelections.length }} 個</p
@@ -940,7 +961,8 @@ export const OverflowStrategy: Story = {
         <p style="font-size: 12px; color: #666; margin-bottom: 8px;">
           輸入文字後按 Enter 或點擊 + 號新增選項
         </p>
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           [addable]="true"
           [onInsert]="handleInsert"
           [onRemoveCreated]="handleRemoveCreated"
@@ -948,7 +970,7 @@ export const OverflowStrategy: Story = {
           placeholder="輸入文字新增選項..."
           [(ngModel)]="selected"
           (selectionChange)="onSelect($event)"
-        />
+        ></div>
       </div>
       <div>
         <p style="font-size: 12px; color: #666;"
@@ -1024,7 +1046,8 @@ export const CreatableSingle: Story = {
           下拉視覺採單選風格 checked icon，但行為仍可多選；建立項目維持 New
           標記。
         </p>
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           mode="multiple"
           [addable]="true"
           [onInsert]="handleInsert"
@@ -1032,7 +1055,7 @@ export const CreatableSingle: Story = {
           [options]="options()"
           placeholder="輸入文字新增選項..."
           [(ngModel)]="selections"
-        />
+        ></div>
       </div>
       <div>
         <p style="font-size: 12px; color: #666;"
@@ -1109,7 +1132,8 @@ export const CreatableMultiple: Story = {
             <li>自動去除前後空白、自動清理未選擇的新增選項</li>
           </ul>
         </div>
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           mode="multiple"
           [addable]="true"
           [onInsert]="handleInsert"
@@ -1120,7 +1144,7 @@ export const CreatableMultiple: Story = {
           emptyText="沒有符合的項目"
           placeholder="試試貼上: Grid chart, Griddle, Grid"
           [(ngModel)]="selections"
-        />
+        ></div>
       </div>
       <div
         style="padding: 12px; background-color: #f5f5f5; border-radius: 4px;"
@@ -1227,7 +1251,8 @@ export const BulkCreate: Story = {
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
         ></span>
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           mode="multiple"
           inputPosition="inside"
           [addable]="true"
@@ -1238,7 +1263,7 @@ export const BulkCreate: Story = {
           placeholder="輸入文字新增選項..."
           [(ngModel)]="selections"
           (visibilityChange)="onVisibilityChange($event)"
-        />
+        ></div>
       </div>
       <div>
         <p>已選擇數量: {{ selections.length }}</p>
@@ -1343,7 +1368,8 @@ export const InputPositionInside: Story = {
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
         ></span>
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           mode="multiple"
           inputPosition="inside"
           [addable]="true"
@@ -1356,7 +1382,7 @@ export const InputPositionInside: Story = {
           placeholder="試試貼上..."
           [(ngModel)]="selections"
           (visibilityChange)="onVisibilityChange($event)"
-        />
+        ></div>
       </div>
       <div>
         <p>已選擇數量: {{ selections.length }}</p>
@@ -1438,7 +1464,8 @@ export const InsideBulkCreate: Story = {
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
         ></span>
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           mode="multiple"
           inputPosition="inside"
           [options]="emptyOptions"
@@ -1447,7 +1474,7 @@ export const InsideBulkCreate: Story = {
           placeholder="沒有選項可選"
           [(ngModel)]="selections"
           (visibilityChange)="onVisibilityChange($event)"
-        />
+        ></div>
       </div>
     </div>
   `,
@@ -1495,7 +1522,8 @@ export const InsideEmpty: Story = {
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
         ></span>
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           mode="multiple"
           inputPosition="inside"
           [loading]="true"
@@ -1506,7 +1534,7 @@ export const InsideEmpty: Story = {
           placeholder="資料載入中..."
           [(ngModel)]="selections"
           (visibilityChange)="onVisibilityChange($event)"
-        />
+        ></div>
       </div>
     </div>
   `,
@@ -1550,7 +1578,8 @@ export const InsideLoading: Story = {
         [label]="'已載入 ' + options().length + ' / ' + totalCount + ' 個選項'"
       ></span>
       <div style="display: flex; gap: 8px; align-items: center;">
-        <mzn-autocomplete
+        <div
+          mznAutocomplete
           [disabledOptionsFilter]="true"
           [loading]="loading()"
           [menuMaxHeight]="120"
@@ -1561,7 +1590,7 @@ export const InsideLoading: Story = {
           [(ngModel)]="selected"
           (reachBottom)="onReachBottom()"
           (leaveBottom)="onLeaveBottom()"
-        />
+        ></div>
       </div>
       <div style="font-size: 12px; color: #666;">
         @if (loading()) {
@@ -1653,11 +1682,12 @@ export const LoadMoreOnReachBottom: Story = {
         </p>
         <div style="display: flex; gap: 8px; align-items: center;">
           <div style="flex: 1;">
-            <mzn-autocomplete
+            <div
+              mznAutocomplete
               #clearRef
               [options]="options"
               placeholder="輸入後點擊清除文字"
-            />
+            ></div>
           </div>
           <button
             mznButton
@@ -1677,13 +1707,14 @@ export const LoadMoreOnReachBottom: Story = {
         </p>
         <div style="display: flex; gap: 8px; align-items: center;">
           <div style="flex: 1;">
-            <mzn-autocomplete
+            <div
+              mznAutocomplete
               #resetRef
               mode="multiple"
               [options]="options"
               placeholder="選取後點擊重置"
               [(ngModel)]="resetValue"
-            />
+            ></div>
           </div>
           <button
             mznButton
@@ -1702,13 +1733,14 @@ export const LoadMoreOnReachBottom: Story = {
         </p>
         <div style="display: flex; gap: 8px; align-items: center;">
           <div style="flex: 1;">
-            <mzn-autocomplete
+            <div
+              mznAutocomplete
               #submitRef
               mode="multiple"
               [options]="options"
               placeholder="選取項目後送出"
               [(ngModel)]="submitValue"
-            />
+            ></div>
           </div>
           <button
             mznButton

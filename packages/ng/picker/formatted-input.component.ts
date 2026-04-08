@@ -46,47 +46,55 @@ export interface FormattedInputErrorMessages {
  * @example
  * ```html
  * <!-- 在 @mezzanine-ui/ng/picker 中使用 -->
- * <mzn-formatted-input
+ * <div mznFormattedInput
  *   [format]="'YYYY-MM-DD'"
  *   [value]="currentValue"
  *   [placeholder]="'Select date'"
  *   [disabled]="false"
  *   (valueChanged)="onValueChange($event)"
  *   (pasteIsoValue)="onPasteIso($event)"
- * />
+ * ></div>
  * ```
  *
  * @see {@link MaskFormat} 格式解析工具類別
  * @see {@link MznPickerTrigger} Picker 觸發器元件
  */
 @Component({
-  selector: 'mzn-formatted-input',
+  selector: '[mznFormattedInput]',
+  host: {
+    '[class]': 'hostClass',
+    '[attr.disabled]': 'null',
+    '[attr.errorMessages]': 'null',
+    '[attr.format]': 'null',
+    '[attr.hoverValue]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.validate]': 'null',
+    '[attr.value]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [class]="hostClass">
-      <input
-        #inputEl
-        type="text"
-        [class]="inputClass"
-        [disabled]="disabled()"
-        [attr.aria-disabled]="disabled()"
-        [value]="inputDisplayValue()"
-        [placeholder]="resolvedPlaceholder()"
-        (keydown)="onKeyDown($event)"
-        (focus)="onFocus($event)"
-        (blur)="onBlur($event)"
-        (paste)="onPaste($event)"
-        (change)="$event.stopPropagation()"
-      />
-      @if (showDisplayOverlay()) {
-        <div aria-hidden="true" [class]="displayClass">
-          @for (segment of displaySegments(); track $index) {
-            <span [class]="segmentClass(segment)">{{ segment.text }}</span>
-          }
-        </div>
-      }
-    </div>
+    <input
+      #inputEl
+      type="text"
+      [class]="inputClass"
+      [disabled]="disabled()"
+      [attr.aria-disabled]="disabled()"
+      [value]="inputDisplayValue()"
+      [placeholder]="resolvedPlaceholder()"
+      (keydown)="onKeyDown($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      (paste)="onPaste($event)"
+      (change)="$event.stopPropagation()"
+    />
+    @if (showDisplayOverlay()) {
+      <div aria-hidden="true" [class]="displayClass">
+        @for (segment of displaySegments(); track $index) {
+          <span [class]="segmentClass(segment)">{{ segment.text }}</span>
+        }
+      </div>
+    }
   `,
 })
 export class MznFormattedInput {

@@ -56,7 +56,8 @@ import {
   template: `
     <div [class]="separatorInputsClass">
       <div [class]="separatorInputClass">
-        <mzn-formatted-input
+        <div
+          mznFormattedInput
           [attr.aria-label]="'Date input'"
           [disabled]="disabled()"
           [errorMessages]="errorMessagesLeft()"
@@ -70,11 +71,12 @@ import {
           (pasteIsoValue)="pasteIsoValueLeft.emit($event)"
           (valueChanged)="onLeftChanged($event)"
           (valueCleared)="leftValueCleared.emit()"
-        />
+        ></div>
       </div>
       <div [class]="separatorClass"></div>
       <div [class]="separatorInputClass">
-        <mzn-formatted-input
+        <div
+          mznFormattedInput
           [attr.aria-label]="'Time input'"
           [disabled]="disabled()"
           [errorMessages]="errorMessagesRight()"
@@ -87,7 +89,7 @@ import {
           (pasteIsoValue)="pasteIsoValueRight.emit($event)"
           (valueChanged)="onRightChanged($event)"
           (valueCleared)="rightValueCleared.emit()"
-        />
+        ></div>
       </div>
     </div>
     @if (shouldShowClearable()) {

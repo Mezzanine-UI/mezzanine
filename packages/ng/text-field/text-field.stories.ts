@@ -74,9 +74,9 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-text-field [size]="size" [error]="error" [clearable]="clearable" [disabled]="disabled" [readonly]="readonly">
+      <div mznTextField [size]="size" [error]="error" [clearable]="clearable" [disabled]="disabled" [readonly]="readonly">
         <input placeholder="Enter text..." [disabled]="disabled" [readOnly]="readonly" />
-      </mzn-text-field>
+      </div>
     `,
   }),
 };
@@ -86,12 +86,12 @@ export const Sizes: Story = {
   render: () => ({
     template: `
       <div style="display: inline-grid; grid-template-columns: 1fr; gap: 16px;">
-        <mzn-text-field size="main">
+        <div mznTextField size="main">
           <input placeholder="Main size" />
-        </mzn-text-field>
-        <mzn-text-field size="sub">
+        </div>
+        <div mznTextField size="sub">
           <input placeholder="Sub size" />
-        </mzn-text-field>
+        </div>
       </div>
     `,
   }),
@@ -102,15 +102,15 @@ export const States: Story = {
   render: () => ({
     template: `
       <div style="display: inline-grid; grid-template-columns: 1fr; gap: 16px;">
-        <mzn-text-field>
+        <div mznTextField>
           <input type="text" placeholder="Default state" />
-        </mzn-text-field>
-        <mzn-text-field [readonly]="true">
+        </div>
+        <div mznTextField [readonly]="true">
           <input type="text" value="Readonly state" [readOnly]="true" />
-        </mzn-text-field>
-        <mzn-text-field [disabled]="true">
+        </div>
+        <div mznTextField [disabled]="true">
           <input type="text" value="Disabled state" [disabled]="true" />
-        </mzn-text-field>
+        </div>
       </div>
     `,
   }),
@@ -122,13 +122,13 @@ export const ErrorState: Story = {
     props: { WarningFilledIcon },
     template: `
       <div style="display: inline-grid; grid-template-columns: 1fr; gap: 16px;">
-        <mzn-text-field [error]="true">
+        <div mznTextField [error]="true">
           <input type="email" placeholder="Error default" value="invalid@" />
-        </mzn-text-field>
-        <mzn-text-field [error]="true" [hasSuffix]="true">
+        </div>
+        <div mznTextField [error]="true" [hasSuffix]="true">
           <input type="email" placeholder="Error with icon" />
           <i mznIcon suffix [icon]="WarningFilledIcon" ></i>
-        </mzn-text-field>
+        </div>
       </div>
     `,
   }),
@@ -145,18 +145,18 @@ export const WithAffix: Story = {
     },
     template: `
       <div style="display: inline-grid; grid-template-columns: 1fr; gap: 16px;">
-        <mzn-text-field [hasPrefix]="true">
+        <div mznTextField [hasPrefix]="true">
           <i mznIcon prefix [icon]="SearchIcon" ></i>
           <input type="text" placeholder="Prefix icon" />
-        </mzn-text-field>
-        <mzn-text-field [hasSuffix]="true">
+        </div>
+        <div mznTextField [hasSuffix]="true">
           <input type="text" placeholder="Suffix icon" />
           <i mznIcon suffix [icon]="InfoFilledIcon" ></i>
-        </mzn-text-field>
-        <mzn-text-field [hasSuffix]="true">
+        </div>
+        <div mznTextField [hasSuffix]="true">
           <input type="password" placeholder="Password with toggle visibility" value="secret123" />
           <i mznIcon suffix [icon]="EyeInvisibleIcon" ></i>
-        </mzn-text-field>
+        </div>
       </div>
     `,
   }),
@@ -168,13 +168,13 @@ export const Clearable: Story = {
     props: { SearchIcon },
     template: `
       <div style="display: inline-grid; grid-template-columns: 1fr; gap: 16px;">
-        <mzn-text-field [clearable]="true">
+        <div mznTextField [clearable]="true">
           <input type="text" placeholder="Clearable (hover/focus to see)" value="Clearable text" />
-        </mzn-text-field>
-        <mzn-text-field [clearable]="true" [hasPrefix]="true">
+        </div>
+        <div mznTextField [clearable]="true" [hasPrefix]="true">
           <i mznIcon prefix [icon]="SearchIcon" ></i>
           <input type="text" placeholder="Clearable with prefix" value="With prefix icon" />
-        </mzn-text-field>
+        </div>
       </div>
     `,
   }),
@@ -187,21 +187,21 @@ export const ComponentsExample: Story = {
       <div style="display: inline-grid; grid-template-columns: 1fr; gap: 32px; min-width: 320px;">
         <div>
           <h3 style="margin-top: 0; margin-bottom: 8px;">Textarea (with resize)</h3>
-          <mzn-text-field>
+          <div mznTextField>
             <textarea placeholder="Textarea with text-field padding" rows="4"></textarea>
-          </mzn-text-field>
+          </div>
         </div>
         <div>
           <h3 style="margin-top: 0; margin-bottom: 8px;">Select-like Component</h3>
-          <mzn-text-field>
+          <div mznTextField>
             <div style="width: 100%;">Select an option...</div>
-          </mzn-text-field>
+          </div>
         </div>
         <div>
           <h3 style="margin-top: 0; margin-bottom: 8px;">AutoComplete-like Component</h3>
-          <mzn-text-field>
+          <div mznTextField>
             <input type="text" placeholder="Type to search..." />
-          </mzn-text-field>
+          </div>
         </div>
       </div>
     `,

@@ -66,7 +66,8 @@ export interface DateValue {
     '[class]': 'hostClasses()',
   },
   template: `
-    <mzn-text-field
+    <div
+      mznTextField
       [active]="active()"
       [clearable]="shouldShowClearable()"
       [forceShowClearable]="shouldShowClearable()"
@@ -143,7 +144,7 @@ export interface DateValue {
         }
       </div>
       <ng-content select="[suffix]" />
-    </mzn-text-field>
+    </div>
   `,
 })
 export class MznMultipleDatePickerTrigger implements AfterViewInit {

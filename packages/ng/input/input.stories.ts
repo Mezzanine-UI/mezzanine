@@ -24,25 +24,31 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
         <p style="margin: 0 0 12px 0;"
           >Default (with SearchIcon and clearable)</p
         >
-        <mzn-input
+        <div
+          mznInput
           variant="search"
           [value]="searchValue"
           [clearable]="true"
           placeholder="搜尋..."
           (valueChange)="searchValue = $event"
-        />
+        ></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Not Clearable</p>
-        <mzn-input variant="search" [clearable]="false" placeholder="搜尋..." />
+        <div
+          mznInput
+          variant="search"
+          [clearable]="false"
+          placeholder="搜尋..."
+        ></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Sizes - Main</p>
-        <mzn-input variant="search" size="main" placeholder="搜尋..." />
+        <div mznInput variant="search" size="main" placeholder="搜尋..."></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Sizes - Sub</p>
-        <mzn-input variant="search" size="sub" placeholder="搜尋..." />
+        <div mznInput variant="search" size="sub" placeholder="搜尋..."></div>
       </div>
     </div>
   `,
@@ -69,31 +75,34 @@ class StorySearchInput {
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Prefix</p>
-        <mzn-input
+        <div
+          mznInput
           variant="measure"
           prefixText="NT"
           value="1000"
           placeholder="0"
-        />
+        ></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Suffix</p>
-        <mzn-input
+        <div
+          mznInput
           variant="measure"
           suffixText="NT"
           [min]="0"
           [max]="10000"
           [step]="100"
           value="100"
-        />
+        ></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Text Only</p>
-        <mzn-input variant="measure" value="175" />
+        <div mznInput variant="measure" value="175"></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Spinner</p>
-        <mzn-input
+        <div
+          mznInput
           variant="measure"
           [value]="spinNumber"
           [min]="0"
@@ -101,15 +110,15 @@ class StorySearchInput {
           [step]="100"
           [showSpinner]="true"
           (valueChange)="spinNumber = $event"
-        />
+        ></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Size Main</p>
-        <mzn-input variant="measure" size="main" value="70" />
+        <div mznInput variant="measure" size="main" value="70"></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Size Sub</p>
-        <mzn-input variant="measure" size="sub" value="70" />
+        <div mznInput variant="measure" size="sub" value="70"></div>
       </div>
     </div>
   `,
@@ -136,26 +145,37 @@ class StoryMeasureInput {
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Basic Password</p>
-        <mzn-input variant="password" placeholder="請輸入密碼" />
+        <div mznInput variant="password" placeholder="請輸入密碼"></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">With Password Strength Indicator</p>
-        <mzn-input
+        <div
+          mznInput
           variant="password"
           placeholder="請輸入密碼"
           [value]="password"
           [showPasswordStrengthIndicator]="true"
           [passwordStrengthIndicator]="passwordStrengthIndicator"
           (valueChange)="onPasswordChange($event)"
-        />
+        ></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Size Main</p>
-        <mzn-input variant="password" size="main" placeholder="請輸入密碼" />
+        <div
+          mznInput
+          variant="password"
+          size="main"
+          placeholder="請輸入密碼"
+        ></div>
       </div>
       <div>
         <p style="margin: 0 0 12px 0;">Size Sub</p>
-        <mzn-input variant="password" size="sub" placeholder="請輸入密碼" />
+        <div
+          mznInput
+          variant="password"
+          size="sub"
+          placeholder="請輸入密碼"
+        ></div>
       </div>
     </div>
   `,
@@ -219,7 +239,8 @@ class StoryPasswordInput {
       </div>
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <p style="margin: 0 0 12px 0;">Currency Format (Thousand Separator)</p>
-        <mzn-input
+        <div
+          mznInput
           variant="measure"
           placeholder="輸入金額"
           [value]="currencyValue"
@@ -227,7 +248,7 @@ class StoryPasswordInput {
           [parser]="parser"
           [showSpinner]="true"
           (valueChange)="currencyValue = $event"
-        />
+        ></div>
         <p style="margin: 0; font-size: 12px; color: #666;">
           Raw value: {{ currencyValue }}
         </p>
@@ -279,52 +300,57 @@ class StoryFormatterParser {
       </div>
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <p style="margin: 0 0 12px 0;">Domain Selector</p>
-        <mzn-input
+        <div
+          mznInput
           variant="select"
           value="https://"
           placeholder="Domain"
           [selectButton]="{ position: 'prefix', value: prefixValue }"
           [selectOptions]="domainOptions"
           (selectOptionSelected)="prefixValue = $event.id"
-        />
-        <mzn-input
+        ></div>
+        <div
+          mznInput
           variant="select"
           value="https://"
           placeholder="Domain"
           [selectButton]="{ position: 'suffix', value: suffixValue }"
           [selectOptions]="domainOptions"
           (selectOptionSelected)="suffixValue = $event.id"
-        />
-        <mzn-input
+        ></div>
+        <div
+          mznInput
           variant="select"
           value="https://"
           placeholder="Domain"
           [selectButton]="{ position: 'both', value: bothValue }"
           [selectOptions]="domainOptions"
           (selectOptionSelected)="bothValue = $event.id"
-        />
+        ></div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <p style="margin: 0 0 12px 0;">Size Main</p>
-        <mzn-input
+        <div
+          mznInput
           variant="select"
           size="main"
           placeholder="Placeholder"
           [selectButton]="{ position: 'suffix', value: sizeMainValue }"
           [selectOptions]="domainOptions"
           (selectOptionSelected)="sizeMainValue = $event.id"
-        />
+        ></div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <p style="margin: 0 0 12px 0;">Size Sub</p>
-        <mzn-input
+        <div
+          mznInput
           variant="select"
           size="sub"
           placeholder="Placeholder"
           [selectButton]="{ position: 'suffix', value: sizeSubValue }"
           [selectOptions]="domainOptions"
           (selectOptionSelected)="sizeSubValue = $event.id"
-        />
+        ></div>
       </div>
     </div>
   `,
@@ -426,27 +452,27 @@ export const BaseInput: Story = {
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Normal</p>
-          <mzn-input placeholder="請輸入文字" />
+          <div mznInput placeholder="請輸入文字" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">With Value</p>
-          <mzn-input value="Example" />
+          <div mznInput value="Example" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Error</p>
-          <mzn-input placeholder="請輸入文字" [error]="true" />
+          <div mznInput placeholder="請輸入文字" [error]="true" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Disabled</p>
-          <mzn-input placeholder="請輸入文字" [disabled]="true" />
+          <div mznInput placeholder="請輸入文字" [disabled]="true" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Read Only</p>
-          <mzn-input placeholder="請輸入文字" value="Example" [readonly]="true" />
+          <div mznInput placeholder="請輸入文字" value="Example" [readonly]="true" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Size Sub</p>
-          <mzn-input size="sub" placeholder="請輸入文字" />
+          <div mznInput size="sub" placeholder="請輸入文字" ></div>
         </div>
       </div>
     `,
@@ -464,26 +490,26 @@ export const WithAffixInput: Story = {
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Icon Leading</p>
-          <mzn-input variant="affix" [prefixIcon]="UserIcon" placeholder="Placeholder" />
+          <div mznInput variant="affix" [prefixIcon]="UserIcon" placeholder="Placeholder" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Prefix</p>
-          <mzn-input variant="affix" prefixText="Prefix" placeholder="Placeholder" />
+          <div mznInput variant="affix" prefixText="Prefix" placeholder="Placeholder" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Suffix</p>
-          <mzn-input variant="affix" suffixText="Suffix" placeholder="Placeholder" />
+          <div mznInput variant="affix" suffixText="Suffix" placeholder="Placeholder" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Prefix &amp; Suffix</p>
-          <mzn-input variant="affix" prefixText="Prefix" suffixText="Suffix" placeholder="Placeholder" />
+          <div mznInput variant="affix" prefixText="Prefix" suffixText="Suffix" placeholder="Placeholder" ></div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <p style="margin: 0 0 12px 0;">Size Sub</p>
-          <mzn-input variant="affix" size="sub" [prefixIcon]="UserIcon" placeholder="Placeholder" />
-          <mzn-input variant="affix" size="sub" prefixText="Prefix" placeholder="Placeholder" />
-          <mzn-input variant="affix" size="sub" suffixText="Suffix" placeholder="Placeholder" />
-          <mzn-input variant="affix" size="sub" prefixText="Prefix" suffixText="Suffix" placeholder="Placeholder" />
+          <div mznInput variant="affix" size="sub" [prefixIcon]="UserIcon" placeholder="Placeholder" ></div>
+          <div mznInput variant="affix" size="sub" prefixText="Prefix" placeholder="Placeholder" ></div>
+          <div mznInput variant="affix" size="sub" suffixText="Suffix" placeholder="Placeholder" ></div>
+          <div mznInput variant="affix" size="sub" prefixText="Prefix" suffixText="Suffix" placeholder="Placeholder" ></div>
         </div>
       </div>
     `,
@@ -507,15 +533,15 @@ export const NumberInput: Story = {
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Basic Number</p>
-          <mzn-input variant="number" placeholder="0" />
+          <div mznInput variant="number" placeholder="0" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">With Min/Max</p>
-          <mzn-input variant="number" [min]="0" [max]="100" value="50" />
+          <div mznInput variant="number" [min]="0" [max]="100" value="50" ></div>
         </div>
         <div>
           <p style="margin: 0 0 12px 0;">Size Sub</p>
-          <mzn-input variant="number" [step]="0.5" value="1.5" size="sub" />
+          <div mznInput variant="number" [step]="0.5" value="1.5" size="sub" ></div>
         </div>
       </div>
     `,
@@ -573,28 +599,28 @@ export const ActionInput: Story = {
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <p style="margin: 0 0 12px 0;">Copy Action</p>
-          <mzn-input variant="action" value="https://example.com/share/abc123" [actionButton]="copyAction" />
-          <mzn-input variant="action" value="https://example.com/share/abc123" [actionButton]="prefixCopyAction" />
+          <div mznInput variant="action" value="https://example.com/share/abc123" [actionButton]="copyAction" ></div>
+          <div mznInput variant="action" value="https://example.com/share/abc123" [actionButton]="prefixCopyAction" ></div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <p style="margin: 0 0 12px 0;">Disabled Button</p>
-          <mzn-input variant="action" value="content" [disabled]="true" [actionButton]="copyAction" />
+          <div mznInput variant="action" value="content" [disabled]="true" [actionButton]="copyAction" ></div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <p style="margin: 0 0 12px 0;">Readonly with Action Disabled (Default)</p>
-          <mzn-input variant="action" value="content" [readonly]="true" [actionButton]="readonlyActionDefault" />
+          <div mznInput variant="action" value="content" [readonly]="true" [actionButton]="readonlyActionDefault" ></div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <p style="margin: 0 0 12px 0;">Readonly with Action Enabled</p>
-          <mzn-input variant="action" value="content" [readonly]="true" [actionButton]="readonlyActionEnabled" />
+          <div mznInput variant="action" value="content" [readonly]="true" [actionButton]="readonlyActionEnabled" ></div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <p style="margin: 0 0 12px 0;">Size Main</p>
-          <mzn-input variant="action" size="main" value="example" [actionButton]="copyAction" />
+          <div mznInput variant="action" size="main" value="example" [actionButton]="copyAction" ></div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <p style="margin: 0 0 12px 0;">Size Sub</p>
-          <mzn-input variant="action" size="sub" value="example" [actionButton]="copyAction" />
+          <div mznInput variant="action" size="sub" value="example" [actionButton]="copyAction" ></div>
         </div>
       </div>
     `,

@@ -37,14 +37,15 @@ export default meta;
   template: `
     <mzn-calendar-config-provider>
       <p style="margin: 0 0 8px 0">Value: {{ value() }}</p>
-      <mzn-formatted-input
+      <div
+        mznFormattedInput
         [format]="format"
         [value]="value()"
         [placeholder]="placeholder"
         [disabled]="disabled"
         (valueChanged)="onValueChanged($event)"
         (valueCleared)="onValueCleared()"
-      />
+      ></div>
     </mzn-calendar-config-provider>
   `,
 })
@@ -77,15 +78,15 @@ export const FormattedInputDisabled: StoryObj = {
     template: `
       <mzn-calendar-config-provider>
         <div style="display: flex; flex-direction: column; gap: 12px;">
-          <mzn-formatted-input
+          <div mznFormattedInput
             format="YYYY-MM-DD"
             [disabled]="true"
             placeholder="Disabled"
-          />
-          <mzn-formatted-input
+          ></div>
+          <div mznFormattedInput
             format="HH:mm:ss"
             placeholder="Time format"
-          />
+          ></div>
         </div>
       </mzn-calendar-config-provider>
     `,

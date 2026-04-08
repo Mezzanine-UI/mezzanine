@@ -53,7 +53,7 @@ export const All: Story = {
         <!-- All Props: contentHeader + filterArea + tab -->
         <div mznSection>
           <header mznContentHeader title="Section Title" description="This is a Description." size="sub">
-            <mzn-input placeholder="Search..." variant="search" />
+            <div mznInput placeholder="Search..." variant="search" ></div>
             <button mznButton variant="destructive-secondary">Destructive</button>
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
@@ -61,10 +61,10 @@ export const All: Story = {
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
-                <mzn-input placeholder="Enter" size="sub" />
+                <div mznInput placeholder="Enter" size="sub" ></div>
               </mzn-filter>
               <mzn-filter [span]="2">
-                <mzn-input placeholder="Enter" size="sub" />
+                <div mznInput placeholder="Enter" size="sub" ></div>
               </mzn-filter>
             </mzn-filter-line>
           </mzn-filter-area>
@@ -85,7 +85,7 @@ export const All: Story = {
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
-                <mzn-input placeholder="Enter" size="sub" />
+                <div mznInput placeholder="Enter" size="sub" ></div>
               </mzn-filter>
             </mzn-filter-line>
           </mzn-filter-area>
@@ -111,7 +111,7 @@ export const All: Story = {
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
-                <mzn-input placeholder="Enter" size="sub" />
+                <div mznInput placeholder="Enter" size="sub" ></div>
               </mzn-filter>
             </mzn-filter-line>
           </mzn-filter-area>
@@ -136,7 +136,7 @@ export const All: Story = {
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
-                <mzn-input placeholder="Enter" size="sub" />
+                <div mznInput placeholder="Enter" size="sub" ></div>
               </mzn-filter>
             </mzn-filter-line>
           </mzn-filter-area>
@@ -200,7 +200,7 @@ export const SectionVerticalLayout: Story = {
             <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
               <mzn-filter-line>
                 <mzn-filter [span]="2">
-                  <mzn-input placeholder="Enter" size="sub" />
+                  <div mznInput placeholder="Enter" size="sub" ></div>
                 </mzn-filter>
               </mzn-filter-line>
             </mzn-filter-area>

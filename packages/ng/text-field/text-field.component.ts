@@ -27,19 +27,19 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
  * ```html
  * import { MznTextField } from '@mezzanine-ui/ng/text-field';
  *
- * <mzn-text-field>
+ * <div mznTextField>
  *   <input placeholder="請輸入" />
- * </mzn-text-field>
+ * </div>
  *
- * <mzn-text-field [clearable]="true" (cleared)="onClear()">
+ * <div mznTextField [clearable]="true" (cleared)="onClear()">
  *   <span prefix>$</span>
  *   <input placeholder="金額" />
  *   <span suffix>.00</span>
- * </mzn-text-field>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-text-field',
+  selector: '[mznTextField]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznClearActions],
@@ -47,6 +47,19 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
     '[class]': 'hostClasses()',
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
+    '[attr.active]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.forceShowClearable]': 'null',
+    '[attr.hideSuffixWhenClearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.hasPrefix]': 'null',
+    '[attr.hasSuffix]': 'null',
+    '[attr.readonly]': 'null',
+    '[attr.size]': 'null',
+    '[attr.typing]': 'null',
+    '[attr.warning]': 'null',
   },
   template: `
     @if (hasPrefix()) {

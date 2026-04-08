@@ -57,7 +57,8 @@ import {
     '(mouseleave)': 'onMouseLeave()',
   },
   template: `
-    <mzn-formatted-input
+    <div
+      mznFormattedInput
       [attr.aria-label]="'Start date'"
       [disabled]="disabled()"
       [errorMessages]="errorMessagesFrom()"
@@ -70,14 +71,15 @@ import {
       (inputFocused)="onFromFocus($event)"
       (valueChanged)="onFromChanged($event)"
       (valueCleared)="fromValueCleared.emit()"
-    />
+    ></div>
     <i
       mznIcon
       [icon]="arrowIcon"
       [class]="arrowIconClass"
       aria-hidden="true"
     ></i>
-    <mzn-formatted-input
+    <div
+      mznFormattedInput
       [attr.aria-label]="'End date'"
       [disabled]="disabled()"
       [errorMessages]="errorMessagesTo()"
@@ -90,7 +92,7 @@ import {
       (inputFocused)="onToFocus($event)"
       (valueChanged)="onToChanged($event)"
       (valueCleared)="toValueCleared.emit()"
-    />
+    ></div>
     @if (shouldShowClearable()) {
       <button
         type="button"

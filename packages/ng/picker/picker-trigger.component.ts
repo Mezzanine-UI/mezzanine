@@ -57,7 +57,8 @@ import {
     '(mouseleave)': 'onMouseLeave()',
   },
   template: `
-    <mzn-formatted-input
+    <div
+      mznFormattedInput
       [disabled]="disabled()"
       [errorMessages]="errorMessages()"
       [format]="format()"
@@ -71,7 +72,7 @@ import {
       (pasteIsoValue)="pasteIsoValue.emit($event)"
       (valueChanged)="onValueChanged($event)"
       (valueCleared)="onValueCleared()"
-    />
+    ></div>
     @if (shouldShowClearable()) {
       <button
         type="button"

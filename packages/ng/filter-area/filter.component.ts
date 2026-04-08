@@ -26,9 +26,9 @@ import { MZN_FILTER_AREA_CONTEXT } from './filter-area-context';
  * import { MznFilter } from '@mezzanine-ui/ng/filter-area';
  *
  * <mzn-filter [span]="2">
- *   <mzn-text-field label="Name">
+ *   <div mznTextField label="Name">
  *     <input mznInput placeholder="Enter name" />
- *   </mzn-text-field>
+ *   </div>
  * </mzn-filter>
  * ```
  *

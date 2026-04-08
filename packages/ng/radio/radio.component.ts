@@ -110,11 +110,12 @@ export interface RadioWithInputConfig {
     </label>
     @if (withInputConfig() && resolvedType() === 'radio') {
       <div [style.width.px]="withInputConfig()!.width ?? 120">
-        <mzn-input
+        <div
+          mznInput
           [placeholder]="withInputConfig()!.placeholder ?? 'Placeholder'"
           [disabled]="withInputConfig()!.disabled ?? false"
           (valueChange)="withInputConfig()!.onValueChange?.($event)"
-        />
+        ></div>
       </div>
     }
   `,

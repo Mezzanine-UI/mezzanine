@@ -82,14 +82,14 @@ export const Playground: Story = {
     props: args,
     template: `
       <div style="width: 400px;">
-        <mzn-textarea
+        <div mznTextarea
           [disabled]="disabled"
           [placeholder]="placeholder"
           [readonly]="readonly"
           [resize]="resize"
           [rows]="rows"
           [type]="type"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -107,11 +107,11 @@ export const Types: Story = {
           <div style="display: flex; gap: 24px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <span style="font-size: 12px;">Default</span>
-              <mzn-textarea type="default" placeholder="Enter a description..." resize="horizontal" />
+              <div mznTextarea type="default" placeholder="Enter a description..." resize="horizontal" ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <span style="font-size: 12px;">Filled</span>
-              <mzn-textarea type="default" placeholder="輸入文字..." [ngModel]="filledValue" />
+              <div mznTextarea type="default" placeholder="輸入文字..." [ngModel]="filledValue" ></div>
             </div>
           </div>
         </div>
@@ -120,11 +120,11 @@ export const Types: Story = {
           <div style="display: flex; gap: 24px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <span style="font-size: 12px;">Default</span>
-              <mzn-textarea type="warning" placeholder="Enter a description..." />
+              <div mznTextarea type="warning" placeholder="Enter a description..." ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <span style="font-size: 12px;">Filled</span>
-              <mzn-textarea type="warning" placeholder="輸入文字..." [ngModel]="filledValue" />
+              <div mznTextarea type="warning" placeholder="輸入文字..." [ngModel]="filledValue" ></div>
             </div>
           </div>
         </div>
@@ -133,11 +133,11 @@ export const Types: Story = {
           <div style="display: flex; gap: 24px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <span style="font-size: 12px;">Default</span>
-              <mzn-textarea type="error" placeholder="Enter a description..." />
+              <div mznTextarea type="error" placeholder="Enter a description..." ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <span style="font-size: 12px;">Filled</span>
-              <mzn-textarea type="error" placeholder="輸入文字..." [ngModel]="filledValue" />
+              <div mznTextarea type="error" placeholder="輸入文字..." [ngModel]="filledValue" ></div>
             </div>
           </div>
         </div>

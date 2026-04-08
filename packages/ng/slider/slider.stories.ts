@@ -47,18 +47,18 @@ export const Single: Story = {
       <div style="padding: 2rem 5rem; display: grid; gap: 2rem;">
         <div style="display: grid; gap: 0.5rem;">
           <h3>With input</h3>
-          <mzn-slider
+          <div mznSlider
             [(ngModel)]="value"
             [min]="min"
             [max]="max"
             [step]="step"
             [disabled]="disabled"
             [withInput]="true"
-          />
+          ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
           <h3>With Icon</h3>
-          <mzn-slider
+          <div mznSlider
             [(ngModel)]="value"
             [min]="min"
             [max]="max"
@@ -66,29 +66,29 @@ export const Single: Story = {
             [disabled]="disabled"
             [prefixIcon]="MinusIcon"
             [suffixIcon]="PlusIcon"
-          />
+          ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
           <h3>Slice 3 ticks between min and max</h3>
-          <mzn-slider
+          <div mznSlider
             [(ngModel)]="value"
             [min]="min"
             [max]="max"
             [step]="step"
             [disabled]="disabled"
             [withTick]="3"
-          />
+          ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
           <h3>Custom tick marks: [10, 20, 30, 75]</h3>
-          <mzn-slider
+          <div mznSlider
             [(ngModel)]="value"
             [min]="min"
             [max]="max"
             [step]="step"
             [disabled]="disabled"
             [withTick]="[10, 20, 30, 75]"
-          />
+          ></div>
         </div>
         <h3 style="margin-top: 2rem;">{{ value }}</h3>
       </div>
@@ -128,7 +128,7 @@ export const Range: Story = {
       <div style="padding: 2rem 5rem; display: grid; gap: 2rem;">
         <div style="display: grid; gap: 0.5rem;">
           <h3>With input</h3>
-          <mzn-slider
+          <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
             [min]="min"
@@ -136,11 +136,11 @@ export const Range: Story = {
             [step]="step"
             [disabled]="disabled"
             [withInput]="true"
-          />
+          ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
           <h3>With prefixIcon and suffixIcon</h3>
-          <mzn-slider
+          <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
             [min]="min"
@@ -149,11 +149,11 @@ export const Range: Story = {
             [disabled]="disabled"
             [prefixIcon]="MinusIcon"
             [suffixIcon]="PlusIcon"
-          />
+          ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
           <h3>Slice 3 ticks between min and max</h3>
-          <mzn-slider
+          <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
             [min]="min"
@@ -161,11 +161,11 @@ export const Range: Story = {
             [step]="step"
             [disabled]="disabled"
             [withTick]="3"
-          />
+          ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
           <h3>Custom tick marks: [10, 20, 30, 75]</h3>
-          <mzn-slider
+          <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
             [min]="min"
@@ -173,7 +173,7 @@ export const Range: Story = {
             [step]="step"
             [disabled]="disabled"
             [withTick]="[10, 20, 30, 75]"
-          />
+          ></div>
         </div>
         <h3 style="margin-top: 2rem;">{{ rangeValue[0] }}, {{ rangeValue[1] }}</h3>
       </div>
@@ -190,7 +190,8 @@ export const Range: Story = {
       <div style="display: grid; gap: 0.5rem;">
         <h3>Single - 自訂 onClick（每次 +/- 10）</h3>
         <p>透過 prefixIconClick / suffixIconClick 自訂點擊行為。</p>
-        <mzn-slider
+        <div
+          mznSlider
           [(ngModel)]="singleValue"
           [min]="0"
           [max]="100"
@@ -198,13 +199,14 @@ export const Range: Story = {
           [suffixIcon]="PlusIcon"
           [onPrefixIconClick]="decreaseSingleFn"
           [onSuffixIconClick]="increaseSingleFn"
-        />
+        ></div>
         <h3>{{ singleValue() }}</h3>
       </div>
       <div style="display: grid; gap: 0.5rem;">
         <h3>Range - 自訂 onClick（整體位移 10）</h3>
         <p>prefixIconClick 整體左移，suffixIconClick 整體右移。</p>
-        <mzn-slider
+        <div
+          mznSlider
           [value]="rangeValue()"
           (valueChange)="rangeValue.set($any($event))"
           [min]="0"
@@ -213,7 +215,7 @@ export const Range: Story = {
           [suffixIcon]="PlusIcon"
           [onPrefixIconClick]="shiftRangeLeftFn"
           [onSuffixIconClick]="shiftRangeRightFn"
-        />
+        ></div>
         <h3>{{ rangeValue()[0] }}, {{ rangeValue()[1] }}</h3>
       </div>
     </div>
@@ -273,26 +275,28 @@ export const WithIconCustomClick: Story = {
       <div style="display: grid; gap: 0.5rem;">
         <h3>Single</h3>
         <p>透過點擊（Click）圖示（Icon）來觸發值的變化。</p>
-        <mzn-slider
+        <div
+          mznSlider
           [(ngModel)]="singleValue"
           [min]="0"
           [max]="100"
           [prefixIcon]="MinusIcon"
           [suffixIcon]="PlusIcon"
-        />
+        ></div>
         <h3>{{ singleValue() }}</h3>
       </div>
       <div style="display: grid; gap: 0.5rem;">
         <h3>Range</h3>
         <p>點擊「-」減少下限，點擊「+」增加上限。</p>
-        <mzn-slider
+        <div
+          mznSlider
           [value]="rangeValue()"
           (valueChange)="rangeValue.set($any($event))"
           [min]="0"
           [max]="100"
           [prefixIcon]="MinusIcon"
           [suffixIcon]="PlusIcon"
-        />
+        ></div>
         <h3>{{ rangeValue()[0] }}, {{ rangeValue()[1] }}</h3>
       </div>
     </div>

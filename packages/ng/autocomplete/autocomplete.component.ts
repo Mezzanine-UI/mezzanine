@@ -51,9 +51,9 @@ import { highlightText, provideValueAccessor } from '@mezzanine-ui/ng/utils';
  *
  * @example
  * ```html
- * <mzn-autocomplete [options]="opts">
+ * <div mznAutocomplete [options]="opts">
  *   <i mznIcon mznAutocompletePrefix [icon]="searchIcon" ></i>
- * </mzn-autocomplete>
+ * </div>
  * ```
  */
 @Directive({
@@ -96,34 +96,34 @@ export function getFullParsedList(
  * ```html
  * import { MznAutocomplete } from '@mezzanine-ui/ng/autocomplete';
  *
- * <mzn-autocomplete
+ * <div mznAutocomplete
  *   [options]="fruits"
  *   [(ngModel)]="selectedFruit"
  *   placeholder="搜尋水果"
  *   (searchChange)="onSearch($event)"
- * />
+ * ></div>
  *
- * <mzn-autocomplete
+ * <div mznAutocomplete
  *   mode="multiple"
  *   [options]="fruits"
  *   [(ngModel)]="selectedFruits"
  *   placeholder="搜尋水果"
  *   [clearable]="true"
  *   overflowStrategy="wrap"
- * />
+ * ></div>
  *
- * <mzn-autocomplete
+ * <div mznAutocomplete
  *   [options]="opts"
  *   [addable]="true"
  *   [onInsert]="handleInsert"
  *   placeholder="可新增選項"
- * />
+ * ></div>
  * ```
  *
  * @see MznSelect
  */
 @Component({
-  selector: 'mzn-autocomplete',
+  selector: '[mznAutocomplete]',
   standalone: true,
   imports: [
     NgTemplateOutlet,
@@ -138,6 +138,39 @@ export function getFullParsedList(
   animations: [mznTranslateTopAnimation],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.active]': 'null',
+    '[attr.addable]': 'null',
+    '[attr.asyncData]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.clearSearchText]': 'null',
+    '[attr.createActionText]': 'null',
+    '[attr.createActionTextTemplate]': 'null',
+    '[attr.createSeparators]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.disabledOptionsFilter]': 'null',
+    '[attr.dropdownZIndex]': 'null',
+    '[attr.emptyText]': 'null',
+    '[attr.error]': 'null',
+    '[attr.inputPosition]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.loadingPosition]': 'null',
+    '[attr.loadingText]': 'null',
+    '[attr.menuMaxHeight]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.id]': 'null',
+    '[attr.name]': 'null',
+    '[attr.onInsert]': 'null',
+    '[attr.onRemoveCreated]': 'null',
+    '[attr.open]': 'null',
+    '[attr.options]': 'null',
+    '[attr.overflowStrategy]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.required]': 'null',
+    '[attr.searchDebounceTime]': 'null',
+    '[attr.size]': 'null',
+    '[attr.stepByStepBulkCreate]': 'null',
+    '[attr.trimOnCreate]': 'null',
   },
   template: `
     @if (inputPosition() === 'outside') {
@@ -327,7 +360,8 @@ export function getFullParsedList(
         @if (inputPosition() === 'inside') {
           <li [class]="listHeaderClass" role="presentation">
             <div [class]="listHeaderInnerClass">
-              <mzn-text-field
+              <div
+                mznTextField
                 [active]="!isEffectiveLoading()"
                 [fullWidth]="true"
                 [disabled]="disabled() || isEffectiveLoading()"
@@ -343,7 +377,7 @@ export function getFullParsedList(
                   (keydown)="onInputKeydown($event)"
                   (paste)="onPaste($event)"
                 />
-              </mzn-text-field>
+              </div>
             </div>
           </li>
         }
