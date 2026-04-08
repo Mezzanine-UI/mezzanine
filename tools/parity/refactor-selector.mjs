@@ -107,15 +107,18 @@ const VOID_ELEMENTS = new Set([
 
 function rewriteConsumerText(text, tag, host, attr) {
   const isVoid = VOID_ELEMENTS.has(host);
+  // Boundary: tag must NOT be followed by another tag-name character
+  // (letter / digit / hyphen), otherwise `mzn-empty` would match
+  // `mzn-empty-main-icon`. Use a negative lookahead instead of `\b`.
+  const boundary = `(?![-\\w])`;
   // Multi-line self-closing first (non-greedy inside).
-  const selfClose = new RegExp(`<${tag}\\b([^>]*?)/>`, 'gs');
+  const selfClose = new RegExp(`<${tag}${boundary}([^>]*?)/>`, 'gs');
   let out = text.replace(
     selfClose,
     isVoid ? `<${host} ${attr}$1 />` : `<${host} ${attr}$1></${host}>`,
   );
-  // Opening tag `<tag attrs>content</tag>` — for void hosts this is
-  // illegal in the original anyway, but if present, convert to self-close.
-  const opening = new RegExp(`<${tag}\\b`, 'g');
+  // Opening tag `<tag attrs>content</tag>`.
+  const opening = new RegExp(`<${tag}${boundary}`, 'g');
   out = out.replace(opening, `<${host} ${attr}`);
   // Closing tag (only emit if host is not void).
   const closing = new RegExp(`</${tag}>`, 'g');

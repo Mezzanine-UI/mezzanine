@@ -102,7 +102,7 @@ import clsx from 'clsx';
     </li>
     @if (showUnderline()) {
       <li role="presentation" aria-hidden="true">
-        <mzn-separator orientation="horizontal" [class]="underlineClass" />
+        <hr mznSeparator orientation="horizontal" [class]="underlineClass" />
       </li>
     }
   `,

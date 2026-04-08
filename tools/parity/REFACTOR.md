@@ -18,13 +18,32 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 | baseline | `c15a7030`  | —          | 8416         | 6866        | start of refactor phase                                           |
 | 1        | _(pending)_ | separator  | 6866         | ~6866       | trial; proves pipeline but separator diffs are story-side not tag |
 
-## Session Handoff — 2026-04-08
+## Session Handoff — 2026-04-08 (continuation)
+
+### Fixed this session
+
+- **Script boundary bug**: `rewriteConsumerText` used `<${tag}\\b` which, because `-` is non-word, matched `mzn-empty` inside `mzn-empty-main-initial-data-icon` (word→non-word boundary between `y` and `-`). Replaced `\b` with negative lookahead `(?![-\\w])` so the tag name must not be followed by another tag-name character. Verified on `empty` — sub-component tags are no longer corrupted.
+
+### Blocker discovered on `empty` — DO NOT skip next time
+
+Attempted `empty` (selector-only, baseline 38 diffs). Post-refactor: **577 diffs** — huge regression. Reverted. Two concerns to investigate before proceeding with any more components that have plain string input bindings:
+
+1. **Attribute leakage**: with an attribute selector, the host becomes a real DOM element (`<div>`), so static attributes like `title="..."`, `type="..."`, `size="..."` in consumer templates end up as HTML attributes on the div. Parity sees them as `[ATTR] //div[0]@title` etc. Fix options:
+   - Use `@HostBinding('attr.title')` set to `null` on each conflicting input, OR
+   - Force bracket syntax in every consumer (`[title]="..."`)
+   - Pick a convention before batching more components.
+2. **Mystery style regression**: all descendants shifted from `rgb(1, 1, 1)` to `rgb(3, 3, 3)` and heights changed (e.g. 856→780px). The core `.mzn-empty` class selectors in `_empty-styles.scss` should match either element/attribute form. Not yet diagnosed — may be CSS variable inheritance or a second instance of core styles loading. **Diagnose first** by comparing computed-style trees on one story before batching.
+
+Until both are understood, further refactor batches are likely to regress parity.
+
+### Original handoff (still valid)
 
 **Context is high.** Current session completed Phase 0 (build script) and Phase 1 trial on `separator`. Next session should resume batching.
 
 ### What exists
 
 - `tools/parity/refactor-selector.mjs` — mechanical rewriter. Usage:
+
   ```
   node tools/parity/refactor-selector.mjs <comp.ts> [host-tag]
   ```
@@ -33,6 +52,7 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
   - Injects `host: { '[class]': 'mzn-x' }` IF template outer wrapper has static `class="mzn-x"` (conservative — skips with WARN if anything non-trivial)
   - Updates all consumers across `packages/ng/` (opening, closing, self-closing, multi-line via `/s` flag)
   - Handles void-element hosts (`<hr>`, `<br>`, etc.) by emitting `<host />` not `<host></host>`
+
 - `tools/parity/REFACTOR.md` — this file, progress tracker
 
 ### What the script CAN'T do (needs human)
