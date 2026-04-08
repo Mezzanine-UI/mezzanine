@@ -21,19 +21,19 @@ export const Playground: Story = {
         <div>
           <h3 style="margin-bottom: 12px;">Size: main (Normal)</h3>
           <div style="display: flex; gap: 12px;">
-            <mzn-input-select-button size="main" value="https://" />
+            <div mznInputSelectButton size="main" value="https://" ></div>
           </div>
         </div>
         <div>
           <h3 style="margin-bottom: 12px;">Size: sub (Normal)</h3>
           <div style="display: flex; gap: 12px;">
-            <mzn-input-select-button size="sub" value="https://" />
+            <div mznInputSelectButton size="sub" value="https://" ></div>
           </div>
         </div>
         <div>
           <h3 style="margin-bottom: 12px;">Disabled State</h3>
           <div style="display: flex; gap: 12px;">
-            <mzn-input-select-button [disabled]="true" value="www." />
+            <div mznInputSelectButton [disabled]="true" value="www." ></div>
           </div>
         </div>
       </div>

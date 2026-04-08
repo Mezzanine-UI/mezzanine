@@ -25,27 +25,39 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  * ```html
  * import { MznSelectTrigger } from '@mezzanine-ui/ng/select';
  *
- * <mzn-select-trigger
+ * <div mznSelectTrigger
  *   [active]="isOpen"
  *   [clearable]="true"
  *   [displayText]="selectedLabel"
  *   placeholder="請選擇"
  *   (cleared)="onClear()"
  *   (triggerClicked)="onToggle()"
- * />
+ * ></div>
  * ```
  *
  * @see MznSelect
  * @see MznSelectTriggerTags
  */
 @Component({
-  selector: 'mzn-select-trigger',
+  selector: '[mznSelectTrigger]',
   standalone: true,
   imports: [MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
     '(click)': 'onTriggerClick()',
+    '[attr.active]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.displayText]': 'null',
+    '[attr.error]': 'null',
+    '[attr.hasValue]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.prefix]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.size]': 'null',
+    '[attr.suffixActionIcon]': 'null',
   },
   template: `
     @if (prefix()) {

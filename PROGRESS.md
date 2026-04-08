@@ -5,11 +5,11 @@ per-batch commit hashes. This file is deleted when every component is done._
 
 ## Overall
 
-| Metric                | Count | Percent |
-| --------------------- | ----- | ------- |
-| Attribute selector    | 57    | 34%     |
-| Element selector      | 111   | 66%     |
-| **Total**             | 168   | 100%    |
+| Metric             | Count | Percent |
+| ------------------ | ----- | ------- |
+| Attribute selector | 65    | 39%     |
+| Element selector   | 103   | 61%     |
+| **Total**          | 168   | 100%    |
 
 Legend: ✅ done · ⬜ pending · 🚫 blocked
 
@@ -17,110 +17,110 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 ### Foundation / primitives
 
-| Comp                | Status | Batch   |
-| ------------------- | ------ | ------- |
-| button              | ✅     | pre-existing |
-| button-group        | ✅     | P2-3    |
-| icon                | ✅     | pre-existing |
-| typography          | ✅     | pre-existing |
-| separator           | ✅     | batch 1 |
-| tooltip             | ✅     | pre-existing |
-| portal              | ✅     | P2-2    |
-| popper              | ✅     | P2-2    |
-| backdrop            | ✅     | P2-2    |
-| scrollbar           | ✅     | P2-2    |
+| Comp         | Status | Batch        |
+| ------------ | ------ | ------------ |
+| button       | ✅     | pre-existing |
+| button-group | ✅     | P2-3         |
+| icon         | ✅     | pre-existing |
+| typography   | ✅     | pre-existing |
+| separator    | ✅     | batch 1      |
+| tooltip      | ✅     | pre-existing |
+| portal       | ✅     | P2-2         |
+| popper       | ✅     | P2-2         |
+| backdrop     | ✅     | P2-2         |
+| scrollbar    | ✅     | P2-2         |
 
 ### Layout
 
-| Comp                 | Status | Batch |
-| -------------------- | ------ | ----- |
-| layout               | ✅     | 3     |
-| layout-left-panel    | ⬜     |       |
-| layout-main          | ⬜     |       |
-| layout-right-panel   | ⬜     |       |
-| section              | ✅     | P2-2  |
-| section-group        | ✅     | P2-2  |
-| page-header          | ⬜     |       |
-| page-footer          | ⬜     |       |
-| content-header       | ✅     | P2-2  |
-| content-header-responsive | ⬜ |       |
+| Comp                      | Status | Batch |
+| ------------------------- | ------ | ----- |
+| layout                    | ✅     | 3     |
+| layout-left-panel         | ⬜     |       |
+| layout-main               | ⬜     |       |
+| layout-right-panel        | ⬜     |       |
+| section                   | ✅     | P2-2  |
+| section-group             | ✅     | P2-2  |
+| page-header               | ⬜     |       |
+| page-footer               | ⬜     |       |
+| content-header            | ✅     | P2-2  |
+| content-header-responsive | ⬜     |       |
 
 ### Feedback / overlay
 
-| Comp                          | Status | Batch |
-| ----------------------------- | ------ | ----- |
-| empty                         | ✅     | 2     |
-| alert-banner                  | ✅     | P2-1  |
-| inline-message                | ✅     | P2-1  |
-| inline-message-group          | ✅     | P2-1  |
-| progress                      | ✅     | P2-1  |
-| spin                          | ✅     | P2-1  |
-| skeleton                      | ✅     | P2-1  |
-| result-state                  | ✅     | P2-1  |
-| message                       | ✅     | P2-3  |
-| drawer                        | ✅     | P2-3  |
-| popconfirm                    | ✅     | P2-3  |
-| modal                         | ✅     | P2-4  |
-| modal-header                  | ✅     | P2-4  |
-| modal-footer                  | ✅     | P2-4  |
-| modal-body-for-verification   | ✅     | P2-4  |
-| modal-body-container          | ✅     | pre-existing (directive) |
-| media-preview-modal           | ✅     | P2-4  |
-| notification-center           | ✅     | P2-4  |
-| notifier (service-only)       | n/a    | —     |
-| floating-button               | ✅     | pre-existing |
-| cropper                       | ⬜     |       |
+| Comp                        | Status | Batch                    |
+| --------------------------- | ------ | ------------------------ |
+| empty                       | ✅     | 2                        |
+| alert-banner                | ✅     | P2-1                     |
+| inline-message              | ✅     | P2-1                     |
+| inline-message-group        | ✅     | P2-1                     |
+| progress                    | ✅     | P2-1                     |
+| spin                        | ✅     | P2-1                     |
+| skeleton                    | ✅     | P2-1                     |
+| result-state                | ✅     | P2-1                     |
+| message                     | ✅     | P2-3                     |
+| drawer                      | ✅     | P2-3                     |
+| popconfirm                  | ✅     | P2-3                     |
+| modal                       | ✅     | P2-4                     |
+| modal-header                | ✅     | P2-4                     |
+| modal-footer                | ✅     | P2-4                     |
+| modal-body-for-verification | ✅     | P2-4                     |
+| modal-body-container        | ✅     | pre-existing (directive) |
+| media-preview-modal         | ✅     | P2-4                     |
+| notification-center         | ✅     | P2-4                     |
+| notifier (service-only)     | n/a    | —                        |
+| floating-button             | ✅     | pre-existing             |
+| cropper                     | ⬜     |                          |
 
 ### Data entry — form atomics
 
-| Comp                         | Status | Batch |
-| ---------------------------- | ------ | ----- |
-| input                        | ✅     | P2-5  |
-| text-field                   | ✅     | P2-5  |
-| textarea                     | ✅     | P2-5  |
-| formatted-input              | ✅     | P2-5  |
-| autocomplete                 | ✅     | P2-5  |
-| autocomplete-prefix          | ✅     | pre-existing |
-| slider                       | ✅     | P2-5  |
-| password-strength-indicator  | ✅     | P2-5  |
-| checkbox                     | ✅     | P2-3  |
-| checkbox-group               | ✅     | P2-3  |
-| check-all                    | ✅     | P2-3  |
-| radio                        | ✅     | P2-3  |
-| radio-group                  | ✅     | P2-3  |
-| toggle                       | ✅     | P2-3  |
-| input-action-button          | ⬜     |       |
-| input-select-button          | ⬜     |       |
-| input-spinner-button         | ⬜     |       |
-| input-check (internal)       | ⬜     |       |
-| input-trigger-popper (internal) | ⬜  |       |
+| Comp                            | Status | Batch        |
+| ------------------------------- | ------ | ------------ |
+| input                           | ✅     | P2-5         |
+| text-field                      | ✅     | P2-5         |
+| textarea                        | ✅     | P2-5         |
+| formatted-input                 | ✅     | P2-5         |
+| autocomplete                    | ✅     | P2-5         |
+| autocomplete-prefix             | ✅     | pre-existing |
+| slider                          | ✅     | P2-5         |
+| password-strength-indicator     | ✅     | P2-5         |
+| checkbox                        | ✅     | P2-3         |
+| checkbox-group                  | ✅     | P2-3         |
+| check-all                       | ✅     | P2-3         |
+| radio                           | ✅     | P2-3         |
+| radio-group                     | ✅     | P2-3         |
+| toggle                          | ✅     | P2-3         |
+| input-action-button             | ✅     | P2-6         |
+| input-select-button             | ✅     | P2-6         |
+| input-spinner-button            | ✅     | P2-6         |
+| input-check (internal)          | ✅     | P2-6         |
+| input-trigger-popper (internal) | ✅     | P2-6         |
 
 ### Form structural
 
-| Comp            | Status | Batch |
-| --------------- | ------ | ----- |
-| form-group      | ✅     | 3     |
-| form-field      | ⬜     |       |
-| form-label      | ⬜     |       |
-| form-hint-text  | ⬜     |       |
+| Comp           | Status | Batch |
+| -------------- | ------ | ----- |
+| form-group     | ✅     | 3     |
+| form-field     | ⬜     |       |
+| form-label     | ⬜     |       |
+| form-hint-text | ⬜     |       |
 
 ### Dropdown family
 
-| Comp                | Status | Batch |
-| ------------------- | ------ | ----- |
-| dropdown            | ⬜     |       |
-| dropdown-item       | ⬜     |       |
-| dropdown-item-card  | ⬜     |       |
-| dropdown-action     | ⬜     |       |
-| dropdown-status     | ✅     | 3     |
+| Comp               | Status | Batch |
+| ------------------ | ------ | ----- |
+| dropdown           | ⬜     |       |
+| dropdown-item      | ⬜     |       |
+| dropdown-item-card | ⬜     |       |
+| dropdown-action    | ⬜     |       |
+| dropdown-status    | ✅     | 3     |
 
 ### Select family
 
-| Comp                 | Status | Batch |
-| -------------------- | ------ | ----- |
-| select               | ⬜     |       |
-| select-trigger       | ⬜     |       |
-| select-trigger-tags  | ⬜     |       |
+| Comp                | Status | Batch |
+| ------------------- | ------ | ----- |
+| select              | ✅     | P2-6  |
+| select-trigger      | ✅     | P2-6  |
+| select-trigger-tags | ✅     | P2-6  |
 
 ### Pagination
 
@@ -133,24 +133,24 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 ### Navigation family
 
-| Comp                        | Status | Batch |
-| --------------------------- | ------ | ----- |
-| navigation                  | ⬜     |       |
-| navigation-header           | ⬜     |       |
-| navigation-footer           | ⬜     |       |
-| navigation-icon-button      | ⬜     |       |
-| navigation-option           | ⬜     |       |
-| navigation-option-category  | ⬜     |       |
-| navigation-user-menu        | ⬜     |       |
+| Comp                       | Status | Batch |
+| -------------------------- | ------ | ----- |
+| navigation                 | ⬜     |       |
+| navigation-header          | ⬜     |       |
+| navigation-footer          | ⬜     |       |
+| navigation-icon-button     | ⬜     |       |
+| navigation-option          | ⬜     |       |
+| navigation-option-category | ⬜     |       |
+| navigation-user-menu       | ⬜     |       |
 
 ### Anchor / Breadcrumb
 
-| Comp              | Status | Batch |
-| ----------------- | ------ | ----- |
-| anchor-group      | ✅     | 3     |
-| anchor-item       | ⬜     |       |
-| breadcrumb        | ⬜     |       |
-| breadcrumb-item   | ⬜     |       |
+| Comp            | Status | Batch |
+| --------------- | ------ | ----- |
+| anchor-group    | ✅     | 3     |
+| anchor-item     | ⬜     |       |
+| breadcrumb      | ⬜     |       |
+| breadcrumb-item | ⬜     |       |
 
 ### Tab / Stepper / Accordion
 
@@ -177,11 +177,11 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 ### Filter
 
-| Comp         | Status | Batch |
-| ------------ | ------ | ----- |
-| filter-area  | ⬜     |       |
-| filter-line  | ⬜     |       |
-| filter       | ⬜     |       |
+| Comp        | Status | Batch |
+| ----------- | ------ | ----- |
+| filter-area | ⬜     |       |
+| filter-line | ⬜     |       |
+| filter      | ⬜     |       |
 
 ### Data display — tags / badges
 
@@ -197,27 +197,27 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 ### Card family
 
-| Comp                          | Status | Batch |
-| ----------------------------- | ------ | ----- |
-| base-card                     | ⬜     |       |
-| base-card-skeleton            | ⬜     |       |
-| card-group                    | ⬜     |       |
-| selection-card                | ⬜     |       |
-| single-thumbnail-card         | ⬜     |       |
-| single-thumbnail-card-skeleton| ⬜     |       |
-| four-thumbnail-card           | ⬜     |       |
-| four-thumbnail-card-skeleton  | ⬜     |       |
-| quick-action-card             | ⬜     |       |
-| quick-action-card-skeleton    | ⬜     |       |
-| thumbnail                     | ⬜     |       |
-| thumbnail-card-info           | ⬜     |       |
+| Comp                           | Status | Batch |
+| ------------------------------ | ------ | ----- |
+| base-card                      | ⬜     |       |
+| base-card-skeleton             | ⬜     |       |
+| card-group                     | ⬜     |       |
+| selection-card                 | ⬜     |       |
+| single-thumbnail-card          | ⬜     |       |
+| single-thumbnail-card-skeleton | ⬜     |       |
+| four-thumbnail-card            | ⬜     |       |
+| four-thumbnail-card-skeleton   | ⬜     |       |
+| quick-action-card              | ⬜     |       |
+| quick-action-card-skeleton     | ⬜     |       |
+| thumbnail                      | ⬜     |       |
+| thumbnail-card-info            | ⬜     |       |
 
 ### Cascader
 
-| Comp            | Status | Batch |
-| --------------- | ------ | ----- |
-| cascader        | ⬜     |       |
-| cascader-panel  | ⬜     |       |
+| Comp           | Status | Batch |
+| -------------- | ------ | ----- |
+| cascader       | ⬜     |       |
+| cascader-panel | ⬜     |       |
 
 ### Table
 
@@ -227,70 +227,70 @@ Legend: ✅ done · ⬜ pending · 🚫 blocked
 
 ### Upload family
 
-| Comp                 | Status | Batch |
-| -------------------- | ------ | ----- |
-| upload               | ⬜     |       |
-| uploader             | ⬜     |       |
-| upload-item          | ⬜     |       |
-| upload-picture-card  | ⬜     |       |
+| Comp                | Status | Batch |
+| ------------------- | ------ | ----- |
+| upload              | ⬜     |       |
+| uploader            | ⬜     |       |
+| upload-item         | ⬜     |       |
+| upload-picture-card | ⬜     |       |
 
 ### Calendar family (largest)
 
-| Comp                          | Status | Batch |
-| ----------------------------- | ------ | ----- |
-| calendar                      | ⬜     |       |
-| range-calendar                | ⬜     |       |
-| calendar-cell                 | ⬜     |       |
-| calendar-config-provider      | ⬜     |       |
-| calendar-controls             | ⬜     |       |
-| calendar-day-of-week          | ⬜     |       |
-| calendar-days                 | ⬜     |       |
-| calendar-weeks                | ⬜     |       |
-| calendar-months               | ⬜     |       |
-| calendar-quarters             | ⬜     |       |
-| calendar-half-years           | ⬜     |       |
-| calendar-years                | ⬜     |       |
-| calendar-quick-select         | ⬜     |       |
-| calendar-footer-actions       | ⬜     |       |
-| calendar-footer-control       | ⬜     |       |
+| Comp                     | Status | Batch |
+| ------------------------ | ------ | ----- |
+| calendar                 | ⬜     |       |
+| range-calendar           | ⬜     |       |
+| calendar-cell            | ⬜     |       |
+| calendar-config-provider | ⬜     |       |
+| calendar-controls        | ⬜     |       |
+| calendar-day-of-week     | ⬜     |       |
+| calendar-days            | ⬜     |       |
+| calendar-weeks           | ⬜     |       |
+| calendar-months          | ⬜     |       |
+| calendar-quarters        | ⬜     |       |
+| calendar-half-years      | ⬜     |       |
+| calendar-years           | ⬜     |       |
+| calendar-quick-select    | ⬜     |       |
+| calendar-footer-actions  | ⬜     |       |
+| calendar-footer-control  | ⬜     |       |
 
 ### Date / Time picker family
 
-| Comp                         | Status | Batch |
-| ---------------------------- | ------ | ----- |
-| date-picker                  | ⬜     |       |
-| date-picker-calendar         | ⬜     |       |
-| date-range-picker            | ⬜     |       |
-| date-range-picker-calendar   | ⬜     |       |
-| date-time-picker             | ⬜     |       |
-| date-time-range-picker       | ⬜     |       |
-| multiple-date-picker         | ⬜     |       |
-| multiple-date-picker-trigger | ⬜     |       |
-| time-picker                  | ⬜     |       |
-| time-picker-panel            | ⬜     |       |
-| time-range-picker            | ⬜     |       |
-| time-panel                   | ⬜     |       |
-| time-panel-column            | ⬜     |       |
-| picker-trigger               | ⬜     |       |
-| picker-trigger-with-separator| ⬜     |       |
-| range-picker-trigger         | ⬜     |       |
+| Comp                          | Status | Batch |
+| ----------------------------- | ------ | ----- |
+| date-picker                   | ⬜     |       |
+| date-picker-calendar          | ⬜     |       |
+| date-range-picker             | ⬜     |       |
+| date-range-picker-calendar    | ⬜     |       |
+| date-time-picker              | ⬜     |       |
+| date-time-range-picker        | ⬜     |       |
+| multiple-date-picker          | ⬜     |       |
+| multiple-date-picker-trigger  | ⬜     |       |
+| time-picker                   | ⬜     |       |
+| time-picker-panel             | ⬜     |       |
+| time-range-picker             | ⬜     |       |
+| time-panel                    | ⬜     |       |
+| time-panel-column             | ⬜     |       |
+| picker-trigger                | ⬜     |       |
+| picker-trigger-with-separator | ⬜     |       |
+| range-picker-trigger          | ⬜     |       |
 
 ### Empty sub-icons
 
-| Comp                            | Status | Batch |
-| ------------------------------- | ------ | ----- |
-| empty-main-initial-data-icon    | ⬜     |       |
-| empty-main-notification-icon    | ⬜     |       |
-| empty-main-result-icon          | ⬜     |       |
-| empty-main-system-icon          | ⬜     |       |
+| Comp                         | Status | Batch |
+| ---------------------------- | ------ | ----- |
+| empty-main-initial-data-icon | ⬜     |       |
+| empty-main-notification-icon | ⬜     |       |
+| empty-main-result-icon       | ⬜     |       |
+| empty-main-system-icon       | ⬜     |       |
 
 ### Transition directives
 
-| Comp       | Status | Batch |
-| ---------- | ------ | ----- |
-| rotate     | ✅     | pre-existing |
-| fade       | ⬜     |       |
-| scale      | ⬜     |       |
-| slide      | ⬜     |       |
-| translate  | ⬜     |       |
-| collapse   | ⬜     |       |
+| Comp      | Status | Batch        |
+| --------- | ------ | ------------ |
+| rotate    | ✅     | pre-existing |
+| fade      | ⬜     |              |
+| scale     | ⬜     |              |
+| slide     | ⬜     |              |
+| translate | ⬜     |              |
+| collapse  | ⬜     |              |

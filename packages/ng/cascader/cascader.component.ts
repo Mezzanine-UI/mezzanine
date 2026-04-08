@@ -52,7 +52,8 @@ interface PanelDescriptor {
     '[class]': 'hostClasses()',
   },
   template: `
-    <mzn-select-trigger
+    <div
+      mznSelectTrigger
       [class.mzn-cascader-trigger--partial]="isPartial()"
       [active]="isOpen()"
       [clearable]="clearable() && !disabled() && !readOnly() && hasValue()"
@@ -66,7 +67,7 @@ interface PanelDescriptor {
       [size]="size()"
       (cleared)="clear($event)"
       (triggerClicked)="toggleOpen()"
-    />
+    ></div>
     <div mznPortal [disablePortal]="!(globalPortal() ?? true)">
       @if (isOpen()) {
         <div [class]="panelsClass">

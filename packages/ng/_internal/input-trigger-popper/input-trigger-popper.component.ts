@@ -19,13 +19,13 @@ import { size, type Middleware } from '@floating-ui/dom';
  *
  * @example
  * ```html
- * <mzn-input-trigger-popper [anchor]="triggerEl" [open]="isOpen" [sameWidth]="true">
+ * <div mznInputTriggerPopper [anchor]="triggerEl" [open]="isOpen" [sameWidth]="true">
  *   <div>dropdown options</div>
- * </mzn-input-trigger-popper>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-input-trigger-popper',
+  selector: '[mznInputTriggerPopper]',
   standalone: true,
   imports: [MznPopper],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +35,9 @@ import { size, type Middleware } from '@floating-ui/dom';
     '(touchstart)': '$event.stopPropagation()',
     '(touchmove)': '$event.stopPropagation()',
     '(touchend)': '$event.stopPropagation()',
+    '[attr.anchor]': 'null',
+    '[attr.open]': 'null',
+    '[attr.sameWidth]': 'null',
   },
   template: `
     <div

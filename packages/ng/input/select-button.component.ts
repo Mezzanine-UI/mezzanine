@@ -25,20 +25,27 @@ import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
  * ```html
  * import { MznInputSelectButton } from '@mezzanine-ui/ng/input';
  *
- * <mzn-input-select-button
+ * <div mznInputSelectButton
  *   [options]="options"
  *   [value]="selectedValue"
  *   (selected)="onSelect($event)"
- * />
+ * ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-input-select-button',
+  selector: '[mznInputSelectButton]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon, MznDropdown],
   host: {
     style: 'display: contents',
+    '[attr.disabled]': 'null',
+    '[attr.dropdownMaxHeight]': 'null',
+    '[attr.dropdownPlacement]': 'null',
+    '[attr.dropdownWidth]': 'null',
+    '[attr.options]': 'null',
+    '[attr.size]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     <button

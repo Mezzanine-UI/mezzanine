@@ -45,19 +45,19 @@ import {
  * ```html
  * import { MznSelect } from '@mezzanine-ui/ng/select';
  *
- * <mzn-select
+ * <div mznSelect
  *   [options]="fruits"
  *   [(ngModel)]="selectedFruit"
  *   placeholder="請選擇水果"
  *   (selectionChange)="onFruitChange($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznDropdown
  * @see MznAutocomplete
  */
 @Component({
-  selector: 'mzn-select',
+  selector: '[mznSelect]',
   standalone: true,
   imports: [
     MznIcon,
@@ -70,9 +70,31 @@ import {
   animations: [mznTranslateTopAnimation],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.className]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.placeholder]': 'null',
+    '[attr.options]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.fullWidth]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.type]': 'null',
+    '[attr.menuMaxHeight]': 'null',
+    '[attr.clearable]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.loadingPosition]': 'null',
+    '[attr.loadingText]': 'null',
+    '[attr.globalPortal]': 'null',
+    '[attr.dropdownZIndex]': 'null',
+    '[attr.prefix]': 'null',
+    '[attr.suffixActionIcon]': 'null',
+    '[attr.size]': 'null',
+    '[attr.required]': 'null',
+    '[attr.overflowStrategy]': 'null',
   },
   template: `
-    <mzn-select-trigger
+    <div
+      mznSelectTrigger
       [active]="isOpen()"
       [clearable]="clearable()"
       [disabled]="disabled()"
@@ -89,17 +111,19 @@ import {
       (triggerClicked)="toggleOpen()"
     >
       @if (mode() === 'multiple' && hasValue()) {
-        <mzn-select-trigger-tags
+        <div
+          mznSelectTriggerTags
           [disabled]="disabled()"
           [overflowStrategy]="overflowStrategy()"
           [readOnly]="readOnly()"
           [size]="size()"
           [value]="selectedTagValues()"
           (tagClosed)="onTagClose($event)"
-        />
+        ></div>
       }
-    </mzn-select-trigger>
-    <mzn-input-trigger-popper
+    </div>
+    <div
+      mznInputTriggerPopper
       [anchor]="triggerElRef()!"
       [open]="isOpen()"
       [sameWidth]="true"
@@ -145,7 +169,7 @@ import {
           </div>
         </div>
       }
-    </mzn-input-trigger-popper>
+    </div>
   `,
 })
 export class MznSelect implements ControlValueAccessor {

@@ -20,17 +20,20 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  * ```html
  * import { MznInputSpinnerButton } from '@mezzanine-ui/ng/input';
  *
- * <mzn-input-spinner-button type="up" (clicked)="onIncrement()" />
- * <mzn-input-spinner-button type="down" (clicked)="onDecrement()" />
+ * <div mznInputSpinnerButton type="up" (clicked)="onIncrement()" ></div>
+ * <div mznInputSpinnerButton type="down" (clicked)="onDecrement()" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-input-spinner-button',
+  selector: '[mznInputSpinnerButton]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
   host: {
     style: 'display: contents',
+    '[attr.disabled]': 'null',
+    '[attr.size]': 'null',
+    '[attr.type]': 'null',
   },
   template: `
     <button

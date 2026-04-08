@@ -20,17 +20,21 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  * ```html
  * import { MznInputActionButton } from '@mezzanine-ui/ng/input';
  *
- * <mzn-input-action-button />
- * <mzn-input-action-button [icon]="CustomIcon" label="Download" />
+ * <div mznInputActionButton ></div>
+ * <div mznInputActionButton [icon]="CustomIcon" label="Download" ></div>
  * ```
  */
 @Component({
-  selector: 'mzn-input-action-button',
+  selector: '[mznInputActionButton]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],
   host: {
     style: 'display: contents',
+    '[attr.disabled]': 'null',
+    '[attr.icon]': 'null',
+    '[attr.label]': 'null',
+    '[attr.size]': 'null',
   },
   template: `
     <button

@@ -42,13 +42,14 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
         label()
       }}</div>
     }
-    <mzn-select
+    <div
+      mznSelect
       [class]="selectClass"
       [disabled]="disabled()"
       [options]="selectOptions()"
       [ngModel]="currentValueId()"
       (selectionChange)="onSelectionChange($event)"
-    />
+    ></div>
   `,
 })
 export class MznPaginationPageSize {

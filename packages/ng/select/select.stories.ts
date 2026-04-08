@@ -112,32 +112,32 @@ export const Basic: Story = {
     },
     template: `
       <div style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;">
-        <mzn-select
+        <div mznSelect
           [clearable]="true"
           [fullWidth]="true"
           [required]="true"
           [options]="basicOptions"
           placeholder="預設文字"
-        />
-        <mzn-select
+        ></div>
+        <div mznSelect
           [disabled]="true"
           [fullWidth]="true"
           [options]="simpleOptions"
           placeholder="預設文字"
-        />
-        <mzn-select
+        ></div>
+        <div mznSelect
           [error]="true"
           [fullWidth]="true"
           [options]="simpleOptions"
           placeholder="預設文字"
-        />
-        <mzn-select
+        ></div>
+        <div mznSelect
           [clearable]="true"
           [fullWidth]="true"
           mode="multiple"
           [options]="multipleOptions"
           placeholder="我是多選"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -153,21 +153,21 @@ export const Size: Story = {
       <div style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;">
         <div>
           <p style="margin-bottom: 8px;">size = main (default)</p>
-          <mzn-select
+          <div mznSelect
             [fullWidth]="true"
             [options]="options"
             placeholder="預設文字"
             size="main"
-          />
+          ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">size = sub</p>
-          <mzn-select
+          <div mznSelect
             [fullWidth]="true"
             [options]="options"
             placeholder="預設文字"
             size="sub"
-          />
+          ></div>
         </div>
       </div>
     `,
@@ -189,14 +189,14 @@ export const Multiple: Story = {
     },
     template: `
       <div style="max-width: 300px;">
-        <mzn-select
+        <div mznSelect
           [clearable]="true"
           [fullWidth]="true"
           mode="multiple"
           [options]="options"
           overflowStrategy="wrap"
           placeholder="請選擇多個項目"
-        />
+        ></div>
       </div>
     `,
   }),
@@ -212,22 +212,22 @@ export const WithReadOnly: Story = {
       <div style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;">
         <div>
           <p style="margin-bottom: 8px;">readOnly = false (default)</p>
-          <mzn-select
+          <div mznSelect
             [clearable]="true"
             [fullWidth]="true"
             [options]="options"
             placeholder="預設文字"
-          />
+          ></div>
         </div>
         <div>
           <p style="margin-bottom: 8px;">readOnly = true</p>
-          <mzn-select
+          <div mznSelect
             [clearable]="true"
             [fullWidth]="true"
             [options]="options"
             [readOnly]="true"
             placeholder="預設文字"
-          />
+          ></div>
         </div>
       </div>
     `,
@@ -241,7 +241,8 @@ export const WithReadOnly: Story = {
   imports: [MznSelect],
   template: `
     <div style="max-width: 300px;">
-      <mzn-select
+      <div
+        mznSelect
         [clearable]="true"
         [fullWidth]="true"
         [loading]="loading()"
@@ -251,7 +252,7 @@ export const WithReadOnly: Story = {
         placeholder="滾動載入更多"
         (onReachBottom)="loadMore()"
         (onLeaveBottom)="onLeaveBottom()"
-      />
+      ></div>
     </div>
   `,
 })
@@ -316,13 +317,13 @@ export const WithTree: Story = {
         <!-- NOTE: Tree/nested options are not yet supported in Angular MznSelect.
              The React version supports a children property on DropdownOption for multi-level
              dropdown rendering. This story shows a flat multiple-select as the closest equivalent. -->
-        <mzn-select
+        <div mznSelect
           [clearable]="true"
           [fullWidth]="true"
           mode="multiple"
           [options]="options"
           placeholder="請選擇"
-        />
+        ></div>
       </div>
     `,
   }),

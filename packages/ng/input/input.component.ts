@@ -110,18 +110,20 @@ export type InputVariant =
   template: `
     <div [class]="hostClasses()">
       @if (actionButtonPosition() === 'prefix') {
-        <mzn-input-action-button
+        <div
+          mznInputActionButton
           [disabled]="actionButtonDisabled()"
           [icon]="actionButton()?.icon"
           [label]="actionButton()?.label ?? 'Copy'"
           [size]="size()"
           (clicked)="actionButton()?.onClick?.()"
-        />
+        ></div>
       }
       @if (
         selectButtonPosition() === 'prefix' || selectButtonPosition() === 'both'
       ) {
-        <mzn-input-select-button
+        <div
+          mznInputSelectButton
           [disabled]="selectButton()?.disabled || disabled()"
           [dropdownMaxHeight]="dropdownMaxHeight()"
           [dropdownPlacement]="dropdownPlacement()"
@@ -130,7 +132,7 @@ export type InputVariant =
           [size]="size()"
           [value]="selectButton()?.value"
           (selected)="onSelectOption($event)"
-        />
+        ></div>
       }
       <div
         mznTextField
@@ -186,18 +188,20 @@ export type InputVariant =
               <span>{{ sfx }}</span>
             }
             <div [class]="classes.spinners">
-              <mzn-input-spinner-button
+              <div
+                mznInputSpinnerButton
                 type="up"
                 [size]="size()"
                 [disabled]="disabled()"
                 (clicked)="onSpinUp()"
-              />
-              <mzn-input-spinner-button
+              ></div>
+              <div
+                mznInputSpinnerButton
                 type="down"
                 [size]="size()"
                 [disabled]="disabled()"
                 (clicked)="onSpinDown()"
-              />
+              ></div>
             </div>
           </div>
         } @else if (resolvedSuffix(); as sfx) {
@@ -223,18 +227,20 @@ export type InputVariant =
         }
       </div>
       @if (actionButtonPosition() === 'suffix') {
-        <mzn-input-action-button
+        <div
+          mznInputActionButton
           [disabled]="actionButtonDisabled()"
           [icon]="actionButton()?.icon"
           [label]="actionButton()?.label ?? 'Copy'"
           [size]="size()"
           (clicked)="actionButton()?.onClick?.()"
-        />
+        ></div>
       }
       @if (
         selectButtonPosition() === 'suffix' || selectButtonPosition() === 'both'
       ) {
-        <mzn-input-select-button
+        <div
+          mznInputSelectButton
           [disabled]="selectButton()?.disabled || disabled()"
           [dropdownMaxHeight]="dropdownMaxHeight()"
           [dropdownPlacement]="dropdownPlacement()"
@@ -243,7 +249,7 @@ export type InputVariant =
           [size]="size()"
           [value]="selectButton()?.value"
           (selected)="onSelectOption($event)"
-        />
+        ></div>
       }
     </div>
     @if (showPasswordStrengthIndicator() && variant() === 'password') {

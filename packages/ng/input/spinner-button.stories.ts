@@ -21,22 +21,22 @@ export const Playground: Story = {
         <div>
           <h3 style="margin-bottom: 12px;">Size: main (Normal)</h3>
           <div style="position: relative;">
-            <mzn-input-spinner-button type="up" size="main" />
-            <mzn-input-spinner-button type="down" size="main" />
+            <div mznInputSpinnerButton type="up" size="main" ></div>
+            <div mznInputSpinnerButton type="down" size="main" ></div>
           </div>
         </div>
         <div>
           <h3 style="margin-bottom: 12px;">Size: sub (Normal)</h3>
           <div style="position: relative;">
-            <mzn-input-spinner-button type="up" size="sub" />
-            <mzn-input-spinner-button type="down" size="sub" />
+            <div mznInputSpinnerButton type="up" size="sub" ></div>
+            <div mznInputSpinnerButton type="down" size="sub" ></div>
           </div>
         </div>
         <div>
           <h3 style="margin-bottom: 12px;">Disabled</h3>
           <div style="position: relative;">
-            <mzn-input-spinner-button type="up" [disabled]="true" />
-            <mzn-input-spinner-button type="down" [disabled]="true" />
+            <div mznInputSpinnerButton type="up" [disabled]="true" ></div>
+            <div mznInputSpinnerButton type="down" [disabled]="true" ></div>
           </div>
         </div>
       </div>

@@ -17,18 +17,25 @@ import clsx from 'clsx';
  *
  * @example
  * ```html
- * <mzn-input-check [size]="'main'" [disabled]="false">
+ * <div mznInputCheck [size]="'main'" [disabled]="false">
  *   <ng-container control><input type="checkbox" /></ng-container>
  *   Label text
- * </mzn-input-check>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-input-check',
+  selector: '[mznInputCheck]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.size]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.focused]': 'null',
+    '[attr.hint]': 'null',
+    '[attr.hasLabel]': 'null',
+    '[attr.segmentedStyle]': 'null',
   },
   template: `
     <span [class]="controlClasses()">

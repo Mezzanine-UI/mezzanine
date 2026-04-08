@@ -23,22 +23,22 @@ export const Playground: Story = {
         <div>
           <h3 style="margin-bottom: 12px;">Size: main (Normal)</h3>
           <div style="display: flex; gap: 12px;">
-            <mzn-input-action-button size="main" />
-            <mzn-input-action-button [icon]="EyeIcon" label="View" size="main" />
+            <div mznInputActionButton size="main" ></div>
+            <div mznInputActionButton [icon]="EyeIcon" label="View" size="main" ></div>
           </div>
         </div>
         <div>
           <h3 style="margin-bottom: 12px;">Size: sub (Normal)</h3>
           <div style="display: flex; gap: 12px;">
-            <mzn-input-action-button size="sub" />
-            <mzn-input-action-button [icon]="EyeIcon" label="View" size="sub" />
+            <div mznInputActionButton size="sub" ></div>
+            <div mznInputActionButton [icon]="EyeIcon" label="View" size="sub" ></div>
           </div>
         </div>
         <div>
           <h3 style="margin-bottom: 12px;">Disabled State</h3>
           <div style="display: flex; gap: 12px;">
-            <mzn-input-action-button [disabled]="true" />
-            <mzn-input-action-button [icon]="EyeIcon" label="View" [disabled]="true" />
+            <div mznInputActionButton [disabled]="true" ></div>
+            <div mznInputActionButton [icon]="EyeIcon" label="View" [disabled]="true" ></div>
           </div>
         </div>
       </div>

@@ -38,11 +38,11 @@ export interface SelectTriggerTagValue {
  * ```html
  * import { MznSelectTriggerTags } from '@mezzanine-ui/ng/select';
  *
- * <mzn-select-trigger-tags
+ * <div mznSelectTriggerTags
  *   [value]="selectedItems"
  *   overflowStrategy="counter"
  *   (tagClosed)="onRemove($event)"
- * />
+ * ></div>
  * ```
  *
  * @see MznSelect
@@ -51,13 +51,18 @@ export interface SelectTriggerTagValue {
  * @see MznTagGroup
  */
 @Component({
-  selector: 'mzn-select-trigger-tags',
+  selector: '[mznSelectTriggerTags]',
   standalone: true,
   imports: [MznTag, MznTagGroup],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
     '[class]': 'wrapperClasses()',
+    '[attr.disabled]': 'null',
+    '[attr.overflowStrategy]': 'null',
+    '[attr.readOnly]': 'null',
+    '[attr.size]': 'null',
+    '[attr.value]': 'null',
   },
   template: `
     @if (overflowStrategy() === 'wrap') {

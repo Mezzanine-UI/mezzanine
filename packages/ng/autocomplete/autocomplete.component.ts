@@ -342,7 +342,8 @@ export function getFullParsedList(
       }
     } @else {
       <!-- Outside mode: use popper for floating positioning -->
-      <mzn-input-trigger-popper
+      <div
+        mznInputTriggerPopper
         [anchor]="triggerElRef()!"
         [open]="isOpen()"
         [sameWidth]="true"
@@ -352,7 +353,7 @@ export function getFullParsedList(
             <ng-container *ngTemplateOutlet="dropdownContentTpl" />
           </div>
         }
-      </mzn-input-trigger-popper>
+      </div>
     }
     <!-- Shared dropdown content template -->
     <ng-template #dropdownContentTpl>
