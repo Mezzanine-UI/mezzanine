@@ -35,14 +35,14 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
  * import { MznModal, MznModalHeader, MznModalFooter } from '@mezzanine-ui/ng/modal';
  *
  * <div mznModal [open]="isOpen" (closed)="isOpen = false">
- *   <mzn-modal-header title="確認刪除" supportingText="此操作無法復原" />
+ *   <div mznModalHeader title="確認刪除" supportingText="此操作無法復原"></div>
  *   <div class="mzn-modal__body-container">
  *     <p>確定要刪除嗎？</p>
  *   </div>
- *   <mzn-modal-footer>
+ *   <div mznModalFooter>
  *     <button mznButton variant="base-secondary" (click)="isOpen = false">取消</button>
  *     <button mznButton variant="base-primary" (click)="onConfirm()">確認</button>
- *   </mzn-modal-footer>
+ *   </div>
  * </div>
  * ```
  *

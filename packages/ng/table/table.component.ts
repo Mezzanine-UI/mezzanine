@@ -259,13 +259,14 @@ function nextSortOrder(current: SortOrder): SortOrder {
             <tr [class]="emptyRowClass">
               <td [attr.colspan]="totalColumns()" [class]="emptyClass">
                 @if (emptyProps(); as ep) {
-                  <mzn-empty
+                  <div
+                    mznEmpty
                     [title]="ep.title"
                     [type]="ep.type ?? 'initial-data'"
                     [size]="ep.size ?? 'main'"
                     [description]="ep.description"
                     [style.height]="formatEmptyHeight(ep.height)"
-                  />
+                  ></div>
                 } @else {
                   {{ emptyText() }}
                 }

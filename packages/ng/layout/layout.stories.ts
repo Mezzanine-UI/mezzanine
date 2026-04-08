@@ -53,7 +53,7 @@ import { MznIcon } from '../icon/icon.component';
             separator line to resize it.</p
           >
         </div>
-        <mzn-floating-button [autoHideWhenOpen]="true" [open]="rightOpen()">
+        <div mznFloatingButton [autoHideWhenOpen]="true" [open]="rightOpen()">
           <button
             mznButton
             variant="base-primary"
@@ -65,7 +65,7 @@ import { MznIcon } from '../icon/icon.component';
           >
             <i mznIcon [icon]="PlusIcon" [size]="16"></i>
           </button>
-        </mzn-floating-button>
+        </div>
       </div>
       <aside mznLayoutRightPanel [defaultWidth]="320" [open]="rightOpen()">
         <div style="padding: var(--mzn-spacing-primitive-24);">

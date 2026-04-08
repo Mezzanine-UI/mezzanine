@@ -100,12 +100,13 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
           ></div>
         }
         @if (auxiliaryContentType() === 'toggle') {
-          <mzn-toggle
+          <div
+            mznToggle
             [checked]="auxiliaryContentChecked()"
             [label]="auxiliaryContentLabel()"
             (ngModelChange)="auxiliaryContentChanged.emit($event)"
             [ngModel]="auxiliaryContentChecked()"
-          />
+          ></div>
         }
       </div>
     }
