@@ -2,11 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   ElementRef,
+  effect,
   inject,
   input,
-  OnDestroy,
-  OnInit,
   output,
   signal,
   viewChild,
@@ -17,53 +17,59 @@ import { ChevronDownIcon, UserIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
-import { MznTooltip } from '@mezzanine-ui/ng/tooltip';
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
 
 /**
- * 導覽列使用者選單元件，顯示使用者頭像與名稱，並提供下拉選單。
+ * 導覽列使用者選單元件，顯示頭像 + 使用者名稱 + 下拉選單。
  *
- * 當使用者名稱溢出或導覽列收合時，自動以 Tooltip 顯示完整名稱。
+ * 對應 React 的 `NavigationUserMenu`。
+ *
+ * Angular 端採用 **element selector** (`<mzn-navigation-user-menu>`)，host 以
+ * `display: contents` 在 layout 中透明，內層 `<button>` 為實際的 toggle；
+ * 下拉選單以 `MznDropdown` + `MznPopper` 做浮動定位。收合狀態下
+ * placement 會切換為 `collapsedPlacement` 以模擬 React 版行為。
+ *
+ * 使用者名稱透過 `<span userName>...</span>` slot 投影；若使用者名稱因寬度
+ * 受限而 truncate，`userNameOverflow` signal 會自動更新（由 `ResizeObserver`
+ * 追蹤），供外部 tooltip 判斷使用。
  *
  * @example
  * ```html
  * import { MznNavigationUserMenu } from '@mezzanine-ui/ng/navigation';
  *
- * <button mznNavigationUserMenu imgSrc="/avatar.png" placement="top-end">
+ * <mzn-navigation-user-menu imgSrc="/avatar.png" placement="top-end">
  *   <span userName>John Doe</span>
- *   <ng-template #menuContent>
- *     <div mznDropdownItemCard label="個人設定" ></div>
- *     <div mznDropdownItemCard label="登出" ></div>
+ *   <ng-template menuContent>
+ *     <div mznDropdownItemCard label="個人設定" />
+ *     <div mznDropdownItemCard label="登出" />
  *   </ng-template>
- * </button>
+ * </mzn-navigation-user-menu>
  * ```
  *
  * @see MznNavigation
  * @see MznDropdown
  */
 @Component({
-  selector: '[mznNavigationUserMenu]',
+  selector: 'mzn-navigation-user-menu',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznIcon, MznDropdown, MznTooltip],
+  imports: [MznIcon, MznDropdown],
   host: {
-    '[class]': 'hostClasses()',
-    '[attr.imgSrc]': 'null',
-    '[attr.placement]': 'null',
-    '[attr.collapsedPlacement]': 'null',
+    '[style.display]': "'contents'",
   },
   template: `
     <button
-      #menuAnchor
+      #menuBtn
       type="button"
-      [class]="buttonClasses()"
+      [class]="hostClasses()"
       (click)="toggleMenu()"
     >
-      <span [class]="classes.content" #contentEl>
+      <span [class]="classes.content">
         <span [class]="classes.avatar">
           @if (!imgError() && imgSrc()) {
             <img
-              [src]="imgSrc()"
+              [src]="imgSrc()!"
               alt="User avatar"
               [class]="classes.avatar"
               (error)="imgError.set(true)"
@@ -82,16 +88,16 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
     </button>
     <div
       mznDropdown
-      [anchor]="menuAnchor"
+      [anchor]="menuBtn"
       [open]="isOpen()"
       [placement]="currentPlacement()"
+      [options]="options()"
+      (selected)="handleOptionSelected($event)"
       (closed)="handleClose()"
-    >
-      <ng-content select="[menuContent], ng-template" />
-    </div>
+    ></div>
   `,
 })
-export class MznNavigationUserMenu implements OnInit, OnDestroy {
+export class MznNavigationUserMenu {
   protected readonly classes = classes;
   protected readonly userIcon = UserIcon;
   protected readonly chevronDownIcon = ChevronDownIcon;
@@ -99,29 +105,38 @@ export class MznNavigationUserMenu implements OnInit, OnDestroy {
   private readonly navigation = inject(MZN_NAVIGATION_ACTIVATED, {
     optional: true,
   });
-  private resizeObserver: ResizeObserver | null = null;
+  private readonly destroyRef = inject(DestroyRef);
   private readonly userNameEl =
     viewChild<ElementRef<HTMLSpanElement>>('userNameEl');
 
-  /** 使用者頭像圖片 URL。 */
+  /** 使用者頭像圖片 URL。未提供或載入失敗時會 fallback 到 user icon。 */
   readonly imgSrc = input<string>();
 
   /**
-   * 下拉選單位置。
-   * @default 'top-end'
+   * 下拉選單項目。使用 `DropdownOption`（與 `MznDropdown` 相同）以
+   * 保持整個 design system 對 menu item 定義的一致。
    */
-  readonly placement = input<string>('top-end');
+  readonly options = input<ReadonlyArray<DropdownOption>>([]);
 
   /**
-   * 導覽列收合時的下拉選單位置。
+   * 展開時的下拉選單 placement。
+   * @default 'top-end'
+   */
+  readonly placement = input<Placement>('top-end');
+
+  /**
+   * 導覽列收合狀態下的下拉選單 placement。
    * @default 'right-end'
    */
-  readonly collapsedPlacement = input<string>('right-end');
+  readonly collapsedPlacement = input<Placement>('right-end');
 
-  /** 選單開啟/關閉事件。 */
+  /** 選單顯示狀態變更事件（true = 展開，false = 收合）。 */
   readonly visibilityChange = output<boolean>();
 
-  /** 選單關閉事件。 */
+  /** 選取某個 menu item 的事件，攜帶被選中的 `DropdownOption`。 */
+  readonly optionSelected = output<DropdownOption>();
+
+  /** 選單關閉事件（點擊外部或 click-away 觸發）。 */
   readonly closed = output<void>();
 
   protected readonly imgError = signal(false);
@@ -134,58 +149,44 @@ export class MznNavigationUserMenu implements OnInit, OnDestroy {
 
   protected readonly currentPlacement = computed(
     (): Placement =>
-      (this.collapsed()
-        ? this.collapsedPlacement()
-        : this.placement()) as Placement,
+      this.collapsed() ? this.collapsedPlacement() : this.placement(),
   );
-
-  protected readonly tooltipTitle = computed((): string | undefined => {
-    if ((this.collapsed() || this.userNameOverflow()) && !this.isOpen()) {
-      return undefined; // Will use projected content as tooltip
-    }
-
-    return undefined;
-  });
 
   protected readonly hostClasses = computed((): string =>
     clsx(classes.host, this.isOpen() && classes.open),
   );
 
-  protected readonly buttonClasses = computed((): string =>
-    clsx(classes.host, this.isOpen() && classes.open),
-  );
-
-  ngOnInit(): void {
-    this.observeUserNameOverflow();
+  constructor() {
+    // Observe userName span size; flag overflow so external tooltips can react.
+    effect((onCleanup) => {
+      const el = this.userNameEl()?.nativeElement;
+      if (!el || typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(() => {
+        this.userNameOverflow.set(el.scrollWidth > el.offsetWidth);
+      });
+      observer.observe(el);
+      onCleanup(() => observer.disconnect());
+    });
+    // Safety net: tear down any lingering state on component destroy.
+    this.destroyRef.onDestroy(() => {
+      this.isOpen.set(false);
+    });
   }
 
-  ngOnDestroy(): void {
-    this.resizeObserver?.disconnect();
-  }
-
-  protected handleVisibilityChange(): void {
+  protected toggleMenu(): void {
     this.isOpen.update((v) => !v);
     this.visibilityChange.emit(this.isOpen());
   }
 
-  protected toggleMenu(): void {
-    this.handleVisibilityChange();
-  }
-
   protected handleClose(): void {
+    if (!this.isOpen()) return;
     this.isOpen.set(false);
+    this.visibilityChange.emit(false);
     this.closed.emit();
   }
 
-  private observeUserNameOverflow(): void {
-    const el = this.userNameEl()?.nativeElement;
-
-    if (!el) return;
-
-    this.resizeObserver = new ResizeObserver(() => {
-      this.userNameOverflow.set(el.scrollWidth > el.offsetWidth);
-    });
-
-    this.resizeObserver.observe(el);
+  protected handleOptionSelected(option: DropdownOption): void {
+    this.optionSelected.emit(option);
+    this.handleClose();
   }
 }

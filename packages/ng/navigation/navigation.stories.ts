@@ -14,6 +14,7 @@ import { MznNavigationHeader } from './navigation-header.component';
 import { MznNavigationFooter } from './navigation-footer.component';
 import { MznNavigationIconButton } from './navigation-icon-button.component';
 import { MznNavigationOptionCategory } from './navigation-option-category.component';
+import { MznNavigationUserMenu } from './navigation-user-menu.component';
 
 export default {
   title: 'Navigation/Navigation',
@@ -77,8 +78,8 @@ export const Basic: Story = {
   }),
 };
 
-// NOTE: NavigationUserMenu (avatar + dropdown menu in footer) from React is not available in Angular.
-// Angular NavigationFooter accepts arbitrary content; use plain text or icon buttons instead.
+// NavigationUserMenu is now available (Phase 5 #3). See the
+// `NavigationWithUserMenu` story below for a working example.
 
 @Component({
   selector: 'story-custom-anchor',
@@ -272,7 +273,6 @@ export const Overflow: Story = {
         </mzn-navigation-option-category>
         <footer mznNavigationFooter>
           <span>李經理</span>
-          <!-- NOTE: NavigationUserMenu (avatar with dropdown) from React is not available in Angular. -->
           <button mznNavigationIconButton [icon]="QuestionOutlineIcon"></button>
         </footer>
       </nav>
@@ -293,5 +293,91 @@ export const All: Story = {
   decorators: [moduleMetadata({ imports: [NavigationAllStoryComponent] })],
   render: () => ({
     template: `<story-navigation-all />`,
+  }),
+};
+
+@Component({
+  selector: 'story-navigation-user-menu',
+  standalone: true,
+  imports: [
+    MznNavigation,
+    MznNavigationHeader,
+    MznNavigationFooter,
+    MznNavigationOption,
+    MznNavigationUserMenu,
+  ],
+  template: `
+    <div style="height: calc(100vh - 32px); display: grid;">
+      <nav mznNavigation>
+        <header mznNavigationHeader title="Mezzanine">
+          <span
+            aria-label="logo"
+            style="
+              background-color: #5D74E9;
+              border-radius: 4px;
+              height: 28px;
+              width: 28px;
+              display: block;
+            "
+          ></span>
+        </header>
+        <mzn-navigation-option title="首頁" href="/" [icon]="HomeIcon" />
+        <mzn-navigation-option
+          title="會員管理"
+          href="/members"
+          [icon]="UserIcon"
+        />
+        <footer mznNavigationFooter>
+          <mzn-navigation-user-menu
+            imgSrc="https://i.pravatar.cc/64?img=12"
+            [options]="menuOptions"
+            (visibilityChange)="onVisibilityChange($event)"
+            (optionSelected)="onOptionSelected($event)"
+            (closed)="onMenuClosed()"
+          >
+            <span userName>王小明</span>
+          </mzn-navigation-user-menu>
+        </footer>
+      </nav>
+    </div>
+  `,
+})
+class NavigationWithUserMenuStoryComponent {
+  readonly HomeIcon = HomeIcon;
+  readonly UserIcon = UserIcon;
+
+  readonly menuOptions = [
+    { id: 'profile', name: '個人資料' },
+    { id: 'settings', name: '設定' },
+    { id: 'logout', name: '登出' },
+  ];
+
+  onVisibilityChange(open: boolean): void {
+    // eslint-disable-next-line no-console
+    console.log('[MznNavigationUserMenu] visibility', open);
+  }
+
+  onOptionSelected(option: { id: string; name: string }): void {
+    // eslint-disable-next-line no-console
+    console.log('[MznNavigationUserMenu] selected', option);
+  }
+
+  onMenuClosed(): void {
+    // eslint-disable-next-line no-console
+    console.log('[MznNavigationUserMenu] closed');
+  }
+}
+
+export const NavigationWithUserMenu: Story = {
+  name: 'With User Menu',
+  parameters: {
+    controls: { disable: true },
+    layout: 'fullscreen',
+  },
+  decorators: [
+    moduleMetadata({ imports: [NavigationWithUserMenuStoryComponent] }),
+  ],
+  render: () => ({
+    template: `<story-navigation-user-menu />`,
   }),
 };
