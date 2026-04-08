@@ -30,21 +30,29 @@ const COUNT_VARIANTS: readonly string[] = [
  * ```html
  * import { MznBadge } from '@mezzanine-ui/ng/badge';
  *
- * <mzn-badge variant="count-alert" [count]="5" />
- * <mzn-badge variant="count-brand" [count]="120" [overflowCount]="99" />
- * <mzn-badge variant="dot-error"><i mznIcon [icon]="BellIcon" ></i></mzn-badge>
- * <mzn-badge variant="text-brand" text="NEW" />
+ * <span mznBadge variant="count-alert" [count]="5" ></span>
+ * <span mznBadge variant="count-brand" [count]="120" [overflowCount]="99" ></span>
+ * <span mznBadge variant="dot-error"><i mznIcon [icon]="BellIcon" ></i></span>
+ * <span mznBadge variant="text-brand" text="NEW" ></span>
  * ```
  */
 @Component({
-  selector: 'mzn-badge',
+  selector: '[mznBadge]',
+  host: {
+    '[class]': 'containerClasses()',
+    '[attr.variant]': 'null',
+    '[attr.count]': 'null',
+    '[attr.overflowCount]': 'null',
+    '[attr.size]': 'null',
+    '[attr.text]': 'null',
+    '[attr.hasChildren]': 'null',
+    '[attr.className]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [class]="containerClasses()">
-      <ng-content />
-      <span [class]="hostClasses()">{{ displayText() }}</span>
-    </div>
+    <ng-content />
+    <span [class]="hostClasses()">{{ displayText() }}</span>
   `,
 })
 export class MznBadge {

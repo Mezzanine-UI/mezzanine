@@ -84,7 +84,8 @@ export interface DropdownActionConfig {
     '[attr.name]': 'name() ?? null',
   },
   template: `
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchor()"
       [open]="open()"
       [placement]="resolvedPlacement()"
@@ -129,7 +130,7 @@ export interface DropdownActionConfig {
           />
         </div>
       }
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznDropdown {

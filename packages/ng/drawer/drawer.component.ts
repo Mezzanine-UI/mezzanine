@@ -138,7 +138,8 @@ export interface DrawerFilterConfig {
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [mznSlideRightAnimation],
   template: `
-    <mzn-backdrop
+    <div
+      mznBackdrop
       [open]="open()"
       [disableCloseOnBackdropClick]="disableCloseOnBackdropClick()"
       [disablePortal]="disablePortal()"
@@ -150,7 +151,7 @@ export interface DrawerFilterConfig {
           @if (isHeaderDisplay() || headerTitle()) {
             <div [class]="headerClass">
               {{ headerTitle() }}
-              <mzn-clear-actions (clicked)="closed.emit()" />
+              <button mznClearActions (clicked)="closed.emit()"></button>
             </div>
           }
 
@@ -318,7 +319,7 @@ export interface DrawerFilterConfig {
           }
         </div>
       }
-    </mzn-backdrop>
+    </div>
   `,
 })
 export class MznDrawer {

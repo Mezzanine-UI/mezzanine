@@ -37,7 +37,8 @@ import { size, type Middleware } from '@floating-ui/dom';
     '(touchend)': '$event.stopPropagation()',
   },
   template: `
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchor()"
       [open]="open()"
       [placement]="placement"
@@ -46,7 +47,7 @@ import { size, type Middleware } from '@floating-ui/dom';
       style="z-index: var(--mzn-z-index-popover)"
     >
       <ng-content />
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznInputTriggerPopper {

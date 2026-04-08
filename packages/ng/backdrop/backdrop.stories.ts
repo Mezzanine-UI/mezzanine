@@ -41,7 +41,8 @@ type Story = StoryObj;
           </div>
         }
       </div>
-      <mzn-backdrop
+      <div
+        mznBackdrop
         [open]="open()"
         variant="dark"
         (backdropClick)="open.set(false)"
@@ -64,7 +65,7 @@ type Story = StoryObj;
             >
           </div>
         }
-      </mzn-backdrop>
+      </div>
     </div>
   `,
 })
@@ -104,7 +105,8 @@ export const DarkVariant: Story = {
           </div>
         }
       </div>
-      <mzn-backdrop
+      <div
+        mznBackdrop
         [open]="open()"
         variant="light"
         (backdropClick)="open.set(false)"
@@ -130,7 +132,7 @@ export const DarkVariant: Story = {
             >
           </div>
         }
-      </mzn-backdrop>
+      </div>
     </div>
   `,
 })
@@ -162,7 +164,8 @@ export const LightVariant: Story = {
         <div style="padding: 24px;">
           Container Element (Backdrop will be rendered inside this)
         </div>
-        <mzn-backdrop
+        <div
+          mznBackdrop
           [container]="container"
           [open]="open()"
           variant="dark"
@@ -187,7 +190,7 @@ export const LightVariant: Story = {
               >
             </div>
           }
-        </mzn-backdrop>
+        </div>
       </div>
     </div>
   `,
@@ -227,7 +230,8 @@ export const CustomContainer: Story = {
           </div>
         }
       </div>
-      <mzn-backdrop
+      <div
+        mznBackdrop
         [open]="open()"
         variant="dark"
         [disableScrollLock]="true"
@@ -250,7 +254,7 @@ export const CustomContainer: Story = {
             >
           </div>
         }
-      </mzn-backdrop>
+      </div>
     </div>
   `,
 })
@@ -281,7 +285,8 @@ export const DisableScrollLock: Story = {
         style="background: var(--mzn-color-background-base); border: 2px dashed var(--mzn-color-border-neutral); border-radius: 8px; height: 300px; overflow: hidden; padding: 16px; position: relative; width: 100%;"
       >
         <p>Parent Element (overflow: hidden)</p>
-        <mzn-backdrop
+        <div
+          mznBackdrop
           [open]="open()"
           variant="dark"
           [disablePortal]="true"
@@ -304,7 +309,7 @@ export const DisableScrollLock: Story = {
               >
             </div>
           }
-        </mzn-backdrop>
+        </div>
       </div>
     </div>
   `,
@@ -329,7 +334,8 @@ export const DisablePortal: Story = {
       <button mznButton variant="base-primary" (click)="drawerOpen.set(true)"
         >Open Drawer</button
       >
-      <mzn-backdrop
+      <div
+        mznBackdrop
         [open]="drawerOpen()"
         variant="dark"
         (closed)="drawerOpen.set(false); modalOpen.set(false)"
@@ -347,8 +353,9 @@ export const DisablePortal: Story = {
             >
           </div>
         }
-      </mzn-backdrop>
-      <mzn-backdrop
+      </div>
+      <div
+        mznBackdrop
         [open]="modalOpen()"
         variant="dark"
         (closed)="modalOpen.set(false)"
@@ -377,7 +384,7 @@ export const DisablePortal: Story = {
             </div>
           </div>
         }
-      </mzn-backdrop>
+      </div>
     </div>
   `,
 })
@@ -407,7 +414,8 @@ export const DrawerModalSelectLayering: Story = {
       <button mznButton variant="base-primary" (click)="open.set(true)"
         >Open Modal (Must Use Button)</button
       >
-      <mzn-backdrop
+      <div
+        mznBackdrop
         [open]="open()"
         variant="dark"
         [disableCloseOnBackdropClick]="true"
@@ -425,7 +433,7 @@ export const DrawerModalSelectLayering: Story = {
             >
           </div>
         }
-      </mzn-backdrop>
+      </div>
     </div>
   `,
 })

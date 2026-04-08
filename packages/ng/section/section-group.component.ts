@@ -18,20 +18,21 @@ export type SectionGroupDirection = 'horizontal' | 'vertical';
  * import { MznSectionGroup } from '@mezzanine-ui/ng/section';
  * import { MznSection } from '@mezzanine-ui/ng/section';
  *
- * <mzn-section-group direction="horizontal">
- *   <mzn-section>...</mzn-section>
- *   <mzn-section>...</mzn-section>
- * </mzn-section-group>
+ * <div mznSectionGroup direction="horizontal">
+ *   <div mznSection>...</div>
+ *   <div mznSection>...</div>
+ * </div>
  * ```
  *
  * @see MznSection
  */
 @Component({
-  selector: 'mzn-section-group',
+  selector: '[mznSectionGroup]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.direction]': 'null',
   },
   template: `<ng-content />`,
 })

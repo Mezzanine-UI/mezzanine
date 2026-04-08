@@ -27,21 +27,28 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
  * ```html
  * import { MznBackdrop } from '@mezzanine-ui/ng/backdrop';
  *
- * <mzn-backdrop [open]="isOpen" (closed)="onClose()">
+ * <div mznBackdrop [open]="isOpen" (closed)="onClose()">
  *   <div>Modal content</div>
- * </mzn-backdrop>
+ * </div>
  * ```
  *
  * @see MznPortal
  */
 @Component({
-  selector: 'mzn-backdrop',
+  selector: '[mznBackdrop]',
+  host: {
+    '[attr.open]': 'null',
+    '[attr.variant]': 'null',
+    '[attr.disableScrollLock]': 'null',
+    '[attr.disableCloseOnBackdropClick]': 'null',
+    '[attr.disablePortal]': 'null',
+  },
   standalone: true,
   imports: [MznPortal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [mznFadeAnimation],
   template: `
-    <mzn-portal [disablePortal]="disablePortal()">
+    <div mznPortal [disablePortal]="disablePortal()">
       <div
         [class]="hostClasses()"
         role="presentation"
@@ -61,7 +68,7 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
           </div>
         </div>
       </div>
-    </mzn-portal>
+    </div>
   `,
 })
 export class MznBackdrop {

@@ -80,7 +80,8 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
     },
   ],
   template: `
-    <mzn-backdrop
+    <div
+      mznBackdrop
       [open]="open()"
       [class]="backdropClassName()"
       [disableCloseOnBackdropClick]="disableCloseOnBackdropClick()"
@@ -98,15 +99,16 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
             <ng-content select="mzn-modal-footer" />
           }
           @if (showDismissButton()) {
-            <mzn-clear-actions
+            <button
+              mznClearActions
               [class]="closeIconClass"
               variant="base"
               (clicked)="closed.emit()"
-            />
+            ></button>
           }
         </div>
       }
-    </mzn-backdrop>
+    </div>
   `,
 })
 export class MznModal {

@@ -40,7 +40,7 @@ export type ContentHeaderTitleComponent =
  * import { MznContentHeader } from '@mezzanine-ui/ng/content-header';
  *
  * <!-- 基本用法：使用 ng-content 插槽 -->
- * <mzn-content-header title="頁面標題" description="描述文字">
+ * <header mznContentHeader title="頁面標題" description="描述文字">
  *   <button contentHeaderBackButton mznButton variant="base-ghost">返回</button>
  *   <div contentHeaderFilter>
  *     <input mznInput placeholder="搜尋..." />
@@ -51,23 +51,28 @@ export type ContentHeaderTitleComponent =
  *   <div contentHeaderUtilities>
  *     <button mznButton iconType="icon-only"><i mznIcon [icon]="PlusIcon" ></i></button>
  *   </div>
- * </mzn-content-header>
+ * </header>
  *
  * <!-- 程式化返回按鈕（等效 React onBackClick） -->
- * <mzn-content-header title="頁面標題" (backClick)="handleBack()">
- * </mzn-content-header>
+ * <header mznContentHeader title="頁面標題" (backClick)="handleBack()">
+ * </header>
  * ```
  *
  * @see MznButton
  * @see MznContentHeaderResponsive
  */
 @Component({
-  selector: 'mzn-content-header',
+  selector: '[mznContentHeader]',
   standalone: true,
   imports: [MznTypography, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.description]': 'null',
+    '[attr.size]': 'null',
+    '[attr.showBackButton]': 'null',
+    '[attr.title]': 'null',
+    '[attr.titleComponent]': 'null',
   },
   template: `
     <span [class]="titleAreaClass">

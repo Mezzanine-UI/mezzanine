@@ -52,11 +52,12 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
         <span [class]="contentClass">{{ content() }}</span>
       </div>
       @if (severity() === 'info') {
-        <mzn-clear-actions
+        <button
+          mznClearActions
           type="standard"
           variant="base"
           (clicked)="handleClose()"
-        />
+        ></button>
       }
     }
   `,

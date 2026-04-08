@@ -10,7 +10,7 @@ import { pageHeaderClasses as classes } from '@mezzanine-ui/core/page-header';
  *
  * <mzn-page-header>
  *   <mzn-breadcrumb>...</mzn-breadcrumb>
- *   <mzn-content-header>...</mzn-content-header>
+ *   <header mznContentHeader>...</header>
  * </mzn-page-header>
  * ```
  */

@@ -86,12 +86,13 @@ export interface AlertBannerAction {
               </div>
             }
             @if (showCloseButton()) {
-              <mzn-clear-actions
+              <button
+                mznClearActions
                 type="standard"
                 variant="inverse"
                 [class]="closeClass"
                 (clicked)="handleClose()"
-              />
+              ></button>
             }
           </div>
         </div>

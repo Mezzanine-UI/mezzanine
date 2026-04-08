@@ -33,13 +33,14 @@ import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '[class]': 'hostClasses()' },
   template: `
-    <mzn-scrollbar
+    <div
+      mznScrollbar
       [disabled]="scrollbarDisabled()"
       [maxHeight]="scrollbarMaxHeight()"
       [maxWidth]="scrollbarMaxWidth()"
     >
       <div [class]="mainContentClass"><ng-content /></div>
-    </mzn-scrollbar>
+    </div>
   `,
 })
 export class MznLayoutMain {

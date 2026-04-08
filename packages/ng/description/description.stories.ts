@@ -41,10 +41,10 @@ export const Playground: Story = {
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">Badge</p>
           <mzn-description size="main" title="訂單狀態" widthType="narrow">
-            <mzn-badge variant="dot-success" text="已訂購" />
+            <span mznBadge variant="dot-success" text="已訂購" ></span>
           </mzn-description>
           <mzn-description size="sub" title="訂單狀態" widthType="narrow">
-            <mzn-badge variant="dot-success" text="已訂購" />
+            <span mznBadge variant="dot-success" text="已訂購" ></span>
           </mzn-description>
         </div>
         <div>

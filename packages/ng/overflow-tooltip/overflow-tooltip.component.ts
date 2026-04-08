@@ -70,7 +70,8 @@ const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [mznFadeFast],
   template: `
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchor()"
       [open]="popperOpen()"
       [placement]="placement()"
@@ -106,7 +107,7 @@ const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
           }
         </div>
       }
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznOverflowTooltip {

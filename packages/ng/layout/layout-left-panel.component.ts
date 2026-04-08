@@ -52,13 +52,14 @@ const ARROW_KEY_STEP = 10;
   template: `
     @if (open()) {
       <aside [class]="sidePanelContentClass">
-        <mzn-scrollbar
+        <div
+          mznScrollbar
           [disabled]="scrollbarDisabled()"
           [maxHeight]="scrollbarMaxHeight()"
           [maxWidth]="scrollbarMaxWidth()"
         >
           <ng-content />
-        </mzn-scrollbar>
+        </div>
       </aside>
       <div
         role="separator"

@@ -39,7 +39,8 @@ import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
   imports: [MznPopper, MznTimePanel],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchor()"
       [open]="open()"
       placement="bottom-start"
@@ -57,7 +58,7 @@ import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
         (confirmed)="confirmed.emit()"
         (cancelled)="cancelled.emit()"
       />
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznTimePickerPanel {

@@ -31,7 +31,7 @@ export const Playground: Story = {
           <mzn-description-content>#HXE3901270287719038</mzn-description-content>
         </mzn-description>
         <mzn-description title="訂單狀態" widthType="narrow">
-          <mzn-badge variant="dot-success" text="已出貨" />
+          <span mznBadge variant="dot-success" text="已出貨" ></span>
         </mzn-description>
       </mzn-description-group>
     `,
@@ -53,7 +53,7 @@ export const HorizontalLayout: Story = {
                 <mzn-description-content>#HXE3901270287719038</mzn-description-content>
               </mzn-description>
               <mzn-description title="訂單狀態" widthType="narrow">
-                <mzn-badge variant="dot-success" text="已出貨" />
+                <span mznBadge variant="dot-success" text="已出貨" ></span>
               </mzn-description>
             </mzn-description-group>
           </div>
@@ -69,7 +69,7 @@ export const HorizontalLayout: Story = {
                 <mzn-description-content>#HXE3901270287719038</mzn-description-content>
               </mzn-description>
               <mzn-description title="訂單狀態" widthType="wide">
-                <mzn-badge variant="dot-success" text="已出貨" />
+                <span mznBadge variant="dot-success" text="已出貨" ></span>
               </mzn-description>
             </mzn-description-group>
           </div>
@@ -85,7 +85,7 @@ export const HorizontalLayout: Story = {
                 <mzn-description-content>#HXE3901270287719038</mzn-description-content>
               </mzn-description>
               <mzn-description title="訂單狀態" widthType="stretch">
-                <mzn-badge variant="dot-success" text="已出貨" />
+                <span mznBadge variant="dot-success" text="已出貨" ></span>
               </mzn-description>
             </mzn-description-group>
           </div>
@@ -107,7 +107,7 @@ export const VerticalLayout: Story = {
             <mzn-description-content>#HXE3901270287719038</mzn-description-content>
           </mzn-description>
           <mzn-description title="訂單狀態" orientation="vertical">
-            <mzn-badge variant="dot-success" text="已出貨" />
+            <span mznBadge variant="dot-success" text="已出貨" ></span>
           </mzn-description>
         </mzn-description-group>
       </div>
@@ -188,7 +188,7 @@ export const GroupStructure: Story = {
             <mzn-description-content>#HXE3901270287719038</mzn-description-content>
           </mzn-description>
           <mzn-description title="訂單狀態" widthType="narrow">
-            <mzn-badge variant="dot-success" text="已出貨" />
+            <span mznBadge variant="dot-success" text="已出貨" ></span>
           </mzn-description>
           <mzn-description title="訂單金額" widthType="narrow">
             <mzn-description-content variant="statistic">99,000</mzn-description-content>

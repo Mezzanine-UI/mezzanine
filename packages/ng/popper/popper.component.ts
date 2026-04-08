@@ -84,15 +84,15 @@ const SIDE_TO_STATIC: Record<string, { property: string; value: string }> = {
  * import { MznPopper } from '@mezzanine-ui/ng/popper';
  *
  * <button #anchor>Toggle</button>
- * <mzn-popper [anchor]="anchor" [open]="isOpen" placement="bottom-start">
+ * <div mznPopper [anchor]="anchor" [open]="isOpen" placement="bottom-start">
  *   <div>Popper content</div>
- * </mzn-popper>
+ * </div>
  * ```
  *
  * @see MznPortal
  */
 @Component({
-  selector: 'mzn-popper',
+  selector: '[mznPopper]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -102,6 +102,13 @@ const SIDE_TO_STATIC: Record<string, { property: string; value: string }> = {
     '[style.display]': 'open() ? null : "none"',
     '[style.visibility]': 'referenceHidden() ? "hidden" : null',
     '[attr.data-popper-placement]': 'currentPlacement()',
+    '[attr.anchor]': 'null',
+    '[attr.arrowOptions]': 'null',
+    '[attr.middleware]': 'null',
+    '[attr.offsetOptions]': 'null',
+    '[attr.open]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.strategy]': 'null',
   },
   template: `
     <ng-content />

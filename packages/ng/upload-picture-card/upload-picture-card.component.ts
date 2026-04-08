@@ -126,12 +126,13 @@ export interface UploadPictureCardAriaLabels {
 
       <div [class]="actionClasses()">
         @if (status() === 'loading' && size() !== 'minor' && !readable()) {
-          <mzn-clear-actions
+          <button
+            mznClearActions
             type="embedded"
             variant="contrast"
             [ariaLabel]="resolvedAriaLabels().cancelUpload"
             (clicked)="onDelete($event)"
-          />
+          ></button>
           <div
             [class]="upc.loadingIcon"
             [attr.aria-label]="resolvedAriaLabels().uploading"

@@ -61,7 +61,8 @@ export interface SpinBackdropProps {
     '[attr.trackColor]': 'null',
   },
   template: `
-    <mzn-backdrop
+    <div
+      mznBackdrop
       [open]="loading()"
       [class]="backdropProps().class"
       [disableCloseOnBackdropClick]="
@@ -82,7 +83,7 @@ export interface SpinBackdropProps {
           }
         </div>
       }
-    </mzn-backdrop>
+    </div>
     <ng-content />
   `,
 })

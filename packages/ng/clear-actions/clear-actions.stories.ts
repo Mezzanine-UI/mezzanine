@@ -45,7 +45,7 @@ export const Playground: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<mzn-clear-actions [type]="type" [variant]="variant" (clicked)="clicked($event)" />`,
+    template: `<button mznClearActions [type]="type" [variant]="variant" (clicked)="clicked($event)" ></button>`,
   }),
 };
 
@@ -53,7 +53,7 @@ export const StandardBase: Story = {
   render: () => ({
     template: `
       <div style="width: 100px; height: 100px; background-color: #F3F4F6; display: flex; justify-content: center; align-items: center;">
-        <mzn-clear-actions type="standard" variant="base" />
+        <button mznClearActions type="standard" variant="base" ></button>
       </div>
     `,
   }),
@@ -63,7 +63,7 @@ export const StandardInverse: Story = {
   render: () => ({
     template: `
       <div style="width: 100px; height: 100px; background-color: #4F565F; display: flex; justify-content: center; align-items: center;">
-        <mzn-clear-actions type="standard" variant="inverse" />
+        <button mznClearActions type="standard" variant="inverse" ></button>
       </div>
     `,
   }),
@@ -73,7 +73,7 @@ export const EmbeddedContrast: Story = {
   render: () => ({
     template: `
       <div style="width: 100px; height: 100px; background-color: #F3F4F6; display: flex; justify-content: center; align-items: center;">
-        <mzn-clear-actions type="embedded" variant="contrast" />
+        <button mznClearActions type="embedded" variant="contrast" ></button>
       </div>
     `,
   }),
@@ -83,7 +83,7 @@ export const EmbeddedEmphasis: Story = {
   render: () => ({
     template: `
       <div style="width: 100px; height: 100px; background-color: #F3F4F6; display: flex; justify-content: center; align-items: center;">
-        <mzn-clear-actions type="embedded" variant="emphasis" />
+        <button mznClearActions type="embedded" variant="emphasis" ></button>
       </div>
     `,
   }),
@@ -93,7 +93,7 @@ export const ClearableBase: Story = {
   render: () => ({
     template: `
       <div style="width: 100px; height: 100px; background-color: #F3F4F6; display: flex; justify-content: center; align-items: center;">
-        <mzn-clear-actions type="clearable" />
+        <button mznClearActions type="clearable" ></button>
       </div>
     `,
   }),

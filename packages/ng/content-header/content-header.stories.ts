@@ -34,7 +34,7 @@ export const MainSize: Story = {
     template: `
       <div style="display: grid; gap: 24px; max-width: 1280px;">
 
-        <mzn-content-header
+        <header mznContentHeader
           title="商品詳細資料"
           description="檢視並編輯商品的基本資訊、價格與庫存設定"
           size="main"
@@ -60,9 +60,9 @@ export const MainSize: Story = {
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
             </button>
           </div>
-        </mzn-content-header>
+        </header>
 
-        <mzn-content-header title="料號管理" size="main">
+        <header mznContentHeader title="料號管理" size="main">
           <a contentHeaderBackButton href="/?path=/story/navigation-contentheader--main-size" title="back">
             <button mznButton variant="base-tertiary" iconType="icon-only">
               <i mznIcon [icon]="ChevronLeftIcon" ></i>
@@ -82,9 +82,9 @@ export const MainSize: Story = {
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
             </button>
           </div>
-        </mzn-content-header>
+        </header>
 
-        <mzn-content-header title="料號管理" description="響應式" size="main">
+        <header mznContentHeader title="料號管理" description="響應式" size="main">
           <a contentHeaderBackButton href="/?path=/story/navigation-contentheader--main-size" title="back">
             <button mznButton variant="base-tertiary" iconType="icon-only">
               <i mznIcon [icon]="ChevronLeftIcon" ></i>
@@ -109,7 +109,7 @@ export const MainSize: Story = {
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
             </button>
           </div>
-        </mzn-content-header>
+        </header>
 
       </div>
     `,
@@ -122,7 +122,7 @@ export const SubSize: Story = {
     template: `
       <div style="display: grid; gap: 24px; max-width: 720px;">
 
-        <mzn-content-header title="文章編輯" size="sub">
+        <header mznContentHeader title="文章編輯" size="sub">
           <div contentHeaderFilter>
             <label style="display: flex; align-items: center; gap: 4px;">
               <input type="checkbox" /> 預覽模式
@@ -138,9 +138,9 @@ export const SubSize: Story = {
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
             </button>
           </div>
-        </mzn-content-header>
+        </header>
 
-        <mzn-content-header
+        <header mznContentHeader
           title="待辦事項清單"
           description="最後更新的資料會顯示在最上方"
           size="sub"
@@ -159,9 +159,9 @@ export const SubSize: Story = {
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
             </button>
           </div>
-        </mzn-content-header>
+        </header>
 
-        <mzn-content-header
+        <header mznContentHeader
           title="待辦事項清單"
           description="最後更新的資料會顯示在最上方"
           size="sub"
@@ -182,7 +182,7 @@ export const SubSize: Story = {
               <i mznIcon [icon]="DotHorizontalIcon" ></i>
             </button>
           </div>
-        </mzn-content-header>
+        </header>
 
       </div>
     `,

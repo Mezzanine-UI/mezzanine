@@ -24,7 +24,7 @@ export type { ResponsiveBreakpoint };
  * ```html
  * import { MznContentHeaderResponsive } from '@mezzanine-ui/ng/content-header';
  *
- * <mzn-content-header title="標題">
+ * <header mznContentHeader title="標題">
  *   <div contentHeaderActions>
  *     <!-- 僅在 1080px 以上顯示批次刪除按鈕 -->
  *     <mzn-content-header-responsive breakpoint="above1080px">
@@ -32,7 +32,7 @@ export type { ResponsiveBreakpoint };
  *     </mzn-content-header-responsive>
  *     <button mznButton variant="base-primary">查詢</button>
  *   </div>
- * </mzn-content-header>
+ * </header>
  * ```
  *
  * @see MznContentHeader

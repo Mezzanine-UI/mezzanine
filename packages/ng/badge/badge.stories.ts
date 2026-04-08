@@ -44,12 +44,12 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <mzn-badge
+      <span mznBadge
         [variant]="variant"
         [count]="count"
         [overflowCount]="overflowCount"
         [text]="text || undefined"
-      />
+      ></span>
     `,
   }),
 };
@@ -67,47 +67,47 @@ export const Variants: Story = {
 
           <div style="display: flex; align-items: center;">
             <span>Success</span>
-            <mzn-badge variant="dot-success">
+            <span mznBadge variant="dot-success">
               <button type="button" style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: none; background-color: transparent;">
                 <i mznIcon [icon]="NotificationIcon" [size]="16" ></i>
               </button>
-            </mzn-badge>
+            </span>
           </div>
 
           <div style="display: flex; align-items: center;">
             <span>Error</span>
-            <mzn-badge variant="dot-error">
+            <span mznBadge variant="dot-error">
               <button type="button" style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: none; background-color: transparent;">
                 <i mznIcon [icon]="NotificationIcon" [size]="16" ></i>
               </button>
-            </mzn-badge>
+            </span>
           </div>
 
           <div style="display: flex; align-items: center;">
             <span>Warning</span>
-            <mzn-badge variant="dot-warning">
+            <span mznBadge variant="dot-warning">
               <button type="button" style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: none; background-color: transparent;">
                 <i mznIcon [icon]="NotificationIcon" [size]="16" ></i>
               </button>
-            </mzn-badge>
+            </span>
           </div>
 
           <div style="display: flex; align-items: center;">
             <span>Info</span>
-            <mzn-badge variant="dot-info">
+            <span mznBadge variant="dot-info">
               <button type="button" style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: none; background-color: transparent;">
                 <i mznIcon [icon]="NotificationIcon" [size]="16" ></i>
               </button>
-            </mzn-badge>
+            </span>
           </div>
 
           <div style="display: flex; align-items: center;">
             <span>Inactive</span>
-            <mzn-badge variant="dot-inactive">
+            <span mznBadge variant="dot-inactive">
               <button type="button" style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: none; background-color: transparent;">
                 <i mznIcon [icon]="NotificationIcon" [size]="16" ></i>
               </button>
-            </mzn-badge>
+            </span>
           </div>
         </div>
 
@@ -116,32 +116,32 @@ export const Variants: Story = {
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Success
-            <mzn-badge variant="dot-success" text="States" size="main" />
-            <mzn-badge variant="dot-success" text="States" size="sub" />
+            <span mznBadge variant="dot-success" text="States" size="main" ></span>
+            <span mznBadge variant="dot-success" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Error
-            <mzn-badge variant="dot-error" text="States" size="main" />
-            <mzn-badge variant="dot-error" text="States" size="sub" />
+            <span mznBadge variant="dot-error" text="States" size="main" ></span>
+            <span mznBadge variant="dot-error" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Warning
-            <mzn-badge variant="dot-warning" text="States" size="main" />
-            <mzn-badge variant="dot-warning" text="States" size="sub" />
+            <span mznBadge variant="dot-warning" text="States" size="main" ></span>
+            <span mznBadge variant="dot-warning" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Info
-            <mzn-badge variant="dot-info" text="States" size="main" />
-            <mzn-badge variant="dot-info" text="States" size="sub" />
+            <span mznBadge variant="dot-info" text="States" size="main" ></span>
+            <span mznBadge variant="dot-info" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Inactive
-            <mzn-badge variant="dot-inactive" text="States" size="main" />
-            <mzn-badge variant="dot-inactive" text="States" size="sub" />
+            <span mznBadge variant="dot-inactive" text="States" size="main" ></span>
+            <span mznBadge variant="dot-inactive" text="States" size="sub" ></span>
           </div>
         </div>
 
@@ -150,32 +150,32 @@ export const Variants: Story = {
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Success
-            <mzn-badge variant="text-success" text="States" size="main" />
-            <mzn-badge variant="text-success" text="States" size="sub" />
+            <span mznBadge variant="text-success" text="States" size="main" ></span>
+            <span mznBadge variant="text-success" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Error
-            <mzn-badge variant="text-error" text="States" size="main" />
-            <mzn-badge variant="text-error" text="States" size="sub" />
+            <span mznBadge variant="text-error" text="States" size="main" ></span>
+            <span mznBadge variant="text-error" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Warning
-            <mzn-badge variant="text-warning" text="States" size="main" />
-            <mzn-badge variant="text-warning" text="States" size="sub" />
+            <span mznBadge variant="text-warning" text="States" size="main" ></span>
+            <span mznBadge variant="text-warning" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Info
-            <mzn-badge variant="text-info" text="States" size="main" />
-            <mzn-badge variant="text-info" text="States" size="sub" />
+            <span mznBadge variant="text-info" text="States" size="main" ></span>
+            <span mznBadge variant="text-info" text="States" size="sub" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Inactive
-            <mzn-badge variant="text-inactive" text="States" size="main" />
-            <mzn-badge variant="text-inactive" text="States" size="sub" />
+            <span mznBadge variant="text-inactive" text="States" size="main" ></span>
+            <span mznBadge variant="text-inactive" text="States" size="sub" ></span>
           </div>
         </div>
 
@@ -184,27 +184,27 @@ export const Variants: Story = {
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Alert
-            <mzn-badge variant="count-alert" [count]="5" />
+            <span mznBadge variant="count-alert" [count]="5" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Inactive
-            <mzn-badge variant="count-inactive" [count]="5" />
+            <span mznBadge variant="count-inactive" [count]="5" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Inverse
-            <mzn-badge variant="count-inverse" [count]="5" />
+            <span mznBadge variant="count-inverse" [count]="5" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Brand
-            <mzn-badge variant="count-brand" [count]="5" />
+            <span mznBadge variant="count-brand" [count]="5" ></span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
             Info
-            <mzn-badge variant="count-info" [count]="5" />
+            <span mznBadge variant="count-info" [count]="5" ></span>
           </div>
         </div>
       </div>

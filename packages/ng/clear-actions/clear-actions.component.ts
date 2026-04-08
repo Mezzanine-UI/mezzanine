@@ -28,13 +28,17 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
  * ```html
  * import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
  *
- * <mzn-clear-actions (clicked)="onClose()" />
- * <mzn-clear-actions type="embedded" variant="contrast" (clicked)="onClose()" />
- * <mzn-clear-actions type="clearable" (clicked)="onClear()" />
+ * <button mznClearActions (clicked)="onClose()" ></button>
+ * <button mznClearActions type="embedded" variant="contrast" (clicked)="onClose()" ></button>
+ * <button mznClearActions type="clearable" (clicked)="onClear()" ></button>
  * ```
  */
 @Component({
-  selector: 'mzn-clear-actions',
+  selector: '[mznClearActions]',
+  host: {
+    '[attr.type]': 'null',
+    '[attr.variant]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon],

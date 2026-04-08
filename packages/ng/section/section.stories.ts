@@ -51,13 +51,13 @@ export const All: Story = {
     template: `
       <div style="background-color: #F3F4F6; display: flex; flex-direction: column; gap: var(--mzn-spacing-gap-calm, 16px); padding: 16px;">
         <!-- All Props: contentHeader + filterArea + tab -->
-        <mzn-section>
-          <mzn-content-header title="Section Title" description="This is a Description." size="sub">
+        <div mznSection>
+          <header mznContentHeader title="Section Title" description="This is a Description." size="sub">
             <mzn-input placeholder="Search..." variant="search" />
             <button mznButton variant="destructive-secondary">Destructive</button>
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
-          </mzn-content-header>
+          </header>
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
@@ -74,14 +74,14 @@ export const All: Story = {
             <mzn-tab-item>TabItem 3</mzn-tab-item>
           </mzn-tabs>
           ${sampleContent}
-        </mzn-section>
+        </div>
 
         <!-- contentHeader + filterArea -->
-        <mzn-section>
-          <mzn-content-header title="Section Title" description="This is a Description." size="sub">
+        <div mznSection>
+          <header mznContentHeader title="Section Title" description="This is a Description." size="sub">
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
-          </mzn-content-header>
+          </header>
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
@@ -90,24 +90,24 @@ export const All: Story = {
             </mzn-filter-line>
           </mzn-filter-area>
           ${sampleContent}
-        </mzn-section>
+        </div>
 
         <!-- contentHeader + tab -->
-        <mzn-section>
-          <mzn-content-header title="Section Title" description="This is a Description." size="sub">
+        <div mznSection>
+          <header mznContentHeader title="Section Title" description="This is a Description." size="sub">
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
-          </mzn-content-header>
+          </header>
           <mzn-tabs>
             <mzn-tab-item>TabItem 1</mzn-tab-item>
             <mzn-tab-item>TabItem 2</mzn-tab-item>
             <mzn-tab-item>TabItem 3</mzn-tab-item>
           </mzn-tabs>
           ${sampleContent}
-        </mzn-section>
+        </div>
 
         <!-- filterArea + tab -->
-        <mzn-section>
+        <div mznSection>
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
@@ -121,18 +121,18 @@ export const All: Story = {
             <mzn-tab-item>TabItem 3</mzn-tab-item>
           </mzn-tabs>
           ${sampleContent}
-        </mzn-section>
+        </div>
 
         <!-- contentHeader only -->
-        <mzn-section>
-          <mzn-content-header title="Section Title" description="This is a Description." size="sub">
+        <div mznSection>
+          <header mznContentHeader title="Section Title" description="This is a Description." size="sub">
             <button mznButton>Primary</button>
-          </mzn-content-header>
+          </header>
           ${sampleContent}
-        </mzn-section>
+        </div>
 
         <!-- filterArea only -->
-        <mzn-section>
+        <div mznSection>
           <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
             <mzn-filter-line>
               <mzn-filter [span]="2">
@@ -141,22 +141,22 @@ export const All: Story = {
             </mzn-filter-line>
           </mzn-filter-area>
           ${sampleContent}
-        </mzn-section>
+        </div>
 
         <!-- tab only -->
-        <mzn-section>
+        <div mznSection>
           <mzn-tabs>
             <mzn-tab-item>TabItem 1</mzn-tab-item>
             <mzn-tab-item>TabItem 2</mzn-tab-item>
             <mzn-tab-item>TabItem 3</mzn-tab-item>
           </mzn-tabs>
           ${sampleContent}
-        </mzn-section>
+        </div>
 
         <!-- Content only (no props) -->
-        <mzn-section>
+        <div mznSection>
           ${sampleContent}
-        </mzn-section>
+        </div>
       </div>
     `,
   }),
@@ -174,29 +174,29 @@ export const SectionVerticalLayout: Story = {
             <mzn-breadcrumb-item name="Page" href="/1" />
             <mzn-breadcrumb-item name="History" href="/" />
           </mzn-breadcrumb>
-          <mzn-content-header title="Page Title">
+          <header mznContentHeader title="Page Title">
             <button mznButton variant="base-secondary">Secondary</button>
             <button mznButton>Primary</button>
-          </mzn-content-header>
+          </header>
         </mzn-page-header>
 
-        <mzn-section-group>
-          <mzn-section-group direction="horizontal">
-            <mzn-section>
-              <mzn-content-header title="Section Title" description="This is a Description." size="sub" />
+        <div mznSectionGroup>
+          <div mznSectionGroup direction="horizontal">
+            <div mznSection>
+              <header mznContentHeader title="Section Title" description="This is a Description." size="sub" ></header>
               <div style="background-color: #F9FAFB; padding: 16px; min-height: 120px;">Content of Section</div>
-            </mzn-section>
-            <mzn-section>
-              <mzn-content-header title="Section Title" description="This is a Description." size="sub" />
+            </div>
+            <div mznSection>
+              <header mznContentHeader title="Section Title" description="This is a Description." size="sub" ></header>
               <div style="background-color: #F9FAFB; padding: 16px; min-height: 120px;">Content of Section</div>
-            </mzn-section>
-          </mzn-section-group>
+            </div>
+          </div>
 
-          <mzn-section>
-            <mzn-content-header title="Section Title" description="This is a Description." size="sub">
+          <div mznSection>
+            <header mznContentHeader title="Section Title" description="This is a Description." size="sub">
               <button mznButton variant="base-secondary">Secondary</button>
               <button mznButton>Primary</button>
-            </mzn-content-header>
+            </header>
             <mzn-filter-area actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
               <mzn-filter-line>
                 <mzn-filter [span]="2">
@@ -210,8 +210,8 @@ export const SectionVerticalLayout: Story = {
               <mzn-tab-item>TabItem 3</mzn-tab-item>
             </mzn-tabs>
             <div style="background-color: #F9FAFB; padding: 16px; min-height: 120px;">Content of Section</div>
-          </mzn-section>
-        </mzn-section-group>
+          </div>
+        </div>
       </div>
     `,
   }),
@@ -224,11 +224,11 @@ export const ContentVerticalLayout: Story = {
     template: `
       <div style="background-color: #F3F4F6; display: flex; flex-direction: column; gap: var(--mzn-spacing-gap-calm, 16px); padding: 16px;">
         <mzn-page-header>
-          <mzn-content-header title="Page Title" />
+          <header mznContentHeader title="Page Title" ></header>
         </mzn-page-header>
 
-        <mzn-section>
-          <mzn-content-header title="Section Title" description="This is a Description." size="sub" />
+        <div mznSection>
+          <header mznContentHeader title="Section Title" description="This is a Description." size="sub" ></header>
           <div style="display: flex; flex-direction: column; gap: var(--mzn-spacing-gap-calm, 16px);">
             <div style="background-color: #F9FAFB; min-height: 120px; padding: 16px;">
               Content of Section 1
@@ -246,7 +246,7 @@ export const ContentVerticalLayout: Story = {
               </div>
             </div>
           </div>
-        </mzn-section>
+        </div>
       </div>
     `,
   }),

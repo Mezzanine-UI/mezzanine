@@ -46,7 +46,8 @@ import {
   imports: [MznPopper, MznRangeCalendar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchor()"
       [open]="open()"
       [placement]="placement()"
@@ -85,7 +86,7 @@ import {
           (cancelled)="cancelled.emit()"
         />
       </div>
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznDateRangePickerCalendar {

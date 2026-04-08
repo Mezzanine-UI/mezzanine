@@ -65,7 +65,8 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
     '[class]': 'hostClasses()',
   },
   template: `
-    <mzn-backdrop
+    <div
+      mznBackdrop
       [open]="open()"
       [disableCloseOnBackdropClick]="disableCloseOnBackdropClick()"
       [disablePortal]="disablePortal()"
@@ -90,13 +91,14 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
           </div>
         </div>
 
-        <mzn-clear-actions
+        <button
+          mznClearActions
           class="mzn-modal__media-preview-close-button"
           type="embedded"
           variant="contrast"
           ariaLabel="Close"
           (clicked)="closed.emit()"
-        />
+        ></button>
 
         @if (hasMultipleItems()) {
           <button
@@ -143,7 +145,7 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
           </div>
         }
       }
-    </mzn-backdrop>
+    </div>
   `,
 })
 export class MznMediaPreviewModal {

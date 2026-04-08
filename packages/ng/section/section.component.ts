@@ -12,10 +12,10 @@ import { sectionClasses as classes } from '@mezzanine-ui/core/section';
  * import { MznSection } from '@mezzanine-ui/ng/section';
  * import { MznContentHeader } from '@mezzanine-ui/ng/content-header';
  *
- * <mzn-section>
- *   <mzn-content-header title="區段標題" size="sub" />
+ * <div mznSection>
+ *   <header mznContentHeader title="區段標題" size="sub" ></header>
  *   <div>主要內容</div>
- * </mzn-section>
+ * </div>
  * ```
  *
  * @see MznContentHeader
@@ -23,7 +23,7 @@ import { sectionClasses as classes } from '@mezzanine-ui/core/section';
  * @see MznSectionGroup
  */
 @Component({
-  selector: 'mzn-section',
+  selector: '[mznSection]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

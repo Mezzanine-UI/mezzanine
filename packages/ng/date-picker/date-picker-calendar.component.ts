@@ -41,7 +41,8 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
   imports: [MznCalendar, MznPopper],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchor()"
       [open]="open()"
       placement="bottom-start"
@@ -67,7 +68,7 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
         [isYearDisabled]="isYearDisabled()"
         (dateChanged)="dateChanged.emit($event)"
       />
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznDatePickerCalendar {

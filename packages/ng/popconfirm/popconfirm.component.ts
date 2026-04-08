@@ -50,7 +50,8 @@ const popconfirmPrefix = 'mzn-popconfirm';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [mznFadeAnimation],
   template: `
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchor()"
       [open]="open()"
       [placement]="placement()"
@@ -84,7 +85,7 @@ const popconfirmPrefix = 'mzn-popconfirm';
           </div>
         </div>
       }
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznPopconfirm {

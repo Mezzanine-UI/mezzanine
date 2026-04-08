@@ -20,13 +20,13 @@ type Story = StoryObj;
   imports: [MznPopper, MznButton],
   template: `
     <div style="display: flex; gap: 10px; padding: 40px;">
-      <mzn-popper [anchor]="hoverAnchor()" [open]="hoverAnchor() !== null">
+      <div mznPopper [anchor]="hoverAnchor()" [open]="hoverAnchor() !== null">
         <div
           style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
         >
           Content
         </div>
-      </mzn-popper>
+      </div>
       <button
         #hoverBtn
         mznButton
@@ -48,13 +48,13 @@ type Story = StoryObj;
       >
         Click me
       </button>
-      <mzn-popper [anchor]="clickAnchor()" [open]="clickAnchor() !== null">
+      <div mznPopper [anchor]="clickAnchor()" [open]="clickAnchor() !== null">
         <div
           style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
         >
           Content
         </div>
-      </mzn-popper>
+      </div>
     </div>
   `,
 })
@@ -78,7 +78,8 @@ export const Basic: Story = {
     <div
       style="display: inline-grid; gap: 30px; grid-auto-rows: minmax(min-content, max-content); grid-template-columns: repeat(5, max-content); justify-content: center; margin-top: 50px; width: 100%;"
     >
-      <mzn-popper
+      <div
+        mznPopper
         [anchor]="anchor()"
         [open]="anchor() !== null"
         [placement]="placement()"
@@ -89,7 +90,7 @@ export const Basic: Story = {
         >
           Content
         </div>
-      </mzn-popper>
+      </div>
       <div></div>
       <button
         #ts
@@ -205,7 +206,8 @@ export const Placement: Story = {
     <div
       style="display: inline-grid; gap: 30px; grid-auto-rows: minmax(min-content, max-content); grid-template-columns: repeat(5, max-content); justify-content: center; margin-top: 50px; width: 100%;"
     >
-      <mzn-popper
+      <div
+        mznPopper
         [anchor]="anchor()"
         [open]="anchor() !== null"
         [placement]="placement()"
@@ -217,7 +219,7 @@ export const Placement: Story = {
         >
           Content
         </div>
-      </mzn-popper>
+      </div>
       <div></div>
       <button
         #ts
@@ -334,7 +336,8 @@ export const WithArrow: Story = {
       style="display: flex; flex-direction: column; gap: 20px; height: 200vh; padding-top: 50vh;"
     >
       <div>Scroll to test flip and shift middleware</div>
-      <mzn-popper
+      <div
+        mznPopper
         [anchor]="anchor()"
         [open]="anchor() !== null"
         placement="top"
@@ -350,7 +353,7 @@ export const WithArrow: Story = {
         >
           Content
         </div>
-      </mzn-popper>
+      </div>
       <button
         #btn
         mznButton
@@ -379,7 +382,8 @@ export const WithMiddleware: Story = {
   imports: [MznPopper, MznButton],
   template: `
     <div style="display: flex; gap: 10px; position: relative; padding: 40px;">
-      <mzn-popper
+      <div
+        mznPopper
         [anchor]="anchor()"
         [open]="anchor() !== null"
         placement="bottom"
@@ -391,7 +395,7 @@ export const WithMiddleware: Story = {
         >
           Content
         </div>
-      </mzn-popper>
+      </div>
       <button
         #btn
         mznButton

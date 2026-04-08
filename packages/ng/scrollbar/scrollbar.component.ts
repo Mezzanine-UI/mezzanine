@@ -28,21 +28,27 @@ import clsx from 'clsx';
  * ```html
  * import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
  *
- * <mzn-scrollbar maxHeight="300px" (viewportReady)="onReady($event)">
+ * <div mznScrollbar maxHeight="300px" (viewportReady)="onReady($event)">
  *   <div>Long content...</div>
- * </mzn-scrollbar>
+ * </div>
  * ```
  *
  * @see {@link https://kingsora.github.io/OverlayScrollbars/ OverlayScrollbars}
  */
 @Component({
-  selector: 'mzn-scrollbar',
+  selector: '[mznScrollbar]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
     '[style.max-height]': 'maxHeight()',
     '[style.max-width]': 'maxWidth()',
+    '[attr.defer]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.events]': 'null',
+    '[attr.maxHeight]': 'null',
+    '[attr.maxWidth]': 'null',
+    '[attr.options]': 'null',
   },
   template: `<ng-content />`,
 })

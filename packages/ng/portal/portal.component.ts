@@ -23,17 +23,22 @@ import { MznPortalRegistry, PortalLayer } from './portal-registry.service';
  * ```html
  * import { MznPortal } from '@mezzanine-ui/ng/portal';
  *
- * <mzn-portal>
+ * <div mznPortal>
  *   <div>This will be rendered at document.body level</div>
- * </mzn-portal>
+ * </div>
  *
- * <mzn-portal [disablePortal]="true">
+ * <div mznPortal [disablePortal]="true">
  *   <div>This stays in place</div>
- * </mzn-portal>
+ * </div>
  * ```
  */
 @Component({
-  selector: 'mzn-portal',
+  selector: '[mznPortal]',
+  host: {
+    '[attr.container]': 'null',
+    '[attr.disablePortal]': 'null',
+    '[attr.layer]': 'null',
+  },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<ng-template #content><ng-content /></ng-template>`,

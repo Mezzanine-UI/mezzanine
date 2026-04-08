@@ -56,20 +56,22 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
     }
     <ng-content />
     @if (!hideSuffixWhenClearable() && shouldShowClearable()) {
-      <mzn-clear-actions
+      <button
+        mznClearActions
         type="clearable"
         [class]="classes.clearIcon"
         (clicked)="onClearClick($event)"
-      />
+      ></button>
     }
     <div [class]="suffixClasses()" [hidden]="!hasSuffix()">
       <ng-content select="[suffix]" />
       @if (hideSuffixWhenClearable() && clearable()) {
-        <mzn-clear-actions
+        <button
+          mznClearActions
           type="clearable"
           [class]="classes.clearIcon"
           (clicked)="onClearClick($event)"
-        />
+        ></button>
       }
     </div>
   `,

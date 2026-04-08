@@ -24,9 +24,9 @@ export const CustomContainer: Story = {
     template: `
       <div style="width: 100%; height: 100px; background-color: #d9d9d9;">
         <p>The container wrapping portal.</p>
-        <mzn-portal [container]="dest">
+        <div mznPortal [container]="dest">
           ${demoElementTemplate}
-        </mzn-portal>
+        </div>
       </div>
       <div #dest style="width: 100%; height: 100px; background-color: #e5e5e5;">
         <p>The portal destination.</p>
@@ -49,7 +49,7 @@ export const CustomContainer: Story = {
       <button mznButton (click)="show.set(!show())"
         >{{ show() ? 'Hide' : 'Show' }} Portal</button
       >
-      <mzn-portal layer="default">
+      <div mznPortal layer="default">
         @if (show()) {
           <div
             style="place-self: center; padding: 24px; background-color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); border-radius: 8px; pointer-events: auto;"
@@ -59,7 +59,7 @@ export const CustomContainer: Story = {
             ${demoElementTemplate}
           </div>
         }
-      </mzn-portal>
+      </div>
     </div>
   `,
 })
@@ -95,7 +95,7 @@ export const DefaultLayer: Story = {
         }
       </div>
       @for (alert of alerts(); track $index) {
-        <mzn-portal layer="alert">
+        <div mznPortal layer="alert">
           <div
             [style.background-color]="$index % 2 === 0 ? '#4caf50' : '#2196f3'"
             style="padding: 16px 24px; color: #fff; display: flex; justify-content: space-between; align-items: center; pointer-events: auto;"
@@ -108,7 +108,7 @@ export const DefaultLayer: Story = {
               >×</button
             >
           </div>
-        </mzn-portal>
+        </div>
       }
     </div>
   `,
@@ -146,12 +146,12 @@ export const DisablePortal: Story = {
         </p>
         <div style="padding: 16px; background-color: #f5f5f5; border-radius: 8px;">
           <p style="margin-bottom: 16px;">Parent Container</p>
-          <mzn-portal [disablePortal]="true">
+          <div mznPortal [disablePortal]="true">
             <div style="padding: 16px; background-color: #e0e0e0; border-radius: 4px;">
               <p>This content is NOT portaled</p>
               <div style="width: 100px; height: 100px; background-image: radial-gradient(circle, #778de8, #7b83c6, #797aa6, #737287, #6a6a6a); border-radius: 100%;"></div>
             </div>
-          </mzn-portal>
+          </div>
         </div>
       </div>
     `,
@@ -194,22 +194,22 @@ export const DisablePortal: Story = {
         </p>
       </div>
       @if (showAlert()) {
-        <mzn-portal layer="alert">
+        <div mznPortal layer="alert">
           <div
             style="padding: 16px 24px; background-color: #ff9800; color: #fff; pointer-events: auto;"
           >
             Alert Layer
           </div>
-        </mzn-portal>
+        </div>
       }
       @if (showDefault()) {
-        <mzn-portal layer="default">
+        <div mznPortal layer="default">
           <div
             style="width: 200px; height: 100%; justify-self: flex-end; padding: 24px; background-color: rgba(33, 150, 243, 0.95); color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); pointer-events: auto;"
           >
             Default Layer
           </div>
-        </mzn-portal>
+        </div>
       }
     </div>
   `,

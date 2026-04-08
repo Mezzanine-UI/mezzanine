@@ -77,7 +77,8 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
         (click)="togglePanel($event)"
       ></i>
     </mzn-picker-trigger>
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="triggerElement()"
       [open]="isOpen()"
       placement="bottom-start"
@@ -105,7 +106,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           (cancelled)="onCancel()"
         />
       </div>
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznDateTimePicker implements ControlValueAccessor {

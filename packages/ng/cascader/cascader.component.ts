@@ -67,7 +67,7 @@ interface PanelDescriptor {
       (cleared)="clear($event)"
       (triggerClicked)="toggleOpen()"
     />
-    <mzn-portal [disablePortal]="!(globalPortal() ?? true)">
+    <div mznPortal [disablePortal]="!(globalPortal() ?? true)">
       @if (isOpen()) {
         <div [class]="panelsClass">
           @for (panel of visiblePanels(); track $index) {
@@ -80,7 +80,7 @@ interface PanelDescriptor {
           }
         </div>
       }
-    </mzn-portal>
+    </div>
   `,
 })
 export class MznCascader {

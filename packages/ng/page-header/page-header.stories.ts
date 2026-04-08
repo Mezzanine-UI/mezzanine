@@ -42,7 +42,7 @@ export const Default: Story = {
           <mzn-page-header>
             <mzn-breadcrumb [items]="breadcrumbItems" />
 
-            <mzn-content-header title="Page Title" description="This is a Description.">
+            <header mznContentHeader title="Page Title" description="This is a Description.">
               <a contentHeaderBackButton href="./" title="back">
                 <button mznButton variant="base-tertiary" iconType="icon-only">
                   <i mznIcon [icon]="ChevronLeftIcon" ></i>
@@ -58,7 +58,7 @@ export const Default: Story = {
                   <i mznIcon [icon]="MenuIcon" ></i>
                 </button>
               </div>
-            </mzn-content-header>
+            </header>
           </mzn-page-header>
         </div>
       </div>

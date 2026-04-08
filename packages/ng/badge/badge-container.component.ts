@@ -10,14 +10,14 @@ import { badgeClasses as classes } from '@mezzanine-ui/core/badge';
  * ```html
  * import { MznBadgeContainer, MznBadge } from '@mezzanine-ui/ng/badge';
  *
- * <mzn-badge-container>
+ * <span mznBadgeContainer>
  *   <i mznIcon [icon]="bellIcon" ></i>
- *   <mzn-badge variant="dot" />
- * </mzn-badge-container>
+ *   <span mznBadge variant="dot" ></span>
+ * </span>
  * ```
  */
 @Component({
-  selector: 'mzn-badge-container',
+  selector: '[mznBadgeContainer]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

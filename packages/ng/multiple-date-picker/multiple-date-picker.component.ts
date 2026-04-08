@@ -84,7 +84,8 @@ import {
         (click)="toggleCalendar($event)"
       ></i>
     </mzn-multiple-date-picker-trigger>
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="triggerElement()"
       [open]="isOpen()"
       placement="bottom-start"
@@ -102,7 +103,7 @@ import {
         (confirmed)="onConfirm()"
         (cancelled)="onCancel()"
       />
-    </mzn-popper>
+    </div>
   `,
 })
 export class MznMultipleDatePicker implements ControlValueAccessor {
