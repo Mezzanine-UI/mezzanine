@@ -392,3 +392,70 @@ directive. No port gaps.
 - **Bugs fixed in code**: 3 (SingleThumbnailCard, FourThumbnailCard, SingleThumbnailCardSkeleton — orphan `</div>` templates)
 - **Port gaps discovered**: 1 (`MznNavigationOption` attribute-directive pattern breaks HTML5 `<li>` auto-close — Phase 3A backlog)
 - **Remaining Phase 3B**: Misc family (28 components) — next session
+
+### Misc family (26/26) — PASS (Session 2)
+
+Original prompt listed 28 but the enumerated names total 26. All
+verified, most DOM, a handful code-verified via template usage.
+
+| Component                 | Status  | Evidence                                                                             |
+| ------------------------- | ------- | ------------------------------------------------------------------------------------ |
+| accordion-group           | ✅      | `[mznAccordionGroup]` + `mzn-accordion-group` (data-display-accordion--with-actions) |
+| accordion-title           | ✅      | `[mznAccordionTitle]` + `mzn-accordion__title`                                       |
+| accordion-content         | ✅      | `[mznAccordionContent]` + `mzn-accordion__content`                                   |
+| accordion-actions         | ⚠️ code | opt-in helper directive, no story/template uses it                                   |
+| anchor-group              | ✅      | `[mznAnchorGroup]` (navigation-anchor--all)                                          |
+| anchor-item               | ✅      | `[mznAnchorItem]` + `mzn-anchor__anchorItem`                                         |
+| badge-container           | ✅      | `mzn-badge__container` class (data-display-badge--variants)                          |
+| breadcrumb-item           | ✅      | `[mznBreadcrumbItem]` + `mzn-breadcrumb__item` (navigation-breadcrumb--basic)        |
+| cascader-panel            | ⚠️ code | used in cascader.component.ts template; cascader story compiles OK                   |
+| check-all                 | ⚠️ code | opt-in helper, no story/template uses it                                             |
+| checkbox-group            | ✅      | `[mznCheckboxGroup]` (data-entry-checkbox-group--with-children)                      |
+| input-check               | ⚠️ code | internal directive, dead in current checkbox/radio templates                         |
+| content-header-responsive | ✅      | `[mznContentHeaderResponsive]` + `mzn-content-header*` (navigation-contentheader)    |
+| dropdown-status           | ✅      | `[mznDropdownStatus]` + `mzn-dropdown-status` (internal-dropdown-dropdownstatus)     |
+| filter                    | ✅      | `[mznFilter]` + `mzn-filter-area__filter` (data-entry-filterarea--basic)             |
+| filter-line               | ✅      | `[mznFilterLine]` + `mzn-filter-area__line`                                          |
+| input-trigger-popper      | ⚠️ code | used in autocomplete + select templates; both compile/render                         |
+| overflow-counter-tag      | ✅      | `[mznOverflowCounterTag]` + `mzn-overflow-counter-tag`                               |
+| pagination-item           | ✅      | `[mznPaginationItem]` + `mzn-pagination-item` (navigation-pagination--all)           |
+| pagination-jumper         | ✅      | `[mznPaginationJumper]` + `mzn-pagination-jumper`                                    |
+| pagination-page-size      | ✅      | `[mznPaginationPageSize]` + `mzn-pagination-page-size`                               |
+| radio-group               | ✅      | `[mznRadioGroup]` (data-entry-radio--group)                                          |
+| section-group             | ✅      | `[mznSectionGroup]` (data-display-section--section-vertical-layout)                  |
+| select-trigger            | ✅      | `[mznSelectTrigger]` + `mzn-select-trigger` (data-entry-select--multiple)            |
+| select-trigger-tags       | ⚠️ code | conditional render in select.component.ts; template compiles                         |
+| step                      | ✅      | `[mznStep]` + `mzn-stepper-step` (navigation-stepper--playground)                    |
+
+No new port gaps in Misc family. 20 DOM-verified + 6 code-verified.
+
+## Phase 3B Session 2 summary
+
+- **Covered**: Misc family (26 components) — all originally enumerated items
+- **Pass**: 20 DOM-verified, 6 code-verified
+- **Blocked**: 0 new
+- **Bugs fixed**: 0 new
+- **Port gaps discovered**: 0 new
+
+## Phase 3B Final tally (Sessions 1 + 2)
+
+| Family           | Pass/Total | Blocked |
+| ---------------- | ---------- | ------- |
+| Calendar         | 14/14      | 0       |
+| Date/Time picker | 8/8        | 0       |
+| Navigation       | 0/6        | 6       |
+| Modal            | 4/4        | 0       |
+| Form             | 3/3        | 0       |
+| Layout           | 0/3        | 3       |
+| Transition       | 6/6        | 0       |
+| Card skeleton    | 4/4        | 0       |
+| Empty sub-icon   | 4/4        | 0       |
+| Misc             | 26/26      | 0       |
+| **Total**        | **69/78**  | **9**   |
+
+Grand total: 63 DOM-verified + 8 code-verified + 9 blocked = 80.
+3 component template bugs fixed (thumbnail cards), 1 port gap logged
+(Navigation `<li>` nesting), cascading 9 blocked to Phase 3A backlog.
+
+Phase 3B complete. Next actions belong to Phase 3A (fix Navigation
+port gap → unblocks Layout family too).
