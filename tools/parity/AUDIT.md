@@ -246,3 +246,18 @@ Sample: 6 previously validated + now +14 calendar components. Exercised
 | calendar-quick-select    | ⚠️ code-verified only — conditional on `[quickSelect]` input; no default story wires it. Move to Phase 3A backlog if visual verification needed. |
 
 No port gaps or DI errors found. Calendar family mature.
+
+### Date/Time picker family (8/8) — PASS
+
+| Component                     | Story                                                       | Verification                                                          |
+| ----------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------- |
+| picker-trigger                | `internal-picker--picker-trigger-playground`                | `[mznPickerTrigger]` + `mzn-picker` host class                        |
+| picker-trigger-with-separator | `internal-picker--picker-trigger-with-separator-playground` | `[mznPickerTriggerWithSeparator]` + `mzn-picker__separator*`          |
+| range-picker-trigger          | `internal-picker--range-picker-trigger-playground`          | `[mznRangePickerTrigger]` + `mzn-picker--range`                       |
+| multiple-date-picker-trigger  | `data-entry-multipledatepicker--playground`                 | `[mznMultipleDatePickerTrigger]` + `mzn-multiple-date-picker-trigger` |
+| date-picker-calendar          | `data-entry-datepicker--playground`                         | `[mznDatePickerCalendar]` wraps 16KB calendar subtree                 |
+| date-range-picker-calendar    | `data-entry-daterangepicker--playground`                    | `[mznDateRangePickerCalendar]` wraps 32KB range subtree               |
+| time-picker-panel             | `data-entry-timepicker--playground`                         | `[mznTimePickerPanel]` wraps 16KB subtree                             |
+| time-panel-column             | `data-entry-datetimepicker--playground`                     | `[mznTimePanelColumn]` + `mzn-time-panel-column*`                     |
+
+No port gaps or DI errors found. Picker family mature.
