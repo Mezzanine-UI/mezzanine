@@ -318,3 +318,26 @@ moves on.
 | modal-body-container        | ⚠️ code-verified only — opt-in helper directive, no story/template uses it (exported from package index)   |
 
 No port gaps found. Modal family mature.
+
+### Form family (3/3) — PASS
+
+Verified via `data-entry-form--playground`:
+
+| Component      | Verification                                                 |
+| -------------- | ------------------------------------------------------------ |
+| form-field     | `[mznFormField]` + `mzn-form-field` + `--vertical`           |
+| form-label     | `[mznFormLabel]` + `mzn-form-field__label-area`              |
+| form-hint-text | `[mznFormHintText]` + `mzn-form-field__hint-text` + `--info` |
+
+### Layout family (0/3) — BLOCKED (cascades from Navigation)
+
+Both `foundation-layout--playground` and
+`foundation-layout--with-dual-panels` stories embed full navigation
+templates with nested `<li mznNavigationOption>` children. The same
+HTML5 `<li>` auto-close port gap that blocks Navigation also blocks
+every Layout story at JIT compile time.
+
+Layout component (`[mznLayout]`, `[mznLayoutMain]`, `[mznLayoutLeftPanel]`,
+`[mznLayoutRightPanel]`) is implemented and exported — verified by
+selector grep. Visual verification cascades from the Navigation fix.
+Logged to Phase 3A backlog alongside Navigation.
