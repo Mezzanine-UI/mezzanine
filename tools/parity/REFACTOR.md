@@ -21,7 +21,7 @@ _(updated per batch, see `tools/parity/.out/summary.json` for per-run diffs)_
 | 3        | `0021e7e5`  | layout, anchor-group, form-group, dropdown-status                                                      | —            | 2/0/64/19   | auto attr-null injection added to script; 0 attribute leakage                                             |
 | Phase 1  | `1bddc833`  | compare.ts walker softening                                                                            | 6866         | 23742       | full unmask via class-aware soft-continue (no element refactor)                                           |
 | P2-1     | `17bc3995`  | tag, inline-message(+group), alert-banner, progress, spin, skeleton, result-state                      | —            | per-comp    | first Tier A batch; 0 attribute leakage                                                                   |
-| P2-2     | _(pending)_ | badge(+container), backdrop, popper, portal, scrollbar, section(+group), clear-actions, content-header | —            | per-comp    | auto host detect: span/span/div/div/div/div/div/div/button/header; dynamic collapse auto-applied on badge |
+| P2-2     | `364dfbc0`  | badge(+container), backdrop, popper, portal, scrollbar, section(+group), clear-actions, content-header | —            | per-comp    | auto host detect: span/span/div/div/div/div/div/div/button/header; dynamic collapse auto-applied on badge |
 
 ## ⚠️ Diff-count masking — critical reading (mostly fixed in Phase 1)
 
