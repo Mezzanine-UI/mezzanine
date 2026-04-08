@@ -99,14 +99,52 @@ tags by default). They escaped the script because:
 
 ## Pre-existing breakages confirmed by revert testing
 
-| Story                         | Error                                                                                                   | Pre-existing?                              |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| Calendar Playground           | `NG0950: Input is required but no value is available yet` from `MznCalendarConfigProvider.inputValueFn` | YES — verified by checkout to pre-batch-13 |
-| DatePicker Playground         | `NG0201: No provider found for InjectionToken MZN_CALENDAR_CONFIG`                                      | YES — verified same way                    |
-| Modal stories visible content | `MznPortalRegistry.getContainer('default')` returns null in storybook env                               | YES — known from P2-4                      |
+| Story                         | Error                                                                                                                    | Pre-existing?                              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| Calendar Playground           | `NG0950: Input is required but no value is available yet` from `MznCalendarConfigProvider.inputValueFn`                  | YES — verified by checkout to pre-batch-13 |
+| DatePicker Playground         | `NG0201: No provider found for InjectionToken MZN_CALENDAR_CONFIG`                                                       | YES — verified same way                    |
+| Modal stories visible content | ~~`MznPortalRegistry.getContainer('default')` returns null in storybook env~~ — **false diagnosis, see Phase 4.1 below** | partial                                    |
 
 These are all storybook-environment issues that the refactor surfaced
 into view but did not introduce. They are tracked as Phase 5 cleanup.
+
+### Phase 4.1 correction: Modal was not actually portal-broken
+
+The P2-4 entry above claimed modal stories were blocked on
+`MznPortalRegistry.getContainer('default')` returning null in storybook.
+Re-investigation in Phase 4.1 (DevTools inspection of
+`feedback-modal--playground`) showed that `MznPortalRegistry` already
+auto-creates `#mzn-portal-container` / `#mzn-alert-container` on first
+access via `ensureContainers()` — no consumer registration is needed.
+The portal attach path was working correctly all along; content WAS
+reaching `document.body`.
+
+The actual reasons modal stories looked broken:
+
+1. **Missing `mzn-modal__content-wrapper`** — React's `useModalContainer`
+   wraps the dialog in a full-size flex-center div. Angular port skipped
+   it, so the dialog stuck to the backdrop's top-left corner.
+2. **`MznClearActions` nested-button bug** — P2-3 left the directive
+   with an inner `<button>` template under consumer `<button mznClearActions>`
+   hosts, producing invalid `<button><button>` nesting that browsers
+   split apart. The close icon's visuals and click handler lived on the
+   wrong button.
+3. **Modal header raw `<h2>` / `<p>`** — React wraps in `<Typography>`
+   with semantic `h2` / `body` tokens. Angular port left them raw,
+   getting browser-default font sizes.
+4. **Checkbox structural drift from React** — Angular used
+   `input-check__control` + `input-check__label` primitives (the Radio
+   pattern), but React's Checkbox renders its own
+   `input-container > input-content` + `text-container` structure. Many
+   `:has(.text-container)` gated scss rules never applied, and
+   label/description missed `<Typography>` wrapping.
+
+All four fixed in this phase; see REFACTOR.md entry P4.1.
+
+**Process lesson**: "stash-revert proves pre-existing" validates that
+the refactor didn't introduce the bug, but does NOT validate the
+diagnosis of WHY it's broken. Always inspect the live DOM before
+declaring a blocker.
 
 ## Components visually verified in this audit
 
@@ -149,3 +187,10 @@ pre-existing issues that this Phase 2 made visible:
   accept Angular-only status
 - All the per-component descendant diffs (theme rgb noise, Typography
   `<p>` vs `<span>`, hostClasses() emission order drift, etc.)
+- **Port gaps discovered during Phase 4.1** (Phase 3A backlog — not
+  refactor work, these are features the original Angular port simply
+  did not implement):
+  - `MznCheckbox.withEditInput` / `editableInput` — React Checkbox can
+    render an inline editable input when checked; Angular has no such
+    prop. Affects `data-entry-checkbox--with-editable-input-and-form`.
+  - Verify other families for similar gaps (Phase 3B spot-check).
