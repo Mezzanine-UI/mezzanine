@@ -13,10 +13,7 @@ import {
   CheckboxSeverity,
   CheckboxSize,
 } from '@mezzanine-ui/core/checkbox';
-import {
-  inputCheckClasses,
-  InputCheckSize,
-} from '@mezzanine-ui/core/_internal/input-check';
+import { inputCheckClasses } from '@mezzanine-ui/core/_internal/input-check';
 import { CheckedIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
@@ -185,13 +182,21 @@ export class MznCheckbox implements ControlValueAccessor {
       );
     }
 
+    // Default mode: match React's root class composition so that
+    // `.mzn-checkbox__input { appearance: none; border: 1px solid; ... }`
+    // from _checkbox-styles.scss applies to the native input. Previously
+    // this emitted `.mzn-input-check` which activated the shared
+    // `.mzn-input-check input { opacity: 0 }` rule and hid the visible
+    // box entirely. React emits `mzn-checkbox mzn-checkbox--<severity>
+    // mzn-checkbox--<size>` with optional state modifiers.
     return clsx(
-      inputCheckClasses.host,
-      inputCheckClasses.size(this.resolvedSize() as InputCheckSize),
+      classes.host,
+      classes.size(this.resolvedSize()),
+      classes.severity(this.severity() ?? 'info'),
       {
-        [inputCheckClasses.disabled]: this.resolvedDisabled(),
-        [inputCheckClasses.error]: this.error(),
-        [inputCheckClasses.withLabel]: true,
+        [classes.checked]: this.resolvedChecked(),
+        [classes.indeterminate]: this.indeterminate(),
+        [classes.disabled]: this.resolvedDisabled(),
       },
     );
   });

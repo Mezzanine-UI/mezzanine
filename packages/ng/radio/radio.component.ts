@@ -73,18 +73,32 @@ export interface RadioWithInputConfig {
   template: `
     <label>
       <span [class]="controlWrapperClass()">
-        <input
-          type="radio"
-          [style.display]="resolvedType() === 'segment' ? 'none' : null"
-          [checked]="resolvedChecked()"
-          [disabled]="resolvedDisabled()"
-          [name]="resolvedName()"
-          [value]="value()"
-          (change)="onInputChange()"
-          (focus)="onTouched()"
-        />
-        @if (resolvedType() === 'segment' && icon()) {
-          <i mznIcon [icon]="icon()!"></i>
+        @if (resolvedType() === 'radio') {
+          <span [class]="radioCircleClass()">
+            <input
+              type="radio"
+              [checked]="resolvedChecked()"
+              [disabled]="resolvedDisabled()"
+              [name]="resolvedName()"
+              [value]="value()"
+              (change)="onInputChange()"
+              (focus)="onTouched()"
+            />
+          </span>
+        } @else {
+          <input
+            type="radio"
+            style="display: none"
+            [checked]="resolvedChecked()"
+            [disabled]="resolvedDisabled()"
+            [name]="resolvedName()"
+            [value]="value()"
+            (change)="onInputChange()"
+            (focus)="onTouched()"
+          />
+          @if (icon()) {
+            <i mznIcon [icon]="icon()!"></i>
+          }
         }
       </span>
       <span [class]="labelClass">
@@ -181,15 +195,13 @@ export class MznRadio implements ControlValueAccessor {
       );
     }
 
-    return clsx(
-      inputCheckClasses.host,
-      inputCheckClasses.size(this.resolvedSize()),
-      {
-        [inputCheckClasses.disabled]: this.resolvedDisabled(),
-        [inputCheckClasses.error]: this.error(),
-        [inputCheckClasses.withLabel]: true,
-      },
-    );
+    // Default radio: match React's structure — host carries
+    // `mzn-radio__wrapper`, control span carries `mzn-radio mzn-radio--<size>`
+    // (+ state modifiers). Previously this emitted `mzn-input-check` on the
+    // host which activated `.mzn-input-check input { opacity: 0 }` and
+    // suppressed the visible radio circle drawn by `.mzn-radio { border-radius:
+    // 50%; border: 1px solid }`.
+    return classes.wrapper;
   });
 
   protected readonly controlWrapperClass = computed((): string => {
@@ -197,8 +209,18 @@ export class MznRadio implements ControlValueAccessor {
       return classes.segmentedContainer;
     }
 
-    return clsx(inputCheckClasses.control, classes.wrapper);
+    return inputCheckClasses.control;
   });
+
+  // Inner span that actually renders the visible radio circle. Kept on a
+  // DIFFERENT element than `.mzn-input-check__control` because both rules
+  // write `width` and `.mzn-radio { width: 100% }` would override the fixed
+  // control-size from the input-check wrapper if they were co-located.
+  protected readonly radioCircleClass = computed((): string =>
+    clsx(classes.host, classes.size(this.resolvedSize()), {
+      [classes.checked]: this.resolvedChecked(),
+    }),
+  );
 
   protected readonly labelClass = inputCheckClasses.label;
   protected readonly hintClass = inputCheckClasses.hint;

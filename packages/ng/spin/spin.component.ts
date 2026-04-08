@@ -1,8 +1,12 @@
 import {
+  AfterContentInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   input,
+  signal,
+  ViewChild,
 } from '@angular/core';
 import { iconClasses as classes } from '@mezzanine-ui/core/spin';
 import { BackdropVariant } from '@mezzanine-ui/core/backdrop';
@@ -61,33 +65,65 @@ export interface SpinBackdropProps {
     '[attr.trackColor]': 'null',
   },
   template: `
-    <div
-      mznBackdrop
-      [open]="loading()"
-      [class]="backdropProps().class"
-      [disableCloseOnBackdropClick]="
-        backdropProps().disableCloseOnBackdropClick ?? true
-      "
-      [disablePortal]="true"
-      [disableScrollLock]="backdropProps().disableScrollLock ?? true"
-      [variant]="backdropProps().variant ?? 'light'"
-      style="pointer-events: none;"
-    >
-      @if (loading()) {
-        <div [class]="spinClasses()">
-          <span [class]="classes.spinnerRing" [style]="ringStyles()">
-            <span [class]="classes.spinnerTail"></span>
-          </span>
-          @if (description()) {
-            <span [class]="descriptionClasses()">{{ description() }}</span>
-          }
-        </div>
-      }
-    </div>
-    <ng-content />
+    <span #contentSlot style="display: contents">
+      <ng-content />
+    </span>
+    @if (hasChildren()) {
+      <div
+        mznBackdrop
+        [open]="loading()"
+        [class]="backdropProps().class"
+        [disableCloseOnBackdropClick]="
+          backdropProps().disableCloseOnBackdropClick ?? true
+        "
+        [disablePortal]="true"
+        [disableScrollLock]="backdropProps().disableScrollLock ?? true"
+        [variant]="backdropProps().variant ?? 'light'"
+        style="pointer-events: none;"
+      >
+        @if (loading()) {
+          <div [class]="spinClasses()">
+            <span [class]="classes.spinnerRing" [style]="ringStyles()">
+              <span [class]="classes.spinnerTail"></span>
+            </span>
+            @if (description()) {
+              <span [class]="descriptionClasses()">{{ description() }}</span>
+            }
+          </div>
+        }
+      </div>
+    } @else if (loading()) {
+      <div [class]="spinClasses()">
+        <span [class]="classes.spinnerRing" [style]="ringStyles()">
+          <span [class]="classes.spinnerTail"></span>
+        </span>
+        @if (description()) {
+          <span [class]="descriptionClasses()">{{ description() }}</span>
+        }
+      </div>
+    }
   `,
 })
-export class MznSpin {
+export class MznSpin implements AfterContentInit {
+  @ViewChild('contentSlot', { static: true })
+  protected contentSlot!: ElementRef<HTMLElement>;
+
+  // React's Spin has two render paths: with children → nested backdrop,
+  // without children → inline spinner. Detect projected content at
+  // AfterContentInit so we can match the standalone path.
+  protected readonly hasChildren = signal(false);
+
+  ngAfterContentInit(): void {
+    const hasNonEmpty = Array.from(
+      this.contentSlot.nativeElement.childNodes,
+    ).some(
+      (n) =>
+        n.nodeType === Node.ELEMENT_NODE ||
+        (n.nodeType === Node.TEXT_NODE && n.textContent?.trim()),
+    );
+    this.hasChildren.set(hasNonEmpty);
+  }
+
   protected readonly classes = classes;
 
   /**
