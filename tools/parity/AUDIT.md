@@ -562,3 +562,34 @@ without importing the directive.
   parity is desired.
 
 Phase 3A backlog now: only CI-gate work remains (Phase 5).
+
+## Phase 5 — CI gate
+
+Two regression guards added in commits `c4b79175` and `6b4489e9`:
+
+1. **`yarn parity:lint-ng-content`** — static script in
+   `tools/parity/check-ng-content-selectors.mjs` that scans every
+   `.ts` under `packages/ng`, collects declared `@Component` /
+   `@Directive` element selectors, and flags any
+   `<ng-content select="mzn-xxx" />` whose tag form does not match
+   a real component. Attribute-form selectors (`[mznFoo]`) are
+   treated as slot markers and skipped. Current status: clean.
+
+2. **`yarn ng:build-storybook`** in CI — runs an AOT build of
+   the entire Angular Storybook, which exercises every component
+   template through the Angular compiler. This would have caught
+   the three Phase 3B template bugs (thumbnail cards), both
+   Phase 3A port gaps (navigation `<li>`, calendar provider),
+   and all five ng-content typos at compile time, long before
+   any visual or parity inspection.
+
+Both steps are wired into `.github/workflows/test.yml` after the
+existing `yarn test` step.
+
+Scope-intentionally-not-covered: **story inline render() template
+bugs** (where the story's `render: () => ({ template: "..." })`
+contains a compile error) are not caught by AOT build because
+Storybook compiles those at runtime. Catching them would require
+running Storybook's test-runner under a headless browser in CI,
+which is heavy for the marginal benefit. Document it as a known
+gap; revisit if inline template regressions recur.
