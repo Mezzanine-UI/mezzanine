@@ -1,14 +1,10 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
-  ElementRef,
   inject,
   input,
   output,
-  signal,
 } from '@angular/core';
 import {
   textFieldClasses as classes,
@@ -16,12 +12,18 @@ import {
 } from '@mezzanine-ui/core/text-field';
 import clsx from 'clsx';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
+import { MznTextFieldHost } from './text-field-host.directive';
 
 /**
- * 文字欄位容器元件，包裝 input/textarea 並提供前後綴、清除按鈕、狀態樣式。
+ * 文字欄位容器元件,包裝 input/textarea 並提供前後綴、清除按鈕、狀態樣式。
  *
- * 自動偵測內部 input/textarea 的 focus/blur/hover/value 狀態。
- * 支援 `clearable` 清除按鈕、`prefix`/`suffix` 插槽、`disabled`/`readonly`/`error`/`warning` 狀態。
+ * 內部透過 `hostDirectives` 套用 {@link MznTextFieldHost},由 directive
+ * 負責 host class 計算與 descendant `<input>` / `<textarea>` 的狀態追蹤
+ * (focus / blur / input / hover / hasValue / typing)。本 component 只負責
+ * 渲染 prefix / suffix 投影插槽與 clearable 清除按鈕。
+ *
+ * 對應 React `<TextField>` component,提供相同的 children / prefix / suffix /
+ * clearable API。
  *
  * @example
  * ```html
@@ -31,22 +33,40 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
  *   <input placeholder="請輸入" />
  * </div>
  *
- * <div mznTextField [clearable]="true" (cleared)="onClear()">
+ * <div mznTextField [clearable]="true" [hasPrefix]="true" [hasSuffix]="true" (cleared)="onClear()">
  *   <span prefix>$</span>
  *   <input placeholder="金額" />
  *   <span suffix>.00</span>
  * </div>
  * ```
+ *
+ * @see MznTextFieldHost
  */
 @Component({
   selector: '[mznTextField]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznClearActions],
+  hostDirectives: [
+    {
+      directive: MznTextFieldHost,
+      inputs: [
+        'active',
+        'clearable',
+        'disabled',
+        'error',
+        'fullWidth',
+        'hasPrefix',
+        'hasSuffix',
+        'readonly',
+        'size',
+        'typing',
+        'warning',
+      ],
+      outputs: ['hoveredChange', 'focusedChange', 'hasValueChange'],
+    },
+  ],
   host: {
-    '[class]': 'hostClasses()',
-    '(mouseenter)': 'onMouseEnter()',
-    '(mouseleave)': 'onMouseLeave()',
     '[attr.active]': 'null',
     '[attr.clearable]': 'null',
     '[attr.forceShowClearable]': 'null',
@@ -56,7 +76,7 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
     '[attr.fullWidth]': 'null',
     '[attr.hasPrefix]': 'null',
     '[attr.hasSuffix]': 'null',
-    '[attr.readonly]': 'null',
+    '[attr.readOnly]': 'null',
     '[attr.size]': 'null',
     '[attr.typing]': 'null',
     '[attr.warning]': 'null',
@@ -76,35 +96,25 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
         (clicked)="onClearClick($event)"
       ></button>
     }
-    <div [class]="suffixClasses()" [hidden]="!hasSuffix()">
-      <ng-content select="[suffix]" />
-      @if (hideSuffixWhenClearable() && clearable()) {
-        <button
-          mznClearActions
-          type="clearable"
-          [class]="classes.clearIcon"
-          (clicked)="onClearClick($event)"
-        ></button>
-      }
-    </div>
+    @if (hasSuffix() || (hideSuffixWhenClearable() && clearable())) {
+      <div [class]="suffixClasses()">
+        <ng-content select="[suffix]" />
+        @if (hideSuffixWhenClearable() && clearable()) {
+          <button
+            mznClearActions
+            type="clearable"
+            [class]="classes.clearIcon"
+            (clicked)="onClearClick($event)"
+          ></button>
+        }
+      </div>
+    }
   `,
 })
-export class MznTextField implements AfterViewInit {
+export class MznTextField {
   protected readonly classes = classes;
 
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly hostRef = inject(ElementRef<HTMLElement>);
-
-  private readonly isHovered = signal(false);
-  private readonly isFocused = signal(false);
-  private readonly isTyping = signal(false);
-  private readonly hasValue = signal(false);
-
-  /**
-   * 是否處於 active 狀態。
-   * @default false
-   */
-  readonly active = input(false);
+  private readonly host = inject(MznTextFieldHost);
 
   /**
    * 是否顯示清除按鈕。
@@ -113,87 +123,41 @@ export class MznTextField implements AfterViewInit {
   readonly clearable = input(false);
 
   /**
-   * 強制顯示清除按鈕，即使欄位目前無值。
+   * 強制顯示清除按鈕,即使欄位目前無值。
    * @default false
    */
   readonly forceShowClearable = input(false);
 
   /**
-   * 當清除按鈕顯示時，隱藏後綴內容（[suffix]）。
+   * 當清除按鈕顯示時,隱藏後綴內容([suffix])。
    * @default false
    */
   readonly hideSuffixWhenClearable = input(false);
 
   /**
-   * 是否停用。
-   * @default false
-   */
-  readonly disabled = input(false);
-
-  /**
-   * 是否為錯誤狀態。
-   * @default false
-   */
-  readonly error = input(false);
-
-  /**
-   * 是否全寬。
-   * @default true
-   */
-  readonly fullWidth = input(true);
-
-  /**
-   * 是否有前綴內容（用於計算 slim gap）。
+   * 是否有前綴內容(影響 prefix slot 渲染與 slim-gap 計算)。
    * @default false
    */
   readonly hasPrefix = input(false);
 
   /**
-   * 是否有後綴內容（用於計算 slim gap）。
+   * 是否有後綴內容(影響 suffix slot 渲染與 slim-gap 計算)。
    * @default false
    */
   readonly hasSuffix = input(false);
 
-  /**
-   * 是否唯讀。
-   * @default false
-   */
-  readonly readonly = input(false);
-
-  /**
-   * 欄位尺寸。
-   * @default 'main'
-   */
-  readonly size = input<TextFieldSize>('main');
-
-  /**
-   * 是否正在輸入。
-   */
-  readonly typing = input<boolean>();
-
-  /**
-   * 是否為警告狀態。
-   * @default false
-   */
-  readonly warning = input(false);
-
   /** 清除按鈕點擊事件。 */
   readonly cleared = output<MouseEvent>();
-
-  protected readonly resolvedTyping = computed((): boolean => {
-    if (this.disabled() || this.readonly()) return false;
-
-    const typingProp = this.typing();
-
-    return typingProp !== undefined ? typingProp : this.isTyping();
-  });
 
   protected readonly shouldShowClearable = computed((): boolean => {
     if (!this.clearable()) return false;
     if (this.forceShowClearable()) return true;
+
     return (
-      this.hasValue() &&
-      (this.isHovered() || this.resolvedTyping() || this.isFocused())
+      this.host.hasValueState() &&
+      (this.host.isHoveredState() ||
+        this.host.resolvedTyping() ||
+        this.host.isFocusedState())
     );
   });
 
@@ -203,79 +167,16 @@ export class MznTextField implements AfterViewInit {
     }),
   );
 
-  protected readonly hostClasses = computed((): string =>
-    clsx(classes.host, {
-      [classes.slimGap]:
-        (this.hasPrefix() && this.hasSuffix()) || this.clearable(),
-      [classes.main]: this.size() === 'main',
-      [classes.sub]: this.size() === 'sub',
-      [classes.clearable]: this.clearable(),
-      [classes.clearing]: this.shouldShowClearable(),
-      [classes.disabled]: this.disabled(),
-      [classes.error]: this.error(),
-      [classes.fullWidth]: this.fullWidth(),
-      [classes.readonly]: this.readonly(),
-      [classes.typing]: this.resolvedTyping(),
-      [classes.active]: this.active(),
-      [classes.warning]: this.warning(),
-    }),
-  );
-
-  ngAfterViewInit(): void {
-    const host = this.hostRef.nativeElement;
-
-    const input = host.querySelector('input, textarea') as
-      | HTMLInputElement
-      | HTMLTextAreaElement
-      | null;
-
-    if (!input) return;
-
-    const checkValue = (): void => {
-      this.hasValue.set((input.value || '').trim().length > 0);
-    };
-
-    const handleInput = (): void => {
-      this.isTyping.set(true);
-      checkValue();
-    };
-
-    const handleFocus = (): void => {
-      this.isFocused.set(true);
-      checkValue();
-    };
-
-    const handleBlur = (): void => {
-      this.isTyping.set(false);
-      this.isFocused.set(false);
-      checkValue();
-    };
-
-    checkValue();
-
-    input.addEventListener('input', handleInput);
-    input.addEventListener('focus', handleFocus);
-    input.addEventListener('blur', handleBlur);
-    input.addEventListener('change', checkValue);
-
-    this.destroyRef.onDestroy(() => {
-      input.removeEventListener('input', handleInput);
-      input.removeEventListener('focus', handleFocus);
-      input.removeEventListener('blur', handleBlur);
-      input.removeEventListener('change', checkValue);
-    });
-  }
-
-  protected onMouseEnter(): void {
-    this.isHovered.set(true);
-  }
-
-  protected onMouseLeave(): void {
-    this.isHovered.set(false);
+  /**
+   * 透過 size input 讀取 host directive 的值,供 parent / 消費者能從 template 參考。
+   * (保留此 proxy 以維持原本的公開 API signature。)
+   */
+  get size(): TextFieldSize {
+    return this.host.size();
   }
 
   protected onClearClick(event: MouseEvent): void {
-    if (!this.disabled() && !this.readonly()) {
+    if (!this.host.disabled() && !this.host.readonly()) {
       this.cleared.emit(event);
     }
   }

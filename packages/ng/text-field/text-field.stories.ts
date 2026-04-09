@@ -11,14 +11,26 @@ import { MznTextField } from './text-field.component';
 
 const sizes: TextFieldSize[] = ['main', 'sub'];
 
-const meta: Meta<MznTextField> = {
+/**
+ * 外部型別,將 `MznTextField` component 與透過 `hostDirectives` 掛上的
+ * `MznTextFieldHost` directive 的 inputs 合併,讓 Storybook 的 argTypes
+ * 能同時看到兩邊的屬性(`disabled` / `error` / `readOnly` 等由 directive 暴露)。
+ */
+type MznTextFieldArgs = MznTextField & {
+  disabled: boolean;
+  error: boolean;
+  readonly: boolean;
+  size: TextFieldSize;
+};
+
+const meta: Meta<MznTextFieldArgs> = {
   title: 'Internal/TextField',
   component: MznTextField,
   decorators: [moduleMetadata({ imports: [MznTextField, MznIcon] })],
 };
 
 export default meta;
-type Story = StoryObj<MznTextField>;
+type Story = StoryObj<MznTextFieldArgs>;
 
 export const Playground: Story = {
   argTypes: {
