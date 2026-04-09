@@ -1,6 +1,6 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
-import { MznBreadcrumb } from './breadcrumb.component';
+import { BreadcrumbItemData, MznBreadcrumb } from './breadcrumb.component';
 import { MznBreadcrumbItem } from './breadcrumb-item.component';
 
 export default {
@@ -15,39 +15,38 @@ export default {
 
 type Story = StoryObj;
 
-export const Playground: Story = {
-  name: 'Playground',
-  argTypes: {
-    condensed: {
-      control: 'boolean',
-      description:
-        'Show only the last two items (condensed mode). Overflow dropdown is planned for a future release.',
-    },
-    items: {
-      control: 'object',
-      description: 'Array of breadcrumb items.',
-    },
+const breadcrumbItem: BreadcrumbItemData[] = [
+  { id: 'home', name: 'Home', href: '/' },
+  { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
+  {
+    id: 'subcategory',
+    name: 'Subcategory',
+    href: '/Category/Subcategory',
+    target: '_blank',
   },
-  args: {
-    condensed: false,
-    items: [
-      { id: 'home', name: 'Home', href: '/' },
-      { id: 'category', name: 'Category', href: '/category' },
-      { id: 'subcategory', name: 'Subcategory', href: '/category/subcategory' },
-      { id: 'current', name: 'Current Page' },
-    ],
+  { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
+  { id: 'detail', name: 'Detail', href: '/Category/Subcategory/Tab/Detail' },
+  {
+    id: 'history',
+    name: 'History',
+    href: '/Category/Subcategory/Tab/Detail/History',
   },
-  render: (args) => ({
-    props: args,
-    template: `<nav mznBreadcrumb [condensed]="condensed" [items]="items" ></nav>`,
-  }),
-};
+];
 
 export const Basic: Story = {
   parameters: {
     controls: { disable: true },
   },
   render: () => ({
+    props: {
+      items3: breadcrumbItem.slice(0, 3),
+      items4: breadcrumbItem.slice(0, 4),
+      items5: breadcrumbItem.slice(0, 5),
+      items6: breadcrumbItem,
+      condensed2: breadcrumbItem.slice(0, 2),
+      condensed3: breadcrumbItem.slice(0, 3),
+      condensed4: breadcrumbItem.slice(0, 4),
+    },
     template: `
       <div style="display: grid; gap: 64px; padding-bottom: 160px;">
         <div style="display: grid; gap: 40px;">
@@ -55,65 +54,37 @@ export const Basic: Story = {
 
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">3 items</span>
-            <nav mznBreadcrumb [items]="[
-              { id: 'home', name: 'Home', href: '/' },
-              { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
-              { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' }
-            ]" ></nav>
+            <nav mznBreadcrumb [items]="items3"></nav>
           </div>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">4 items</span>
-            <nav mznBreadcrumb [items]="[
-              { id: 'home', name: 'Home', href: '/' },
-              { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
-              { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
-              { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' }
-            ]" ></nav>
+            <nav mznBreadcrumb [items]="items4"></nav>
           </div>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">5 items</span>
-            <nav mznBreadcrumb [items]="[
-              { id: 'home', name: 'Home', href: '/' },
-              { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
-              { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
-              { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
-              { id: 'detail', name: 'Detail', href: '/Category/Subcategory/Tab/Detail' }
-            ]" ></nav>
+            <nav mznBreadcrumb [items]="items5"></nav>
           </div>
           <div style="display: grid; gap: 8px;">
             <span mznTypography variant="caption-highlight">6 items</span>
-            <nav mznBreadcrumb [items]="[
-              { id: 'home', name: 'Home', href: '/' },
-              { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
-              { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
-              { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
-              { id: 'detail', name: 'Detail', href: '/Category/Subcategory/Tab/Detail' },
-              { id: 'history', name: 'History', href: '/Category/Subcategory/Tab/Detail/History' }
-            ]" ></nav>
+            <nav mznBreadcrumb [items]="items6"></nav>
           </div>
         </div>
 
-        <div style="display: grid; gap: 40px;">
-          <h2 mznTypography variant="h2">Condensed</h2>
+        <div style="display: grid; gap: 24px;">
+          <h2 mznTypography variant="h2">Condensed Mode</h2>
+
           <div style="display: grid; gap: 8px;">
-            <span mznTypography variant="caption-highlight">condensed (5 items → shows last 2)</span>
-            <nav mznBreadcrumb [condensed]="true" [items]="[
-              { id: 'home', name: 'Home', href: '/' },
-              { id: 'category', name: 'Category', href: '/Category' },
-              { id: 'subcategory', name: 'Subcategory', href: '/Category/Subcategory' },
-              { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
-              { id: 'detail', name: 'Detail' }
-            ]" ></nav>
+            <span mznTypography variant="caption-highlight">2 items</span>
+            <nav mznBreadcrumb [condensed]="true" [items]="condensed2"></nav>
           </div>
           <div style="display: grid; gap: 8px;">
-            <span mznTypography variant="caption-highlight">condensed (3 items → shows last 2)</span>
-            <nav mznBreadcrumb [condensed]="true" [items]="[
-              { id: 'home', name: 'Home', href: '/' },
-              { id: 'category', name: 'Category', href: '/Category' },
-              { id: 'current', name: 'Current Page' }
-            ]" ></nav>
+            <span mznTypography variant="caption-highlight">3 items</span>
+            <nav mznBreadcrumb [condensed]="true" [items]="condensed3"></nav>
           </div>
-          <!-- NOTE: Overflow dropdown for collapsed middle items is planned for a future release. -->
+          <div style="display: grid; gap: 8px;">
+            <span mznTypography variant="caption-highlight">4 items</span>
+            <nav mznBreadcrumb [condensed]="true" [items]="condensed4"></nav>
+          </div>
         </div>
       </div>
     `,

@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { breadcrumbItemClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import clsx from 'clsx';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 
 /**
  * 麵包屑項目元件，代表路徑中的單一層級。
@@ -24,10 +25,13 @@ import clsx from 'clsx';
   selector: '[mznBreadcrumbItem]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTypography],
   host: {
     '[class]': 'hostClasses()',
+    '[attr.id]': 'itemId() ?? null',
     '[attr.current]': 'null',
     '[attr.href]': 'null',
+    '[attr.itemId]': 'null',
     '[attr.name]': 'null',
     '[attr.target]': 'null',
   },
@@ -39,11 +43,11 @@ import clsx from 'clsx';
         [target]="target()"
         (click)="onClick($event)"
       >
-        <span>{{ name() }}</span>
+        <span mznTypography [variant]="typographyVariant()">{{ name() }}</span>
       </a>
     } @else {
       <span [class]="triggerClass">
-        <span>{{ name() }}</span>
+        <span mznTypography [variant]="typographyVariant()">{{ name() }}</span>
       </span>
     }
   `,
@@ -60,6 +64,9 @@ export class MznBreadcrumbItem {
   /** 連結目標。 */
   readonly href = input<string>();
 
+  /** 項目唯一識別碼,綁定到 host 的 `id` 屬性。 */
+  readonly itemId = input<string>();
+
   /** 項目名稱。 */
   readonly name = input.required<string>();
 
@@ -73,6 +80,11 @@ export class MznBreadcrumbItem {
     clsx(classes.host, {
       [classes.current]: this.current(),
     }),
+  );
+
+  protected readonly typographyVariant = computed(
+    (): 'caption' | 'caption-highlight' =>
+      this.current() ? 'caption-highlight' : 'caption',
   );
 
   protected onClick(_event: MouseEvent): void {
