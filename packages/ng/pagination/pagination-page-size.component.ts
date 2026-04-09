@@ -49,6 +49,7 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
     }
     <div
       mznSelect
+      size="sub"
       [class]="selectClass"
       [disabled]="disabled()"
       [options]="selectOptions()"

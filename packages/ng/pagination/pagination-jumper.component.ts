@@ -4,9 +4,11 @@ import {
   computed,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { paginationJumperClasses as classes } from '@mezzanine-ui/core/pagination/paginationJumper';
 import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 
 /**
@@ -31,7 +33,7 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
 @Component({
   selector: '[mznPaginationJumper]',
   standalone: true,
-  imports: [MznButton, MznTypography],
+  imports: [MznButton, MznInput, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
@@ -48,20 +50,23 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
         hintText()
       }}</div>
     }
-    <input
-      #jumperInput
-      type="number"
+    <div
+      mznInput
+      variant="number"
+      size="sub"
       [class]="inputClass"
       [disabled]="disabled()"
       [placeholder]="inputPlaceholder() ?? ''"
-      (keydown.enter)="onSubmit(jumperInput)"
-    />
+      [value]="value()"
+      (valueChange)="value.set($event)"
+      (keydown.enter)="onSubmit()"
+    ></div>
     <button
       mznButton
       type="button"
       size="sub"
       [disabled]="disabled()"
-      (click)="onSubmit(jumperInput)"
+      (click)="onSubmit()"
       >{{ buttonText() }}</button
     >
   `,
@@ -99,6 +104,7 @@ export class MznPaginationJumper {
 
   protected readonly hostClass = classes.host;
   protected readonly inputClass = classes.input;
+  protected readonly value = signal('');
 
   private readonly totalPages = computed((): number => {
     const t = this.total();
@@ -106,14 +112,14 @@ export class MznPaginationJumper {
     return t ? Math.ceil(t / this.pageSize()) : 1;
   });
 
-  protected onSubmit(inputEl: HTMLInputElement): void {
-    const raw = Number(inputEl.value);
+  protected onSubmit(): void {
+    const raw = Number(this.value());
     const tp = this.totalPages();
 
     if (raw >= 1 && raw <= tp && Number.isInteger(raw)) {
       this.pageChanged.emit(raw);
     }
 
-    inputEl.value = '';
+    this.value.set('');
   }
 }
