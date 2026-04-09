@@ -82,7 +82,7 @@ const SIDE_TO_ROTATION: Record<string, number> = {
   host: {
     '[class]': 'hostClasses()',
     '[attr.aria-disabled]': 'resolvedDisabled()',
-    '[attr.disabled]': 'resolvedDisabled() || null',
+    '[attr.disabled]': "resolvedDisabled() ? '' : null",
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
   },
@@ -99,9 +99,9 @@ export class MznButton {
   private leaveTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Spin element rendered when loading=true */
-  private spinWrapperEl: HTMLSpanElement | null = null;
-  /** Original children hidden during loading */
-  private hiddenChildren: { node: ChildNode; display: string }[] = [];
+  private spinWrapperEl: HTMLDivElement | null = null;
+  /** Original children detached into a fragment during loading */
+  private detachedChildren: DocumentFragment | null = null;
 
   constructor() {
     // Capture-phase click interception for disabled/loading
@@ -216,27 +216,23 @@ export class MznButton {
 
     if (this.spinWrapperEl) return;
 
-    // Hide existing children (set display: none on each)
-    this.hiddenChildren = [];
-    el.childNodes.forEach((node: ChildNode) => {
-      if (node instanceof HTMLElement) {
-        this.hiddenChildren.push({ node, display: node.style.display });
-        node.style.display = 'none';
-      } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-        // Wrap text nodes in a span so we can hide them
-        const wrapper = this.renderer.createElement('span') as HTMLSpanElement;
+    // Detach existing children into a fragment so we can restore them later.
+    // This matches React's behaviour of swapping children entirely during
+    // loading (no leftover hidden wrappers in the DOM tree).
+    const fragment = document.createDocumentFragment();
 
-        wrapper.style.display = 'none';
-        wrapper.setAttribute('data-mzn-loading-hidden', '');
-        el.insertBefore(wrapper, node);
-        wrapper.appendChild(node);
-        this.hiddenChildren.push({ node: wrapper, display: '' });
-      }
-    });
+    while (el.firstChild) {
+      fragment.appendChild(el.firstChild);
+    }
+
+    this.detachedChildren = fragment;
 
     // Create spin element using spinClasses (host + size + ring + tail) from @mezzanine-ui/core/spin.
-    this.spinWrapperEl = this.renderer.createElement('span') as HTMLSpanElement;
-    this.spinWrapperEl.className = `${spinClasses.spin} ${spinClasses.size('minor')}`;
+    // React's <Spin loading size="minor" /> standalone path renders a <div>,
+    // so we mirror that tag exactly.
+    const wrapper = this.renderer.createElement('div') as HTMLDivElement;
+
+    wrapper.className = `${spinClasses.spin} ${spinClasses.size('minor')}`;
 
     const ring = this.renderer.createElement('span') as HTMLSpanElement;
 
@@ -247,8 +243,9 @@ export class MznButton {
     tail.className = spinClasses.spinnerTail;
 
     ring.appendChild(tail);
-    this.spinWrapperEl.appendChild(ring);
-    el.appendChild(this.spinWrapperEl);
+    wrapper.appendChild(ring);
+    el.appendChild(wrapper);
+    this.spinWrapperEl = wrapper;
   }
 
   private removeSpinElement(): void {
@@ -257,27 +254,10 @@ export class MznButton {
       this.spinWrapperEl = null;
     }
 
-    // Restore hidden children
-    for (const { node, display } of this.hiddenChildren) {
-      if (node instanceof HTMLElement) {
-        if (node.hasAttribute('data-mzn-loading-hidden')) {
-          // Unwrap text nodes
-          const parent = node.parentNode;
-
-          if (parent) {
-            while (node.firstChild) {
-              parent.insertBefore(node.firstChild, node);
-            }
-
-            parent.removeChild(node);
-          }
-        } else {
-          node.style.display = display;
-        }
-      }
+    if (this.detachedChildren) {
+      this.elRef.nativeElement.appendChild(this.detachedChildren);
+      this.detachedChildren = null;
     }
-
-    this.hiddenChildren = [];
   }
 
   protected onMouseEnter(): void {
