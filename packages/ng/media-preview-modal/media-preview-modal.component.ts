@@ -15,10 +15,7 @@ import clsx from 'clsx';
 import { MznBackdrop } from '@mezzanine-ui/ng/backdrop';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import {
-  mznScaleAnimation,
-  mznFadeAnimation,
-} from '@mezzanine-ui/ng/transition';
+import { MznScale, MznFade } from '@mezzanine-ui/ng/transition';
 import { EscapeKeyService } from '@mezzanine-ui/ng/services';
 import { TopStackService } from '@mezzanine-ui/ng/services';
 import { ScrollLockService } from '@mezzanine-ui/ng/services';
@@ -58,9 +55,8 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
 @Component({
   selector: '[mznMediaPreviewModal]',
   standalone: true,
-  imports: [MznBackdrop, MznClearActions, MznIcon],
+  imports: [MznBackdrop, MznClearActions, MznIcon, MznScale, MznFade],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznScaleAnimation, mznFadeAnimation],
   host: {
     '[class]': 'hostClasses()',
     '[attr.open]': 'null',
@@ -83,25 +79,27 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
       [disablePortal]="disablePortal()"
       (closed)="onBackdropClose()"
     >
-      @if (open()) {
-        <div class="mzn-modal__content-wrapper" @mznScale>
+      <div mznScale [in]="open()">
+        <div class="mzn-modal__content-wrapper">
           <div class="mzn-modal__media-preview-content">
             <div class="mzn-modal__media-preview-media-container">
               @for (idx of displayedIndices(); track idx) {
                 @if (isStringItem(mediaItems()[idx])) {
-                  <img
-                    class="mzn-modal__media-preview-image"
-                    @mznFade
-                    [src]="asString(mediaItems()[idx])"
-                    [alt]="'Media ' + (idx + 1)"
-                    style="width: 100%; height: 100%; object-fit: contain;"
-                  />
+                  <span mznFade [in]="true">
+                    <img
+                      class="mzn-modal__media-preview-image"
+                      [src]="asString(mediaItems()[idx])"
+                      [alt]="'Media ' + (idx + 1)"
+                      style="width: 100%; height: 100%; object-fit: contain;"
+                    />
+                  </span>
                 }
               }
             </div>
           </div>
         </div>
-
+      </div>
+      @if (open()) {
         <button
           mznClearActions
           class="mzn-modal__media-preview-close-button"

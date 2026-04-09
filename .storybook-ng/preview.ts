@@ -1,6 +1,13 @@
-import type { Preview } from '@storybook/angular';
+import { importProvidersFrom } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { applicationConfig, type Preview } from '@storybook/angular';
 
 const preview: Preview = {
+  decorators: [
+    applicationConfig({
+      providers: [importProvidersFrom(BrowserAnimationsModule)],
+    }),
+  ],
   parameters: {
     docs: {},
     backgrounds: {

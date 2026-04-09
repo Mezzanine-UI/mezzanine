@@ -7,6 +7,7 @@ import {
   input,
   OnInit,
   output,
+  signal,
 } from '@angular/core';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import {
@@ -17,7 +18,7 @@ import {
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznSpin } from '@mezzanine-ui/ng/spin';
-import { mznTranslateBottomAnimation } from '@mezzanine-ui/ng/transition';
+import { MznTranslate } from '@mezzanine-ui/ng/transition';
 import { messageTimerController } from './message-timer-controller';
 
 /**
@@ -35,13 +36,11 @@ import { messageTimerController } from './message-timer-controller';
 @Component({
   selector: '[mznMessage]',
   standalone: true,
-  imports: [MznIcon, MznSpin],
+  imports: [MznIcon, MznSpin, MznTranslate],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznTranslateBottomAnimation],
   host: {
     '[class]': 'hostClasses()',
     role: 'status',
-    '[@mznTranslateBottom]': '""',
     '(mouseenter)': 'onHoverStart()',
     '(mouseleave)': 'onHoverEnd()',
     '(focus)': 'onHoverStart()',
@@ -54,14 +53,16 @@ import { messageTimerController } from './message-timer-controller';
     '[attr.severity]': 'null',
   },
   template: `
-    @if (severity() === 'loading') {
-      <span [class]="iconClass">
-        <div mznSpin [loading]="true" size="minor"></div>
-      </span>
-    } @else if (resolvedIcon(); as icon) {
-      <i mznIcon [icon]="icon" [class]="iconClass"></i>
-    }
-    <span [class]="contentClass">{{ message() }}</span>
+    <div mznTranslate [in]="mounted()" from="bottom">
+      @if (severity() === 'loading') {
+        <span [class]="iconClass">
+          <div mznSpin [loading]="true" size="minor"></div>
+        </span>
+      } @else if (resolvedIcon(); as icon) {
+        <i mznIcon [icon]="icon" [class]="iconClass"></i>
+      }
+      <span [class]="contentClass">{{ message() }}</span>
+    </div>
   `,
 })
 export class MznMessage implements OnInit {
@@ -128,8 +129,13 @@ export class MznMessage implements OnInit {
 
   protected readonly iconClass = classes.icon;
   protected readonly contentClass = classes.content;
+  protected readonly mounted = signal(false);
 
   ngOnInit(): void {
+    // Trigger enter transition on next microtask so MznTranslate observes
+    // the false → true flip and plays the :enter animation.
+    queueMicrotask(() => this.mounted.set(true));
+
     this.remainingTime =
       typeof this.duration() === 'number' ? (this.duration() as number) : 0;
     this.startTimer();

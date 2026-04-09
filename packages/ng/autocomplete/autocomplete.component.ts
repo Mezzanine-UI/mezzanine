@@ -43,7 +43,7 @@ import { SelectTriggerTagValue } from '@mezzanine-ui/ng/select';
 import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznTextField } from '@mezzanine-ui/ng/text-field';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
-import { mznTranslateTopAnimation } from '@mezzanine-ui/ng/transition';
+import { MznTranslate } from '@mezzanine-ui/ng/transition';
 import { highlightText, provideValueAccessor } from '@mezzanine-ui/ng/utils';
 
 /**
@@ -132,10 +132,10 @@ export function getFullParsedList(
     MznInputTriggerPopper,
     MznTag,
     MznTextField,
+    MznTranslate,
   ],
   providers: [provideValueAccessor(MznAutocomplete)],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznTranslateTopAnimation],
   host: {
     '[class]': 'hostClasses()',
     '[attr.active]': 'null',
@@ -329,17 +329,16 @@ export function getFullParsedList(
     }
     <!-- Inside mode: render inline (no popper), matching React Dropdown isInline behavior -->
     @if (inputPosition() === 'inside') {
-      @if (isOpen()) {
+      <div mznTranslate [in]="isOpen()" from="top">
         <div
           [class]="dropdownRootClass()"
-          @mznTranslateTop
           (click)="$event.stopPropagation()"
           (touchstart)="$event.stopPropagation()"
           (touchend)="$event.stopPropagation()"
         >
           <ng-container *ngTemplateOutlet="dropdownContentTpl" />
         </div>
-      }
+      </div>
     } @else {
       <!-- Outside mode: use popper for floating positioning -->
       <div
@@ -348,11 +347,11 @@ export function getFullParsedList(
         [open]="isOpen()"
         [sameWidth]="true"
       >
-        @if (isOpen()) {
-          <div [class]="dropdownRootClass()" @mznTranslateTop>
+        <div mznTranslate [in]="isOpen()" from="top">
+          <div [class]="dropdownRootClass()">
             <ng-container *ngTemplateOutlet="dropdownContentTpl" />
           </div>
-        }
+        </div>
       </div>
     }
     <!-- Shared dropdown content template -->

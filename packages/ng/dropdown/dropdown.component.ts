@@ -22,7 +22,7 @@ import { IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
-import { mznTranslateTopAnimation } from '@mezzanine-ui/ng/transition';
+import { MznTranslate } from '@mezzanine-ui/ng/transition';
 import type { DropdownActionProps } from './dropdown-action.component';
 import { MznDropdownItem } from './dropdown-item.component';
 
@@ -77,9 +77,8 @@ export interface DropdownActionConfig {
 @Component({
   selector: '[mznDropdown]',
   standalone: true,
-  imports: [MznPopper, MznDropdownItem],
+  imports: [MznPopper, MznDropdownItem, MznTranslate],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznTranslateTopAnimation],
   host: {
     '[attr.name]': 'name() ?? null',
     '[attr.actionCancelText]': 'null',
@@ -123,8 +122,8 @@ export interface DropdownActionConfig {
       [offsetOptions]="{ mainAxis: 4 }"
       [style.z-index]="zIndex() ?? null"
     >
-      @if (open()) {
-        <div [class]="resolvedRootClass()" @mznTranslateTop>
+      <div mznTranslate [in]="open()" from="top">
+        <div [class]="resolvedRootClass()">
           @if (showHeader()) {
             <li [class]="listHeaderClass" role="presentation">
               <div [class]="listHeaderInnerClass">
@@ -161,7 +160,7 @@ export interface DropdownActionConfig {
             (selected)="onItemSelected($event)"
           ></div>
         </div>
-      }
+      </div>
     </div>
   `,
 })

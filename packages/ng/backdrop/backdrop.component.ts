@@ -14,7 +14,7 @@ import {
 } from '@mezzanine-ui/core/backdrop';
 import clsx from 'clsx';
 import { MznPortal } from '@mezzanine-ui/ng/portal';
-import { mznFadeAnimation } from '@mezzanine-ui/ng/transition';
+import { MznFade } from '@mezzanine-ui/ng/transition';
 import { ScrollLockService } from '@mezzanine-ui/ng/services';
 
 /**
@@ -44,9 +44,8 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
     '[attr.disablePortal]': 'null',
   },
   standalone: true,
-  imports: [MznPortal],
+  imports: [MznPortal, MznFade],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznFadeAnimation],
   template: `
     <div mznPortal [disablePortal]="disablePortal()">
       <div
@@ -55,14 +54,13 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
         [attr.aria-hidden]="!open()"
       >
         <div [class]="mainClass">
-          @if (open()) {
+          <div mznFade [in]="open()">
             <div
               [class]="backdropClasses()"
               aria-hidden="true"
-              @mznFade
               (click)="onBackdropClick()"
             ></div>
-          }
+          </div>
           <div [class]="contentClass">
             <ng-content />
           </div>

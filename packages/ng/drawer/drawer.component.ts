@@ -28,7 +28,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { FormsModule } from '@angular/forms';
 import { MznRadio } from '@mezzanine-ui/ng/radio';
 import { MznRadioGroup } from '@mezzanine-ui/ng/radio';
-import { mznSlideRightAnimation } from '@mezzanine-ui/ng/transition';
+import { MznSlide } from '@mezzanine-ui/ng/transition';
 import { EscapeKeyService } from '@mezzanine-ui/ng/services';
 import { TopStackService } from '@mezzanine-ui/ng/services';
 
@@ -149,9 +149,9 @@ export interface DrawerFilterConfig {
     MznIcon,
     MznRadio,
     MznRadioGroup,
+    MznSlide,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznSlideRightAnimation],
   template: `
     <div
       mznBackdrop
@@ -161,8 +161,8 @@ export interface DrawerFilterConfig {
       (closed)="closed.emit()"
       (backdropClick)="backdropClick.emit()"
     >
-      @if (open()) {
-        <div [class]="hostClasses()" @mznSlideRight>
+      <div mznSlide [in]="open()" from="right">
+        <div [class]="hostClasses()">
           @if (isHeaderDisplay() || headerTitle()) {
             <div [class]="headerClass">
               {{ headerTitle() }}
@@ -335,7 +335,7 @@ export interface DrawerFilterConfig {
             <ng-content select="[mznDrawerBottom]" />
           }
         </div>
-      }
+      </div>
     </div>
   `,
 })

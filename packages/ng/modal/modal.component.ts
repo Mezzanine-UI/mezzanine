@@ -17,7 +17,7 @@ import {
 import clsx from 'clsx';
 import { MznBackdrop } from '@mezzanine-ui/ng/backdrop';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
-import { mznScaleAnimation } from '@mezzanine-ui/ng/transition';
+import { MznScale } from '@mezzanine-ui/ng/transition';
 import { EscapeKeyService } from '@mezzanine-ui/ng/services';
 import { TopStackService } from '@mezzanine-ui/ng/services';
 import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
@@ -68,9 +68,8 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
     '[attr.size]': 'null',
   },
   standalone: true,
-  imports: [MznBackdrop, MznClearActions],
+  imports: [MznBackdrop, MznClearActions, MznScale],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznScaleAnimation],
   providers: [
     {
       provide: MZN_MODAL_CONTEXT,
@@ -105,8 +104,8 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
       (backdropClick)="backdropClick.emit()"
     >
       <div [class]="contentWrapperClass">
-        @if (open()) {
-          <div [class]="hostClasses()" role="dialog" @mznScale>
+        <div mznScale [in]="open()">
+          <div [class]="hostClasses()" role="dialog">
             @if (showModalHeader()) {
               <ng-content select="[mznModalHeader]" />
             }
@@ -123,7 +122,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
               ></button>
             }
           </div>
-        }
+        </div>
       </div>
     </div>
   `,

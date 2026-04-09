@@ -1,12 +1,4 @@
 import {
-  animate,
-  AnimationEvent,
-  AnimationTriggerMetadata,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -24,23 +16,18 @@ import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { MznTag } from '@mezzanine-ui/ng/tag';
+import { MznFade } from '@mezzanine-ui/ng/transition';
 import clsx from 'clsx';
 
-const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
-  transition(':enter', [
-    style({ opacity: 0 }),
-    animate(
-      `${MOTION_DURATION.fast}ms ${MOTION_EASING.standard}`,
-      style({ opacity: 1 }),
-    ),
-  ]),
-  transition(':leave', [
-    animate(
-      `${MOTION_DURATION.fast}ms ${MOTION_EASING.standard}`,
-      style({ opacity: 0 }),
-    ),
-  ]),
-]);
+const FADE_FAST_DURATION = {
+  enter: MOTION_DURATION.fast,
+  exit: MOTION_DURATION.fast,
+};
+
+const FADE_FAST_EASING = {
+  enter: MOTION_EASING.standard,
+  exit: MOTION_EASING.standard,
+};
 
 /**
  * 浮動標籤面板元件，用於顯示溢出標籤清單。
@@ -75,9 +62,8 @@ const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
     '[attr.tags]': 'null',
   },
   standalone: true,
-  imports: [MznPopper, MznTag],
+  imports: [MznPopper, MznTag, MznFade],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznFadeFast],
   template: `
     <div
       mznPopper
@@ -88,13 +74,14 @@ const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
       [offsetOptions]="offsetConfig"
       [class]="hostClasses()"
     >
-      @if (open()) {
-        <div
-          #contentEl
-          [class]="classes.content"
-          @mznFadeFast
-          (@mznFadeFast.done)="onFadeDone($event)"
-        >
+      <div
+        mznFade
+        [in]="open()"
+        [duration]="fadeFastDuration"
+        [easing]="fadeFastEasing"
+        (onExited)="onFadeExited()"
+      >
+        <div #contentEl [class]="classes.content">
           @for (tag of tags(); track $index) {
             @if (readOnly()) {
               <span
@@ -115,12 +102,14 @@ const mznFadeFast: AnimationTriggerMetadata = trigger('mznFadeFast', [
             }
           }
         </div>
-      }
+      </div>
     </div>
   `,
 })
 export class MznOverflowTooltip {
   protected readonly classes = classes;
+  protected readonly fadeFastDuration = FADE_FAST_DURATION;
+  protected readonly fadeFastEasing = FADE_FAST_EASING;
 
   protected readonly arrowConfig = {
     enabled: true,
@@ -243,9 +232,7 @@ export class MznOverflowTooltip {
     });
   }
 
-  protected onFadeDone(event: AnimationEvent): void {
-    if (event.toState === 'void') {
-      this.popperOpen.set(false);
-    }
+  protected onFadeExited(): void {
+    this.popperOpen.set(false);
   }
 }
