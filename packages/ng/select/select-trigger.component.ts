@@ -64,9 +64,16 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
       <span [class]="prefixClass">{{ prefix() }}</span>
     }
 
-    <span [class]="triggerInputClass">
-      {{ hasValue() ? displayText() : placeholder() }}
-    </span>
+    <input
+      readonly
+      type="text"
+      aria-autocomplete="list"
+      aria-haspopup="listbox"
+      autocomplete="off"
+      [class]="triggerInputClass"
+      [value]="hasValue() ? displayText() : ''"
+      [attr.placeholder]="hasValue() ? null : placeholder()"
+    />
     <ng-content />
 
     @if (clearable() && hasValue()) {
@@ -166,6 +173,9 @@ export class MznSelectTrigger {
 
   protected readonly hostClasses = computed((): string =>
     clsx(
+      textFieldClasses.host,
+      textFieldClasses.fullWidth,
+      this.size() === 'sub' ? textFieldClasses.sub : textFieldClasses.main,
       classes.trigger,
       classes.triggerMode(this.mode()),
       classes.triggerSelected(this.hasValue() ? true : null),

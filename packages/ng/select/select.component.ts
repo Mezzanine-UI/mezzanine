@@ -24,10 +24,11 @@ import {
 } from '@mezzanine-ui/core/dropdown';
 import { ChevronDownIcon, CheckedIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
+import { MznDropdownItemCard } from '@mezzanine-ui/ng/dropdown';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznInputTriggerPopper } from '@mezzanine-ui/ng/_internal';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
-import { mznTranslateTopAnimation } from '@mezzanine-ui/ng/transition';
+import { MznTranslate } from '@mezzanine-ui/ng/transition';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import { MznSelectTrigger } from './select-trigger.component';
 import {
@@ -64,10 +65,11 @@ import {
     MznInputTriggerPopper,
     MznSelectTrigger,
     MznSelectTriggerTags,
+    MznDropdownItemCard,
+    MznTranslate,
   ],
   providers: [provideValueAccessor(MznSelect)],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [mznTranslateTopAnimation],
   host: {
     '[class]': 'hostClasses()',
     '[attr.className]': 'null',
@@ -128,11 +130,10 @@ import {
       [open]="isOpen()"
       [sameWidth]="true"
     >
-      @if (isOpen()) {
+      <div mznTranslate [in]="isOpen()" from="top">
         <div
           [class]="dropdownRootClass"
           [style.max-height.px]="menuMaxHeight()"
-          @mznTranslateTop
         >
           <div [class]="listWrapperClass" (scroll)="onListScroll($event)">
             @if (loading() && loadingPosition() === 'full') {
@@ -143,21 +144,13 @@ import {
             }
             <ul [class]="listClass" role="listbox">
               @for (option of options(); track option.id) {
-                <li
-                  role="option"
-                  [class]="optionClasses(option)"
-                  [attr.aria-selected]="isSelected(option)"
-                  (click)="onOptionClick(option); $event.stopPropagation()"
-                >
-                  <span [class]="cardBodyClass">
-                    <span [class]="cardTitleClass">{{ option.name }}</span>
-                  </span>
-                  @if (isSelected(option)) {
-                    <span [class]="appendClass">
-                      <i mznIcon [icon]="checkedIcon"></i>
-                    </span>
-                  }
-                </li>
+                <div
+                  mznDropdownItemCard
+                  [mode]="mode()"
+                  [label]="option.name"
+                  [checked]="isSelected(option)"
+                  (clicked)="onOptionClick(option)"
+                ></div>
               }
             </ul>
             @if (loading() && loadingPosition() === 'bottom') {
@@ -168,7 +161,7 @@ import {
             }
           </div>
         </div>
-      }
+      </div>
     </div>
   `,
 })
