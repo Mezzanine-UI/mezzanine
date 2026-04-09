@@ -7,6 +7,10 @@
 /out-tsc
 /storybook-static
 **/storybook-static
+/storybook-ng-static
+**/storybook-ng-static
+/.storybook-ng/preview.js
+/.storybook-ng/preview.d.ts
 documentation.json
 **/documentation.json
 
