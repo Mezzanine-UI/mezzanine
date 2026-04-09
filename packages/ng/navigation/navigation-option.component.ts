@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   forwardRef,
   inject,
   input,
@@ -73,6 +74,7 @@ import {
         <span [class]="titleWrapperClass">
           <span [class]="titleClass">{{ title() }}</span>
         </span>
+        <ng-content select="[navBadge]" />
         @if (hasChildren()) {
           <i mznIcon [class]="toggleIconClass" [icon]="toggleIcon()"></i>
         }
@@ -191,6 +193,28 @@ export class MznNavigationOption implements NavigationOptionLevel {
     if (this.defaultOpen()) {
       this.open.set(true);
     }
+
+    // Auto-open when the activated path matches or is a descendant of
+    // this option's current path (prefix match). Mirrors React's
+    // `useEffect` in `NavigationOption.tsx` that listens to
+    // `activatedPathKey`.
+    effect(() => {
+      const activatedPath = this.navState?.activatedPath;
+
+      if (!activatedPath || activatedPath.length === 0) return;
+
+      const current = this.currentPath();
+
+      if (current.length === 0 || current.length > activatedPath.length) {
+        return;
+      }
+
+      for (let i = 0; i < current.length; i += 1) {
+        if (current[i] !== activatedPath[i]) return;
+      }
+
+      this.open.set(true);
+    });
   }
 
   protected onTriggerClick(): void {

@@ -27,11 +27,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
     '[attr.active]': 'null',
     '[attr.icon]': 'null',
   },
-  template: `
-    <button type="button">
-      <i mznIcon [icon]="icon()" [size]="16"></i>
-    </button>
-  `,
+  template: ` <i mznIcon [icon]="icon()" [size]="16"></i> `,
 })
 export class MznNavigationIconButton {
   /**

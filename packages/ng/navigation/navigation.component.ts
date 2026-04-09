@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { navigationClasses as classes } from '@mezzanine-ui/core/navigation';
+import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import {
@@ -85,7 +86,7 @@ export type NavigationItemConfig =
   selector: '[mznNavigation]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznNavigationOption, MznNavigationOptionCategory],
+  imports: [MznNavigationOption, MznNavigationOptionCategory, MznScrollbar],
   providers: [
     {
       provide: MZN_NAVIGATION_ACTIVATED,
@@ -123,81 +124,87 @@ export type NavigationItemConfig =
   template: `
     <ng-content select="[mznNavigationHeader]" />
     <div [class]="contentClass">
-      <ul [class]="listClass">
-        @if (items(); as itemList) {
-          @for (item of itemList; track item.title) {
-            @if (isCategoryConfig(item)) {
-              <mzn-navigation-option-category [title]="item.title">
-                @for (child of item.children ?? []; track child.title) {
-                  <mzn-navigation-option
-                    [active]="child.active"
-                    [defaultOpen]="child.defaultOpen ?? false"
-                    [hasChildren]="(child.children?.length ?? 0) > 0"
-                    [href]="child.href"
-                    [icon]="child.icon"
-                    [optionId]="child.id"
-                    [title]="child.title"
-                  >
-                    @for (
-                      grandchild of child.children ?? [];
-                      track grandchild.title
-                    ) {
-                      <mzn-navigation-option
-                        [active]="grandchild.active"
-                        [defaultOpen]="grandchild.defaultOpen ?? false"
-                        [hasChildren]="(grandchild.children?.length ?? 0) > 0"
-                        [href]="grandchild.href"
-                        [icon]="grandchild.icon"
-                        [optionId]="grandchild.id"
-                        [title]="grandchild.title"
-                      />
-                    }
-                  </mzn-navigation-option>
-                }
-              </mzn-navigation-option-category>
-            } @else {
-              <mzn-navigation-option
-                [active]="item.active"
-                [defaultOpen]="item.defaultOpen ?? false"
-                [hasChildren]="(item.children?.length ?? 0) > 0"
-                [href]="item.href"
-                [icon]="item.icon"
-                [optionId]="item.id"
-                [title]="item.title"
-              >
-                @for (child of item.children ?? []; track child.title) {
-                  <mzn-navigation-option
-                    [active]="child.active"
-                    [defaultOpen]="child.defaultOpen ?? false"
-                    [hasChildren]="(child.children?.length ?? 0) > 0"
-                    [href]="child.href"
-                    [icon]="child.icon"
-                    [optionId]="child.id"
-                    [title]="child.title"
-                  >
-                    @for (
-                      grandchild of child.children ?? [];
-                      track grandchild.title
-                    ) {
-                      <mzn-navigation-option
-                        [active]="grandchild.active"
-                        [defaultOpen]="grandchild.defaultOpen ?? false"
-                        [hasChildren]="(grandchild.children?.length ?? 0) > 0"
-                        [href]="grandchild.href"
-                        [icon]="grandchild.icon"
-                        [optionId]="grandchild.id"
-                        [title]="grandchild.title"
-                      />
-                    }
-                  </mzn-navigation-option>
-                }
-              </mzn-navigation-option>
+      <div
+        mznScrollbar
+        [disabled]="resolvedCollapsed()"
+        style="flex: 1 1 0; min-height: 0;"
+      >
+        <ul [class]="listClass">
+          @if (items(); as itemList) {
+            @for (item of itemList; track item.title) {
+              @if (isCategoryConfig(item)) {
+                <mzn-navigation-option-category [title]="item.title">
+                  @for (child of item.children ?? []; track child.title) {
+                    <mzn-navigation-option
+                      [active]="child.active"
+                      [defaultOpen]="child.defaultOpen ?? false"
+                      [hasChildren]="(child.children?.length ?? 0) > 0"
+                      [href]="child.href"
+                      [icon]="child.icon"
+                      [optionId]="child.id"
+                      [title]="child.title"
+                    >
+                      @for (
+                        grandchild of child.children ?? [];
+                        track grandchild.title
+                      ) {
+                        <mzn-navigation-option
+                          [active]="grandchild.active"
+                          [defaultOpen]="grandchild.defaultOpen ?? false"
+                          [hasChildren]="(grandchild.children?.length ?? 0) > 0"
+                          [href]="grandchild.href"
+                          [icon]="grandchild.icon"
+                          [optionId]="grandchild.id"
+                          [title]="grandchild.title"
+                        />
+                      }
+                    </mzn-navigation-option>
+                  }
+                </mzn-navigation-option-category>
+              } @else {
+                <mzn-navigation-option
+                  [active]="item.active"
+                  [defaultOpen]="item.defaultOpen ?? false"
+                  [hasChildren]="(item.children?.length ?? 0) > 0"
+                  [href]="item.href"
+                  [icon]="item.icon"
+                  [optionId]="item.id"
+                  [title]="item.title"
+                >
+                  @for (child of item.children ?? []; track child.title) {
+                    <mzn-navigation-option
+                      [active]="child.active"
+                      [defaultOpen]="child.defaultOpen ?? false"
+                      [hasChildren]="(child.children?.length ?? 0) > 0"
+                      [href]="child.href"
+                      [icon]="child.icon"
+                      [optionId]="child.id"
+                      [title]="child.title"
+                    >
+                      @for (
+                        grandchild of child.children ?? [];
+                        track grandchild.title
+                      ) {
+                        <mzn-navigation-option
+                          [active]="grandchild.active"
+                          [defaultOpen]="grandchild.defaultOpen ?? false"
+                          [hasChildren]="(grandchild.children?.length ?? 0) > 0"
+                          [href]="grandchild.href"
+                          [icon]="grandchild.icon"
+                          [optionId]="grandchild.id"
+                          [title]="grandchild.title"
+                        />
+                      }
+                    </mzn-navigation-option>
+                  }
+                </mzn-navigation-option>
+              }
             }
+          } @else {
+            <ng-content />
           }
-        } @else {
-          <ng-content />
-        }
-      </ul>
+        </ul>
+      </div>
     </div>
     <ng-content select="[mznNavigationFooter]" />
   `,

@@ -56,13 +56,17 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon, MznDropdown],
   host: {
-    '[style.display]': "'contents'",
+    '[style.display]': "'block'",
+    '[style.min-width]': "'0'",
+    '[style.flex]': "'0 1 auto'",
+    '[style.overflow]': "'hidden'",
   },
   template: `
     <button
       #menuBtn
       type="button"
       [class]="hostClasses()"
+      style="max-width: 100%; min-width: 0;"
       (click)="toggleMenu()"
     >
       <span [class]="classes.content">
@@ -80,7 +84,7 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
         </span>
         <span [class]="classes.userName">
           <span #userNameEl>
-            <ng-content select="[userName]" />
+            <ng-content />
           </span>
         </span>
         <i mznIcon [class]="classes.icon" [icon]="chevronDownIcon"></i>
