@@ -1,30 +1,11 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { PlusIcon } from '@mezzanine-ui/icons';
-import {
-  ButtonGroupOrientation,
-  ButtonSize,
-  ButtonVariant,
-} from '@mezzanine-ui/core/button';
+import { ButtonGroupOrientation } from '@mezzanine-ui/core/button';
 import { MznButton } from './button.directive';
 import { MznButtonGroup } from './button-group.component';
 import { MznIcon } from '../icon/icon.component';
 
 const orientations: ButtonGroupOrientation[] = ['horizontal', 'vertical'];
-const sizes: ButtonSize[] = ['main', 'sub', 'minor'];
-const variants: ButtonVariant[] = [
-  'base-primary',
-  'base-secondary',
-  'base-tertiary',
-  'base-ghost',
-  'base-dashed',
-  'base-text-link',
-  'destructive-primary',
-  'destructive-secondary',
-  'destructive-ghost',
-  'destructive-text-link',
-  'inverse',
-  'inverse-ghost',
-];
 
 export default {
   title: 'Foundation/Button/ButtonGroup',
@@ -39,72 +20,32 @@ type Story = StoryObj;
 
 export const Playground: Story = {
   argTypes: {
-    disabled: {
-      control: { type: 'boolean' },
-      description:
-        'If the disabled of a button inside group not provided, the disabled of group will override it.',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-    fullWidth: {
-      control: { type: 'boolean' },
-      description: 'If true, set width: 100%.',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
     orientation: {
       options: orientations,
       control: { type: 'select' },
-      description: 'The orientation of button group.',
-      table: {
-        type: {
-          summary: orientations.map((o) => `'${o}'`).join(' | '),
-        },
-        defaultValue: { summary: "'horizontal'" },
-      },
-    },
-    size: {
-      options: sizes,
-      control: { type: 'select' },
-      description:
-        'If the size of a button inside group not provided, the size of group will override it.',
-      table: {
-        type: { summary: sizes.map((s) => `'${s}'`).join(' | ') },
-        defaultValue: { summary: "'main'" },
-      },
-    },
-    variant: {
-      options: variants,
-      control: { type: 'select' },
-      description:
-        'If the variant of a button inside group not provided, the variant of group will override it.',
-      table: {
-        type: { summary: variants.map((v) => `'${v}'`).join(' | ') },
-        defaultValue: { summary: "'base-primary'" },
-      },
     },
   },
   args: {
-    disabled: false,
-    fullWidth: false,
     orientation: 'horizontal',
-    size: 'main',
-    variant: 'base-primary',
   },
   render: (args) => ({
     props: args,
     template: `
-      <div mznButtonGroup
-        [variant]="variant"
-        [size]="size"
-        [orientation]="orientation"
-        [disabled]="disabled"
-        [fullWidth]="fullWidth"
-      >
+      <div mznButtonGroup variant="base-primary" size="main" [orientation]="orientation">
+        <button mznButton>One</button>
+        <button mznButton>Two</button>
+        <button mznButton>Three</button>
+      </div>
+      <br />
+      <br />
+      <div mznButtonGroup variant="base-secondary" size="sub" [orientation]="orientation">
+        <button mznButton>One</button>
+        <button mznButton>Two</button>
+        <button mznButton>Three</button>
+      </div>
+      <br />
+      <br />
+      <div mznButtonGroup variant="destructive-primary" size="minor" [orientation]="orientation">
         <button mznButton>One</button>
         <button mznButton>Two</button>
         <button mznButton>Three</button>
