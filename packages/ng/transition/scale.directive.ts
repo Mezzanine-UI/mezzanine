@@ -59,6 +59,7 @@ const defaultEasing: TransitionEasing = {
   template: `
     <div
       #scaleRoot
+      [style.display]="'inline-block'"
       [style.opacity]="opacityStyle()"
       [style.transform]="transformStyle()"
       [style.transform-origin]="transformOrigin()"

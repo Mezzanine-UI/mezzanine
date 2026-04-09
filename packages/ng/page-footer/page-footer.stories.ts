@@ -91,29 +91,6 @@ export const StandardType: Story = {
   }),
 };
 
-export const WithWarningMessage: Story = {
-  args: {
-    type: 'standard',
-    supportingActionName: '查看發佈紀錄',
-    warningMessage: '部分內容未通過驗證，請調整後重試',
-  },
-  render: (args) => ({
-    props: args,
-    template: `
-      <div mznPageFooter
-        [type]="type"
-        [supportingActionName]="supportingActionName"
-        [warningMessage]="warningMessage"
-      >
-        <div mznButtonGroup actions>
-          <button mznButton variant="base-secondary">儲存草稿</button>
-          <button mznButton variant="base-primary">發佈</button>
-        </div>
-      </div>
-    `,
-  }),
-};
-
 export const OverflowType: Story = {
   args: {
     type: 'overflow',
@@ -140,6 +117,29 @@ export const InformationType: Story = {
     props: args,
     template: `
       <div mznPageFooter [type]="type" [annotation]="annotation">
+        <div mznButtonGroup actions>
+          <button mznButton variant="base-secondary">儲存草稿</button>
+          <button mznButton variant="base-primary">發佈</button>
+        </div>
+      </div>
+    `,
+  }),
+};
+
+export const WithWarningMessage: Story = {
+  args: {
+    type: 'standard',
+    supportingActionName: '查看發佈紀錄',
+    warningMessage: '部分內容未通過驗證，請調整後重試',
+  },
+  render: (args) => ({
+    props: args,
+    template: `
+      <div mznPageFooter
+        [type]="type"
+        [supportingActionName]="supportingActionName"
+        [warningMessage]="warningMessage"
+      >
         <div mznButtonGroup actions>
           <button mznButton variant="base-secondary">儲存草稿</button>
           <button mznButton variant="base-primary">發佈</button>

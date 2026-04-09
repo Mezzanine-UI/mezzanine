@@ -10,8 +10,6 @@ import { MznNavigationHeader } from '../navigation/navigation-header.component';
 import { MznNavigationOption } from '../navigation/navigation-option.component';
 import { MznNavigationFooter } from '../navigation/navigation-footer.component';
 import { MznFloatingButton } from '../floating-button/floating-button.component';
-import { MznButton } from '../button/button.directive';
-import { MznIcon } from '../icon/icon.component';
 
 @Component({
   selector: 'story-layout-playground',
@@ -25,8 +23,6 @@ import { MznIcon } from '../icon/icon.component';
     MznNavigationOption,
     MznNavigationFooter,
     MznFloatingButton,
-    MznButton,
-    MznIcon,
   ],
   template: `
     <div mznLayout navigationClassName="foo" contentWrapperClassName="bar">
@@ -60,18 +56,15 @@ import { MznIcon } from '../icon/icon.component';
             separator line to resize it.</p
           >
         </div>
-        <div mznFloatingButton [autoHideWhenOpen]="true" [open]="rightOpen()">
-          <button
-            mznButton
-            variant="base-primary"
-            size="main"
-            iconType="icon-only"
-            [icon]="PlusIcon"
-            tooltipText="Open Panel"
-            (click)="rightOpen.set(true)"
-          >
-            <i mznIcon [icon]="PlusIcon" [size]="16"></i>
-          </button>
+        <div
+          mznFloatingButton
+          [autoHideWhenOpen]="true"
+          [icon]="PlusIcon"
+          iconType="icon-only"
+          [open]="rightOpen()"
+          (click)="rightOpen.set(true)"
+        >
+          Open Panel
         </div>
       </div>
       <aside mznLayoutRightPanel [defaultWidth]="320" [open]="rightOpen()">
@@ -90,7 +83,7 @@ import { MznIcon } from '../icon/icon.component';
         height: 600px;
         border: 1px solid rgba(128, 128, 128, 0.3);
         border-radius: 4px;
-        overflow: hidden;
+        overflow-x: auto;
       }
     `,
   ],
@@ -184,7 +177,7 @@ class LayoutPlaygroundComponent {
         height: 600px;
         border: 1px solid rgba(128, 128, 128, 0.3);
         border-radius: 4px;
-        overflow: hidden;
+        overflow-x: auto;
       }
     `,
   ],
