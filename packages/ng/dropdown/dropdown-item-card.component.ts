@@ -64,7 +64,8 @@ import clsx from 'clsx';
   template: `
     <li
       role="option"
-      [id]="id() ?? null"
+      [attr.id]="id() || null"
+      [attr.aria-labelledby]="labelId()"
       [class]="hostClasses()"
       [attr.aria-selected]="checked()"
       [attr.aria-disabled]="disabled() || null"
@@ -89,16 +90,29 @@ import clsx from 'clsx';
               ></div>
             }
             @if (checkSite() === 'prefix' && mode() === 'single' && checked()) {
-              <i mznIcon [icon]="checkedIcon" [size]="16"></i>
+              <i
+                mznIcon
+                [icon]="checkedIcon"
+                [color]="checkIconColor()"
+                [size]="16"
+              ></i>
             }
           </div>
         }
         <div [class]="bodyClass">
           @if (label()) {
-            <span [class]="titleClass">{{ label() }}</span>
+            <p
+              mznTypography
+              variant="body"
+              [class]="titleClass"
+              [attr.id]="labelId()"
+              ><span>{{ label() }}</span></p
+            >
           }
           @if (subTitle()) {
-            <span [class]="descriptionClass">{{ subTitle() }}</span>
+            <p mznTypography variant="caption" [class]="descriptionClass">{{
+              subTitle()
+            }}</p>
           }
         </div>
         @if (showAppendContent()) {
@@ -112,7 +126,12 @@ import clsx from 'clsx';
               <i mznIcon [icon]="appendIcon()!" [size]="16"></i>
             }
             @if (checkSite() === 'suffix' && checked()) {
-              <i mznIcon [icon]="checkedIcon" [size]="16"></i>
+              <i
+                mznIcon
+                [icon]="checkedIcon"
+                [color]="checkIconColor()"
+                [size]="16"
+              ></i>
             }
           </div>
         }
@@ -217,6 +236,24 @@ export class MznDropdownItemCard {
     return (
       !!appendContent || !!appendIcon || (checkSite === 'suffix' && checked)
     );
+  });
+
+  // Mirror React's appendIconColor: disabled → neutral-light,
+  // validate 'danger' → error, otherwise brand.
+  protected readonly checkIconColor = computed(
+    (): 'neutral-light' | 'error' | 'brand' => {
+      if (this.disabled()) return 'neutral-light';
+      if (this.validate() === 'danger') return 'error';
+
+      return 'brand';
+    },
+  );
+
+  /** DOM id for label, used for aria-labelledby. Mirrors React's `${id}-label`. */
+  protected readonly labelId = computed((): string | null => {
+    const id = this.id();
+
+    return id ? `${id}-label` : null;
   });
 
   protected onClick(): void {
