@@ -9,6 +9,7 @@ import { contentHeaderClasses as classes } from '@mezzanine-ui/core/content-head
 import { TypographySemanticType } from '@mezzanine-ui/system/typography';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznButton } from '@mezzanine-ui/ng/button';
 import { ChevronLeftIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 
@@ -64,7 +65,7 @@ export type ContentHeaderTitleComponent =
 @Component({
   selector: '[mznContentHeader]',
   standalone: true,
-  imports: [MznTypography, MznIcon],
+  imports: [MznTypography, MznIcon, MznButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -79,8 +80,16 @@ export type ContentHeaderTitleComponent =
       @if (size() === 'main') {
         <span [class]="backButtonClass">
           @if (showBackButton()) {
-            <button type="button" aria-label="Back" (click)="backClick.emit()">
-              <i mznIcon [icon]="chevronLeftIcon"></i>
+            <button
+              mznButton
+              type="button"
+              variant="base-tertiary"
+              size="sub"
+              iconType="icon-only"
+              aria-label="Back"
+              (click)="backClick.emit()"
+            >
+              <i mznIcon [icon]="chevronLeftIcon" [size]="16"></i>
             </button>
           } @else {
             <ng-content select="[contentHeaderBackButton]" />
