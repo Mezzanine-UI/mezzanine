@@ -95,6 +95,19 @@ async function snapshotStory(
     { timeout: 15000 },
   );
   await page.evaluate(() => document.fonts.ready);
+  // Suppress CSS transitions/animations so getComputedStyle() does not return
+  // mid-animation interpolated values. Storybook's .sb-show-main applies a
+  // `transition: color` for theme switching; in fresh story loads it causes
+  // the inherited `color` to fade from #000 → token, and React vs Angular
+  // mount-timing differences would otherwise capture different frames.
+  await page.addStyleTag({
+    content: `*, *::before, *::after { transition: none !important; animation: none !important; }`,
+  });
+  await page.evaluate(() =>
+    Promise.all(
+      document.getAnimations().map((a) => a.finished.catch(() => undefined)),
+    ),
+  );
   return (await page.evaluate(
     `(${SNAPSHOT_SOURCE})(${JSON.stringify(STYLE_KEYS)})`,
   )) as NormalizedNode | null;
