@@ -1,12 +1,11 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznAnchorGroup } from './anchor-group.component';
-import { MznAnchorItem } from './anchor-item.component';
 import { AnchorItemData } from './typings';
 
 const meta: Meta<MznAnchorGroup> = {
   title: 'Navigation/Anchor',
   component: MznAnchorGroup,
-  decorators: [moduleMetadata({ imports: [MznAnchorGroup, MznAnchorItem] })],
+  decorators: [moduleMetadata({ imports: [MznAnchorGroup] })],
 };
 
 export default meta;
@@ -140,34 +139,102 @@ const anchors: AnchorItemData[] = [
   },
 ];
 
-export const Playground: Story = {
-  name: 'Playground',
-  argTypes: {
-    anchors: {
-      control: 'object',
-      description: 'Array of anchor items to display.',
-    },
-    className: {
-      control: 'text',
-      description: 'Additional CSS class name.',
-    },
-  },
-  args: {
-    anchors: [
-      { href: '#section-1', id: 'section-1', name: 'Section 1' },
-      { href: '#section-2', id: 'section-2', name: 'Section 2' },
-      { href: '#section-3', id: 'section-3', name: 'Section 3' },
-    ],
-  },
-  render: (args) => ({
-    props: args,
-    template: `<div mznAnchorGroup [anchors]="anchors" [className]="className" ></div>`,
-  }),
-};
-
 export const All: Story = {
   parameters: {
     controls: { disable: true },
+  },
+  argTypes: {
+    anchors: {
+      control: false,
+      description: '錨點項目資料陣列,支援最多三層巢狀(每層最多三項)。',
+      table: {
+        category: 'MznAnchorGroup Inputs',
+        type: { summary: 'AnchorItemData[]' },
+      },
+    },
+    className: {
+      control: 'text',
+      description: '附加到 host 的自訂 CSS class。',
+      table: {
+        category: 'MznAnchorGroup Inputs',
+        type: { summary: 'string' },
+      },
+    },
+    'AnchorItemData.id': {
+      name: 'id',
+      control: false,
+      description: '唯一識別碼,作為 `@for` track 值。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: 'string' },
+      },
+    },
+    'AnchorItemData.name': {
+      name: 'name',
+      control: false,
+      description: '顯示名稱。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: 'string' },
+      },
+    },
+    'AnchorItemData.href': {
+      name: 'href',
+      control: false,
+      description: '連結目標,通常包含 hash(如 `#section-1`)。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: 'string' },
+      },
+    },
+    'AnchorItemData.title': {
+      name: 'title',
+      control: false,
+      description: '對應 HTML `title` 屬性。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: 'string' },
+      },
+    },
+    'AnchorItemData.autoScrollTo': {
+      name: 'autoScrollTo',
+      control: false,
+      description:
+        '點擊時是否以 `scrollIntoView({ behavior: "smooth" })` 平滑捲動到目標。父層設定 `true` 會繼承給子項目。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    'AnchorItemData.disabled': {
+      name: 'disabled',
+      control: false,
+      description: '是否停用此錨點。父層停用時,所有子 anchor 一併停用。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    'AnchorItemData.onClick': {
+      name: 'onClick',
+      control: false,
+      description: '點擊此錨點時觸發的 callback。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: '() => void' },
+      },
+    },
+    'AnchorItemData.children': {
+      name: 'children',
+      control: false,
+      description: '子錨點陣列。最多三層巢狀,每層最多三項,超過部分會被忽略。',
+      table: {
+        category: 'AnchorItemData',
+        type: { summary: 'AnchorItemData[]' },
+      },
+    },
   },
   render: () => ({
     props: {
@@ -176,8 +243,8 @@ export const All: Story = {
     },
     template: `
       <div style="display: flex; flex-flow: column; gap: 24px;">
-        <div mznAnchorGroup [anchors]="childrenAnchors" ></div>
-        <div mznAnchorGroup [anchors]="anchors" ></div>
+        <div mznAnchorGroup [anchors]="childrenAnchors"></div>
+        <div mznAnchorGroup [anchors]="anchors"></div>
       </div>
     `,
   }),
