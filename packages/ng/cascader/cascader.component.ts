@@ -1,8 +1,12 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
+  effect,
   ElementRef,
+  inject,
   input,
   output,
   signal,
@@ -72,13 +76,19 @@ interface PanelDescriptor {
     '[attr.dropdownZIndex]': 'null',
   },
   template: `
+    <span
+      #measureEl
+      aria-hidden="true"
+      style="position: absolute; visibility: hidden; white-space: nowrap; pointer-events: none;"
+      >{{ fullDisplayValue() }}</span
+    >
     <div
       mznSelectTrigger
       [class.mzn-cascader-trigger--partial]="isPartial()"
       [active]="isOpen()"
       [clearable]="clearable() && !disabled() && !readOnly() && hasValue()"
       [disabled]="disabled()"
-      [displayText]="displayValue()"
+      [displayText]="collapsedDisplayValue()"
       [error]="error()"
       [hasValue]="hasValue()"
       [mode]="'single'"
@@ -105,10 +115,17 @@ interface PanelDescriptor {
     </div>
   `,
 })
-export class MznCascader {
+export class MznCascader implements AfterViewInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
+  private resizeObserver: ResizeObserver | null = null;
+
   protected readonly triggerElRef = viewChild(MznSelectTrigger, {
     read: ElementRef<HTMLElement>,
   });
+
+  private readonly measureElRef =
+    viewChild<ElementRef<HTMLElement>>('measureEl');
 
   /**
    * 是否顯示清除按鈕。
@@ -197,7 +214,10 @@ export class MznCascader {
     }),
   );
 
-  protected readonly displayValue = computed((): string => {
+  /** 是否因寬度不足需折疊中間路徑。 */
+  private readonly isOverflowing = signal(false);
+
+  protected readonly fullDisplayValue = computed((): string => {
     const val = this.value();
 
     if (val?.length) {
@@ -205,6 +225,17 @@ export class MznCascader {
     }
 
     return '';
+  });
+
+  protected readonly collapsedDisplayValue = computed((): string => {
+    const val = this.value();
+    const full = this.fullDisplayValue();
+
+    if (!this.isOpen() && val && val.length >= 3 && this.isOverflowing()) {
+      return `${val[0].name} / ... / ${val[val.length - 1].name}`;
+    }
+
+    return full;
   });
 
   protected readonly hasValue = computed((): boolean => {
@@ -261,6 +292,44 @@ export class MznCascader {
       return panels;
     },
   );
+
+  constructor() {
+    effect(() => {
+      const isOpen = this.isOpen();
+      const display = this.fullDisplayValue();
+      const val = this.value();
+
+      if (isOpen || !val || val.length < 3) {
+        this.isOverflowing.set(false);
+        return;
+      }
+
+      // Need to read display to track it as dependency
+      void display;
+      queueMicrotask(() => this.checkOverflow());
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.resizeObserver = new ResizeObserver(() => this.checkOverflow());
+    this.resizeObserver.observe(this.hostElRef.nativeElement);
+
+    this.destroyRef.onDestroy(() => {
+      this.resizeObserver?.disconnect();
+      this.resizeObserver = null;
+    });
+  }
+
+  private checkOverflow(): void {
+    const measureEl = this.measureElRef()?.nativeElement;
+    const triggerEl = this.triggerElRef()?.nativeElement;
+    const inputEl = triggerEl?.querySelector('input');
+
+    if (!measureEl || !inputEl) return;
+
+    measureEl.style.font = getComputedStyle(inputEl).font;
+    this.isOverflowing.set(measureEl.offsetWidth > inputEl.clientWidth);
+  }
 
   toggleOpen(): void {
     if (this.disabled() || this.readOnly()) {
