@@ -247,12 +247,12 @@ export const Sizes: Story = {
         <h3 mznTypography variant="h3" style="margin: 0 0 8px 0;">{{
           m.label
         }}</h3>
-        <p
-          mznTypography
-          variant="body"
-          style="margin: 0 0 8px 0; white-space: pre-line;"
-          >origin value: {{ m.value ?? '' }} format value: {{ m.formatted }}</p
-        >
+        <p mznTypography variant="body" style="margin: 0 0 4px 0;">
+          origin value: {{ m.value ?? '' }}
+        </p>
+        <p mznTypography variant="body" style="margin: 0 0 8px 0;">
+          format value: {{ m.formatted }}
+        </p>
         <div
           mznDatePicker
           [mode]="m.mode"
