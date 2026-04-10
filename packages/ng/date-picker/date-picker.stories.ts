@@ -7,6 +7,7 @@ import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
 } from '@mezzanine-ui/ng/calendar';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznDatePicker } from './date-picker.component';
 
 const meta: Meta<MznDatePicker> = {
@@ -32,16 +33,20 @@ type Story = StoryObj<MznDatePicker>;
 @Component({
   selector: 'story-date-picker-playground',
   standalone: true,
-  imports: [MznDatePicker],
+  imports: [MznDatePicker, MznTypography],
   template: `
+    <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+      Value: {{ value() ?? '' }}
+    </h3>
     <div
       mznDatePicker
       [clearable]="clearable"
       [disabled]="disabled"
       [error]="error"
+      [format]="format"
       [fullWidth]="fullWidth"
       [mode]="mode"
-      [placeholder]="placeholder"
+      placeholder="輸入日期"
       [readOnly]="readOnly"
       [size]="size"
       [value]="value()"
@@ -53,9 +58,9 @@ class DatePickerPlaygroundComponent {
   clearable = false;
   disabled = false;
   error = false;
+  format = 'YYYY-MM-DD';
   fullWidth = false;
   mode: CalendarMode = 'day';
-  placeholder = 'Select date';
   readOnly = false;
   size: 'main' | 'sub' = 'main';
   readonly value = signal<string | undefined>(undefined);
@@ -107,12 +112,12 @@ export const Playground: Story = {
         defaultValue: { summary: "'day'" },
       },
     },
-    placeholder: {
+    format: {
       control: { type: 'text' },
-      description: 'Placeholder text for the input.',
+      description: 'The date format string.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: "''" },
+        defaultValue: { summary: "'YYYY-MM-DD'" },
       },
     },
     readOnly: {
@@ -137,9 +142,9 @@ export const Playground: Story = {
     clearable: false,
     disabled: false,
     error: false,
+    format: 'YYYY-MM-DD',
     fullWidth: false,
     mode: 'day',
-    placeholder: 'Select date',
     readOnly: false,
     size: 'main',
   },
@@ -151,9 +156,9 @@ export const Playground: Story = {
         [clearable]="clearable"
         [disabled]="disabled"
         [error]="error"
+        [format]="format"
         [fullWidth]="fullWidth"
         [mode]="mode"
-        [placeholder]="placeholder"
         [readOnly]="readOnly"
         [size]="size"
       />
