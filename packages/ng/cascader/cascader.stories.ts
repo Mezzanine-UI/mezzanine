@@ -596,29 +596,39 @@ export const Controlled: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-cascader-uncontrolled',
+  standalone: true,
+  imports: [MznCascader, MznTypography],
+  template: `
+    <div style="max-width: 320px;">
+      <p mznTypography variant="body" style="margin-bottom: 8px;">
+        非受控（Uncontrolled），預設值為台灣 / 台北市 / 中山區
+      </p>
+      <div
+        mznCascader
+        [fullWidth]="true"
+        [options]="options"
+        [value]="value()"
+        placeholder="國家 / 城市 / 區域"
+        (valueChange)="value.set($event)"
+      ></div>
+    </div>
+  `,
+})
+class UncontrolledDemoComponent {
+  readonly options = taiwanOptions;
+  readonly value = signal<CascaderOption[]>([
+    { id: 'taiwan', name: '台灣' },
+    { id: 'taipei', name: '台北市' },
+    { id: 'zhongshan', name: '中山區' },
+  ]);
+}
+
 export const Uncontrolled: Story = {
+  decorators: [moduleMetadata({ imports: [UncontrolledDemoComponent] })],
   render: () => ({
-    props: {
-      options: taiwanOptions,
-      defaultValue: [
-        { id: 'taiwan', name: '台灣' },
-        { id: 'taipei', name: '台北市' },
-        { id: 'zhongshan', name: '中山區' },
-      ],
-    },
-    template: `
-      <div style="max-width: 320px;">
-        <p mznTypography variant="body" style="margin-bottom: 8px;">
-          非受控（Uncontrolled），預設值為台灣 / 台北市 / 中山區
-        </p>
-        <div mznCascader
-          [fullWidth]="true"
-          [options]="options"
-          [value]="defaultValue"
-          placeholder="國家 / 城市 / 區域"
-        ></div>
-      </div>
-    `,
+    template: `<story-cascader-uncontrolled />`,
   }),
 };
 
