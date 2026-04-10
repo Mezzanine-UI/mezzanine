@@ -76,6 +76,7 @@ import {
       [disabled]="disabled()"
       [errorMessages]="errorMessages()"
       [format]="format()"
+      [inputSize]="resolvedInputSize()"
       [hoverValue]="hoverValue()"
       [placeholder]="placeholder()"
       [validate]="validate()"
@@ -212,6 +213,14 @@ export class MznPickerTrigger implements AfterViewInit {
     clsx(textFieldClasses.suffix, {
       [textFieldClasses.suffixOverlay]: !this.readOnly() && this.clearable(),
     }),
+  );
+
+  /**
+   * Native input `size` attribute (character count). Mirrors React
+   * DatePicker which defaults to `format.length + 2`.
+   */
+  protected readonly resolvedInputSize = computed(
+    (): number => this.format().length + 2,
   );
 
   // -------------------------------------------------------------------------

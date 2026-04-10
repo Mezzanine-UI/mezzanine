@@ -66,6 +66,7 @@ export interface FormattedInputErrorMessages {
     '[attr.disabled]': 'null',
     '[attr.errorMessages]': 'null',
     '[attr.format]': 'null',
+    '[attr.inputSize]': 'null',
     '[attr.hoverValue]': 'null',
     '[attr.placeholder]': 'null',
     '[attr.validate]': 'null',
@@ -80,7 +81,7 @@ export interface FormattedInputErrorMessages {
       [class]="inputClass"
       [disabled]="disabled()"
       [attr.aria-disabled]="disabled()"
-      [attr.size]="format().length + 2"
+      [attr.size]="inputSize() ?? null"
       [value]="inputDisplayValue()"
       [placeholder]="resolvedPlaceholder()"
       (keydown)="onKeyDown($event)"
@@ -144,6 +145,13 @@ export class MznFormattedInput {
   readonly validate = input<((isoDate: string) => boolean) | undefined>(
     undefined,
   );
+
+  /**
+   * 原生 input 的 `size` 屬性值（字元寬度）。
+   * 單獨使用時由 DatePicker 傳 `format.length + 2`；
+   * RangePicker 則不傳（讓 flex 自由伸展）。
+   */
+  readonly inputSize = input<number | undefined>(undefined);
 
   /**
    * 當前值（ISO date string 或格式化字串）。
