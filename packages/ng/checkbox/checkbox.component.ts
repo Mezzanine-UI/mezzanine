@@ -2,9 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
+  ElementRef,
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import {
@@ -18,6 +21,7 @@ import { inputCheckClasses } from '@mezzanine-ui/core/_internal/input-check';
 import { CheckedIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import {
   MZN_CHECKBOX_GROUP,
@@ -43,7 +47,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 @Component({
   selector: '[mznCheckbox]',
   standalone: true,
-  imports: [MznIcon, MznTypography],
+  imports: [MznIcon, MznInput, MznTypography],
   providers: [provideValueAccessor(MznCheckbox)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -60,6 +64,8 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.severity]': 'null',
     '[attr.size]': 'null',
     '[attr.value]': 'null',
+    '[attr.withEditInput]': 'null',
+    '[attr.editableInputPlaceholder]': 'null',
   },
   template: `
     <label [class]="labelContainerClass">
@@ -101,7 +107,11 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           }
           <ng-content />
         </span>
-        @if (description() && resolvedMode() !== 'chip') {
+        @if (
+          description() &&
+          resolvedMode() !== 'chip' &&
+          !shouldShowEditableInput()
+        ) {
           <span
             mznTypography
             variant="caption"
@@ -121,6 +131,21 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
         }
       </span>
     </label>
+    @if (
+      shouldShowEditableInput() && resolvedMode() !== 'chip' && !indeterminate()
+    ) {
+      <label [class]="editableInputContainerClass">
+        <div
+          mznInput
+          #editableInputEl
+          variant="base"
+          [disabled]="resolvedDisabled()"
+          [placeholder]="editableInputPlaceholder()"
+          [name]="editableInputName()"
+          (mousedown)="onEditableInputMouseDown($event)"
+        ></div>
+      </label>
+    }
   `,
 })
 export class MznCheckbox implements ControlValueAccessor {
@@ -128,6 +153,8 @@ export class MznCheckbox implements ControlValueAccessor {
     MZN_CHECKBOX_GROUP,
     { optional: true },
   );
+
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   /** 是否勾選（獨立使用時）。 */
   readonly checked = input<boolean>();
@@ -164,6 +191,28 @@ export class MznCheckbox implements ControlValueAccessor {
 
   /** Checkbox 值（用於群組）。 */
   readonly value = input<string>('');
+
+  /**
+   * 是否在勾選時顯示附加輸入框。
+   * @default false
+   */
+  readonly withEditInput = input(false);
+
+  /**
+   * 附加輸入框的 placeholder。
+   * @default 'Please enter...'
+   */
+  readonly editableInputPlaceholder = input('Please enter...');
+
+  /**
+   * 附加輸入框的 name。預設由 checkbox name 或 id 衍生。
+   */
+  readonly editableInputName = computed(
+    (): string => `${this.resolvedName() || 'checkbox'}_input`,
+  );
+
+  private readonly editableInputElRef =
+    viewChild<ElementRef<HTMLElement>>('editableInputEl');
 
   private readonly internalChecked = signal(false);
 
@@ -240,7 +289,46 @@ export class MznCheckbox implements ControlValueAccessor {
   protected readonly iconClass = classes.icon;
   protected readonly chipIconClass = clsx(classes.icon, classes.chipIcon);
   protected readonly indeterminateLineClass = classes.indeterminateLine;
+  protected readonly editableInputContainerClass =
+    classes.editableInputContainer;
   protected readonly checkIcon = CheckedIcon;
+
+  protected readonly shouldShowEditableInput = computed((): boolean =>
+    this.withEditInput(),
+  );
+
+  private prevChecked = false;
+
+  constructor() {
+    effect(() => {
+      const checked = this.resolvedChecked();
+      const show = this.shouldShowEditableInput();
+
+      if (checked && !this.prevChecked && show) {
+        queueMicrotask(() => {
+          const el = this.editableInputElRef()?.nativeElement;
+          const input = el?.querySelector('input');
+
+          input?.focus();
+        });
+      }
+
+      this.prevChecked = checked;
+    });
+  }
+
+  protected onEditableInputMouseDown(event: MouseEvent): void {
+    if (!this.resolvedChecked() && !this.resolvedDisabled()) {
+      event.preventDefault();
+
+      const hostEl = this.hostElRef.nativeElement;
+      const checkboxInput = hostEl.querySelector(
+        'input[type="checkbox"]',
+      ) as HTMLInputElement | null;
+
+      checkboxInput?.click();
+    }
+  }
 
   // CVA
   private onChange: (value: boolean) => void = () => {};
