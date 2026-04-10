@@ -353,42 +353,118 @@ export const Sizes: Story = {
   }),
 };
 
-export const Modes: Story = {
-  render: () => ({
-    props: {
-      rangeD: undefined,
-      rangeW: undefined,
-      rangeM: undefined,
-      rangeY: undefined,
-      rangeQ: undefined,
-      rangeH: undefined,
+@Component({
+  selector: 'story-date-range-picker-modes',
+  standalone: true,
+  imports: [FormsModule, MznDateRangePicker, MznTypography],
+  template: `
+    @for (m of modes; track m.mode) {
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">{{
+          m.label
+        }}</h3>
+        <p mznTypography variant="body" style="margin: 0 0 4px 0;">
+          origin value: [{{ m.value?.[0] || '' }}, {{ m.value?.[1] || '' }}]
+        </p>
+        <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+          format value: [{{ formatOne(m.mode, m.value?.[0]) }},
+          {{ formatOne(m.mode, m.value?.[1]) }}]
+        </p>
+        <div
+          mznDateRangePicker
+          [mode]="m.mode"
+          [format]="resolvedFormat(m.mode)"
+          [value]="m.value"
+          [inputFromPlaceholder]="m.fromPlaceholder"
+          [inputToPlaceholder]="m.toPlaceholder"
+          (rangeChanged)="onChange(m, $event)"
+        ></div>
+      </div>
+    }
+  `,
+})
+class DateRangePickerModesStoryComponent {
+  private readonly config = inject(MZN_CALENDAR_CONFIG);
+
+  readonly modes: Array<{
+    mode: CalendarMode;
+    label: string;
+    fromPlaceholder: string;
+    toPlaceholder: string;
+    value: RangePickerValue | undefined;
+  }> = [
+    {
+      mode: 'day',
+      label: 'Day',
+      fromPlaceholder: 'Start Date',
+      toPlaceholder: 'End Date',
+      value: undefined,
     },
-    template: `
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Day</strong></p>
-        <div mznDateRangePicker [(ngModel)]="rangeD" mode="day" inputFromPlaceholder="Start Date" inputToPlaceholder="End Date" ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Week</strong></p>
-        <div mznDateRangePicker [(ngModel)]="rangeW" mode="week" inputFromPlaceholder="Start Week" inputToPlaceholder="End Week" ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Month</strong></p>
-        <div mznDateRangePicker [(ngModel)]="rangeM" mode="month" inputFromPlaceholder="Start Month" inputToPlaceholder="End Month" ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Year</strong></p>
-        <div mznDateRangePicker [(ngModel)]="rangeY" mode="year" inputFromPlaceholder="Start Year" inputToPlaceholder="End Year" ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Quarter</strong></p>
-        <div mznDateRangePicker [(ngModel)]="rangeQ" mode="quarter" inputFromPlaceholder="Start Quarter" inputToPlaceholder="End Quarter" ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Half Year</strong></p>
-        <div mznDateRangePicker [(ngModel)]="rangeH" mode="half-year" inputFromPlaceholder="Start Half Year" inputToPlaceholder="End Half Year" ></div>
-      </div>
-    `,
+    {
+      mode: 'week',
+      label: 'Week',
+      fromPlaceholder: 'Start Week',
+      toPlaceholder: 'End Week',
+      value: undefined,
+    },
+    {
+      mode: 'month',
+      label: 'Month',
+      fromPlaceholder: 'Start Month',
+      toPlaceholder: 'End Month',
+      value: undefined,
+    },
+    {
+      mode: 'year',
+      label: 'Year',
+      fromPlaceholder: 'Start Year',
+      toPlaceholder: 'End Year',
+      value: undefined,
+    },
+    {
+      mode: 'quarter',
+      label: 'Quarter',
+      fromPlaceholder: 'Start Quarter',
+      toPlaceholder: 'End Quarter',
+      value: undefined,
+    },
+    {
+      mode: 'half-year',
+      label: 'Half Year',
+      fromPlaceholder: 'Start Half Year',
+      toPlaceholder: 'End Half Year',
+      value: undefined,
+    },
+  ];
+
+  resolvedFormat(mode: CalendarMode): string {
+    return getDefaultModeFormat(mode);
+  }
+
+  formatOne(mode: CalendarMode, val: string | undefined): string {
+    if (!val) return '';
+    return this.config.formatToString(
+      this.config.locale,
+      val,
+      this.resolvedFormat(mode),
+    );
+  }
+
+  onChange(
+    m: (typeof this.modes)[number],
+    range: RangePickerValue | undefined,
+  ): void {
+    m.value = range;
+  }
+}
+
+export const Modes: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [DateRangePickerModesStoryComponent] }),
+  ],
+  render: () => ({
+    template: `<story-date-range-picker-modes />`,
   }),
 };
 
