@@ -1,19 +1,17 @@
 import { Component } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
-import { StepOrientation, StepType } from './step.component';
 import { MznStepper } from './stepper.component';
 import { MznStep } from './step.component';
+import { MznButton, MznButtonGroup } from '@mezzanine-ui/ng/button';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznStepperState } from './stepper-state';
-
-const orientations: StepOrientation[] = ['horizontal', 'vertical'];
-const types: StepType[] = ['number', 'dot'];
 
 const meta: Meta<MznStepper> = {
   title: 'Navigation/Stepper',
   component: MznStepper,
   decorators: [
     moduleMetadata({
-      imports: [MznStepper, MznStep],
+      imports: [MznStepper, MznStep, MznTypography],
     }),
   ],
 };
@@ -26,7 +24,7 @@ export const Status: Story = {
   render: () => ({
     template: `
       <div style="display: grid; gap: 32px;">
-        <p style="font-weight: 600;">Status</p>
+        <h3 mznTypography variant="h3">Status</h3>
         <div style="display: grid; gap: 24px;">
           <div mznStepper orientation="horizontal" type="number" [currentStep]="2">
             <div mznStep title="succeeded" ></div>
@@ -110,80 +108,24 @@ export const Status: Story = {
   }),
 };
 
-export const Playground: Story = {
-  argTypes: {
-    currentStep: {
-      control: {
-        type: 'range',
-        min: 0,
-        max: 3,
-        step: 1,
-      },
-      description: 'The current active step index (zero-based).',
-      table: {
-        type: { summary: 'number' },
-        defaultValue: { summary: '0' },
-      },
-    },
-    orientation: {
-      options: orientations,
-      control: { type: 'select' },
-      description: 'The layout orientation of the stepper.',
-      table: {
-        type: { summary: "'horizontal' | 'vertical'" },
-        defaultValue: { summary: "'horizontal'" },
-      },
-    },
-    type: {
-      options: types,
-      control: { type: 'select' },
-      description: 'The indicator style of the stepper.',
-      table: {
-        type: { summary: "'number' | 'dot'" },
-        defaultValue: { summary: "'number'" },
-      },
-    },
-  },
-  args: {
-    currentStep: 1,
-    orientation: 'horizontal',
-    type: 'number',
-  },
-  render: (args) => ({
-    props: args,
-    template: `
-      <div mznStepper [currentStep]="currentStep" [orientation]="orientation" [type]="type">
-        <div mznStep title="步驟一" description="請輸入基本資訊" ></div>
-        <div mznStep title="步驟二" description="核對填寫資料" ></div>
-        <div mznStep title="步驟三" description="完成送出" ></div>
-        <div mznStep title="步驟四" ></div>
-      </div>
-    `,
-  }),
-};
-
-/**
- * `MznStepperState` 對應 React 版 `useStepper` hook，
- * 提供 `nextStep`、`prevStep`、`goToStep` 等導航方法，
- * 以及 `isFirstStep`、`isLastStep` 邊界旗標。
- */
 @Component({
-  selector: 'mzn-stepper-with-navigation-demo',
+  selector: 'mzn-stepper-playground-demo',
   standalone: true,
-  imports: [MznStepper, MznStep],
+  imports: [MznStepper, MznStep, MznTypography, MznButton, MznButtonGroup],
   template: `
     <div style="display: grid; gap: 32px;">
       <div style="display: grid; gap: 24px;">
-        <p style="font-weight: 600;">currentStep: {{ state.currentStep() }}</p>
-        <div style="display: flex; gap: 8px;">
-          <button (click)="state.prevStep()" [disabled]="state.isFirstStep()"
-            >Prev</button
-          >
-          <button (click)="state.nextStep()" [disabled]="state.isLastStep()"
-            >Next</button
-          >
+        <h3 mznTypography variant="h3"
+          >currentStep: {{ state.currentStep() }}</h3
+        >
+        <div mznButtonGroup color="primary">
+          <button mznButton (click)="state.prevStep()">Prev</button>
+          <button mznButton (click)="state.nextStep()">Next</button>
         </div>
       </div>
+
+      <br />
+
       <div style="display: grid; gap: 24px;">
         <div
           mznStepper
@@ -191,10 +133,34 @@ export const Playground: Story = {
           type="number"
           [currentStep]="state.currentStep()"
         >
-          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
-          <div mznStep title="步驟二" description="核對填寫資料"></div>
-          <div mznStep title="步驟三" description="完成送出"></div>
-          <div mznStep title="步驟四"></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(1)"
+          ></div>
+          <div
+            mznStep
+            title="步驟二"
+            description="步驟二敘述"
+            [interactive]="true"
+            (click)="onStepClick(2)"
+          ></div>
+          <div
+            mznStep
+            title="步驟三"
+            description="步驟三敘述"
+            [interactive]="true"
+            (click)="onStepClick(3)"
+          ></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(4)"
+          ></div>
         </div>
         <div
           mznStepper
@@ -202,12 +168,39 @@ export const Playground: Story = {
           type="dot"
           [currentStep]="state.currentStep()"
         >
-          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
-          <div mznStep title="步驟二" description="核對填寫資料"></div>
-          <div mznStep title="步驟三" description="完成送出"></div>
-          <div mznStep title="步驟四"></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(1)"
+          ></div>
+          <div
+            mznStep
+            title="步驟二"
+            description="步驟二敘述"
+            [interactive]="true"
+            (click)="onStepClick(2)"
+          ></div>
+          <div
+            mznStep
+            title="步驟三"
+            description="步驟三敘述"
+            [interactive]="true"
+            (click)="onStepClick(3)"
+          ></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(4)"
+          ></div>
         </div>
       </div>
+
+      <br />
+
       <div style="display: flex; justify-content: space-around;">
         <div
           mznStepper
@@ -215,10 +208,34 @@ export const Playground: Story = {
           type="number"
           [currentStep]="state.currentStep()"
         >
-          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
-          <div mznStep title="步驟二" description="核對填寫資料"></div>
-          <div mznStep title="步驟三" description="完成送出"></div>
-          <div mznStep title="步驟四"></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(1)"
+          ></div>
+          <div
+            mznStep
+            title="步驟二"
+            description="步驟二敘述"
+            [interactive]="true"
+            (click)="onStepClick(2)"
+          ></div>
+          <div
+            mznStep
+            title="步驟三"
+            description="步驟三敘述"
+            [interactive]="true"
+            (click)="onStepClick(3)"
+          ></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(4)"
+          ></div>
         </div>
         <div
           mznStepper
@@ -226,27 +243,59 @@ export const Playground: Story = {
           type="dot"
           [currentStep]="state.currentStep()"
         >
-          <div mznStep title="步驟一" description="請輸入基本資訊"></div>
-          <div mznStep title="步驟二" description="核對填寫資料"></div>
-          <div mznStep title="步驟三" description="完成送出"></div>
-          <div mznStep title="步驟四"></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(1)"
+          ></div>
+          <div
+            mznStep
+            title="步驟二"
+            description="步驟二敘述"
+            [interactive]="true"
+            (click)="onStepClick(2)"
+          ></div>
+          <div
+            mznStep
+            title="步驟三"
+            description="步驟三敘述"
+            [interactive]="true"
+            (click)="onStepClick(3)"
+          ></div>
+          <div
+            mznStep
+            title="步驟一"
+            description="步驟一敘述"
+            [interactive]="true"
+            (click)="onStepClick(4)"
+          ></div>
         </div>
       </div>
     </div>
   `,
 })
-class WithNavigationDemoComponent {
+class PlaygroundDemoComponent {
   readonly state = new MznStepperState({ totalSteps: 4, defaultStep: 0 });
+
+  onStepClick(step: number): void {
+    // eslint-disable-next-line no-console
+    console.log(`Clicked step ${step}`);
+  }
 }
 
-export const WithNavigation: Story = {
-  parameters: { controls: { disable: true } },
+export const Playground: Story = {
+  args: {
+    stepCount: 4,
+  } as Record<string, unknown>,
+  argTypes: {},
   decorators: [
     moduleMetadata({
-      imports: [WithNavigationDemoComponent],
+      imports: [PlaygroundDemoComponent],
     }),
   ],
   render: () => ({
-    template: `<mzn-stepper-with-navigation-demo />`,
+    template: `<mzn-stepper-playground-demo />`,
   }),
 };
