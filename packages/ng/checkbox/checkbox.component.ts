@@ -21,7 +21,7 @@ import { inputCheckClasses } from '@mezzanine-ui/core/_internal/input-check';
 import { CheckedIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import { MznInput } from '@mezzanine-ui/ng/input';
+import { MznTextField } from '@mezzanine-ui/ng/text-field';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import {
   MZN_CHECKBOX_GROUP,
@@ -47,7 +47,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 @Component({
   selector: '[mznCheckbox]',
   standalone: true,
-  imports: [MznIcon, MznInput, MznTypography],
+  imports: [MznIcon, MznTextField, MznTypography],
   providers: [provideValueAccessor(MznCheckbox)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -136,14 +136,18 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     ) {
       <label [class]="editableInputContainerClass">
         <div
-          mznInput
+          mznTextField
           #editableInputEl
-          variant="base"
-          [disabled]="resolvedDisabled()"
-          [placeholder]="editableInputPlaceholder()"
-          [name]="editableInputName()"
+          size="main"
           (mousedown)="onEditableInputMouseDown($event)"
-        ></div>
+        >
+          <input
+            type="text"
+            [disabled]="resolvedDisabled()"
+            [placeholder]="editableInputPlaceholder()"
+            [name]="editableInputName()"
+          />
+        </div>
       </label>
     }
   `,
