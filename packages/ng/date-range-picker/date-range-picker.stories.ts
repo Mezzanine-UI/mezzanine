@@ -468,29 +468,283 @@ export const Modes: Story = {
   }),
 };
 
-export const CustomDisable: Story = {
-  render: () => ({
-    props: { range: undefined },
-    template: `
-      <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
-        <p style="margin: 0 0 16px 0"><strong>1. Disable Navigation Controls</strong></p>
-        <p style="margin: 0 0 12px 0">Disable month/year switching buttons and navigation arrows.</p>
-        <div mznDateRangePicker
-          [(ngModel)]="range"
+@Component({
+  selector: 'story-date-range-picker-custom-disable',
+  standalone: true,
+  imports: [MznDateRangePicker, MznTypography],
+  template: `
+    <div
+      style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px;"
+    >
+      <h2 mznTypography variant="h2" style="margin: 0 0 16px 0;"
+        >1. Disable Navigation Controls</h2
+      >
+      <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+        Disable month/year switching buttons and navigation arrows. Useful when
+        you want to restrict user to current view only.
+      </p>
+      <div
+        mznDateRangePicker
+        [value]="valNav"
+        [disabledMonthSwitch]="true"
+        [disabledYearSwitch]="true"
+        [disableOnNext]="true"
+        [disableOnDoubleNext]="true"
+        [disableOnPrev]="true"
+        [disableOnDoublePrev]="true"
+        mode="day"
+        format="YYYY-MM-DD"
+        inputFromPlaceholder="Start Date"
+        inputToPlaceholder="End Date"
+        (rangeChanged)="valNav = $event"
+      ></div>
+    </div>
+
+    <div
+      style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px;"
+    >
+      <h2 mznTypography variant="h2" style="margin: 0 0 16px 0;"
+        >2. Mode-specific Disable Examples</h2
+      >
+      <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+        When selecting a range that crosses disabled dates, the range will be
+        blocked and selection will restart.
+      </p>
+
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+          Day: Disable {{ disabledDatesStartStr }} ~ {{ disabledDatesEndStr }}
+        </h3>
+        <div
+          mznDateRangePicker
+          [value]="valD"
+          [isDateDisabled]="isDateDisabled"
+          [format]="dayFormat"
           mode="day"
           inputFromPlaceholder="Start Date"
           inputToPlaceholder="End Date"
+          (rangeChanged)="valD = $event"
         ></div>
       </div>
-      <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
-        <p style="margin: 0 0 16px 0"><strong>2. Mode-specific Disable Examples</strong></p>
-        <p style="margin: 0 0 12px 0">When selecting a range that crosses disabled dates, the range will be blocked.</p>
-        <div style="margin: 0 0 24px 0">
-          <p style="margin: 0 0 8px 0"><strong>Day: Custom disabled dates</strong></p>
-          <div mznDateRangePicker [(ngModel)]="range" mode="day" inputFromPlaceholder="Start Date" inputToPlaceholder="End Date" ></div>
-        </div>
+
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+          Week: Disable {{ disabledWeeksStartStr }} ~ {{ disabledWeeksEndStr }}
+        </h3>
+        <div
+          mznDateRangePicker
+          [value]="valW"
+          [isWeekDisabled]="isWeekDisabled"
+          [format]="weekFormat"
+          mode="week"
+          inputFromPlaceholder="Start Week"
+          inputToPlaceholder="End Week"
+          (rangeChanged)="valW = $event"
+        ></div>
       </div>
-    `,
+
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+          Month: Disable {{ disabledMonthsStartStr }} ~
+          {{ disabledMonthsEndStr }}
+        </h3>
+        <div
+          mznDateRangePicker
+          [value]="valM"
+          [isMonthDisabled]="isMonthDisabled"
+          [format]="monthFormat"
+          mode="month"
+          inputFromPlaceholder="Start Month"
+          inputToPlaceholder="End Month"
+          (rangeChanged)="valM = $event"
+        ></div>
+      </div>
+
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+          Year: Disable {{ disabledYearsStartStr }} ~ {{ disabledYearsEndStr }}
+        </h3>
+        <div
+          mznDateRangePicker
+          [value]="valY"
+          [isYearDisabled]="isYearDisabled"
+          [format]="yearFormat"
+          mode="year"
+          inputFromPlaceholder="Start Year"
+          inputToPlaceholder="End Year"
+          (rangeChanged)="valY = $event"
+        ></div>
+      </div>
+
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+          Quarter: Disable Q1 and Q2 of current year
+        </h3>
+        <div
+          mznDateRangePicker
+          [value]="valQ"
+          [isQuarterDisabled]="isQuarterDisabled"
+          [format]="quarterFormat"
+          mode="quarter"
+          inputFromPlaceholder="Start Quarter"
+          inputToPlaceholder="End Quarter"
+          (rangeChanged)="valQ = $event"
+        ></div>
+      </div>
+
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+          Half Year: Disable H1 of current year
+        </h3>
+        <div
+          mznDateRangePicker
+          [value]="valH"
+          [isHalfYearDisabled]="isHalfYearDisabled"
+          [format]="halfYearFormat"
+          mode="half-year"
+          inputFromPlaceholder="Start Half Year"
+          inputToPlaceholder="End Half Year"
+          (rangeChanged)="valH = $event"
+        ></div>
+      </div>
+    </div>
+  `,
+})
+class DateRangePickerCustomDisableStoryComponent {
+  private readonly config = inject(MZN_CALENDAR_CONFIG);
+
+  valNav: RangePickerValue | undefined;
+  valD: RangePickerValue | undefined;
+  valW: RangePickerValue | undefined;
+  valM: RangePickerValue | undefined;
+  valY: RangePickerValue | undefined;
+  valQ: RangePickerValue | undefined;
+  valH: RangePickerValue | undefined;
+
+  readonly dayFormat = getDefaultModeFormat('day');
+  readonly weekFormat = getDefaultModeFormat('week');
+  readonly monthFormat = getDefaultModeFormat('month');
+  readonly yearFormat = getDefaultModeFormat('year');
+  readonly quarterFormat = getDefaultModeFormat('quarter');
+  readonly halfYearFormat = getDefaultModeFormat('half-year');
+
+  private readonly today = new Date();
+  private readonly todayMs = this.today.getTime();
+  private readonly dayMs = 86_400_000;
+
+  // Disabled date range: 3-7 days from today
+  private readonly disabledDatesStart = new Date(this.todayMs + 3 * this.dayMs);
+  private readonly disabledDatesEnd = new Date(this.todayMs + 7 * this.dayMs);
+
+  readonly disabledDatesStartStr = this.fmt(
+    this.disabledDatesStart,
+    'YYYY-MM-DD',
+  );
+  readonly disabledDatesEndStr = this.fmt(this.disabledDatesEnd, 'YYYY-MM-DD');
+
+  // Disabled week range: 5 weeks ago to 2 weeks ago
+  private readonly disabledWeeksStart = new Date(
+    this.todayMs - 35 * this.dayMs,
+  );
+  private readonly disabledWeeksEnd = new Date(this.todayMs - 14 * this.dayMs);
+
+  readonly disabledWeeksStartStr = this.fmt(
+    this.disabledWeeksStart,
+    this.weekFormat,
+  );
+  readonly disabledWeeksEndStr = this.fmt(
+    this.disabledWeeksEnd,
+    this.weekFormat,
+  );
+
+  // Disabled month range: 5 months ago to 1 month ago
+  private readonly disabledMonthsStart = this.addMonths(this.today, -5);
+  private readonly disabledMonthsEnd = this.addMonths(this.today, -1);
+
+  readonly disabledMonthsStartStr = this.fmt(
+    this.disabledMonthsStart,
+    'YYYY-MM',
+  );
+  readonly disabledMonthsEndStr = this.fmt(this.disabledMonthsEnd, 'YYYY-MM');
+
+  // Disabled year range: 5 years ago to 1 year ago
+  readonly disabledYearsStartStr = String(this.today.getFullYear() - 5);
+  readonly disabledYearsEndStr = String(this.today.getFullYear() - 1);
+
+  readonly isDateDisabled = (target: string): boolean => {
+    const d = this.toDay(target);
+    return (
+      d >= this.toDay(this.disabledDatesStart) &&
+      d <= this.toDay(this.disabledDatesEnd)
+    );
+  };
+
+  readonly isWeekDisabled = (target: string): boolean => {
+    const d = this.toDay(target);
+    return (
+      d >= this.toDay(this.disabledWeeksStart) &&
+      d <= this.toDay(this.disabledWeeksEnd)
+    );
+  };
+
+  readonly isMonthDisabled = (target: string): boolean => {
+    const d = new Date(target);
+    const ym = d.getFullYear() * 12 + d.getMonth();
+    const startYm =
+      this.disabledMonthsStart.getFullYear() * 12 +
+      this.disabledMonthsStart.getMonth();
+    const endYm =
+      this.disabledMonthsEnd.getFullYear() * 12 +
+      this.disabledMonthsEnd.getMonth();
+    return ym >= startYm && ym <= endYm;
+  };
+
+  readonly isYearDisabled = (target: string): boolean => {
+    const y = new Date(target).getFullYear();
+    return (
+      y >= this.today.getFullYear() - 5 && y <= this.today.getFullYear() - 1
+    );
+  };
+
+  readonly isQuarterDisabled = (target: string): boolean => {
+    const d = new Date(target);
+    const q = Math.ceil((d.getMonth() + 1) / 3);
+    return d.getFullYear() === this.today.getFullYear() && (q === 1 || q === 2);
+  };
+
+  readonly isHalfYearDisabled = (target: string): boolean => {
+    const d = new Date(target);
+    const h = Math.ceil((d.getMonth() + 1) / 6);
+    return d.getFullYear() === this.today.getFullYear() && h === 1;
+  };
+
+  private fmt(date: Date, format: string): string {
+    return this.config.formatToString(
+      this.config.locale,
+      date.toISOString(),
+      format,
+    );
+  }
+
+  private toDay(d: Date | string): number {
+    const dt = typeof d === 'string' ? new Date(d) : d;
+    return dt.getFullYear() * 10000 + (dt.getMonth() + 1) * 100 + dt.getDate();
+  }
+
+  private addMonths(date: Date, months: number): Date {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + months);
+    return d;
+  }
+}
+
+export const CustomDisable: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [DateRangePickerCustomDisableStoryComponent] }),
+  ],
+  render: () => ({
+    template: `<story-date-range-picker-custom-disable />`,
   }),
 };
 
