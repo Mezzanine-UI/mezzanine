@@ -38,6 +38,7 @@ import { CascaderOption } from './cascader-option';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[style.overflow-y]': '"auto"',
     '[attr.activeOptionId]': 'null',
     '[attr.focusedOptionId]': 'null',
     '[attr.options]': 'null',
