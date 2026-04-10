@@ -411,6 +411,20 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
       return result.format(format.replace('n', halfYear.toString()));
     }
 
+    // Handle week-year formats (moment-compatible tokens not native to dayjs)
+    // gggg = locale week year, ww = locale week number
+    // GGGG = ISO week year, WW = ISO week number
+    if (format.includes('gggg') || format.includes('GGGG')) {
+      const isMon = isMondayFirst(locale);
+      const weekYear = isMon ? result.isoWeekYear() : result.year();
+      const weekNum = isMon ? result.isoWeek() : result.week();
+
+      return format
+        .replace(/gggg|GGGG/, String(weekYear))
+        .replace(/\[([^\]]*)\]/g, '$1')
+        .replace(/ww|WW/, String(weekNum).padStart(2, '0'));
+    }
+
     return result.format(format);
   },
   formatToISOString: (date) => dayjs(date).toISOString(),
