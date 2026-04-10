@@ -533,23 +533,23 @@ class CustomDisableStoryComponent {
   readonly maxDateStr = this.fmt(this.maxDate, 'YYYY-MM-DD');
 
   readonly isDateOutOfRange = (target: string): boolean => {
-    const t = new Date(target).getTime();
-    return t < this.minDate.getTime() || t > this.maxDate.getTime();
+    const d = this.toDay(target);
+    return d < this.toDay(this.minDate) || d > this.toDay(this.maxDate);
   };
 
   readonly isDateDisabled = (target: string): boolean => {
-    const t = new Date(target).getTime();
+    const d = this.toDay(target);
     return (
-      t >= this.disabledDatesStart.getTime() &&
-      t <= this.disabledDatesEnd.getTime()
+      d >= this.toDay(this.disabledDatesStart) &&
+      d <= this.toDay(this.disabledDatesEnd)
     );
   };
 
   readonly isWeekDisabled = (target: string): boolean => {
-    const t = new Date(target).getTime();
+    const d = this.toDay(target);
     return (
-      t >= this.disabledWeeksStart.getTime() &&
-      t <= this.disabledWeeksEnd.getTime()
+      d >= this.toDay(this.disabledWeeksStart) &&
+      d <= this.toDay(this.disabledWeeksEnd)
     );
   };
 
@@ -590,6 +590,12 @@ class CustomDisableStoryComponent {
       date.toISOString(),
       format,
     );
+  }
+
+  /** Truncate to YYYYMMDD integer for day-level comparison (avoids time-of-day drift). */
+  private toDay(d: Date | string): number {
+    const dt = typeof d === 'string' ? new Date(d) : d;
+    return dt.getFullYear() * 10000 + (dt.getMonth() + 1) * 100 + dt.getDate();
   }
 
   private addMonths(date: Date, months: number): Date {
