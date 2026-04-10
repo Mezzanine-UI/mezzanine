@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -21,6 +23,7 @@ import { TextFieldSize } from '@mezzanine-ui/core/text-field';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznPickerTrigger } from '@mezzanine-ui/ng/picker';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import { MznDatePickerCalendar } from './date-picker-calendar.component';
@@ -130,8 +133,11 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
     ></div>
   `,
 })
-export class MznDatePicker implements ControlValueAccessor {
+export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly clickAway = inject(ClickAwayService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   /** 是否可清除。 @default true */
   readonly clearable = input(true);
@@ -322,6 +328,20 @@ export class MznDatePicker implements ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  ngAfterViewInit(): void {
+    this.clickAway.listen(
+      this.hostElRef.nativeElement,
+      () => {
+        if (this.isOpen()) {
+          this.isOpen.set(false);
+          this.calendarToggled.emit(false);
+          this.onTouched?.();
+        }
+      },
+      this.destroyRef,
+    );
   }
 
   protected openCalendar(): void {
