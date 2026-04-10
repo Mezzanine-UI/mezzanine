@@ -18,10 +18,6 @@ type Story = StoryObj;
 
 export const Playground: Story = {
   argTypes: {
-    checked: {
-      control: { type: 'boolean' },
-      description: 'Whether the checkbox is checked',
-    },
     description: {
       control: { type: 'text' },
       description: 'The description text displayed below the label',
@@ -51,15 +47,20 @@ export const Playground: Story = {
       description:
         'The size of checkbox. In chip mode, "minor" is also available.',
     },
+    withEditInput: {
+      control: { type: 'boolean' },
+      description:
+        'Whether to show an editable input when the checkbox is checked',
+    },
   },
   args: {
-    checked: false,
     description: 'Supporting text',
     disabled: false,
     indeterminate: false,
     mode: 'default',
     severity: 'info',
     size: 'main',
+    withEditInput: false,
   },
   render: (args) => ({
     props: {
@@ -67,13 +68,13 @@ export const Playground: Story = {
     },
     template: `
       <div mznCheckbox
-        [checked]="checked"
         [description]="description"
         [disabled]="disabled"
         [indeterminate]="indeterminate"
         [mode]="mode"
         [severity]="severity"
         [size]="size"
+        [withEditInput]="withEditInput"
       >
         Checkbox Label
       </div>
