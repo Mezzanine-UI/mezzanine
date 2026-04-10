@@ -182,6 +182,8 @@ export class MznSelectTrigger {
       {
         [classes.triggerDisabled]: this.disabled(),
         [classes.triggerReadOnly]: this.readOnly(),
+        [textFieldClasses.disabled]: this.disabled(),
+        [textFieldClasses.readonly]: this.readOnly(),
         [textFieldClasses.error]: this.error(),
       },
     ),
