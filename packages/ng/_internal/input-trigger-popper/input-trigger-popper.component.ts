@@ -2,12 +2,20 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   input,
+  signal,
 } from '@angular/core';
 import { inputTriggerPopperClasses as classes } from '@mezzanine-ui/core/_internal/input-trigger-popper';
 import { MznPopper, PopperPlacement } from '@mezzanine-ui/ng/popper';
 import { size, type Middleware } from '@floating-ui/dom';
+
+/**
+ * 全域遞增計數器，確保後開啟的 popper z-index 永遠高於先開啟的。
+ * @internal
+ */
+let popperOpenSequence = 0;
 
 /**
  * 下拉觸發器共用的 Popper 容器（內部元件，不公開匯出）。
@@ -47,7 +55,7 @@ import { size, type Middleware } from '@floating-ui/dom';
       [placement]="placement"
       [offsetOptions]="offsetOpts"
       [middleware]="resolvedMiddleware()"
-      style="z-index: var(--mzn-z-index-popover)"
+      [style.z-index]="zIndex()"
     >
       <ng-content />
     </div>
@@ -74,6 +82,17 @@ export class MznInputTriggerPopper {
   protected readonly hostClass = classes.host;
   protected readonly placement: PopperPlacement = 'bottom-start';
   protected readonly offsetOpts = { mainAxis: 4 };
+  protected readonly zIndex = signal('var(--mzn-z-index-popover)');
+
+  constructor() {
+    effect(() => {
+      if (this.open()) {
+        this.zIndex.set(
+          `calc(var(--mzn-z-index-popover) + ${++popperOpenSequence})`,
+        );
+      }
+    });
+  }
 
   protected readonly resolvedMiddleware = computed(
     (): ReadonlyArray<Middleware> => {
