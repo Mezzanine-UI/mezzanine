@@ -25,6 +25,7 @@ import {
 } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MZN_STEPPER_CONTEXT } from './stepper-context';
 
 /** Step 的狀態類型。 */
@@ -68,15 +69,20 @@ const indicatorNumberIconList = [
   selector: '[mznStep]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznIcon],
+  imports: [MznIcon, MznTypography],
   host: {
     '[class]': 'hostClasses()',
     '[style.--connect-line-distance]': 'connectLineDistance()',
+    '[attr.role]': 'interactive() ? "button" : null',
+    '[attr.tabindex]': 'interactive() ? 0 : null',
+    '(keydown.enter)': 'handleInteractiveKey($event)',
+    '(keydown.space)': 'handleInteractiveKey($event)',
     '[attr.connectLineDistance]': 'null',
     '[attr.description]': 'null',
     '[attr.disabled]': 'null',
     '[attr.error]': 'null',
     '[attr.index]': 'null',
+    '[attr.interactive]': 'null',
     '[attr.status]': 'null',
     '[attr.title]': 'null',
   },
@@ -94,12 +100,18 @@ const indicatorNumberIconList = [
       <span [class]="dotIndicatorClasses"></span>
     }
     <div [class]="textContainerClass">
-      <span [class]="titleClass">
+      <span
+        [class]="titleClass"
+        mznTypography
+        variant="label-primary-highlight"
+      >
         {{ title() }}
         <span [class]="titleConnectLineClass"></span>
       </span>
       @if (description()) {
-        <span [class]="descriptionClass">{{ description() }}</span>
+        <span [class]="descriptionClass" mznTypography variant="caption">{{
+          description()
+        }}</span>
       }
     </div>
   `,
@@ -131,6 +143,13 @@ export class MznStep {
 
   /** 是否為錯誤狀態（僅在 status 非 processing 時生效）。 */
   readonly error = input(false);
+
+  /**
+   * 是否為可互動步驟。啟用時加入 `role="button"` 及 `tabindex="0"`，
+   * 並支援 Enter / Space 鍵觸發 click 事件。
+   * @default false
+   */
+  readonly interactive = input(false);
 
   /**
    * 手動指定步驟索引（零基）。
@@ -211,8 +230,16 @@ export class MznStep {
       [classes.vertical]: this._orientation() === 'vertical',
       [classes.dot]: this._type() === 'dot',
       [classes.number]: this._type() === 'number',
+      [classes.interactive]: this.interactive(),
     }),
   );
+
+  protected handleInteractiveKey(event: KeyboardEvent): void {
+    if (!this.interactive()) return;
+
+    event.preventDefault();
+    (event.currentTarget as HTMLElement).click();
+  }
 
   constructor() {
     this._index = this.stepperCtx?.register(this) ?? signal(0);
