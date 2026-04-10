@@ -220,28 +220,35 @@ export const VerticalChips: Story = {
         使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能。
       </p>
       <div
-        mznCheckbox
-        mode="chip"
-        [checked]="isAllSelected()"
-        [indeterminate]="isIndeterminate()"
-        (change)="onSelectAll($event)"
-        >全選</div
+        style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;"
       >
-      <div
-        mznCheckboxGroup
-        [(ngModel)]="values"
-        name="chips-level-group"
-        layout="horizontal"
-        mode="chip"
-      >
-        <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+        <div
+          mznCheckbox
+          mode="chip"
+          [checked]="isAllSelected()"
+          [indeterminate]="isIndeterminate()"
+          (change)="onSelectAll($event)"
+          >全選</div
+        >
+        <i class="mzn-checkbox-group--level-control-separator"></i>
+        <div
+          mznCheckboxGroup
+          [(ngModel)]="values"
+          name="chips-level-group"
+          layout="horizontal"
+          mode="chip"
+        >
+          <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="3" mode="chip" [disabled]="true"
+            >Checkbox Label</div
+          >
+          <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+        </div>
       </div>
     </div>
   `,
@@ -288,29 +295,33 @@ export const ChipsWithLevelControl: Story = {
       <p mznTypography variant="body" color="text-neutral">
         使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能，垂直排列。
       </p>
-      <div
-        mznCheckbox
-        mode="chip"
-        [checked]="isAllSelected()"
-        [indeterminate]="isIndeterminate()"
-        (change)="onSelectAll($event)"
-        >全選</div
-      >
-      <div
-        mznCheckboxGroup
-        [(ngModel)]="values"
-        name="chips-level-group-vertical"
-        layout="vertical"
-        mode="chip"
-      >
-        <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
-        <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div
+          mznCheckbox
+          mode="chip"
+          [checked]="isAllSelected()"
+          [indeterminate]="isIndeterminate()"
+          (change)="onSelectAll($event)"
+          >全選</div
+        >
+        <div
+          mznCheckboxGroup
+          [(ngModel)]="values"
+          name="chips-level-group-vertical"
+          layout="vertical"
+          mode="chip"
+        >
+          <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="3" mode="chip" [disabled]="true"
+            >Checkbox Label</div
+          >
+          <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+          <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+        </div>
       </div>
     </div>
   `,
