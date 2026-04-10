@@ -11,8 +11,9 @@ import {
   SelectMode,
 } from '@mezzanine-ui/core/select';
 import { textFieldClasses } from '@mezzanine-ui/core/text-field';
-import { ChevronDownIcon, CloseIcon } from '@mezzanine-ui/icons';
+import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
+import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 
 /**
@@ -41,7 +42,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 @Component({
   selector: '[mznSelectTrigger]',
   standalone: true,
-  imports: [MznIcon],
+  imports: [MznClearActions, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -77,20 +78,26 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
     <ng-content />
 
     @if (clearable() && hasValue()) {
-      <i
-        mznIcon
-        [icon]="clearIcon"
-        [class]="clearIconClass"
-        (click)="onClearClick($event)"
-      ></i>
+      <button
+        mznClearActions
+        type="clearable"
+        class="mzn-text-field__clear-icon"
+        tabindex="-1"
+        (mousedown)="$event.preventDefault()"
+        (clicked)="onClearClick($event)"
+      ></button>
     }
 
-    <i mznIcon [icon]="resolvedSuffixIcon()" [class]="suffixIconClasses()"></i>
+    <div class="mzn-text-field__suffix">
+      <i
+        mznIcon
+        [icon]="resolvedSuffixIcon()"
+        [class]="suffixIconClasses()"
+      ></i>
+    </div>
   `,
 })
 export class MznSelectTrigger {
-  protected readonly clearIcon = CloseIcon;
-
   /**
    * 是否處於啟用（展開）狀態，控制後綴圖示旋轉。
    * @default false
@@ -168,7 +175,6 @@ export class MznSelectTrigger {
   readonly triggerClicked = output<void>();
 
   protected readonly prefixClass = clsx(classes.triggerPrefix);
-  protected readonly clearIconClass = clsx(classes.triggerClearIcon);
   protected readonly triggerInputClass = classes.triggerInput;
 
   protected readonly hostClasses = computed((): string =>
@@ -182,6 +188,7 @@ export class MznSelectTrigger {
       {
         [classes.triggerDisabled]: this.disabled(),
         [classes.triggerReadOnly]: this.readOnly(),
+        [textFieldClasses.clearable]: this.clearable() && this.hasValue(),
         [textFieldClasses.disabled]: this.disabled(),
         [textFieldClasses.readonly]: this.readOnly(),
         [textFieldClasses.error]: this.error(),
