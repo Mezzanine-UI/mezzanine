@@ -6,7 +6,7 @@ import {
   CalendarMode,
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
-import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
@@ -23,7 +23,7 @@ const meta: Meta<MznDatePicker> = {
       providers: [
         {
           provide: MZN_CALENDAR_CONFIG,
-          useValue: createCalendarConfig(CalendarMethodsDayjs, {
+          useValue: createCalendarConfig(CalendarMethodsMoment, {
             locale: CalendarLocale.ZH_TW,
           }),
         },
@@ -207,7 +207,7 @@ export const Method: Story = {
         <div mznDatePicker [(ngModel)]="date" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>CalendarMethodsDayjs</strong></p>
+        <p style="margin: 0 0 12px 0"><strong>CalendarMethodsMoment</strong></p>
         <div mznDatePicker [(ngModel)]="date" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
