@@ -1,9 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
-import { CalendarMode } from '@mezzanine-ui/core/calendar';
+import {
+  CalendarLocale,
+  CalendarMode,
+  getDefaultModeFormat,
+} from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
-import { CalendarLocale } from '@mezzanine-ui/core/calendar';
 import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
@@ -234,42 +237,88 @@ export const Sizes: Story = {
   }),
 };
 
-export const Modes: Story = {
-  render: () => ({
-    props: {
-      dateD: undefined as string | undefined,
-      dateW: undefined as string | undefined,
-      dateM: undefined as string | undefined,
-      dateY: undefined as string | undefined,
-      dateQ: undefined as string | undefined,
-      dateH: undefined as string | undefined,
+@Component({
+  selector: 'story-date-picker-modes',
+  standalone: true,
+  imports: [MznDatePicker, MznTypography],
+  template: `
+    @for (m of modes; track m.mode) {
+      <div style="margin: 0 0 32px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 8px 0;">{{
+          m.label
+        }}</h3>
+        <p
+          mznTypography
+          variant="body"
+          style="margin: 0 0 8px 0; white-space: pre-line;"
+          >origin value: {{ m.value ?? '' }} format value: {{ m.formatted }}</p
+        >
+        <div
+          mznDatePicker
+          [mode]="m.mode"
+          [value]="m.value"
+          placeholder="輸入日期"
+          (dateChanged)="onDateChange(m, $event)"
+        ></div>
+      </div>
+    }
+  `,
+})
+class ModesStoryComponent {
+  private readonly config = inject(MZN_CALENDAR_CONFIG);
+
+  readonly modes = [
+    {
+      mode: 'day' as const,
+      label: 'Day',
+      value: undefined as string | undefined,
+      formatted: '',
     },
-    template: `
-      <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Day</strong></p>
-        <div mznDatePicker [(ngModel)]="dateD" mode="day" placeholder="輸入日期" ></div>
-      </div>
-      <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Week</strong></p>
-        <div mznDatePicker [(ngModel)]="dateW" mode="week" placeholder="輸入日期" ></div>
-      </div>
-      <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Month</strong></p>
-        <div mznDatePicker [(ngModel)]="dateM" mode="month" placeholder="輸入日期" ></div>
-      </div>
-      <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Year</strong></p>
-        <div mznDatePicker [(ngModel)]="dateY" mode="year" placeholder="輸入日期" ></div>
-      </div>
-      <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Quarter</strong></p>
-        <div mznDatePicker [(ngModel)]="dateQ" mode="quarter" placeholder="輸入日期" ></div>
-      </div>
-      <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Half year</strong></p>
-        <div mznDatePicker [(ngModel)]="dateH" mode="half-year" placeholder="輸入日期" ></div>
-      </div>
-    `,
+    {
+      mode: 'week' as const,
+      label: 'Week',
+      value: undefined as string | undefined,
+      formatted: '',
+    },
+    {
+      mode: 'month' as const,
+      label: 'Month',
+      value: undefined as string | undefined,
+      formatted: '',
+    },
+    {
+      mode: 'year' as const,
+      label: 'Year',
+      value: undefined as string | undefined,
+      formatted: '',
+    },
+    {
+      mode: 'quarter' as const,
+      label: 'Quarter',
+      value: undefined as string | undefined,
+      formatted: '',
+    },
+    {
+      mode: 'half-year' as const,
+      label: 'Half year',
+      value: undefined as string | undefined,
+      formatted: '',
+    },
+  ];
+
+  onDateChange(m: (typeof this.modes)[number], val: string | undefined): void {
+    m.value = val;
+    const fmt = getDefaultModeFormat(m.mode);
+    m.formatted = val
+      ? this.config.formatToString(this.config.locale, val, fmt)
+      : '';
+  }
+}
+
+export const Modes: Story = {
+  decorators: [moduleMetadata({ imports: [ModesStoryComponent] })],
+  render: () => ({
+    template: `<story-date-picker-modes />`,
   }),
 };
 
