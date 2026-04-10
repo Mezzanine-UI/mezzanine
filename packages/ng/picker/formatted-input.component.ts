@@ -80,6 +80,7 @@ export interface FormattedInputErrorMessages {
       [class]="inputClass"
       [disabled]="disabled()"
       [attr.aria-disabled]="disabled()"
+      [attr.size]="format().length + 2"
       [value]="inputDisplayValue()"
       [placeholder]="resolvedPlaceholder()"
       (keydown)="onKeyDown($event)"

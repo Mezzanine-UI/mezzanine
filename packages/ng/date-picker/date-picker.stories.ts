@@ -3,6 +3,7 @@ import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { CalendarMode } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import { CalendarLocale } from '@mezzanine-ui/core/calendar';
 import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
@@ -19,7 +20,9 @@ const meta: Meta<MznDatePicker> = {
       providers: [
         {
           provide: MZN_CALENDAR_CONFIG,
-          useValue: createCalendarConfig(CalendarMethodsDayjs),
+          useValue: createCalendarConfig(CalendarMethodsDayjs, {
+            locale: CalendarLocale.ZH_TW,
+          }),
         },
       ],
     }),
