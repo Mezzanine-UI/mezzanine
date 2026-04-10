@@ -159,8 +159,6 @@ export function getFullParsedList(
     '[attr.mode]': 'null',
     '[attr.id]': 'null',
     '[attr.name]': 'null',
-    '[attr.onInsert]': 'null',
-    '[attr.onRemoveCreated]': 'null',
     '[attr.open]': 'null',
     '[attr.options]': 'null',
     '[attr.overflowStrategy]': 'null',

@@ -68,8 +68,6 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.suffixIcon]': 'null',
     '[attr.withInput]': 'null',
     '[attr.withTick]': 'null',
-    '[attr.onPrefixIconClick]': 'null',
-    '[attr.onSuffixIconClick]': 'null',
   },
   template: `
     @if (withInput() && isRange()) {
