@@ -87,17 +87,22 @@ import {
       (valueChanged)="onValueChanged($event)"
       (valueCleared)="onValueCleared()"
     ></div>
-    @if (shouldShowClearable()) {
-      <button
-        type="button"
-        [class]="clearIconClass"
-        (click)="cleared.emit(); $event.stopPropagation()"
-      >
-        <i mznIcon [icon]="closeIcon"></i>
-      </button>
-    } @else {
-      <ng-content select="[suffix]" />
-    }
+    <div [class]="suffixClasses()">
+      <div [class]="suffixContentClass">
+        <ng-content select="[suffix]" />
+      </div>
+      @if (clearable() && !readOnly()) {
+        <button
+          type="button"
+          [class]="clearIconClass"
+          tabindex="-1"
+          (mousedown)="$event.preventDefault()"
+          (click)="cleared.emit(); $event.stopPropagation()"
+        >
+          <i mznIcon [icon]="closeIcon"></i>
+        </button>
+      }
+    </div>
   `,
 })
 export class MznPickerTrigger implements AfterViewInit {
@@ -203,6 +208,13 @@ export class MznPickerTrigger implements AfterViewInit {
 
   protected readonly closeIcon = CloseIcon;
   protected readonly clearIconClass = textFieldClasses.clearIcon;
+  protected readonly suffixContentClass = textFieldClasses.suffixContent;
+
+  protected readonly suffixClasses = computed((): string =>
+    clsx(textFieldClasses.suffix, {
+      [textFieldClasses.suffixOverlay]: !this.readOnly() && this.clearable(),
+    }),
+  );
 
   // -------------------------------------------------------------------------
   // Computed classes
@@ -215,6 +227,7 @@ export class MznPickerTrigger implements AfterViewInit {
       this.size() === 'sub' ? textFieldClasses.sub : textFieldClasses.main,
       this.hostClassModifier(),
       {
+        [textFieldClasses.slimGap]: this.clearable(),
         [textFieldClasses.clearable]: !this.readOnly() && this.clearable(),
         [textFieldClasses.clearing]: this.shouldShowClearable(),
         [textFieldClasses.disabled]: this.disabled(),
