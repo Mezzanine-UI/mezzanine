@@ -18,7 +18,11 @@ import {
 } from '@mezzanine-ui/core/calendar';
 import { pickerClasses, RangePickerValue } from '@mezzanine-ui/core/picker';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
-import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
+import {
+  MZN_CALENDAR_CONFIG,
+  type CalendarDayAnnotation,
+  type CalendarQuickSelectOption,
+} from '@mezzanine-ui/ng/calendar';
 import { MznRangePickerTrigger } from '@mezzanine-ui/ng/picker';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import { MznDateRangePickerCalendar } from './date-range-picker-calendar.component';
@@ -67,6 +71,8 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
     '[attr.isQuarterDisabled]': 'null',
     '[attr.isWeekDisabled]': 'null',
     '[attr.isYearDisabled]': 'null',
+    '[attr.quickSelect]': 'null',
+    '[attr.renderAnnotations]': 'null',
     '[attr.mode]': 'null',
     '[attr.readOnly]': 'null',
     '[attr.referenceDate]': 'null',
@@ -123,6 +129,8 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
       [isQuarterDisabled]="isQuarterDisabled()"
       [isWeekDisabled]="isWeekDisabled()"
       [isYearDisabled]="isYearDisabled()"
+      [quickSelect]="quickSelect()"
+      [renderAnnotations]="renderAnnotations()"
       [showFooterActions]="confirmMode() === 'manual'"
       (rangeChanged)="onRangeChanged($event)"
       (confirmed)="onConfirm()"
@@ -200,6 +208,17 @@ export class MznDateRangePicker implements ControlValueAccessor {
   readonly isYearDisabled = input<((date: DateType) => boolean) | undefined>(
     undefined,
   );
+
+  /** Quick select shortcut options (activeId + options array). */
+  readonly quickSelect = input<
+    | { activeId?: string; options: ReadonlyArray<CalendarQuickSelectOption> }
+    | undefined
+  >(undefined);
+
+  /** Per-date annotation render function. */
+  readonly renderAnnotations = input<
+    ((date: DateType) => CalendarDayAnnotation) | undefined
+  >(undefined);
 
   /** 日曆模式。 @default 'day' */
   readonly mode = input<CalendarMode>('day');

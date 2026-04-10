@@ -6,8 +6,11 @@ import {
   output,
 } from '@angular/core';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
-import { MznRangeCalendar } from '@mezzanine-ui/ng/calendar';
-import { CalendarQuickSelectOption } from '@mezzanine-ui/ng/calendar';
+import {
+  MznRangeCalendar,
+  type CalendarDayAnnotation,
+  type CalendarQuickSelectOption,
+} from '@mezzanine-ui/ng/calendar';
 import {
   MznPopper,
   PopperOffsetOptions,
@@ -69,6 +72,7 @@ import {
     '[attr.isYearInRange]': 'null',
     '[attr.mode]': 'null',
     '[attr.quickSelect]': 'null',
+    '[attr.renderAnnotations]': 'null',
     '[attr.referenceDate]': 'null',
     '[attr.showFooterActions]': 'null',
     '[attr.value]': 'null',
@@ -112,6 +116,7 @@ import {
           [isYearDisabled]="isYearDisabled()"
           [isYearInRange]="isYearInRange()"
           [quickSelect]="quickSelect()"
+          [renderAnnotations]="renderAnnotations()"
           [showFooterActions]="showFooterActions()"
           (rangeChanged)="rangeChanged.emit($event)"
           (cellHover)="cellHover.emit($event)"
@@ -223,6 +228,11 @@ export class MznDateRangePickerCalendar {
         options: ReadonlyArray<CalendarQuickSelectOption>;
       }
     | undefined
+  >(undefined);
+
+  /** Per-date annotation render function. */
+  readonly renderAnnotations = input<
+    ((date: DateType) => CalendarDayAnnotation) | undefined
   >(undefined);
 
   /**

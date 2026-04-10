@@ -748,28 +748,267 @@ export const CustomDisable: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-date-range-picker-calendar-integration',
+  standalone: true,
+  imports: [MznDateRangePicker, MznTypography],
+  template: `
+    <div
+      style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px;"
+    >
+      <h2 mznTypography variant="h2" style="margin: 0 0 16px 0;"
+        >1. Date Annotations (renderAnnotations)</h2
+      >
+      <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+        Display additional information on each date cell via calendarProps.
+        Perfect for showing metrics, events, or status indicators.
+      </p>
+      <div style="margin: 0 0 32px 0;">
+        <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+          Example: Stock market daily changes
+        </p>
+        <div
+          mznDateRangePicker
+          [value]="valAnnotation"
+          [renderAnnotations]="annotationFn"
+          mode="day"
+          format="YYYY-MM-DD"
+          inputFromPlaceholder="Start Date"
+          inputToPlaceholder="End Date"
+          (rangeChanged)="valAnnotation = $event"
+        ></div>
+      </div>
+    </div>
+
+    <div
+      style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px;"
+    >
+      <h2 mznTypography variant="h2" style="margin: 0 0 16px 0;"
+        >2. Quick Select Options</h2
+      >
+      <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+        Provide shortcut buttons for commonly selected date ranges. Great for
+        improving UX in dashboards and reports.
+      </p>
+      <div style="margin: 0 0 32px 0;">
+        <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+          Selected: [{{ selectedFrom() }}, {{ selectedTo() }}]
+        </p>
+        <div
+          mznDateRangePicker
+          [value]="valQuickSelect"
+          [quickSelect]="quickSelectConfig()"
+          mode="day"
+          format="YYYY-MM-DD"
+          inputFromPlaceholder="Start Date"
+          inputToPlaceholder="End Date"
+          (rangeChanged)="valQuickSelect = $event"
+        ></div>
+      </div>
+    </div>
+  `,
+})
+class DateRangePickerCalendarIntegrationStoryComponent {
+  private readonly config = inject(MZN_CALENDAR_CONFIG);
+
+  valAnnotation: RangePickerValue | undefined;
+  valQuickSelect: RangePickerValue | undefined;
+
+  private readonly todayMs = Date.now();
+  private readonly dayMs = 86_400_000;
+
+  private readonly annotationMap: Record<
+    string,
+    {
+      value: string;
+      color: 'text-success' | 'text-error' | 'text-warning' | 'text-neutral';
+    }
+  > = {
+    [this.toDayKey(0)]: { value: '+5.2%', color: 'text-success' },
+    [this.toDayKey(-1)]: { value: '-3.1%', color: 'text-error' },
+    [this.toDayKey(-2)]: { value: '+1.8%', color: 'text-warning' },
+    [this.toDayKey(-3)]: { value: '+8.4%', color: 'text-success' },
+    [this.toDayKey(-4)]: { value: '-7.2%', color: 'text-error' },
+    [this.toDayKey(1)]: { value: '+2.1%', color: 'text-warning' },
+    [this.toDayKey(2)]: { value: '-0.5%', color: 'text-neutral' },
+    [this.toDayKey(3)]: { value: '+6.7%', color: 'text-success' },
+  };
+
+  readonly annotationFn = (
+    date: string,
+  ):
+    | {
+        value: string;
+        color: 'text-success' | 'text-error' | 'text-warning' | 'text-neutral';
+      }
+    | undefined => {
+    const key = this.config.formatToString(
+      this.config.locale,
+      date,
+      'YYYY-MM-DD',
+    );
+    return this.annotationMap[key];
+  };
+
+  quickSelectConfig(): {
+    activeId?: string;
+    options: ReadonlyArray<{ id: string; name: string; onClick: () => void }>;
+  } {
+    return {
+      activeId: this.getActiveId(),
+      options: [
+        {
+          id: 'today',
+          name: 'Today',
+          onClick: () => {
+            const start = this.startOfDay(0);
+            const end = this.endOfDay(0);
+            this.valQuickSelect = [start, end];
+          },
+        },
+        {
+          id: 'last7days',
+          name: 'Last 7 Days',
+          onClick: () => {
+            this.valQuickSelect = [this.startOfDay(-6), this.endOfDay(0)];
+          },
+        },
+        {
+          id: 'last30days',
+          name: 'Last 30 Days',
+          onClick: () => {
+            this.valQuickSelect = [this.startOfDay(-29), this.endOfDay(0)];
+          },
+        },
+        {
+          id: 'thisMonth',
+          name: 'This Month',
+          onClick: () => {
+            const d = new Date(this.todayMs);
+            const start = new Date(d.getFullYear(), d.getMonth(), 1);
+            const end = new Date(
+              d.getFullYear(),
+              d.getMonth() + 1,
+              0,
+              23,
+              59,
+              59,
+              999,
+            );
+            this.valQuickSelect = [start.toISOString(), end.toISOString()];
+          },
+        },
+        {
+          id: 'lastMonth',
+          name: 'Last Month',
+          onClick: () => {
+            const d = new Date(this.todayMs);
+            const start = new Date(d.getFullYear(), d.getMonth() - 1, 1);
+            const end = new Date(
+              d.getFullYear(),
+              d.getMonth(),
+              0,
+              23,
+              59,
+              59,
+              999,
+            );
+            this.valQuickSelect = [start.toISOString(), end.toISOString()];
+          },
+        },
+      ],
+    };
+  }
+
+  selectedFrom(): string {
+    const v = this.valQuickSelect?.[0];
+    if (!v) return '';
+    return this.config.formatToString(this.config.locale, v, 'YYYY-MM-DD');
+  }
+
+  selectedTo(): string {
+    const v = this.valQuickSelect?.[1];
+    if (!v) return '';
+    return this.config.formatToString(this.config.locale, v, 'YYYY-MM-DD');
+  }
+
+  private getActiveId(): string | undefined {
+    const val = this.valQuickSelect;
+    if (!val || !val[0] || !val[1]) return undefined;
+    const from = this.toDay(val[0]);
+    const to = this.toDay(val[1]);
+    const today = this.toDay(new Date(this.todayMs));
+
+    if (from === today && to === today) return 'today';
+    if (
+      from === this.toDay(new Date(this.todayMs - 6 * this.dayMs)) &&
+      to === today
+    )
+      return 'last7days';
+    if (
+      from === this.toDay(new Date(this.todayMs - 29 * this.dayMs)) &&
+      to === today
+    )
+      return 'last30days';
+
+    const d = new Date(this.todayMs);
+    const thisMonthStart = this.toDay(
+      new Date(d.getFullYear(), d.getMonth(), 1),
+    );
+    const thisMonthEnd = this.toDay(
+      new Date(d.getFullYear(), d.getMonth() + 1, 0),
+    );
+    if (from === thisMonthStart && to === thisMonthEnd) return 'thisMonth';
+
+    const lastMonthStart = this.toDay(
+      new Date(d.getFullYear(), d.getMonth() - 1, 1),
+    );
+    const lastMonthEnd = this.toDay(new Date(d.getFullYear(), d.getMonth(), 0));
+    if (from === lastMonthStart && to === lastMonthEnd) return 'lastMonth';
+
+    return undefined;
+  }
+
+  private toDayKey(offsetDays: number): string {
+    const iso = new Date(this.todayMs + offsetDays * this.dayMs).toISOString();
+    return this.config.formatToString(this.config.locale, iso, 'YYYY-MM-DD');
+  }
+
+  private toDay(d: Date | string): number {
+    const dt = typeof d === 'string' ? new Date(d) : d;
+    return dt.getFullYear() * 10000 + (dt.getMonth() + 1) * 100 + dt.getDate();
+  }
+
+  private startOfDay(offsetDays: number): string {
+    const d = new Date(this.todayMs + offsetDays * this.dayMs);
+    const start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    return start.toISOString();
+  }
+
+  private endOfDay(offsetDays: number): string {
+    const d = new Date(this.todayMs + offsetDays * this.dayMs);
+    const end = new Date(
+      d.getFullYear(),
+      d.getMonth(),
+      d.getDate(),
+      23,
+      59,
+      59,
+      999,
+    );
+    return end.toISOString();
+  }
+}
+
 export const CalendarIntegration: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({
+      imports: [DateRangePickerCalendarIntegrationStoryComponent],
+    }),
+  ],
   render: () => ({
-    props: {
-      rangeAnnotation: undefined,
-      rangeQuickSelect: undefined,
-    },
-    template: `
-      <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
-        <p style="margin: 0 0 16px 0"><strong>1. Date Annotations (renderAnnotations)</strong></p>
-        <p style="margin: 0 0 12px 0">Display additional information on each date cell.</p>
-        <div style="margin: 0 0 32px 0">
-          <div mznDateRangePicker [(ngModel)]="rangeAnnotation" mode="day" inputFromPlaceholder="Start Date" inputToPlaceholder="End Date" ></div>
-        </div>
-      </div>
-      <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
-        <p style="margin: 0 0 16px 0"><strong>2. Quick Select Options</strong></p>
-        <p style="margin: 0 0 12px 0">Provide shortcut buttons for commonly selected date ranges.</p>
-        <div style="margin: 0 0 32px 0">
-          <div mznDateRangePicker [(ngModel)]="rangeQuickSelect" mode="day" inputFromPlaceholder="Start Date" inputToPlaceholder="End Date" ></div>
-        </div>
-      </div>
-    `,
+    template: `<story-date-range-picker-calendar-integration />`,
   }),
 };
 
