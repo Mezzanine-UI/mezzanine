@@ -387,7 +387,7 @@ export const ChipsWithLevelControlVertical: Story = {
     <div mznCheckboxGroup [(ngModel)]="values" name="level-control-group">
       <div mznCheckbox value="1">Checkbox Label</div>
       <div mznCheckbox value="2">Checkbox Label</div>
-      <div mznCheckbox value="3">Checkbox Label</div>
+      <div mznCheckbox value="3" [disabled]="true">Checkbox Label</div>
       <div mznCheckbox value="4">Checkbox Label</div>
       <div mznCheckbox value="5">Checkbox Label</div>
       <div mznCheckbox value="6">Checkbox Label</div>
