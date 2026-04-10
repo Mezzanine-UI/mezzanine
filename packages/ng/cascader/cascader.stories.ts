@@ -883,45 +883,63 @@ export const Clearable: Story = {
   }),
 };
 
-export const OverflowCollapse: Story = {
-  render: () => ({
-    props: {
-      options: taiwanOptions,
-      preselectedValue: [
-        { id: 'taiwan', name: '台灣' },
-        { id: 'taipei', name: '台北市' },
-        { id: 'zhongzheng', name: '中正區' },
-      ],
-    },
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 24px;">
-        <div>
-          <p mznTypography variant="body" style="margin-bottom: 8px;">
-            寬度不足時，中間路徑折疊為「...」，hover 顯示完整路徑 Tooltip（width: 160px）
-          </p>
-          <div style="width: 160px;">
-            <div mznCascader
-              [fullWidth]="true"
-              [options]="options"
-              [value]="preselectedValue"
-              placeholder="國家 / 城市 / 區域"
-            ></div>
-          </div>
-        </div>
-        <div>
-          <p mznTypography variant="body" style="margin-bottom: 8px;">
-            寬度充足時不折疊，顯示完整路徑（width: 320px）
-          </p>
-          <div style="width: 320px;">
-            <div mznCascader
-              [fullWidth]="true"
-              [options]="options"
-              [value]="preselectedValue"
-              placeholder="國家 / 城市 / 區域"
-            ></div>
-          </div>
+@Component({
+  selector: 'story-cascader-overflow-collapse',
+  standalone: true,
+  imports: [MznCascader, MznTypography],
+  template: `
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div>
+        <p mznTypography variant="body" style="margin-bottom: 8px;">
+          寬度不足時，中間路徑折疊為「...」，hover 顯示完整路徑 Tooltip（width:
+          160px）
+        </p>
+        <div style="width: 160px;">
+          <div
+            mznCascader
+            [fullWidth]="true"
+            [options]="options"
+            [value]="narrowValue()"
+            placeholder="國家 / 城市 / 區域"
+            (valueChange)="narrowValue.set($event)"
+          ></div>
         </div>
       </div>
-    `,
+      <div>
+        <p mznTypography variant="body" style="margin-bottom: 8px;">
+          寬度充足時不折疊，顯示完整路徑（width: 320px）
+        </p>
+        <div style="width: 320px;">
+          <div
+            mznCascader
+            [fullWidth]="true"
+            [options]="options"
+            [value]="wideValue()"
+            placeholder="國家 / 城市 / 區域"
+            (valueChange)="wideValue.set($event)"
+          ></div>
+        </div>
+      </div>
+    </div>
+  `,
+})
+class OverflowCollapseDemoComponent {
+  readonly options = taiwanOptions;
+  readonly narrowValue = signal<CascaderOption[]>([
+    { id: 'taiwan', name: '台灣' },
+    { id: 'taipei', name: '台北市' },
+    { id: 'zhongzheng', name: '中正區' },
+  ]);
+  readonly wideValue = signal<CascaderOption[]>([
+    { id: 'taiwan', name: '台灣' },
+    { id: 'taipei', name: '台北市' },
+    { id: 'zhongzheng', name: '中正區' },
+  ]);
+}
+
+export const OverflowCollapse: Story = {
+  decorators: [moduleMetadata({ imports: [OverflowCollapseDemoComponent] })],
+  render: () => ({
+    template: `<story-cascader-overflow-collapse />`,
   }),
 };
