@@ -1,13 +1,18 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
-import { CalendarMode } from '@mezzanine-ui/core/calendar';
-import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import {
+  CalendarLocale,
+  CalendarMode,
+  getDefaultModeFormat,
+} from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
 } from '@mezzanine-ui/ng/calendar';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznDateRangePicker } from './date-range-picker.component';
 
 const meta: Meta<MznDateRangePicker> = {
@@ -19,7 +24,9 @@ const meta: Meta<MznDateRangePicker> = {
       providers: [
         {
           provide: MZN_CALENDAR_CONFIG,
-          useValue: createCalendarConfig(CalendarMethodsDayjs),
+          useValue: createCalendarConfig(CalendarMethodsMoment, {
+            locale: CalendarLocale.ZH_TW,
+          }),
         },
       ],
     }),
@@ -32,14 +39,24 @@ type Story = StoryObj<MznDateRangePicker>;
 @Component({
   selector: 'story-date-range-picker-playground',
   standalone: true,
-  imports: [MznDateRangePicker],
+  imports: [MznDateRangePicker, MznTypography],
   template: `
+    <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;">
+      {{ modeLabel() }}
+    </h3>
+    <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+      current value: [{{ value()?.[0] || '' }}, {{ value()?.[1] || '' }}]
+    </p>
+    <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+      format: [{{ formattedFrom() }}, {{ formattedTo() }}]
+    </p>
     <div
       mznDateRangePicker
       [clearable]="clearable"
       [confirmMode]="confirmMode"
       [disabled]="disabled"
       [error]="error"
+      [format]="resolvedFormat()"
       [fullWidth]="fullWidth"
       [inputFromPlaceholder]="inputFromPlaceholder"
       [inputToPlaceholder]="inputToPlaceholder"
@@ -52,6 +69,8 @@ type Story = StoryObj<MznDateRangePicker>;
   `,
 })
 class DateRangePickerPlaygroundComponent {
+  private readonly config = inject(MZN_CALENDAR_CONFIG);
+
   clearable = false;
   confirmMode: 'immediate' | 'manual' = 'immediate';
   disabled = false;
@@ -63,6 +82,35 @@ class DateRangePickerPlaygroundComponent {
   readOnly = false;
   size: 'main' | 'sub' = 'main';
   readonly value = signal<RangePickerValue | undefined>(undefined);
+
+  modeLabel(): string {
+    const m = this.mode;
+    return m.charAt(0).toUpperCase() + m.slice(1);
+  }
+
+  resolvedFormat(): string {
+    return getDefaultModeFormat(this.mode);
+  }
+
+  formattedFrom(): string {
+    const v = this.value()?.[0];
+    if (!v) return '';
+    return this.config.formatToString(
+      this.config.locale,
+      v,
+      this.resolvedFormat(),
+    );
+  }
+
+  formattedTo(): string {
+    const v = this.value()?.[1];
+    if (!v) return '';
+    return this.config.formatToString(
+      this.config.locale,
+      v,
+      this.resolvedFormat(),
+    );
+  }
 }
 
 export const Playground: Story = {
