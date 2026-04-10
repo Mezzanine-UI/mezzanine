@@ -104,6 +104,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       [open]="isOpen()"
       placement="bottom-start"
       [offsetOptions]="{ mainAxis: 4 }"
+      style="z-index: var(--mzn-z-index-popover)"
     >
       <div>
         <div

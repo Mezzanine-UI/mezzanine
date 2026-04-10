@@ -83,6 +83,7 @@ import {
       [open]="open()"
       [placement]="placement()"
       [offsetOptions]="offsetOptions()"
+      style="z-index: var(--mzn-z-index-popover)"
     >
       <div (mouseleave)="mouseLeave.emit()">
         <div

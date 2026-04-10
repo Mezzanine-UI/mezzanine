@@ -69,6 +69,7 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
       [open]="open()"
       placement="bottom-start"
       [offsetOptions]="popperOffsetOptions()"
+      style="z-index: var(--mzn-z-index-popover)"
     >
       <div
         mznCalendar
