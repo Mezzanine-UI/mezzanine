@@ -175,6 +175,19 @@ export const Severity: Story = {
                 >Checkbox Label</div
               >
             </div>
+            <div
+              style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;"
+            >
+              <p mznTypography variant="body">With editable input:</p>
+              <div
+                mznCheckbox
+                [(ngModel)]="mainEditInput"
+                name="mainEditInput"
+                description="Supporting text"
+                [withEditInput]="true"
+                >Checkbox Label</div
+              >
+            </div>
           </div>
         </div>
         <div
@@ -231,6 +244,20 @@ export const Severity: Story = {
                 [disabled]="true"
                 size="sub"
                 description="Supporting text"
+                >Checkbox Label</div
+              >
+            </div>
+            <div
+              style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;"
+            >
+              <p mznTypography variant="body">With editable input:</p>
+              <div
+                mznCheckbox
+                [(ngModel)]="subEditInput"
+                name="subEditInput"
+                size="sub"
+                description="Supporting text"
+                [withEditInput]="true"
                 >Checkbox Label</div
               >
             </div>
@@ -381,8 +408,10 @@ export const Severity: Story = {
 class StateDemoComponent {
   mainNormal = false;
   mainChecked = true;
+  mainEditInput = false;
   subNormal = false;
   subChecked = true;
+  subEditInput = false;
 }
 
 export const State: Story = {
