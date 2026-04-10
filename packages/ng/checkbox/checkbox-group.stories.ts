@@ -207,84 +207,201 @@ export const VerticalChips: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-chips-level-horizontal',
+  standalone: true,
+  imports: [FormsModule, MznCheckbox, MznCheckboxGroup, MznTypography],
+  template: `
+    <div
+      style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;"
+    >
+      <p mznTypography variant="body">Chip 模式搭配 Level 控制範例</p>
+      <p mznTypography variant="body" color="text-neutral">
+        使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能。
+      </p>
+      <div
+        mznCheckbox
+        mode="chip"
+        [checked]="isAllSelected()"
+        [indeterminate]="isIndeterminate()"
+        (change)="onSelectAll($event)"
+        >全選</div
+      >
+      <div
+        mznCheckboxGroup
+        [(ngModel)]="values"
+        name="chips-level-group"
+        layout="horizontal"
+        mode="chip"
+      >
+        <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+      </div>
+    </div>
+  `,
+})
+class ChipsWithLevelHorizontalComponent {
+  private readonly allIds = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  values: string[] = ['2', '4'];
+
+  isAllSelected(): boolean {
+    return this.allIds.every((id) => this.values.includes(id));
+  }
+
+  isIndeterminate(): boolean {
+    return this.values.length > 0 && !this.isAllSelected();
+  }
+
+  onSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.values = checked ? [...this.allIds] : [];
+  }
+}
+
 export const ChipsWithLevelControl: Story = {
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [ChipsWithLevelHorizontalComponent] }),
+  ],
   render: () => ({
-    props: { values: ['2', '4'] as string[] },
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;">
-        <p mznTypography variant="body">Chip 模式搭配 Level 控制範例</p>
-        <p mznTypography variant="body" color="text-neutral">
-          使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能。
-        </p>
-        <div mznCheckboxGroup [(ngModel)]="values" name="chips-level-group" layout="horizontal" mode="chip">
-          <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
-        </div>
-      </div>
-    `,
+    template: `<story-chips-level-horizontal />`,
   }),
 };
+
+@Component({
+  selector: 'story-chips-level-vertical',
+  standalone: true,
+  imports: [FormsModule, MznCheckbox, MznCheckboxGroup, MznTypography],
+  template: `
+    <div
+      style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;"
+    >
+      <p mznTypography variant="body"
+        >Chip 模式搭配 Level 控制範例（垂直佈局）</p
+      >
+      <p mznTypography variant="body" color="text-neutral">
+        使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能，垂直排列。
+      </p>
+      <div
+        mznCheckbox
+        mode="chip"
+        [checked]="isAllSelected()"
+        [indeterminate]="isIndeterminate()"
+        (change)="onSelectAll($event)"
+        >全選</div
+      >
+      <div
+        mznCheckboxGroup
+        [(ngModel)]="values"
+        name="chips-level-group-vertical"
+        layout="vertical"
+        mode="chip"
+      >
+        <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
+        <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
+      </div>
+    </div>
+  `,
+})
+class ChipsWithLevelVerticalComponent {
+  private readonly allIds = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  values: string[] = ['2', '4'];
+
+  isAllSelected(): boolean {
+    return this.allIds.every((id) => this.values.includes(id));
+  }
+
+  isIndeterminate(): boolean {
+    return this.values.length > 0 && !this.isAllSelected();
+  }
+
+  onSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.values = checked ? [...this.allIds] : [];
+  }
+}
 
 export const ChipsWithLevelControlVertical: Story = {
   parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [ChipsWithLevelVerticalComponent] })],
   render: () => ({
-    props: { values: ['2', '4'] as string[] },
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;">
-        <p mznTypography variant="body">Chip 模式搭配 Level 控制範例（垂直佈局）</p>
-        <p mznTypography variant="body" color="text-neutral">
-          使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能，垂直排列。
-        </p>
-        <div mznCheckboxGroup [(ngModel)]="values" name="chips-level-group-vertical" layout="vertical" mode="chip">
-          <div mznCheckbox value="1" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="2" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="3" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="4" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="5" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="6" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="7" mode="chip">Checkbox Label</div>
-          <div mznCheckbox value="8" mode="chip">Checkbox Label</div>
-        </div>
-      </div>
-    `,
+    template: `<story-chips-level-vertical />`,
   }),
 };
 
+@Component({
+  selector: 'story-level-control-customization',
+  standalone: true,
+  imports: [FormsModule, MznCheckbox, MznCheckboxGroup],
+  template: `
+    <div
+      mznCheckbox
+      [checked]="isAllSelected()"
+      [indeterminate]="isIndeterminate()"
+      (change)="onSelectAll($event)"
+      >全選</div
+    >
+    <div mznCheckboxGroup [(ngModel)]="values" name="level-control-group">
+      <div mznCheckbox value="1">Checkbox Label</div>
+      <div mznCheckbox value="2">Checkbox Label</div>
+      <div mznCheckbox value="3">Checkbox Label</div>
+      <div mznCheckbox value="4">Checkbox Label</div>
+      <div mznCheckbox value="5">Checkbox Label</div>
+      <div mznCheckbox value="6">Checkbox Label</div>
+      <div mznCheckbox value="7">Checkbox Label</div>
+      <div mznCheckbox value="8">Checkbox Label</div>
+      <div mznCheckbox value="9">Checkbox Label</div>
+      <div mznCheckbox value="10">Checkbox Label</div>
+      <div mznCheckbox value="11">Checkbox Label</div>
+      <div mznCheckbox value="12">Checkbox Label</div>
+      <div mznCheckbox value="13">Checkbox Label</div>
+      <div mznCheckbox value="14">Checkbox Label</div>
+      <div mznCheckbox value="15">Checkbox Label</div>
+      <div mznCheckbox value="16">Checkbox Label</div>
+      <div mznCheckbox value="17">Checkbox Label</div>
+      <div mznCheckbox value="18">Checkbox Label</div>
+      <div mznCheckbox value="19">Checkbox Label</div>
+      <div mznCheckbox value="20">Checkbox Label</div>
+    </div>
+  `,
+})
+class LevelControlCustomizationComponent {
+  private readonly allIds = Array.from({ length: 20 }, (_, i) => String(i + 1));
+  values: string[] = ['2', '4'];
+
+  isAllSelected(): boolean {
+    return this.allIds.every((id) => this.values.includes(id));
+  }
+
+  isIndeterminate(): boolean {
+    return this.values.length > 0 && !this.isAllSelected();
+  }
+
+  onSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.values = checked ? [...this.allIds] : [];
+  }
+}
+
 export const WithLevelControlCustomization: Story = {
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [LevelControlCustomizationComponent] }),
+  ],
   render: () => ({
-    props: { values: ['2', '4'] as string[] },
-    template: `
-      <div mznCheckboxGroup [(ngModel)]="values" name="level-control-group">
-        <div mznCheckbox value="1">Checkbox Label</div>
-        <div mznCheckbox value="2">Checkbox Label</div>
-        <div mznCheckbox value="3">Checkbox Label</div>
-        <div mznCheckbox value="4">Checkbox Label</div>
-        <div mznCheckbox value="5">Checkbox Label</div>
-        <div mznCheckbox value="6">Checkbox Label</div>
-        <div mznCheckbox value="7">Checkbox Label</div>
-        <div mznCheckbox value="8">Checkbox Label</div>
-        <div mznCheckbox value="9">Checkbox Label</div>
-        <div mznCheckbox value="10">Checkbox Label</div>
-        <div mznCheckbox value="11">Checkbox Label</div>
-        <div mznCheckbox value="12">Checkbox Label</div>
-        <div mznCheckbox value="13">Checkbox Label</div>
-        <div mznCheckbox value="14">Checkbox Label</div>
-        <div mznCheckbox value="15">Checkbox Label</div>
-        <div mznCheckbox value="16">Checkbox Label</div>
-        <div mznCheckbox value="17">Checkbox Label</div>
-        <div mznCheckbox value="18">Checkbox Label</div>
-        <div mznCheckbox value="19">Checkbox Label</div>
-        <div mznCheckbox value="20">Checkbox Label</div>
-      </div>
-    `,
+    template: `<story-level-control-customization />`,
   }),
 };
 
