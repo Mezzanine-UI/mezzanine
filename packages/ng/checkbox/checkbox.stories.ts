@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznCheckbox } from './checkbox.component';
 import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
@@ -423,26 +424,51 @@ export const State: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-checkbox-with-form',
+  standalone: true,
+  imports: [FormsModule, MznButton, MznCheckbox, MznTypography],
+  template: `
+    <form
+      (ngSubmit)="onSubmit()"
+      style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 400px;"
+    >
+      <p mznTypography variant="body">簡單表單範例</p>
+      <div
+        mznCheckbox
+        [(ngModel)]="agreeToTerms"
+        label="我同意服務條款"
+        name="agreeToTerms"
+      ></div>
+      <div
+        mznCheckbox
+        [(ngModel)]="subscribeNewsletter"
+        description="訂閱我們的電子報以獲得最新消息"
+        label="訂閱電子報"
+        name="subscribeNewsletter"
+      ></div>
+      <button mznButton type="submit" style="margin-top: 8px;"> 提交 </button>
+    </form>
+  `,
+})
+class WithFormDemoComponent {
+  agreeToTerms = false;
+  subscribeNewsletter = false;
+
+  onSubmit(): void {
+    // eslint-disable-next-line no-console
+    console.log('Form submitted:', {
+      agreeToTerms: this.agreeToTerms,
+      subscribeNewsletter: this.subscribeNewsletter,
+    });
+  }
+}
+
 export const WithForm: Story = {
   parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [WithFormDemoComponent] })],
   render: () => ({
-    props: {
-      agreeToTerms: false,
-      subscribeNewsletter: false,
-    },
-    template: `
-      <form style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 400px;">
-        <p style="margin: 0; font-weight: bold;">簡單表單範例</p>
-        <div mznCheckbox [(ngModel)]="agreeToTerms" name="agreeToTerms">我同意服務條款</div>
-        <div mznCheckbox [(ngModel)]="subscribeNewsletter" name="subscribeNewsletter">訂閱電子報</div>
-        <button
-          type="button"
-          style="padding: 8px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 8px;"
-        >
-          提交
-        </button>
-      </form>
-    `,
+    template: `<story-checkbox-with-form />`,
   }),
 };
 
@@ -451,7 +477,7 @@ export const Indeterminate: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px;">
-        <p style="margin: 0; font-weight: bold;">Indeterminate State</p>
+        <p mznTypography variant="body">Indeterminate State</p>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div mznCheckbox [indeterminate]="true">Indeterminate (main)</div>
           <div mznCheckbox [indeterminate]="true" size="sub">Indeterminate (sub)</div>
@@ -462,31 +488,79 @@ export const Indeterminate: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-checkbox-editable-form',
+  standalone: true,
+  imports: [FormsModule, MznButton, MznCheckbox, MznTypography],
+  template: `
+    <form
+      (ngSubmit)="onSubmit()"
+      style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 500px;"
+    >
+      <p mznTypography variant="body">表單整合範例</p>
+      <p mznTypography variant="body" color="text-neutral">
+        選擇「其他」選項後，需要填寫自訂內容才能提交。
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div
+          mznCheckbox
+          [(ngModel)]="option1"
+          label="選項 1"
+          name="option1"
+        ></div>
+        <div
+          mznCheckbox
+          [(ngModel)]="option2"
+          label="選項 2"
+          name="option2"
+        ></div>
+        <div
+          mznCheckbox
+          [(ngModel)]="otherChecked"
+          label="其他"
+          name="otherChecked"
+          [withEditInput]="true"
+        ></div>
+      </div>
+      @if (otherChecked && !otherOption) {
+        <p mznTypography variant="caption" color="text-error">
+          請輸入其他選項的內容
+        </p>
+      }
+      <button
+        mznButton
+        type="submit"
+        [disabled]="otherChecked && !otherOption"
+        style="margin-top: 8px;"
+      >
+        提交
+      </button>
+    </form>
+  `,
+})
+class WithEditableInputAndFormDemoComponent {
+  option1 = false;
+  option2 = false;
+  otherChecked = false;
+  otherOption = '';
+
+  onSubmit(): void {
+    // eslint-disable-next-line no-console
+    console.log('Form submitted:', {
+      option1: this.option1,
+      option2: this.option2,
+      otherChecked: this.otherChecked,
+      otherOption: this.otherOption,
+    });
+  }
+}
+
 export const WithEditableInputAndForm: Story = {
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [WithEditableInputAndFormDemoComponent] }),
+  ],
   render: () => ({
-    props: {
-      option1: false,
-      option2: false,
-      otherChecked: false,
-    },
-    template: `
-      <form style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 500px;">
-        <p style="margin: 0; font-weight: bold;">表單整合範例</p>
-        <p style="margin: 0; color: #6b7280; font-size: 14px;">選擇「其他」選項後，需要填寫自訂內容才能提交。</p>
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div mznCheckbox [(ngModel)]="option1" name="option1">選項 1</div>
-          <div mznCheckbox [(ngModel)]="option2" name="option2">選項 2</div>
-          <div mznCheckbox [(ngModel)]="otherChecked" name="otherChecked">其他</div>
-          <input *ngIf="otherChecked" type="text" placeholder="請輸入其他選項內容" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;" />
-        </div>
-        <button
-          type="button"
-          style="padding: 8px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 8px;"
-        >
-          提交
-        </button>
-      </form>
-    `,
+    template: `<story-checkbox-editable-form />`,
   }),
 };
