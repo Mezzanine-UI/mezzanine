@@ -1,12 +1,14 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { MznCheckbox } from './checkbox.component';
+import { MznTag } from '@mezzanine-ui/ng/tag';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 
 export default {
   title: 'Data Entry/Checkbox',
   decorators: [
     moduleMetadata({
-      imports: [MznCheckbox, FormsModule],
+      imports: [MznCheckbox, FormsModule, MznTag, MznTypography],
     }),
   ],
 } satisfies Meta;
@@ -83,26 +85,30 @@ export const Severity: Story = {
   render: () => ({
     template: `
       <div style="display: flex; gap: 36px; align-items: flex-start;">
-        <div style="display: flex; flex-direction: column; gap: 8px; padding: 32px; background-color: #F3F4F6;">
-          <span style="font-weight: bold;">Default mode</span>
-          <div style="margin-top: 8px;">
-            <p>Info:</p>
-            <div mznCheckbox severity="info">Info checkbox</div>
-          </div>
-          <div>
-            <p>Error:</p>
-            <div mznCheckbox severity="error">Error checkbox</div>
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; padding: 32px; background-color: #F3F4F6;">
+          <span mznTag type="static" label="Default mode" size="main"></span>
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+            <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+              <p mznTypography variant="body">Info:</p>
+              <div mznCheckbox severity="info">Info checkbox</div>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+              <p mznTypography variant="body">Error:</p>
+              <div mznCheckbox severity="error">Error checkbox</div>
+            </div>
           </div>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 8px; padding: 32px; background-color: #F3F4F6;">
-          <span style="font-weight: bold;">Chip mode</span>
-          <div style="margin-top: 8px;">
-            <p>Info:</p>
-            <div mznCheckbox mode="chip" severity="info">Info chip</div>
-          </div>
-          <div>
-            <p>Error:</p>
-            <div mznCheckbox mode="chip" severity="error">Error chip</div>
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; padding: 32px; background-color: #F3F4F6;">
+          <span mznTag type="static" label="Chip mode" size="main"></span>
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+            <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+              <p mznTypography variant="body">Info:</p>
+              <div mznCheckbox mode="chip" severity="info">Info chip</div>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+              <p mznTypography variant="body">Error:</p>
+              <div mznCheckbox mode="chip" severity="error">Error chip</div>
+            </div>
           </div>
         </div>
       </div>
@@ -113,74 +119,104 @@ export const Severity: Story = {
 export const State: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
-    props: {
-      checked: false,
-    },
     template: `
       <div>
         <p>Check</p>
         <div style="display: flex; gap: 36px; align-items: flex-start;">
           <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; padding: 32px; background-color: #F3F4F6;">
-            <span style="font-weight: bold;">Main</span>
-            <div style="margin-top: 8px;">
-              <p>Normal:</p>
-              <div mznCheckbox>Checkbox Label</div>
-            </div>
-            <div>
-              <p>Checked:</p>
-              <div mznCheckbox [checked]="true">Checkbox Label</div>
-            </div>
-            <div>
-              <p>Disabled:</p>
-              <div mznCheckbox [disabled]="true">Checkbox Label</div>
+            <span mznTag type="static" label="Main" size="main"></span>
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Normal:</p>
+                <div mznCheckbox description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Checked:</p>
+                <div mznCheckbox [checked]="true" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Indeterminate:</p>
+                <div mznCheckbox [indeterminate]="true" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Disabled:</p>
+                <div mznCheckbox [disabled]="true" description="Supporting text">Checkbox Label</div>
+              </div>
             </div>
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; padding: 32px; background-color: #F3F4F6;">
-            <span style="font-weight: bold;">Sub</span>
-            <div style="margin-top: 8px;">
-              <p>Normal:</p>
-              <div mznCheckbox size="sub">Checkbox Label</div>
-            </div>
-            <div>
-              <p>Checked:</p>
-              <div mznCheckbox size="sub" [checked]="true">Checkbox Label</div>
-            </div>
-            <div>
-              <p>Disabled:</p>
-              <div mznCheckbox size="sub" [disabled]="true">Checkbox Label</div>
+            <span mznTag type="static" label="Sub" size="main"></span>
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Normal:</p>
+                <div mznCheckbox size="sub" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Checked:</p>
+                <div mznCheckbox size="sub" [checked]="true" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Indeterminate:</p>
+                <div mznCheckbox size="sub" [indeterminate]="true" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Disabled:</p>
+                <div mznCheckbox size="sub" [disabled]="true" description="Supporting text">Checkbox Label</div>
+              </div>
             </div>
           </div>
         </div>
         <p>Checkbox in Chip mode</p>
         <div style="display: flex; gap: 36px; align-items: flex-start;">
           <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; padding: 32px; background-color: #F3F4F6;">
-            <span style="font-weight: bold;">Chip Main</span>
-            <div style="margin-top: 8px;">
-              <p>Normal:</p>
-              <div mznCheckbox mode="chip">Checkbox Label</div>
-            </div>
-            <div>
-              <p>Checked:</p>
-              <div mznCheckbox mode="chip" [checked]="true">Checkbox Label</div>
-            </div>
-            <div>
-              <p>Disabled:</p>
-              <div mznCheckbox mode="chip" [disabled]="true">Checkbox Label</div>
+            <span mznTag type="static" label="Chip Main" size="main"></span>
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Normal:</p>
+                <div mznCheckbox mode="chip" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Checked:</p>
+                <div mznCheckbox mode="chip" [checked]="true" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Disabled:</p>
+                <div mznCheckbox mode="chip" [disabled]="true" description="Supporting text">Checkbox Label</div>
+              </div>
             </div>
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; padding: 32px; background-color: #F3F4F6;">
-            <span style="font-weight: bold;">Chip Sub</span>
-            <div style="margin-top: 8px;">
-              <p>Normal:</p>
-              <div mznCheckbox mode="chip" size="sub">Checkbox Label</div>
+            <span mznTag type="static" label="Chip Sub" size="main"></span>
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Normal:</p>
+                <div mznCheckbox mode="chip" size="sub" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Checked:</p>
+                <div mznCheckbox mode="chip" size="sub" [checked]="true" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Disabled:</p>
+                <div mznCheckbox mode="chip" size="sub" [disabled]="true" description="Supporting text">Checkbox Label</div>
+              </div>
             </div>
-            <div>
-              <p>Checked:</p>
-              <div mznCheckbox mode="chip" size="sub" [checked]="true">Checkbox Label</div>
-            </div>
-            <div>
-              <p>Disabled:</p>
-              <div mznCheckbox mode="chip" size="sub" [disabled]="true">Checkbox Label</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; width: 33%; padding: 32px; background-color: #F3F4F6;">
+            <span mznTag type="static" label="Chip Minor" size="main"></span>
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Normal:</p>
+                <div mznCheckbox mode="chip" size="minor" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Checked:</p>
+                <div mznCheckbox mode="chip" size="minor" [checked]="true" description="Supporting text">Checkbox Label</div>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 100%; margin-bottom: 16px;">
+                <p mznTypography variant="body">Disabled:</p>
+                <div mznCheckbox mode="chip" size="minor" [disabled]="true" description="Supporting text">Checkbox Label</div>
+              </div>
             </div>
           </div>
         </div>
