@@ -6,10 +6,13 @@ import {
   CalendarMode,
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import {
   MZN_CALENDAR_CONFIG,
+  MznCalendarConfigProvider,
   createCalendarConfig,
 } from '@mezzanine-ui/ng/calendar';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
@@ -261,23 +264,73 @@ export const Basic: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-date-range-picker-method',
+  standalone: true,
+  imports: [
+    FormsModule,
+    MznCalendarConfigProvider,
+    MznDateRangePicker,
+    MznTypography,
+  ],
+  template: `
+    <div [mznCalendarConfigProvider] [methods]="momentMethods" locale="zh-TW">
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;"
+          >CalendarMethodsMoment</h3
+        >
+        <div
+          mznDateRangePicker
+          [(ngModel)]="rangeMoment"
+          inputFromPlaceholder="Start Date"
+          inputToPlaceholder="End Date"
+        ></div>
+      </div>
+    </div>
+    <div [mznCalendarConfigProvider] [methods]="dayjsMethods" locale="zh-TW">
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;"
+          >CalendarMethodsDayjs</h3
+        >
+        <div
+          mznDateRangePicker
+          [(ngModel)]="rangeDayjs"
+          inputFromPlaceholder="Start Date"
+          inputToPlaceholder="End Date"
+        ></div>
+      </div>
+    </div>
+    <div [mznCalendarConfigProvider] [methods]="luxonMethods" locale="zh-TW">
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;"
+          >CalendarMethodsLuxon</h3
+        >
+        <div
+          mznDateRangePicker
+          [(ngModel)]="rangeLuxon"
+          inputFromPlaceholder="Start Date"
+          inputToPlaceholder="End Date"
+        ></div>
+      </div>
+    </div>
+  `,
+})
+class DateRangePickerMethodStoryComponent {
+  readonly momentMethods = CalendarMethodsMoment;
+  readonly dayjsMethods = CalendarMethodsDayjs;
+  readonly luxonMethods = CalendarMethodsLuxon;
+  rangeMoment: RangePickerValue | undefined;
+  rangeDayjs: RangePickerValue | undefined;
+  rangeLuxon: RangePickerValue | undefined;
+}
+
 export const Method: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [DateRangePickerMethodStoryComponent] }),
+  ],
   render: () => ({
-    props: { range: undefined },
-    template: `
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>CalendarMethodsMoment</strong></p>
-        <div mznDateRangePicker [(ngModel)]="range" inputFromPlaceholder="Start Date" inputToPlaceholder="End Date" ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>CalendarMethodsDayjs</strong></p>
-        <div mznDateRangePicker [(ngModel)]="range" inputFromPlaceholder="Start Date" inputToPlaceholder="End Date" ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>CalendarMethodsLuxon</strong></p>
-        <div mznDateRangePicker [(ngModel)]="range" inputFromPlaceholder="Start Date" inputToPlaceholder="End Date" ></div>
-      </div>
-    `,
+    template: `<story-date-range-picker-method />`,
   }),
 };
 
