@@ -472,22 +472,6 @@ export const WithForm: Story = {
   }),
 };
 
-export const Indeterminate: Story = {
-  parameters: { controls: { disable: true } },
-  render: () => ({
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px;">
-        <p mznTypography variant="body">Indeterminate State</p>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div mznCheckbox [indeterminate]="true">Indeterminate (main)</div>
-          <div mznCheckbox [indeterminate]="true" size="sub">Indeterminate (sub)</div>
-          <div mznCheckbox [indeterminate]="true" [disabled]="true">Indeterminate (disabled)</div>
-        </div>
-      </div>
-    `,
-  }),
-};
-
 @Component({
   selector: 'story-checkbox-editable-form',
   standalone: true,
@@ -520,6 +504,8 @@ export const Indeterminate: Story = {
           label="其他"
           name="otherChecked"
           [withEditInput]="true"
+          [editableInputValue]="otherOption"
+          (editableInputChange)="otherOption = $event"
         ></div>
       </div>
       @if (otherChecked && !otherOption) {

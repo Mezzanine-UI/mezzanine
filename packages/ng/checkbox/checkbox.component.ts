@@ -6,6 +6,7 @@ import {
   ElementRef,
   inject,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -66,6 +67,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.value]': 'null',
     '[attr.withEditInput]': 'null',
     '[attr.editableInputPlaceholder]': 'null',
+    '[attr.editableInputValue]': 'null',
   },
   template: `
     <label [class]="labelContainerClass">
@@ -158,6 +160,8 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
             [disabled]="resolvedDisabled()"
             [placeholder]="editableInputPlaceholder()"
             [name]="editableInputName()"
+            [value]="editableInputValue()"
+            (input)="onEditableInput($event)"
           />
         </div>
       </label>
@@ -219,6 +223,15 @@ export class MznCheckbox implements ControlValueAccessor {
    * @default 'Please enter...'
    */
   readonly editableInputPlaceholder = input('Please enter...');
+
+  /**
+   * 附加輸入框的目前值（受控模式）。
+   * @default ''
+   */
+  readonly editableInputValue = input('');
+
+  /** 附加輸入框值變更事件。 */
+  readonly editableInputChange = output<string>();
 
   /**
    * 附加輸入框的 name。預設由 checkbox name 或 id 衍生。
@@ -344,6 +357,12 @@ export class MznCheckbox implements ControlValueAccessor {
 
       checkboxInput?.click();
     }
+  }
+
+  protected onEditableInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.editableInputChange.emit(value);
   }
 
   // CVA
