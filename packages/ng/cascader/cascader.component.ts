@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   cascaderClasses as classes,
@@ -12,8 +14,9 @@ import {
 } from '@mezzanine-ui/core/cascader';
 import clsx from 'clsx';
 
-import { MznPortal } from '@mezzanine-ui/ng/portal';
+import { MznInputTriggerPopper } from '@mezzanine-ui/ng/_internal';
 import { MznSelectTrigger } from '@mezzanine-ui/ng/select';
+import { MznTranslate } from '@mezzanine-ui/ng/transition';
 import { MznCascaderPanel } from './cascader-panel.component';
 import { CascaderOption } from './cascader-option';
 
@@ -46,7 +49,12 @@ interface PanelDescriptor {
 @Component({
   selector: '[mznCascader]',
   standalone: true,
-  imports: [MznCascaderPanel, MznPortal, MznSelectTrigger],
+  imports: [
+    MznCascaderPanel,
+    MznInputTriggerPopper,
+    MznSelectTrigger,
+    MznTranslate,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -54,7 +62,6 @@ interface PanelDescriptor {
     '[attr.disabled]': 'null',
     '[attr.error]': 'null',
     '[attr.fullWidth]': 'null',
-    '[attr.globalPortal]': 'null',
     '[attr.menuMaxHeight]': 'null',
     '[attr.options]': 'null',
     '[attr.placeholder]': 'null',
@@ -81,9 +88,9 @@ interface PanelDescriptor {
       (cleared)="clear($event)"
       (triggerClicked)="toggleOpen()"
     ></div>
-    <div mznPortal [disablePortal]="!(globalPortal() ?? true)">
-      @if (isOpen()) {
-        <div [class]="panelsClass">
+    <div mznInputTriggerPopper [anchor]="triggerElRef()!" [open]="isOpen()">
+      <div mznTranslate [in]="isOpen()" from="top">
+        <div [class]="panelsClass" [style.max-height.px]="menuMaxHeight()">
           @for (panel of visiblePanels(); track $index) {
             <div
               mznCascaderPanel
@@ -94,11 +101,15 @@ interface PanelDescriptor {
             ></div>
           }
         </div>
-      }
+      </div>
     </div>
   `,
 })
 export class MznCascader {
+  protected readonly triggerElRef = viewChild(MznSelectTrigger, {
+    read: ElementRef<HTMLElement>,
+  });
+
   /**
    * 是否顯示清除按鈕。
    * @default false
