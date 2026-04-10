@@ -13,11 +13,8 @@ import {
 } from '@angular/core';
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import { TextFieldSize, textFieldClasses } from '@mezzanine-ui/core/text-field';
-import {
-  CalendarIcon,
-  CloseIcon,
-  LongTailArrowRightIcon,
-} from '@mezzanine-ui/icons';
+import { CalendarIcon, LongTailArrowRightIcon } from '@mezzanine-ui/icons';
+import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import clsx from 'clsx';
 import {
@@ -49,7 +46,7 @@ import {
 @Component({
   selector: '[mznRangePickerTrigger]',
   standalone: true,
-  imports: [MznIcon, MznFormattedInput],
+  imports: [MznClearActions, MznIcon, MznFormattedInput],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -112,19 +109,23 @@ import {
       (valueChanged)="onToChanged($event)"
       (valueCleared)="toValueCleared.emit()"
     ></div>
-    @if (shouldShowClearable()) {
-      <button
-        type="button"
-        [class]="clearIconClass"
-        (click)="cleared.emit(); $event.stopPropagation()"
-      >
-        <i mznIcon [icon]="closeIcon"></i>
-      </button>
-    } @else {
-      <ng-content select="[suffix]">
-        <i mznIcon [icon]="calendarIcon" (click)="iconClick.emit($event)"></i>
-      </ng-content>
-    }
+    <div [class]="suffixClasses()">
+      <div [class]="suffixContentClass">
+        <ng-content select="[suffix]">
+          <i mznIcon [icon]="calendarIcon" (click)="iconClick.emit($event)"></i>
+        </ng-content>
+      </div>
+      @if (clearable() && !readOnly()) {
+        <button
+          mznClearActions
+          type="clearable"
+          [class]="clearIconClass"
+          tabindex="-1"
+          (mousedown)="$event.preventDefault()"
+          (clicked)="cleared.emit(); $event.stopPropagation()"
+        ></button>
+      }
+    </div>
   `,
 })
 export class MznRangePickerTrigger implements AfterViewInit {
@@ -261,7 +262,13 @@ export class MznRangePickerTrigger implements AfterViewInit {
   protected readonly arrowIconClass = classes.arrowIcon;
   protected readonly calendarIcon = CalendarIcon;
   protected readonly clearIconClass = textFieldClasses.clearIcon;
-  protected readonly closeIcon = CloseIcon;
+  protected readonly suffixContentClass = textFieldClasses.suffixContent;
+
+  protected readonly suffixClasses = computed((): string =>
+    clsx(textFieldClasses.suffix, {
+      [textFieldClasses.suffixOverlay]: !this.readOnly() && this.clearable(),
+    }),
+  );
 
   // -------------------------------------------------------------------------
   // Computed classes
@@ -275,6 +282,7 @@ export class MznRangePickerTrigger implements AfterViewInit {
       this.size() === 'sub' ? textFieldClasses.sub : textFieldClasses.main,
       this.hostClassModifier(),
       {
+        [textFieldClasses.slimGap]: this.clearable(),
         [textFieldClasses.clearable]: !this.readOnly() && this.clearable(),
         [textFieldClasses.clearing]: this.shouldShowClearable(),
         [textFieldClasses.disabled]: this.disabled(),
