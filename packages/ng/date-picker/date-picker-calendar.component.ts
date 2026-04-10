@@ -6,7 +6,11 @@ import {
   output,
 } from '@angular/core';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
-import { MznCalendar } from '@mezzanine-ui/ng/calendar';
+import {
+  MznCalendar,
+  type CalendarDayAnnotation,
+  type CalendarQuickSelectOption,
+} from '@mezzanine-ui/ng/calendar';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
 
@@ -58,6 +62,8 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
     '[attr.isWeekDisabled]': 'null',
     '[attr.isYearDisabled]': 'null',
     '[attr.popperOffsetOptions]': 'null',
+    '[attr.quickSelect]': 'null',
+    '[attr.renderAnnotations]': 'null',
   },
   standalone: true,
   imports: [MznCalendar, MznPopper],
@@ -90,6 +96,8 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
         [isQuarterDisabled]="isQuarterDisabled()"
         [isWeekDisabled]="isWeekDisabled()"
         [isYearDisabled]="isYearDisabled()"
+        [quickSelect]="quickSelect()"
+        [renderAnnotations]="renderAnnotations()"
         (dateChanged)="dateChanged.emit($event)"
       ></div>
     </div>
@@ -166,6 +174,17 @@ export class MznDatePickerCalendar {
   readonly isYearDisabled = input<((date: DateType) => boolean) | undefined>(
     undefined,
   );
+
+  /** Quick select shortcut options (activeId + options array). */
+  readonly quickSelect = input<
+    | { activeId?: string; options: ReadonlyArray<CalendarQuickSelectOption> }
+    | undefined
+  >(undefined);
+
+  /** Per-date annotation render function. */
+  readonly renderAnnotations = input<
+    ((date: DateType) => CalendarDayAnnotation) | undefined
+  >(undefined);
 
   /**
    * Popper 位移設定，覆寫預設的 `{ mainAxis: 4 }`。

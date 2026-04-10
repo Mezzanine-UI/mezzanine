@@ -612,28 +612,193 @@ export const CustomDisable: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-date-picker-calendar-integration',
+  standalone: true,
+  imports: [MznDatePicker, MznTypography],
+  template: `
+    <div
+      style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px;"
+    >
+      <h2 mznTypography variant="h2" style="margin: 0 0 16px 0;"
+        >1. Date Annotations (renderAnnotations)</h2
+      >
+      <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+        Display additional information on each date cell via calendarProps.
+        Perfect for showing metrics, events, or status indicators.
+      </p>
+      <div style="margin: 0 0 32px 0;">
+        <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+          Example: Stock market daily changes
+        </p>
+        <div
+          mznDatePicker
+          [value]="valAnnotation"
+          [renderAnnotations]="annotationFn"
+          mode="day"
+          format="YYYY-MM-DD"
+          placeholder="Date"
+          (dateChanged)="valAnnotation = $event"
+        ></div>
+      </div>
+    </div>
+    <div
+      style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px;"
+    >
+      <h2 mznTypography variant="h2" style="margin: 0 0 16px 0;"
+        >2. Quick Select Options</h2
+      >
+      <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+        Provide shortcut buttons for commonly selected dates via calendarProps.
+        Great for improving UX in dashboards and reports.
+      </p>
+      <div style="margin: 0 0 32px 0;">
+        <p mznTypography variant="body" style="margin: 0 0 12px 0;">
+          Selected: {{ selectedDisplay() }}
+        </p>
+        <div
+          mznDatePicker
+          [value]="valQuickSelect"
+          [quickSelect]="quickSelectConfig()"
+          mode="day"
+          format="YYYY-MM-DD"
+          placeholder="Date"
+          (dateChanged)="valQuickSelect = $event"
+        ></div>
+      </div>
+    </div>
+  `,
+})
+class CalendarIntegrationStoryComponent {
+  private readonly config = inject(MZN_CALENDAR_CONFIG);
+
+  valAnnotation: string | undefined;
+  valQuickSelect: string | undefined;
+
+  private readonly todayMs = Date.now();
+  private readonly dayMs = 86_400_000;
+
+  private readonly annotationMap: Record<
+    string,
+    {
+      value: string;
+      color: 'text-success' | 'text-error' | 'text-warning' | 'text-neutral';
+    }
+  > = {
+    [this.toDayKey(0)]: { value: '+5.2%', color: 'text-success' },
+    [this.toDayKey(-1)]: { value: '-3.1%', color: 'text-error' },
+    [this.toDayKey(-2)]: { value: '+1.8%', color: 'text-warning' },
+    [this.toDayKey(-3)]: { value: '+8.4%', color: 'text-success' },
+    [this.toDayKey(-4)]: { value: '-7.2%', color: 'text-error' },
+    [this.toDayKey(1)]: { value: '+2.1%', color: 'text-warning' },
+    [this.toDayKey(2)]: { value: '-0.5%', color: 'text-neutral' },
+    [this.toDayKey(3)]: { value: '+6.7%', color: 'text-success' },
+  };
+
+  readonly annotationFn = (
+    date: string,
+  ):
+    | {
+        value: string;
+        color: 'text-success' | 'text-error' | 'text-warning' | 'text-neutral';
+      }
+    | undefined => {
+    const key = this.config.formatToString(
+      this.config.locale,
+      date,
+      'YYYY-MM-DD',
+    );
+    return this.annotationMap[key];
+  };
+
+  private readonly todayIso = new Date(this.todayMs).toISOString();
+  private readonly yesterdayIso = new Date(
+    this.todayMs - this.dayMs,
+  ).toISOString();
+  private readonly lastWeekIso = new Date(
+    this.todayMs - 7 * this.dayMs,
+  ).toISOString();
+  private readonly lastMonthIso = this.addMonthsIso(-1);
+
+  readonly quickSelectConfig = (): {
+    activeId?: string;
+    options: ReadonlyArray<{
+      id: string;
+      name: string;
+      disabled?: boolean;
+      onClick: () => void;
+    }>;
+  } => ({
+    activeId: this.getActiveId(),
+    options: [
+      {
+        id: 'today',
+        name: 'Today',
+        onClick: () => (this.valQuickSelect = this.todayIso),
+      },
+      {
+        id: 'yesterday',
+        name: 'Yesterday',
+        onClick: () => (this.valQuickSelect = this.yesterdayIso),
+      },
+      {
+        id: 'lastWeek',
+        name: 'Last Week',
+        disabled: true,
+        onClick: () => (this.valQuickSelect = this.lastWeekIso),
+      },
+      {
+        id: 'lastMonth',
+        name: 'Last Month',
+        onClick: () => (this.valQuickSelect = this.lastMonthIso),
+      },
+    ],
+  });
+
+  selectedDisplay(): string {
+    if (!this.valQuickSelect) return 'None';
+    return this.config.formatToString(
+      this.config.locale,
+      this.valQuickSelect,
+      'YYYY-MM-DD',
+    );
+  }
+
+  private getActiveId(): string | undefined {
+    if (!this.valQuickSelect) return undefined;
+    const key = this.config.formatToString(
+      this.config.locale,
+      this.valQuickSelect,
+      'YYYY-MM-DD',
+    );
+    if (key === this.toDayKey(0)) return 'today';
+    if (key === this.toDayKey(-1)) return 'yesterday';
+    if (key === this.toDayKey(-7)) return 'lastWeek';
+    if (key === this.formatIso(this.lastMonthIso)) return 'lastMonth';
+    return undefined;
+  }
+
+  private toDayKey(offsetDays: number): string {
+    const iso = new Date(this.todayMs + offsetDays * this.dayMs).toISOString();
+    return this.formatIso(iso);
+  }
+
+  private formatIso(iso: string): string {
+    return this.config.formatToString(this.config.locale, iso, 'YYYY-MM-DD');
+  }
+
+  private addMonthsIso(months: number): string {
+    const d = new Date(this.todayMs);
+    d.setMonth(d.getMonth() + months);
+    return d.toISOString();
+  }
+}
+
 export const CalendarIntegration: Story = {
+  decorators: [
+    moduleMetadata({ imports: [CalendarIntegrationStoryComponent] }),
+  ],
   render: () => ({
-    props: {
-      dateAnnotation: undefined as string | undefined,
-      dateQuickSelect: undefined as string | undefined,
-    },
-    template: `
-      <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
-        <p style="margin: 0 0 16px 0"><strong>1. Date Annotations (renderAnnotations)</strong></p>
-        <p style="margin: 0 0 12px 0">Display additional information on each date cell via calendarProps.</p>
-        <div style="margin: 0 0 32px 0">
-          <p style="margin: 0 0 12px 0">Example: Stock market daily changes</p>
-          <div mznDatePicker [(ngModel)]="dateAnnotation" mode="day" placeholder="Date" ></div>
-        </div>
-      </div>
-      <div style="margin: 0 0 48px 0; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px">
-        <p style="margin: 0 0 16px 0"><strong>2. Quick Select Options</strong></p>
-        <p style="margin: 0 0 12px 0">Provide shortcut buttons for commonly selected dates via calendarProps.</p>
-        <div style="margin: 0 0 32px 0">
-          <div mznDatePicker [(ngModel)]="dateQuickSelect" mode="day" placeholder="Date" ></div>
-        </div>
-      </div>
-    `,
+    template: `<story-date-picker-calendar-integration />`,
   }),
 };

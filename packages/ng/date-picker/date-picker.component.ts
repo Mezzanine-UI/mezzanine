@@ -21,7 +21,11 @@ import {
 import { pickerClasses } from '@mezzanine-ui/core/picker';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
 import { CalendarIcon } from '@mezzanine-ui/icons';
-import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
+import {
+  MZN_CALENDAR_CONFIG,
+  type CalendarDayAnnotation,
+  type CalendarQuickSelectOption,
+} from '@mezzanine-ui/ng/calendar';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznPickerTrigger } from '@mezzanine-ui/ng/picker';
@@ -70,6 +74,8 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
     '[attr.isQuarterDisabled]': 'null',
     '[attr.isWeekDisabled]': 'null',
     '[attr.isYearDisabled]': 'null',
+    '[attr.quickSelect]': 'null',
+    '[attr.renderAnnotations]': 'null',
     '[attr.mode]': 'null',
     '[attr.size]': 'null',
     '[attr.placeholder]': 'null',
@@ -129,6 +135,8 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
       [isQuarterDisabled]="isQuarterDisabled()"
       [isWeekDisabled]="isWeekDisabled()"
       [isYearDisabled]="isYearDisabled()"
+      [quickSelect]="quickSelect()"
+      [renderAnnotations]="renderAnnotations()"
       (dateChanged)="onCalendarChange($event)"
     ></div>
   `,
@@ -196,6 +204,17 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
   readonly isYearDisabled = input<((date: DateType) => boolean) | undefined>(
     undefined,
   );
+
+  /** Quick select shortcut options (activeId + options array). */
+  readonly quickSelect = input<
+    | { activeId?: string; options: ReadonlyArray<CalendarQuickSelectOption> }
+    | undefined
+  >(undefined);
+
+  /** Per-date annotation render function. */
+  readonly renderAnnotations = input<
+    ((date: DateType) => CalendarDayAnnotation) | undefined
+  >(undefined);
 
   /** 日曆模式。 @default 'day' */
   readonly mode = input<CalendarMode>('day');
