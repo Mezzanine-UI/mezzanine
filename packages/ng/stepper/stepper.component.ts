@@ -1,13 +1,18 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
+  ElementRef,
+  inject,
   input,
   output,
   signal,
 } from '@angular/core';
 import { stepperClasses as classes } from '@mezzanine-ui/core/stepper';
+import { stepClasses } from '@mezzanine-ui/core/stepper';
 import clsx from 'clsx';
 import { StepOrientation, StepType } from './step.component';
 import { MZN_STEPPER_CONTEXT, StepperContext } from './stepper-context';
@@ -63,7 +68,11 @@ import { MZN_STEPPER_CONTEXT, StepperContext } from './stepper-context';
   },
   template: `<ng-content />`,
 })
-export class MznStepper {
+export class MznStepper implements AfterViewInit {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly destroyRef = inject(DestroyRef);
+  private resizeObserver: ResizeObserver | null = null;
+
   /** @internal 註冊的子 Step 列表，用於計算索引。 */
   readonly registeredSteps = signal<readonly unknown[]>([]);
 
@@ -103,5 +112,94 @@ export class MznStepper {
 
       this.stepChange.emit(step);
     });
+
+    effect(() => {
+      this.orientation();
+      this.type();
+      this.currentStep();
+      this.registeredSteps();
+
+      queueMicrotask(() => this.calculateDistances());
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.calculateDistances();
+
+    this.resizeObserver = new ResizeObserver(() => this.calculateDistances());
+    this.resizeObserver.observe(this.elementRef.nativeElement);
+
+    this.destroyRef.onDestroy(() => {
+      this.resizeObserver?.disconnect();
+      this.resizeObserver = null;
+    });
+  }
+
+  private calculateDistances(): void {
+    const hostEl = this.elementRef.nativeElement as HTMLElement;
+    const stepElements: HTMLElement[] = Array.from(
+      hostEl.querySelectorAll(':scope > [mznstep]'),
+    );
+    const orientation = this.orientation();
+    const type = this.type();
+    const hostRect = hostEl.getBoundingClientRect();
+
+    for (let i = 0; i < stepElements.length - 1; i += 1) {
+      const current = stepElements[i];
+      const next = stepElements[i + 1];
+      let distance = 0;
+
+      if (orientation === 'horizontal' && type === 'number') {
+        const titleLine = current.querySelector(
+          `.${stepClasses.titleConnectLine}`,
+        );
+
+        if (titleLine) {
+          const titleRect = titleLine.getBoundingClientRect();
+
+          distance =
+            next.getBoundingClientRect().left -
+            hostRect.left -
+            (titleRect.right - hostRect.left);
+        }
+      } else if (orientation === 'horizontal' && type === 'dot') {
+        const indicator = current.querySelector(
+          `.${stepClasses.statusIndicator}`,
+        );
+
+        if (indicator) {
+          const indicatorRect = indicator.getBoundingClientRect();
+          const nextRect = next.getBoundingClientRect();
+
+          distance =
+            nextRect.left -
+            hostRect.left +
+            nextRect.width / 2 -
+            (indicatorRect.right - hostRect.left) -
+            indicator.clientWidth / 2;
+        }
+      } else {
+        const indicator = current.querySelector(
+          `.${stepClasses.statusIndicator}`,
+        );
+
+        if (indicator) {
+          const indicatorRect = indicator.getBoundingClientRect();
+
+          distance =
+            next.getBoundingClientRect().top -
+            hostRect.top -
+            (indicatorRect.bottom - hostRect.top);
+        }
+      }
+
+      current.style.setProperty('--connect-line-distance', `${distance}px`);
+    }
+
+    const last = stepElements[stepElements.length - 1];
+
+    if (last) {
+      last.style.removeProperty('--connect-line-distance');
+    }
   }
 }
