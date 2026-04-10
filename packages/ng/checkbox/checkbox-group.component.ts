@@ -48,8 +48,15 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
   host: {
     '[class]': 'hostClasses()',
     '[attr.layout]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.size]': 'null',
+    '[attr.name]': 'null',
   },
-  template: `<ng-content />`,
+  template: `
+    <div [class]="contentWrapperClasses()">
+      <ng-content />
+    </div>
+  `,
 })
 export class MznCheckboxGroup implements ControlValueAccessor {
   /** 是否禁用所有子 Checkbox。 */
@@ -77,11 +84,13 @@ export class MznCheckboxGroup implements ControlValueAccessor {
     this.internalValue(),
   );
 
-  protected readonly hostClasses = computed((): string =>
+  protected readonly hostClasses = computed((): string => classes.host);
+
+  protected readonly contentWrapperClasses = computed((): string =>
     clsx(
-      classes.host,
+      classes.contentWrapper,
       classes.layout(this.layout()),
-      classes.mode(this.mode()),
+      this.mode() !== 'default' ? classes.mode(this.mode()) : undefined,
     ),
   );
 
