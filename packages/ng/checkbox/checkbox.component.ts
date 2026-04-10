@@ -84,13 +84,25 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           />
           @if (resolvedMode() === 'chip') {
             @if (resolvedChecked()) {
-              <i mznIcon [icon]="checkIcon" [class]="chipIconClass"></i>
+              <i
+                mznIcon
+                [icon]="checkIcon"
+                [class]="chipIconClass"
+                color="brand"
+                [size]="16"
+              ></i>
             }
           } @else {
             @if (indeterminate()) {
               <span [class]="indeterminateLineClass"></span>
             } @else if (resolvedChecked()) {
-              <i mznIcon [icon]="checkIcon" [class]="iconClass"></i>
+              <i
+                mznIcon
+                [icon]="checkIcon"
+                [class]="iconClass"
+                color="fixed-light"
+                [size]="9"
+              ></i>
             }
           }
         </div>
