@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import { TextFieldSize, textFieldClasses } from '@mezzanine-ui/core/text-field';
-import { CloseIcon } from '@mezzanine-ui/icons';
+import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import clsx from 'clsx';
 import {
@@ -49,7 +49,7 @@ import {
 @Component({
   selector: '[mznPickerTrigger]',
   standalone: true,
-  imports: [MznIcon, MznFormattedInput],
+  imports: [MznClearActions, MznIcon, MznFormattedInput],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -93,14 +93,13 @@ import {
       </div>
       @if (clearable() && !readOnly()) {
         <button
-          type="button"
+          mznClearActions
+          type="clearable"
           [class]="clearIconClass"
           tabindex="-1"
           (mousedown)="$event.preventDefault()"
-          (click)="cleared.emit(); $event.stopPropagation()"
-        >
-          <i mznIcon [icon]="closeIcon"></i>
-        </button>
+          (clicked)="cleared.emit(); $event.stopPropagation()"
+        ></button>
       }
     </div>
   `,
@@ -206,7 +205,6 @@ export class MznPickerTrigger implements AfterViewInit {
   // Static class references
   // -------------------------------------------------------------------------
 
-  protected readonly closeIcon = CloseIcon;
   protected readonly clearIconClass = textFieldClasses.clearIcon;
   protected readonly suffixContentClass = textFieldClasses.suffixContent;
 
