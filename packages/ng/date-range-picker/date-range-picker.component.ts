@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -23,6 +25,7 @@ import {
   type CalendarDayAnnotation,
   type CalendarQuickSelectOption,
 } from '@mezzanine-ui/ng/calendar';
+import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznRangePickerTrigger } from '@mezzanine-ui/ng/picker';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import { MznDateRangePickerCalendar } from './date-range-picker-calendar.component';
@@ -139,8 +142,11 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
     ></div>
   `,
 })
-export class MznDateRangePicker implements ControlValueAccessor {
+export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly clickAway = inject(ClickAwayService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   /** 是否可清除。 @default true */
   readonly clearable = input(true);
@@ -364,6 +370,19 @@ export class MznDateRangePicker implements ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this._onTouched = fn;
+  }
+
+  ngAfterViewInit(): void {
+    this.clickAway.listen(
+      this.hostElRef.nativeElement,
+      () => {
+        if (this.isOpen()) {
+          this.onCancel();
+          this._onTouched?.();
+        }
+      },
+      this.destroyRef,
+    );
   }
 
   protected openCalendar(): void {
