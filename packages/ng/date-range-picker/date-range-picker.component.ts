@@ -251,6 +251,8 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   );
   protected readonly triggerElement = computed(() => this.triggerRef());
 
+  private readonly rangeCalendarRef = viewChild(MznDateRangePickerCalendar);
+
   readonly isOpen = signal(false);
 
   /**
@@ -260,6 +262,15 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     undefined,
     undefined,
   ] as unknown as RangePickerValue);
+
+  /**
+   * Manual confirm mode 下的暫存選取值。
+   * 只有按 Confirm 才會 promote 到 committedValue；
+   * Cancel / click-away 會清掉，還原到 committedValue。
+   */
+  private readonly stagedValue = signal<RangePickerValue | undefined>(
+    undefined,
+  );
 
   protected readonly resolvedFormat = computed(
     () => this.format() ?? getDefaultModeFormat(this.mode()),
@@ -303,10 +314,13 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   });
 
   /**
-   * 傳入 MznDateRangePickerCalendar 的 value（顯示已 commit 的範圍高亮）。
+   * 傳入 MznDateRangePickerCalendar 的 value。
+   * Manual mode 下優先顯示暫存的 stagedValue，未 staged 時 fallback 到 committed。
    */
   protected readonly calendarDisplayValue = computed(
     (): ReadonlyArray<DateType> => {
+      const staged = this.stagedValue();
+      if (staged && staged[0] && staged[1]) return [staged[0], staged[1]];
       const val = this.committedValue();
       if (!val || !val[0] || !val[1]) return [];
       return [val[0], val[1]];
@@ -475,19 +489,23 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     if (this.confirmMode() === 'immediate') {
       this.commitRange(start, end);
     } else {
-      // In manual mode, stage the selection without closing
-      this.committedValue.set([start, end]);
+      // In manual mode, stage the selection — do NOT touch committedValue
+      // until the user presses Confirm.
+      this.stagedValue.set([start, end]);
     }
   }
 
   protected onConfirm(): void {
-    const val = this.committedValue();
-    if (val?.[0] && val?.[1]) {
-      this.commitRange(val[0], val[1]);
+    const staged = this.stagedValue();
+    if (staged?.[0] && staged?.[1]) {
+      this.commitRange(staged[0], staged[1]);
     }
+    this.stagedValue.set(undefined);
   }
 
   protected onCancel(): void {
+    this.stagedValue.set(undefined);
+    this.rangeCalendarRef()?.resetPickingState();
     this.isOpen.set(false);
   }
 

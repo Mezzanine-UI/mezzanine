@@ -4,6 +4,7 @@ import {
   ElementRef,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import {
@@ -128,6 +129,13 @@ import {
   `,
 })
 export class MznDateRangePickerCalendar {
+  private readonly rangeCalendarRef = viewChild(MznRangeCalendar);
+
+  /** Reset the inner range calendar picking/hover state (forward). */
+  resetPickingState(): void {
+    this.rangeCalendarRef()?.resetPickingState();
+  }
+
   // ─── Popper inputs ─────────────────────────────────────────────
 
   /**
