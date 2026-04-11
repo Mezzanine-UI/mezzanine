@@ -392,9 +392,28 @@ export class MznRangeCalendar {
     },
   );
 
+  /**
+   * Fallback in-range function derived from the currently committed value.
+   * When no external `isDateInRange` is provided but a fully selected
+   * [start, end] value exists, highlight cells between them — matching
+   * React's DateRangePicker `getIsInRangeHandler` behavior.
+   */
+  private readonly committedRangeFn = computed(
+    (): ((date: DateType) => boolean) | undefined => {
+      const val = this.value();
+      if (!val || !Array.isArray(val) || val.length < 2) return undefined;
+      const start = val[0];
+      const end = val[val.length - 1];
+      if (!start || !end) return undefined;
+      const c = this.config;
+      const [lo, hi] = c.isBefore(start, end) ? [start, end] : [end, start];
+      return (date: DateType): boolean => c.isBetween(date, lo, hi, 'day');
+    },
+  );
+
   readonly effectiveIsDateInRange = computed(
     (): ((date: DateType) => boolean) | undefined =>
-      this.hoverRangeFn() ?? this.isDateInRange(),
+      this.hoverRangeFn() ?? this.isDateInRange() ?? this.committedRangeFn(),
   );
 
   readonly effectiveIsMonthInRange = computed(
