@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -19,6 +21,7 @@ import { MznCalendar } from '@mezzanine-ui/ng/calendar';
 import { MznCalendarFooterActions } from '@mezzanine-ui/ng/_internal';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
+import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
 import { MznPickerTrigger } from '@mezzanine-ui/ng/picker';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
@@ -134,8 +137,11 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     </div>
   `,
 })
-export class MznDateTimePicker implements ControlValueAccessor {
+export class MznDateTimePicker implements ControlValueAccessor, AfterViewInit {
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly clickAway = inject(ClickAwayService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   readonly placeholder = input('');
   readonly disabled = input(false);
@@ -255,6 +261,19 @@ export class MznDateTimePicker implements ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  ngAfterViewInit(): void {
+    this.clickAway.listen(
+      this.hostElRef.nativeElement,
+      () => {
+        if (this.isOpen()) {
+          this.isOpen.set(false);
+          this.onTouched?.();
+        }
+      },
+      this.destroyRef,
+    );
   }
 
   protected openPanel(): void {
