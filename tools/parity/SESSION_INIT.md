@@ -10,9 +10,9 @@ Paste the following into a fresh Claude session to resume the element → attrib
 
 **請先依序讀這三份檔案瞭解完整 context**：
 
-1. `tools/parity/REFACTOR.md` — 進度表 + blockers + gotchas + per-batch workflow
+1. `tools/parity/REFACTOR.md` — 進度表 + blockers + gotchas + per-batch workflow + **Angular Component Input Architecture（Mode B 強制規範）**
 2. `tools/parity/refactor-selector.mjs` — 自動化腳本，能處理什麼、不能處理什麼
-3. `tools/parity/api.ts` — parity harness 的 API 比對器
+3. `tools/parity/api.ts` — parity harness 的 API 比對器（含 type alias / intersection / Omit / Pick 遞迴解析）
 
 **分支**：`angular`。最後 commit：`git log --oneline -5`。
 
@@ -49,5 +49,7 @@ cat tools/parity/.out/summary.json 2>/dev/null | python3 -c "import json,sys; d=
   find packages/ng -type f \( -name '*.js' -o -name '*.d.ts' \) -not -path '*/node_modules/*' -not -path '*/dist/*' -delete
   ```
 - Angular Storybook 的 HMR 對 selector / template 結構改動不可靠，改完 component 後要重啟（`kill $(pgrep -f 'ng run ng-storybook')` 然後 `npm run ng:storybook` 背景執行）
+- **Angular Component Input Architecture 強制規範（2026-04-11 起）**：所有元件的 input/output 必須 prop-for-prop 鏡像 React 對應元件的 props。React 有 flat 的就 flat、有 bundle 的就 bundle、兩者共存時 Angular 也共存；flat 覆寫 bundle。例外：`prefix`/`suffix` 用 content projection、`xxxRef` 用 ViewChild、無對應物的 React lib 寫 deviation。**詳見 `tools/parity/REFACTOR.md` 的 `Angular Component Input Architecture` 區段 + `.claude/skills/architecting-angular-components/SKILL.md`**
+- Mac 使用者的終端機可能有 local HTTP proxy（`http_proxy=127.0.0.1:6152`）攔截 `curl` 對 localhost，導致對 :6007 的 health check 誤報 503。用 `curl --noproxy '*'` 或在 `NO_PROXY='*'` 環境下執行 parity harness
 
 從分析當前 blocker 並提出解方開始。

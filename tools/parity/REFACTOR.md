@@ -179,6 +179,162 @@ git add packages/ng tools/parity/REFACTOR.md
 git commit -m "refactor(ng): convert <components> to attribute selectors"
 ```
 
+## Angular Component Input Architecture — **強制規範 (2026-04-11)**
+
+**全專案 Angular 元件的 input/output 必須 prop-for-prop 鏡像 React 對應元件的 props。**
+此規範對整個 `packages/ng/` 有效，任何新建或重構的元件必須遵守。
+
+### 核心規則：**Angular 忠實鏡像 React 的 prop shape**
+
+> **「React 有 flat 的就 flat、React 有 bundle 的就 bundle、兩者共存時 Angular 也共存。Angular 不自己發明抽象。」**
+
+React 實際上是 **hybrid 模式** — 同一個元件的 props 會混合：
+
+- **常用設定用 flat top-level props**：`disabledMonthSwitch`、`isDateDisabled`、`placeholderLeft`、`validateLeft` … 這些透過 TS `extends Pick<...>` 鏈從 sub-component props 繼承上來
+- **Escape hatch 用 bundle props**：`calendarProps`、`inputLeftProps`、`popperProps`、`fadeProps` 等用 `xxxProps?: Omit<...>` 宣告，讓使用者傳遞任意額外的子元件設定
+
+**兩套設計併存，使用者可任選一種寫法。** Angular 要跟 React 對齊的最忠實作法就是 prop-for-prop 鏡像：
+
+```ts
+// React DateTimePickerProps 有這些（flat via inheritance）
+disabledMonthSwitch?: boolean;  // from DatePickerCalendarProps → Pick<CalendarProps>
+displayMonthLocale?: string;
+isDateDisabled?: (d: DateType) => boolean;
+placeholderLeft?: string;       // from PickerTriggerWithSeparatorProps
+errorMessagesLeft?: ...;
+validateLeft?: ...;
+// 同時也有這些（bundle escape hatches）
+calendarProps?: Omit<CalendarProps, ...>;
+inputLeftProps?: Omit<...>;
+popperProps?: Omit<InputTriggerPopperProps, ...>;
+popperPropsTime?: ...;
+```
+
+```ts
+// Angular MznDateTimePicker 也必須兩個都有
+readonly disabledMonthSwitch = input<boolean | undefined>(undefined);
+readonly displayMonthLocale = input<string | undefined>(undefined);
+readonly isDateDisabled = input<((d: DateType) => boolean) | undefined>(undefined);
+readonly placeholderLeft = input<string | undefined>(undefined);
+readonly errorMessagesLeft = input<FormattedInputErrorMessages | undefined>(undefined);
+readonly validateLeft = input<((s: string) => boolean) | undefined>(undefined);
+// 同時也有 bundle
+readonly calendarProps = input<MznDateTimePickerCalendarProps | undefined>(undefined);
+readonly inputLeftProps = input<MznDateTimePickerInputProps | undefined>(undefined);
+readonly popperProps = input<MznDateTimePickerPopperProps | undefined>(undefined);
+readonly popperPropsTime = input<MznDateTimePickerPopperProps | undefined>(undefined);
+```
+
+### flat + bundle 同時存在時的優先順序：**flat 覆寫 bundle**
+
+元件內部用 `computed` 把 flat + bundle 合併為單一 view-model：
+
+```ts
+protected readonly resolvedCalendar = computed(
+  (): MznDateTimePickerCalendarProps => {
+    const bundle = this.calendarProps() ?? {};
+    return {
+      // flat 優先，bundle fallback
+      disabledMonthSwitch: this.disabledMonthSwitch() ?? bundle.disabledMonthSwitch,
+      displayMonthLocale: this.displayMonthLocale() ?? bundle.displayMonthLocale,
+      isDateDisabled: this.isDateDisabled() ?? bundle.isDateDisabled,
+      // ...
+    };
+  },
+);
+```
+
+flat input 的 default 一律是 `undefined`（`input<T | undefined>(undefined)`），方便以 `??` 區分「未設定」跟「明確設為 false/空字串」。
+
+### 使用端陷阱 — inline object literal
+
+```html
+<!-- ❌ 禁止：每次 CD cycle 都建立新 object，signal reference equality 失敗，
+     下游 computed/effect 會不必要地重新執行 -->
+<div mznDateTimePicker [calendarProps]="{ displayMonthLocale: 'zh-TW' }"></div>
+```
+
+```ts
+// ✅ 必須：把 bundle hoist 到 class field 或 signal
+@Component({
+  template: `<div mznDateTimePicker [calendarProps]="calBundle"></div>`,
+})
+export class Host {
+  // 不會變的設定 → readonly field
+  protected readonly calBundle = {
+    displayMonthLocale: 'zh-TW',
+    isMonthDisabled: (d: DateType) => false,
+  };
+
+  // 會變的設定 → signal
+  protected readonly popperBundle = signal<PopperBundleProps>({
+    placement: 'bottom-start',
+  });
+}
+```
+
+或者直接用 flat 寫法（沒有 OnPush CD 陷阱）：
+
+```html
+<!-- ✅ flat 寫法：無 inline object，安全 -->
+<div mznDateTimePicker [displayMonthLocale]="'zh-TW'" [isMonthDisabled]="isDisabledFn"></div>
+```
+
+**這是使用端的責任，元件開發者不需要防禦**。元件的 JSDoc `@example` 應示範正確的 hoist 寫法或直接用 flat。
+
+### 例外：不對應為 Angular input 的 React props
+
+- **`prefix` / `suffix`（React `ReactNode`）** → Angular 用 content projection（`<ng-content select="[prefix]">`），不當 input
+- **`xxxRef`（React ref forwarding）** → Angular 用 `@ViewChild` + template ref `#var="mznXxx"` 模式，使用端從 outside 取得
+- **`fadeProps` 等 React 框架專屬的配置物件** → Angular 無同等抽象時，寫入 `DEVIATIONS.md`
+
+### Parity 工具如何支援這個規範
+
+`tools/parity/api.ts` 的 extractor **不做 flatten transform**。React 端與 Angular 端都以「prop 名稱」為單位直接比對。鏡像正確的情況下，parity diff 應歸零（除了少數 deviation）。
+
+**inherited props 解析**透過以下機制：
+
+1. **Interface `extends` 遞迴**（原有功能）
+2. **Type alias `type X = A & B & C;` 的 intersection 展開**（2026-04-11 新增）
+3. **`Omit<>` / `Pick<>` 展開**（原有功能）
+4. **Sibling-safe visited set**（2026-04-11 修正）：每個 parent resolution 用獨立的 visited clone，避免兄弟分支互相污染（`CalendarProps` 的 `Pick<CalendarMonthsProps>` 不會被 `Pick<CalendarDaysProps>` 內部引用 `CalendarMonthsProps` 而提前截斷）
+
+#### Parity extractor 會跳過的欄位
+
+- 名字在 `SKIP_PROP_NAMES`：`children`, `className`, `classes`, `ref`, `key`, `style`, `prefix`, `suffix`
+- 名字結尾 `Ref`（如 `calendarRef`, `inputLeftRef`）
+- HTML passthrough interface（`HTMLAttributes`, `NativeElementProps*` 等）
+
+### 新元件 / 重構 checklist
+
+當新建 Angular 元件或重構舊元件時：
+
+1. **打開對應的 React 元件 `Xxx.tsx`**，找到 `export interface XxxProps` 或 `export type XxxProps = ...`
+2. **列出 React 所有的 props**（包含 `extends`/`Omit<>`/`Pick<>` 繼承來的）— 可以先用 `tsx tools/parity/api.ts` 腳本 trace 一下看看 extractor 實際算出哪些
+3. **為每個 React prop 在 Angular 開對應的 input**：
+   - 名稱一致：`disabledMonthSwitch` ↔ `disabledMonthSwitch`、`calendarProps` ↔ `calendarProps`
+   - 預設值：flat primitive input 預設用 `undefined`，bundle input 預設用 `undefined`
+4. **元件內部的 computed 讀 `xxx() ?? this.bundle()?.xxx`** 實現 flat 覆寫 bundle
+5. **Output 命名對齊 React**：`onChange` → `change`、`onFocusLeft` → `focusLeft` 等
+6. **skip**：
+   - React 的 `prefix` / `suffix` ReactNode — Angular 用 content projection
+   - React 的 `xxxRef` — Angular 用 ViewChild + public method
+   - 無對應物的 React 慣用法（如 `fadeProps`）— 寫入 `DEVIATIONS.md`，kind 為 `input` 或 `output`
+7. **更新 stories**：flat 寫法或 hoist 的 bundle 寫法皆可，但禁止 inline object literal
+8. **更新 JSDoc `@example`** 示範使用方式
+9. **跑 `npm run parity -- <comp>`** 確認 API diff 歸零
+
+### 遷移進度
+
+- [x] `date-time-picker` — 首個採用 hybrid 鏡像模式的 picker，**parity 0 diff**（除 `fadeProps` deviation），作為規範確立的參考實作
+- [ ] `date-picker`
+- [ ] `date-range-picker`
+- [ ] `time-picker`
+- [ ] `date-time-range-picker`
+- [ ] `multiple-date-picker`
+
+_舊元件會在 parity refactor 的下一階段批次遷移。在那之前新元件必須直接採用此規範。_
+
 ## Host Element Overrides
 
 For components where the React root element is NOT a `<div>`. Script defaults to `<div>`; these must be set explicitly.

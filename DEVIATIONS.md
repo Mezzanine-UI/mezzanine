@@ -8,5 +8,6 @@
 - `Reason`：必須具體說明為何無法 parity
 - `Approved`：使用者核可日期 `YYYY-MM-DD`
 
-| Component | Story | Kind | React | Angular | Reason | Approved |
-| --------- | ----- | ---- | ----- | ------- | ------ | -------- |
+| Component        | Story   | Kind  | React     | Angular | Reason                                                                                                                                                                                                                                                                             | Approved   |
+| ---------------- | ------- | ----- | --------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| date-time-picker | **api** | input | fadeProps | —       | React 用 `react-transition-group` / 自訂 Transition lib 暴露一整包 props 控制彈出層的淡入淡出動畫。Angular 這邊採用純 CSS transition，沒有同等的 JS 可配置物件，因此無法做出 prop-level 對應。若未來 Angular 側新增類似的 transition 層，應回頭加上 `fadeProps` input 並移除此行。 | 2026-04-11 |
