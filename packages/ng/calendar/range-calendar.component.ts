@@ -167,11 +167,11 @@ export { CalendarQuickSelectOption };
         ></div>
       </div>
       @if (showFooterActions()) {
-        <div
-          mznCalendarFooterActions
+        <mzn-calendar-footer-actions
+          [confirmDisabled]="!canConfirm()"
           (confirmed)="confirmed.emit()"
           (cancelled)="onCancelledInternal()"
-        ></div>
+        ></mzn-calendar-footer-actions>
       }
     </div>
   `,
@@ -289,6 +289,11 @@ export class MznRangeCalendar {
   private readonly pickingStart = signal<DateType | undefined>(undefined);
   private readonly pickingEnd = signal<DateType | undefined>(undefined);
   private readonly hoverDate = signal<DateType | undefined>(undefined);
+
+  /** Whether the picking state has both start and end committed. */
+  protected readonly canConfirm = computed(
+    (): boolean => !!this.pickingStart() && !!this.pickingEnd(),
+  );
 
   /** Managed reference dates for the two calendars. */
   private readonly internalFirstRef = signal<DateType>('');
