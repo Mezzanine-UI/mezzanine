@@ -81,16 +81,16 @@ export interface CalendarDayAnnotation {
                 (click)="onDayClick(day.date)"
                 (mouseenter)="dateHover.emit(day.date)"
                 >{{ day.dateNum }}
-                @if (day.annotation) {
+                @if (day.hasAnnotation) {
                   <span
                     mznTypography
                     variant="annotation"
                     [color]="
                       day.active
                         ? 'text-fixed-light'
-                        : (day.annotation.color ?? 'text-neutral')
+                        : (day.annotation?.color ?? 'text-neutral')
                     "
-                    >{{ day.annotation.value ?? '--' }}</span
+                    >{{ day.annotation?.value ?? '--' }}</span
                   >
                 }
               </button>
