@@ -81,8 +81,13 @@ export interface FormattedInputErrorMessages {
       [class]="inputClass"
       [disabled]="disabled()"
       [attr.aria-disabled]="disabled()"
+      [attr.aria-label]="ariaLabel() ?? null"
+      [attr.aria-multiline]="ariaMultiline() ?? null"
+      [attr.aria-readonly]="ariaReadonly() ?? null"
+      [attr.aria-required]="ariaRequired() ?? null"
       [attr.size]="inputSize() ?? null"
       [value]="inputDisplayValue()"
+      [attr.value]="inputDisplayValue()"
       [attr.placeholder]="resolvedPlaceholder() ?? null"
       (keydown)="onKeyDown($event)"
       (focus)="onFocus($event)"
@@ -106,6 +111,18 @@ export class MznFormattedInput {
   // -------------------------------------------------------------------------
   // Inputs (alphabetical order)
   // -------------------------------------------------------------------------
+
+  /** 內部 input 的 `aria-label` 屬性。 */
+  readonly ariaLabel = input<string | undefined>(undefined);
+
+  /** 內部 input 的 `aria-multiline` 屬性。 */
+  readonly ariaMultiline = input<boolean | undefined>(undefined);
+
+  /** 內部 input 的 `aria-readonly` 屬性。 */
+  readonly ariaReadonly = input<boolean | undefined>(undefined);
+
+  /** 內部 input 的 `aria-required` 屬性。 */
+  readonly ariaRequired = input<boolean | undefined>(undefined);
 
   /**
    * 是否禁用。
