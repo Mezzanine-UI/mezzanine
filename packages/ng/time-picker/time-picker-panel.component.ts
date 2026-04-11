@@ -7,6 +7,10 @@ import {
 } from '@angular/core';
 import { DateType } from '@mezzanine-ui/core/calendar';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
+import type {
+  PopperOffsetOptions,
+  PopperPlacement,
+} from '@mezzanine-ui/ng/popper';
 import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
 
 /**
@@ -54,8 +58,8 @@ import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
       mznPopper
       [anchor]="anchor()"
       [open]="open()"
-      placement="bottom-start"
-      [offsetOptions]="{ mainAxis: 4 }"
+      [placement]="popperPlacement()"
+      [offsetOptions]="popperOffsetOptions()"
       style="z-index: var(--mzn-z-index-popover)"
     >
       <div
@@ -116,6 +120,18 @@ export class MznTimePickerPanel {
    * @default false
    */
   readonly open = input(false);
+
+  /**
+   * Popper 位移設定。
+   * @default { mainAxis: 4 }
+   */
+  readonly popperOffsetOptions = input<PopperOffsetOptions>({ mainAxis: 4 });
+
+  /**
+   * Popper 定位方向。
+   * @default 'bottom-start'
+   */
+  readonly popperPlacement = input<PopperPlacement>('bottom-start');
 
   /**
    * 秒鐘步長。
