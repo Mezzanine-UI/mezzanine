@@ -1,11 +1,11 @@
-import { Component, signal } from '@angular/core';
-import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
 } from '@mezzanine-ui/ng/calendar';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
+import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznDateTimePicker } from './date-time-picker.component';
 
 const meta: Meta<MznDateTimePicker> = {
@@ -13,7 +13,7 @@ const meta: Meta<MznDateTimePicker> = {
   component: MznDateTimePicker,
   decorators: [
     moduleMetadata({
-      imports: [FormsModule],
+      imports: [FormsModule, MznDateTimePicker, MznTypography],
       providers: [
         {
           provide: MZN_CALENDAR_CONFIG,
@@ -27,46 +27,6 @@ const meta: Meta<MznDateTimePicker> = {
 export default meta;
 type Story = StoryObj<MznDateTimePicker>;
 
-@Component({
-  selector: 'story-date-time-picker-playground',
-  standalone: true,
-  imports: [MznDateTimePicker],
-  template: `
-    <div
-      mznDateTimePicker
-      [clearable]="clearable"
-      [disabled]="disabled"
-      [error]="error"
-      [fullWidth]="fullWidth"
-      [hideHour]="hideHour"
-      [hideMinute]="hideMinute"
-      [hideSecond]="hideSecond"
-      [hourStep]="hourStep"
-      [minuteStep]="minuteStep"
-      [placeholder]="placeholder"
-      [readOnly]="readOnly"
-      [secondStep]="secondStep"
-      [value]="value()"
-      (dateTimeChanged)="value.set($event)"
-    ></div>
-  `,
-})
-class DateTimePickerPlaygroundComponent {
-  clearable = false;
-  disabled = false;
-  error = false;
-  fullWidth = false;
-  hideHour = false;
-  hideMinute = false;
-  hideSecond = false;
-  hourStep = 1;
-  minuteStep = 1;
-  placeholder = 'Select date and time';
-  readOnly = false;
-  secondStep = 1;
-  readonly value = signal<string | undefined>(undefined);
-}
-
 export const Playground: Story = {
   argTypes: {
     clearable: {
@@ -74,7 +34,7 @@ export const Playground: Story = {
       description: 'Whether the picker value can be cleared.',
       table: {
         type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
+        defaultValue: { summary: 'true' },
       },
     },
     disabled: {
@@ -91,6 +51,22 @@ export const Playground: Story = {
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
+      },
+    },
+    formatDate: {
+      control: { type: 'text' },
+      description: 'Display format for the date input.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: "'YYYY-MM-DD'" },
+      },
+    },
+    formatTime: {
+      control: { type: 'text' },
+      description: 'Display format for the time input.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: "'HH:mm:ss'" },
       },
     },
     fullWidth: {
@@ -141,12 +117,20 @@ export const Playground: Story = {
         defaultValue: { summary: '1' },
       },
     },
-    placeholder: {
+    placeholderLeft: {
       control: { type: 'text' },
-      description: 'Placeholder text for the input.',
+      description: 'Placeholder text for the date (left) input.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: "''" },
+        defaultValue: { summary: "'Select date'" },
+      },
+    },
+    placeholderRight: {
+      control: { type: 'text' },
+      description: 'Placeholder text for the time (right) input.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: "'Select time'" },
       },
     },
     readOnly: {
@@ -165,64 +149,83 @@ export const Playground: Story = {
         defaultValue: { summary: '1' },
       },
     },
+    size: {
+      control: { type: 'select' },
+      options: ['main', 'sub'],
+      description: 'Text field size.',
+      table: {
+        type: { summary: "'main' | 'sub'" },
+        defaultValue: { summary: "'main'" },
+      },
+    },
   },
   args: {
     clearable: false,
     disabled: false,
     error: false,
+    formatDate: 'YYYY-MM-DD',
+    formatTime: 'HH:mm:ss',
     fullWidth: false,
     hideHour: false,
     hideMinute: false,
     hideSecond: false,
     hourStep: 1,
     minuteStep: 1,
-    placeholder: 'Select date and time',
+    placeholderLeft: 'Select date',
+    placeholderRight: 'Select time',
     readOnly: false,
     secondStep: 1,
+    size: 'main',
   },
-  decorators: [
-    moduleMetadata({ imports: [DateTimePickerPlaygroundComponent] }),
-  ],
   render: (args) => ({
     props: args,
     template: `
-      <story-date-time-picker-playground
+      <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">origin value: undefined</h3>
+      <div
+        mznDateTimePicker
         [clearable]="clearable"
         [disabled]="disabled"
         [error]="error"
+        [formatDate]="formatDate"
+        [formatTime]="formatTime"
         [fullWidth]="fullWidth"
         [hideHour]="hideHour"
         [hideMinute]="hideMinute"
         [hideSecond]="hideSecond"
         [hourStep]="hourStep"
         [minuteStep]="minuteStep"
-        [placeholder]="placeholder"
+        [placeholderLeft]="placeholderLeft"
+        [placeholderRight]="placeholderRight"
         [readOnly]="readOnly"
         [secondStep]="secondStep"
-      />
+        [size]="size"
+      ></div>
     `,
   }),
 };
 
 export const Basic: Story = {
   render: () => ({
-    props: { dateTime: undefined as string | undefined },
+    props: {
+      dateTime: undefined as string | undefined,
+      normalLabel: 'Normal\n            Origin Value: undefined',
+    },
     template: `
       <div style="width: 320px; margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Normal</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">{{ normalLabel }}</h3>
+        <div mznDateTimePicker [(ngModel)]="dateTime"></div>
       </div>
       <div style="width: 320px; margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <div mznDateTimePicker [disabled]="true" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Disabled</h3>
+        <div mznDateTimePicker [disabled]="true"></div>
       </div>
       <div style="width: 320px; margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Error</strong></p>
-        <div mznDateTimePicker [error]="true" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Error</h3>
+        <div mznDateTimePicker [error]="true"></div>
       </div>
       <div style="width: 320px; margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Read only</strong></p>
-        <div mznDateTimePicker [readOnly]="true" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Read only</h3>
+        <div mznDateTimePicker [readOnly]="true"></div>
       </div>
     `,
   }),
@@ -233,16 +236,16 @@ export const Method: Story = {
     props: { dateTime: undefined as string | undefined },
     template: `
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>CalendarMethodsMoment</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">CalendarMethodsMoment</h3>
+        <div mznDateTimePicker [(ngModel)]="dateTime"></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>CalendarMethodsDayjs</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">CalendarMethodsDayjs</h3>
+        <div mznDateTimePicker [(ngModel)]="dateTime"></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>CalendarMethodLuxon</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">CalendarMethodLuxon</h3>
+        <div mznDateTimePicker [(ngModel)]="dateTime"></div>
       </div>
     `,
   }),
@@ -256,12 +259,12 @@ export const Sizes: Story = {
     },
     template: `
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Size: main</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateMain" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Size: main</h3>
+        <div mznDateTimePicker [(ngModel)]="dateMain" size="main"></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Size: sub</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateSub" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Size: sub</h3>
+        <div mznDateTimePicker [(ngModel)]="dateSub" size="sub"></div>
       </div>
     `,
   }),
@@ -275,12 +278,25 @@ export const DisplayColumn: Story = {
     },
     template: `
       <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Hours, minutes, seconds</strong></p>
-        <div mznDateTimePicker [(ngModel)]="date1" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 8px 0">Hours, minutes, seconds</h3>
+        <p mznTypography variant="body" style="margin: 0 0 8px 0">current value: undefined</p>
+        <div
+          mznDateTimePicker
+          [(ngModel)]="date1"
+          formatDate="YYYY-MM-DD"
+          formatTime="HH:mm:ss"
+        ></div>
       </div>
       <div style="margin: 0 0 32px 0">
-        <p style="margin: 0 0 8px 0"><strong>Hours, minutes</strong></p>
-        <div mznDateTimePicker [(ngModel)]="date2" [hideSecond]="true" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 8px 0">Hours, minutes</h3>
+        <p mznTypography variant="body" style="margin: 0 0 8px 0">current value: undefined</p>
+        <div
+          mznDateTimePicker
+          [(ngModel)]="date2"
+          [hideSecond]="true"
+          formatDate="YYYY-MM-DD"
+          formatTime="HH:mm"
+        ></div>
       </div>
     `,
   }),
@@ -288,15 +304,33 @@ export const DisplayColumn: Story = {
 
 export const CustomDisable: Story = {
   render: () => ({
-    props: { dateTime: undefined as string | undefined },
+    props: {
+      dateTime: undefined as string | undefined,
+      modeLabel:
+        "(mode='day')\n            disabledMonthSwitch = true\n            disabledYearSwitch = true\n            disableOnNext = true\n            disableOnPrev = true",
+    },
     template: `
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>(mode='day') Disable navigation controls</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0; white-space: pre-line">{{ modeLabel }}</h3>
+        <div
+          mznDateTimePicker
+          [(ngModel)]="dateTime"
+          [disabledMonthSwitch]="true"
+          [disabledYearSwitch]="true"
+          [disableOnNext]="true"
+          [disableOnPrev]="true"
+          formatDate="YYYY-MM-DD"
+          formatTime="HH:mm:ss"
+        ></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>(mode='day') Custom disabled dates</strong></p>
-        <div mznDateTimePicker [(ngModel)]="dateTime" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">(mode='day') Custom disabled dates</h3>
+        <div
+          mznDateTimePicker
+          [(ngModel)]="dateTime"
+          formatDate="YYYY-MM-DD"
+          formatTime="HH:mm:ss"
+        ></div>
       </div>
     `,
   }),
