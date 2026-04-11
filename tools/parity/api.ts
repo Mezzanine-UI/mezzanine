@@ -91,7 +91,22 @@ const SKIP_PROP_NAMES = new Set([
   'ref',
   'key',
   'style',
+  // Content projection slots — Angular uses `<ng-content select="[prefix]">`
+  // and `<ng-content select="[suffix]">` instead of React's ReactNode props.
+  // Not representable as signal inputs, so not counted as parity diffs.
+  'prefix',
+  'suffix',
 ]);
+
+/**
+ * Skip React props that represent ref forwarding (e.g. `calendarRef`,
+ * `inputLeftRef`). Angular's idiomatic pattern for this is `@ViewChild` +
+ * template reference variable (`#picker="mznDateTimePicker"`), not a prop,
+ * so these have no input equivalent and should not be counted as diffs.
+ */
+function isRefProp(name: string): boolean {
+  return name.length > 3 && name.endsWith('Ref');
+}
 
 /**
  * Interface names that represent HTML attribute pass-through — treated
@@ -118,20 +133,36 @@ function isHtmlPassthrough(name: string): boolean {
 }
 
 type InterfaceEntry = {
+  kind: 'interface';
   file: string;
   extendsClause: string | null;
   body: string;
 };
 
-let interfaceIndex: Map<string, InterfaceEntry> | null = null;
+type TypeAliasEntry = {
+  kind: 'alias';
+  file: string;
+  /** Right-hand side of the `type X = RHS;` declaration (trimmed, no trailing `;`). */
+  rhs: string;
+};
+
+type IndexEntry = InterfaceEntry | TypeAliasEntry;
+
+let interfaceIndex: Map<string, IndexEntry> | null = null;
 
 /**
- * Build a repo-wide index of interface declarations. We scan source
- * files under packages/react/src and capture name, extends clause, and
- * body for each `interface Name { ... }` block.
+ * Build a repo-wide index of TypeScript type declarations. We scan source
+ * files under packages/react/src and capture two things:
+ *
+ * 1. `interface Name [extends ...] { ... }` → InterfaceEntry
+ * 2. `type Name [<T>] = RHS;`                → TypeAliasEntry
+ *
+ * Type aliases are essential for resolving props like
+ * `TextFieldProps = TextFieldBaseProps & TextFieldAffixProps & TextFieldInteractiveStateProps;`
+ * where the "real" props live inside multiple intersected parents.
  */
-function buildInterfaceIndex(): Map<string, InterfaceEntry> {
-  const index = new Map<string, InterfaceEntry>();
+function buildInterfaceIndex(): Map<string, IndexEntry> {
+  const index = new Map<string, IndexEntry>();
 
   const walk = (dir: string): void => {
     let entries: string[] = [];
@@ -158,9 +189,11 @@ function buildInterfaceIndex(): Map<string, InterfaceEntry> {
       if (full.endsWith('.stories.tsx')) continue;
 
       const text = readFileSync(full, 'utf-8');
-      const headerPattern =
+
+      // --- Interfaces --------------------------------------------------------
+      const interfacePattern =
         /(?:export\s+)?interface\s+(\w+)(?:<[^>]*>)?\s*(?:extends\s+([^{]+?))?\s*\{/g;
-      for (const match of text.matchAll(headerPattern)) {
+      for (const match of text.matchAll(interfacePattern)) {
         const name = match[1];
         const extendsClause = match[2] ? match[2].trim() : null;
         const headerEnd = (match.index ?? 0) + match[0].length;
@@ -174,7 +207,54 @@ function buildInterfaceIndex(): Map<string, InterfaceEntry> {
         }
         const body = text.slice(headerEnd, i - 1);
         if (!index.has(name)) {
-          index.set(name, { file: full, extendsClause, body });
+          index.set(name, {
+            kind: 'interface',
+            file: full,
+            extendsClause,
+            body,
+          });
+        }
+      }
+
+      // --- Type aliases ------------------------------------------------------
+      // Greedy match up to the first top-level `;` — we track paren/bracket
+      // depth so nested objects and generics don't terminate early.
+      const aliasHeaderPattern =
+        /(?:export\s+)?type\s+(\w+)(?:<[^>]*>)?\s*=\s*/g;
+      for (const match of text.matchAll(aliasHeaderPattern)) {
+        const name = match[1];
+        if (index.has(name)) continue; // interface wins if both exist
+        const rhsStart = (match.index ?? 0) + match[0].length;
+        // Scan forward until a top-level `;` respecting `{}`, `<>`, `()`, `[]`.
+        let depthCurly = 0;
+        let depthAngle = 0;
+        let depthParen = 0;
+        let depthBracket = 0;
+        let i = rhsStart;
+        while (i < text.length) {
+          const ch = text[i];
+          if (ch === '{') depthCurly += 1;
+          else if (ch === '}') depthCurly -= 1;
+          else if (ch === '<') depthAngle += 1;
+          else if (ch === '>') depthAngle -= 1;
+          else if (ch === '(') depthParen += 1;
+          else if (ch === ')') depthParen -= 1;
+          else if (ch === '[') depthBracket += 1;
+          else if (ch === ']') depthBracket -= 1;
+          else if (
+            ch === ';' &&
+            depthCurly === 0 &&
+            depthAngle === 0 &&
+            depthParen === 0 &&
+            depthBracket === 0
+          ) {
+            break;
+          }
+          i += 1;
+        }
+        const rhs = text.slice(rhsStart, i).trim();
+        if (rhs) {
+          index.set(name, { kind: 'alias', file: full, rhs });
         }
       }
     }
@@ -184,7 +264,7 @@ function buildInterfaceIndex(): Map<string, InterfaceEntry> {
   return index;
 }
 
-function getInterfaceIndex(): Map<string, InterfaceEntry> {
+function getInterfaceIndex(): Map<string, IndexEntry> {
   if (!interfaceIndex) interfaceIndex = buildInterfaceIndex();
   return interfaceIndex;
 }
@@ -263,6 +343,7 @@ function extractBodyProps(body: string): ApiSet {
     if (!m) continue;
     const name = m[1];
     if (SKIP_PROP_NAMES.has(name)) continue;
+    if (isRefProp(name)) continue;
     if (
       name.startsWith('on') &&
       name.length > 2 &&
@@ -277,8 +358,140 @@ function extractBodyProps(body: string): ApiSet {
 }
 
 /**
- * Resolve an interface name to its full prop set, following `extends`
- * chains. HTML passthrough and unknown interfaces are treated as empty.
+ * Split a type-alias RHS expression into top-level operands at the given
+ * operator (`&` for intersections, `|` for unions), respecting nested
+ * `<>`, `()`, `{}`, `[]` depths.
+ */
+function splitTopLevel(expr: string, operator: '&' | '|'): string[] {
+  const out: string[] = [];
+  let depthAngle = 0;
+  let depthParen = 0;
+  let depthCurly = 0;
+  let depthBracket = 0;
+  let start = 0;
+  for (let i = 0; i < expr.length; i += 1) {
+    const ch = expr[i];
+    if (ch === '<') depthAngle += 1;
+    else if (ch === '>') depthAngle -= 1;
+    else if (ch === '(') depthParen += 1;
+    else if (ch === ')') depthParen -= 1;
+    else if (ch === '{') depthCurly += 1;
+    else if (ch === '}') depthCurly -= 1;
+    else if (ch === '[') depthBracket += 1;
+    else if (ch === ']') depthBracket -= 1;
+    else if (
+      ch === operator &&
+      depthAngle === 0 &&
+      depthParen === 0 &&
+      depthCurly === 0 &&
+      depthBracket === 0
+    ) {
+      // Reject `&&` / `||` (expression operators, shouldn't appear in types
+      // but just in case) and compound assignment tokens.
+      if (expr[i + 1] === operator) {
+        i += 1;
+        continue;
+      }
+      out.push(expr.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+  out.push(expr.slice(start).trim());
+  return out.filter((p) => p.length > 0);
+}
+
+/**
+ * Resolve a type-alias RHS expression to its full prop set. The expression
+ * may be a plain reference (`X`), a generic reference (`X<T>`), an
+ * `Omit<X, ...>` / `Pick<X, ...>`, an intersection (`A & B`), a union
+ * (`A | B`), an inline type literal (`{ x: T; y: T }`), or combinations.
+ */
+function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
+  const result: ApiSet = { inputs: new Set(), outputs: new Set() };
+
+  // Split on top-level `|` first (union) — for parity purposes, we want the
+  // union of props across all branches (any branch may expose any prop).
+  // Clone `visited` per sibling branch to avoid cross-branch poisoning.
+  const unionParts = splitTopLevel(expr, '|');
+  if (unionParts.length > 1) {
+    for (const part of unionParts) {
+      const sub = resolveTypeExpression(part, new Set(visited));
+      for (const k of sub.inputs) result.inputs.add(k);
+      for (const k of sub.outputs) result.outputs.add(k);
+    }
+    return result;
+  }
+
+  // Intersection — merge props from every operand. Clone `visited` per
+  // sibling operand for the same reason.
+  const intersectionParts = splitTopLevel(expr, '&');
+  if (intersectionParts.length > 1) {
+    for (const part of intersectionParts) {
+      const sub = resolveTypeExpression(part, new Set(visited));
+      for (const k of sub.inputs) result.inputs.add(k);
+      for (const k of sub.outputs) result.outputs.add(k);
+    }
+    return result;
+  }
+
+  const single = expr.trim();
+
+  // Inline type literal `{ a: T; b: T }` — treat its body as an anonymous
+  // interface. The outer `{` / `}` are stripped before extracting props.
+  if (single.startsWith('{') && single.endsWith('}')) {
+    const body = single.slice(1, -1);
+    const inner = extractBodyProps(body);
+    for (const k of inner.inputs) result.inputs.add(k);
+    for (const k of inner.outputs) result.outputs.add(k);
+    return result;
+  }
+
+  // Omit<X, 'a' | 'b'> — resolve X then filter.
+  const omitMatch = single.match(
+    /^Omit\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
+  );
+  if (omitMatch) {
+    const keys = new Set(
+      omitMatch[2]
+        .split('|')
+        .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
+    );
+    const base = resolveInterfaceProps(omitMatch[1], visited);
+    for (const k of base.inputs) if (!keys.has(k)) result.inputs.add(k);
+    for (const k of base.outputs) if (!keys.has(k)) result.outputs.add(k);
+    return result;
+  }
+
+  // Pick<X, 'a' | 'b'> — resolve X then filter to the picked keys only.
+  const pickMatch = single.match(
+    /^Pick\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
+  );
+  if (pickMatch) {
+    const keys = new Set(
+      pickMatch[2]
+        .split('|')
+        .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
+    );
+    const base = resolveInterfaceProps(pickMatch[1], visited);
+    for (const k of base.inputs) if (keys.has(k)) result.inputs.add(k);
+    for (const k of base.outputs) if (keys.has(k)) result.outputs.add(k);
+    return result;
+  }
+
+  // Plain reference — `X` or `X<Y, Z>`.
+  const plain = single.match(/^(\w+)(?:\s*<[^>]*>)?$/);
+  if (plain) {
+    const base = resolveInterfaceProps(plain[1], visited);
+    for (const k of base.inputs) result.inputs.add(k);
+    for (const k of base.outputs) result.outputs.add(k);
+  }
+  return result;
+}
+
+/**
+ * Resolve a type or interface name to its full prop set, following
+ * `extends` chains and intersection/union operands in type aliases.
+ * HTML passthrough and unknown types are treated as empty.
  */
 function resolveInterfaceProps(
   name: string,
@@ -297,12 +510,26 @@ function resolveInterfaceProps(
     (name.endsWith('Props') ? index.get(`${name}Base`) : undefined);
   if (!entry) return { inputs: new Set(), outputs: new Set() };
 
+  // Type alias — recursively resolve its RHS expression.
+  if (entry.kind === 'alias') {
+    return resolveTypeExpression(entry.rhs, visited);
+  }
+
   const result: ApiSet = { inputs: new Set(), outputs: new Set() };
 
   if (entry.extendsClause) {
     const parents = parseExtends(entry.extendsClause);
     for (const parent of parents) {
-      const parentProps = resolveInterfaceProps(parent.name, visited);
+      // Clone `visited` per sibling parent so that resolution of one branch
+      // does not poison resolution of the next. `visited` only needs to
+      // prevent infinite recursion within a single ancestor chain — sibling
+      // parents are independent and must re-resolve types the previous
+      // sibling happened to touch internally. Concretely: `CalendarProps`
+      // extends `Pick<CalendarDaysProps, ...>` AND `Pick<CalendarMonthsProps, ...>`;
+      // `CalendarDaysProps` internally references `CalendarMonthsProps`, which
+      // used to leak into `visited` and silently drop the second Pick's props.
+      const parentVisited = new Set(visited);
+      const parentProps = resolveInterfaceProps(parent.name, parentVisited);
       const mergeSet = (target: Set<string>, source: Set<string>): void => {
         for (const k of source) {
           if (parent.pick && !parent.pick.has(k)) continue;

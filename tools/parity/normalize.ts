@@ -93,8 +93,15 @@ export const SNAPSHOT_SOURCE = `
 
   // Mezzanine uses BEM-style class names (e.g. mzn-button--base-text-link),
   // not CSS-module hashes — compare classes verbatim, only sorting tokens.
+  // Drop \`ng-*\` classes (ng-pristine, ng-untouched, ng-valid, ng-dirty,
+  // ng-touched, ng-invalid, etc.) injected by Angular FormsModule when an
+  // element has an NgModel/NgForm directive — they have no React analogue.
   function normalizeClass(value) {
-    return value.split(/\\s+/).filter(Boolean).sort().join(' ');
+    return value
+      .split(/\\s+/)
+      .filter(function (c) { return c && c.indexOf('ng-') !== 0; })
+      .sort()
+      .join(' ');
   }
   function normalizeAttrs(el) {
     var out = {};
