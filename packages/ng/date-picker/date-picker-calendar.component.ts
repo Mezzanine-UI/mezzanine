@@ -12,7 +12,10 @@ import {
   type CalendarQuickSelectOption,
 } from '@mezzanine-ui/ng/calendar';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
-import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
+import type {
+  PopperOffsetOptions,
+  PopperPlacement,
+} from '@mezzanine-ui/ng/popper';
 
 /**
  * DatePicker 專用的日曆彈出層子元件。
@@ -73,33 +76,36 @@ import { PopperOffsetOptions } from '@mezzanine-ui/ng/popper';
       mznPopper
       [anchor]="anchor()"
       [open]="open()"
-      placement="bottom-start"
+      [placement]="popperPlacement()"
       [offsetOptions]="popperOffsetOptions()"
       style="z-index: var(--mzn-z-index-popover)"
     >
-      <div
-        mznCalendar
-        [referenceDate]="referenceDate()"
-        [value]="value()"
-        [mode]="mode()"
-        [disabledMonthSwitch]="disabledMonthSwitch()"
-        [disabledYearSwitch]="disabledYearSwitch()"
-        [disableOnNext]="disableOnNext()"
-        [disableOnPrev]="disableOnPrev()"
-        [disableOnDoubleNext]="disableOnDoubleNext()"
-        [disableOnDoublePrev]="disableOnDoublePrev()"
-        [displayMonthLocale]="displayMonthLocale()"
-        [displayWeekDayLocale]="displayWeekDayLocale()"
-        [isDateDisabled]="isDateDisabled()"
-        [isHalfYearDisabled]="isHalfYearDisabled()"
-        [isMonthDisabled]="isMonthDisabled()"
-        [isQuarterDisabled]="isQuarterDisabled()"
-        [isWeekDisabled]="isWeekDisabled()"
-        [isYearDisabled]="isYearDisabled()"
-        [quickSelect]="quickSelect()"
-        [renderAnnotations]="renderAnnotations()"
-        (dateChanged)="dateChanged.emit($event)"
-      ></div>
+      <div (mouseleave)="leave.emit()">
+        <div
+          mznCalendar
+          [referenceDate]="referenceDate()"
+          [value]="value()"
+          [mode]="mode()"
+          [disabledMonthSwitch]="disabledMonthSwitch()"
+          [disabledYearSwitch]="disabledYearSwitch()"
+          [disableOnNext]="disableOnNext()"
+          [disableOnPrev]="disableOnPrev()"
+          [disableOnDoubleNext]="disableOnDoubleNext()"
+          [disableOnDoublePrev]="disableOnDoublePrev()"
+          [displayMonthLocale]="displayMonthLocale()"
+          [displayWeekDayLocale]="displayWeekDayLocale()"
+          [isDateDisabled]="isDateDisabled()"
+          [isHalfYearDisabled]="isHalfYearDisabled()"
+          [isMonthDisabled]="isMonthDisabled()"
+          [isQuarterDisabled]="isQuarterDisabled()"
+          [isWeekDisabled]="isWeekDisabled()"
+          [isYearDisabled]="isYearDisabled()"
+          [quickSelect]="quickSelect()"
+          [renderAnnotations]="renderAnnotations()"
+          (cellHover)="hover.emit($event)"
+          (dateChanged)="dateChanged.emit($event)"
+        ></div>
+      </div>
     </div>
   `,
 })
@@ -187,6 +193,12 @@ export class MznDatePickerCalendar {
   >(undefined);
 
   /**
+   * Popper 定位方向。
+   * @default 'bottom-start'
+   */
+  readonly popperPlacement = input<PopperPlacement>('bottom-start');
+
+  /**
    * Popper 位移設定，覆寫預設的 `{ mainAxis: 4 }`。
    * @default { mainAxis: 4 }
    */
@@ -194,4 +206,10 @@ export class MznDatePickerCalendar {
 
   /** 日期選取事件。 */
   readonly dateChanged = output<DateType>();
+
+  /** 日曆格子 hover 事件（對應 React DatePickerCalendar 的 `onHover`）。 */
+  readonly hover = output<DateType>();
+
+  /** 滑鼠離開日曆面板事件（對應 React DatePickerCalendar 的 `onLeave`）。 */
+  readonly leave = output<void>();
 }
