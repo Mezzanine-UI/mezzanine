@@ -251,6 +251,12 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   );
   protected readonly triggerElement = computed(() => this.triggerRef());
 
+  /**
+   * Directive instance of the trigger, used to imperatively focus the
+   * "to" input after the first calendar click (matches React parity).
+   */
+  private readonly triggerComponent = viewChild(MznRangePickerTrigger);
+
   private readonly rangeCalendarRef = viewChild(MznDateRangePickerCalendar);
 
   readonly isOpen = signal(false);
@@ -264,12 +270,30 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   ] as unknown as RangePickerValue);
 
   /**
-   * Manual confirm mode 下的暫存選取值。
-   * 只有按 Confirm 才會 promote 到 committedValue；
-   * Cancel / click-away 會清掉，還原到 committedValue。
+   * 進行中的選取狀態（對應 React 的 internalFrom/internalTo + isSelecting）。
+   *
+   * - `undefined` 代表目前沒有在選取，input 顯示 committedValue
+   * - `[start, undefined]` 代表第一次點擊後、尚未選完 end
+   * - `[start, end]` 代表兩個日期都選了，等待 Confirm（manual）或已 commit（immediate 已清除）
+   *
+   * Input 顯示與 calendarDisplayValue 在 staged 存在時優先讀 staged，
+   * 達成選取過程中 input 即時反映選取中日期的效果。
    */
-  private readonly stagedValue = signal<RangePickerValue | undefined>(
-    undefined,
+  private readonly stagedValue = signal<
+    [DateType | undefined, DateType | undefined] | undefined
+  >(undefined);
+
+  /**
+   * 目前有效的範圍值：選取中時讀 staged，否則 fallback 到 committed。
+   * 對應 React 的 `from = isSelecting ? internalFrom : (valueProp?.[0] ?? internalFrom)`。
+   */
+  private readonly effectiveRange = computed(
+    (): readonly [DateType | undefined, DateType | undefined] => {
+      const staged = this.stagedValue();
+      if (staged) return staged;
+      const committed = this.committedValue();
+      return [committed?.[0], committed?.[1]] as const;
+    },
   );
 
   protected readonly resolvedFormat = computed(
@@ -291,39 +315,37 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
 
   /**
    * 起始日期的格式化字串，供 from 輸入框顯示。
+   * 選取進行中會優先顯示 staged 值（對應 React 的 internalFrom + isSelecting）。
    */
   protected readonly inputFromValue = computed((): string | undefined => {
-    const val = this.committedValue();
-    if (!val?.[0]) return undefined;
+    const [from] = this.effectiveRange();
+    if (!from) return undefined;
     const c = this.config;
-    return (
-      c.formatToString(c.locale, val[0], this.resolvedFormat()) ?? undefined
-    );
+    return c.formatToString(c.locale, from, this.resolvedFormat()) ?? undefined;
   });
 
   /**
    * 結束日期的格式化字串，供 to 輸入框顯示。
+   * 選取進行中會優先顯示 staged 值（對應 React 的 internalTo + isSelecting）。
    */
   protected readonly inputToValue = computed((): string | undefined => {
-    const val = this.committedValue();
-    if (!val?.[1]) return undefined;
+    const [, to] = this.effectiveRange();
+    if (!to) return undefined;
     const c = this.config;
-    return (
-      c.formatToString(c.locale, val[1], this.resolvedFormat()) ?? undefined
-    );
+    return c.formatToString(c.locale, to, this.resolvedFormat()) ?? undefined;
   });
 
   /**
    * 傳入 MznDateRangePickerCalendar 的 value。
-   * Manual mode 下優先顯示暫存的 stagedValue，未 staged 時 fallback 到 committed。
+   * 選取進行中優先顯示 staged，未 staged 時 fallback 到 committed。
+   * 支援第一次點擊後單一日期的暫存顯示。
    */
   protected readonly calendarDisplayValue = computed(
     (): ReadonlyArray<DateType> => {
-      const staged = this.stagedValue();
-      if (staged && staged[0] && staged[1]) return [staged[0], staged[1]];
-      const val = this.committedValue();
-      if (!val || !val[0] || !val[1]) return [];
-      return [val[0], val[1]];
+      const [from, to] = this.effectiveRange();
+      if (from && to) return [from, to];
+      if (from) return [from];
+      return [];
     },
   );
 
@@ -411,9 +433,11 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   }
 
   /**
-   * Handle typed-input from the "from" slot. Parses, validates, and stages
-   * into committedValue[0]; if a "to" already exists and the new "from" is
-   * after it, swap to keep [start, end] order.
+   * Handle typed-input from the "from" slot. Parses, validates, and updates
+   * staged state; if a "to" already exists and the new "from" is after it,
+   * swap to keep [start, end] order. In immediate mode a complete range is
+   * committed immediately; in manual mode the range remains staged until
+   * Confirm (matches React).
    */
   protected onTriggerFromChange({
     isoValue,
@@ -431,21 +455,15 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     if (!parsed) return;
     const validate = this.validateFn();
     if (validate && !validate(isoValue)) return;
-    const current = this.committedValue();
-    const to = current?.[1];
-    const next: RangePickerValue =
-      to && c.isBefore(to, parsed)
-        ? ([to, parsed] as RangePickerValue)
-        : ([parsed, to] as unknown as RangePickerValue);
-    this.committedValue.set(next);
-    if (next[0] && next[1]) {
-      this._onChange?.(next);
-      this.rangeChanged.emit(next);
-      this._onTouched?.();
-    }
+    const [, currentTo] = this.effectiveRange();
+    const [nextFrom, nextTo]: [DateType, DateType | undefined] =
+      currentTo && c.isBefore(currentTo, parsed)
+        ? [currentTo, parsed]
+        : [parsed, currentTo];
+    this.applyTypedRange(nextFrom, nextTo);
   }
 
-  /** Handle typed-input from the "to" slot. */
+  /** Handle typed-input from the "to" slot. See `onTriggerFromChange`. */
   protected onTriggerToChange({
     isoValue,
   }: {
@@ -462,17 +480,32 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     if (!parsed) return;
     const validate = this.validateFn();
     if (validate && !validate(isoValue)) return;
-    const current = this.committedValue();
-    const from = current?.[0];
-    const next: RangePickerValue =
-      from && c.isBefore(parsed, from)
-        ? ([parsed, from] as RangePickerValue)
-        : ([from, parsed] as unknown as RangePickerValue);
-    this.committedValue.set(next);
-    if (next[0] && next[1]) {
-      this._onChange?.(next);
-      this.rangeChanged.emit(next);
-      this._onTouched?.();
+    const [currentFrom] = this.effectiveRange();
+    const [nextFrom, nextTo]: [DateType | undefined, DateType] =
+      currentFrom && c.isBefore(parsed, currentFrom)
+        ? [parsed, currentFrom]
+        : [currentFrom, parsed];
+    this.applyTypedRange(nextFrom, nextTo);
+  }
+
+  /**
+   * Shared commit/stage routing for typed input on both from/to slots.
+   * Immediate mode commits a complete range or stages a partial one;
+   * manual mode always stages until Confirm.
+   */
+  private applyTypedRange(
+    nextFrom: DateType | undefined,
+    nextTo: DateType | undefined,
+  ): void {
+    if (this.confirmMode() === 'immediate') {
+      if (nextFrom && nextTo) {
+        this.commitRange(nextFrom, nextTo);
+        this.stagedValue.set(undefined);
+      } else {
+        this.stagedValue.set([nextFrom, nextTo]);
+      }
+    } else {
+      this.stagedValue.set([nextFrom, nextTo]);
     }
   }
 
@@ -481,13 +514,36 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     DateType | undefined,
   ]): void {
     if (end === undefined) {
-      // First click — do not commit yet; picking state tracked in MznRangeCalendar
+      // First click — stage [start, undefined] so the "from" input
+      // immediately reflects the selection-in-progress, matching React's
+      // `internalFrom + isSelecting` behaviour.
+      this.stagedValue.set([start, undefined]);
+
+      // React: "開始新的選取，則先清除值" — when starting a new selection
+      // over a previously complete range, immediate mode clears the external
+      // value. Manual mode preserves committed so Cancel can restore it.
+      if (this.confirmMode() === 'immediate') {
+        const committed = this.committedValue();
+        if (committed?.[0] && committed?.[1]) {
+          const empty: RangePickerValue = [
+            undefined,
+            undefined,
+          ] as unknown as RangePickerValue;
+          this.committedValue.set(empty);
+          this._onChange?.(empty);
+          this.rangeChanged.emit(empty);
+        }
+      }
+
+      // React: `inputToRef.current?.focus()` — move focus to the "to" input.
+      this.triggerComponent()?.focusTo();
       return;
     }
 
-    // Second click — commit range
+    // Second click — full range picked
     if (this.confirmMode() === 'immediate') {
       this.commitRange(start, end);
+      this.stagedValue.set(undefined);
     } else {
       // In manual mode, stage the selection — do NOT touch committedValue
       // until the user presses Confirm.
@@ -519,6 +575,7 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
       undefined,
     ] as unknown as RangePickerValue;
     this.committedValue.set(empty);
+    this.stagedValue.set(undefined);
     this._onChange?.(empty);
     this.rangeChanged.emit(empty);
     this._onTouched?.();
