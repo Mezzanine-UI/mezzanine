@@ -1,12 +1,17 @@
 import { FormsModule } from '@angular/forms';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import { DateType } from '@mezzanine-ui/core/calendar';
 import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
 } from '@mezzanine-ui/ng/calendar';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import { MznDateTimePicker } from './date-time-picker.component';
+
+dayjs.extend(isBetween);
 
 const meta: Meta<MznDateTimePicker> = {
   title: 'Data Entry/DateTimePicker',
@@ -303,35 +308,78 @@ export const DisplayColumn: Story = {
 };
 
 export const CustomDisable: Story = {
-  render: () => ({
-    props: {
-      dateTime: undefined as string | undefined,
-      modeLabel:
-        "(mode='day')\n            disabledMonthSwitch = true\n            disabledYearSwitch = true\n            disableOnNext = true\n            disableOnPrev = true",
-    },
-    template: `
-      <div style="margin: 0 0 24px 0">
-        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0; white-space: pre-line">{{ modeLabel }}</h3>
-        <div
-          mznDateTimePicker
-          [(ngModel)]="dateTime"
-          [disabledMonthSwitch]="true"
-          [disabledYearSwitch]="true"
-          [disableOnNext]="true"
-          [disableOnPrev]="true"
-          formatDate="YYYY-MM-DD"
-          formatTime="HH:mm:ss"
-        ></div>
-      </div>
-      <div style="margin: 0 0 24px 0">
-        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">(mode='day') Custom disabled dates</h3>
-        <div
-          mznDateTimePicker
-          [(ngModel)]="dateTime"
-          formatDate="YYYY-MM-DD"
-          formatTime="HH:mm:ss"
-        ></div>
-      </div>
-    `,
-  }),
+  render: () => {
+    const formatDate = 'YYYY-MM-DD';
+    const formatTime = 'HH:mm:ss';
+
+    const disabledDatesStart = dayjs().add(3, 'day');
+    const disabledDatesEnd = dayjs().add(7, 'day');
+    const disabledMonthsStart = dayjs().subtract(5, 'month');
+    const disabledMonthsEnd = dayjs().subtract(1, 'month');
+    const disabledYearsStart = dayjs().subtract(20, 'year');
+    const disabledYearsEnd = dayjs().subtract(1, 'year');
+
+    const disabledLabel =
+      `(mode='day') Disabled\n` +
+      `  Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}\n` +
+      `  Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}\n` +
+      `  Dates: ${disabledDatesStart.format(`${formatDate} ${formatTime}`)} ~ ${disabledDatesEnd.format(`${formatDate} ${formatTime}`)}`;
+
+    return {
+      props: {
+        dateTime: undefined as string | undefined,
+        modeLabel:
+          "(mode='day')\n            disabledMonthSwitch = true\n            disabledYearSwitch = true\n            disableOnNext = true\n            disableOnPrev = true",
+        disabledLabel,
+        isDateDisabled: (target: DateType): boolean =>
+          dayjs(target).isBetween(
+            disabledDatesStart,
+            disabledDatesEnd,
+            'day',
+            '[]',
+          ),
+        isMonthDisabled: (target: DateType): boolean =>
+          dayjs(target).isBetween(
+            disabledMonthsStart,
+            disabledMonthsEnd,
+            'month',
+            '[]',
+          ),
+        isYearDisabled: (target: DateType): boolean =>
+          dayjs(target).isBetween(
+            disabledYearsStart,
+            disabledYearsEnd,
+            'year',
+            '[]',
+          ),
+      },
+      template: `
+        <div style="margin: 0 0 24px 0">
+          <h3 mznTypography variant="h3" style="margin: 0 0 12px 0; white-space: pre-line">{{ modeLabel }}</h3>
+          <div
+            mznDateTimePicker
+            [(ngModel)]="dateTime"
+            [disabledMonthSwitch]="true"
+            [disabledYearSwitch]="true"
+            [disableOnNext]="true"
+            [disableOnPrev]="true"
+            formatDate="YYYY-MM-DD"
+            formatTime="HH:mm:ss"
+          ></div>
+        </div>
+        <div style="margin: 0 0 24px 0">
+          <h3 mznTypography variant="h3" style="margin: 0 0 12px 0; white-space: pre-line">{{ disabledLabel }}</h3>
+          <div
+            mznDateTimePicker
+            [(ngModel)]="dateTime"
+            [isDateDisabled]="isDateDisabled"
+            [isMonthDisabled]="isMonthDisabled"
+            [isYearDisabled]="isYearDisabled"
+            formatDate="YYYY-MM-DD"
+            formatTime="HH:mm:ss"
+          ></div>
+        </div>
+      `,
+    };
+  },
 };
