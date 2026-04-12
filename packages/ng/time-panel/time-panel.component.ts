@@ -14,6 +14,7 @@ import {
 } from '@mezzanine-ui/core/time-panel';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
 import { MznCalendarFooterActions } from '@mezzanine-ui/ng/_internal';
+import { getCSSVariablePixelValue } from '@mezzanine-ui/ng/utils';
 import { MznTimePanelColumn } from './time-panel-column.component';
 
 /**
@@ -106,9 +107,11 @@ export class MznTimePanel {
   readonly secondStep = input(1);
   /**
    * 每個儲存格的高度（px），控制捲動定位。
-   * @default 32
+   * 預設從 CSS variable `--mzn-spacing-size-element-loose` 讀取。
    */
-  readonly cellHeight = input(32);
+  readonly cellHeight = input(
+    getCSSVariablePixelValue('--mzn-spacing-size-element-loose', 32),
+  );
   /** 當前顯示值。 */
   readonly value = input<DateType | undefined>(undefined);
 
