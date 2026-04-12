@@ -146,10 +146,10 @@ export const Basic: Story = {
             </mzn-navigation-option>
           }
           <footer mznNavigationFooter>
-            <mzn-navigation-user-menu
+            <div mznNavigationUserMenu
               imgSrc="https://i.pravatar.cc/150?u=admin"
               [options]="userMenuOptions"
-            >王小明</mzn-navigation-user-menu>
+            >王小明</div>
             <button icons mznNavigationIconButton [icon]="QuestionOutlineIcon"></button>
             <span icons mznBadge variant="dot-error">
               <button mznNavigationIconButton [icon]="NotificationIcon"></button>
@@ -266,10 +266,10 @@ export const Overflow: Story = {
             </mzn-navigation-option>
           }
           <footer mznNavigationFooter>
-            <mzn-navigation-user-menu
+            <div mznNavigationUserMenu
               imgSrc="https://i.pravatar.cc/150?u=admin"
               [options]="userMenuOptions"
-            >Very long username Very long username Very long username</mzn-navigation-user-menu>
+            >Very long username Very long username Very long username</div>
             <button icons mznNavigationIconButton [icon]="QuestionOutlineIcon"></button>
             <span icons mznBadge variant="dot-error">
               <button mznNavigationIconButton [icon]="NotificationIcon"></button>
@@ -417,11 +417,12 @@ export const Overflow: Story = {
           ></mzn-navigation-option>
         </mzn-navigation-option-category>
         <footer mznNavigationFooter>
-          <mzn-navigation-user-menu
+          <div
+            mznNavigationUserMenu
             imgSrc="https://i.pravatar.cc/150?u=manager"
             [options]="userMenuOptions"
             (optionSelected)="onUserMenuSelect($event)"
-            >李經理</mzn-navigation-user-menu
+            >李經理</div
           >
           <button
             icons
@@ -541,11 +542,12 @@ export const Overflow: Story = {
           ></mzn-navigation-option>
         </mzn-navigation-option-category>
         <footer mznNavigationFooter>
-          <mzn-navigation-user-menu
+          <div
+            mznNavigationUserMenu
             imgSrc="https://i.pravatar.cc/150?u=manager"
             [options]="userMenuOptions"
             (optionSelected)="onUserMenuSelect($event)"
-            >李經理</mzn-navigation-user-menu
+            >李經理</div
           >
           <button
             icons
@@ -638,11 +640,12 @@ export const Overflow: Story = {
           ></mzn-navigation-option>
         </mzn-navigation-option-category>
         <footer mznNavigationFooter>
-          <mzn-navigation-user-menu
+          <div
+            mznNavigationUserMenu
             imgSrc="https://i.pravatar.cc/150?u=manager"
             [options]="userMenuOptions"
             (optionSelected)="onUserMenuSelect($event)"
-            >李經理</mzn-navigation-user-menu
+            >李經理</div
           >
           <button
             icons

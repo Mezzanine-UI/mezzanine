@@ -23,35 +23,33 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
 /**
  * 導覽列使用者選單元件，顯示頭像 + 使用者名稱 + 下拉選單。
  *
- * 對應 React 的 `NavigationUserMenu`。
- *
- * Angular 端採用 **element selector** (`<mzn-navigation-user-menu>`)，host 以
- * `display: contents` 在 layout 中透明，內層 `<button>` 為實際的 toggle；
+ * 對應 React 的 `NavigationUserMenu`。Host `<div>` 對應 React 端
+ * `<Dropdown>` 產生的 root wrapper，內層 `<button>` 為實際 toggle；
  * 下拉選單以 `MznDropdown` + `MznPopper` 做浮動定位。收合狀態下
  * placement 會切換為 `collapsedPlacement` 以模擬 React 版行為。
  *
- * 使用者名稱透過 `<span userName>...</span>` slot 投影；若使用者名稱因寬度
- * 受限而 truncate，`userNameOverflow` signal 會自動更新（由 `ResizeObserver`
+ * 使用者名稱透過 content projection 投影；若使用者名稱因寬度受限而
+ * truncate，`userNameOverflow` signal 會自動更新（由 `ResizeObserver`
  * 追蹤），供外部 tooltip 判斷使用。
  *
  * @example
  * ```html
  * import { MznNavigationUserMenu } from '@mezzanine-ui/ng/navigation';
  *
- * <mzn-navigation-user-menu imgSrc="/avatar.png" placement="top-end">
+ * <div mznNavigationUserMenu imgSrc="/avatar.png" placement="top-end">
  *   <span userName>John Doe</span>
  *   <ng-template menuContent>
  *     <div mznDropdownItemCard label="個人設定" />
  *     <div mznDropdownItemCard label="登出" />
  *   </ng-template>
- * </mzn-navigation-user-menu>
+ * </div>
  * ```
  *
  * @see MznNavigation
  * @see MznDropdown
  */
 @Component({
-  selector: 'mzn-navigation-user-menu',
+  selector: 'div[mznNavigationUserMenu]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MznIcon, MznDropdown],
@@ -60,6 +58,9 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
     '[style.min-width]': "'0'",
     '[style.flex]': "'0 1 auto'",
     '[style.overflow]': "'hidden'",
+    '[attr.imgSrc]': 'null',
+    '[attr.placement]': 'null',
+    '[attr.collapsedPlacement]': 'null',
   },
   template: `
     <button

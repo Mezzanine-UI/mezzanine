@@ -30,10 +30,9 @@ import {
  * 從 `MZN_NAVIGATION_ACTIVATED` 與 `MZN_NAVIGATION_OPTION_LEVEL` 取得啟用與層級資訊。
  * 具有子選項時可展開/收合。
  *
- * 使用 element selector 而非 attribute directive 以避免 HTML5 `<li>` 巢狀時
- * auto-close 破壞 Angular template parse。Host 套 `display: contents`
- * 讓 `<mzn-navigation-option>` 在 layout 上透明，內層 `<li>` 依然是 `<ul>`
- * 的直接子項。
+ * 使用 element selector 以避免 HTML5 `<li>` 巢狀時 auto-close 破壞
+ * Angular template parse。Host 套 `display: contents` 讓自訂元素在
+ * layout 上透明，內層 `<li>` 依然是 `<ul>` 的直接子項。
  *
  * @example
  * ```html
