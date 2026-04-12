@@ -102,7 +102,7 @@ export const Playground: Story = {
           </div>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter name" />
+              <div mznInput placeholder="Enter name"></div>
             </div>
           </div>
         </div>
@@ -167,7 +167,7 @@ export const Basic: Story = {
           </div>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter name" />
+              <div mznInput placeholder="Enter name"></div>
             </div>
           </div>
         </div>
@@ -212,12 +212,12 @@ export const SubSize: Story = {
         <div mznFilterLine>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="name" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter name" />
+              <div mznInput placeholder="Enter name"></div>
             </div>
           </div>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter name" />
+              <div mznInput placeholder="Enter name"></div>
             </div>
           </div>
         </div>
@@ -265,7 +265,7 @@ export const SingleLine: Story = {
           </div>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter name" />
+              <div mznInput placeholder="Enter name"></div>
             </div>
           </div>
           <div mznFilter [span]="2">
@@ -306,12 +306,12 @@ export const IsDirty: Story = {
         <div mznFilterLine>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="name" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter name" />
+              <div mznInput placeholder="Enter name"></div>
             </div>
           </div>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter remark" />
+              <div mznInput placeholder="Enter remark"></div>
             </div>
           </div>
         </div>
@@ -350,7 +350,7 @@ export const VerticalLabel: Story = {
           </div>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
-              <input mznInput placeholder="Enter name" />
+              <div mznInput placeholder="Enter name"></div>
             </div>
           </div>
         </div>
