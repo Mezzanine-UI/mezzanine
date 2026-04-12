@@ -21,11 +21,15 @@ import { buttonClasses } from '@mezzanine-ui/core/button';
  * ```
  */
 @Component({
-  selector: 'mzn-calendar-footer-actions',
+  selector: '[mznCalendarFooterActions]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
+    '[attr.cancelText]': 'null',
+    '[attr.confirmText]': 'null',
+    '[attr.cancelDisabled]': 'null',
+    '[attr.confirmDisabled]': 'null',
   },
   template: `
     <button

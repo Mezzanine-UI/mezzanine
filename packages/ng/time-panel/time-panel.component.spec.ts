@@ -114,14 +114,14 @@ describe('MznTimePanel', () => {
 
   it('should render footer actions', () => {
     const actions = fixture.nativeElement.querySelector(
-      'mzn-calendar-footer-actions',
+      '.mzn-calendar-footer-actions',
     );
     expect(actions).toBeTruthy();
   });
 
   it('should emit confirmed on Ok click', () => {
     const okBtn = fixture.nativeElement.querySelectorAll(
-      'mzn-calendar-footer-actions button',
+      '.mzn-calendar-footer-actions button',
     )[1];
     okBtn?.click();
     fixture.detectChanges();
@@ -130,7 +130,7 @@ describe('MznTimePanel', () => {
 
   it('should emit cancelled on Cancel click', () => {
     const cancelBtn = fixture.nativeElement.querySelectorAll(
-      'mzn-calendar-footer-actions button',
+      '.mzn-calendar-footer-actions button',
     )[0];
     cancelBtn?.click();
     fixture.detectChanges();

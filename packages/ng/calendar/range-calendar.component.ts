@@ -167,11 +167,12 @@ export { CalendarQuickSelectOption };
         ></div>
       </div>
       @if (showFooterActions()) {
-        <mzn-calendar-footer-actions
+        <div
+          mznCalendarFooterActions
           [confirmDisabled]="!canConfirm()"
           (confirmed)="confirmed.emit()"
           (cancelled)="onCancelledInternal()"
-        ></mzn-calendar-footer-actions>
+        ></div>
       }
     </div>
   `,
