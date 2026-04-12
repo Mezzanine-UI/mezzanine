@@ -88,6 +88,7 @@ import { MznFilterLine } from './filter-line.component';
     <div
       [class]="rowClasses()"
       [style.flex-direction]="expanded() ? 'column' : null"
+      [style.align-items]="expanded() ? 'stretch' : null"
     >
       <ng-content />
       <div [class]="actionsClasses()">
