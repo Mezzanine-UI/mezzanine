@@ -2,12 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
+  contentChild,
   input,
 } from '@angular/core';
 import { CheckboxGroupOption } from '@mezzanine-ui/core/checkbox';
 import { MznCheckbox } from './checkbox.component';
-import { MZN_CHECKBOX_GROUP } from './checkbox-group-context';
+import { MznCheckboxGroup } from './checkbox-group.component';
 
 /**
  * 全選核取方塊元件，搭配 `MznCheckboxGroup` 使用。
@@ -54,7 +54,7 @@ import { MZN_CHECKBOX_GROUP } from './checkbox-group-context';
   `,
 })
 export class MznCheckAll {
-  private readonly group = inject(MZN_CHECKBOX_GROUP, { optional: true });
+  private readonly group = contentChild(MznCheckboxGroup);
 
   /**
    * 全部選項列表，用於計算全選/部分選取/未選狀態。
@@ -80,7 +80,7 @@ export class MznCheckAll {
   );
 
   protected readonly checked = computed((): boolean => {
-    const groupValue = this.group?.value() ?? [];
+    const groupValue = this.group()?.value() ?? [];
     const enabled = this.enabledValues();
 
     if (enabled.length === 0) return false;
@@ -89,7 +89,7 @@ export class MznCheckAll {
   });
 
   protected readonly indeterminate = computed((): boolean => {
-    const groupValue = this.group?.value() ?? [];
+    const groupValue = this.group()?.value() ?? [];
     const enabled = this.enabledValues();
     const selectedEnabled = enabled.filter((v) => groupValue.includes(v));
 
@@ -99,9 +99,11 @@ export class MznCheckAll {
   });
 
   protected handleCheckAllChange(): void {
-    if (!this.group) return;
+    const group = this.group();
 
-    const groupValue = this.group.value();
+    if (!group) return;
+
+    const groupValue = group.value();
     const enabled = this.enabledValues();
     const isCurrentlyChecked = this.checked();
 
@@ -109,14 +111,14 @@ export class MznCheckAll {
       // Uncheck all enabled options, keep disabled ones that were checked
       enabled.forEach((v) => {
         if (groupValue.includes(v)) {
-          this.group!.toggle(v);
+          group.toggle(v);
         }
       });
     } else {
       // Check all enabled options
       enabled.forEach((v) => {
         if (!groupValue.includes(v)) {
-          this.group!.toggle(v);
+          group.toggle(v);
         }
       });
     }
