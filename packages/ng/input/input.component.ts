@@ -143,7 +143,9 @@ export type InputVariant =
         [error]="error()"
         [fullWidth]="fullWidth()"
         [hasPrefix]="!!resolvedPrefix()"
-        [hasSuffix]="!!resolvedSuffix()"
+        [hasSuffix]="
+          !!resolvedSuffix() || (showSpinner() && variant() === 'measure')
+        "
         [readonly]="readonlyState()"
         [size]="size()"
         [typing]="typing()"
@@ -180,12 +182,9 @@ export type InputVariant =
           (blur)="onBlur()"
         />
         @if (showSpinner() && variant() === 'measure') {
-          <div
-            suffix
-            [class]="textFieldClasses.suffix + ' ' + classes.spinners"
-          >
+          <span suffix>
             @if (resolvedSuffix(); as sfx) {
-              <span>{{ sfx }}</span>
+              {{ sfx }}
             }
             <div [class]="classes.spinners">
               <div
@@ -203,7 +202,7 @@ export type InputVariant =
                 (clicked)="onSpinDown()"
               ></div>
             </div>
-          </div>
+          </span>
         } @else if (resolvedSuffix(); as sfx) {
           <span suffix [class]="textFieldClasses.suffix">
             @if (sfx === 'password-toggle') {
@@ -670,6 +669,17 @@ export class MznInput implements ControlValueAccessor, OnInit {
     this.internalValue.set(newValue);
     this.onChangeFn(newValue);
     this.valueChange.emit(newValue);
+
+    // Force-sync native input to formatted display value.
+    // When the parsed value doesn't change (e.g. typing "a" into empty field
+    // → parser returns "" which is already the current value), Angular skips
+    // the DOM update because the signal didn't change. We must imperatively
+    // set the native input value so invalid characters are stripped.
+    const formatted = this.displayValue();
+
+    if (target.value !== formatted) {
+      target.value = formatted;
+    }
   }
 
   protected onBlur(): void {
