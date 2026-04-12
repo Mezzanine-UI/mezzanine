@@ -594,7 +594,7 @@ export class MznDateTimePicker implements ControlValueAccessor, AfterViewInit {
   private readonly hoverDate = signal<DateType | undefined>(undefined);
 
   /** 日曆內部 referenceDate — 隨已選日期跟著走；預設當下日期。 */
-  private readonly internalReferenceDate = signal<DateType>(
+  protected readonly internalReferenceDate = signal<DateType>(
     this.config.startOf(this.config.getNow(), 'day'),
   );
 
