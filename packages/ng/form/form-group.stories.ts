@@ -1,5 +1,6 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormFieldLayout } from '@mezzanine-ui/core/form';
+import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznFormField } from './form-field.component';
 import { MznFormGroup } from './form-group.component';
 
@@ -7,7 +8,7 @@ export default {
   title: 'Data Entry/Form/FormGroup',
   decorators: [
     moduleMetadata({
-      imports: [MznFormField, MznFormGroup],
+      imports: [MznFormField, MznFormGroup, MznInput],
     }),
   ],
 } satisfies Meta;
@@ -20,13 +21,13 @@ export const Basic: Story = {
     template: `
       <div mznFormGroup title="Group Title">
         <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
-          <input placeholder="Placeholder" />
+          <div mznInput placeholder="Placeholder"></div>
         </div>
         <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
-          <input placeholder="Placeholder" />
+          <div mznInput placeholder="Placeholder"></div>
         </div>
         <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field3">
-          <input placeholder="Placeholder" />
+          <div mznInput placeholder="Placeholder"></div>
         </div>
       </div>
     `,
@@ -40,21 +41,21 @@ export const MultipleGroups: Story = {
       <div style="display: flex; flex-direction: column; gap: 32px;">
         <div mznFormGroup title="Group Title">
           <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field1">
-            <input placeholder="Placeholder" />
+            <div mznInput placeholder="Placeholder"></div>
           </div>
           <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field2">
-            <input placeholder="Placeholder" />
+            <div mznInput placeholder="Placeholder"></div>
           </div>
           <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group1-field3">
-            <input placeholder="Placeholder" />
+            <div mznInput placeholder="Placeholder"></div>
           </div>
         </div>
         <div mznFormGroup title="Group Title">
           <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field1">
-            <input placeholder="Placeholder" />
+            <div mznInput placeholder="Placeholder"></div>
           </div>
           <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="group2-field2">
-            <input placeholder="Placeholder" />
+            <div mznInput placeholder="Placeholder"></div>
           </div>
         </div>
       </div>
@@ -68,10 +69,10 @@ export const CustomFieldsContainerClassName: Story = {
     template: `
       <div mznFormGroup fieldsContainerClassName="custom-gap" title="Group Title with Custom Gap">
         <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field1">
-          <input placeholder="Placeholder" />
+          <div mznInput placeholder="Placeholder"></div>
         </div>
         <div mznFormField label="Label" layout="${FormFieldLayout.HORIZONTAL}" name="field2">
-          <input placeholder="Placeholder" />
+          <div mznInput placeholder="Placeholder"></div>
         </div>
       </div>
     `,
