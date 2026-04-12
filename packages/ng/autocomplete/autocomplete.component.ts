@@ -933,9 +933,14 @@ export class MznAutocomplete
 
   /**
    * 是否加上 clearable class（控制佈局：min-width 覆蓋為 0）。
-   * 對齊 React 的 shouldForceClearable：有值或有搜尋文字時自動啟用。
+   * 對齊 React：SelectTrigger 永遠接收 `clearable={true}`，因此
+   * `--clearable` class 只在 `clearable()` 為 true 時才加上。
+   * 若 `clearable` 為 false 卻強制加上 `--clearable`，hover 時
+   * suffix 消失但 clear-icon 不渲染，造成視覺寬度縮小。
    */
   protected readonly shouldForceClearable = computed((): boolean => {
+    if (!this.clearable()) return false;
+
     if (this.mode() === 'multiple') {
       return this.hasValue() || !!this.searchText().trim();
     }
