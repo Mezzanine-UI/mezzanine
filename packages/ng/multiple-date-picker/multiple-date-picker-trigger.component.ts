@@ -16,7 +16,9 @@ import { multipleDatePickerClasses as classes } from '@mezzanine-ui/core/multipl
 import { DateType } from '@mezzanine-ui/core/calendar';
 import { TagSize } from '@mezzanine-ui/core/tag';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
+import { CalendarIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznTag, MznTagGroup } from '@mezzanine-ui/ng/tag';
 import { MznTextField } from '@mezzanine-ui/ng/text-field';
 import { MznOverflowCounterTag } from '@mezzanine-ui/ng/overflow-tooltip';
@@ -61,9 +63,10 @@ export interface DateValue {
   selector: '[mznMultipleDatePickerTrigger]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznTextField, MznTag, MznTagGroup, MznOverflowCounterTag],
+  imports: [MznIcon, MznTextField, MznTag, MznTagGroup, MznOverflowCounterTag],
   host: {
     '[class]': 'hostClasses()',
+    '[style.display]': '"inline-flex"',
     '[attr.active]': 'null',
     '[attr.clearable]': 'null',
     '[attr.disabled]': 'null',
@@ -79,17 +82,27 @@ export interface DateValue {
   template: `
     <div
       mznTextField
+      style="width: 100%"
       [active]="active()"
+      [class.mzn-multiple-date-picker-trigger]="true"
+      [class.mzn-multiple-date-picker-trigger--selected]="hasValue()"
+      [class.mzn-multiple-date-picker-trigger--disabled]="disabled()"
+      [class.mzn-multiple-date-picker-trigger--readonly]="readOnly()"
       [clearable]="shouldShowClearable()"
       [forceShowClearable]="shouldShowClearable()"
       [disabled]="disabled()"
       [error]="error()"
       [fullWidth]="fullWidth()"
+      [hasSuffix]="true"
       [readonly]="readOnly()"
       [size]="size()"
       (cleared)="cleared.emit($event)"
     >
-      <div #tagsContainerEl [class]="tagsWrapperClasses()">
+      <div
+        #tagsContainerEl
+        [class]="tagsWrapperClasses()"
+        (click)="focused.emit()"
+      >
         @if (hasValue()) {
           <div #tagsEl [class]="tagsClasses()">
             <div mznTagGroup>
@@ -99,6 +112,7 @@ export interface DateValue {
                     mznTag
                     type="static"
                     [label]="item.name"
+                    [readOnly]="true"
                     [size]="tagSize()"
                   ></span>
                 } @else {
@@ -124,6 +138,29 @@ export interface DateValue {
                   (tagDismiss)="onOverflowTagDismiss($event)"
                 ></span>
               }
+            </div>
+            <!-- Hidden measurement container (React "fake DOM" pattern) -->
+            <div
+              #fakeTagsEl
+              aria-hidden="true"
+              style="position: absolute; pointer-events: none; visibility: hidden; opacity: 0; inset: 0;"
+            >
+              @for (item of value(); track item.id) {
+                <span
+                  mznTag
+                  [disabled]="disabled()"
+                  [label]="item.name"
+                  [size]="tagSize()"
+                  type="dismissable"
+                ></span>
+              }
+              <span
+                mznOverflowCounterTag
+                [disabled]="disabled()"
+                [readOnly]="readOnly()"
+                [tagSize]="tagSize()"
+                [tags]="['placeholder']"
+              ></span>
             </div>
           </div>
           <input
@@ -154,7 +191,13 @@ export interface DateValue {
           />
         }
       </div>
-      <ng-content select="[suffix]" />
+      <i
+        mznIcon
+        suffix
+        [clickable]="!disabled() && !readOnly()"
+        [icon]="calendarIcon"
+        (click)="onSuffixClick($event)"
+      ></i>
     </div>
   `,
 })
@@ -165,6 +208,8 @@ export class MznMultipleDatePickerTrigger implements AfterViewInit {
   private readonly tagsContainerElRef =
     viewChild<ElementRef<HTMLDivElement>>('tagsContainerEl');
   private readonly tagsElRef = viewChild<ElementRef<HTMLDivElement>>('tagsEl');
+  private readonly fakeTagsElRef =
+    viewChild<ElementRef<HTMLDivElement>>('fakeTagsEl');
 
   /** 最大可見標籤數量（counter 模式下由 ResizeObserver 計算）。 */
   private readonly maxVisibleCount = signal<number>(Infinity);
@@ -251,12 +296,17 @@ export class MznMultipleDatePickerTrigger implements AfterViewInit {
   /** 觸發器聚焦事件。 */
   readonly focused = output<void>();
 
+  /** 後綴圖示點擊事件。 */
+  readonly suffixClicked = output<Event>();
+
   /** 單一標籤關閉事件，回傳被移除的原始 DateType。 */
   readonly tagClosed = output<DateType>();
 
   // ---------------------------------------------------------------------------
   // Static CSS classes
   // ---------------------------------------------------------------------------
+
+  protected readonly calendarIcon = CalendarIcon;
 
   protected readonly inputClass = classes.triggerInput;
   protected readonly absoluteInputClass = clsx(
@@ -299,10 +349,8 @@ export class MznMultipleDatePickerTrigger implements AfterViewInit {
   );
 
   protected readonly hostClasses = computed((): string =>
-    clsx(classes.trigger, {
-      [classes.triggerSelected]: this.hasValue(),
-      [classes.triggerDisabled]: this.disabled(),
-      [classes.triggerReadOnly]: this.readOnly(),
+    clsx(classes.host, {
+      [classes.hostFullWidth]: this.fullWidth(),
     }),
   );
 
@@ -365,77 +413,88 @@ export class MznMultipleDatePickerTrigger implements AfterViewInit {
   }
 
   /**
-   * Measures how many tags fit within the container width by comparing
-   * cumulative tag widths against the available container width.
-   * Reserves space for the counter tag when not all items fit.
+   * Measures how many tags fit by reading widths from the hidden "fake DOM"
+   * container (which always renders ALL tags). This mirrors React's
+   * useSelectTriggerTags approach and avoids the chicken-and-egg problem
+   * where visible count determines rendering which determines measurement.
    */
   private recalculate(): void {
     if (this.overflowStrategy() !== 'counter') return;
 
     const container = this.tagsContainerElRef()?.nativeElement;
+    const fakeContainer = this.fakeTagsElRef()?.nativeElement;
+
+    if (!container || !fakeContainer) {
+      this.maxVisibleCount.set(Infinity);
+      return;
+    }
+
     const tagsEl = this.tagsElRef()?.nativeElement;
+    const measureTarget = tagsEl ?? container;
+    const cs = getComputedStyle(measureTarget);
+    const paddingLeft = parseFloat(cs.paddingLeft) || 0;
+    const paddingRight = parseFloat(cs.paddingRight) || 0;
+    const maxWidth = container.clientWidth - paddingLeft - paddingRight;
 
-    if (!container || !tagsEl) {
+    if (maxWidth <= 0) {
       this.maxVisibleCount.set(Infinity);
       return;
     }
 
-    const containerWidth = container.getBoundingClientRect().width;
-
-    if (containerWidth === 0) {
-      this.maxVisibleCount.set(Infinity);
-      return;
-    }
-
-    const tagEls = Array.from(tagsEl.querySelectorAll<HTMLElement>('mzn-tag'));
-    const counterTagEl = tagsEl.querySelector<HTMLElement>(
-      'mzn-overflow-counter-tag',
+    const fakeTags = Array.from(
+      fakeContainer.querySelectorAll<HTMLElement>('.mzn-tag'),
+    );
+    const fakeEllipsis = fakeContainer.querySelector<HTMLElement>(
+      '.mzn-overflow-counter-tag',
     );
 
-    if (tagEls.length === 0) {
+    if (fakeTags.length === 0) {
       this.maxVisibleCount.set(Infinity);
       return;
     }
 
-    const counterWidth = counterTagEl
-      ? counterTagEl.getBoundingClientRect().width
-      : 40; // estimated fallback for counter tag
+    const ellipsisWidth = fakeEllipsis ? this.getFullWidth(fakeEllipsis) : 0;
 
-    let accumulated = 0;
-    let fits = 0;
+    let nextCount = fakeTags.length;
+    let consumedWidth = 0;
 
-    for (const el of tagEls) {
-      const w = el.getBoundingClientRect().width;
-      const remaining = tagEls.length - fits - 1;
-      const wouldOverflow = accumulated + w > containerWidth;
+    for (let i = 0; i < fakeTags.length; i++) {
+      const tagWidth = this.getFullWidth(fakeTags[i]);
+      const hasOverflow = fakeTags.length - (i + 1) > 0;
+      const reservedWidth = hasOverflow ? ellipsisWidth : 0;
 
-      if (wouldOverflow) {
-        // Check if we can fit remaining in counter mode
-        if (accumulated + counterWidth <= containerWidth) {
-          break;
-        }
+      if (consumedWidth + tagWidth + reservedWidth > maxWidth) {
+        nextCount = i;
         break;
       }
 
-      const nextWouldOverflow =
-        remaining > 0 && accumulated + w + counterWidth > containerWidth;
-
-      if (nextWouldOverflow && remaining > 0) {
-        // This tag fits but the rest won't — stop here and show counter
-        fits += 1;
-        break;
-      }
-
-      accumulated += w;
-      fits += 1;
+      consumedWidth += tagWidth;
+      nextCount = i + 1;
     }
 
-    this.maxVisibleCount.set(fits > 0 ? fits : 1);
+    this.maxVisibleCount.set(nextCount > 0 ? nextCount : 1);
+  }
+
+  /** Measures element width including margins (matching React's getFullWidth). */
+  private getFullWidth(element: HTMLElement): number {
+    const rect = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+    const marginLeft =
+      parseFloat(style.marginInlineStart || style.marginLeft || '0') || 0;
+    const marginRight =
+      parseFloat(style.marginInlineEnd || style.marginRight || '0') || 0;
+
+    return rect.width + marginLeft + marginRight;
   }
 
   // ---------------------------------------------------------------------------
   // Event handlers
   // ---------------------------------------------------------------------------
+
+  protected onSuffixClick(event: Event): void {
+    event.stopPropagation();
+    this.suffixClicked.emit(event);
+  }
 
   protected onTagClose(event: MouseEvent, date: DateType): void {
     event.stopPropagation();
