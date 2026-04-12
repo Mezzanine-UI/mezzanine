@@ -71,7 +71,7 @@ export interface RadioWithInputConfig {
     '[attr.value]': 'null',
   },
   template: `
-    <label>
+    <label [class]="labelHostClasses()">
       <span [class]="controlWrapperClass()">
         @if (resolvedType() === 'radio') {
           <span [class]="radioCircleClass()">
@@ -205,6 +205,30 @@ export class MznRadio implements ControlValueAccessor {
     return classes.wrapper;
   });
 
+  protected readonly labelHostClasses = computed((): string => {
+    if (this.resolvedType() === 'segment') {
+      return clsx(
+        inputCheckClasses.host,
+        inputCheckClasses.size(this.resolvedSize()),
+        inputCheckClasses.segmented,
+        {
+          [inputCheckClasses.disabled]: this.resolvedDisabled(),
+          [inputCheckClasses.error]: this.error(),
+        },
+      );
+    }
+
+    return clsx(
+      inputCheckClasses.host,
+      inputCheckClasses.size(this.resolvedSize()),
+      {
+        [inputCheckClasses.disabled]: this.resolvedDisabled(),
+        [inputCheckClasses.error]: this.error(),
+        [inputCheckClasses.withLabel]: true,
+      },
+    );
+  });
+
   protected readonly controlWrapperClass = computed((): string => {
     if (this.resolvedType() === 'segment') {
       return classes.segmentedContainer;
@@ -220,6 +244,7 @@ export class MznRadio implements ControlValueAccessor {
   protected readonly radioCircleClass = computed((): string =>
     clsx(classes.host, classes.size(this.resolvedSize()), {
       [classes.checked]: this.resolvedChecked(),
+      [classes.error]: this.error(),
     }),
   );
 
