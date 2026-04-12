@@ -1,8 +1,31 @@
-import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import { ArgTypes, Description, Meta } from '@storybook/addon-docs/blocks';
+import { MznFilterArea } from './filter-area.component';
+import { MznFilterLine } from './filter-line.component';
+import { MznFilter } from './filter.component';
 import * as FilterAreaStories from './filter-area.stories';
 
 <Meta of={FilterAreaStories} />
 
 # FilterArea
 
-<ArgTypes of={FilterAreaStories.Playground} />
+<Description of={MznFilterArea} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/filter-area/filter-area.component.ts)
+
+<ArgTypes of={MznFilterArea} />
+
+# FilterLine
+
+<Description of={MznFilterLine} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/filter-area/filter-line.component.ts)
+
+<ArgTypes of={MznFilterLine} />
+
+# Filter
+
+<Description of={MznFilter} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/filter-area/filter.component.ts)
+
+<ArgTypes of={MznFilter} />
