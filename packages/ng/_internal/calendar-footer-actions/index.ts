@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   output,
 } from '@angular/core';
@@ -34,14 +35,14 @@ import { buttonClasses } from '@mezzanine-ui/core/button';
   template: `
     <button
       type="button"
-      [class]="cancelButtonClass"
+      [class]="resolvedCancelButtonClass()"
       [disabled]="cancelDisabled()"
       (click)="cancelled.emit()"
       >{{ cancelText() }}</button
     >
     <button
       type="button"
-      [class]="confirmButtonClass"
+      [class]="resolvedConfirmButtonClass()"
       [disabled]="confirmDisabled()"
       (click)="confirmed.emit()"
       >{{ confirmText() }}</button
@@ -64,6 +65,19 @@ export class MznCalendarFooterActions {
   readonly confirmed = output<void>();
 
   protected readonly hostClass = classes.footerActions;
-  protected readonly cancelButtonClass = `${buttonClasses.host} ${buttonClasses.variant('base-tertiary')} ${buttonClasses.size('minor')}`;
-  protected readonly confirmButtonClass = `${buttonClasses.host} ${buttonClasses.variant('base-primary')} ${buttonClasses.size('minor')}`;
+
+  private readonly cancelButtonBase = `${buttonClasses.host} ${buttonClasses.variant('base-tertiary')} ${buttonClasses.size('minor')}`;
+  private readonly confirmButtonBase = `${buttonClasses.host} ${buttonClasses.variant('base-primary')} ${buttonClasses.size('minor')}`;
+
+  protected readonly resolvedCancelButtonClass = computed((): string =>
+    this.cancelDisabled()
+      ? `${this.cancelButtonBase} ${buttonClasses.disabled}`
+      : this.cancelButtonBase,
+  );
+
+  protected readonly resolvedConfirmButtonClass = computed((): string =>
+    this.confirmDisabled()
+      ? `${this.confirmButtonBase} ${buttonClasses.disabled}`
+      : this.confirmButtonBase,
+  );
 }
