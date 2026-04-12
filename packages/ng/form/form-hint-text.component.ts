@@ -36,7 +36,12 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
   template: `
     @if (showHintTextIcon()) {
       @if (resolvedIcon(); as icon) {
-        <i mznIcon [class]="classes.hintTextIcon" [icon]="icon"></i>
+        <i
+          mznIcon
+          [class]="classes.hintTextIcon"
+          [color]="severity()"
+          [icon]="icon"
+        ></i>
       }
     }
     {{ hintText() }}
