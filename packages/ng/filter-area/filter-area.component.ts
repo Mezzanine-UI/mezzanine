@@ -16,6 +16,7 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
 import {
   MZN_FILTER_AREA_CONTEXT,
   FilterAreaContextValue,
@@ -54,7 +55,7 @@ import { MznFilterLine } from './filter-line.component';
   selector: '[mznFilterArea]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznButton],
+  imports: [MznButton, MznIcon],
   providers: [
     {
       provide: MZN_FILTER_AREA_CONTEXT,
@@ -111,7 +112,6 @@ import { MznFilterLine } from './filter-line.component';
             mznButton
             variant="base-ghost"
             iconType="icon-only"
-            [icon]="toggleIcon()"
             [size]="size()"
             [attr.aria-expanded]="expanded()"
             [attr.aria-label]="
@@ -119,6 +119,7 @@ import { MznFilterLine } from './filter-line.component';
             "
             [attr.title]="expanded() ? 'Collapse filters' : 'Expand filters'"
             (click)="toggleExpanded()"
+            ><i mznIcon [icon]="toggleIcon()" [size]="16"></i
           ></button>
         }
       </div>
