@@ -212,24 +212,24 @@ export const SubSize: Story = {
         <div mznFilterLine>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="name" [density]="density" [layout]="layout">
-              <div mznInput placeholder="Enter name"></div>
+              <div mznInput [size]="size" placeholder="Enter name"></div>
             </div>
           </div>
           <div mznFilter [span]="2">
             <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
-              <div mznInput placeholder="Enter name"></div>
+              <div mznInput [size]="size" placeholder="Enter name"></div>
             </div>
           </div>
         </div>
         <div mznFilterLine>
           <div mznFilter [span]="3">
             <div mznFormField label="Label" name="advanced1" [density]="density" [layout]="layout">
-              <div mznAutocomplete [fullWidth]="true" [menuMaxHeight]="140" [options]="autoCompleteOptions" placeholder="請輸入"></div>
+              <div mznAutocomplete [size]="size" [fullWidth]="true" [menuMaxHeight]="140" [options]="autoCompleteOptions" placeholder="請輸入"></div>
             </div>
           </div>
           <div mznFilter [span]="3">
             <div mznFormField label="Label" name="advanced3" [density]="density" [layout]="layout">
-              <div mznAutocomplete [fullWidth]="true" [menuMaxHeight]="140" [options]="autoCompleteOptions" placeholder="請輸入"></div>
+              <div mznAutocomplete [size]="size" [fullWidth]="true" [menuMaxHeight]="140" [options]="autoCompleteOptions" placeholder="請輸入"></div>
             </div>
           </div>
         </div>
