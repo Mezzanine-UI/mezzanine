@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -13,14 +14,15 @@ import {
 import { ControlValueAccessor } from '@angular/forms';
 import {
   CalendarMode,
+  calendarClasses,
   DateType,
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
-import { CalendarIcon } from '@mezzanine-ui/icons';
+import type { TextFieldSize } from '@mezzanine-ui/core/text-field';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
+import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznCalendar } from '@mezzanine-ui/ng/calendar';
 import { MznCalendarFooterActions } from '@mezzanine-ui/ng/_internal';
-import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import {
@@ -50,8 +52,11 @@ import {
 @Component({
   selector: '[mznMultipleDatePicker]',
   host: {
+    style: 'display: contents',
     '[attr.active]': 'null',
+    '[attr.cancelText]': 'null',
     '[attr.clearable]': 'null',
+    '[attr.confirmText]': 'null',
     '[attr.disabled]': 'null',
     '[attr.error]': 'null',
     '[attr.format]': 'null',
@@ -64,13 +69,13 @@ import {
     '[attr.readOnly]': 'null',
     '[attr.referenceDate]': 'null',
     '[attr.required]': 'null',
+    '[attr.size]': 'null',
     '[attr.value]': 'null',
   },
   standalone: true,
   imports: [
     MznCalendar,
     MznCalendarFooterActions,
-    MznIcon,
     MznPopper,
     MznMultipleDatePickerTrigger,
   ],
@@ -89,19 +94,13 @@ import {
       [placeholder]="placeholder()"
       [readOnly]="readOnly()"
       [required]="required()"
+      [size]="size()"
       [value]="pendingDateValues()"
       (cleared)="onClear()"
       (focused)="openCalendar()"
+      (suffixClicked)="toggleCalendar($event)"
       (tagClosed)="onTagClose($event)"
-    >
-      <i
-        mznIcon
-        suffix
-        [clickable]="true"
-        [icon]="calendarIcon"
-        (click)="toggleCalendar($event)"
-      ></i>
-    </div>
+    ></div>
     <div
       mznPopper
       [anchor]="triggerElement()"
@@ -110,25 +109,36 @@ import {
       [offsetOptions]="{ mainAxis: 4 }"
       style="z-index: var(--mzn-z-index-popover)"
     >
-      <div
-        mznCalendar
-        [referenceDate]="internalReferenceDate()"
-        [value]="pendingValue()"
-        [mode]="mode()"
-        [isDateDisabled]="resolvedIsDateDisabled()"
-        (dateChanged)="onCalendarChange($event)"
-      ></div>
-      <div
-        mznCalendarFooterActions
-        [confirmDisabled]="pendingValue().length === 0"
-        (confirmed)="onConfirm()"
-        (cancelled)="onCancel()"
-      ></div>
+      <div [class]="calendarHostClass">
+        <div [class]="mainWithFooterClass">
+          <div
+            mznCalendar
+            [class]="noShadowCalendarClass"
+            [disabledFooterControl]="true"
+            [referenceDate]="internalReferenceDate()"
+            [value]="pendingValue()"
+            [mode]="mode()"
+            [isDateDisabled]="resolvedIsDateDisabled()"
+            (dateChanged)="onCalendarChange($event)"
+          ></div>
+          <div
+            mznCalendarFooterActions
+            [cancelText]="cancelText()"
+            [confirmDisabled]="pendingValue().length === 0"
+            [confirmText]="confirmText()"
+            (confirmed)="onConfirm()"
+            (cancelled)="onCancel()"
+          ></div>
+        </div>
+      </div>
     </div>
   `,
 })
 export class MznMultipleDatePicker implements ControlValueAccessor {
+  private readonly clickAway = inject(ClickAwayService);
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   // ---------------------------------------------------------------------------
   // Inputs (alphabetical)
@@ -141,8 +151,14 @@ export class MznMultipleDatePicker implements ControlValueAccessor {
    */
   readonly active = input(false);
 
+  /** 取消按鈕文字。 @default 'Cancel' */
+  readonly cancelText = input('Cancel');
+
   /** 是否可清除。 @default true */
   readonly clearable = input(true);
+
+  /** 確認按鈕文字。 @default 'Ok' */
+  readonly confirmText = input('Ok');
 
   /** 是否停用。 @default false */
   readonly disabled = input(false);
@@ -187,6 +203,9 @@ export class MznMultipleDatePicker implements ControlValueAccessor {
   /** 是否為必填欄位。 @default false */
   readonly required = input(false);
 
+  /** 觸發器尺寸。 @default 'main' */
+  readonly size = input<TextFieldSize>('main');
+
   /** 外部控制的日期值（非 CVA 模式時使用）。 */
   readonly value = input<ReadonlyArray<DateType> | undefined>(undefined);
 
@@ -201,7 +220,9 @@ export class MznMultipleDatePicker implements ControlValueAccessor {
   // Internal state
   // ---------------------------------------------------------------------------
 
-  protected readonly calendarIcon = CalendarIcon;
+  protected readonly calendarHostClass = calendarClasses.host;
+  protected readonly mainWithFooterClass = calendarClasses.mainWithFooter;
+  protected readonly noShadowCalendarClass = calendarClasses.noShadowHost;
 
   private readonly triggerRef = viewChild<
     MznMultipleDatePickerTrigger,
@@ -291,6 +312,37 @@ export class MznMultipleDatePicker implements ControlValueAccessor {
       } else if (!this.referenceDate()) {
         this.internalReferenceDate.set(this.config.getNow());
       }
+    });
+
+    // Click-away: revert and close (matches React usePickerDocumentEventClose)
+    let clickAwayCleanup: (() => void) | null = null;
+
+    effect(() => {
+      const open = this.isOpen();
+
+      clickAwayCleanup?.();
+      clickAwayCleanup = null;
+
+      if (open) {
+        clickAwayCleanup = this.clickAway.listen(
+          this.hostElRef.nativeElement,
+          () => this.onCancel(),
+          this.destroyRef,
+        );
+      }
+    });
+
+    // Escape key: revert and close
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape' && this.isOpen()) {
+        this.onCancel();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    this.destroyRef.onDestroy(() => {
+      document.removeEventListener('keydown', onKeyDown);
+      clickAwayCleanup?.();
     });
   }
 
