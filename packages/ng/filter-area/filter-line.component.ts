@@ -48,15 +48,15 @@ export class MznFilterLine {
   protected readonly hostClass = classes.line;
 
   /**
-   * 判斷是否為第一個 mzn-filter-line 子元件。
-   * 透過檢查前方是否有同名兄弟元素來判斷，避免依賴 contentChildren signal。
+   * 判斷是否為第一個 FilterLine 子元件。
+   * 透過檢查前方兄弟元素是否帶有 `mzn-filter-area__line` class 來判斷。
    */
   private isFirstLine(): boolean {
     const el = this.elRef.nativeElement;
     let sibling = el.previousElementSibling;
 
     while (sibling) {
-      if (sibling.tagName.toLowerCase() === 'mzn-filter-line') {
+      if (sibling.classList.contains(classes.line)) {
         return false;
       }
 
