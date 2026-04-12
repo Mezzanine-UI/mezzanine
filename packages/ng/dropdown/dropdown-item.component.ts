@@ -100,6 +100,7 @@ export interface DropdownFlatTreeNode {
           [id]="listboxId() ?? null"
           [attr.aria-label]="resolvedListboxLabel()"
           [class]="listClass"
+          [style.max-height]="resolvedMaxHeight()"
           role="listbox"
           [tabIndex]="-1"
         >
