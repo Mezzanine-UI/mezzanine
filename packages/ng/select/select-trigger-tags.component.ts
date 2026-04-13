@@ -15,7 +15,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
-import { TagSize } from '@mezzanine-ui/core/tag';
+import { tagClasses, TagSize } from '@mezzanine-ui/core/tag';
 import clsx from 'clsx';
 import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznTagGroup } from '@mezzanine-ui/ng/tag';
@@ -138,7 +138,8 @@ export interface SelectTriggerTagValue {
             @for (item of value(); track item.id) {
               <span
                 mznTag
-                type="static"
+                type="dismissable"
+                [disabled]="true"
                 [size]="size()"
                 [label]="item.name"
               ></span>
@@ -283,8 +284,9 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
     );
     if (!fakeTagsWrapper) return;
 
-    const tagGroupEl =
-      fakeTagsWrapper.querySelector<HTMLElement>('.mzn-tag-group');
+    const tagGroupEl = fakeTagsWrapper.querySelector<HTMLElement>(
+      `.${tagClasses.group}`,
+    );
     if (!tagGroupEl) return;
 
     const children = Array.from(tagGroupEl.children) as HTMLElement[];
@@ -298,10 +300,15 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
 
     if (fakeTags.length === 0) return;
 
+    // Use host element (wrapper = .tags-input-wrapper) for available width,
+    // and tagsContainer (.tags) for padding — mirrors React's measure():
+    //   containerWidth = containerRef (wrapper) .clientWidth
+    //   padding        = tagsRef (.tags) computed style
+    const containerWidth = this.hostEl.nativeElement.clientWidth;
     const cs = getComputedStyle(containerEl);
     const paddingLeft = parseFloat(cs.paddingLeft) || 0;
     const paddingRight = parseFloat(cs.paddingRight) || 0;
-    const maxWidth = containerEl.clientWidth - paddingLeft - paddingRight;
+    const maxWidth = containerWidth - paddingLeft - paddingRight;
 
     const ellipsisWidth = fakeEllipsis ? this.getFullWidth(fakeEllipsis) : 0;
 
