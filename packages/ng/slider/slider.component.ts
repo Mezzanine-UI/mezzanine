@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   inject,
   input,
@@ -70,6 +71,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.step]': 'null',
     '[attr.suffixIcon]': 'null',
     '[attr.withInput]': 'null',
+    '[attr.value]': 'null',
     '[attr.withTick]': 'null',
   },
   template: `
@@ -218,6 +220,9 @@ export class MznSlider implements ControlValueAccessor {
   private readonly ngZone = inject(NgZone);
   private readonly railRef = viewChild<ElementRef<HTMLDivElement>>('railEl');
 
+  /** 當前值（非受控模式用 ngModel，受控模式用此 input）。 */
+  readonly value = input<SliderValue>();
+
   /** 是否禁用。 @default false */
   readonly disabled = input(false);
 
@@ -271,6 +276,17 @@ export class MznSlider implements ControlValueAccessor {
   private readonly internalValue = signal<SliderValue>(0);
   private readonly dragging = signal(false);
   private readonly anchorValue = signal<number | undefined>(undefined);
+
+  constructor() {
+    // Sync value input to internalValue (for non-CVA / [value] binding usage)
+    effect(() => {
+      const v = this.value();
+
+      if (v !== undefined) {
+        this.internalValue.set(v);
+      }
+    });
+  }
 
   readonly resolvedValue = computed((): SliderValue => this.internalValue());
 

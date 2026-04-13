@@ -91,7 +91,7 @@ export const Single: Story = {
             [withTick]="[10, 20, 30, 75]"
           ></div>
         </div>
-        <h3 style="margin-top: 2rem;">{{ value }}</h3>
+        <h3 mznTypography variant="h3" style="margin-top: 2rem;">{{ value }}</h3>
       </div>
     `,
   }),
@@ -176,7 +176,7 @@ export const Range: Story = {
             [withTick]="[10, 20, 30, 75]"
           ></div>
         </div>
-        <h3 style="margin-top: 2rem;">{{ rangeValue[0] }}, {{ rangeValue[1] }}</h3>
+        <h3 mznTypography variant="h3" style="margin-top: 2rem;">{{ rangeValue[0] }}, {{ rangeValue[1] }}</h3>
       </div>
     `,
   }),
