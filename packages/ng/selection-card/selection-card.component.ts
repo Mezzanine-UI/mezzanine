@@ -1,8 +1,12 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
+  inject,
   input,
+  OnDestroy,
   output,
   signal,
 } from '@angular/core';
@@ -16,7 +20,10 @@ import {
 import { IconDefinition, FileIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
+
+const SELECTION_ICON_SIZE = 26;
 
 /**
  * 選擇卡片元件。
@@ -42,6 +49,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
   host: {
     '[attr.checked]': 'null',
     '[attr.customIcon]': 'null',
+    '[attr.defaultChecked]': 'null',
     '[attr.direction]': 'null',
     '[attr.disabled]': 'null',
     '[attr.image]': 'null',
@@ -56,7 +64,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.value]': 'null',
   },
   standalone: true,
-  imports: [MznIcon],
+  imports: [MznIcon, MznTypography],
   providers: [provideValueAccessor(MznSelectionCard)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -70,19 +78,37 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
             alt=""
           />
         } @else {
-          <i mznIcon [icon]="resolvedIcon()" [class]="iconClass"></i>
+          <i
+            mznIcon
+            [icon]="resolvedIcon()"
+            [class]="iconClass"
+            aria-hidden="true"
+            color="neutral-solid"
+            [size]="iconSize"
+          ></i>
         }
         <div [class]="contentClass">
-          <span [class]="textClass" [style.max-width]="textMaxWidth()">{{
-            text()
-          }}</span>
+          <p
+            mznTypography
+            variant="body-highlight"
+            color="text-neutral-solid"
+            display="block"
+            [ellipsis]="true"
+            [class]="textClass"
+            [style.max-width]="textMaxWidth()"
+            >{{ text() }}</p
+          >
           @if (supportingText()) {
-            <span
+            <p
+              mznTypography
+              variant="caption"
+              color="text-neutral"
+              display="block"
+              [ellipsis]="true"
               [class]="supportingTextClass"
               [style.max-width]="supportingTextMaxWidth()"
+              >{{ supportingText() }}</p
             >
-              {{ supportingText() }}
-            </span>
           }
         </div>
       </div>
@@ -102,9 +128,20 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     </label>
   `,
 })
-export class MznSelectionCard implements ControlValueAccessor {
-  /** 是否勾選。 */
+export class MznSelectionCard
+  implements AfterViewInit, OnDestroy, ControlValueAccessor
+{
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
+  private radioGroupHandler: ((e: Event) => void) | null = null;
+
+  /** 是否勾選（受控模式，持續覆寫內部狀態）。 */
   readonly checked = input<boolean>();
+
+  /**
+   * 預設勾選狀態（非受控模式，僅設定初始值）。
+   * 對應 React 的 `defaultChecked` prop。
+   */
+  readonly defaultChecked = input(false);
 
   /** 自訂圖示。 */
   readonly customIcon = input<IconDefinition>();
@@ -153,6 +190,7 @@ export class MznSelectionCard implements ControlValueAccessor {
   readonly value = input<string>('');
 
   private readonly internalChecked = signal(false);
+  private defaultCheckedApplied = false;
   private readonly focused = signal(false);
 
   protected readonly resolvedChecked = computed(
@@ -175,6 +213,7 @@ export class MznSelectionCard implements ControlValueAccessor {
   protected readonly containerClass = classes.container;
   protected readonly imageClass = classes.selectionImage;
   protected readonly iconClass = classes.icon;
+  protected readonly iconSize = SELECTION_ICON_SIZE;
   protected readonly contentClass = classes.content;
   protected readonly textClass = classes.text;
   protected readonly supportingTextClass = classes.supportingText;
@@ -194,6 +233,54 @@ export class MznSelectionCard implements ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.defaultCheckedApplied && this.defaultChecked()) {
+      this.internalChecked.set(true);
+      this.defaultCheckedApplied = true;
+    }
+
+    if (this.selector() === 'radio') {
+      this.setupRadioGroupSync();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.teardownRadioGroupSync();
+  }
+
+  /**
+   * Listen for change events at document level so that when ANOTHER radio
+   * in the same name-group is selected, this card re-reads its native
+   * input's checked state. The browser unchecks sibling radios silently
+   * (no change event on the unchecked input), so we must detect it here.
+   */
+  private setupRadioGroupSync(): void {
+    this.radioGroupHandler = (e: Event): void => {
+      const target = e.target as HTMLInputElement;
+
+      if (target.type !== 'radio' || target.name !== this.name()) {
+        return;
+      }
+
+      const input = this.hostElRef.nativeElement.querySelector(
+        'input[type="radio"]',
+      ) as HTMLInputElement | null;
+
+      if (input && input.checked !== this.internalChecked()) {
+        this.internalChecked.set(input.checked);
+      }
+    };
+
+    document.addEventListener('change', this.radioGroupHandler, true);
+  }
+
+  private teardownRadioGroupSync(): void {
+    if (this.radioGroupHandler) {
+      document.removeEventListener('change', this.radioGroupHandler, true);
+      this.radioGroupHandler = null;
+    }
   }
 
   protected onInputChange(event: Event): void {
