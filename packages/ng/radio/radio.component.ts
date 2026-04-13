@@ -1,10 +1,13 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import {
@@ -71,10 +74,52 @@ export interface RadioWithInputConfig {
     '[attr.value]': 'null',
   },
   template: `
-    <label [class]="labelHostClasses()">
-      <span [class]="controlWrapperClass()">
-        @if (resolvedType() === 'radio') {
+    @if (resolvedType() === 'radio') {
+      <label [class]="labelHostClasses()">
+        <span [class]="radioControlClass">
           <span [class]="radioCircleClass()">
+            <input
+              #radioInputEl
+              type="radio"
+              [checked]="resolvedChecked()"
+              [disabled]="resolvedDisabled()"
+              [name]="resolvedName()"
+              [value]="value()"
+              (change)="onRadioChange()"
+              (focus)="onTouched()"
+            />
+          </span>
+        </span>
+        <span [class]="labelClass">
+          <ng-content />
+          @if (hint()) {
+            <span [class]="hintClass">{{ hint() }}</span>
+          }
+        </span>
+      </label>
+      @if (withInputConfig()) {
+        <div
+          #textInputWrapper
+          [style.width.px]="withInputConfig()!.width ?? 120"
+        >
+          <div
+            mznInput
+            [placeholder]="withInputConfig()!.placeholder ?? 'Placeholder'"
+            [disabled]="withInputConfig()!.disabled ?? false"
+            (valueChange)="withInputConfig()!.onValueChange?.($event)"
+          ></div>
+        </div>
+      }
+    } @else {
+      <label [class]="labelHostClasses()">
+        <span [class]="segmentedControlClass()">
+          <span [class]="segmentedHostClass()">
+            <span [class]="segmentedContainerClass()">
+              @if (icon()) {
+                <i mznIcon [icon]="icon()!" [size]="16"></i>
+              }
+              <ng-content />
+            </span>
             <input
               type="radio"
               [checked]="resolvedChecked()"
@@ -85,38 +130,8 @@ export interface RadioWithInputConfig {
               (focus)="onTouched()"
             />
           </span>
-        } @else {
-          <input
-            type="radio"
-            style="display: none"
-            [checked]="resolvedChecked()"
-            [disabled]="resolvedDisabled()"
-            [name]="resolvedName()"
-            [value]="value()"
-            (change)="onInputChange()"
-            (focus)="onTouched()"
-          />
-          @if (icon()) {
-            <i mznIcon [icon]="icon()!"></i>
-          }
-        }
-      </span>
-      <span [class]="labelClass">
-        <ng-content />
-        @if (hint() && resolvedType() === 'radio') {
-          <span [class]="hintClass">{{ hint() }}</span>
-        }
-      </span>
-    </label>
-    @if (withInputConfig() && resolvedType() === 'radio') {
-      <div [style.width.px]="withInputConfig()!.width ?? 120">
-        <div
-          mznInput
-          [placeholder]="withInputConfig()!.placeholder ?? 'Placeholder'"
-          [disabled]="withInputConfig()!.disabled ?? false"
-          (valueChange)="withInputConfig()!.onValueChange?.($event)"
-        ></div>
-      </div>
+        </span>
+      </label>
     }
   `,
 })
@@ -124,6 +139,10 @@ export class MznRadio implements ControlValueAccessor {
   private readonly group = inject<RadioGroupContextValue>(MZN_RADIO_GROUP, {
     optional: true,
   });
+
+  constructor() {
+    afterNextRender(() => this.setupTextInputClickHandler());
+  }
 
   /** 是否勾選（獨立使用時）。 */
   readonly checked = input<boolean>();
@@ -184,27 +203,10 @@ export class MznRadio implements ControlValueAccessor {
     (): RadioType => this.group?.type() ?? this.type(),
   );
 
-  protected readonly hostClasses = computed((): string => {
-    if (this.resolvedType() === 'segment') {
-      return clsx(
-        classes.host,
-        classes.segmented,
-        classes.size(this.resolvedSize()),
-        {
-          [classes.checked]: this.resolvedChecked(),
-        },
-      );
-    }
+  // Host element class: mzn-radio__wrapper for both radio and segment
+  protected readonly hostClasses = computed((): string => classes.wrapper);
 
-    // Default radio: match React's structure — host carries
-    // `mzn-radio__wrapper`, control span carries `mzn-radio mzn-radio--<size>`
-    // (+ state modifiers). Previously this emitted `mzn-input-check` on the
-    // host which activated `.mzn-input-check input { opacity: 0 }` and
-    // suppressed the visible radio circle drawn by `.mzn-radio { border-radius:
-    // 50%; border: 1px solid }`.
-    return classes.wrapper;
-  });
-
+  // <label> classes — InputCheck host
   protected readonly labelHostClasses = computed((): string => {
     if (this.resolvedType() === 'segment') {
       return clsx(
@@ -229,22 +231,34 @@ export class MznRadio implements ControlValueAccessor {
     );
   });
 
-  protected readonly controlWrapperClass = computed((): string => {
-    if (this.resolvedType() === 'segment') {
-      return classes.segmentedContainer;
-    }
+  // Radio type: control wrapper (mzn-input-check__control)
+  protected readonly radioControlClass = inputCheckClasses.control;
 
-    return inputCheckClasses.control;
-  });
-
-  // Inner span that actually renders the visible radio circle. Kept on a
-  // DIFFERENT element than `.mzn-input-check__control` because both rules
-  // write `width` and `.mzn-radio { width: 100% }` would override the fixed
-  // control-size from the input-check wrapper if they were co-located.
+  // Radio type: inner circle span
   protected readonly radioCircleClass = computed((): string =>
     clsx(classes.host, classes.size(this.resolvedSize()), {
       [classes.checked]: this.resolvedChecked(),
       [classes.error]: this.error(),
+    }),
+  );
+
+  // Segment type: control wrapper (mzn-input-check__control--segmented)
+  protected readonly segmentedControlClass = computed((): string =>
+    clsx(inputCheckClasses.control, inputCheckClasses.controlSegmented),
+  );
+
+  // Segment type: inner host span (mzn-radio--segmented + state)
+  protected readonly segmentedHostClass = computed((): string =>
+    clsx(classes.host, classes.size(this.resolvedSize()), classes.segmented, {
+      [classes.checked]: this.resolvedChecked(),
+      [classes.error]: this.error(),
+    }),
+  );
+
+  // Segment type: container for icon + text
+  protected readonly segmentedContainerClass = computed((): string =>
+    clsx(classes.segmentedContainer, {
+      [classes.segmentedContainerWithIconText]: !!this.icon(),
     }),
   );
 
@@ -267,6 +281,12 @@ export class MznRadio implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
+  private readonly radioInputElRef =
+    viewChild<ElementRef<HTMLInputElement>>('radioInputEl');
+
+  private readonly textInputWrapperRef =
+    viewChild<ElementRef<HTMLElement>>('textInputWrapper');
+
   protected onInputChange(): void {
     const val = this.value();
 
@@ -276,5 +296,37 @@ export class MznRadio implements ControlValueAccessor {
       this.internalValue.set(val);
       this.onChange(val);
     }
+  }
+
+  /** Radio change + auto-focus text input (matches React handleRadioChange). */
+  protected onRadioChange(): void {
+    this.onInputChange();
+
+    const cfg = this.withInputConfig();
+
+    if (cfg && !cfg.disabled) {
+      const inputEl =
+        this.textInputWrapperRef()?.nativeElement?.querySelector('input');
+      inputEl?.focus();
+    }
+  }
+
+  /**
+   * Bind click on the inner native <input> of MznInput to select this radio.
+   * React does this via inputProps.onClick on the Input component.
+   * We use afterNextRender to wait for MznInput to render its internal input.
+   */
+  private setupTextInputClickHandler(): void {
+    const wrapper = this.textInputWrapperRef()?.nativeElement;
+
+    if (!wrapper) return;
+
+    const innerInput = wrapper.querySelector('input');
+
+    if (!innerInput) return;
+
+    innerInput.addEventListener('click', () => {
+      this.radioInputElRef()?.nativeElement?.click();
+    });
   }
 }
