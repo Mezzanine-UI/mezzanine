@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -109,7 +110,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           }
         </div>
       </div>
-      <span [class]="textContainerClass">
+      <span [class]="hasTextContent() ? textContainerClass : ''">
         <span
           mznTypography
           variant="label-primary"
@@ -119,7 +120,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           @if (label()) {
             {{ label() }}
           }
-          <ng-content />
+          <span #contentSlot style="display: contents"><ng-content /></span>
         </span>
         @if (
           description() &&
@@ -168,13 +169,43 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     }
   `,
 })
-export class MznCheckbox implements ControlValueAccessor {
+export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
   private readonly group = inject<CheckboxGroupContextValue>(
     MZN_CHECKBOX_GROUP,
     { optional: true },
   );
 
   private readonly hostElRef = inject(ElementRef<HTMLElement>);
+  private readonly contentSlotRef =
+    viewChild<ElementRef<HTMLElement>>('contentSlot');
+
+  /** Whether there is any visible text content (label, description, hint, or projected content). */
+  protected readonly hasTextContent = signal(false);
+
+  ngAfterContentInit(): void {
+    this.updateHasTextContent();
+  }
+
+  private updateHasTextContent(): void {
+    const hasInputs = !!(this.label() || this.description() || this.hint());
+
+    if (hasInputs) {
+      this.hasTextContent.set(true);
+
+      return;
+    }
+
+    const slot = this.contentSlotRef()?.nativeElement;
+
+    if (slot) {
+      const hasProjected = Array.from(slot.childNodes).some(
+        (n) =>
+          n.nodeType === Node.ELEMENT_NODE ||
+          (n.nodeType === Node.TEXT_NODE && n.textContent?.trim()),
+      );
+      this.hasTextContent.set(hasProjected);
+    }
+  }
 
   /** 是否勾選（獨立使用時）。 */
   readonly checked = input<boolean>();
