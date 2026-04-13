@@ -75,7 +75,6 @@ export const Playground: Story = {
     placeholder: '輸入文字...',
     readonly: false,
     resize: 'none',
-    rows: 4,
     type: 'default',
   },
   render: (args) => ({
