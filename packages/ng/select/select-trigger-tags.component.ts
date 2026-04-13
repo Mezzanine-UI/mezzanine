@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   computed,
+  effect,
   ElementRef,
   inject,
   input,
@@ -234,6 +235,18 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
     if (count === Infinity || count >= total) return 0;
     return total - count;
   });
+
+  constructor() {
+    // React uses useLayoutEffect on value changes to re-measure.
+    // Angular equivalent: effect that watches value() and triggers recalculate.
+    effect(() => {
+      this.value();
+
+      if (this.overflowStrategy() === 'counter') {
+        this.recalculateOverflow();
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     if (this.overflowStrategy() === 'counter') {
