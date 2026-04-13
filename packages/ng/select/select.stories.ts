@@ -208,6 +208,7 @@ export const WithReadOnly: Story = {
   render: () => ({
     props: {
       options: simpleOptions,
+      selectedValue: '1',
     },
     template: `
       <div style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;">
@@ -217,6 +218,7 @@ export const WithReadOnly: Story = {
             [clearable]="true"
             [fullWidth]="true"
             [options]="options"
+            [(ngModel)]="selectedValue"
             placeholder="預設文字"
           ></div>
         </div>
@@ -226,6 +228,7 @@ export const WithReadOnly: Story = {
             [clearable]="true"
             [fullWidth]="true"
             [options]="options"
+            [(ngModel)]="selectedValue"
             [readOnly]="true"
             placeholder="預設文字"
           ></div>
@@ -304,28 +307,109 @@ export const WithScroll: Story = {
   }),
 };
 
-// WithTree: Angular Select does not support nested/tree options (children property).
-// The React version renders a multi-level tree using the `children` field on DropdownOption.
-// This feature is not implemented in the Angular component.
-export const WithTree: Story = {
-  parameters: { controls: { disable: true } },
-  render: () => ({
-    props: {
-      options: simpleOptions,
-    },
-    template: `
-      <div style="max-width: 300px;">
-        <!-- NOTE: Tree/nested options are not yet supported in Angular MznSelect.
-             The React version supports a children property on DropdownOption for multi-level
-             dropdown rendering. This story shows a flat multiple-select as the closest equivalent. -->
-        <div mznSelect
+const treeOptions: DropdownOption[] = [
+  {
+    name: '前端框架',
+    id: 'frontend',
+    children: [
+      {
+        name: 'React',
+        id: 'react',
+        children: [
+          { name: 'React.js', id: 'reactjs' },
+          { name: 'React Native', id: 'react-native' },
+          { name: 'Next.js', id: 'nextjs' },
+        ],
+      },
+      { name: 'Vue', id: 'vue' },
+      { name: 'Angular', id: 'angular' },
+    ],
+  },
+  {
+    name: '後端框架',
+    id: 'backend',
+    children: [
+      { name: 'Node.js', id: 'nodejs' },
+      { name: 'Express', id: 'express' },
+      { name: 'NestJS', id: 'nestjs' },
+    ],
+  },
+  {
+    name: '資料庫',
+    id: 'database',
+    children: [
+      { name: 'PostgreSQL', id: 'postgresql' },
+      { name: 'MySQL', id: 'mysql' },
+      { name: 'MongoDB', id: 'mongodb' },
+    ],
+  },
+];
+
+@Component({
+  selector: 'story-select-with-tree',
+  standalone: true,
+  imports: [MznSelect, MznTypography],
+  template: `
+    <div
+      style="display: flex; flex-direction: column; gap: 24px; max-width: 400px;"
+    >
+      <div>
+        <p mznTypography variant="body" style="margin-bottom: 8px;">
+          Multiple Mode (Tree) - 所有選項都有 checkbox:
+        </p>
+        <div
+          mznSelect
           [clearable]="true"
           [fullWidth]="true"
           mode="multiple"
-          [options]="options"
-          placeholder="請選擇"
+          [options]="treeOptions"
+          [(ngModel)]="selectedValue"
+          placeholder="請選擇多個技術棧"
         ></div>
       </div>
-    `,
+      @if (selectedValue.length > 0) {
+        <div
+          style="padding: 8px; background-color: #f5f5f5; border-radius: 4px;"
+        >
+          <p mznTypography variant="body" style="margin-bottom: 4px;">
+            已選擇 ({{ selectedValue.length }} 項):
+          </p>
+          @for (id of selectedValue; track id) {
+            <p mznTypography variant="body" style="font-size: 12px;">
+              • {{ getOptionName(id) }} (ID: {{ id }})
+            </p>
+          }
+        </div>
+      }
+    </div>
+  `,
+})
+class SelectWithTreeStoryComponent {
+  readonly treeOptions = treeOptions;
+  selectedValue: string[] = [];
+
+  getOptionName(id: string): string {
+    const find = (opts: DropdownOption[]): string | null => {
+      for (const opt of opts) {
+        if (opt.id === id) return opt.name;
+        if (opt.children) {
+          const found = find(opt.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    return find(this.treeOptions) ?? id;
+  }
+}
+
+export const WithTree: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [FormsModule, SelectWithTreeStoryComponent] }),
+  ],
+  render: () => ({
+    template: `<story-select-with-tree />`,
   }),
 };
