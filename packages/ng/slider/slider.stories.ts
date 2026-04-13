@@ -2,13 +2,14 @@ import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { MinusIcon, PlusIcon } from '@mezzanine-ui/icons';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznSlider } from './slider.component';
 
 export default {
   title: 'Data Entry/Slider',
   decorators: [
     moduleMetadata({
-      imports: [MznSlider, FormsModule],
+      imports: [MznSlider, MznTypography, FormsModule],
     }),
   ],
 } satisfies Meta;
@@ -46,7 +47,7 @@ export const Single: Story = {
     template: `
       <div style="padding: 2rem 5rem; display: grid; gap: 2rem;">
         <div style="display: grid; gap: 0.5rem;">
-          <h3>With input</h3>
+          <h3 mznTypography variant="h3">With input</h3>
           <div mznSlider
             [(ngModel)]="value"
             [min]="min"
@@ -57,7 +58,7 @@ export const Single: Story = {
           ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
-          <h3>With Icon</h3>
+          <h3 mznTypography variant="h3">With Icon</h3>
           <div mznSlider
             [(ngModel)]="value"
             [min]="min"
@@ -69,7 +70,7 @@ export const Single: Story = {
           ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
-          <h3>Slice 3 ticks between min and max</h3>
+          <h3 mznTypography variant="h3">Slice 3 ticks between min and max</h3>
           <div mznSlider
             [(ngModel)]="value"
             [min]="min"
@@ -80,7 +81,7 @@ export const Single: Story = {
           ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
-          <h3>Custom tick marks: [10, 20, 30, 75]</h3>
+          <h3 mznTypography variant="h3">Custom tick marks: [10, 20, 30, 75]</h3>
           <div mznSlider
             [(ngModel)]="value"
             [min]="min"
@@ -127,7 +128,7 @@ export const Range: Story = {
     template: `
       <div style="padding: 2rem 5rem; display: grid; gap: 2rem;">
         <div style="display: grid; gap: 0.5rem;">
-          <h3>With input</h3>
+          <h3 mznTypography variant="h3">With input</h3>
           <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
@@ -139,7 +140,7 @@ export const Range: Story = {
           ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
-          <h3>With prefixIcon and suffixIcon</h3>
+          <h3 mznTypography variant="h3">With prefixIcon and suffixIcon</h3>
           <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
@@ -152,7 +153,7 @@ export const Range: Story = {
           ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
-          <h3>Slice 3 ticks between min and max</h3>
+          <h3 mznTypography variant="h3">Slice 3 ticks between min and max</h3>
           <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
@@ -164,7 +165,7 @@ export const Range: Story = {
           ></div>
         </div>
         <div style="display: grid; gap: 0.5rem;">
-          <h3>Custom tick marks: [10, 20, 30, 75]</h3>
+          <h3 mznTypography variant="h3">Custom tick marks: [10, 20, 30, 75]</h3>
           <div mznSlider
             [value]="rangeValue"
             (valueChange)="rangeValue = $any($event)"
@@ -184,11 +185,11 @@ export const Range: Story = {
 @Component({
   selector: 'story-slider-with-icon-custom-click',
   standalone: true,
-  imports: [MznSlider, FormsModule],
+  imports: [MznSlider, MznTypography, FormsModule],
   template: `
     <div style="padding: 2rem 5rem; display: grid; gap: 2rem;">
       <div style="display: grid; gap: 0.5rem;">
-        <h3>Single - 自訂 onClick（每次 +/- 10）</h3>
+        <h3 mznTypography variant="h3">Single - 自訂 onClick（每次 +/- 10）</h3>
         <p>透過 prefixIconClick / suffixIconClick 自訂點擊行為。</p>
         <div
           mznSlider
@@ -200,10 +201,10 @@ export const Range: Story = {
           [onPrefixIconClick]="decreaseSingleFn"
           [onSuffixIconClick]="increaseSingleFn"
         ></div>
-        <h3>{{ singleValue() }}</h3>
+        <h3 mznTypography variant="h3">{{ singleValue() }}</h3>
       </div>
       <div style="display: grid; gap: 0.5rem;">
-        <h3>Range - 自訂 onClick（整體位移 10）</h3>
+        <h3 mznTypography variant="h3">Range - 自訂 onClick（整體位移 10）</h3>
         <p>prefixIconClick 整體左移，suffixIconClick 整體右移。</p>
         <div
           mznSlider
@@ -216,7 +217,9 @@ export const Range: Story = {
           [onPrefixIconClick]="shiftRangeLeftFn"
           [onSuffixIconClick]="shiftRangeRightFn"
         ></div>
-        <h3>{{ rangeValue()[0] }}, {{ rangeValue()[1] }}</h3>
+        <h3 mznTypography variant="h3"
+          >{{ rangeValue()[0] }}, {{ rangeValue()[1] }}</h3
+        >
       </div>
     </div>
   `,
@@ -269,11 +272,11 @@ export const WithIconCustomClick: Story = {
 @Component({
   selector: 'story-slider-with-icon',
   standalone: true,
-  imports: [MznSlider, FormsModule],
+  imports: [MznSlider, MznTypography, FormsModule],
   template: `
     <div style="padding: 2rem 5rem; display: grid; gap: 2rem;">
       <div style="display: grid; gap: 0.5rem;">
-        <h3>Single</h3>
+        <h3 mznTypography variant="h3">Single</h3>
         <p>透過點擊（Click）圖示（Icon）來觸發值的變化。</p>
         <div
           mznSlider
@@ -283,10 +286,10 @@ export const WithIconCustomClick: Story = {
           [prefixIcon]="MinusIcon"
           [suffixIcon]="PlusIcon"
         ></div>
-        <h3>{{ singleValue() }}</h3>
+        <h3 mznTypography variant="h3">{{ singleValue() }}</h3>
       </div>
       <div style="display: grid; gap: 0.5rem;">
-        <h3>Range</h3>
+        <h3 mznTypography variant="h3">Range</h3>
         <p>點擊「-」減少下限，點擊「+」增加上限。</p>
         <div
           mznSlider
@@ -297,7 +300,9 @@ export const WithIconCustomClick: Story = {
           [prefixIcon]="MinusIcon"
           [suffixIcon]="PlusIcon"
         ></div>
-        <h3>{{ rangeValue()[0] }}, {{ rangeValue()[1] }}</h3>
+        <h3 mznTypography variant="h3"
+          >{{ rangeValue()[0] }}, {{ rangeValue()[1] }}</h3
+        >
       </div>
     </div>
   `,
