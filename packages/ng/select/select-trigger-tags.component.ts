@@ -123,8 +123,12 @@ export interface SelectTriggerTagValue {
           }
         </div>
 
-        <!-- Fake tags for measurement: rendered off-screen, used by ResizeObserver -->
-        <div [class]="fakeTagsClasses()" aria-hidden="true">
+        <!-- Fake tags for measurement (React useSelectTriggerTags pattern) -->
+        <div
+          [class]="fakeTagsClasses()"
+          aria-hidden="true"
+          style="position: absolute; pointer-events: none; visibility: hidden; opacity: 0; inset: 0;"
+        >
           <div mznTagGroup>
             @for (item of value(); track item.id) {
               <span
