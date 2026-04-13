@@ -106,12 +106,7 @@ export class MznTooltip implements OnInit {
 
   private readonly isHovered = signal(false);
 
-  ngOnInit(): void {
-    this.destroyRef.onDestroy(() => {
-      this.hideTooltip();
-      this.removeTooltipElement();
-    });
-
+  constructor() {
     // Reactively update tooltip text when mznTooltip input changes (e.g. during drag)
     effect(() => {
       const title = this.mznTooltip();
@@ -119,6 +114,13 @@ export class MznTooltip implements OnInit {
       if (this.tooltipEl && this.tooltipEl.style.display !== 'none') {
         this.updateTooltipText(title ?? '');
       }
+    });
+  }
+
+  ngOnInit(): void {
+    this.destroyRef.onDestroy(() => {
+      this.hideTooltip();
+      this.removeTooltipElement();
     });
   }
 
