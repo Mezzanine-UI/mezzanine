@@ -1,10 +1,10 @@
 import {
+  afterRenderEffect,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   computed,
-  effect,
   ElementRef,
   inject,
   input,
@@ -238,8 +238,11 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
 
   constructor() {
     // React uses useLayoutEffect on value changes to re-measure.
-    // Angular equivalent: effect that watches value() and triggers recalculate.
-    effect(() => {
+    // afterRenderEffect runs AFTER Angular has rendered the template to DOM,
+    // which is the correct equivalent of React's useLayoutEffect — the fake
+    // tags container will already contain the updated tag elements when we
+    // measure.
+    afterRenderEffect(() => {
       this.value();
 
       if (this.overflowStrategy() === 'counter') {
