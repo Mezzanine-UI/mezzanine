@@ -3,7 +3,9 @@ import {
   Component,
   computed,
   ElementRef,
+  inject,
   input,
+  NgZone,
   output,
   signal,
   viewChild,
@@ -28,6 +30,7 @@ import { IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznInput } from '@mezzanine-ui/ng/input';
+import { MznTooltip } from '@mezzanine-ui/ng/tooltip';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 
 /**
@@ -54,7 +57,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 @Component({
   selector: '[mznSlider]',
   standalone: true,
-  imports: [MznIcon, MznInput],
+  imports: [MznIcon, MznInput, MznTooltip],
   providers: [provideValueAccessor(MznSlider)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -71,14 +74,16 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
   },
   template: `
     @if (withInput() && isRange()) {
-      <div
-        mznInput
-        [class]="inputClass"
-        [inputType]="'number'"
-        [value]="startInputValue()"
-        (valueChange)="onStartInputValueChange($event)"
-        [disabled]="disabled()"
-      ></div>
+      <div [class]="inputClass">
+        <div
+          mznInput
+          variant="number"
+          [inputType]="'number'"
+          [value]="startInputValue()"
+          (valueChange)="onStartInputValueChange($event)"
+          [disabled]="disabled()"
+        ></div>
+      </div>
     }
     @if (prefixIcon()) {
       <span
@@ -114,6 +119,9 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       @if (isRange()) {
         <div [class]="handlerStartPositionClass">
           <div
+            [mznTooltip]="'' + rangeValue()[0]"
+            [tooltipOffset]="handlerTooltipOffset"
+            tooltipPlacement="top"
             [class]="handlerStartClasses()"
             role="slider"
             tabindex="0"
@@ -130,6 +138,9 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
         </div>
         <div [class]="handlerEndPositionClass">
           <div
+            [mznTooltip]="'' + rangeValue()[1]"
+            [tooltipOffset]="handlerTooltipOffset"
+            tooltipPlacement="top"
             [class]="handlerEndClasses()"
             role="slider"
             tabindex="0"
@@ -147,6 +158,9 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       } @else {
         <div [class]="handlerPositionClass">
           <div
+            [mznTooltip]="'' + singleValue()"
+            [tooltipOffset]="handlerTooltipOffset"
+            tooltipPlacement="top"
             [class]="handlerClasses()"
             role="slider"
             tabindex="0"
@@ -174,14 +188,16 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
       }
     </div>
     @if (withInput()) {
-      <div
-        mznInput
-        [class]="inputClass"
-        [inputType]="'number'"
-        [value]="endInputValue()"
-        (valueChange)="onEndInputValueChange($event)"
-        [disabled]="disabled()"
-      ></div>
+      <div [class]="inputClass">
+        <div
+          mznInput
+          variant="number"
+          [inputType]="'number'"
+          [value]="endInputValue()"
+          (valueChange)="onEndInputValueChange($event)"
+          [disabled]="disabled()"
+        ></div>
+      </div>
     }
     @if (suffixIcon()) {
       <span
@@ -199,6 +215,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
   `,
 })
 export class MznSlider implements ControlValueAccessor {
+  private readonly ngZone = inject(NgZone);
   private readonly railRef = viewChild<ElementRef<HTMLDivElement>>('railEl');
 
   /** 是否禁用。 @default false */
@@ -361,6 +378,9 @@ export class MznSlider implements ControlValueAccessor {
   protected readonly iconClass = classes.icon;
   protected readonly tickClass = classes.tick;
   protected readonly inputClass = classes.input;
+
+  /** Tooltip offset matching React's handler tooltip positioning. */
+  protected readonly handlerTooltipOffset = 12;
   protected readonly handlerPositionClass = classes.handlerPosition;
   protected readonly handlerStartPositionClass = `${classes.handlerPosition} ${classes.handlerStartPosition}`;
   protected readonly handlerEndPositionClass = `${classes.handlerPosition} ${classes.handlerEndPosition}`;
@@ -615,24 +635,27 @@ export class MznSlider implements ControlValueAccessor {
     );
 
     const onMove = (e: MouseEvent | TouchEvent): void => {
-      const rail = this.railRef()?.nativeElement;
+      this.ngZone.run(() => {
+        const rail = this.railRef()?.nativeElement;
 
-      if (!rail) {
-        return;
-      }
+        if (!rail) {
+          return;
+        }
 
-      const clientX = 'touches' in e ? e.changedTouches[0].clientX : e.clientX;
-      const roundedNewValue = this.getRoundedValue(clientX, rail);
-      const currentVal = this.resolvedValue();
+        const clientX =
+          'touches' in e ? e.changedTouches[0].clientX : e.clientX;
+        const roundedNewValue = this.getRoundedValue(clientX, rail);
+        const currentVal = this.resolvedValue();
 
-      if (isRangeSlider(currentVal)) {
-        const newRange: RangeSliderValue = [...currentVal];
+        if (isRangeSlider(currentVal)) {
+          const newRange: RangeSliderValue = [...currentVal];
 
-        newRange[handlerIndex] = roundedNewValue;
-        this.updateValue(sortSliderValue(newRange));
-      } else {
-        this.updateValue(roundedNewValue);
-      }
+          newRange[handlerIndex] = roundedNewValue;
+          this.updateValue(sortSliderValue(newRange));
+        } else {
+          this.updateValue(roundedNewValue);
+        }
+      });
     };
 
     const onEnd = (e: Event): void => {
