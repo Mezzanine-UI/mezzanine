@@ -89,7 +89,11 @@ export interface SelectTriggerTagValue {
         </span>
       }
     } @else {
-      <div #tagsContainer [class]="tagsContainerClasses()">
+      <div
+        #tagsContainer
+        [class]="tagsContainerClasses()"
+        style="position: relative;"
+      >
         <div mznTagGroup>
           @for (item of visibleItems(); track item.id) {
             @if (readOnly()) {
