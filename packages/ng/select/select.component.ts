@@ -19,13 +19,21 @@ import {
 } from '@mezzanine-ui/core/select';
 import {
   dropdownClasses,
+  DropdownItemLevel,
   DropdownOption,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown';
-import { ChevronDownIcon, CheckedIcon, SpinnerIcon } from '@mezzanine-ui/icons';
+import {
+  CaretDownIcon,
+  CaretRightIcon,
+  ChevronDownIcon,
+  CheckedIcon,
+  IconDefinition,
+  SpinnerIcon,
+} from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznDropdownItemCard } from '@mezzanine-ui/ng/dropdown';
-import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznSpin } from '@mezzanine-ui/ng/spin';
 import { MznInputTriggerPopper } from '@mezzanine-ui/ng/_internal';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznTranslate } from '@mezzanine-ui/ng/transition';
@@ -36,10 +44,20 @@ import {
   SelectTriggerTagValue,
 } from './select-trigger-tags.component';
 
+/** Flattened tree node for rendering. */
+interface FlatOption {
+  readonly option: DropdownOption;
+  readonly level: DropdownItemLevel;
+  readonly hasChildren: boolean;
+  readonly isExpanded: boolean;
+}
+
 /**
  * 選擇器元件，點擊觸發器後展開下拉選單供選取。
  *
  * 支援單選與多選模式，實作 `ControlValueAccessor` 支援 Angular Forms。
+ * 多選模式下若 options 含有 `children` 巢狀結構，會自動切換為樹狀選取（`type: 'tree'`）
+ * 並為所有選項加上勾選框。
  * 使用 `MznInputTriggerPopper` 定位下拉選單，`ClickAwayService` 處理外部點擊。
  *
  * @example
@@ -61,7 +79,7 @@ import {
   selector: '[mznSelect]',
   standalone: true,
   imports: [
-    MznIcon,
+    MznSpin,
     MznInputTriggerPopper,
     MznSelectTrigger,
     MznSelectTriggerTags,
@@ -131,36 +149,46 @@ import {
       [sameWidth]="true"
     >
       <div mznTranslate [in]="isOpen()" from="top">
-        <div
-          [class]="dropdownRootClass"
+        <ul
+          [class]="listClass"
           [style.max-height.px]="menuMaxHeight()"
+          role="listbox"
         >
-          <div [class]="listWrapperClass" (scroll)="onListScroll($event)">
+          <div
+            [class]="listWrapperClass"
+            [style.max-height.px]="menuMaxHeight()"
+            (scroll)="onListScroll($event)"
+          >
             @if (loading() && loadingPosition() === 'full') {
               <div [class]="statusClass">
-                <i mznIcon [icon]="loadingIcon" [spin]="true" [size]="16"></i>
+                <div mznSpin [loading]="true" size="minor"></div>
                 <span [class]="statusTextClass">{{ loadingText() }}</span>
               </div>
             }
-            <ul [class]="listClass" role="listbox">
-              @for (option of options(); track option.id) {
-                <div
-                  mznDropdownItemCard
-                  [mode]="mode()"
-                  [label]="option.name"
-                  [checked]="isSelected(option)"
-                  (clicked)="onOptionClick(option)"
-                ></div>
-              }
-            </ul>
+            @for (item of visibleOptions(); track item.option.id) {
+              <div
+                mznDropdownItemCard
+                [mode]="mode()"
+                [label]="item.option.name"
+                [level]="item.level"
+                [checked]="isOptionChecked(item.option)"
+                [indeterminate]="isOptionIndeterminate(item.option)"
+                [prependIcon]="getCaretIcon(item)"
+                [checkSite]="resolvedType() === 'tree' ? 'prefix' : 'suffix'"
+                (clicked)="onVisibleOptionClick(item)"
+                (checkedChange)="onVisibleOptionCheckedChange(item)"
+              ></div>
+            }
             @if (loading() && loadingPosition() === 'bottom') {
-              <div [class]="loadingMoreClass">
-                <i mznIcon [icon]="loadingIcon" [spin]="true" [size]="16"></i>
-                <span>{{ loadingText() }}</span>
-              </div>
+              <li [class]="loadingMoreClass">
+                <div [class]="statusClass">
+                  <div mznSpin [loading]="true" size="minor"></div>
+                  <span [class]="statusTextClass">{{ loadingText() }}</span>
+                </div>
+              </li>
             }
           </div>
-        </div>
+        </ul>
       </div>
     </div>
   `,
@@ -255,8 +283,8 @@ export class MznSelect implements ControlValueAccessor {
 
   protected readonly isOpen = signal(false);
   private readonly internalValue = signal<ReadonlyArray<string>>([]);
-  private lastScrollTop = 0;
-  private maxScrollTop = 0;
+  private readonly expandedNodes = signal<ReadonlySet<string>>(new Set());
+  private wasAtBottom = false;
 
   // CVA
   private onChange: (value: ReadonlyArray<string> | string) => void = () => {};
@@ -288,6 +316,15 @@ export class MznSelect implements ControlValueAccessor {
     (): boolean => this.internalValue().length > 0,
   );
 
+  /** Auto-detect tree mode: multiple + any option has children → 'tree'. Mirrors React Select. */
+  protected readonly resolvedType = computed((): DropdownType => {
+    const opts = this.options();
+    if (this.mode() === 'multiple' && opts.some((o) => o.children?.length)) {
+      return 'tree';
+    }
+    return this.type();
+  });
+
   protected readonly displayText = computed((): string => {
     const ids = this.internalValue();
     const opts = this.options();
@@ -295,7 +332,7 @@ export class MznSelect implements ControlValueAccessor {
     if (ids.length === 0) return '';
 
     return ids
-      .map((id) => opts.find((o) => o.id === id)?.name ?? id)
+      .map((id) => this.findOptionById(id, opts)?.name ?? id)
       .join(', ');
   });
 
@@ -306,8 +343,49 @@ export class MznSelect implements ControlValueAccessor {
 
       return ids.map((id) => ({
         id,
-        name: opts.find((o) => o.id === id)?.name ?? id,
+        name: this.findOptionById(id, opts)?.name ?? id,
       }));
+    },
+  );
+
+  /** Flatten tree into visible items respecting expansion state. */
+  protected readonly visibleOptions = computed(
+    (): ReadonlyArray<FlatOption> => {
+      const opts = this.options();
+      const expanded = this.expandedNodes();
+      const isTree = this.resolvedType() === 'tree';
+
+      if (!isTree) {
+        return opts.map((option) => ({
+          option,
+          level: 0 as DropdownItemLevel,
+          hasChildren: false,
+          isExpanded: false,
+        }));
+      }
+
+      const result: FlatOption[] = [];
+
+      const collect = (
+        items: ReadonlyArray<DropdownOption>,
+        depth: number,
+      ): void => {
+        for (const option of items) {
+          const hasChildren = (option.children?.length ?? 0) > 0;
+          const level = Math.min(depth, 2) as DropdownItemLevel;
+          const isExpanded = hasChildren && expanded.has(option.id);
+
+          result.push({ option, level, hasChildren, isExpanded });
+
+          if (isExpanded && option.children) {
+            collect(option.children, depth + 1);
+          }
+        }
+      };
+
+      collect(opts, 0);
+
+      return result;
     },
   );
 
@@ -322,7 +400,6 @@ export class MznSelect implements ControlValueAccessor {
     ),
   );
 
-  protected readonly dropdownRootClass = dropdownClasses.root;
   protected readonly listClass = dropdownClasses.list;
   protected readonly listWrapperClass = dropdownClasses.listWrapper;
   protected readonly cardBodyClass = dropdownClasses.cardBody;
@@ -357,14 +434,142 @@ export class MznSelect implements ControlValueAccessor {
     });
   }
 
-  protected isSelected(option: DropdownOption): boolean {
-    return this.selectedIds().has(option.id);
+  // ── Tree helpers ──────────────────────────────────────────────
+
+  private findOptionById(
+    id: string,
+    opts: ReadonlyArray<DropdownOption>,
+  ): DropdownOption | null {
+    for (const opt of opts) {
+      if (String(opt.id) === id) return opt;
+      if (opt.children) {
+        const found = this.findOptionById(id, opt.children);
+        if (found) return found;
+      }
+    }
+    return null;
   }
 
-  protected optionClasses(option: DropdownOption): string {
-    return clsx(dropdownClasses.card, {
-      [dropdownClasses.cardActive]: this.isSelected(option),
+  private getLeafDescendantIds(option: DropdownOption): ReadonlyArray<string> {
+    const ids: string[] = [];
+
+    const collect = (opt: DropdownOption): void => {
+      if (!opt.children || opt.children.length === 0) {
+        ids.push(String(opt.id));
+      } else {
+        opt.children.forEach(collect);
+      }
+    };
+
+    collect(option);
+
+    return ids;
+  }
+
+  protected isOptionChecked(option: DropdownOption): boolean {
+    if (this.resolvedType() !== 'tree') {
+      return this.selectedIds().has(option.id);
+    }
+
+    const leafIds = this.getLeafDescendantIds(option);
+    const selected = this.selectedIds();
+
+    return leafIds.length > 0 && leafIds.every((id) => selected.has(id));
+  }
+
+  protected isOptionIndeterminate(option: DropdownOption): boolean {
+    if (this.resolvedType() !== 'tree') return false;
+    if (!option.children?.length) return false;
+
+    const leafIds = this.getLeafDescendantIds(option);
+    const selected = this.selectedIds();
+    const count = leafIds.filter((id) => selected.has(id)).length;
+
+    return count > 0 && count < leafIds.length;
+  }
+
+  protected getCaretIcon(item: FlatOption): IconDefinition | undefined {
+    if (!item.hasChildren || item.level === 2) return undefined;
+
+    return item.isExpanded ? CaretDownIcon : CaretRightIcon;
+  }
+
+  private toggleExpand(optionId: string): void {
+    this.expandedNodes.update((prev) => {
+      const next = new Set(prev);
+
+      if (next.has(optionId)) {
+        next.delete(optionId);
+      } else {
+        next.add(optionId);
+      }
+
+      return next;
     });
+  }
+
+  // ── Selection handlers ────────────────────────────────────────
+
+  protected onVisibleOptionClick(item: FlatOption): void {
+    if (this.resolvedType() === 'tree') {
+      if (item.hasChildren) {
+        this.toggleExpand(item.option.id);
+
+        return;
+      }
+
+      this.onTreeLeafSelect(item.option);
+    } else {
+      this.onFlatOptionClick(item.option);
+    }
+  }
+
+  /** Checkbox click handler (prefix mode). stopPropagation prevents (clicked) from firing. */
+  protected onVisibleOptionCheckedChange(item: FlatOption): void {
+    this.onTreeLeafSelect(item.option);
+  }
+
+  private onFlatOptionClick(option: DropdownOption): void {
+    const m = this.mode();
+
+    if (m === 'single') {
+      this.internalValue.set([option.id]);
+      this.onChange(option.id);
+      this.isOpen.set(false);
+    } else {
+      const current = this.internalValue();
+      const next = current.includes(option.id)
+        ? current.filter((id) => id !== option.id)
+        : [...current, option.id];
+
+      this.internalValue.set(next);
+      this.onChange(next);
+    }
+
+    this.selectionChange.emit(option);
+  }
+
+  private onTreeLeafSelect(option: DropdownOption): void {
+    const opts = this.options();
+    const leafIds = this.getLeafDescendantIds(option);
+    const current = this.internalValue();
+    const selectedLeafIds = leafIds.filter((id) => current.includes(id));
+    const allSelected = selectedLeafIds.length === leafIds.length;
+
+    let next: ReadonlyArray<string>;
+
+    if (allSelected) {
+      const leafIdSet = new Set(leafIds);
+      next = current.filter((id) => !leafIdSet.has(id));
+    } else {
+      const existingIdSet = new Set(current);
+      const toAdd = leafIds.filter((id) => !existingIdSet.has(id));
+      next = [...current, ...toAdd];
+    }
+
+    this.internalValue.set(next);
+    this.onChange(next);
+    this.selectionChange.emit(this.findOptionById(option.id, opts) ?? option);
   }
 
   protected toggleOpen(): void {
@@ -390,46 +595,24 @@ export class MznSelect implements ControlValueAccessor {
     } as DropdownOption);
   }
 
-  protected onOptionClick(option: DropdownOption): void {
-    const m = this.mode();
-
-    if (m === 'single') {
-      this.internalValue.set([option.id]);
-      this.onChange(option.id);
-      this.isOpen.set(false);
-    } else {
-      const current = this.internalValue();
-      const next = current.includes(option.id)
-        ? current.filter((id) => id !== option.id)
-        : [...current, option.id];
-
-      this.internalValue.set(next);
-      this.onChange(next);
-    }
-
-    this.selectionChange.emit(option);
-  }
-
   protected onListScroll(event: Event): void {
     const target = event.target as HTMLDivElement;
-    const { scrollTop } = target;
-    const maxScrollTop = target.scrollHeight - target.clientHeight;
+    const { scrollTop, scrollHeight, clientHeight } = target;
+    const maxScrollTop = scrollHeight - clientHeight;
 
-    // Update maxScrollTop only when scrolled to bottom
-    if (scrollTop >= maxScrollTop) {
-      this.maxScrollTop = maxScrollTop;
+    this.onScroll.emit({ scrollTop, maxScrollTop });
+
+    // Check if scrolled to bottom (with 1px threshold for sub-pixel rounding errors)
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+    if (isAtBottom && !this.wasAtBottom) {
+      this.onReachBottom.emit();
     }
 
-    // Emit scroll event
-    this.onScroll.emit({ scrollTop, maxScrollTop: this.maxScrollTop });
-
-    // Handle onReachBottom and onLeaveBottom
-    if (scrollTop >= maxScrollTop && this.lastScrollTop < maxScrollTop) {
-      this.onReachBottom.emit();
-    } else if (scrollTop < maxScrollTop && this.lastScrollTop >= maxScrollTop) {
+    if (!isAtBottom && this.wasAtBottom) {
       this.onLeaveBottom.emit();
     }
 
-    this.lastScrollTop = scrollTop;
+    this.wasAtBottom = isAtBottom;
   }
 }
