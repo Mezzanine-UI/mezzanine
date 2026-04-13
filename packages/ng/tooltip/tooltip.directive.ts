@@ -1,6 +1,7 @@
 import {
   Directive,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   input,
@@ -24,10 +25,10 @@ const ARROW_WIDTH = 12;
 const ARROW_HEIGHT = 6;
 
 const SIDE_TO_ROTATION: Record<string, number> = {
-  top: 180,
-  right: -90,
-  bottom: 0,
-  left: 90,
+  top: 0,
+  right: 90,
+  bottom: 180,
+  left: -90,
 };
 
 /**
@@ -110,6 +111,15 @@ export class MznTooltip implements OnInit {
       this.hideTooltip();
       this.removeTooltipElement();
     });
+
+    // Reactively update tooltip text when mznTooltip input changes (e.g. during drag)
+    effect(() => {
+      const title = this.mznTooltip();
+
+      if (this.tooltipEl && this.tooltipEl.style.display !== 'none') {
+        this.updateTooltipText(title ?? '');
+      }
+    });
   }
 
   protected onMouseEnter(): void {
@@ -131,6 +141,16 @@ export class MznTooltip implements OnInit {
       this.isHovered.set(false);
       this.hideTooltip();
     }, this.tooltipMouseLeaveDelay());
+  }
+
+  private updateTooltipText(text: string): void {
+    if (!this.tooltipEl) return;
+
+    this.tooltipEl.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        node.textContent = text;
+      }
+    });
   }
 
   private showTooltip(): void {
@@ -206,6 +226,7 @@ export class MznTooltip implements OnInit {
       this.arrowEl = this.renderer.createElement('div') as HTMLDivElement;
       this.arrowEl.className = classes.arrow;
       this.arrowEl.style.position = 'absolute';
+      this.arrowEl.style.lineHeight = '0';
 
       const svg = document.createElementNS(SVG_NS, 'svg');
 
@@ -255,6 +276,13 @@ export class MznTooltip implements OnInit {
     }
 
     this.cleanupAutoUpdate = autoUpdate(reference, floating, () => {
+      // Sync tooltip text on every frame (handles out-of-zone signal updates during drag)
+      const currentTitle = this.mznTooltip();
+
+      if (currentTitle) {
+        this.updateTooltipText(currentTitle);
+      }
+
       void computePosition(reference, floating, {
         placement: placementVal,
         middleware: middlewares,
@@ -269,9 +297,26 @@ export class MznTooltip implements OnInit {
           const side = placement.split('-')[0];
           const rotation = SIDE_TO_ROTATION[side] ?? 0;
 
+          // Reset all sides, then set the correct ones
+          Object.assign(arrowElement.style, {
+            left: '',
+            right: '',
+            top: '',
+            bottom: '',
+          });
+
+          // Position arrow at the opposite edge of the tooltip
+          const staticSide: Record<string, string> = {
+            top: 'bottom',
+            right: 'left',
+            bottom: 'top',
+            left: 'right',
+          };
+
           Object.assign(arrowElement.style, {
             left: arrowX != null ? `${arrowX}px` : '',
             top: arrowY != null ? `${arrowY}px` : '',
+            [staticSide[side]]: `-${ARROW_HEIGHT}px`,
             transform: `rotate(${rotation}deg)`,
           });
         }
