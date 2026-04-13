@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznSelect } from './select.component';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 
@@ -8,7 +9,7 @@ export default {
   title: 'Data Entry/Select',
   decorators: [
     moduleMetadata({
-      imports: [FormsModule, MznSelect],
+      imports: [FormsModule, MznSelect, MznTypography],
     }),
   ],
   argTypes: {
@@ -152,7 +153,7 @@ export const Size: Story = {
     template: `
       <div style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;">
         <div>
-          <p style="margin-bottom: 8px;">size = main (default)</p>
+          <p mznTypography variant="body" style="margin-bottom: 8px;">size = main (default)</p>
           <div mznSelect
             [fullWidth]="true"
             [options]="options"
@@ -161,7 +162,7 @@ export const Size: Story = {
           ></div>
         </div>
         <div>
-          <p style="margin-bottom: 8px;">size = sub</p>
+          <p mznTypography variant="body" style="margin-bottom: 8px;">size = sub</p>
           <div mznSelect
             [fullWidth]="true"
             [options]="options"
@@ -211,7 +212,7 @@ export const WithReadOnly: Story = {
     template: `
       <div style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;">
         <div>
-          <p style="margin-bottom: 8px;">readOnly = false (default)</p>
+          <p mznTypography variant="body" style="margin-bottom: 8px;">readOnly = false (default)</p>
           <div mznSelect
             [clearable]="true"
             [fullWidth]="true"
@@ -220,7 +221,7 @@ export const WithReadOnly: Story = {
           ></div>
         </div>
         <div>
-          <p style="margin-bottom: 8px;">readOnly = true</p>
+          <p mznTypography variant="body" style="margin-bottom: 8px;">readOnly = true</p>
           <div mznSelect
             [clearable]="true"
             [fullWidth]="true"

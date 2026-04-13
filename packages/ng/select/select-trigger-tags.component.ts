@@ -138,6 +138,12 @@ export interface SelectTriggerTagValue {
                 [label]="item.name"
               ></span>
             }
+            <span
+              mznTag
+              type="overflow-counter"
+              [count]="99"
+              [size]="size()"
+            ></span>
           </div>
         </div>
       </div>
@@ -244,11 +250,14 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
     this.resizeObserver.observe(this.hostEl.nativeElement);
   }
 
+  /**
+   * Measures how many tags fit using the hidden fake DOM container.
+   * Mirrors React's useSelectTriggerTags algorithm.
+   */
   private recalculateOverflow(): void {
     const containerEl = this.tagsContainerRef()?.nativeElement;
     if (!containerEl) return;
 
-    // The fake tags div is the last child of tagsContainer (aria-hidden)
     const fakeTagsWrapper = containerEl.querySelector<HTMLElement>(
       '[aria-hidden="true"]',
     );
@@ -258,40 +267,57 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
       fakeTagsWrapper.querySelector<HTMLElement>('.mzn-tag-group');
     if (!tagGroupEl) return;
 
-    const tagEls = Array.from(tagGroupEl.children) as HTMLElement[];
-    if (tagEls.length === 0) return;
+    const children = Array.from(tagGroupEl.children) as HTMLElement[];
+    // Last child is the overflow counter tag
+    const fakeTags = children.filter(
+      (el) => !el.classList.contains('mzn-tag--overflow-counter'),
+    );
+    const fakeEllipsis = children.find((el) =>
+      el.classList.contains('mzn-tag--overflow-counter'),
+    );
 
-    const containerWidth = containerEl.getBoundingClientRect().width;
-    // Reserve space for the overflow counter tag (~52px for '+N' tag + gap)
-    const counterTagWidth = 52;
-    const gap = 4;
+    if (fakeTags.length === 0) return;
 
-    let usedWidth = 0;
-    let visibleCount = 0;
+    const cs = getComputedStyle(containerEl);
+    const paddingLeft = parseFloat(cs.paddingLeft) || 0;
+    const paddingRight = parseFloat(cs.paddingRight) || 0;
+    const maxWidth = containerEl.clientWidth - paddingLeft - paddingRight;
 
-    for (const tagEl of tagEls) {
-      const tagWidth = tagEl.getBoundingClientRect().width + gap;
+    const ellipsisWidth = fakeEllipsis ? this.getFullWidth(fakeEllipsis) : 0;
 
-      // If this isn't the last tag, we need to reserve space for the counter
-      const remainingTags = tagEls.length - visibleCount - 1;
-      const neededWidth =
-        remainingTags > 0
-          ? usedWidth + tagWidth + counterTagWidth + gap
-          : usedWidth + tagWidth;
+    let nextCount = fakeTags.length;
+    let consumedWidth = 0;
 
-      if (neededWidth <= containerWidth) {
-        usedWidth += tagWidth;
-        visibleCount++;
-      } else {
+    for (let i = 0; i < fakeTags.length; i++) {
+      const tagWidth = this.getFullWidth(fakeTags[i]);
+      const hasOverflow = fakeTags.length - (i + 1) > 0;
+      const reservedWidth = hasOverflow ? ellipsisWidth : 0;
+
+      if (consumedWidth + tagWidth + reservedWidth > maxWidth) {
+        nextCount = i;
         break;
       }
+
+      consumedWidth += tagWidth;
+      nextCount = i + 1;
     }
 
-    const newCount = visibleCount > 0 ? visibleCount : 1;
+    const newCount = nextCount > 0 ? nextCount : 1;
     if (newCount !== this.visibleCount()) {
       this.visibleCount.set(newCount);
       this.cdr.markForCheck();
     }
+  }
+
+  private getFullWidth(element: HTMLElement): number {
+    const rect = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+    const marginLeft =
+      parseFloat(style.marginInlineStart || style.marginLeft || '0') || 0;
+    const marginRight =
+      parseFloat(style.marginInlineEnd || style.marginRight || '0') || 0;
+
+    return rect.width + marginLeft + marginRight;
   }
 
   protected onTagClose(event: MouseEvent, item: SelectTriggerTagValue): void {
