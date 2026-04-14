@@ -179,90 +179,105 @@ export const Type: Story = {
 };
 
 export const Status: Story = {
-  render: () => ({
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 32px; width: 400px;">
-        <div>
-          <h3>Status: loading</h3>
-          <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="document.pdf" status="loading" size="main" ></div></li>
-                <li><div mznUploadItem fileName="document.pdf" status="loading" size="sub" ></div></li>
-              </ul>
+  render: () => {
+    const imageFile = createMockFile('example.jpg', 'image/jpeg', 15360);
+    const pdfFile = createMockFile('document.pdf', 'application/pdf', 2048);
+
+    return {
+      props: {
+        imageFile,
+        pdfFile,
+        onDelete: (event: MouseEvent): void => {
+          console.log('onDelete', event);
+        },
+        onReload: (event: MouseEvent): void => {
+          console.log('onReload', event);
+        },
+      },
+      template: `
+        <div style="display: flex; flex-direction: column; gap: 32px; width: 400px;">
+          <div>
+            <h3>Status: loading</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="pdfFile" status="loading" type="icon" size="main" (delete)="onDelete($event)"></div></li>
+                  <li><div mznUploadItem [file]="pdfFile" status="loading" type="icon" size="sub" (delete)="onDelete($event)"></div></li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="imageFile" status="loading" type="thumbnail" size="main" (delete)="onDelete($event)"></div></li>
+                  <li><div mznUploadItem [file]="imageFile" status="loading" type="thumbnail" size="sub" (delete)="onDelete($event)"></div></li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="pdfFile" status="loading" type="thumbnail" size="main" (delete)="onDelete($event)"></div></li>
+                  <li><div mznUploadItem [file]="pdfFile" status="loading" type="thumbnail" size="sub" (delete)="onDelete($event)"></div></li>
+                </ul>
+              </div>
             </div>
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="example.jpg" status="loading" size="main" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
-                <li><div mznUploadItem fileName="example.jpg" status="loading" size="sub" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
-              </ul>
+          </div>
+          <div>
+            <h3>Status: done</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="pdfFile" status="done" type="icon" size="main" (delete)="onDelete($event)"></div></li>
+                  <li><div mznUploadItem [file]="pdfFile" status="done" type="icon" size="sub" (delete)="onDelete($event)"></div></li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="imageFile" status="done" type="thumbnail" size="main" (delete)="onDelete($event)"></div></li>
+                  <li><div mznUploadItem [file]="imageFile" status="done" type="thumbnail" size="sub" (delete)="onDelete($event)"></div></li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="pdfFile" status="done" type="thumbnail" size="main" (delete)="onDelete($event)"></div></li>
+                  <li><div mznUploadItem [file]="pdfFile" status="done" type="thumbnail" size="sub" (delete)="onDelete($event)"></div></li>
+                </ul>
+              </div>
             </div>
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="document.pdf" status="loading" size="main" ></div></li>
-                <li><div mznUploadItem fileName="document.pdf" status="loading" size="sub" ></div></li>
-              </ul>
+          </div>
+          <div>
+            <h3>Status: error</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="pdfFile" status="error" type="icon" size="main" errorMessage="上傳失敗，請重試" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+                  <li><div mznUploadItem [file]="pdfFile" status="error" type="icon" size="sub" errorMessage="上傳失敗，請重試" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="imageFile" status="error" type="thumbnail" size="main" errorMessage="上傳失敗，請重試" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+                  <li><div mznUploadItem [file]="imageFile" status="error" type="thumbnail" size="sub" errorMessage="上傳失敗，請重試" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
+                <ul style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><div mznUploadItem [file]="pdfFile" status="error" type="thumbnail" size="main" errorMessage="上傳失敗，請重試" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+                  <li><div mznUploadItem [file]="pdfFile" status="error" type="thumbnail" size="sub" errorMessage="上傳失敗，請重試" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-        <div>
-          <h3>Status: done</h3>
-          <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="document.pdf" status="done" size="main" ></div></li>
-                <li><div mznUploadItem fileName="document.pdf" status="done" size="sub" ></div></li>
-              </ul>
-            </div>
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="example.jpg" status="done" size="main" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
-                <li><div mznUploadItem fileName="example.jpg" status="done" size="sub" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
-              </ul>
-            </div>
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="document.pdf" status="done" size="main" ></div></li>
-                <li><div mznUploadItem fileName="document.pdf" status="done" size="sub" ></div></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3>Status: error</h3>
-          <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: icon (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="document.pdf" status="error" size="main" errorMessage="上傳失敗，請重試" ></div></li>
-                <li><div mznUploadItem fileName="document.pdf" status="error" size="sub" errorMessage="上傳失敗，請重試" ></div></li>
-              </ul>
-            </div>
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: image thumbnail (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="example.jpg" status="error" size="main" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" ></div></li>
-                <li><div mznUploadItem fileName="example.jpg" status="error" size="sub" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" ></div></li>
-              </ul>
-            </div>
-            <div>
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: normal;">Type: file thumbnail (main, sub)</h4>
-              <ul style="display: flex; flex-direction: column; gap: 8px;">
-                <li><div mznUploadItem fileName="document.pdf" status="error" size="main" errorMessage="上傳失敗，請重試" ></div></li>
-                <li><div mznUploadItem fileName="document.pdf" status="error" size="sub" errorMessage="上傳失敗，請重試" ></div></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
+      `,
+    };
+  },
 };
 
 export const Size: Story = {
