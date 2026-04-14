@@ -1,17 +1,20 @@
 import {
+  AfterViewChecked,
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   input,
   output,
+  signal,
+  viewChild,
 } from '@angular/core';
 import {
   uploadItemClasses as classes,
   UploadItemSize,
   UploadItemStatus,
+  UploadItemType,
 } from '@mezzanine-ui/core/upload';
-import clsx from 'clsx';
-import { MznIcon } from '@mezzanine-ui/ng/icon';
 import {
   CloseIcon,
   DangerousFilledIcon,
@@ -22,28 +25,30 @@ import {
   SpinnerIcon,
   TrashIcon,
 } from '@mezzanine-ui/icons';
+import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznSpin } from '@mezzanine-ui/ng/spin';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
+import clsx from 'clsx';
+import { extractFileNameFromUrl, isImageFile } from './upload-utils';
+import { MznUploadPictureCard } from './upload-picture-card.component';
 
 /**
- * 單一上傳檔案的顯示元件，呈現檔案名稱、狀態圖示與操作按鈕。
+ * 單一上傳檔案的列表項目元件。
  *
- * 根據 `status` 顯示不同狀態（完成、錯誤、載入中），
- * 支援縮圖預覽、錯誤訊息與移除操作。
+ * 根據 `status` 渲染三種狀態：`loading`（旋轉圖 + 取消）、`done`（下載）、`error`（重試）。
+ * 檔案結束（`done` / `error`）時額外顯示刪除按鈕。`type` 為 `'thumbnail'` 時以縮圖呈現，
+ * 圖片檔案會內嵌 `MznUploadPictureCard` 作為縮圖。
  *
  * @example
  * ```html
  * import { MznUploadItem } from '@mezzanine-ui/ng/upload';
  *
  * <div mznUploadItem
- *   fileName="report.pdf"
+ *   [file]="file"
  *   status="done"
- *   (remove)="onRemove()"
- * ></div>
- *
- * <div mznUploadItem
- *   fileName="broken.csv"
- *   status="error"
- *   errorMessage="檔案格式錯誤"
- *   (remove)="onRemove()"
+ *   (delete)="onDelete($event)"
+ *   (download)="onDownload($event)"
  * ></div>
  * ```
  *
@@ -51,77 +56,95 @@ import {
  */
 @Component({
   selector: '[mznUploadItem]',
+  exportAs: 'mznUploadItem',
   standalone: true,
-  imports: [MznIcon],
+  imports: [
+    MznIcon,
+    MznTypography,
+    MznSpin,
+    MznClearActions,
+    MznUploadPictureCard,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
-    '[attr.disabled]': 'null',
-    '[attr.errorIcon]': 'null',
-    '[attr.errorMessage]': 'null',
-    '[attr.fileName]': 'null',
-    '[attr.icon]': 'null',
-    '[attr.progress]': 'null',
-    '[attr.showFileSize]': 'null',
-    '[attr.size]': 'null',
-    '[attr.status]': 'null',
-    '[attr.thumbnailUrl]': 'null',
-    '[attr.url]': 'null',
   },
   template: `
-    <div [class]="containerClass">
-      @if (thumbnailUrl() || url()) {
-        <img [class]="thumbnailClass" [src]="thumbnailUrl() ?? url()" alt="" />
-      } @else {
-        <i mznIcon [class]="iconClass" [icon]="resolvedIcon()"></i>
-      }
-
+    <div
+      [class]="containerClass"
+      role="group"
+      [attr.aria-disabled]="disabled()"
+      [attr.tabindex]="disabled() ? -1 : 0"
+    >
       <div [class]="contentWrapperClass">
-        <div [class]="contentClass">
-          <span [class]="nameClass">{{ resolvedFileName() }}</span>
-        </div>
-
-        @if (status() === 'error' && errorMessage()) {
-          <div [class]="errorMessageClass">
+        <div [class]="iconWrapperClass">
+          @if (type() === 'thumbnail') {
+            @if (resolvedIsImage()) {
+              <div
+                mznUploadPictureCard
+                size="minor"
+                [file]="file()"
+                [url]="url()"
+                [class]="thumbnailClass"
+              ></div>
+            } @else {
+              <div [class]="thumbnailClass">
+                <i
+                  mznIcon
+                  [icon]="fileIcon"
+                  [class]="iconClass"
+                  [size]="16"
+                ></i>
+              </div>
+            }
+          } @else {
             <i
               mznIcon
-              [class]="errorIconClass"
-              [icon]="resolvedErrorIcon()"
+              [icon]="resolvedIcon()"
+              [class]="iconClass"
+              [size]="16"
             ></i>
-            <span [class]="errorMessageTextClass">{{ errorMessage() }}</span>
-          </div>
-        }
+          }
+        </div>
+        <div [class]="contentClass">
+          <p #nameEl mznTypography [class]="nameClass" [ellipsis]="true">{{
+            resolvedFileName()
+          }}</p>
+          @if (shouldShowFileSize()) {
+            <p mznTypography [class]="fontSizeClass">{{
+              formattedFileSize()
+            }}</p>
+          }
+        </div>
       </div>
-
       <div [class]="actionsClass">
         @if (status() === 'loading') {
           <div [class]="loadingIconClass">
-            <i mznIcon [icon]="spinnerIconDef" [spin]="true"></i>
+            <div mznSpin [loading]="true" size="minor"></div>
           </div>
           <button
-            type="button"
+            mznClearActions
+            type="standard"
             [class]="closeIconClass"
-            (click)="cancel.emit()"
-          >
-            <i mznIcon [icon]="closeIconDef"></i>
-          </button>
+            (clicked)="onCancel($event)"
+          ></button>
         }
         @if (status() === 'done' && !disabled()) {
           <i
             mznIcon
-            [class]="downloadIconClass"
             [icon]="downloadIconDef"
+            [class]="downloadIconClass"
             [size]="16"
-            (click)="download.emit()"
+            (click)="onDownload($event)"
           ></i>
         }
         @if (status() === 'error' && !disabled()) {
           <i
             mznIcon
-            [class]="resetIconClass"
             [icon]="resetIconDef"
+            [class]="resetIconClass"
             [size]="16"
-            (click)="reload.emit()"
+            (click)="onReload($event)"
           ></i>
         }
       </div>
@@ -130,140 +153,114 @@ import {
       <div [class]="deleteContentClass">
         <i
           mznIcon
-          [class]="deleteIconClass"
           [icon]="trashIconDef"
+          [class]="deleteIconClass"
           [size]="16"
           color="neutral-solid"
-          (click)="remove.emit()"
+          (click)="onDelete($event)"
         ></i>
+      </div>
+    }
+    @if (status() === 'error' && errorMessage()) {
+      <div [class]="errorMessageClass">
+        <i
+          mznIcon
+          [icon]="resolvedErrorIcon()"
+          [class]="errorIconClass"
+          [size]="14"
+          color="error"
+        ></i>
+        <p
+          mznTypography
+          color="text-error"
+          variant="caption"
+          [class]="errorMessageTextClass"
+          >{{ errorMessage() }}</p
+        >
       </div>
     }
   `,
 })
-export class MznUploadItem {
-  /**
-   * 是否禁用操作按鈕。
-   * @default false
-   */
-  readonly disabled = input(false);
+export class MznUploadItem implements AfterViewChecked {
+  /** 要顯示的 File 物件（優先於 url 用於檔名與大小）。 */
+  readonly file = input<File>();
+
+  /** 檔案 URL。當 file 未提供時用於顯示與判斷圖片類型。 */
+  readonly url = input<string>();
+
+  /** 檔案識別碼。 */
+  readonly id = input<string>();
 
   /**
-   * 上傳錯誤時顯示的自訂錯誤圖示（IconDefinition）。
-   * 未提供時使用預設的 DangerousFilledIcon。
+   * 預覽形式：
+   * - `'icon'` 顯示檔案圖示
+   * - `'thumbnail'` 顯示縮圖（圖片檔案內嵌 MznUploadPictureCard）
+   *
+   * @default 'icon'
    */
-  readonly errorIcon = input<IconDefinition>();
+  readonly type = input<UploadItemType>('icon');
+
+  /** 上傳項目的尺寸。@default 'main' */
+  readonly size = input<UploadItemSize>('main');
+
+  /** 上傳項目的狀態。@default 'loading' */
+  readonly status = input<UploadItemStatus>('loading');
+
+  /** 明確指定的檔案大小（bytes），優先於 file.size。 */
+  readonly fileSize = input<number>();
+
+  /** 是否顯示檔案大小（done/error 狀態且有大小資料時）。@default true */
+  readonly showFileSize = input(true);
+
+  /** 是否禁用操作按鈕。@default false */
+  readonly disabled = input(false);
 
   /** 錯誤訊息，僅在 status 為 'error' 時顯示。 */
   readonly errorMessage = input<string>();
 
-  /**
-   * 檔案名稱。若未提供，將嘗試從 `url` 或 `thumbnailUrl` 的路徑中提取。
-   */
-  readonly fileName = input<string>();
+  /** 自訂錯誤圖示。未提供時使用 DangerousFilledIcon。 */
+  readonly errorIcon = input<IconDefinition>();
 
-  /**
-   * 自訂檔案類型圖示（IconDefinition）。
-   * 未提供時使用預設的 FileIcon。
-   */
+  /** 自訂檔案類型圖示。未提供時使用 FileIcon。 */
   readonly icon = input<IconDefinition>();
 
-  /** 上傳進度（0-100），僅在 status 為 'loading' 時有意義。 */
-  readonly progress = input<number>();
+  /** 覆寫自動解析的檔名。 */
+  readonly fileName = input<string>();
 
-  /**
-   * 是否顯示檔案大小。
-   * @default true
-   */
-  readonly showFileSize = input(true);
-
-  /**
-   * 上傳項目尺寸。
-   * @default 'main'
-   */
-  readonly size = input<UploadItemSize>('main');
-
-  /**
-   * 上傳項目狀態。
-   * @default 'done'
-   */
-  readonly status = input<UploadItemStatus>('done');
-
-  /** 縮圖 URL，用於圖片預覽。 */
+  /** 保留兼容舊版的 thumbnail URL（等同 url）。 */
   readonly thumbnailUrl = input<string>();
 
-  /**
-   * 已上傳檔案的存取或下載 URL。
-   * 當 `thumbnailUrl` 未提供時，此 URL 將用於顯示圖片預覽。
-   */
-  readonly url = input<string>();
+  /** 使用者點擊取消（loading 狀態）。 */
+  readonly cancel = output<MouseEvent>();
 
-  /** 使用者點擊取消按鈕時觸發（loading 狀態）。 */
-  readonly cancel = output<void>();
+  /** 使用者點擊下載（done 狀態）。 */
+  readonly download = output<MouseEvent>();
 
-  /** 使用者點擊下載按鈕時觸發（done 狀態）。 */
-  readonly download = output<void>();
+  /** 使用者點擊重新上傳（error 狀態）。 */
+  readonly reload = output<MouseEvent>();
 
-  /** 使用者點擊重新上傳按鈕時觸發（error 狀態）。 */
-  readonly reload = output<void>();
+  /** 使用者點擊刪除（finished 狀態）。 */
+  readonly delete = output<MouseEvent>();
 
-  /** 使用者點擊移除按鈕時觸發。 */
-  readonly remove = output<void>();
+  /** 保留兼容舊版 API 的 remove 輸出（同 delete）。 */
+  readonly remove = output<MouseEvent>();
 
+  // Icon defs (constants)
+  protected readonly fileIcon = FileIcon;
   protected readonly closeIconDef = CloseIcon;
   protected readonly downloadIconDef = DownloadIcon;
   protected readonly resetIconDef = ResetIcon;
   protected readonly spinnerIconDef = SpinnerIcon;
   protected readonly trashIconDef = TrashIcon;
 
-  protected readonly resolvedIcon = computed(
-    (): IconDefinition => this.icon() ?? FileIcon,
-  );
-
-  protected readonly resolvedErrorIcon = computed(
-    (): IconDefinition => this.errorIcon() ?? DangerousFilledIcon,
-  );
-
-  /**
-   * 解析後的檔案名稱。
-   * - 若 `fileName` 已提供，直接使用。
-   * - 否則嘗試從 `url` 或 `thumbnailUrl` 的路徑末段提取。
-   * - 無法解析時回傳空字串。
-   */
-  protected readonly resolvedFileName = computed((): string => {
-    const name = this.fileName();
-
-    if (name) return name;
-
-    const rawUrl = this.url() ?? this.thumbnailUrl();
-
-    if (!rawUrl) return '';
-
-    try {
-      const parsed = new URL(rawUrl);
-      return parsed.pathname.split('/').pop() ?? '';
-    } catch {
-      const withoutQuery = rawUrl.split('?')[0].split('#')[0];
-      return withoutQuery.split('/').pop() ?? '';
-    }
-  });
-
-  protected readonly hostClasses = computed((): string =>
-    clsx(classes.host, classes.size(this.size()), {
-      [classes.error]: this.status() === 'error',
-      [classes.disabled]: this.disabled(),
-    }),
-  );
-
-  protected readonly isFinished = computed((): boolean =>
-    /done|error/.test(this.status()),
-  );
-
+  // Class constants
   protected readonly containerClass = classes.container;
   protected readonly iconClass = classes.icon;
   protected readonly thumbnailClass = classes.thumbnail;
   protected readonly contentWrapperClass = classes.contentWrapper;
   protected readonly contentClass = classes.content;
   protected readonly nameClass = classes.name;
+  protected readonly fontSizeClass = classes.fontSize;
   protected readonly actionsClass = classes.actions;
   protected readonly closeIconClass = classes.closeIcon;
   protected readonly deleteContentClass = classes.deleteContent;
@@ -274,4 +271,121 @@ export class MznUploadItem {
   protected readonly errorMessageTextClass = classes.errorMessageText;
   protected readonly loadingIconClass = classes.loadingIcon;
   protected readonly resetIconClass = classes.resetIcon;
+  protected readonly iconWrapperClass = classes.icon;
+
+  private readonly _nameEl =
+    viewChild<ElementRef<HTMLParagraphElement>>('nameEl');
+
+  private readonly _isTruncated = signal(false);
+
+  protected readonly resolvedIsImage = computed((): boolean =>
+    isImageFile(this.file(), this.url() ?? this.thumbnailUrl()),
+  );
+
+  protected readonly resolvedIcon = computed(
+    (): IconDefinition => this.icon() ?? FileIcon,
+  );
+
+  protected readonly resolvedErrorIcon = computed(
+    (): IconDefinition => this.errorIcon() ?? DangerousFilledIcon,
+  );
+
+  protected readonly resolvedFileName = computed((): string => {
+    const explicit = this.fileName();
+
+    if (explicit) return explicit;
+
+    const file = this.file();
+    const url = this.url() ?? this.thumbnailUrl();
+
+    if (file?.name && !url) return file.name;
+    if (url) return extractFileNameFromUrl(url);
+
+    return '';
+  });
+
+  protected readonly isFinished = computed((): boolean =>
+    /done|error/.test(this.status()),
+  );
+
+  protected readonly formattedFileSize = computed((): string => {
+    const file = this.file();
+    const explicit = this.fileSize();
+    const bytes = file?.size ?? explicit;
+
+    if (bytes == null) return '';
+    if (bytes === 0) return '0 B';
+
+    const k = 1024;
+    const units = ['B', 'KB', 'MB'];
+    let size = bytes;
+    let i = 0;
+
+    while (size >= k && i < units.length - 1) {
+      size /= k;
+      i += 1;
+    }
+
+    return `${Math.round(size * 10) / 10} ${units[i]}`;
+  });
+
+  protected readonly shouldShowFileSize = computed((): boolean => {
+    if (!this.showFileSize()) return false;
+    if (!this.isFinished()) return false;
+
+    return this.formattedFileSize().length > 0;
+  });
+
+  protected readonly shouldSingleLineCenter = computed((): boolean =>
+    Boolean(
+      this.type() === 'thumbnail' &&
+        this.resolvedFileName() &&
+        !this.shouldShowFileSize(),
+    ),
+  );
+
+  protected readonly hostClasses = computed((): string =>
+    clsx(classes.host, classes.size(this.size()), {
+      [classes.alignCenter]: this.status() !== 'done',
+      [classes.error]: this.status() === 'error',
+      [classes.disabled]: this.disabled(),
+      [classes.singleLineContent]: this.shouldSingleLineCenter(),
+    }),
+  );
+
+  ngAfterViewChecked(): void {
+    const el = this._nameEl()?.nativeElement;
+
+    if (!el) {
+      if (this._isTruncated()) this._isTruncated.set(false);
+      return;
+    }
+
+    const isTruncated = el.scrollWidth > el.clientWidth;
+
+    if (isTruncated !== this._isTruncated()) {
+      this._isTruncated.set(isTruncated);
+    }
+  }
+
+  protected onCancel(event: MouseEvent): void {
+    event.stopPropagation();
+    this.cancel.emit(event);
+  }
+
+  protected onDownload(event: MouseEvent): void {
+    event.stopPropagation();
+    this.download.emit(event);
+  }
+
+  protected onReload(event: MouseEvent): void {
+    event.stopPropagation();
+    this.reload.emit(event);
+  }
+
+  protected onDelete(event: MouseEvent): void {
+    event.stopPropagation();
+    this.delete.emit(event);
+    this.remove.emit(event);
+  }
 }

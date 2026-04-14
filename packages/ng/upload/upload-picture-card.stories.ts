@@ -1,6 +1,6 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { Component, signal } from '@angular/core';
-import { MznUploadPictureCard } from './upload-picture-card.component';
+import { MznUploadPictureCard } from '@mezzanine-ui/ng/upload';
 
 function createBlobFile(content: string, name: string, mimeType: string): File {
   const blob = new Blob([content], { type: mimeType });

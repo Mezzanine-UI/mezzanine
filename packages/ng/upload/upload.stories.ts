@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, signal, OnInit } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznUpload } from './upload.component';
 import { MznUploader } from './uploader.component';
@@ -15,6 +15,78 @@ export default {
 } satisfies Meta;
 
 type Story = StoryObj;
+
+async function createFileFromUrl(url: string, name: string): Promise<File> {
+  const response = await fetch(url);
+  const blob = await response.blob();
+
+  return new File([blob], name, { type: blob.type || 'image/png' });
+}
+
+@Component({
+  selector: 'story-upload-playground',
+  standalone: true,
+  imports: [MznUpload],
+  template: `
+    @if (!isLoading()) {
+      <div
+        mznUpload
+        [accept]="accept()"
+        [disabled]="disabled()"
+        [hints]="hints()"
+        [mode]="mode()"
+        [multiple]="multiple()"
+        [showFileSize]="showFileSize()"
+        [size]="size()"
+        [files]="files()"
+        (filesChange)="onFilesChange($event)"
+      ></div>
+    }
+  `,
+})
+class UploadPlaygroundStoryComponent implements OnInit {
+  readonly accept = input<string>('image/*');
+  readonly disabled = input(false);
+  readonly hints = input<readonly { label: string; type?: string }[]>([
+    { label: '支援 JPG、PNG；單檔上限 500 KB。', type: 'info' },
+  ]);
+  readonly mode = input<
+    'list' | 'basic-list' | 'button-list' | 'cards' | 'card-wall'
+  >('list');
+  readonly multiple = input(true);
+  readonly showFileSize = input(true);
+  readonly size = input<'main' | 'sub'>('main');
+
+  readonly files = signal<UploadFile[]>([]);
+  readonly isLoading = signal(true);
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const file = await createFileFromUrl(
+        'https://rytass.com/logo.png',
+        'logo.png',
+      );
+
+      this.files.set([
+        {
+          file,
+          id: `story-preload-${Date.now()}`,
+          name: file.name,
+          progress: 100,
+          status: 'done',
+        },
+      ]);
+    } catch (error) {
+      console.error('Failed to load image:', error);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  onFilesChange(next: readonly UploadFile[]): void {
+    this.files.set([...next]);
+  }
+}
 
 export const Playground: Story = {
   argTypes: {
@@ -54,28 +126,44 @@ export const Playground: Story = {
         defaultValue: { summary: 'true' },
       },
     },
+    showFileSize: {
+      control: { type: 'boolean' },
+      description: 'Whether to show file size in the upload list.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+      },
+    },
+    size: {
+      options: ['main', 'sub'],
+      control: { type: 'inline-radio' },
+      description: 'The size of the upload component.',
+      table: {
+        type: { summary: "'main' | 'sub'" },
+        defaultValue: { summary: "'main'" },
+      },
+    },
   },
   args: {
     accept: 'image/*',
     disabled: false,
     mode: 'list',
     multiple: true,
+    showFileSize: true,
+    size: 'main',
   },
+  decorators: [moduleMetadata({ imports: [UploadPlaygroundStoryComponent] })],
   render: (args) => ({
-    props: {
-      ...args,
-      files: [] as UploadFile[],
-    },
+    props: args,
     template: `
-      <div mznUpload
+      <story-upload-playground
         [accept]="accept"
         [disabled]="disabled"
-        [files]="files"
         [mode]="mode"
         [multiple]="multiple"
-      >
-        <span>點擊或拖放檔案至此區域上傳</span>
-      </div>
+        [showFileSize]="showFileSize"
+        [size]="size"
+      />
     `,
   }),
 };
@@ -302,7 +390,7 @@ class IdNameBindingStoryComponent {
     this.files.set([...next]);
   }
 
-  onFileSelect(_fileList: FileList): void {
+  onFileSelect(_files: File[]): void {
     const time = new Date().toLocaleTimeString();
     this.inputLogs.update((prev) => [
       ...prev.slice(-3),
