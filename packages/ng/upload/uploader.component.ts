@@ -104,6 +104,7 @@ import {
         [icon]="resolvedUploadIcon()"
         (click)="handleClickToUpload($event)"
       >
+        <i mznIcon [icon]="resolvedUploadIcon()" [size]="16"></i>
         <p
           mznTypography
           align="center"

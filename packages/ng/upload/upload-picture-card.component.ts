@@ -141,7 +141,9 @@ export interface UploadPictureCardAriaLabels {
                   type="button"
                   [attr.aria-label]="resolvedAriaLabels().zoomIn"
                   (click)="onZoomIn($event)"
-                ></button>
+                >
+                  <i mznIcon [icon]="zoomInIconDef" [size]="16"></i>
+                </button>
               }
               @if (downloadEnabled()) {
                 <button
@@ -153,7 +155,9 @@ export interface UploadPictureCardAriaLabels {
                   type="button"
                   [attr.aria-label]="resolvedAriaLabels().download"
                   (click)="onDownload($event)"
-                ></button>
+                >
+                  <i mznIcon [icon]="downloadIconDef" [size]="16"></i>
+                </button>
               }
               <button
                 mznButton
@@ -164,7 +168,9 @@ export interface UploadPictureCardAriaLabels {
                 type="button"
                 [attr.aria-label]="resolvedAriaLabels().delete"
                 (click)="onDelete($event)"
-              ></button>
+              >
+                <i mznIcon [icon]="trashIconDef" [size]="16"></i>
+              </button>
             </div>
           </div>
           @if (replaceEnabled()) {
@@ -185,7 +191,9 @@ export interface UploadPictureCardAriaLabels {
                 type="button"
                 [attr.aria-label]="resolvedAriaLabels().reload"
                 (click)="onReload($event)"
-              ></button>
+              >
+                <i mznIcon [icon]="resetIconDef" [size]="16"></i>
+              </button>
               <button
                 mznButton
                 variant="base-secondary"
@@ -195,7 +203,9 @@ export interface UploadPictureCardAriaLabels {
                 type="button"
                 [attr.aria-label]="resolvedAriaLabels().delete"
                 (click)="onDelete($event)"
-              ></button>
+              >
+                <i mznIcon [icon]="trashIconDef" [size]="16"></i>
+              </button>
             </div>
           </div>
         }
