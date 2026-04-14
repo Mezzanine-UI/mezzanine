@@ -718,6 +718,14 @@ export const PreloadedImageFromUrl: Story = {
   },
 };
 
+const singleFileLimitHints = [
+  { label: '最多 1 個檔案。', type: 'info' as const },
+];
+
+const singleFileLimitAriaLabels = {
+  clickToReplace: 'Replace',
+};
+
 @Component({
   selector: 'mzn-upload-single-file-limit-story',
   standalone: true,
@@ -731,13 +739,19 @@ export const PreloadedImageFromUrl: Story = {
         <div
           mznUpload
           mode="cards"
-          accept="image/*"
           [files]="files()"
+          [maxFiles]="1"
           [multiple]="false"
-          (filesChange)="onFilesChange($event)"
-        >
-          <span>點擊或拖放圖片至此區域上傳</span>
-        </div>
+          [hints]="hints"
+          [ariaLabels]="ariaLabels"
+          [uploadHandler]="simulateUpload"
+          (filesChange)="files.set(asFiles($event))"
+          (delete)="onDelete($event)"
+          (reload)="onReload($event)"
+          (download)="onDownload($event)"
+          (zoomIn)="onZoomIn($event)"
+          (maxFilesExceeded)="onMaxFilesExceeded($event)"
+        ></div>
       </div>
     </div>
   `,
@@ -745,8 +759,37 @@ export const PreloadedImageFromUrl: Story = {
 class SingleFileLimitStoryComponent {
   readonly files = signal<UploadFile[]>([]);
 
-  onFilesChange(next: readonly UploadFile[]): void {
-    this.files.set([...next]);
+  readonly hints = singleFileLimitHints;
+  readonly ariaLabels = singleFileLimitAriaLabels;
+
+  readonly simulateUpload = simulateUpload;
+
+  asFiles(next: readonly UploadFile[]): UploadFile[] {
+    return [...next];
+  }
+
+  onDelete(event: { fileId: string; file: File }): void {
+    console.log('onDelete', event);
+  }
+
+  onReload(event: { fileId: string; file: File }): void {
+    console.log('onReload', event);
+  }
+
+  onDownload(event: { fileId: string; file: File }): void {
+    console.log('onDownload', event);
+  }
+
+  onZoomIn(event: { fileId: string; file: File }): void {
+    console.log('onZoomIn', event);
+  }
+
+  onMaxFilesExceeded(event: {
+    maxFiles: number;
+    selectedCount: number;
+    currentCount: number;
+  }): void {
+    console.log('onMaxFilesExceeded', event);
   }
 }
 
