@@ -194,7 +194,7 @@ const basicHintsButtonCards = [
   { label: '最多 5 個檔案。', type: 'info' as const },
 ];
 
-const basicDropzoneHintsCardWall = [
+const basicHintsCardWall = [
   { label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。' },
 ];
 
@@ -319,7 +319,7 @@ async function simulateUpload(
             mode="card-wall"
             size="main"
             [files]="cardWallFiles()"
-            [dropzoneHints]="dropzoneHintsCardWall"
+            [hints]="cardWallHints"
             [uploadHandler]="simulateUpload"
             (filesChange)="cardWallFiles.set(asFiles($event))"
             (delete)="onDelete($event)"
@@ -344,7 +344,7 @@ class BasicStoryComponent implements OnInit {
   readonly hintsList = basicHintsList;
   readonly basicHints = basicListHints;
   readonly buttonCardsHints = basicHintsButtonCards;
-  readonly dropzoneHintsCardWall = basicDropzoneHintsCardWall;
+  readonly cardWallHints = basicHintsCardWall;
 
   readonly simulateUpload = simulateUpload;
 
