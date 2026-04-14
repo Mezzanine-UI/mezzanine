@@ -77,8 +77,8 @@ class WithUploaderStoryComponent {
     this.files.set(next.filter((f) => f.status !== 'error') as UploadFile[]);
   }
 
-  onFileSelect(fileList: FileList): void {
-    const file = fileList[0];
+  onFileSelect(files: File[]): void {
+    const file = files[0];
     if (!file) return;
     this.pendingFile = file;
     const url = URL.createObjectURL(file);
