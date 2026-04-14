@@ -29,6 +29,29 @@ fi
 echo -e "${GREEN}✓ Git 狀態檢查通過${NC}"
 echo ""
 
+# 從 npm registry 取得所有 package 中最高的 stable 版本
+get_latest_stable_version() {
+  local packages=("@mezzanine-ui/react" "@mezzanine-ui/core" "@mezzanine-ui/icons" "@mezzanine-ui/system")
+  local max_version=""
+
+  for pkg in "${packages[@]}"; do
+    local v
+    v=$(npm view "$pkg" version 2>/dev/null)
+    if [ -n "$v" ]; then
+      if [ -z "$max_version" ]; then
+        max_version="$v"
+      else
+        # 取較大的版本
+        local higher
+        higher=$(printf '%s\n%s\n' "$max_version" "$v" | sort -V | tail -1)
+        max_version="$higher"
+      fi
+    fi
+  done
+
+  echo "$max_version"
+}
+
 # 從 npm registry 獲取最新的 prerelease 版本號
 get_next_prerelease_version() {
   local preid=$1
@@ -97,7 +120,7 @@ case $choice in
 
     # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn lerna version "$NEXT_VERSION" --force-publish --no-push --yes
     yarn build
     yarn lerna publish from-package --dist-tag canary --yes
 
@@ -134,7 +157,7 @@ case $choice in
 
     # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn lerna version "$NEXT_VERSION" --force-publish --no-push --yes
     yarn build
     yarn lerna publish from-package --dist-tag alpha --yes
 
@@ -171,7 +194,7 @@ case $choice in
 
     # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn lerna version "$NEXT_VERSION" --force-publish --no-push --yes
     yarn build
     yarn lerna publish from-package --dist-tag beta --yes
 
@@ -208,7 +231,7 @@ case $choice in
 
     # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn lerna version "$NEXT_VERSION" --force-publish --no-push --yes
     yarn build
     yarn lerna publish from-package --dist-tag rc --yes
 
@@ -234,12 +257,12 @@ case $choice in
     echo -e "${YELLOW}這將會更新 latest 標籤，所有用戶都會獲取此版本${NC}"
     echo ""
 
-    # 從 npm registry 取得最新 stable 版本，自動計算下一個 patch 版本號
+    # 從 npm registry 取得所有 package 最高 stable 版本，自動計算下一個 patch 版本號
     CURRENT_VERSION=$(node -p "require('./packages/react/package.json').version" 2>/dev/null)
-    LATEST_STABLE=$(npm view "@mezzanine-ui/react" version 2>/dev/null)
+    LATEST_STABLE=$(get_latest_stable_version)
 
     if [ -n "$LATEST_STABLE" ]; then
-      # 已有 stable 版本：在最新 stable 上自動遞增 patch
+      # 已有 stable 版本：在最高 stable 上自動遞增 patch
       IFS='.' read -r _major _minor _patch <<< "$LATEST_STABLE"
       STABLE_VERSION="${_major}.${_minor}.$((_patch + 1))"
     else
@@ -248,8 +271,8 @@ case $choice in
     fi
 
     echo -e "${BLUE}ℹ️  目前版本 (local): ${CURRENT_VERSION}${NC}"
-    echo -e "${BLUE}ℹ️  npm 最新 stable: ${LATEST_STABLE:-"(尚無)"}${NC}"
-    echo -e "${BLUE}ℹ️  即將發布: ${STABLE_VERSION}${NC}"
+    echo -e "${BLUE}ℹ️  npm 所有 package 最高 stable: ${LATEST_STABLE:-"(尚無)"}${NC}"
+    echo -e "${BLUE}ℹ️  即將發布 (全 packages 同步): ${STABLE_VERSION}${NC}"
     echo ""
 
     read -p "版本號是否正確？如需修改請輸入新版本號，或直接按 Enter 使用 ${STABLE_VERSION}: " custom_version
@@ -271,7 +294,7 @@ case $choice in
 
     # 發布：明確指定版本號，避免 lerna 互動選單誤選 prerelease
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn lerna version "$STABLE_VERSION" --no-push --yes
+    yarn lerna version "$STABLE_VERSION" --force-publish --no-push --yes
     yarn build
     yarn lerna publish from-package --dist-tag latest --yes
 
