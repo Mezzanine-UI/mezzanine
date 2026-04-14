@@ -58,9 +58,8 @@ export function createNotifier<
     sortBeforeUpdate,
     ...restNotifierProps
   } = props;
-  const container =
-    typeof document === 'undefined' ? null : document.createElement('div');
-  const root: Root | null = container ? createRoot(container) : null;
+  let container: HTMLDivElement | null = null;
+  let root: Root | null = null;
   const controllerRef = createRef<NotifierController<N>>();
   let currentConfig = {
     duration,
@@ -68,12 +67,16 @@ export function createNotifier<
     ...configProp,
   };
 
-  if (setRoot && container) {
-    setRoot(container);
+  function ensureInitialized() {
+    if (container || typeof document === 'undefined') return;
+    container = document.createElement('div');
+    if (setRoot) setRoot(container);
+    root = createRoot(container);
   }
 
   return {
     add(notifier) {
+      ensureInitialized();
       if (container === null) return 'NOT_SET';
 
       document.body.appendChild(container as HTMLDivElement);
@@ -92,7 +95,6 @@ export function createNotifier<
       if (controllerRef.current) {
         controllerRef.current.add(resolvedNotifier);
       } else {
-
         root?.render(
           <NotifierManager<N>
             controllerRef={controllerRef}
