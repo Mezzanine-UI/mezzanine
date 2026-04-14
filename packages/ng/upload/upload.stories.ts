@@ -168,6 +168,49 @@ export const Playground: Story = {
   }),
 };
 
+const basicListHints = [
+  {
+    label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。',
+    type: 'info' as const,
+  },
+];
+
+const basicDropzoneHintsList = [
+  { label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。' },
+];
+
+const basicHintsList = [
+  {
+    label: '支援 JPG、PNG、PDF；單檔上限 500 KB。',
+    type: 'info' as const,
+  },
+];
+
+const basicHintsButtonCards = [
+  {
+    label: '支援 JPG、PNG、PDF；單檔上限 500 KB。',
+    type: 'info' as const,
+  },
+  { label: '最多 5 個檔案。', type: 'info' as const },
+];
+
+const basicDropzoneHintsCardWall = [
+  { label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。' },
+];
+
+async function simulateUpload(
+  files: File[],
+  setProgress?: (fileIndex: number, progress: number) => void,
+): Promise<void> {
+  console.log('onUpload', files);
+  for (let i = 0; i < files.length; i += 1) {
+    for (let progress = 0; progress <= 100; progress += 20) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      setProgress?.(i, progress);
+    }
+  }
+}
+
 @Component({
   selector: 'mzn-upload-basic-story',
   standalone: true,
@@ -179,20 +222,27 @@ export const Playground: Story = {
       <div>
         <h3>List Mode:</h3>
         <p
-          >Display files in list format with dropzone. Use dropzoneHints to show
-          hints inside the dropzone, and hints to show hints below the
-          uploader.</p
+          >Display files in list format with dropzone. Use
+          <code>dropzoneHints</code> to show hints inside the dropzone, and
+          <code>hints</code> to show hints below the uploader.</p
         >
-        <div
-          mznUpload
-          mode="list"
-          accept="image/*"
-          [files]="files()"
-          [multiple]="true"
-          (filesChange)="onFilesChange($event)"
-        >
-          <span>點擊或拖放檔案至此區域上傳</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="list"
+            size="main"
+            [showFileSize]="true"
+            [files]="listFiles()"
+            [dropzoneHints]="dropzoneHintsList"
+            [hints]="hintsList"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="listFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
       <div>
         <h3>Basic List Mode:</h3>
@@ -200,30 +250,41 @@ export const Playground: Story = {
           >Display files in list format without drag-and-drop (basic
           uploader).</p
         >
-        <div
-          mznUpload
-          mode="basic-list"
-          accept="image/*"
-          [files]="files()"
-          [multiple]="true"
-          (filesChange)="onFilesChange($event)"
-        >
-          <span>點擊或拖放檔案至此區域上傳</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="basic-list"
+            size="main"
+            [showFileSize]="true"
+            [files]="basicListFiles()"
+            [hints]="basicHints"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="basicListFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
       <div>
         <h3>Button List Mode:</h3>
         <p>Display files in button list format</p>
-        <div
-          mznUpload
-          mode="button-list"
-          accept="image/*"
-          [files]="files()"
-          [multiple]="true"
-          (filesChange)="onFilesChange($event)"
-        >
-          <span>選擇檔案</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="button-list"
+            size="main"
+            [files]="buttonListFiles()"
+            [hints]="buttonCardsHints"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="buttonListFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
       <div>
         <h3>Cards Mode:</h3>
@@ -231,41 +292,106 @@ export const Playground: Story = {
           >Display files in card format, images use UploadPictureCard, other
           files use UploadItem</p
         >
-        <div
-          mznUpload
-          mode="cards"
-          accept="image/*"
-          [files]="files()"
-          [multiple]="true"
-          (filesChange)="onFilesChange($event)"
-        >
-          <span>點擊或拖放檔案至此區域上傳</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="cards"
+            size="main"
+            [files]="cardsFiles()"
+            [hints]="buttonCardsHints"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="cardsFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
       <div>
         <h3>Card Wall Mode:</h3>
         <p
           >Display files in card wall format, all files use UploadPictureCard</p
         >
-        <div
-          mznUpload
-          mode="card-wall"
-          accept="image/*"
-          [files]="files()"
-          [multiple]="true"
-          (filesChange)="onFilesChange($event)"
-        >
-          <span>點擊或拖放檔案至此區域上傳</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="card-wall"
+            size="main"
+            [files]="cardWallFiles()"
+            [dropzoneHints]="dropzoneHintsCardWall"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="cardWallFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
     </div>
   `,
 })
-class BasicStoryComponent {
-  readonly files = signal<UploadFile[]>([]);
+class BasicStoryComponent implements OnInit {
+  readonly listFiles = signal<UploadFile[]>([]);
+  readonly basicListFiles = signal<UploadFile[]>([]);
+  readonly buttonListFiles = signal<UploadFile[]>([]);
+  readonly cardsFiles = signal<UploadFile[]>([]);
+  readonly cardWallFiles = signal<UploadFile[]>([]);
+  readonly isLoading = signal(true);
 
-  onFilesChange(next: readonly UploadFile[]): void {
-    this.files.set([...next]);
+  readonly dropzoneHintsList = basicDropzoneHintsList;
+  readonly hintsList = basicHintsList;
+  readonly basicHints = basicListHints;
+  readonly buttonCardsHints = basicHintsButtonCards;
+  readonly dropzoneHintsCardWall = basicDropzoneHintsCardWall;
+
+  readonly simulateUpload = simulateUpload;
+
+  asFiles(next: readonly UploadFile[]): UploadFile[] {
+    return [...next];
+  }
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const file = await createFileFromUrl(
+        'https://rytass.com/logo.png',
+        'logo.png',
+      );
+      const makeFile = (key: string): UploadFile => ({
+        file,
+        id: `story-preload-${key}-${Date.now()}-${Math.random()}`,
+        name: file.name,
+        progress: 100,
+        status: 'done',
+      });
+
+      this.listFiles.set([makeFile('list')]);
+      this.basicListFiles.set([makeFile('basic')]);
+      this.buttonListFiles.set([makeFile('button')]);
+      this.cardsFiles.set([makeFile('cards')]);
+      this.cardWallFiles.set([makeFile('cw')]);
+    } catch (error) {
+      console.error('Failed to load image:', error);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  onDelete(event: { fileId: string; file: File }): void {
+    console.log('onDelete', event);
+  }
+
+  onReload(event: { fileId: string; file: File }): void {
+    console.log('onReload', event);
+  }
+
+  onDownload(event: { fileId: string; file: File }): void {
+    console.log('onDownload', event);
+  }
+
+  onZoomIn(event: { fileId: string; file: File }): void {
+    console.log('onZoomIn', event);
   }
 }
 
