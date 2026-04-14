@@ -69,6 +69,15 @@ import { MznUploadPictureCard } from './upload-picture-card.component';
   host: {
     '[class]': 'hostClasses()',
   },
+  // React renders error-message as a sibling of the `.mzn-upload-item`
+  // host (Fragment) so it takes full width with margin-top. Angular's
+  // attribute selector forces it into the host which is flex-nowrap;
+  // switch to wrap and give error-message a full row when in error
+  // state. See DEVIATIONS.md upload entry.
+  styles: [
+    ':host(.mzn-upload-item--error) { flex-wrap: wrap; } ' +
+      ':host(.mzn-upload-item--error) .mzn-upload-item__error-message { flex-basis: 100%; }',
+  ],
   template: `
     <div
       [class]="containerClass"
