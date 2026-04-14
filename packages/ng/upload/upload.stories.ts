@@ -412,19 +412,21 @@ export const Basic: Story = {
   imports: [MznUpload],
   template: `
     <form
-      (ngSubmit)="onSubmit()"
+      (submit)="onSubmit($event)"
       style="display: flex; flex-direction: column; gap: 16px; width: 600px;"
     >
       <div
         mznUpload
         mode="card-wall"
-        accept="image/*"
         [files]="files()"
         [multiple]="true"
+        [uploadHandler]="simulateUpload"
         (filesChange)="onFilesChange($event)"
-      >
-        <span>點擊或拖放圖片至此區域上傳</span>
-      </div>
+        (delete)="onDelete($event)"
+        (reload)="onReload($event)"
+        (download)="onDownload($event)"
+        (zoomIn)="onZoomIn($event)"
+      ></div>
       <button
         type="submit"
         style="align-self: flex-start; padding: 8px 16px; cursor: pointer;"
@@ -445,20 +447,40 @@ class FormBindingStoryComponent {
   readonly files = signal<UploadFile[]>([]);
   submittedValue = '[]';
 
+  readonly simulateUpload = simulateUpload;
+
   onFilesChange(next: readonly UploadFile[]): void {
     this.files.set([...next]);
   }
 
-  onSubmit(): void {
+  onSubmit(event: Event): void {
+    event.preventDefault();
+
     this.submittedValue = JSON.stringify(
       this.files().map((f) => ({
         id: f.id,
-        name: f.name,
+        name: f.file?.name ?? f.url?.split('/').pop() ?? 'Unknown',
         status: f.status,
       })),
       null,
       2,
     );
+  }
+
+  onDelete(event: { fileId: string; file: File }): void {
+    console.log('onDelete', event);
+  }
+
+  onReload(event: { fileId: string; file: File }): void {
+    console.log('onReload', event);
+  }
+
+  onDownload(event: { fileId: string; file: File }): void {
+    console.log('onDownload', event);
+  }
+
+  onZoomIn(event: { fileId: string; file: File }): void {
+    console.log('onZoomIn', event);
   }
 }
 
