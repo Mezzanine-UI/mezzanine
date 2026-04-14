@@ -3,6 +3,7 @@ import { MznUploadItem } from './upload-item.component';
 
 export default {
   title: 'Data Entry/Upload/UploadItem',
+  component: MznUploadItem,
   decorators: [
     moduleMetadata({
       imports: [MznUploadItem],
@@ -12,77 +13,101 @@ export default {
 
 type Story = StoryObj;
 
+const playgroundFile = new File([''], 'example.jpg', { type: 'image/jpeg' });
+
 export const Playground: Story = {
+  args: {
+    file: playgroundFile,
+    size: 'main',
+    status: 'done',
+    type: 'icon',
+    errorMessage: '',
+    errorIcon: undefined,
+  },
   argTypes: {
-    disabled: {
-      control: { type: 'boolean' },
-      description: 'Whether the upload item actions are disabled.',
+    file: {
+      control: false,
+      description: 'The file to display',
       table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-    errorMessage: {
-      control: { type: 'text' },
-      description: 'The error message to display when status is "error".',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    fileName: {
-      control: { type: 'text' },
-      description: 'The file name to display (required).',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: 'undefined' },
+        type: { summary: 'File' },
       },
     },
     size: {
       options: ['main', 'sub'],
       control: { type: 'select' },
-      description: 'The size of the upload item.',
+      description: 'The size of the upload item',
       table: {
-        type: { summary: "'main' | 'sub'" },
-        defaultValue: { summary: "'main'" },
+        type: { summary: 'UploadItemSize' },
+        defaultValue: { summary: 'main' },
+      },
+    },
+    type: {
+      options: ['icon', 'thumbnail'],
+      control: { type: 'select' },
+      description:
+        'The type of the item. "icon" shows a file icon, "thumbnail" shows a preview for images or a file icon for non-images.',
+      table: {
+        type: { summary: 'UploadItemType' },
+        defaultValue: { summary: 'icon' },
       },
     },
     status: {
-      options: ['done', 'error', 'loading'],
+      options: ['loading', 'done', 'error'],
       control: { type: 'select' },
-      description: 'The upload status of the item.',
+      description: 'The upload status of the item',
       table: {
-        type: { summary: "'done' | 'error' | 'loading'" },
-        defaultValue: { summary: "'done'" },
+        type: { summary: 'UploadItemStatus' },
+        defaultValue: { summary: 'loading' },
       },
     },
-    thumbnailUrl: {
+    icon: {
+      control: false,
+      description: 'Custom icon for the item',
+      table: {
+        type: { summary: 'IconDefinition' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    delete: {
+      description: 'When delete icon is clicked, this callback will be fired',
+      table: {
+        type: { summary: 'EventEmitter<MouseEvent>' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    errorMessage: {
       control: { type: 'text' },
-      description: 'The thumbnail URL for image preview.',
+      description: 'The error message to display when status is "error"',
       table: {
         type: { summary: 'string' },
         defaultValue: { summary: 'undefined' },
       },
     },
-  },
-  args: {
-    disabled: false,
-    errorMessage: '',
-    fileName: 'example.pdf',
-    size: 'main',
-    status: 'done',
-    thumbnailUrl: '',
+    errorIcon: {
+      control: false,
+      description: 'The error icon to display when status is "error"',
+      table: {
+        type: { summary: 'IconDefinition' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
   },
   render: (args) => ({
-    props: args,
+    props: {
+      ...args,
+      onDelete: (event: MouseEvent): void => {
+        console.log('onDelete', event);
+      },
+    },
     template: `
       <div mznUploadItem
-        [disabled]="disabled"
-        [errorMessage]="errorMessage"
-        [fileName]="fileName"
+        [file]="file"
         [size]="size"
         [status]="status"
-        [thumbnailUrl]="thumbnailUrl"
+        [type]="type"
+        [errorMessage]="errorMessage"
+        [errorIcon]="errorIcon"
+        (delete)="onDelete($event)"
       ></div>
     `,
   }),
