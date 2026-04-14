@@ -558,6 +558,19 @@ export const IdNameBinding: Story = {
   }),
 };
 
+const preloadedListHints = [
+  { label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。' },
+];
+
+const preloadedCardsHints = [
+  { label: '支援 JPG、PNG、PDF；單檔上限 500 KB。', type: 'info' as const },
+  { label: '最多 5 個檔案。', type: 'info' as const },
+];
+
+const preloadedCardWallHints = [
+  { label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。' },
+];
+
 @Component({
   selector: 'mzn-upload-preloaded-image-from-url-story',
   standalone: true,
@@ -572,16 +585,22 @@ export const IdNameBinding: Story = {
           >Display preloaded image from URL in list format using UploadItem with
           thumbnail</p
         >
-        <div
-          mznUpload
-          mode="list"
-          accept="image/*"
-          [files]="listFiles()"
-          [multiple]="true"
-          (filesChange)="onListFilesChange($event)"
-        >
-          <span>點擊或拖放檔案至此區域上傳</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="list"
+            size="main"
+            [showFileSize]="true"
+            [files]="listFiles()"
+            [hints]="listHints"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="listFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
       <div>
         <h3>Cards Mode (Picture Card):</h3>
@@ -589,16 +608,21 @@ export const IdNameBinding: Story = {
           >Display preloaded image from URL in card format using
           UploadPictureCard</p
         >
-        <div
-          mznUpload
-          mode="cards"
-          accept="image/*"
-          [files]="cardsFiles()"
-          [multiple]="true"
-          (filesChange)="onCardsFilesChange($event)"
-        >
-          <span>點擊或拖放圖片至此區域上傳</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="cards"
+            size="main"
+            [files]="cardsFiles()"
+            [hints]="cardsHints"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="cardsFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
       <div>
         <h3>Card Wall Mode (Picture Card):</h3>
@@ -606,42 +630,72 @@ export const IdNameBinding: Story = {
           >Display preloaded image from URL in card wall format using
           UploadPictureCard</p
         >
-        <div
-          mznUpload
-          mode="card-wall"
-          accept="image/*"
-          [files]="cardWallFiles()"
-          [multiple]="true"
-          (filesChange)="onCardWallFilesChange($event)"
-        >
-          <span>點擊或拖放圖片至此區域上傳</span>
-        </div>
+        @if (!isLoading()) {
+          <div
+            mznUpload
+            mode="card-wall"
+            size="main"
+            [files]="cardWallFiles()"
+            [hints]="cardWallHints"
+            [uploadHandler]="simulateUpload"
+            (filesChange)="cardWallFiles.set(asFiles($event))"
+            (delete)="onDelete($event)"
+            (reload)="onReload($event)"
+            (download)="onDownload($event)"
+            (zoomIn)="onZoomIn($event)"
+          ></div>
+        }
       </div>
     </div>
   `,
 })
-class PreloadedImageFromUrlStoryComponent {
-  readonly preloadedFile: UploadFile = {
-    id: 'preload-url-1',
-    name: 'logo.png',
-    status: 'done',
-    url: 'https://rytass.com/logo.png',
-  };
+class PreloadedImageFromUrlStoryComponent implements OnInit {
+  readonly listFiles = signal<UploadFile[]>([]);
+  readonly cardsFiles = signal<UploadFile[]>([]);
+  readonly cardWallFiles = signal<UploadFile[]>([]);
+  readonly isLoading = signal(true);
 
-  readonly listFiles = signal<UploadFile[]>([this.preloadedFile]);
-  readonly cardsFiles = signal<UploadFile[]>([this.preloadedFile]);
-  readonly cardWallFiles = signal<UploadFile[]>([this.preloadedFile]);
+  readonly listHints = preloadedListHints;
+  readonly cardsHints = preloadedCardsHints;
+  readonly cardWallHints = preloadedCardWallHints;
 
-  onListFilesChange(next: readonly UploadFile[]): void {
-    this.listFiles.set([...next]);
+  readonly simulateUpload = simulateUpload;
+
+  asFiles(next: readonly UploadFile[]): UploadFile[] {
+    return [...next];
   }
 
-  onCardsFilesChange(next: readonly UploadFile[]): void {
-    this.cardsFiles.set([...next]);
+  ngOnInit(): void {
+    // Simulate loading preloaded files from backend after a brief delay.
+    setTimeout(() => {
+      const makeUrlFile = (key: string): UploadFile => ({
+        id: `story-preload-url-${key}-${Date.now()}-${Math.random()}`,
+        name: 'logo.png',
+        status: 'done',
+        url: 'https://rytass.com/logo.png',
+      });
+
+      this.listFiles.set([makeUrlFile('list')]);
+      this.cardsFiles.set([makeUrlFile('cards')]);
+      this.cardWallFiles.set([makeUrlFile('cw')]);
+      this.isLoading.set(false);
+    }, 500);
   }
 
-  onCardWallFilesChange(next: readonly UploadFile[]): void {
-    this.cardWallFiles.set([...next]);
+  onDelete(event: { fileId: string; file: File }): void {
+    console.log('onDelete', event);
+  }
+
+  onReload(event: { fileId: string; file: File }): void {
+    console.log('onReload', event);
+  }
+
+  onDownload(event: { fileId: string; file: File }): void {
+    console.log('onDownload', event);
+  }
+
+  onZoomIn(event: { fileId: string; file: File }): void {
+    console.log('onZoomIn', event);
   }
 }
 
