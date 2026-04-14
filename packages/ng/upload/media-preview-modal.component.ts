@@ -2,16 +2,20 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   output,
 } from '@angular/core';
-import { MznModal } from '@mezzanine-ui/ng/modal';
+import { modalClasses } from '@mezzanine-ui/core/modal';
+import { MznBackdrop } from '@mezzanine-ui/ng/backdrop';
+import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 
 /**
- * 單圖片預覽 Modal，對應 React `MediaPreviewModal` 之單圖行為。
+ * 單圖片預覽 Modal，對應 React `MediaPreviewModal` 的單圖行為。
  *
- * 僅於 `MznUpload` 的 cards / card-wall 模式按下 ZoomIn 時開啟，
- * 顯示 `mediaItems` 陣列中的第一張圖片。
+ * 只使用 `MznBackdrop` 當作遮罩容器（非完整 `MznModal`），overlay 不會帶白色
+ * 面板背景，支援 PNG 透明通道。關閉按鈕（`ClearActions`）絕對定位在整個
+ * overlay 右上角，結構與 React 版本一致。
  *
  * @example
  * ```html
@@ -27,24 +31,30 @@ import { MznModal } from '@mezzanine-ui/ng/modal';
 @Component({
   selector: 'mzn-upload-media-preview-modal',
   standalone: true,
-  imports: [MznModal],
+  imports: [MznBackdrop, MznClearActions],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      mznModal
-      size="wide"
-      [open]="open()"
-      [showDismissButton]="true"
-      (closed)="onClose()"
-    >
-      @if (currentImage()) {
-        <img
-          class="mzn-upload-media-preview-modal__image"
-          [src]="currentImage()"
-          alt=""
-          style="width: 100%; height: 100%; object-fit: contain;"
-        />
-      }
+    <div mznBackdrop [open]="open()" (closed)="onClose()">
+      <div [class]="dialogClass" role="dialog">
+        <div [class]="contentClass">
+          <div [class]="mediaContainerClass">
+            @if (currentImage()) {
+              <img
+                [class]="imageClass"
+                [src]="currentImage()"
+                alt="Media preview"
+              />
+            }
+          </div>
+        </div>
+      </div>
+      <button
+        mznClearActions
+        type="embedded"
+        variant="contrast"
+        [class]="closeButtonClass"
+        (clicked)="onClose()"
+      ></button>
     </div>
   `,
 })
@@ -55,12 +65,33 @@ export class MznUploadMediaPreviewModal {
   /** 要預覽的媒體 URL 清單（目前僅使用第一項）。 */
   readonly mediaItems = input<readonly string[]>([]);
 
-  /** 關閉時觸發。 */
+  /** 關閉時觸發（背景點擊、ESC 或關閉按鈕）。 */
   readonly close = output<void>();
 
   protected readonly currentImage = computed(
     (): string | undefined => this.mediaItems()[0],
   );
+
+  protected readonly dialogClass = `${modalClasses.host} ${modalClasses.mediaPreview}`;
+  protected readonly contentClass = modalClasses.mediaPreviewContent;
+  protected readonly mediaContainerClass =
+    modalClasses.mediaPreviewMediaContainer;
+  protected readonly imageClass = modalClasses.mediaPreviewImage;
+  protected readonly closeButtonClass = modalClasses.mediaPreviewCloseButton;
+
+  constructor() {
+    // Escape key closes the preview (only while open).
+    effect((onCleanup) => {
+      if (!this.open()) return;
+
+      const onKeyDown = (event: KeyboardEvent): void => {
+        if (event.key === 'Escape') this.close.emit();
+      };
+
+      document.addEventListener('keydown', onKeyDown);
+      onCleanup(() => document.removeEventListener('keydown', onKeyDown));
+    });
+  }
 
   protected onClose(): void {
     this.close.emit();
