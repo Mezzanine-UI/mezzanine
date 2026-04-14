@@ -234,11 +234,21 @@ case $choice in
     echo -e "${YELLOW}這將會更新 latest 標籤，所有用戶都會獲取此版本${NC}"
     echo ""
 
-    # 從 package.json 取得目前版本，去掉 prerelease suffix 得到 stable 版本號
+    # 從 npm registry 取得最新 stable 版本，自動計算下一個 patch 版本號
     CURRENT_VERSION=$(node -p "require('./packages/react/package.json').version" 2>/dev/null)
-    STABLE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-[a-zA-Z]*\.[0-9]*//')
+    LATEST_STABLE=$(npm view "@mezzanine-ui/react" version 2>/dev/null)
 
-    echo -e "${BLUE}ℹ️  目前版本: ${CURRENT_VERSION}${NC}"
+    if [ -n "$LATEST_STABLE" ]; then
+      # 已有 stable 版本：在最新 stable 上自動遞增 patch
+      IFS='.' read -r _major _minor _patch <<< "$LATEST_STABLE"
+      STABLE_VERSION="${_major}.${_minor}.$((_patch + 1))"
+    else
+      # 尚無 stable 版本：去掉 prerelease suffix 作為首個 stable 版本
+      STABLE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-[a-zA-Z]*\.[0-9]*//')
+    fi
+
+    echo -e "${BLUE}ℹ️  目前版本 (local): ${CURRENT_VERSION}${NC}"
+    echo -e "${BLUE}ℹ️  npm 最新 stable: ${LATEST_STABLE:-"(尚無)"}${NC}"
     echo -e "${BLUE}ℹ️  即將發布: ${STABLE_VERSION}${NC}"
     echo ""
 
