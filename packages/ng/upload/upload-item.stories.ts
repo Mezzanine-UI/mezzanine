@@ -113,42 +113,69 @@ export const Playground: Story = {
   }),
 };
 
+function createMockFile(
+  name: string,
+  type = 'application/pdf',
+  sizeInBytes = 1024,
+): File {
+  const content = new Uint8Array(sizeInBytes);
+
+  return new File([content], name, { type });
+}
+
 export const Type: Story = {
-  render: () => ({
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 24px; width: 400px;">
-        <div>
-          <h3>Type: icon</h3>
-          <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><div mznUploadItem fileName="document.pdf" status="loading" ></div></li>
-            <li><div mznUploadItem fileName="document.pdf" status="done" ></div></li>
-            <li><div mznUploadItem fileName="document.pdf" status="error" errorMessage="上傳失敗，請重試" ></div></li>
-            <li><div mznUploadItem fileName="document.pdf" status="done" [disabled]="true" ></div></li>
-          </ul>
+  render: () => {
+    const imageFile = createMockFile('example.jpg', 'image/jpeg', 15360);
+    const pdfFile = createMockFile('document.pdf', 'application/pdf', 2048);
+    const textFile = createMockFile('example.txt', 'text/plain', 512);
+
+    return {
+      props: {
+        imageFile,
+        pdfFile,
+        textFile,
+        onDelete: (event: MouseEvent): void => {
+          console.log('onDelete', event);
+        },
+        onReload: (event: MouseEvent): void => {
+          console.log('onReload', event);
+        },
+      },
+      template: `
+        <div style="display: flex; flex-direction: column; gap: 24px; width: 400px;">
+          <div>
+            <h3>Type: icon</h3>
+            <ul style="display: flex; flex-direction: column; gap: 8px;">
+              <li><div mznUploadItem [file]="pdfFile" status="loading" type="icon" (delete)="onDelete($event)"></div></li>
+              <li><div mznUploadItem [file]="pdfFile" status="done" type="icon" (delete)="onDelete($event)"></div></li>
+              <li><div mznUploadItem [file]="pdfFile" status="error" type="icon" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+              <li><div mznUploadItem [file]="pdfFile" status="done" type="icon" [disabled]="true" (delete)="onDelete($event)"></div></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Type: thumbnail (image)</h3>
+            <ul style="display: flex; flex-direction: column; gap: 8px;">
+              <li><div mznUploadItem [file]="imageFile" status="loading" type="thumbnail" (delete)="onDelete($event)"></div></li>
+              <li><div mznUploadItem [file]="imageFile" status="done" type="thumbnail" (delete)="onDelete($event)"></div></li>
+              <li><div mznUploadItem [file]="imageFile" status="error" type="thumbnail" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+              <li><div mznUploadItem [file]="imageFile" status="done" type="thumbnail" [disabled]="true" (delete)="onDelete($event)"></div></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Type: thumbnail (file)</h3>
+            <p style="margin: 0 0 8px 0; color: #666; font-size: 14px;">Non-image files show a file icon in thumbnail mode</p>
+            <ul style="display: flex; flex-direction: column; gap: 8px;">
+              <li><div mznUploadItem [file]="pdfFile" status="loading" type="thumbnail" (delete)="onDelete($event)"></div></li>
+              <li><div mznUploadItem [file]="pdfFile" status="done" type="thumbnail" (delete)="onDelete($event)"></div></li>
+              <li><div mznUploadItem [file]="textFile" status="done" type="thumbnail" (delete)="onDelete($event)"></div></li>
+              <li><div mznUploadItem [file]="pdfFile" status="error" type="thumbnail" (delete)="onDelete($event)" (reload)="onReload($event)"></div></li>
+              <li><div mznUploadItem [file]="pdfFile" status="done" type="thumbnail" [disabled]="true" (delete)="onDelete($event)"></div></li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <h3>Type: thumbnail (image)</h3>
-          <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><div mznUploadItem fileName="example.jpg" status="loading" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
-            <li><div mznUploadItem fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" ></div></li>
-            <li><div mznUploadItem fileName="example.jpg" status="error" thumbnailUrl="https://rytass.com/logo.png" errorMessage="上傳失敗，請重試" ></div></li>
-            <li><div mznUploadItem fileName="example.jpg" status="done" thumbnailUrl="https://rytass.com/logo.png" [disabled]="true" ></div></li>
-          </ul>
-        </div>
-        <div>
-          <h3>Type: thumbnail (file)</h3>
-          <p style="margin: 0 0 8px 0; color: #666; font-size: 14px;">Non-image files show a file icon in thumbnail mode</p>
-          <ul style="display: flex; flex-direction: column; gap: 8px;">
-            <li><div mznUploadItem fileName="document.pdf" status="loading" ></div></li>
-            <li><div mznUploadItem fileName="document.pdf" status="done" ></div></li>
-            <li><div mznUploadItem fileName="example.txt" status="done" ></div></li>
-            <li><div mznUploadItem fileName="document.pdf" status="error" errorMessage="上傳失敗，請重試" ></div></li>
-            <li><div mznUploadItem fileName="document.pdf" status="done" [disabled]="true" ></div></li>
-          </ul>
-        </div>
-      </div>
-    `,
-  }),
+      `,
+    };
+  },
 };
 
 export const Status: Story = {
