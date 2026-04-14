@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0...@mezzanine-ui/react@1.0.1) (2026-04-14)
+
+### Bug Fixes
+
+- **react/notifier:** lazy-init createRoot to fix React 19 event delegation ([9ee7b2f](https://github.com/Mezzanine-UI/mezzanine/commit/9ee7b2f92f345ad29f6d3e4808a08ebf9bf58443))
+
 # [1.0.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.8...@mezzanine-ui/react@1.0.0) (2026-04-02)
 
 ### Bug Fixes
