@@ -421,31 +421,42 @@ export const NonImageFiles: Story = {
   standalone: true,
   imports: [MznUploadPictureCard],
   template: `
-    <ul
-      style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0; margin: 0;"
+    <div
+      style="display: flex; flex-direction: column; gap: 16px; width: 400px;"
     >
-      <li>
-        <div
-          mznUploadPictureCard
-          [file]="pdfFile"
-          status="done"
-          (deleted)="onDelete($event)"
-          (replaced)="onReplace($event)"
-          [ariaLabels]="ariaLabels"
-        ></div>
-      </li>
-      <li>
-        <div
-          mznUploadPictureCard
-          [file]="pdfFile"
-          status="done"
-          size="sub"
-          (deleted)="onDelete($event)"
-          (replaced)="onReplace($event)"
-          [ariaLabels]="ariaLabels"
-        ></div>
-      </li>
-    </ul>
+      <h3
+        style="margin-bottom: 8px; margin-top: 0; font-size: 16px; font-weight: 600;"
+      >
+        Replace Mode (hover to see overlay)
+      </h3>
+      <ul
+        style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0;"
+      >
+        <li>
+          <div
+            mznUploadPictureCard
+            [file]="pdfFile"
+            status="done"
+            [replaceEnabled]="true"
+            [ariaLabels]="ariaLabels"
+            (deleted)="onDelete($event)"
+            (replaced)="onReplace($event)"
+          ></div>
+        </li>
+        <li>
+          <div
+            mznUploadPictureCard
+            [file]="pdfFile"
+            status="done"
+            size="sub"
+            [replaceEnabled]="true"
+            [ariaLabels]="ariaLabels"
+            (deleted)="onDelete($event)"
+            (replaced)="onReplace($event)"
+          ></div>
+        </li>
+      </ul>
+    </div>
   `,
 })
 class UploadPictureCardReplaceComponent {
@@ -456,8 +467,13 @@ class UploadPictureCardReplaceComponent {
   );
   readonly ariaLabels = { clickToReplace: 'Replace' };
 
-  onDelete(_event: MouseEvent): void {}
-  onReplace(_event: MouseEvent): void {}
+  onDelete(event: MouseEvent): void {
+    console.log('onDelete', event);
+  }
+
+  onReplace(event: MouseEvent): void {
+    console.log('onReplace', event);
+  }
 }
 
 export const ReplaceMode: Story = {
