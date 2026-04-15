@@ -8,6 +8,7 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import {
   dropdownClasses as classes,
@@ -117,12 +118,17 @@ export interface DropdownActionConfig {
     <div
       mznPopper
       [anchor]="anchor()"
-      [open]="open()"
+      [open]="popperOpen()"
       [placement]="resolvedPlacement()"
       [offsetOptions]="{ mainAxis: 4 }"
       [style.z-index]="zIndex() ?? null"
     >
-      <div mznTranslate [in]="open()" from="top">
+      <div
+        mznTranslate
+        [in]="open()"
+        from="top"
+        (onExited)="onTranslateExited()"
+      >
         <div [class]="resolvedRootClass()">
           @if (showHeader()) {
             <li [class]="listHeaderClass" role="presentation">
@@ -385,9 +391,20 @@ export class MznDropdown {
     },
   );
 
+  /**
+   * Popper 實際掛載狀態，會在 open=true 時立即變 true，在 open=false
+   * 後繼續維持為 true 直到內部 MznTranslate 的離場動畫完成，確保
+   * popper 的 `display: none` 不會在動畫結束前就把元素隱藏掉。
+   */
+  protected readonly popperOpen = signal(false);
+
   constructor() {
     effect((onCleanup) => {
       const isOpen = this.open();
+
+      if (isOpen) {
+        this.popperOpen.set(true);
+      }
 
       if (isOpen && !this.disableClickAway()) {
         const cleanup = this.clickAway.listen(
@@ -399,6 +416,12 @@ export class MznDropdown {
         onCleanup(() => cleanup());
       }
     });
+  }
+
+  protected onTranslateExited(): void {
+    if (!this.open()) {
+      this.popperOpen.set(false);
+    }
   }
 
   protected onItemSelected(option: DropdownOption): void {
