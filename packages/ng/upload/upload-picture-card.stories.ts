@@ -166,104 +166,130 @@ export const Playground: Story = {
   standalone: true,
   imports: [MznUploadPictureCard],
   template: `
-    <ul
-      style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0; margin: 0;"
-    >
-      <li>
-        <p style="margin: 0 0 4px; font-weight: 600;">Uploading:</p>
-        <div
-          mznUploadPictureCard
-          [file]="imageFile()"
-          imageFit="contain"
-          (deleted)="onDelete($event)"
-        ></div>
-      </li>
-      <li>
-        <p style="margin: 8px 0 4px; font-weight: 600;"
-          >Enable & Hover-Multiple Files:</p
+    @if (imageFile()) {
+      <div
+        style="display: flex; flex-direction: column; gap: 16px; width: 400px;"
+      >
+        <ul
+          style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0;"
         >
-        <div
-          mznUploadPictureCard
-          [url]="imageUrl"
-          imageFit="contain"
-          status="done"
-          (deleted)="onDelete($event)"
-          (zoomed)="onZoom($event)"
-          (downloaded)="onDownload($event)"
-        ></div>
-      </li>
-      <li>
-        <p style="margin: 8px 0 4px; font-weight: 600;"
-          >Hover-Limit Single File:</p
-        >
-        <div
-          mznUploadPictureCard
-          [file]="imageFile()"
-          status="done"
-          [ariaLabels]="ariaLabels"
-          (deleted)="onDelete($event)"
-          (replaced)="onReplace($event)"
-        ></div>
-      </li>
-      <li>
-        <p style="margin: 8px 0 4px; font-weight: 600;">Error:</p>
-        <div
-          mznUploadPictureCard
-          [url]="imageUrl"
-          imageFit="contain"
-          status="error"
-          (deleted)="onDelete($event)"
-          (reloaded)="onReload($event)"
-        ></div>
-      </li>
-      <li>
-        <p style="margin: 8px 0 4px; font-weight: 600;">Disable:</p>
-        <div
-          mznUploadPictureCard
-          [url]="imageUrl"
-          imageFit="contain"
-          status="done"
-          [disabled]="true"
-          (zoomed)="onZoom($event)"
-          (downloaded)="onDownload($event)"
-          (deleted)="onDelete($event)"
-        ></div>
-      </li>
-      <li>
-        <p style="margin: 8px 0 4px; font-weight: 600;">Read Only:</p>
-        <div
-          mznUploadPictureCard
-          [url]="imageUrl"
-          imageFit="contain"
-          status="done"
-          [readable]="true"
-          (zoomed)="onZoom($event)"
-          (downloaded)="onDownload($event)"
-          (deleted)="onDelete($event)"
-        ></div>
-      </li>
-    </ul>
+          <li>
+            <p>Uploading:</p>
+            <div
+              mznUploadPictureCard
+              [file]="imageFile()!"
+              imageFit="contain"
+              (deleted)="onDelete($event)"
+            ></div>
+          </li>
+          <li>
+            <p>Enable & Hover-Multiple Files:</p>
+            <div
+              mznUploadPictureCard
+              [file]="imageFile()!"
+              imageFit="contain"
+              status="done"
+              [zoomInEnabled]="true"
+              [downloadEnabled]="true"
+              (deleted)="onDelete($event)"
+              (zoomed)="onZoom($event)"
+              (downloaded)="onDownload($event)"
+            ></div>
+          </li>
+          <li>
+            <p>Hover-Limit Single File:</p>
+            <div
+              mznUploadPictureCard
+              [file]="imageFile()!"
+              status="done"
+              [replaceEnabled]="true"
+              [ariaLabels]="ariaLabels"
+              (deleted)="onDelete($event)"
+              (replaced)="onReplace($event)"
+            ></div>
+          </li>
+          <li>
+            <p>Error:</p>
+            <div
+              mznUploadPictureCard
+              [file]="imageFile()!"
+              imageFit="contain"
+              status="error"
+              (deleted)="onDelete($event)"
+              (reloaded)="onReload($event)"
+            ></div>
+          </li>
+          <li>
+            <p>Disable:</p>
+            <div
+              mznUploadPictureCard
+              [file]="imageFile()!"
+              imageFit="contain"
+              status="done"
+              [disabled]="true"
+              [zoomInEnabled]="true"
+              [downloadEnabled]="true"
+              (zoomed)="onZoom($event)"
+              (downloaded)="onDownload($event)"
+              (deleted)="onDelete($event)"
+            ></div>
+          </li>
+          <li>
+            <p>Read Only:</p>
+            <div
+              mznUploadPictureCard
+              [file]="imageFile()!"
+              imageFit="contain"
+              status="done"
+              [readable]="true"
+              [zoomInEnabled]="true"
+              [downloadEnabled]="true"
+              (zoomed)="onZoom($event)"
+              (downloaded)="onDownload($event)"
+              (deleted)="onDelete($event)"
+            ></div>
+          </li>
+        </ul>
+      </div>
+    }
   `,
 })
-class UploadPictureCardBasicComponent {
+class UploadPictureCardBasicComponent implements OnInit {
   readonly imageFile = signal<File | null>(null);
   readonly ariaLabels = { clickToReplace: 'Replace' };
 
-  constructor() {
-    fetch('https://picsum.photos/seed/upload/400/300')
-      .then((r) => r.blob())
-      .then((blob) => {
-        this.imageFile.set(
-          new File([blob], 'example.jpg', { type: 'image/jpeg' }),
-        );
-      });
+  async ngOnInit(): Promise<void> {
+    try {
+      const file = await createFileFromUrl(
+        'https://rytass.com/logo.png',
+        'logo.png',
+      );
+
+      this.imageFile.set(file);
+    } catch (error) {
+      console.error('Failed to load image:', error);
+    }
   }
 
-  onDelete(_event: MouseEvent): void {}
-  onZoom(_event: MouseEvent): void {}
-  onDownload(_event: MouseEvent): void {}
-  onReload(_event: MouseEvent): void {}
-  onReplace(_event: MouseEvent): void {}
+  onDelete(event: MouseEvent): void {
+    console.log('onDelete', event);
+  }
+
+  onZoom(event: MouseEvent): void {
+    console.log('onZoomIn', event);
+  }
+
+  onDownload(event: MouseEvent): void {
+    console.log('onDownload', event);
+  }
+
+  onReload(event: MouseEvent): void {
+    console.log('onReload', event);
+  }
+
+  onReplace(event: MouseEvent): void {
+    console.log('onReplace', event);
+  }
 }
 
 export const Basic: Story = {
