@@ -1,14 +1,23 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
+  effect,
+  ElementRef,
   inject,
+  Injector,
   input,
   OnInit,
   output,
   signal,
+  untracked,
+  viewChild,
 } from '@angular/core';
 import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
+import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
+import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
 import clsx from 'clsx';
 import { AccordionControl, MZN_ACCORDION_CONTROL } from './accordion-control';
 import {
@@ -16,6 +25,19 @@ import {
   MZN_ACCORDION_GROUP,
 } from './accordion-group-context';
 import { MznAccordionTitle } from './accordion-title.component';
+
+type AnimState =
+  | 'exited'
+  | 'pre-enter'
+  | 'entering'
+  | 'entered'
+  | 'pre-exit'
+  | 'exiting';
+
+const ENTER_DURATION = MOTION_DURATION.moderate;
+const EXIT_DURATION = MOTION_DURATION.moderate;
+const ENTER_EASING = MOTION_EASING.entrance;
+const EXIT_EASING = MOTION_EASING.exit;
 
 /**
  * 手風琴元件，提供可展開／收合的內容區塊。
@@ -25,8 +47,9 @@ import { MznAccordionTitle } from './accordion-title.component';
  * 與非受控（`defaultExpanded`）兩種模式。
  *
  * 內容區的 DOM 結構鏡像 React Accordion — Fade > Collapse outer > flex >
- * width-wrapper > content。收合狀態（且未曾展開過或已退出）整棵內容樹不渲染，
- * 對齊 React 的 lazyMount + unmountOnExit 行為。
+ * width-wrapper > content，並以內建狀態機驅動 Fade（opacity）+ Collapse
+ * （height）兩段動畫，對齊 React `react-transition-group` 的
+ * lazyMount + unmountOnExit + entered(visible) 行為。
  *
  * @example
  * ```html
@@ -88,12 +111,20 @@ import { MznAccordionTitle } from './accordion-title.component';
       <ng-content select="[mznAccordionTitle]" />
     }
 
-    @if (resolvedExpanded()) {
-      <div style="opacity: 1;">
+    @if (shouldRenderContent()) {
+      <div
+        [style.opacity]="opacityStyle()"
+        [style.transition]="opacityTransition()"
+      >
         <div
-          style="min-height: 0px; overflow: hidden; width: 100%; height: auto;"
+          [style.min-height]="'0px'"
+          [style.overflow]="overflowStyle()"
+          [style.width]="'100%'"
+          [style.height]="heightStyle()"
+          [style.transition]="heightTransition()"
+          (transitionend)="onContentTransitionEnd($event)"
         >
-          <div style="display: flex; width: 100%;">
+          <div #collapseWrapper style="display: flex; width: 100%;">
             <div style="width: 100%;">
               <ng-content select="[mznAccordionContent]" />
             </div>
@@ -159,14 +190,106 @@ export class MznAccordion implements OnInit {
     }),
   );
 
+  private readonly animState = signal<AnimState>('exited');
+  private readonly measuredHeight = signal<number>(0);
+
+  protected readonly shouldRenderContent = computed(
+    (): boolean => this.animState() !== 'exited',
+  );
+
+  protected readonly opacityStyle = computed((): number => {
+    const s = this.animState();
+
+    // pre-exit is a single-frame setup state that pins the height to a
+    // measured pixel value before the exit transition runs — opacity must
+    // stay at 1 during it so the fade-out animates from 1 to 0.
+    return s === 'entering' || s === 'entered' || s === 'pre-exit' ? 1 : 0;
+  });
+
+  protected readonly heightStyle = computed((): string => {
+    const s = this.animState();
+
+    if (s === 'entered') return 'auto';
+    if (s === 'entering' || s === 'pre-exit')
+      return `${this.measuredHeight()}px`;
+
+    return '0px';
+  });
+
+  protected readonly overflowStyle = computed((): string => {
+    const s = this.animState();
+
+    return s === 'entered' ? 'visible' : 'hidden';
+  });
+
+  protected readonly opacityTransition = computed((): string => {
+    const s = this.animState();
+
+    if (s === 'entering') {
+      return `opacity ${ENTER_DURATION}ms ${ENTER_EASING}`;
+    }
+
+    if (s === 'exiting') {
+      return `opacity ${EXIT_DURATION}ms ${EXIT_EASING}`;
+    }
+
+    return '';
+  });
+
+  protected readonly heightTransition = computed((): string => {
+    const s = this.animState();
+
+    if (s === 'entering') {
+      return `height ${ENTER_DURATION}ms ${ENTER_EASING}`;
+    }
+
+    if (s === 'exiting') {
+      return `height ${EXIT_DURATION}ms ${EXIT_EASING}`;
+    }
+
+    return '';
+  });
+
+  private readonly collapseWrapper =
+    viewChild<ElementRef<HTMLDivElement>>('collapseWrapper');
+
   private readonly groupControl = inject<AccordionGroupControl>(
     MZN_ACCORDION_GROUP,
     { optional: true },
   );
+  private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private fallbackTimer = NaN;
+
+  constructor() {
+    effect(() => {
+      const expanded = this.resolvedExpanded();
+
+      // Read animState untracked — we only react to expanded() changes,
+      // the state machine itself shouldn't loop on its own writes.
+      const state = untracked(() => this.animState());
+
+      if (expanded) {
+        if (state === 'exited' || state === 'exiting' || state === 'pre-exit') {
+          this.startEnter();
+        }
+      } else if (
+        state === 'entered' ||
+        state === 'entering' ||
+        state === 'pre-enter'
+      ) {
+        this.startExit();
+      }
+    });
+
+    this.destroyRef.onDestroy(() => {
+      window.clearTimeout(this.fallbackTimer);
+    });
+  }
 
   ngOnInit(): void {
     // defaultExpanded is read once at init only — matches React useState(defaultValue) semantics.
-    // Subsequent changes to the input do not reset state (use [expanded] for controlled mode).
     if (this.defaultExpanded()) {
       this.internalExpanded.set(true);
     }
@@ -183,5 +306,104 @@ export class MznAccordion implements OnInit {
     if (value && this.groupControl) {
       this.groupControl.onAccordionExpand(this);
     }
+  }
+
+  protected onContentTransitionEnd(event: TransitionEvent): void {
+    if (event.target !== event.currentTarget) return;
+    if (event.propertyName !== 'height') return;
+
+    const state = untracked(() => this.animState());
+
+    if (state === 'entering') {
+      this.finishEnter();
+    } else if (state === 'exiting') {
+      this.finishExit();
+    }
+  }
+
+  private startEnter(): void {
+    window.clearTimeout(this.fallbackTimer);
+
+    // Phase 1: mount at collapsed height (pre-enter). Next paint measures
+    // content height and flips to 'entering' so CSS transitions can animate.
+    this.animState.set('pre-enter');
+
+    afterNextRender(
+      () => {
+        const height = this.collapseWrapper()?.nativeElement.clientHeight ?? 0;
+
+        this.measuredHeight.set(height);
+
+        // Double rAF: the first schedules a callback after the upcoming paint
+        // (so the browser has registered height:0), the second flips state so
+        // the new height:<measured> is rendered as a *change* and a CSS
+        // transition kicks in. A single rAF batches with Angular's render in
+        // some cases and skips the transition.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.animState.set('entering');
+
+            // setTimeout fallback mirrors react-transition-group's timeout
+            // arm in case transitionend never fires (nested transitions, etc.).
+            this.fallbackTimer = window.setTimeout(() => {
+              if (untracked(() => this.animState()) === 'entering') {
+                this.finishEnter();
+              }
+            }, ENTER_DURATION + 50);
+          });
+        });
+      },
+      { injector: this.injector },
+    );
+  }
+
+  private finishEnter(): void {
+    window.clearTimeout(this.fallbackTimer);
+    this.animState.set('entered');
+  }
+
+  private startExit(): void {
+    window.clearTimeout(this.fallbackTimer);
+
+    const state = untracked(() => this.animState());
+
+    // From 'entered' (height: auto) we must first pin the wrapper to a
+    // specific pixel value so the browser can animate from that to 0.
+    // From 'entering' we already have measuredHeight + a concrete height,
+    // so we can fall straight into 'exiting'.
+    if (state === 'entered') {
+      const height = this.collapseWrapper()?.nativeElement.clientHeight ?? 0;
+
+      this.measuredHeight.set(height);
+      this.animState.set('pre-exit');
+
+      // Double rAF mirrors startEnter so the browser paints the fixed
+      // measured height before we flip to height:0 and kick the transition.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.animState.set('exiting');
+
+          this.fallbackTimer = window.setTimeout(() => {
+            if (untracked(() => this.animState()) === 'exiting') {
+              this.finishExit();
+            }
+          }, EXIT_DURATION + 50);
+        });
+      });
+    } else {
+      this.animState.set('exiting');
+
+      this.fallbackTimer = window.setTimeout(() => {
+        if (untracked(() => this.animState()) === 'exiting') {
+          this.finishExit();
+        }
+      }, EXIT_DURATION + 50);
+    }
+  }
+
+  private finishExit(): void {
+    window.clearTimeout(this.fallbackTimer);
+    this.animState.set('exited');
+    this.measuredHeight.set(0);
   }
 }
