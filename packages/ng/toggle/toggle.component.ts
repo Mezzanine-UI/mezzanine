@@ -41,21 +41,22 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.supportingText]': 'null',
   },
   template: `
-    <span [class]="inputContainerClass">
+    <div [class]="inputContainerClass">
+      <span [class]="knobClass"></span>
       <input
         type="checkbox"
         [attr.aria-checked]="resolvedChecked()"
-        [attr.aria-disabled]="resolvedDisabled() || null"
+        [attr.aria-disabled]="resolvedDisabled()"
+        [attr.checked]="resolvedChecked() ? '' : null"
         [class]="inputClass"
         [checked]="resolvedChecked()"
         [disabled]="resolvedDisabled()"
         (change)="onInputChange($event)"
         (focus)="onTouched()"
       />
-      <span [class]="knobClass"></span>
-    </span>
+    </div>
     @if (label()) {
-      <span [class]="textContainerClass">
+      <div [class]="textContainerClass">
         <span
           mznTypography
           variant="label-primary"
@@ -67,7 +68,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
             supportingText()
           }}</span>
         }
-      </span>
+      </div>
     }
   `,
 })
@@ -98,8 +99,17 @@ export class MznToggle implements ControlValueAccessor {
     (): boolean => this.disabled() || this.internalDisabled(),
   );
 
+  // Defensive fallback: if a parent binds `[size]="undefined"` (e.g. a
+  // wrapper that declares its own optional size input without a default),
+  // Angular signal inputs hand us undefined rather than the declared
+  // default of 'main'. Treat undefined as 'main' so the size modifier
+  // class is always emitted.
+  private readonly resolvedSize = computed(
+    (): ToggleSize => this.size() ?? 'main',
+  );
+
   protected readonly hostClasses = computed((): string =>
-    clsx(classes.host, classes[this.size()], {
+    clsx(classes.host, classes[this.resolvedSize()], {
       [classes.checked]: this.resolvedChecked(),
       [classes.disabled]: this.resolvedDisabled(),
     }),
