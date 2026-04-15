@@ -24,6 +24,10 @@ import { MznAccordionTitle } from './accordion-title.component';
  * `MznAccordionTitle` 與 `MznAccordionContent` 子元件。支援受控（`expanded`）
  * 與非受控（`defaultExpanded`）兩種模式。
  *
+ * 內容區的 DOM 結構鏡像 React Accordion — Fade > Collapse outer > flex >
+ * width-wrapper > content。收合狀態（且未曾展開過或已退出）整棵內容樹不渲染，
+ * 對齊 React 的 lazyMount + unmountOnExit 行為。
+ *
  * @example
  * ```html
  * import { MznAccordion, MznAccordionTitle, MznAccordionContent } from '@mezzanine-ui/ng/accordion';
@@ -51,8 +55,19 @@ import { MznAccordionTitle } from './accordion-title.component';
         get expanded(): boolean {
           return accordion.resolvedExpanded();
         },
+        get titleId(): string | null {
+          return accordion.titleId();
+        },
+        get contentId(): string | null {
+          const id = accordion.titleId();
+
+          return id ? `${id}-content` : null;
+        },
         toggleExpanded(value: boolean): void {
           accordion.onToggle(value);
+        },
+        setTitleId(id: string | null): void {
+          accordion.titleId.set(id);
         },
       }),
       deps: [MznAccordion],
@@ -69,12 +84,30 @@ import { MznAccordionTitle } from './accordion-title.component';
   template: `
     @if (title()) {
       <div mznAccordionTitle>{{ title() }}</div>
+    } @else {
+      <ng-content select="[mznAccordionTitle]" />
     }
-    <ng-content />
+
+    @if (resolvedExpanded()) {
+      <div style="opacity: 1;">
+        <div
+          style="min-height: 0px; overflow: hidden; width: 100%; height: auto;"
+        >
+          <div style="display: flex; width: 100%;">
+            <div style="width: 100%;">
+              <ng-content select="[mznAccordionContent]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    }
   `,
 })
 export class MznAccordion implements OnInit {
   private readonly internalExpanded = signal(false);
+
+  /** @internal AccordionTitle host id 寫入用 signal。 */
+  readonly titleId = signal<string | null>(null);
 
   /**
    * 預設是否展開（非受控模式）。

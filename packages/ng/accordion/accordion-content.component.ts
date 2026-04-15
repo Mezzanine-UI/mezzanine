@@ -3,7 +3,10 @@ import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
 import { AccordionControl, MZN_ACCORDION_CONTROL } from './accordion-control';
 
 /**
- * 手風琴內容元件，根據 `MZN_ACCORDION_CONTROL` 的展開狀態顯示或隱藏。
+ * 手風琴內容元件。實際的展開/收合渲染由父層 `MznAccordion` 控制
+ * （條件式 mount 整棵 wrapper 樹），本元件只負責標記 host 為內容 region，
+ * 並依 control 的 titleId 衍生 a11y 連動屬性
+ * （`id` / `aria-labelledby`）。
  *
  * @example
  * ```html
@@ -18,7 +21,8 @@ import { AccordionControl, MZN_ACCORDION_CONTROL } from './accordion-control';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'contentClass',
-    '[style.display]': 'control?.expanded ? null : "none"',
+    '[attr.id]': 'control?.contentId',
+    '[attr.aria-labelledby]': 'control?.titleId',
     role: 'region',
   },
   template: `<ng-content />`,
