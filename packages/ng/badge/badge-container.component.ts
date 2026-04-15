@@ -12,7 +12,7 @@ import { badgeClasses as classes } from '@mezzanine-ui/core/badge';
  *
  * <span mznBadgeContainer>
  *   <i mznIcon [icon]="bellIcon" ></i>
- *   <span mznBadge variant="dot" ></span>
+ *   <div mznBadge variant="dot-error"></div>
  * </span>
  * ```
  */
