@@ -50,7 +50,6 @@ export type CardGroupType =
   ],
   host: {
     '[class]': 'hostClasses()',
-    '[attr.aria-busy]': 'loading() || undefined',
     '[attr.cardType]': 'null',
     '[attr.loading]': 'null',
     '[attr.loadingCount]': 'null',
@@ -58,18 +57,16 @@ export type CardGroupType =
     '[attr.loadingThumbnailWidth]': 'null',
   },
   template: `
-    @if (!loading()) {
-      <ng-content />
-    } @else {
+    <ng-content />
+    @if (loading()) {
       @for (item of skeletonItems(); track $index) {
         @switch (cardType()) {
           @case ('quick-action') {
-            <div mznQuickActionCardSkeleton aria-hidden="true"></div>
+            <div mznQuickActionCardSkeleton></div>
           }
           @case ('single-thumbnail') {
             <div
               mznSingleThumbnailCardSkeleton
-              aria-hidden="true"
               [thumbnailAspectRatio]="loadingThumbnailAspectRatio() ?? '16/9'"
               [thumbnailWidth]="
                 loadingThumbnailWidth() ??
@@ -80,12 +77,11 @@ export type CardGroupType =
           @case ('four-thumbnail') {
             <div
               mznFourThumbnailCardSkeleton
-              aria-hidden="true"
               [thumbnailWidth]="loadingThumbnailWidth() ?? 200"
             ></div>
           }
           @default {
-            <div [class]="baseSkeletonClass" aria-hidden="true">
+            <div [class]="baseSkeletonClass">
               <div [class]="baseSkeletonHeaderClass">
                 <div [class]="baseSkeletonHeaderContentClass">
                   <div mznSkeleton [height]="20" width="60%"></div>
