@@ -13,6 +13,7 @@ import { MznAccordionTitle } from './accordion-title.component';
 import { MznAccordionContent } from './accordion-content.component';
 import { MznAccordionGroup } from './accordion-group.component';
 import { MznButton } from '../button/button.directive';
+import { MznAutocomplete } from '../autocomplete/autocomplete.component';
 import { MznDropdown } from '../dropdown/dropdown.component';
 import { MznIcon } from '../icon/icon.component';
 import { MznTypography } from '../typography/typography.directive';
@@ -192,6 +193,7 @@ export const Exclusive: Story = {
     MznAccordionTitle,
     MznAccordionContent,
     MznAccordionGroup,
+    MznAutocomplete,
     MznButton,
     MznDropdown,
     MznIcon,
@@ -213,8 +215,20 @@ export const Exclusive: Story = {
             >
           </div>
         </div>
-        <div mznAccordionContent>
-          您可以在此更新您的姓名、電子郵件與聯絡電話。 變更將在儲存後立即生效。
+        <div
+          mznAccordionContent
+          style="display: flex; flex-direction: column; gap: 12px;"
+        >
+          <div
+            mznAutocomplete
+            [options]="categoryOptions"
+            placeholder="選擇產品分類"
+          ></div>
+          <div
+            mznAutocomplete
+            [options]="statusOptions"
+            placeholder="選擇商品狀態"
+          ></div>
         </div>
       </div>
       <div mznAccordion [defaultExpanded]="true">
@@ -266,6 +280,16 @@ class AccordionWithActionsDemoComponent {
     { id: 'view', name: '查看' },
     { id: 'edit', name: '編輯', showUnderline: true },
     { id: 'delete', name: '刪除', validate: 'danger' },
+  ];
+  readonly categoryOptions: ReadonlyArray<DropdownOption> = [
+    { id: 'electronics', name: '電子產品' },
+    { id: 'clothing', name: '服飾配件' },
+    { id: 'food', name: '食品飲料' },
+  ];
+  readonly statusOptions: ReadonlyArray<DropdownOption> = [
+    { id: 'on-sale', name: '上架中' },
+    { id: 'off-shelf', name: '已下架' },
+    { id: 'out-of-stock', name: '缺貨中' },
   ];
 
   toggleDropdown(event: MouseEvent): void {
