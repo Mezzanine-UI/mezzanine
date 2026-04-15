@@ -536,7 +536,11 @@ export const DisabledWithActions: Story = {
   template: `
     <div mznAccordionGroup>
       @for (item of items(); track item.id) {
-        <div>
+        <div
+          [style.opacity]="item.visible ? 1 : 0"
+          [style.transition]="fadeTransition"
+          (transitionend)="handleExited(item.id, $event)"
+        >
           <div mznAccordion>
             <div mznAccordionTitle [id]="'delete-transition-' + item.id">
               {{ item.title }}
@@ -569,23 +573,34 @@ export const DisabledWithActions: Story = {
 class AccordionDeleteTransitionDemoComponent {
   readonly trashIcon = TrashIcon;
   readonly plusIcon = PlusIcon;
+  readonly fadeTransition = 'opacity 150ms cubic-bezier(0.4, 0.0, 0.2, 1)';
   private nextId = signal(4);
 
-  readonly items = signal([
+  readonly items = signal<
+    ReadonlyArray<{
+      content: string;
+      id: number;
+      title: string;
+      visible: boolean;
+    }>
+  >([
     {
       content: '目前支援信用卡、Line Pay、Apple Pay 等多種付款方式。',
       id: 1,
       title: '付款方式',
+      visible: true,
     },
     {
       content: '訂單成立後 1-3 個工作天內出貨，全台宅配約 1-2 天送達。',
       id: 2,
       title: '運送政策',
+      visible: true,
     },
     {
       content: '商品到貨後 7 天內可申請退換貨，請保持商品完整包裝。',
       id: 3,
       title: '退換貨須知',
+      visible: true,
     },
   ]);
 
@@ -598,6 +613,7 @@ class AccordionDeleteTransitionDemoComponent {
         content: '這是新增的手風琴內容，可在此填寫詳細說明。',
         id,
         title: `新增項目 ${id}`,
+        visible: true,
       },
     ]);
     this.nextId.update((n) => n + 1);
@@ -605,7 +621,22 @@ class AccordionDeleteTransitionDemoComponent {
 
   handleDelete(id: number, event: MouseEvent): void {
     event.stopPropagation();
-    this.items.update((prev) => prev.filter((item) => item.id !== id));
+    this.items.update((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, visible: false } : item)),
+    );
+  }
+
+  handleExited(id: number, event: TransitionEvent): void {
+    // Only remove when the fade-out on the wrapper itself finishes —
+    // inner element transitions bubble up and would otherwise re-trigger removal.
+    if (event.target !== event.currentTarget) return;
+    if (event.propertyName !== 'opacity') return;
+
+    const item = this.items().find((i) => i.id === id);
+
+    if (item && !item.visible) {
+      this.items.update((prev) => prev.filter((i) => i.id !== id));
+    }
   }
 }
 
