@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { MznBaseCard } from './base-card.component';
 import { MznCardGroup } from './card-group.component';
 
@@ -110,30 +111,47 @@ export const TypeAction: Story = {
   }),
 };
 
+@Component({
+  selector: '[mznBaseCardTypeOverflowDemo]',
+  standalone: true,
+  imports: [MznBaseCard],
+  host: { style: 'width: 320px; display: block;' },
+  template: `
+    <div
+      mznBaseCard
+      title="Overflow Card"
+      description="Card with a dropdown menu"
+      type="overflow"
+      [options]="dropdownOptions"
+      (optionSelect)="onOptionSelect($event)"
+    >
+      Click the three-dot icon to see more options in a dropdown menu.
+    </div>
+  `,
+})
+class BaseCardTypeOverflowDemoComponent {
+  readonly dropdownOptions: ReadonlyArray<DropdownOption> = [
+    { id: 'edit', name: 'Edit' },
+    { id: 'duplicate', name: 'Duplicate' },
+    { id: 'archive', name: 'Archive' },
+    { id: 'delete', name: 'Delete', validate: 'danger' },
+  ];
+
+  onOptionSelect(option: DropdownOption): void {
+    alert(`Selected: ${option.name}`);
+  }
+}
+
 export const TypeOverflow: Story = {
   name: 'Type: Overflow',
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({
+      imports: [BaseCardTypeOverflowDemoComponent],
+    }),
+  ],
   render: () => ({
-    props: {
-      dropdownOptions: [
-        { id: 'edit', name: 'Edit' },
-        { id: 'duplicate', name: 'Duplicate' },
-        { id: 'archive', name: 'Archive' },
-        { id: 'delete', name: 'Delete' },
-      ],
-    },
-    template: `
-      <div style="width: 320px;">
-        <div mznBaseCard
-          title="Overflow Card"
-          description="Card with a dropdown menu"
-          type="overflow"
-          [options]="dropdownOptions"
-        >
-          Click the three-dot icon to see more options in a dropdown menu.
-        </div>
-      </div>
-    `,
+    template: `<div mznBaseCardTypeOverflowDemo></div>`,
   }),
 };
 
@@ -199,6 +217,7 @@ export const TypeToggle: Story = {
         title="Settings"
         type="action"
         actionName="Configure"
+        (actionClick)="onConfigureClick()"
       >
         Manage your account settings and preferences.
       </div>
@@ -232,6 +251,7 @@ export const TypeToggle: Story = {
         title="Advanced"
         type="overflow"
         [options]="dropdownOptions"
+        (optionSelect)="onOptionSelect($event)"
       >
         Access advanced options through the menu.
       </div>
@@ -241,12 +261,20 @@ export const TypeToggle: Story = {
 class BaseCardCardGroupDemoComponent {
   readonly feature1 = signal(true);
   readonly feature2 = signal(false);
-  readonly dropdownOptions = [
+  readonly dropdownOptions: ReadonlyArray<DropdownOption> = [
     { id: 'edit', name: 'Edit' },
     { id: 'duplicate', name: 'Duplicate' },
     { id: 'archive', name: 'Archive' },
-    { id: 'delete', name: 'Delete' },
+    { id: 'delete', name: 'Delete', validate: 'danger' },
   ];
+
+  onConfigureClick(): void {
+    alert('Configure clicked!');
+  }
+
+  onOptionSelect(option: DropdownOption): void {
+    alert(`Selected: ${option.name}`);
+  }
 }
 
 export const WithCardGroup: Story = {
