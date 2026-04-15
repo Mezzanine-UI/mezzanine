@@ -3,11 +3,8 @@ import {
   Component,
   HostBinding,
   input,
-  output,
 } from '@angular/core';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
-
-export type ThumbnailHostComponent = 'div' | 'a' | 'button';
 
 const THUMBNAIL_CLASS = classes.fourThumbnailThumbnail;
 const OVERLAY_CLASS = classes.fourThumbnailOverlay;
@@ -15,27 +12,28 @@ const OVERLAY_CLASS = classes.fourThumbnailOverlay;
 /**
  * 縮圖元件，用於 FourThumbnailCard / SingleThumbnailCard 等卡片的子元素。
  *
- * 支援三種渲染模式：`div`（靜態）、`button`（可點擊）、`a`（連結），
- * 透過 `hostComponent` 切換，統一使用 `mzn-thumbnail` 選擇器。
+ * 用 attribute selector 套在 `<div>`、`<a>`、`<button>` 等 host element 上：
+ * host 保留原本的語意（連結、按鈕、靜態容器），MznThumbnail 只負責套上
+ * `mzn-four-thumbnail-card__thumbnail` class 與 title overlay 子節點。
  *
  * @example
  * ```html
  * import { MznThumbnail } from '@mezzanine-ui/ng/thumbnail';
  *
- * <!-- 靜態模式（預設） -->
+ * <!-- 靜態模式 -->
  * <div mznThumbnail title="Photo 1">
  *   <img alt="thumbnail" src="..." />
  * </div>
  *
  * <!-- 按鈕模式 -->
- * <div mznThumbnail hostComponent="button" title="Click me" (clicked)="onClick($event)">
+ * <button mznThumbnail type="button" title="Click me" (click)="onClick($event)">
  *   <img alt="..." src="..." />
- * </div>
+ * </button>
  *
  * <!-- 連結模式 -->
- * <div mznThumbnail hostComponent="a" href="https://example.com" target="_blank" title="Link">
+ * <a mznThumbnail href="https://example.com" target="_blank" title="Link">
  *   <img alt="..." src="..." />
- * </div>
+ * </a>
  * ```
  *
  * @see MznFourThumbnailCard
@@ -44,97 +42,25 @@ const OVERLAY_CLASS = classes.fourThumbnailOverlay;
 @Component({
   selector: '[mznThumbnail]',
   host: {
-    '[attr.hostComponent]': 'null',
     '[attr.title]': 'null',
-    '[attr.disabled]': 'null',
-    '[attr.href]': 'null',
-    '[attr.target]': 'null',
   },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @switch (hostComponent()) {
-      @case ('button') {
-        <div (click)="onClick($event)">
-          <ng-content />
-          <div [class]="overlayClass">
-            @if (title()) {
-              <span>{{ title() }}</span>
-            }
-          </div>
-        </div>
+    <ng-content />
+    <div [class]="overlayClass">
+      @if (title()) {
+        <span>{{ title() }}</span>
       }
-      @case ('a') {
-        <ng-content />
-        <div [class]="overlayClass">
-          @if (title()) {
-            <span>{{ title() }}</span>
-          }
-        </div>
-      }
-      @default {
-        <ng-content />
-        <div [class]="overlayClass">
-          @if (title()) {
-            <span>{{ title() }}</span>
-          }
-        </div>
-      }
-    }
+    </div>
   `,
 })
 export class MznThumbnail {
-  /**
-   * 渲染模式，決定元件的語義行為。
-   * @default 'div'
-   */
-  readonly hostComponent = input<ThumbnailHostComponent>('div');
-
   /** 滑鼠懸停時顯示的標題文字。 */
   readonly title = input<string>();
-
-  /**
-   * 是否禁用（僅 `button` 模式適用）。
-   * @default false
-   */
-  readonly disabled = input(false);
-
-  /** 連結網址（僅 `a` 模式適用）。 */
-  readonly href = input<string>();
-
-  /** 連結開啟目標（僅 `a` 模式適用）。 */
-  readonly target = input<string>();
-
-  /** 點擊事件（僅 `button` 模式適用）。 */
-  readonly clicked = output<MouseEvent>();
 
   @HostBinding('class')
   protected readonly hostClass = THUMBNAIL_CLASS;
 
-  @HostBinding('attr.href')
-  protected get hostHref(): string | null {
-    return this.hostComponent() === 'a' ? (this.href() ?? '') : null;
-  }
-
-  @HostBinding('attr.target')
-  protected get hostTarget(): string | null {
-    return this.hostComponent() === 'a' ? (this.target() ?? null) : null;
-  }
-
-  @HostBinding('attr.type')
-  protected get hostType(): string | null {
-    return this.hostComponent() === 'button' ? 'button' : null;
-  }
-
-  @HostBinding('attr.disabled')
-  protected get hostDisabled(): boolean | null {
-    return this.hostComponent() === 'button' && this.disabled() ? true : null;
-  }
-
   protected readonly overlayClass = OVERLAY_CLASS;
-
-  protected onClick(event: MouseEvent): void {
-    if (this.disabled()) return;
-    this.clicked.emit(event);
-  }
 }
