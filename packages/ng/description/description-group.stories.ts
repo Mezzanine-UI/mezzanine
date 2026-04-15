@@ -31,7 +31,7 @@ export const Playground: Story = {
           <span mznDescriptionContent>#HXE3901270287719038</span>
         </div>
         <div mznDescription title="訂單狀態" widthType="narrow">
-          <span mznBadge variant="dot-success" text="已出貨" ></span>
+          <div mznBadge variant="dot-success" text="已出貨"></div>
         </div>
       </div>
     `,
@@ -53,7 +53,7 @@ export const HorizontalLayout: Story = {
                 <span mznDescriptionContent>#HXE3901270287719038</span>
               </div>
               <div mznDescription title="訂單狀態" widthType="narrow">
-                <span mznBadge variant="dot-success" text="已出貨" ></span>
+                <div mznBadge variant="dot-success" text="已出貨"></div>
               </div>
             </div>
           </div>
@@ -69,7 +69,7 @@ export const HorizontalLayout: Story = {
                 <span mznDescriptionContent>#HXE3901270287719038</span>
               </div>
               <div mznDescription title="訂單狀態" widthType="wide">
-                <span mznBadge variant="dot-success" text="已出貨" ></span>
+                <div mznBadge variant="dot-success" text="已出貨"></div>
               </div>
             </div>
           </div>
@@ -85,7 +85,7 @@ export const HorizontalLayout: Story = {
                 <span mznDescriptionContent>#HXE3901270287719038</span>
               </div>
               <div mznDescription title="訂單狀態" widthType="stretch">
-                <span mznBadge variant="dot-success" text="已出貨" ></span>
+                <div mznBadge variant="dot-success" text="已出貨"></div>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@ export const VerticalLayout: Story = {
             <span mznDescriptionContent>#HXE3901270287719038</span>
           </div>
           <div mznDescription title="訂單狀態" orientation="vertical">
-            <span mznBadge variant="dot-success" text="已出貨" ></span>
+            <div mznBadge variant="dot-success" text="已出貨"></div>
           </div>
         </div>
       </div>
@@ -188,7 +188,7 @@ export const GroupStructure: Story = {
             <span mznDescriptionContent>#HXE3901270287719038</span>
           </div>
           <div mznDescription title="訂單狀態" widthType="narrow">
-            <span mznBadge variant="dot-success" text="已出貨" ></span>
+            <div mznBadge variant="dot-success" text="已出貨"></div>
           </div>
           <div mznDescription title="訂單金額" widthType="narrow">
             <span mznDescriptionContent variant="statistic">99,000</span>

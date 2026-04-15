@@ -134,7 +134,7 @@ export const Basic: Story = {
             <mzn-navigation-option title="轉換率分析"></mzn-navigation-option>
           </mzn-navigation-option>
           <mzn-navigation-option title="訂單管理" [icon]="ListIcon" [hasChildren]="true">
-            <span navBadge mznBadge variant="count-brand" [count]="5"></span>
+            <div navBadge mznBadge variant="count-brand" [count]="5"></div>
             <mzn-navigation-option title="待處理訂單"></mzn-navigation-option>
             <mzn-navigation-option title="已完成訂單"></mzn-navigation-option>
           </mzn-navigation-option>
@@ -151,9 +151,9 @@ export const Basic: Story = {
               [options]="userMenuOptions"
             >王小明</div>
             <button icons mznNavigationIconButton [icon]="QuestionOutlineIcon"></button>
-            <span icons mznBadge variant="dot-error">
+            <div icons mznBadge variant="dot-error">
               <button mznNavigationIconButton [icon]="NotificationIcon"></button>
-            </span>
+            </div>
           </footer>
         </nav>
       </div>
@@ -271,9 +271,9 @@ export const Overflow: Story = {
               [options]="userMenuOptions"
             >Very long username Very long username Very long username</div>
             <button icons mznNavigationIconButton [icon]="QuestionOutlineIcon"></button>
-            <span icons mznBadge variant="dot-error">
+            <div icons mznBadge variant="dot-error">
               <button mznNavigationIconButton [icon]="NotificationIcon"></button>
-            </span>
+            </div>
           </footer>
         </nav>
       </div>
@@ -429,9 +429,9 @@ export const Overflow: Story = {
             mznNavigationIconButton
             [icon]="QuestionOutlineIcon"
           ></button>
-          <span icons mznBadge variant="dot-error">
+          <div icons mznBadge variant="dot-error">
             <button mznNavigationIconButton [icon]="NotificationIcon"></button>
-          </span>
+          </div>
         </footer>
       </nav>
 
@@ -554,9 +554,9 @@ export const Overflow: Story = {
             mznNavigationIconButton
             [icon]="QuestionOutlineIcon"
           ></button>
-          <span icons mznBadge variant="dot-error">
+          <div icons mznBadge variant="dot-error">
             <button mznNavigationIconButton [icon]="NotificationIcon"></button>
-          </span>
+          </div>
         </footer>
       </nav>
 
@@ -652,9 +652,9 @@ export const Overflow: Story = {
             mznNavigationIconButton
             [icon]="QuestionOutlineIcon"
           ></button>
-          <span icons mznBadge variant="dot-error">
+          <div icons mznBadge variant="dot-error">
             <button mznNavigationIconButton [icon]="NotificationIcon"></button>
-          </span>
+          </div>
         </footer>
       </nav>
 

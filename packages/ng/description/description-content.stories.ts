@@ -50,7 +50,7 @@ export const Playground: Story = {
         </div>
         <div>
           <p style="font-weight: 600;">State</p>
-          <span mznBadge variant="dot-success" text="已審核" ></span>
+          <div mznBadge variant="dot-success" text="已審核"></div>
         </div>
         <div>
           <p style="font-weight: 600;">Statistic</p>
@@ -118,8 +118,8 @@ export const Sizes: Story = {
         <div>
           <p style="margin-bottom: 8px; font-weight: 600;">State</p>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <span mznBadge variant="dot-success" text="已審核（main）" size="main" ></span>
-            <span mznBadge variant="dot-success" text="已審核（sub）" size="sub" ></span>
+            <div mznBadge variant="dot-success" text="已審核（main）" size="main"></div>
+            <div mznBadge variant="dot-success" text="已審核（sub）" size="sub"></div>
           </div>
         </div>
         <div>
