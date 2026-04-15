@@ -109,15 +109,14 @@ function getTimeGroup(timestamp: Date | undefined, now: Date): TimeGroup {
   template: `
     <button type="button" [class]="triggerClasses()" (click)="toggleOpen()">
       @if (unreadCount() > 0) {
-        <span
+        <div
           mznBadge
           variant="count-alert"
           [count]="unreadCount()"
           [overflowCount]="99"
-          [hasChildren]="true"
         >
           <i mznIcon [icon]="notificationIcon"></i>
-        </span>
+        </div>
       } @else {
         <i mznIcon [icon]="notificationIcon"></i>
       }

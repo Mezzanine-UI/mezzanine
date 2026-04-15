@@ -53,12 +53,12 @@ import { MZN_TABS_CONTEXT, TabsContext } from './tab-context';
       }
       <ng-content />
       @if (badgeCount() !== undefined) {
-        <span
+        <div
           mznBadge
           [className]="badgeClass"
           [variant]="badgeCountVariant()"
           [count]="badgeCount()!"
-        ></span>
+        ></div>
       }
     </button>
   `,

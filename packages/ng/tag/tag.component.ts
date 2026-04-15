@@ -74,7 +74,7 @@ import { MznBadge } from '@mezzanine-ui/ng/badge';
       @default {
         <span [class]="classes.label">{{ label() }}</span>
         @if (type() === 'counter') {
-          <span mznBadge variant="count-info" [count]="count() ?? 0"></span>
+          <div mznBadge variant="count-info" [count]="count() ?? 0"></div>
         }
         @if (type() === 'dismissable') {
           <button

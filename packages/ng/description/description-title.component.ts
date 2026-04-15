@@ -48,13 +48,13 @@ import { MZN_DESCRIPTION_CONTEXT } from './description-context';
   },
   template: `
     @if (badge()) {
-      <span
+      <div
         mznBadge
         [class]="textClass"
         [variant]="badge()!"
         [size]="resolvedSize()"
         [text]="text() ?? ''"
-      ></span>
+      ></div>
     } @else if (text()) {
       <span [class]="textClass">{{ text() }}</span>
     } @else {
