@@ -221,11 +221,13 @@ export const Exclusive: Story = {
         >
           <div
             mznAutocomplete
+            [clearable]="true"
             [options]="categoryOptions"
             placeholder="選擇產品分類"
           ></div>
           <div
             mznAutocomplete
+            [clearable]="true"
             [options]="statusOptions"
             placeholder="選擇商品狀態"
           ></div>
