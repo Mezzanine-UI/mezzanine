@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   input,
+  OnInit,
   output,
   signal,
 } from '@angular/core';
@@ -132,7 +133,8 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
               mznToggle
               [disabled]="disabled()"
               [label]="toggleLabel()"
-              [(ngModel)]="toggleChecked"
+              [ngModel]="resolvedToggleChecked()"
+              (ngModelChange)="onToggleInternalChange($event)"
               [size]="toggleSize()"
               [supportingText]="toggleSupportingText()"
             ></div>
@@ -149,7 +151,7 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
     </div>
   `,
 })
-export class MznBaseCard {
+export class MznBaseCard implements OnInit {
   protected readonly headerClass = classes.baseHeader;
   protected readonly headerContentClass = classes.baseHeaderContentWrapper;
   protected readonly headerTitleClass = classes.baseHeaderTitle;
@@ -237,8 +239,21 @@ export class MznBaseCard {
   /** 切換開關狀態變更事件。 */
   readonly toggleChange = output<boolean>();
 
-  /** 切換開關的受控狀態（用於 ngModel 雙向綁定）。 */
-  protected toggleChecked = false;
+  /**
+   * Toggle 內部狀態（非受控模式）。受控模式下由 `checked()` 覆寫。
+   * `defaultChecked` 於 ngOnInit 時一次性寫入，鏡像 React
+   * `useState(defaultChecked)` 語意。
+   */
+  private readonly internalToggleChecked = signal(false);
+
+  /** 解析後的 toggle 勾選狀態，供 MznToggle 顯示使用。 */
+  protected readonly resolvedToggleChecked = computed((): boolean => {
+    const controlled = this.checked();
+
+    if (controlled !== undefined) return controlled;
+
+    return this.internalToggleChecked();
+  });
 
   /** DotHorizontalIcon for overflow type. */
   protected readonly dotHorizontalIcon = DotHorizontalIcon;
@@ -266,5 +281,22 @@ export class MznBaseCard {
   protected onOverflowOptionSelect(option: DropdownOption): void {
     this.optionSelect.emit(option);
     this.overflowOpen.set(false);
+  }
+
+  protected onToggleInternalChange(next: boolean): void {
+    this.toggleChange.emit(next);
+
+    if (this.checked() === undefined) {
+      this.internalToggleChecked.set(next);
+    }
+  }
+
+  ngOnInit(): void {
+    // defaultChecked is read once at init — mirrors React useState(defaultChecked)
+    // semantics. Subsequent input changes do not reset state; use [checked]
+    // for controlled mode.
+    if (this.defaultChecked()) {
+      this.internalToggleChecked.set(true);
+    }
   }
 }
