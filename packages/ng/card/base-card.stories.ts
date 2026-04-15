@@ -296,17 +296,46 @@ export const States: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <div style="display: flex; flex-direction: column; gap: 16px; width: 320px;">
-        <div mznBaseCard title="Normal Card" description="Normal interactive card">
-          This card is fully interactive.
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <h4 style="margin: 0;">Normal</h4>
+        <div style="width: 320px;">
+          <div
+            mznBaseCard
+            title="Normal Card"
+            description="Normal interactive card"
+            type="action"
+            actionName="Action"
+          >
+            This card is fully interactive.
+          </div>
         </div>
 
-        <div mznBaseCard title="Disabled Card" description="This card is disabled" [disabled]="true">
-          The card and its action are disabled.
+        <h4 style="margin: 0;">Disabled</h4>
+        <div style="width: 320px;">
+          <div
+            mznBaseCard
+            title="Disabled Card"
+            description="This card is disabled"
+            type="action"
+            actionName="Action"
+            [disabled]="true"
+          >
+            The card and its action are disabled.
+          </div>
         </div>
 
-        <div mznBaseCard title="Read Only Card" description="This card is read-only" [readOnly]="true">
-          The card cannot be interacted with.
+        <h4 style="margin: 0;">Read Only</h4>
+        <div style="width: 320px;">
+          <div
+            mznBaseCard
+            title="Read Only Card"
+            description="This card is read-only"
+            type="action"
+            actionName="Action"
+            [readOnly]="true"
+          >
+            The card cannot be interacted with.
+          </div>
         </div>
       </div>
     `,
