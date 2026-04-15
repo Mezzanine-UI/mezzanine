@@ -1,10 +1,21 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import {
+  DotHorizontalIcon,
+  EditIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@mezzanine-ui/icons';
 import { MznAccordion } from './accordion.component';
+import { MznAccordionActions } from './accordion-actions.component';
 import { MznAccordionTitle } from './accordion-title.component';
 import { MznAccordionContent } from './accordion-content.component';
 import { MznAccordionGroup } from './accordion-group.component';
 import { MznButton } from '../button/button.directive';
+import { MznDropdown } from '../dropdown/dropdown.component';
+import { MznIcon } from '../icon/icon.component';
+import { MznTypography } from '../typography/typography.directive';
 
 const meta: Meta<MznAccordion> = {
   title: 'Data Display/Accordion',
@@ -17,6 +28,7 @@ const meta: Meta<MznAccordion> = {
         MznAccordionContent,
         MznAccordionGroup,
         MznButton,
+        MznTypography,
       ],
     }),
   ],
@@ -29,7 +41,7 @@ export const Basic: Story = {
   render: () => ({
     template: `
       <div style="max-width: 680px; width: 100%; display: grid; gap: 32px;">
-        <h3>Accordion Group - Size Main</h3>
+        <h3 mznTypography variant="h3">Accordion Group - Size Main</h3>
         <div mznAccordionGroup size="main">
           <div mznAccordion title="付款方式" [disabled]="true">
             <div mznAccordionContent>
@@ -50,7 +62,7 @@ export const Basic: Story = {
             </div>
           </div>
         </div>
-        <h3>Accordion Group - Size Sub</h3>
+        <h3 mznTypography variant="h3">Accordion Group - Size Sub</h3>
         <div mznAccordionGroup size="sub">
           <div mznAccordion title="付款方式" [disabled]="true">
             <div mznAccordionContent>
@@ -77,7 +89,7 @@ export const Basic: Story = {
 };
 
 @Component({
-  selector: 'mzn-accordion-controlled-demo',
+  selector: '[mznAccordionControlledDemo]',
   standalone: true,
   imports: [
     MznAccordion,
@@ -85,41 +97,39 @@ export const Basic: Story = {
     MznAccordionContent,
     MznAccordionGroup,
   ],
+  host: { style: 'max-width: 680px; width: 100%; display: block;' },
   template: `
-    <div style="max-width: 680px; width: 100%;">
-      <div mznAccordionGroup>
-        <div
-          mznAccordion
-          title="篩選條件"
-          [expanded]="activeAccordion() === 0"
-          (expandedChange)="setActive(0, $event)"
-        >
-          <div mznAccordionContent>
-            您可以在此更新您的姓名、電子郵件與聯絡電話。
-            變更將在儲存後立即生效。
-          </div>
+    <div mznAccordionGroup>
+      <div
+        mznAccordion
+        title="篩選條件"
+        [expanded]="activeAccordion() === 0"
+        (expandedChange)="setActive(0, $event)"
+      >
+        <div mznAccordionContent>
+          您可以在此更新您的姓名、電子郵件與聯絡電話。 變更將在儲存後立即生效。
         </div>
-        <div
-          mznAccordion
-          title="安全性設定"
-          [expanded]="activeAccordion() === 1"
-          (expandedChange)="setActive(1, $event)"
-        >
-          <div mznAccordionContent>
-            啟用雙重驗證以加強帳號安全，建議定期更換密碼，
-            並避免使用與其他網站相同的密碼。
-          </div>
+      </div>
+      <div
+        mznAccordion
+        title="安全性設定"
+        [expanded]="activeAccordion() === 1"
+        (expandedChange)="setActive(1, $event)"
+      >
+        <div mznAccordionContent>
+          啟用雙重驗證以加強帳號安全，建議定期更換密碼，
+          並避免使用與其他網站相同的密碼。
         </div>
-        <div
-          mznAccordion
-          title="通知偏好"
-          [expanded]="activeAccordion() === 2"
-          (expandedChange)="setActive(2, $event)"
-        >
-          <div mznAccordionContent>
-            選擇您希望接收的通知類型，包含訂單更新、促銷活動、
-            系統公告等，可隨時調整設定。
-          </div>
+      </div>
+      <div
+        mznAccordion
+        title="通知偏好"
+        [expanded]="activeAccordion() === 2"
+        (expandedChange)="setActive(2, $event)"
+      >
+        <div mznAccordionContent>
+          選擇您希望接收的通知類型，包含訂單更新、促銷活動、
+          系統公告等，可隨時調整設定。
         </div>
       </div>
     </div>
@@ -140,7 +150,7 @@ export const Controlled: Story = {
     }),
   ],
   render: () => ({
-    template: `<mzn-accordion-controlled-demo />`,
+    template: `<div mznAccordionControlledDemo></div>`,
   }),
 };
 
@@ -173,152 +183,364 @@ export const Exclusive: Story = {
   }),
 };
 
-export const WithActions: Story = {
-  render: () => ({
-    template: `
-      <div style="max-width: 680px; width: 100%;">
-        <div mznAccordionGroup>
-          <div mznAccordion>
-            <div mznAccordionTitle>
-              篩選條件
-              <div actions style="display: flex; gap: 4px;">
-                <button mznButton size="main" variant="base-text-link">編輯</button>
-                <button mznButton color="danger" size="main" variant="destructive-text-link">刪除</button>
-              </div>
-            </div>
-            <div mznAccordionContent>
-              您可以在此更新您的姓名、電子郵件與聯絡電話。 變更將在儲存後立即生效。
-            </div>
-          </div>
-          <div mznAccordion [defaultExpanded]="true">
-            <div mznAccordionTitle>產品說明文件</div>
-            <div mznAccordionContent>
-              包含產品規格書、使用手冊與保固條款，
-              請於購買前詳閱相關文件以了解產品功能與限制。
-            </div>
-          </div>
-          <div mznAccordion>
-            <div mznAccordionTitle>
-              產品標籤
-              <div actions style="display: flex; gap: 4px;">
-                <button mznButton size="main" variant="base-text-link">查看</button>
-                <button mznButton size="main" variant="base-text-link">編輯</button>
-                <button mznButton color="danger" size="main" variant="destructive-text-link">刪除</button>
-              </div>
-            </div>
-            <div mznAccordionContent>
-              標籤可協助分類與搜尋產品，您可以為每個產品添加多個標籤，
-              例如：熱銷、新品、限時優惠等。
-            </div>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
-};
-
-export const IconOnly: Story = {
-  render: () => ({
-    template: `
-      <div style="max-width: 680px; width: 100%;">
-        <div mznAccordionGroup>
-          <div mznAccordion>
-            <div mznAccordionTitle>
-              篩選條件
-              <div actions style="display: flex; gap: 4px;">
-                <button mznButton iconType="icon-only" aria-label="編輯篩選條件" title="編輯篩選條件" size="main" variant="base-text-link">✎</button>
-                <button mznButton color="danger" iconType="icon-only" aria-label="刪除篩選條件" title="刪除篩選條件" size="main" variant="destructive-text-link">🗑</button>
-              </div>
-            </div>
-            <div mznAccordionContent>
-              您可以在此設定搜尋篩選條件，包含日期範圍、分類、狀態等篩選選項。
-            </div>
-          </div>
-          <div mznAccordion [defaultExpanded]="true">
-            <div mznAccordionTitle>
-              產品說明文件
-              <div actions style="display: flex; gap: 4px;">
-                <button mznButton iconType="icon-only" size="main" variant="base-text-link">✎</button>
-                <button mznButton color="danger" iconType="icon-only" size="main" variant="destructive-text-link">🗑</button>
-              </div>
-            </div>
-            <div mznAccordionContent>
-              包含產品規格書、使用手冊與保固條款，
-              請於購買前詳閱相關文件以了解產品功能與限制。
-            </div>
-          </div>
-          <div mznAccordion>
-            <div mznAccordionTitle>
-              退換貨須知
-              <div actions style="display: flex; gap: 4px;">
-                <button mznButton iconType="icon-only" size="main" variant="base-text-link">✎</button>
-                <button mznButton color="danger" iconType="icon-only" size="main" variant="destructive-text-link">🗑</button>
-              </div>
-            </div>
-            <div mznAccordionContent>
-              商品到貨後 7 天內可申請退換貨，請保持商品完整包裝。
-              如有瑕疵或寄送錯誤，我們將負擔來回運費。
-            </div>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
-};
-
-export const DisabledWithActions: Story = {
-  render: () => ({
-    template: `
-      <div style="max-width: 680px; width: 100%;">
-        <div mznAccordionGroup>
-          <div mznAccordion [disabled]="true">
-            <div mznAccordionTitle>
-              篩選條件
-              <div actions style="display: flex; gap: 4px;">
-                <button mznButton [disabled]="true" iconType="icon-only" aria-label="編輯" title="編輯" size="main" variant="base-text-link">✎</button>
-                <button mznButton color="danger" [disabled]="true" iconType="icon-only" aria-label="刪除" title="刪除" size="main" variant="destructive-text-link">🗑</button>
-              </div>
-            </div>
-            <div mznAccordionContent>
-              此手風琴目前為停用狀態，無法展開或收合。
-            </div>
-          </div>
-          <div mznAccordion>
-            <div mznAccordionTitle>
-              運送政策
-              <div actions style="display: flex; gap: 4px;">
-                <button mznButton iconType="icon-only" aria-label="編輯" title="編輯" size="main" variant="base-text-link">✎</button>
-                <button mznButton color="danger" iconType="icon-only" aria-label="刪除" title="刪除" size="main" variant="destructive-text-link">🗑</button>
-              </div>
-            </div>
-            <div mznAccordionContent>
-              訂單成立後 1-3 個工作天內出貨，全台宅配約 1-2 天送達。
-            </div>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
-};
-
 @Component({
-  selector: 'mzn-accordion-delete-transition-demo',
+  selector: '[mznAccordionWithActionsDemo]',
   standalone: true,
   imports: [
     MznAccordion,
+    MznAccordionActions,
     MznAccordionTitle,
     MznAccordionContent,
     MznAccordionGroup,
     MznButton,
+    MznDropdown,
+    MznIcon,
   ],
+  host: { style: 'max-width: 680px; width: 100%; display: block;' },
   template: `
-    <div style="display: grid; gap: 16px; max-width: 680px; width: 100%;">
-      <div mznAccordionGroup>
-        @for (item of items(); track item.id) {
+    <div mznAccordionGroup>
+      <div mznAccordion>
+        <div mznAccordionTitle id="accordion-1">
+          篩選條件
+          <div actions mznAccordionActions>
+            <button mznButton size="main" variant="base-text-link">編輯</button>
+            <button
+              mznButton
+              color="danger"
+              size="main"
+              variant="destructive-text-link"
+              >刪除</button
+            >
+          </div>
+        </div>
+        <div mznAccordionContent>
+          您可以在此更新您的姓名、電子郵件與聯絡電話。 變更將在儲存後立即生效。
+        </div>
+      </div>
+      <div mznAccordion [defaultExpanded]="true">
+        <div mznAccordionTitle id="accordion-2">產品說明文件</div>
+        <div mznAccordionContent>
+          包含產品規格書、使用手冊與保固條款，
+          請於購買前詳閱相關文件以了解產品功能與限制。
+        </div>
+      </div>
+      <div mznAccordion>
+        <div mznAccordionTitle id="accordion-3">
+          產品標籤
+          <div actions mznAccordionActions>
+            <div class="mzn-dropdown mzn-dropdown--outside">
+              <button
+                #anchor
+                mznButton
+                iconType="icon-only"
+                size="sub"
+                variant="base-text-link"
+                (click)="toggleDropdown($event)"
+              >
+                <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
+              </button>
+              <div
+                mznDropdown
+                [anchor]="anchor"
+                [open]="dropdownOpen()"
+                [options]="dropdownOptions"
+                placement="bottom-end"
+                (selected)="onDropdownSelect()"
+                (closed)="dropdownOpen.set(false)"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div mznAccordionContent>
+          標籤可協助分類與搜尋產品，您可以為每個產品添加多個標籤，
+          例如：熱銷、新品、限時優惠等。
+        </div>
+      </div>
+    </div>
+  `,
+})
+class AccordionWithActionsDemoComponent {
+  readonly dotHorizontalIcon = DotHorizontalIcon;
+  readonly dropdownOpen = signal(false);
+  readonly dropdownOptions: ReadonlyArray<DropdownOption> = [
+    { id: 'view', name: '查看' },
+    { id: 'edit', name: '編輯', showUnderline: true },
+    { id: 'delete', name: '刪除', validate: 'danger' },
+  ];
+
+  toggleDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.dropdownOpen.update((prev) => !prev);
+  }
+
+  onDropdownSelect(): void {
+    this.dropdownOpen.set(false);
+  }
+}
+
+export const WithActions: Story = {
+  decorators: [
+    moduleMetadata({
+      imports: [AccordionWithActionsDemoComponent],
+    }),
+  ],
+  render: () => ({
+    template: `<div mznAccordionWithActionsDemo></div>`,
+  }),
+};
+
+@Component({
+  selector: '[mznAccordionIconOnlyDemo]',
+  standalone: true,
+  imports: [
+    MznAccordion,
+    MznAccordionActions,
+    MznAccordionTitle,
+    MznAccordionContent,
+    MznAccordionGroup,
+    MznButton,
+    MznIcon,
+  ],
+  host: { style: 'max-width: 680px; width: 100%; display: block;' },
+  template: `
+    <div mznAccordionGroup>
+      <div mznAccordion>
+        <div mznAccordionTitle id="icon-only-1">
+          篩選條件
+          <div actions mznAccordionActions>
+            <button
+              mznButton
+              iconType="icon-only"
+              size="main"
+              variant="base-text-link"
+              aria-label="編輯篩選條件"
+              title="編輯篩選條件"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="editIcon" [size]="16"></i>
+            </button>
+            <button
+              mznButton
+              color="danger"
+              iconType="icon-only"
+              size="main"
+              variant="destructive-text-link"
+              aria-label="刪除篩選條件"
+              title="刪除篩選條件"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="trashIcon" [size]="16"></i>
+            </button>
+          </div>
+        </div>
+        <div mznAccordionContent>
+          您可以在此設定搜尋篩選條件，包含日期範圍、分類、狀態等篩選選項。
+        </div>
+      </div>
+      <div mznAccordion [defaultExpanded]="true">
+        <div mznAccordionTitle id="icon-only-2">
+          產品說明文件
+          <div actions mznAccordionActions>
+            <button
+              mznButton
+              iconType="icon-only"
+              size="main"
+              variant="base-text-link"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="editIcon" [size]="16"></i>
+            </button>
+            <button
+              mznButton
+              color="danger"
+              iconType="icon-only"
+              size="main"
+              variant="destructive-text-link"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="trashIcon" [size]="16"></i>
+            </button>
+          </div>
+        </div>
+        <div mznAccordionContent>
+          包含產品規格書、使用手冊與保固條款，
+          請於購買前詳閱相關文件以了解產品功能與限制。
+        </div>
+      </div>
+      <div mznAccordion>
+        <div mznAccordionTitle id="icon-only-3">
+          退換貨須知
+          <div actions mznAccordionActions>
+            <button
+              mznButton
+              iconType="icon-only"
+              size="main"
+              variant="base-text-link"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="editIcon" [size]="16"></i>
+            </button>
+            <button
+              mznButton
+              color="danger"
+              iconType="icon-only"
+              size="main"
+              variant="destructive-text-link"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="trashIcon" [size]="16"></i>
+            </button>
+          </div>
+        </div>
+        <div mznAccordionContent>
+          商品到貨後 7 天內可申請退換貨，請保持商品完整包裝。
+          如有瑕疵或寄送錯誤，我們將負擔來回運費。
+        </div>
+      </div>
+    </div>
+  `,
+})
+class AccordionIconOnlyDemoComponent {
+  readonly editIcon = EditIcon;
+  readonly trashIcon = TrashIcon;
+}
+
+export const IconOnly: Story = {
+  decorators: [
+    moduleMetadata({
+      imports: [AccordionIconOnlyDemoComponent],
+    }),
+  ],
+  render: () => ({
+    template: `<div mznAccordionIconOnlyDemo></div>`,
+  }),
+};
+
+@Component({
+  selector: '[mznAccordionDisabledWithActionsDemo]',
+  standalone: true,
+  imports: [
+    MznAccordion,
+    MznAccordionActions,
+    MznAccordionTitle,
+    MznAccordionContent,
+    MznAccordionGroup,
+    MznButton,
+    MznIcon,
+  ],
+  host: { style: 'max-width: 680px; width: 100%; display: block;' },
+  template: `
+    <div mznAccordionGroup>
+      <div mznAccordion [disabled]="true">
+        <div mznAccordionTitle id="disabled-1">
+          篩選條件
+          <div actions mznAccordionActions>
+            <button
+              mznButton
+              [disabled]="true"
+              iconType="icon-only"
+              size="main"
+              variant="base-text-link"
+              aria-label="編輯"
+              title="編輯"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="editIcon" [size]="16"></i>
+            </button>
+            <button
+              mznButton
+              color="danger"
+              [disabled]="true"
+              iconType="icon-only"
+              size="main"
+              variant="destructive-text-link"
+              aria-label="刪除"
+              title="刪除"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="trashIcon" [size]="16"></i>
+            </button>
+          </div>
+        </div>
+        <div mznAccordionContent>
+          此手風琴目前為停用狀態，無法展開或收合。
+        </div>
+      </div>
+      <div mznAccordion>
+        <div mznAccordionTitle id="disabled-2">
+          運送政策
+          <div actions mznAccordionActions>
+            <button
+              mznButton
+              iconType="icon-only"
+              size="main"
+              variant="base-text-link"
+              aria-label="編輯"
+              title="編輯"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="editIcon" [size]="16"></i>
+            </button>
+            <button
+              mznButton
+              color="danger"
+              iconType="icon-only"
+              size="main"
+              variant="destructive-text-link"
+              aria-label="刪除"
+              title="刪除"
+              (click)="$event.stopPropagation()"
+            >
+              <i mznIcon [icon]="trashIcon" [size]="16"></i>
+            </button>
+          </div>
+        </div>
+        <div mznAccordionContent>
+          訂單成立後 1-3 個工作天內出貨，全台宅配約 1-2 天送達。
+        </div>
+      </div>
+    </div>
+  `,
+})
+class AccordionDisabledWithActionsDemoComponent {
+  readonly editIcon = EditIcon;
+  readonly trashIcon = TrashIcon;
+}
+
+export const DisabledWithActions: Story = {
+  decorators: [
+    moduleMetadata({
+      imports: [AccordionDisabledWithActionsDemoComponent],
+    }),
+  ],
+  render: () => ({
+    template: `<div mznAccordionDisabledWithActionsDemo></div>`,
+  }),
+};
+
+@Component({
+  selector: '[mznAccordionDeleteTransitionDemo]',
+  standalone: true,
+  imports: [
+    MznAccordion,
+    MznAccordionActions,
+    MznAccordionTitle,
+    MznAccordionContent,
+    MznAccordionGroup,
+    MznButton,
+    MznIcon,
+  ],
+  host: {
+    style: 'display: grid; gap: 16px; max-width: 680px; width: 100%;',
+  },
+  template: `
+    <div mznAccordionGroup>
+      @for (item of items(); track item.id) {
+        <div>
           <div mznAccordion>
-            <div mznAccordionTitle>
+            <div mznAccordionTitle [id]="'delete-transition-' + item.id">
               {{ item.title }}
-              <div actions style="display: flex; gap: 4px;">
+              <div actions mznAccordionActions>
                 <button
                   mznButton
                   color="danger"
@@ -327,23 +549,26 @@ export const DisabledWithActions: Story = {
                   size="main"
                   variant="destructive-text-link"
                   (click)="handleDelete(item.id, $event)"
-                  >🗑</button
                 >
+                  <i mznIcon [icon]="trashIcon" [size]="16"></i>
+                </button>
               </div>
             </div>
             <div mznAccordionContent>{{ item.content }}</div>
           </div>
-        }
-      </div>
-      <div>
-        <button mznButton variant="base-secondary" (click)="handleAdd()"
-          >新增手風琴</button
-        >
-      </div>
+        </div>
+      }
+    </div>
+    <div>
+      <button mznButton variant="base-secondary" (click)="handleAdd()"
+        >新增手風琴</button
+      >
     </div>
   `,
 })
 class AccordionDeleteTransitionDemoComponent {
+  readonly trashIcon = TrashIcon;
+  readonly plusIcon = PlusIcon;
   private nextId = signal(4);
 
   readonly items = signal([
@@ -391,6 +616,6 @@ export const DeleteTransition: Story = {
     }),
   ],
   render: () => ({
-    template: `<mzn-accordion-delete-transition-demo />`,
+    template: `<div mznAccordionDeleteTransitionDemo></div>`,
   }),
 };
