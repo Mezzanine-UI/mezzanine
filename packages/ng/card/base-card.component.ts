@@ -141,10 +141,6 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
               [supportingText]="toggleSupportingText()"
             ></div>
           </div>
-        } @else {
-          <div [class]="headerActionClass">
-            <ng-content select="[header-action]" />
-          </div>
         }
       </div>
     }

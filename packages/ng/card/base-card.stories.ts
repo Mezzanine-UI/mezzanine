@@ -342,19 +342,58 @@ export const States: Story = {
   }),
 };
 
+@Component({
+  selector: '[mznBaseCardAsLinkDemo]',
+  standalone: true,
+  imports: [MznBaseCard],
+  host: { style: 'display: flex; gap: 16px;' },
+  template: `
+    <div style="width: 280px;">
+      <a
+        mznBaseCard
+        href="https://rytass.com/"
+        target="_blank"
+        title="Link Card"
+        description="Click anywhere to navigate"
+        type="default"
+      >
+        This entire card is a clickable link.
+      </a>
+    </div>
+
+    <div style="width: 280px;">
+      <a
+        mznBaseCard
+        href="https://rytass.com/"
+        target="_blank"
+        title="Link with Action"
+        description="Has both link and action"
+        type="action"
+        actionName="Details"
+        (actionClick)="onActionClick($event)"
+      >
+        Card is a link, but action button has separate behavior.
+      </a>
+    </div>
+  `,
+})
+class BaseCardAsLinkDemoComponent {
+  onActionClick(event: MouseEvent): void {
+    event.preventDefault();
+    alert('Action clicked, navigation prevented');
+  }
+}
+
 export const AsLink: Story = {
   name: 'As Link',
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({
+      imports: [BaseCardAsLinkDemoComponent],
+    }),
+  ],
   render: () => ({
-    template: `
-      <div style="display: flex; gap: 16px;">
-        <div style="width: 280px;">
-          <div mznBaseCard title="Link Card" description="Click anywhere to navigate">
-            This entire card is a clickable link (not implemented in Angular).
-          </div>
-        </div>
-      </div>
-    `,
+    template: `<div mznBaseCardAsLinkDemo></div>`,
   }),
 };
 
