@@ -37,6 +37,7 @@ import clsx from 'clsx';
 import { checkboxClasses } from '@mezzanine-ui/core/checkbox';
 import { iconClasses as spinClasses } from '@mezzanine-ui/core/spin';
 import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznInputTriggerPopper } from '@mezzanine-ui/ng/_internal';
 import { SelectTriggerTagValue } from '@mezzanine-ui/ng/select';
@@ -128,6 +129,7 @@ export function getFullParsedList(
   imports: [
     NgTemplateOutlet,
     MznButton,
+    MznClearActions,
     MznIcon,
     MznInputTriggerPopper,
     MznTag,
@@ -306,15 +308,14 @@ export function getFullParsedList(
           />
         }
         @if (shouldShowClearable()) {
-          <i
-            mznIcon
-            [icon]="timesCircleIcon"
+          <button
+            mznClearActions
+            type="clearable"
             [class]="clearIconClass"
-            role="button"
-            tabindex="0"
-            (click)="onClear(); $event.stopPropagation()"
-            (keydown.enter)="onClear(); $event.stopPropagation()"
-          ></i>
+            tabindex="-1"
+            (mousedown)="$event.preventDefault()"
+            (clicked)="onClear(); $event.stopPropagation()"
+          ></button>
         }
         <span [class]="suffixClass">
           <i mznIcon [icon]="chevronDownIcon" [class]="suffixIconClasses()"></i>
