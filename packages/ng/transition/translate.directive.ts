@@ -220,16 +220,25 @@ export class MznTranslate {
     reflow(node);
     this.onEnter.emit({ element: node, isAppearing: false });
 
-    this.state.set('entering');
+    // When a popper parent toggles display:none → block in the same tick
+    // as our `in` signal flips, the browser can coalesce the exit-styles
+    // paint with the entering-styles paint and skip the transition.
+    // A double rAF gives the browser one frame to commit the starting
+    // opacity:0 / transform:-4px paint before we flip to entering.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.state.set('entering');
 
-    const handler = (): void => {
-      node.removeEventListener('transitionend', handler);
-      this.state.set('entered');
-      this.resetTransition(node);
-      this.onEntered.emit({ element: node, isAppearing: false });
-    };
+        const handler = (): void => {
+          node.removeEventListener('transitionend', handler);
+          this.state.set('entered');
+          this.resetTransition(node);
+          this.onEntered.emit({ element: node, isAppearing: false });
+        };
 
-    node.addEventListener('transitionend', handler);
+        node.addEventListener('transitionend', handler);
+      });
+    });
   }
 
   private handleExit(): void {
