@@ -1,13 +1,25 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
-import { Component, signal } from '@angular/core';
-import { MznUploadPictureCard } from '@mezzanine-ui/ng/upload';
+import { Component, input, OnInit, signal } from '@angular/core';
+import type { IconDefinition } from '@mezzanine-ui/icons';
+import {
+  MznUploadPictureCard,
+  UploadPictureCardImageFit,
+  UploadPictureCardSize,
+} from '@mezzanine-ui/ng/upload';
 
 function createBlobFile(content: string, name: string, mimeType: string): File {
   const blob = new Blob([content], { type: mimeType });
   return new File([blob], name, { type: mimeType });
 }
 
-const imageUrl = 'https://picsum.photos/seed/upload/400/300';
+// Helper function to load image from URL and convert to File object
+// (mirrors React's `createFileFromUrl` in UploadPictureCard.stories.tsx)
+async function createFileFromUrl(url: string, fileName: string): Promise<File> {
+  const response = await fetch(url);
+  const blob = await response.blob();
+
+  return new File([blob], fileName, { type: blob.type || 'image/png' });
+}
 
 export default {
   title: 'Data Entry/Upload/UploadPictureCard',
@@ -21,11 +33,77 @@ export default {
 
 type Story = StoryObj;
 
+// Wrapper component for the Playground story — mirrors React's
+// `UploadPictureCardWithImageLoader`. Fetches a real image at ngOnInit,
+// converts it to a File so the component's `file.type` branch kicks in
+// (string URLs without file extensions would otherwise fail the image
+// detection in `resolveFileType()`). The `@if (imageFile())` gate matches
+// React's `if (!imageFile) return <></>` loading behaviour.
+@Component({
+  selector: 'story-upload-picture-card-playground',
+  standalone: true,
+  imports: [MznUploadPictureCard],
+  template: `
+    @if (imageFile()) {
+      <div
+        mznUploadPictureCard
+        [file]="imageFile()!"
+        [size]="size()"
+        [imageFit]="imageFit()"
+        [errorMessage]="errorMessage()"
+        [errorIcon]="errorIcon()"
+        (deleted)="onDeleted($event)"
+      ></div>
+    }
+  `,
+})
+class UploadPictureCardPlaygroundStoryComponent implements OnInit {
+  readonly size = input<UploadPictureCardSize>('main');
+  readonly imageFit = input<UploadPictureCardImageFit>('cover');
+  readonly errorMessage = input<string>();
+  readonly errorIcon = input<IconDefinition>();
+
+  readonly imageFile = signal<File | null>(null);
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const file = await createFileFromUrl(
+        'https://rytass.com/logo.png',
+        'logo.png',
+      );
+
+      this.imageFile.set(file);
+    } catch (error) {
+      console.error('Failed to load image:', error);
+      // Fallback to mock File so the Playground still renders.
+      this.imageFile.set(new File([''], 'example.jpg', { type: 'image/jpeg' }));
+    }
+  }
+
+  onDeleted(event: MouseEvent): void {
+    console.log('onDelete', event);
+  }
+}
+
 export const Playground: Story = {
+  args: {
+    file: new File([''], 'example.jpg', { type: 'image/jpeg' }),
+    size: 'main',
+    imageFit: 'cover',
+    errorMessage: '',
+    errorIcon: undefined,
+  },
   argTypes: {
+    file: {
+      control: false,
+      description: 'The file to display',
+      table: {
+        type: { summary: 'File' },
+      },
+    },
     size: {
-      control: { type: 'select' },
       options: ['main', 'sub', 'minor'],
+      control: { type: 'select' },
       description: 'The size of the upload picture card',
       table: {
         type: { summary: 'UploadPictureCardSize' },
@@ -33,21 +111,12 @@ export const Playground: Story = {
       },
     },
     imageFit: {
-      control: { type: 'select' },
       options: ['cover', 'contain', 'fill', 'none', 'scale-down'],
+      control: { type: 'select' },
       description: 'The image fit of the upload picture card',
       table: {
         type: { summary: 'UploadPictureCardImageFit' },
         defaultValue: { summary: 'cover' },
-      },
-    },
-    status: {
-      control: { type: 'select' },
-      options: ['loading', 'done', 'error'],
-      description: 'The status of the upload picture card',
-      table: {
-        type: { summary: 'UploadItemStatus' },
-        defaultValue: { summary: 'loading' },
       },
     },
     errorMessage: {
@@ -55,63 +124,40 @@ export const Playground: Story = {
       description: 'Error message to display when status is error',
       table: {
         type: { summary: 'string' },
+        defaultValue: { summary: 'undefined' },
       },
     },
-    disabled: {
-      control: { type: 'boolean' },
-      description: 'Whether the upload picture card is disabled',
+    errorIcon: {
+      control: false,
+      description: 'Error icon to display when status is error',
       table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
+        type: { summary: 'IconDefinition' },
+        defaultValue: { summary: 'undefined' },
       },
     },
-    readable: {
-      control: { type: 'boolean' },
-      description: 'Whether the upload picture card is readable',
+    deleted: {
+      description: 'When delete icon is clicked, this callback will be fired',
       table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
+        type: { summary: 'EventEmitter<MouseEvent>' },
+        defaultValue: { summary: 'undefined' },
       },
     },
   },
-  args: {
-    size: 'main',
-    imageFit: 'cover',
-    status: 'loading',
-    disabled: false,
-    readable: false,
-  },
+  decorators: [
+    moduleMetadata({
+      imports: [UploadPictureCardPlaygroundStoryComponent],
+    }),
+  ],
   render: (args) => ({
-    props: {
-      ...args,
-      imageUrl,
-      onDeleted: () => {},
-      onDownloaded: () => {},
-      onReloaded: () => {},
-      onReplaced: () => {},
-      onZoomed: () => {},
-    },
+    props: args,
     template: `
-      <div mznUploadPictureCard
-        [url]="imageUrl"
-        [status]="status"
+      <story-upload-picture-card-playground
         [size]="size"
         [imageFit]="imageFit"
-        [disabled]="disabled"
-        [readable]="readable"
         [errorMessage]="errorMessage"
-        (deleted)="onDeleted()"
-        (downloaded)="onDownloaded()"
-        (reloaded)="onReloaded()"
-        (replaced)="onReplaced()"
-        (zoomed)="onZoomed()"
-      ></div>
+        [errorIcon]="errorIcon"
+      ></story-upload-picture-card-playground>
     `,
-    styles: [
-      `
-      :host { display: inline-block; }
-    `,
-    ],
   }),
 };
 
