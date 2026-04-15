@@ -1,3 +1,4 @@
+import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznBaseCard } from './base-card.component';
 import { MznCardGroup } from './card-group.component';
@@ -136,34 +137,52 @@ export const TypeOverflow: Story = {
   }),
 };
 
+@Component({
+  selector: '[mznBaseCardTypeToggleDemo]',
+  standalone: true,
+  imports: [MznBaseCard],
+  host: { style: 'display: flex; flex-direction: column; gap: 16px;' },
+  template: `
+    <div style="width: 320px;">
+      <div
+        mznBaseCard
+        title="Toggle Card"
+        description="Card with a toggle switch"
+        type="toggle"
+        [checked]="checked()"
+        (toggleChange)="checked.set($event)"
+      >
+        Toggle is currently: <strong>{{ checked() ? 'ON' : 'OFF' }}</strong>
+      </div>
+    </div>
+    <div style="width: 320px;">
+      <div
+        mznBaseCard
+        title="Toggle with Label"
+        description="Toggle with label"
+        type="toggle"
+        toggleLabel="Enabled"
+        [defaultChecked]="true"
+      >
+        The toggle can have its own label and supporting text.
+      </div>
+    </div>
+  `,
+})
+class BaseCardTypeToggleDemoComponent {
+  readonly checked = signal(false);
+}
+
 export const TypeToggle: Story = {
   name: 'Type: Toggle',
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({
+      imports: [BaseCardTypeToggleDemoComponent],
+    }),
+  ],
   render: () => ({
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 16px;">
-        <div style="width: 320px;">
-          <div mznBaseCard
-            title="Toggle Card"
-            description="Card with a toggle switch"
-            type="toggle"
-          >
-            Use the toggle in the card header to switch the state.
-          </div>
-        </div>
-        <div style="width: 320px;">
-          <div mznBaseCard
-            title="Toggle with Label"
-            description="Toggle with label and supporting text"
-            type="toggle"
-            toggleLabel="Enabled"
-            toggleSupportingText="Turn this feature on or off"
-          >
-            The toggle can have its own label and supporting text.
-          </div>
-        </div>
-      </div>
-    `,
+    template: `<div mznBaseCardTypeToggleDemo></div>`,
   }),
 };
 
