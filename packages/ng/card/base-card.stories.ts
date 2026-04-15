@@ -126,7 +126,7 @@ export const TypeOverflow: Story = {
       <div style="width: 320px;">
         <div mznBaseCard
           title="Overflow Card"
-          description="Card with dropdown menu"
+          description="Card with a dropdown menu"
           type="overflow"
           [options]="dropdownOptions"
         >
@@ -186,37 +186,79 @@ export const TypeToggle: Story = {
   }),
 };
 
+@Component({
+  selector: '[mznBaseCardCardGroupDemo]',
+  standalone: true,
+  imports: [MznBaseCard, MznCardGroup],
+  host: { style: 'width: 100%; display: block;' },
+  template: `
+    <div mznCardGroup>
+      <div
+        mznBaseCard
+        description="Basic settings and preferences"
+        title="Settings"
+        type="action"
+        actionName="Configure"
+      >
+        Manage your account settings and preferences.
+      </div>
+      <div
+        mznBaseCard
+        description="Toggle this feature on or off"
+        title="Feature A"
+        type="toggle"
+        [checked]="feature1()"
+        (toggleChange)="feature1.set($event)"
+      >
+        Feature A is
+        <ng-container>{{ feature1() ? 'enabled' : 'disabled' }}</ng-container
+        >.
+      </div>
+      <div
+        mznBaseCard
+        description="Another toggleable feature"
+        title="Feature B"
+        type="toggle"
+        [checked]="feature2()"
+        (toggleChange)="feature2.set($event)"
+      >
+        Feature B is
+        <ng-container>{{ feature2() ? 'enabled' : 'disabled' }}</ng-container
+        >.
+      </div>
+      <div
+        mznBaseCard
+        description="More options available"
+        title="Advanced"
+        type="overflow"
+        [options]="dropdownOptions"
+      >
+        Access advanced options through the menu.
+      </div>
+    </div>
+  `,
+})
+class BaseCardCardGroupDemoComponent {
+  readonly feature1 = signal(true);
+  readonly feature2 = signal(false);
+  readonly dropdownOptions = [
+    { id: 'edit', name: 'Edit' },
+    { id: 'duplicate', name: 'Duplicate' },
+    { id: 'archive', name: 'Archive' },
+    { id: 'delete', name: 'Delete' },
+  ];
+}
+
 export const WithCardGroup: Story = {
   name: 'Card Group',
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({
+      imports: [BaseCardCardGroupDemoComponent],
+    }),
+  ],
   render: () => ({
-    template: `
-      <div style="width: 100%;">
-        <div mznCardGroup>
-          <div mznBaseCard
-            description="Basic settings and preferences"
-            title="Settings"
-            type="action"
-            actionName="Configure"
-          >
-            Manage your account settings and preferences.
-          </div>
-          <div mznBaseCard
-            description="Toggle this feature on or off"
-            title="Feature A"
-            type="toggle"
-          >
-            Use the toggle to enable or disable this feature.
-          </div>
-          <div mznBaseCard
-            description="Another toggleable feature"
-            title="Feature B"
-            type="toggle"
-          >
-            Use the toggle to enable or disable this feature.
-          </div>
-        </div>
-      </div>
+    template: `<div mznBaseCardCardGroupDemo></div>
     `,
   }),
 };

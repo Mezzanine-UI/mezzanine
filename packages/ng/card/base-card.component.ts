@@ -105,27 +105,29 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
           </div>
         } @else if (type() === 'overflow') {
           <div [class]="headerActionClass">
-            <button
-              #overflowTrigger
-              mznButton
-              [disabled]="disabled()"
-              iconType="icon-only"
-              size="sub"
-              variant="base-text-link"
-              type="button"
-              (click)="toggleOverflow()"
-            >
-              <i mznIcon [icon]="dotHorizontalIcon"></i>
-            </button>
-            <div
-              mznDropdown
-              [anchor]="overflowTrigger"
-              [open]="overflowOpen()"
-              [options]="options()"
-              mode="single"
-              (selected)="onOverflowOptionSelect($event)"
-              (closed)="overflowOpen.set(false)"
-            ></div>
+            <div class="mzn-dropdown mzn-dropdown--outside">
+              <button
+                #overflowTrigger
+                mznButton
+                [disabled]="disabled()"
+                iconType="icon-only"
+                size="sub"
+                variant="base-text-link"
+                type="button"
+                (click)="toggleOverflow()"
+              >
+                <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
+              </button>
+              <div
+                mznDropdown
+                [anchor]="overflowTrigger"
+                [open]="overflowOpen()"
+                [options]="options()"
+                mode="single"
+                (selected)="onOverflowOptionSelect($event)"
+                (closed)="overflowOpen.set(false)"
+              ></div>
+            </div>
           </div>
         } @else if (type() === 'toggle') {
           <div [class]="headerActionClass">
