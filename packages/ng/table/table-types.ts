@@ -70,6 +70,13 @@ export interface TableColumn {
    * @default true
    */
   readonly ellipsis?: boolean;
+  /**
+   * 將欄位釘選到表格視窗的左/右側。
+   * 對齊 React `TableColumn.fixed`。
+   * - `'start'` — 捲動時保持在左側，多個 start 欄位依宣告順序疊加 offset。
+   * - `'end'` — 捲動時保持在右側，多個 end 欄位依反向順序疊加 offset。
+   */
+  readonly fixed?: 'start' | 'end';
   /** 欄位唯一識別鍵。 */
   readonly key: string;
   /** 最大欄位寬度（px）。搭配 resizable 使用。 */

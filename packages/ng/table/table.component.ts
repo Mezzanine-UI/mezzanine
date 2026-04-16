@@ -78,7 +78,7 @@ import {
   type TableTransitionState,
   getRowKey,
 } from './table-types';
-import { tableClasses } from '@mezzanine-ui/core/table';
+import { TABLE_ACTIONS_KEY, tableClasses } from '@mezzanine-ui/core/table';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -253,7 +253,10 @@ function throttleRaf(
       [disabled]="nested()"
       [maxHeight]="scrollMaxHeight() ?? undefined"
     >
-      <table [class]="rootClasses()">
+      <table
+        [class]="rootClasses()"
+        [style.width]="fullWidth() ? '100%' : null"
+      >
         <colgroup>
           @if (isDragEnabled() || isPinEnabled()) {
             <col style="width: 40px; min-width: 40px; max-width: 40px;" />
@@ -305,7 +308,11 @@ function throttleRaf(
                 <th [class]="headerExpandCellClass" scope="col"></th>
               }
               @for (col of columns(); track col.key; let colIndex = $index) {
-                <th [class]="getHeaderCellClasses(col)" scope="col">
+                <th
+                  [class]="getHeaderCellClasses(col)"
+                  [style]="fixedOffsetStyle(col)"
+                  scope="col"
+                >
                   <div [class]="headerCellContentClass">
                     <div [class]="getHeaderCellActionsClasses(col)">
                       <span [class]="headerCellTitleClass">{{
@@ -365,7 +372,11 @@ function throttleRaf(
                 </th>
               }
               @if (actions(); as act) {
-                <th [class]="headerCellClass" scope="col">
+                <th
+                  [class]="getActionsHeaderCellClasses(act)"
+                  [style]="getActionsFixedOffsetStyle(act)"
+                  scope="col"
+                >
                   <div [class]="headerCellContentClass">
                     <div [class]="getActionsHeaderActionsClasses(act)">
                       <span [class]="headerCellTitleClass">{{
@@ -480,6 +491,7 @@ function throttleRaf(
                   [class.mzn-table__cell--highlight]="
                     isCellHighlighted(idx, colIndex)
                   "
+                  [style]="fixedOffsetStyle(col)"
                   (mouseenter)="onCellMouseEnter(idx, colIndex)"
                 >
                   <div style="display: grid; width: 100%;">
@@ -528,7 +540,10 @@ function throttleRaf(
                 </td>
               }
               @if (actions(); as act) {
-                <td [class]="cellClass">
+                <td
+                  [class]="getActionsBodyCellClasses(act)"
+                  [style]="getActionsFixedOffsetStyle(act)"
+                >
                   <div [class]="getActionsCellContentClasses(act)">
                     <div [class]="actionsCellClass">
                       @for (
@@ -768,6 +783,108 @@ export class MznTable {
     if (this.isExpandableEnabled()) padding += 40;
 
     return padding;
+  });
+
+  /**
+   * Resolve a column's rendered width in px for fixed-offset accumulation.
+   * Prefers the resized override (via `resolvedColumnWidths`), then the
+   * explicit `column.width`, then `minWidth`, and finally a conservative 0.
+   */
+  private getColumnRenderedWidth(col: TableColumn): number {
+    const resolved = this.resolvedColumnWidths().get(col.key);
+
+    if (resolved != null) return resolved;
+
+    if (typeof col.width === 'number') return col.width;
+    if (typeof col.width === 'string') {
+      const parsed = parseFloat(col.width);
+
+      if (Number.isFinite(parsed)) return parsed;
+    }
+    if (typeof col.minWidth === 'number') return col.minWidth;
+
+    return 0;
+  }
+
+  /**
+   * Map of column key → cumulative left offset (px) for `fixed: 'start'`
+   * columns. Mirrors React `useTableFixedOffsets.startOffsets` — iterates
+   * columns left-to-right, each start-fixed column's offset is the sum of
+   * widths of preceding start-fixed columns.
+   *
+   * Note: selection / expand / drag columns with their own `fixed` are
+   * beyond the scope of this story (WithFixedColumns uses only
+   * `column.fixed` + `actions.fixed`) and are not accumulated here.
+   */
+  protected readonly fixedStartOffsets = computed(
+    (): ReadonlyMap<string, number> => {
+      const map = new Map<string, number>();
+      let acc = 0;
+
+      for (const col of this.columns()) {
+        if (col.fixed === 'start') {
+          map.set(col.key, acc);
+          acc += this.getColumnRenderedWidth(col);
+        }
+      }
+
+      return map;
+    },
+  );
+
+  /**
+   * Map of column key → cumulative right offset (px) for `fixed: 'end'`
+   * columns. Mirrors React `useTableFixedOffsets.endOffsets` — iterates
+   * end-fixed columns *right-to-left*, so the rightmost column has
+   * offset 0 and earlier end-fixed columns accumulate the sum of widths
+   * to their right.
+   *
+   * The actions column is treated as the rightmost end-fixed entry when
+   * `actions.fixed === 'end'`.
+   */
+  protected readonly fixedEndOffsets = computed(
+    (): ReadonlyMap<string, number> => {
+      const map = new Map<string, number>();
+      let acc = 0;
+      const act = this.actions();
+
+      if (act?.fixed === 'end') {
+        map.set(TABLE_ACTIONS_KEY, acc);
+        const w =
+          typeof act.width === 'number'
+            ? act.width
+            : typeof act.width === 'string'
+              ? parseFloat(act.width) || 0
+              : (act.minWidth ?? 0);
+
+        acc += w;
+      }
+
+      const cols = this.columns();
+
+      for (let i = cols.length - 1; i >= 0; i--) {
+        const col = cols[i];
+
+        if (col.fixed === 'end') {
+          map.set(col.key, acc);
+          acc += this.getColumnRenderedWidth(col);
+        }
+      }
+
+      return map;
+    },
+  );
+
+  /**
+   * Offset (px) for the actions column when `actions.fixed === 'end'`.
+   * Convenience accessor used by template `<td>`/`<th>` of the actions cell.
+   */
+  protected readonly actionsFixedEndOffset = computed((): number => {
+    const act = this.actions();
+
+    if (act?.fixed !== 'end') return 0;
+
+    return this.fixedEndOffsets().get(TABLE_ACTIONS_KEY) ?? 0;
   });
 
   /** 展開列內容模板（若未提供則回傳 null，不渲染自訂內容）。 */
@@ -1493,8 +1610,10 @@ export class MznTable {
   /*  Class builders                                                   */
   /* ---------------------------------------------------------------- */
 
-  protected getHeaderCellClasses(_col: TableColumn): string {
-    return tableClasses.headerCell;
+  protected getHeaderCellClasses(col: TableColumn): string {
+    return clsx(tableClasses.headerCell, this.fixedClassesFor(col), {
+      [tableClasses.headerCellFixed]: !!col.fixed,
+    });
   }
 
   protected getHeaderCellActionsClasses(col: TableColumn): string {
@@ -1504,8 +1623,85 @@ export class MznTable {
     );
   }
 
-  protected getCellClasses(_col: TableColumn): string {
-    return tableClasses.cell;
+  protected getCellClasses(col: TableColumn): string {
+    return clsx(tableClasses.cell, this.fixedClassesFor(col));
+  }
+
+  /**
+   * `mzn-table__cell--fixed` + `--fixed-start|--fixed-end` class map for a
+   * column, mirroring React `TableCell` / `TableHeader`.
+   */
+  protected fixedClassesFor(col: TableColumn): Record<string, boolean> {
+    const side = col.fixed;
+
+    return {
+      [tableClasses.cellFixed]: !!side,
+      [tableClasses.cellFixedStart]: side === 'start',
+      [tableClasses.cellFixedEnd]: side === 'end',
+    };
+  }
+
+  /** px offset to apply to a fixed column's `<td>`/`<th>` via CSS var. */
+  protected fixedOffsetStyle(col: TableColumn): Record<string, string> {
+    if (col.fixed === 'start') {
+      const offset = this.fixedStartOffsets().get(col.key) ?? 0;
+
+      return { '--fixed-start-offset': `${offset}px` };
+    }
+
+    if (col.fixed === 'end') {
+      const offset = this.fixedEndOffsets().get(col.key) ?? 0;
+
+      return { '--fixed-end-offset': `${offset}px` };
+    }
+
+    return {};
+  }
+
+  /** Fixed-offset style for the actions column's `<td>` / `<th>`. */
+  protected getActionsFixedOffsetStyle(
+    actions: TableActions,
+  ): Record<string, string> {
+    if (actions.fixed === 'start') {
+      return { '--fixed-start-offset': '0px' };
+    }
+
+    if (actions.fixed === 'end') {
+      const offset = this.actionsFixedEndOffset();
+
+      return { '--fixed-end-offset': `${offset}px` };
+    }
+
+    return {};
+  }
+
+  /** Class map for the actions column header `<th>`, including sticky flags. */
+  protected getActionsHeaderCellClasses(
+    actions: TableActions,
+  ): Record<string, boolean> {
+    const side = actions.fixed;
+
+    return {
+      [tableClasses.headerCell]: true,
+      [tableClasses.cellFixed]: !!side,
+      [tableClasses.cellFixedStart]: side === 'start',
+      [tableClasses.cellFixedEnd]: side === 'end',
+      [tableClasses.headerCellFixed]: !!side,
+    };
+  }
+
+  /** Class map for the actions column body `<td>`, including sticky flags. */
+  protected getActionsBodyCellClasses(
+    actions: TableActions,
+  ): Record<string, boolean> {
+    const side = actions.fixed;
+
+    return {
+      [tableClasses.cell]: true,
+      [tableClasses.cellFixed]: !!side,
+      [tableClasses.cellFixedStart]: side === 'start',
+      [tableClasses.cellFixedEnd]: side === 'end',
+    };
   }
 
   protected getCellContentClasses(col: TableColumn): string {
