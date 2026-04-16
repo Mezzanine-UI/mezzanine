@@ -1,8 +1,11 @@
 import { Component, computed, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznTable } from './table.component';
 import { MznTableCellRender } from './table-cell-render.directive';
+import { useTableDataSource } from './use-table-data-source';
 import type {
   HighlightMode as HighlightModeType,
   RowHeightPreset as RowHeightPresetType,
@@ -193,62 +196,195 @@ export const DataStateRepresentation: Story = {
   }),
 };
 
+interface TransitionRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+}
+
 @Component({
   selector: 'story-table-create-delete',
   standalone: true,
-  imports: [MznTable],
+  imports: [MznButton, MznInput, MznTable, MznTableCellRender, MznTypography],
   template: `
-    <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="width: 100%;">
       <div
-        style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"
+        style="background: #f5f5f5; border-radius: 8px; margin-bottom: 16px; padding: 16px;"
       >
-        <input
-          #nameInput
-          type="text"
-          placeholder="Name"
-          style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px;"
-        />
-        <input
-          #ageInput
-          type="number"
-          placeholder="Age"
-          style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; width: 80px;"
-        />
-        <button
-          (click)="
-            addRow(nameInput.value, ageInput.value);
-            nameInput.value = '';
-            ageInput.value = ''
-          "
-          style="padding: 4px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer;"
+        <h4 style="margin: 0 0 8px 0;"
+          >GraphQL Pattern: mutation → refetch → updateDataSource</h4
         >
-          Add Row
-        </button>
+        <p style="margin: 0 0 4px 0;"
+          >Please use "useTableDataSource" to manage data source with
+          create/delete</p
+        >
+        <p style="color: #666; font-size: 14px; margin: 0;">
+          API returns <code>{{ '{ total: number, items: T[] }' }}</code> format.
+          Pagination uses offset + limit. New items are prepended.
+        </p>
       </div>
-      <div mznTable [columns]="columns" [dataSource]="dataSource()"></div>
+
+      <div
+        style="margin-bottom: 16px; display: flex; flex-flow: row; gap: 8px;"
+      >
+        <div
+          mznInput
+          placeholder="Name"
+          [value]="newName()"
+          (valueChange)="newName.set($event)"
+        ></div>
+        <div
+          mznInput
+          variant="number"
+          placeholder="Age"
+          [value]="newAge()"
+          (valueChange)="newAge.set($event)"
+        ></div>
+        <div
+          mznInput
+          placeholder="Address"
+          [value]="newAddress()"
+          (valueChange)="newAddress.set($event)"
+        ></div>
+        <button
+          mznButton
+          variant="base-primary"
+          type="button"
+          [disabled]="!newName().trim()"
+          (click)="handleCreate()"
+          >Create</button
+        >
+      </div>
+
+      <div
+        mznTable
+        [actions]="actions"
+        [columns]="transitionColumns"
+        [dataSource]="dataSource()"
+        [pagination]="pagination()"
+        [transitionState]="transitionState()"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
     </div>
   `,
 })
 class CreateDeleteTransitionStoryComponent {
-  readonly columns: TableColumn[] = [
-    { key: 'name', title: 'Name', dataIndex: 'name', width: 200 },
-    { key: 'age', title: 'Age', dataIndex: 'age', width: 100, align: 'center' },
-    { key: 'email', title: 'Email', dataIndex: 'email' },
+  private readonly itemsPerPage = 5;
+
+  private readonly serverDb = signal<readonly TransitionRowType[]>(
+    Array.from(
+      { length: 23 },
+      (_, i): TransitionRowType => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + (i % 40),
+        address: `Address ${i + 1}`,
+      }),
+    ),
+  );
+
+  readonly currentPage = signal(1);
+  readonly newName = signal('');
+  readonly newAge = signal('');
+  readonly newAddress = signal('');
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- Angular factory, not React hook
+  private readonly ds = useTableDataSource<TransitionRowType>({
+    initialData: this.fetchPage(1).items,
+    highlightDuration: 1000,
+    fadeOutDuration: 200,
+  });
+
+  readonly dataSource = this.ds.dataSource;
+  readonly transitionState = this.ds.transitionState;
+
+  readonly transitionColumns: TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name', width: 150 },
+    { key: 'age', title: 'Age', width: 100 },
+    { key: 'address', title: 'Address', dataIndex: 'address' },
   ];
 
-  readonly dataSource = signal<TableDataSource[]>([...basicData]);
-
-  addRow(name: string, age: string): void {
-    if (!name.trim()) return;
-    this.dataSource.update((prev) => [
+  readonly actions: TableActions = {
+    title: 'Action',
+    width: 120,
+    variant: 'destructive-text-link',
+    render: () => [
       {
-        key: String(Date.now()),
-        name,
-        age: parseInt(age, 10) || 0,
-        email: `${name.toLowerCase().replace(/\s/g, '')}@example.com`,
+        key: 'delete',
+        label: 'Delete',
+        onClick: (r) => this.handleDelete(String(r['key'])),
       },
-      ...prev,
-    ]);
+    ],
+  };
+
+  readonly pagination = computed(() => ({
+    current: this.currentPage(),
+    pageSize: this.itemsPerPage,
+    total: this.serverDb().length,
+    onChange: (page: number): void => this.handlePageChange(page),
+  }));
+
+  private fetchPage(page: number): {
+    items: TransitionRowType[];
+    total: number;
+  } {
+    const offset = (page - 1) * this.itemsPerPage;
+    const db = this.serverDb();
+
+    return {
+      items: [...db.slice(offset, offset + this.itemsPerPage)],
+      total: db.length,
+    };
+  }
+
+  handlePageChange(page: number): void {
+    this.currentPage.set(page);
+    this.ds.updateDataSource(this.fetchPage(page).items);
+  }
+
+  handleCreate(): void {
+    const name = this.newName().trim();
+
+    if (!name) return;
+
+    const newItem: TransitionRowType = {
+      key: String(Date.now()),
+      name,
+      age: parseInt(this.newAge(), 10) || 0,
+      address: this.newAddress() || 'Unknown Address',
+    };
+
+    this.serverDb.update((prev) => [newItem, ...prev]);
+
+    const response = this.fetchPage(this.currentPage());
+    const inCurrentPage = response.items.some((i) => i.key === newItem.key);
+
+    this.ds.updateDataSource(response.items, {
+      addedKeys: inCurrentPage ? [newItem.key] : [],
+    });
+
+    this.newName.set('');
+    this.newAge.set('');
+    this.newAddress.set('');
+  }
+
+  handleDelete(key: string): void {
+    this.serverDb.update((prev) => prev.filter((i) => i.key !== key));
+
+    const total = this.serverDb().length;
+    const maxPage = Math.ceil(total / this.itemsPerPage);
+    const newPage =
+      this.currentPage() > maxPage ? Math.max(1, maxPage) : this.currentPage();
+
+    if (newPage !== this.currentPage()) this.currentPage.set(newPage);
+
+    this.ds.updateDataSource(this.fetchPage(newPage).items, {
+      removedKeys: [key],
+    });
   }
 }
 
