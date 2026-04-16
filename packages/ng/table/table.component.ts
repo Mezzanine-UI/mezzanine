@@ -24,6 +24,7 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import {
+  ChevronRightIcon,
   DotDragVerticalIcon,
   PinFilledIcon,
   PinIcon,
@@ -229,7 +230,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </th>
               }
               @if (isExpandableEnabled()) {
-                <th [class]="expandCellClass"></th>
+                <th [class]="headerExpandCellClass" scope="col"></th>
               }
               @for (col of columns(); track col.key; let colIndex = $index) {
                 <th [class]="getHeaderCellClasses(col)" scope="col">
@@ -377,12 +378,15 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </td>
               }
               @if (isExpandableEnabled()) {
-                <td
-                  [class]="expandCellClass"
-                  (click)="onExpandCellClick($event, record)"
-                >
+                <td [class]="bodyExpandCellClass">
                   @if (canExpandRow(record)) {
-                    <span [class]="getExpandIconClasses(record)">&#9654;</span>
+                    <button
+                      type="button"
+                      [class]="getExpandIconClasses(record)"
+                      (click)="onExpandIconClick($event, record)"
+                    >
+                      <i mznIcon [icon]="chevronRightIcon" color="inherit"></i>
+                    </button>
                   }
                 </td>
               }
@@ -467,7 +471,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
               }
             </tr>
             @if (isExpandableEnabled() && isExpanded(record)) {
-              <tr [class]="expandedRowClass">
+              <tr [class]="getExpandedRowClasses(record)">
                 <td
                   [attr.colspan]="totalColumns()"
                   [class]="expandedRowCellClass"
@@ -831,6 +835,14 @@ export class MznTable {
   protected readonly selectionCellClass = tableClasses.selectionCell;
   protected readonly selectionCheckboxClass = tableClasses.selectionCheckbox;
   protected readonly expandCellClass = tableClasses.expandCell;
+  protected readonly bodyExpandCellClass = clsx(
+    tableClasses.cell,
+    tableClasses.expandCell,
+  );
+  protected readonly headerExpandCellClass = clsx(
+    tableClasses.headerCell,
+    tableClasses.expandCell,
+  );
   protected readonly expandedRowClass = tableClasses.expandedRow;
   protected readonly expandedRowCellClass = tableClasses.expandedRowCell;
   protected readonly expandedContentClass = tableClasses.expandedContent;
@@ -851,6 +863,7 @@ export class MznTable {
   protected readonly actionsCellClass = tableClasses.actionsCell;
   protected readonly actionButtonClass = `${tableClasses.actionsCell}__button`;
 
+  protected readonly chevronRightIcon = ChevronRightIcon;
   protected readonly dotDragVerticalIcon = DotDragVerticalIcon;
   protected readonly pinFilledIcon = PinFilledIcon;
   protected readonly pinIcon = PinIcon;
@@ -1140,6 +1153,24 @@ export class MznTable {
   protected getSortIconClass(col: TableColumn, direction: SortOrder): string {
     return clsx(tableClasses.sortIcon, {
       [tableClasses.sortIconActive]: col.sortOrder === direction,
+    });
+  }
+
+  /**
+   * Expanded-row wrapper classes — mirrors React `TableExpandedRow.tsx` which
+   * checks the parent row's key against `transitionState` so the expanded
+   * content shares the same add/delete/fade animation as its parent row.
+   * This delivers the "parent delete also highlights the expanded region"
+   * behavior.
+   */
+  protected getExpandedRowClasses(record: TableDataSource): string {
+    const key = getRowKey(record);
+    const ts = this.transitionState();
+
+    return clsx(tableClasses.expandedRow, {
+      [tableClasses.expandedRowAdding]: ts?.addingKeys.has(key) ?? false,
+      [tableClasses.expandedRowDeleting]: ts?.deletingKeys.has(key) ?? false,
+      [tableClasses.expandedRowFadingOut]: ts?.fadingOutKeys.has(key) ?? false,
     });
   }
 
@@ -1545,8 +1576,12 @@ export class MznTable {
     return config.rowExpandable?.(record) ?? true;
   }
 
-  /** Click handler for the expand cell; guards on `canExpandRow`. */
-  protected onExpandCellClick(event: Event, record: TableDataSource): void {
+  /**
+   * Click handler for the expand icon button; mirrors React's
+   * `TableExpandCell` where the `<button>` toggles expansion and stops
+   * propagation so the surrounding `<tr (click)>` does not also fire.
+   */
+  protected onExpandIconClick(event: Event, record: TableDataSource): void {
     if (!this.canExpandRow(record)) return;
     event.stopPropagation();
     this.onToggleExpansion(record);
