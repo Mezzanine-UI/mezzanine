@@ -2,9 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  EventEmitter,
   inject,
   input,
-  output,
+  Output,
 } from '@angular/core';
 import {
   descriptionClasses as classes,
@@ -68,6 +69,7 @@ import { MZN_DESCRIPTION_CONTEXT } from './description-context';
         [class]="classes.contentIcon"
         [icon]="icon()!"
         [size]="16"
+        [clickable]="clickIcon.observed"
         (click)="clickIcon.emit()"
       ></i>
     }
@@ -98,8 +100,13 @@ export class MznDescriptionContent {
    */
   readonly variant = input<DescriptionContentVariant>('normal');
 
-  /** 點擊圖示事件（僅在 `variant="with-icon"` 且傳入 `icon` 時可用）。 */
-  readonly clickIcon = output<void>();
+  /**
+   * 點擊圖示事件（僅在 `variant="with-icon"` 且傳入 `icon` 時可用）。
+   * 刻意使用 decorator-based EventEmitter（而非 signal-based output API），
+   * 以便透過 `.observed` 偵測是否有消費端訂閱——對齊 React Icon 的
+   * 「有 onClick 才把 cursor 變 pointer」行為。
+   */
+  @Output() readonly clickIcon = new EventEmitter<void>();
 
   protected readonly resolvedSize = computed(
     (): DescriptionSize => this.size() ?? this.context?.size ?? 'main',

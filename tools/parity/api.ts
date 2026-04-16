@@ -409,6 +409,28 @@ function splitTopLevel(expr: string, operator: '&' | '|'): string[] {
 function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
   const result: ApiSet = { inputs: new Set(), outputs: new Set() };
 
+  // Strip a single layer of wrapping parentheses. Unions like
+  // `(A & B) | (A & C)` keep each branch wrapped; without unwrapping, the
+  // inner intersection never sees the `&` operator and resolves to empty.
+  let trimmed = expr.trim();
+  while (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+    // Only strip if the outer pair actually wraps the whole expression.
+    let depth = 0;
+    let paired = true;
+    for (let i = 0; i < trimmed.length - 1; i += 1) {
+      const ch = trimmed[i];
+      if (ch === '(') depth += 1;
+      else if (ch === ')') depth -= 1;
+      if (depth === 0 && i < trimmed.length - 1) {
+        paired = false;
+        break;
+      }
+    }
+    if (!paired) break;
+    trimmed = trimmed.slice(1, -1).trim();
+  }
+  expr = trimmed;
+
   // Split on top-level `|` first (union) — for parity purposes, we want the
   // union of props across all branches (any branch may expose any prop).
   // Clone `visited` per sibling branch to avoid cross-branch poisoning.

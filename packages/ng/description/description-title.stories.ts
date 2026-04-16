@@ -1,4 +1,5 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import { MznDescriptionTitle } from './description-title.component';
 
 export default {
@@ -13,19 +14,25 @@ export default {
 type Story = StoryObj;
 
 export const Playground: Story = {
-  argTypes: {
-    widthType: {
-      options: ['narrow', 'wide'],
-      control: { type: 'select' },
-    },
-  },
-  args: {
-    widthType: 'narrow',
-  },
-  render: (args) => ({
-    props: args,
+  render: () => ({
+    props: { questionIcon: QuestionOutlineIcon },
     template: `
-      <div mznDescriptionTitle [widthType]="widthType">欄位名稱</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div mznDescriptionTitle>Title</div>
+        <div mznDescriptionTitle badge="dot-success" text="Title"></div>
+        <div
+          mznDescriptionTitle
+          tooltip="tooltip"
+          tooltipPlacement="top-end"
+          [icon]="questionIcon"
+        >Title</div>
+        <div
+          mznDescriptionTitle
+          badge="dot-success"
+          text="Title"
+          [icon]="questionIcon"
+        ></div>
+      </div>
     `,
   }),
 };
@@ -36,8 +43,8 @@ export const Sizes: Story = {
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div mznDescriptionTitle size="main">Main Title</div>
         <div mznDescriptionTitle size="sub">Sub Title</div>
-        <div mznDescriptionTitle size="main" badge="dot-success">Main with Badge</div>
-        <div mznDescriptionTitle size="sub" badge="dot-success">Sub with Badge</div>
+        <div mznDescriptionTitle size="main" badge="dot-success" text="Main with Badge"></div>
+        <div mznDescriptionTitle size="sub" badge="dot-success" text="Sub with Badge"></div>
       </div>
     `,
   }),

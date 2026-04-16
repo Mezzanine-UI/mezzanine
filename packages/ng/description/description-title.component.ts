@@ -50,9 +50,9 @@ import { MZN_DESCRIPTION_CONTEXT } from './description-context';
     @if (badge()) {
       <div
         mznBadge
-        [class]="textClass"
+        [className]="textClass"
         [variant]="badge()!"
-        [size]="resolvedSize()"
+        [size]="explicitSize()"
         [text]="text() ?? ''"
       ></div>
     } @else if (text()) {
@@ -121,13 +121,24 @@ export class MznDescriptionTitle {
     (): DescriptionSize => this.size() ?? this.context?.size ?? 'main',
   );
 
-  protected readonly hostClasses = computed((): string =>
-    clsx(
-      classes.titleHost,
-      classes.titleSize(this.resolvedSize()),
-      classes.titleWidth(this.widthType()),
-    ),
+  /**
+   * React 只在 consumer 明確傳入 `size` 時才加上 size modifier class，
+   * 未傳時由 CSS 的 base rule 處理預設尺寸。若 `size` 未傳且外層沒有
+   * DescriptionContext，class 應該省略以對齊 React 的輸出。
+   */
+  protected readonly explicitSize = computed(
+    (): DescriptionSize | undefined => this.size() ?? this.context?.size,
   );
+
+  protected readonly hostClasses = computed((): string => {
+    const explicit = this.explicitSize();
+
+    return clsx(
+      classes.titleHost,
+      explicit && classes.titleSize(explicit),
+      classes.titleWidth(this.widthType()),
+    );
+  });
 
   protected readonly textClass = classes.titleText;
 }

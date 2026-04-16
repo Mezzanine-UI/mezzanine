@@ -3,7 +3,8 @@ import { CopyIcon } from '@mezzanine-ui/icons';
 import { MznBadge } from '@mezzanine-ui/ng/badge';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznProgress } from '@mezzanine-ui/ng/progress';
-import { MznTag } from '@mezzanine-ui/ng/tag';
+import { MznTag, MznTagGroup } from '@mezzanine-ui/ng/tag';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznDescriptionContent } from './description-content.component';
 
 export default {
@@ -16,6 +17,8 @@ export default {
         MznButton,
         MznProgress,
         MznTag,
+        MznTagGroup,
+        MznTypography,
       ],
     }),
   ],
@@ -25,53 +28,59 @@ type Story = StoryObj;
 
 export const Playground: Story = {
   render: () => ({
-    props: { copyIcon: CopyIcon },
     template: `
       <div style="display: flex; flex-direction: column; gap: 12px; max-width: 160px;">
         <div>
-          <p style="font-weight: 600;">Text Only</p>
+          <h3 mznTypography variant="h3">Text Only</h3>
           <span mznDescriptionContent>rytass.com</span>
         </div>
         <div>
-          <p style="font-weight: 600;">Text with Icon</p>
-          <span mznDescriptionContent variant="with-icon" [icon]="copyIcon">rytass.com</span>
+          <h3 mznTypography variant="h3">Text with Icon</h3>
+          <span mznDescriptionContent variant="with-icon" [icon]="copyIcon" (clickIcon)="onCopy()">rytass.com</span>
         </div>
         <div>
-          <p style="font-weight: 600;">Text Link Button</p>
+          <h3 mznTypography variant="h3">Text Link Button</h3>
           <button mznButton variant="base-text-link" size="sub">rytass.com</button>
         </div>
         <div>
-          <p style="font-weight: 600;">Trend-Up</p>
+          <h3 mznTypography variant="h3">Trend-Up</h3>
           <span mznDescriptionContent variant="trend-up">88%</span>
         </div>
         <div>
-          <p style="font-weight: 600;">Trend-Down</p>
+          <h3 mznTypography variant="h3">Trend-Down</h3>
           <span mznDescriptionContent variant="trend-down">88%</span>
         </div>
         <div>
-          <p style="font-weight: 600;">State</p>
+          <h3 mznTypography variant="h3">State</h3>
           <div mznBadge variant="dot-success" text="已審核"></div>
         </div>
         <div>
-          <p style="font-weight: 600;">Statistic</p>
+          <h3 mznTypography variant="h3">Statistic</h3>
           <span mznDescriptionContent variant="statistic">98,888</span>
         </div>
         <div>
-          <p style="font-weight: 600;">Progress</p>
+          <h3 mznTypography variant="h3">Progress</h3>
           <div mznProgress [percent]="70" type="percent" ></div>
         </div>
         <div>
-          <p style="font-weight: 600;">Tag</p>
-          <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-            <span mznTag label="Tag" ></span>
-            <span mznTag label="Tag" ></span>
-            <span mznTag label="Tag" ></span>
-            <span mznTag label="Tag" ></span>
-            <span mznTag label="Tag" ></span>
+          <h3 mznTypography variant="h3">Tag</h3>
+          <div mznTagGroup>
+            <span><span mznTag label="Tag" ></span></span>
+            <span><span mznTag label="Tag" ></span></span>
+            <span><span mznTag label="Tag" ></span></span>
+            <span><span mznTag label="Tag" ></span></span>
+            <span><span mznTag label="Tag" ></span></span>
           </div>
         </div>
       </div>
     `,
+    props: {
+      copyIcon: CopyIcon,
+      onCopy: (): void => {
+        // eslint-disable-next-line no-console
+        console.log('click icon');
+      },
+    },
   }),
 };
 
@@ -81,49 +90,49 @@ export const Sizes: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 24px; max-width: 160px;">
         <div>
-          <p style="margin-bottom: 8px; font-weight: 600;">Text Only</p>
+          <h3 mznTypography variant="h3" style="margin-bottom: 8px;">Text Only</h3>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <span mznDescriptionContent size="main">Main Content</span>
             <span mznDescriptionContent size="sub">Sub Content</span>
           </div>
         </div>
         <div>
-          <p style="margin-bottom: 8px; font-weight: 600;">Text with Icon</p>
+          <h3 mznTypography variant="h3" style="margin-bottom: 8px;">Text with Icon</h3>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <span mznDescriptionContent size="main" variant="with-icon" [icon]="copyIcon">Main Content</span>
             <span mznDescriptionContent size="sub" variant="with-icon" [icon]="copyIcon">Sub Content</span>
           </div>
         </div>
         <div>
-          <p style="margin-bottom: 8px; font-weight: 600;">Text Link Button</p>
+          <h3 mznTypography variant="h3" style="margin-bottom: 8px;">Text Link Button</h3>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <button mznButton variant="base-text-link" size="main">Main Link</button>
             <button mznButton variant="base-text-link" size="sub">Sub Link</button>
           </div>
         </div>
         <div>
-          <p style="margin-bottom: 8px; font-weight: 600;">Trend-Up</p>
+          <h3 mznTypography variant="h3" style="margin-bottom: 8px;">Trend-Up</h3>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <span mznDescriptionContent size="main" variant="trend-up">12.5%</span>
             <span mznDescriptionContent size="sub" variant="trend-up">12.5%</span>
           </div>
         </div>
         <div>
-          <p style="margin-bottom: 8px; font-weight: 600;">Trend-Down</p>
+          <h3 mznTypography variant="h3" style="margin-bottom: 8px;">Trend-Down</h3>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <span mznDescriptionContent size="main" variant="trend-down">8.3%</span>
             <span mznDescriptionContent size="sub" variant="trend-down">8.3%</span>
           </div>
         </div>
         <div>
-          <p style="margin-bottom: 8px; font-weight: 600;">State</p>
+          <h3 mznTypography variant="h3" style="margin-bottom: 8px;">State</h3>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <div mznBadge variant="dot-success" text="已審核（main）" size="main"></div>
             <div mznBadge variant="dot-success" text="已審核（sub）" size="sub"></div>
           </div>
         </div>
         <div>
-          <p style="margin-bottom: 8px; font-weight: 600;">Statistic</p>
+          <h3 mznTypography variant="h3" style="margin-bottom: 8px;">Statistic</h3>
           <div style="display: flex; flex-direction: column; gap: 4px;">
             <span mznDescriptionContent size="main" variant="statistic">99,000</span>
             <span mznDescriptionContent size="sub" variant="statistic">99,000</span>
