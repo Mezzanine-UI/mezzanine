@@ -110,12 +110,16 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           }
         </div>
       </div>
-      <span [class]="hasTextContent() ? textContainerClass : ''">
+      <span
+        [class]="hasTextContent() ? textContainerClass : ''"
+        [style.display]="hasTextContent() ? null : 'contents'"
+      >
         <span
           mznTypography
           variant="label-primary"
           [color]="labelColor()"
           [class]="labelClass"
+          [style.display]="hasTextContent() ? null : 'none'"
         >
           @if (label()) {
             {{ label() }}
