@@ -7,6 +7,12 @@ export type { MznTableCellRenderContext } from './table-cell-render.directive';
 export { MZN_TABLE_CONTEXT } from './table-context';
 export type { TableContextValue } from './table-context';
 export { getRowKey } from './table-types';
+export { useTableDataSource } from './use-table-data-source';
+export type {
+  UseTableDataSourceOptions,
+  UseTableDataSourceReturn,
+  UpdateDataSourceOptions,
+} from './use-table-data-source';
 export type {
   ColumnAlign,
   HighlightMode,
