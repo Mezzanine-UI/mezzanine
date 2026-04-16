@@ -6,7 +6,6 @@ import {
   inject,
   input,
   output,
-  viewChild,
 } from '@angular/core';
 import { tabClasses as classes } from '@mezzanine-ui/core/tab';
 import { IconDefinition } from '@mezzanine-ui/icons';
@@ -18,6 +17,7 @@ import { MZN_TABS_CONTEXT, TabsContext } from './tab-context';
 /**
  * 單一 Tab 項目。
  *
+ * host element 必須為 `<button>`，以 1:1 對齊 React `<button class="mzn-tab__item">`。
  * 由父 `MznTabs` 的 `activeKey` 決定是否為使用中狀態。
  *
  * @example
@@ -32,43 +32,37 @@ import { MZN_TABS_CONTEXT, TabsContext } from './tab-context';
   imports: [MznIcon, MznBadge],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    style: 'display: contents',
+    type: 'button',
+    '[class]': 'hostClasses()',
+    '[disabled]': 'disabled()',
+    '[attr.aria-disabled]': 'disabled()',
+    '(click)': 'onTabClick()',
     '[attr.key]': 'null',
     '[attr.badgeCount]': 'null',
-    '[attr.disabled]': 'null',
     '[attr.error]': 'null',
     '[attr.icon]': 'null',
   },
   template: `
-    <button
-      #buttonEl
-      type="button"
-      [class]="hostClasses()"
-      [disabled]="disabled()"
-      [attr.aria-disabled]="disabled()"
-      (click)="onTabClick()"
-    >
-      @if (icon()) {
-        <i mznIcon [icon]="icon()!" [class]="iconClass" [size]="16"></i>
-      }
-      <ng-content />
-      @if (badgeCount() !== undefined) {
-        <div
-          mznBadge
-          [className]="badgeClass"
-          [variant]="badgeCountVariant()"
-          [count]="badgeCount()!"
-        ></div>
-      }
-    </button>
+    @if (icon()) {
+      <i mznIcon [icon]="icon()!" [class]="iconClass" [size]="16"></i>
+    }
+    <ng-content />
+    @if (badgeCount() !== undefined) {
+      <div
+        mznBadge
+        [className]="badgeClass"
+        [variant]="badgeCountVariant()"
+        [count]="badgeCount()!"
+      ></div>
+    }
   `,
 })
 export class MznTabItem {
+  private readonly elementRef =
+    inject<ElementRef<HTMLButtonElement>>(ElementRef);
   private readonly tabsContext = inject<TabsContext>(MZN_TABS_CONTEXT, {
     optional: true,
   });
-  private readonly buttonRef =
-    viewChild<ElementRef<HTMLButtonElement>>('buttonEl');
 
   /** Tab 的唯一識別 key。 */
   readonly key = input.required<string | number>();
@@ -110,9 +104,9 @@ export class MznTabItem {
   protected readonly iconClass = classes.tabItemIcon;
   protected readonly badgeClass = classes.tabItemBadge;
 
-  /** 取得按鈕元素（供父元件計算 active bar 位置）。 */
-  getButtonElement(): HTMLButtonElement | undefined {
-    return this.buttonRef()?.nativeElement;
+  /** 取得 host button 元素（供父元件計算 active bar 位置）。 */
+  getButtonElement(): HTMLButtonElement {
+    return this.elementRef.nativeElement;
   }
 
   /** 處理點擊：通知父元件並發出事件。 */
@@ -121,7 +115,6 @@ export class MznTabItem {
       return;
     }
 
-    // Notify parent Tabs about the click
     if (this.tabsContext) {
       const items = this.tabsContext.tabItems();
       const index = items.indexOf(this);
@@ -129,7 +122,6 @@ export class MznTabItem {
       this.tabsContext.handleTabClick(this.key(), index);
     }
 
-    // Also emit clicked output for external consumers
     this.clicked.emit();
   }
 }
