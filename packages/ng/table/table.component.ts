@@ -574,15 +574,24 @@ function throttleRaf(
         </tbody>
       </table>
     </div>
-    @if (pagination()) {
+    @if (pagination(); as pg) {
       <div #paginationHost [class]="paginationWrapperClass">
         <nav
           mznPagination
-          [current]="pagination()!.current ?? 1"
-          [pageSize]="pagination()!.pageSize ?? 10"
-          [total]="pagination()!.total"
-          [disabled]="pagination()!.disabled ?? false"
+          [current]="pg.current ?? 1"
+          [pageSize]="pg.pageSize ?? 10"
+          [total]="pg.total"
+          [disabled]="pg.disabled ?? false"
+          [showPageSizeOptions]="pg.showPageSizeOptions ?? false"
+          [pageSizeLabel]="pg.pageSizeLabel"
+          [pageSizeOptions]="pg.pageSizeOptions"
+          [renderResultSummary]="pg.renderResultSummary"
+          [showJumper]="pg.showJumper ?? false"
+          [inputPlaceholder]="pg.inputPlaceholder"
+          [hintText]="pg.hintText"
+          [buttonText]="pg.buttonText"
           (pageChanged)="onPaginationChange($event)"
+          (pageSizeChanged)="pg.onPageSizeChange?.($event)"
         ></nav>
       </div>
     }

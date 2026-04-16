@@ -128,6 +128,38 @@ export interface TablePagination {
   readonly total: number;
   /** 頁碼變更時的回呼。 */
   readonly onChange?: (page: number) => void;
+  /**
+   * 是否顯示每頁筆數切換器。
+   * 對齊 React `TablePaginationProps.showPageSizeOptions`。
+   * @default false
+   */
+  readonly showPageSizeOptions?: boolean;
+  /** 每頁筆數切換器的 label 文字，對齊 React `pageSizeLabel`。 */
+  readonly pageSizeLabel?: string;
+  /** 每頁筆數的選項陣列，對齊 React `pageSizeOptions`。 */
+  readonly pageSizeOptions?: readonly number[];
+  /**
+   * 結果摘要文字的 render 函式，對齊 React `renderResultSummary`。
+   * 回傳 `${from}-${to} of ${total}` 形式的字串。
+   */
+  readonly renderResultSummary?: (
+    from: number,
+    to: number,
+    total: number,
+  ) => string;
+  /**
+   * 是否顯示「跳至指定頁」欄位，對齊 React `showJumper`。
+   * @default false
+   */
+  readonly showJumper?: boolean;
+  /** Jumper 輸入框 placeholder，對齊 React `inputPlaceholder`。 */
+  readonly inputPlaceholder?: string;
+  /** Jumper 前綴提示文字，對齊 React `hintText`。 */
+  readonly hintText?: string;
+  /** Jumper 送出按鈕文字，對齊 React `buttonText`。 */
+  readonly buttonText?: string;
+  /** 每頁筆數切換時的回呼。 */
+  readonly onPageSizeChange?: (pageSize: number) => void;
 }
 
 /**
