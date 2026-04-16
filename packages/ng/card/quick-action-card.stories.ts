@@ -180,7 +180,7 @@ export const InCardGroup: Story = {
       userIcon: UserIcon,
     },
     template: `
-      <div mznCardGroup>
+      <div mznCardGroup cardType="quick-action">
         <button mznQuickActionCard
           [icon]="calendarIcon"
           subtitle="View your schedule"
