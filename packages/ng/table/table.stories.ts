@@ -19,6 +19,11 @@ import {
   TrashIcon,
 } from '@mezzanine-ui/icons';
 import { MznButton } from '@mezzanine-ui/ng/button';
+import {
+  MznDescription,
+  MznDescriptionContent,
+  MznDescriptionGroup,
+} from '@mezzanine-ui/ng/description';
 import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznToggle } from '@mezzanine-ui/ng/toggle';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
@@ -1279,50 +1284,83 @@ export const WithPagination: Story = {
 @Component({
   selector: 'story-table-expansion',
   standalone: true,
-  imports: [MznTable],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MznDescription,
+    MznDescriptionContent,
+    MznDescriptionGroup,
+    MznTable,
+    MznTableCellRender,
+    MznTypography,
+  ],
   template: `
-    <ng-template #expandedTpl let-record>
-      <div style="padding: 16px 24px; background: #fafafa;">
-        <strong>{{ record.name }}</strong>
-        <p style="margin: 8px 0 0;">
-          Age {{ record.age }} ·
-          <a [href]="'mailto:' + record.email">{{ record.email }}</a>
-        </p>
+    <!-- Expansion with description (mirrors React 'expandableWithDescription') -->
+    <ng-template #descriptionTpl>
+      <div style="padding: 6px 12px;">
+        <div mznDescriptionGroup>
+          <div mznDescription title="Date Created At" widthType="wide">
+            <span mznDescriptionContent>Tue, 03 Aug 2021 14:22:18 GMT</span>
+          </div>
+          <div mznDescription title="Data Updated At" widthType="wide">
+            <span mznDescriptionContent>Tue, 05 Aug 2025 11:22:18 GMT</span>
+          </div>
+        </div>
       </div>
     </ng-template>
 
-    <div
-      mznTable
-      [columns]="columns"
-      [dataSource]="dataSource"
-      [expandable]="{
-        template: expandedTpl,
-        rowExpandable: canExpand,
-        onExpand: onExpand,
-      }"
-    ></div>
+    <!-- Expansion with sub-table (mirrors React 'expandableWithSubTable') -->
+    <ng-template #subTableTpl let-record>
+      <div mznTable [columns]="baseColumns" [dataSource]="record.subData ?? []">
+        <ng-template mznTableCellRender="age" let-sub>
+          <span mznTypography variant="body-mono">{{ sub.age }}</span>
+        </ng-template>
+      </div>
+    </ng-template>
+
+    <div style="display: grid; grid-auto-columns: row; gap: 12px;">
+      <span>Expansion with description</span>
+      <div
+        mznTable
+        [columns]="baseColumns"
+        [dataSource]="dataSource"
+        [expandable]="{ template: descriptionTpl, rowExpandable: canExpand }"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
+
+      <span>Expansion with sub table</span>
+      <div
+        mznTable
+        [columns]="baseColumns"
+        [dataSource]="dataSource"
+        [expandable]="{ template: subTableTpl, rowExpandable: canExpand }"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
+    </div>
   `,
 })
 class ExpansionStoryComponent {
-  readonly columns = basicColumns;
-  readonly dataSource = basicData;
+  readonly baseColumns: TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name', width: 150 },
+    { key: 'age', title: 'Age', width: 100 },
+    { key: 'address', title: 'Address', dataIndex: 'address' },
+  ];
 
-  // Only rows with age >= 30 are expandable; others hide the chevron.
+  readonly dataSource = expansionBaseData;
+
+  /** Only rows carrying `subData` are expandable — mirrors React
+   *  `rowExpandable: (record) => !!record.subData?.length`. */
   readonly canExpand = (record: TableDataSource): boolean =>
-    (record['age'] as number) >= 30;
-
-  readonly onExpand = (expanded: boolean, record: TableDataSource): void => {
-    // Demo hook: log expand events. Real consumers wire this to analytics.
-    // eslint-disable-next-line no-console
-    console.log('[expand]', {
-      expanded,
-      key: record.key,
-      name: record['name'],
-    });
-  };
+    !!(record as TransitionWithSubType).subData?.length;
 }
 
 export const WithExpansion: Story = {
+  name: 'With Expansion',
   parameters: { controls: { disable: true } },
   decorators: [moduleMetadata({ imports: [ExpansionStoryComponent] })],
   render: () => ({
