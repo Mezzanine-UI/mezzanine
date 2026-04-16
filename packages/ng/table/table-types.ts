@@ -229,6 +229,19 @@ export interface TableRowSelectionCheckbox extends TableRowSelectionBase {
   readonly mode: 'checkbox';
   /** 隱藏表頭的全選 checkbox。 */
   readonly hideSelectAll?: boolean;
+  /**
+   * 全選 / 全不選時，是否保留當前頁以外列的選取狀態。
+   * 對齊 React `TableRowSelectionCheckbox.preserveSelectedRowKeys`。
+   *
+   * - `false`（預設）— 全選只把當前頁可選列加入、全不選只移除當前頁可選列的 key；
+   *   其他頁 (`dataSource` 以外) 的 key 保留原樣，但也不會被補回。
+   * - `true` — 全選同時保留當前 `dataSource` 以外的 key；全不選則移除當前
+   *   `dataSource` 所有列的 key（不論是否 `isSelectionDisabled`）。
+   *
+   * 切頁本身不觸發任何篩選；此 flag 只在 toggleAll 生效。
+   * @default false
+   */
+  readonly preserveSelectedRowKeys?: boolean;
   /** 選取變更時的回呼。 */
   readonly onChange: (
     selectedRowKeys: readonly string[],

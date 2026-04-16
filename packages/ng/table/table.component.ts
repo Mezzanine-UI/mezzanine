@@ -14,6 +14,7 @@ import {
   signal,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -24,6 +25,8 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import {
+  CaretDownIcon,
+  CaretUpIcon,
   ChevronRightIcon,
   DotDragVerticalIcon,
   PinFilledIcon,
@@ -32,9 +35,11 @@ import {
   StarOutlineIcon,
 } from '@mezzanine-ui/icons';
 import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznCheckbox } from '@mezzanine-ui/ng/checkbox';
 import { MznEmpty } from '@mezzanine-ui/ng/empty';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPagination } from '@mezzanine-ui/ng/pagination';
+import { MznRadio } from '@mezzanine-ui/ng/radio';
 import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
 import { MznToggle } from '@mezzanine-ui/ng/toggle';
 import clsx from 'clsx';
@@ -57,6 +62,7 @@ import {
   type TablePagination,
   type TablePinnable,
   type TableRowSelection,
+  type TableRowSelectionCheckbox,
   type TableRowState,
   type TableScroll,
   type TableSelectionMode,
@@ -107,10 +113,13 @@ function nextSortOrder(current: SortOrder): SortOrder {
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
+    FormsModule,
     MznButton,
+    MznCheckbox,
     MznEmpty,
     MznIcon,
     MznPagination,
+    MznRadio,
     MznScrollbar,
     MznToggle,
     NgTemplateOutlet,
@@ -217,16 +226,17 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 <th [class]="dragOrPinHandleCellClass"></th>
               }
               @if (hasSelection()) {
-                <th [class]="selectionCellClass">
-                  @if (selectionMode() === 'checkbox' && !hideSelectAll()) {
-                    <input
-                      type="checkbox"
-                      [class]="selectionCheckboxClass"
-                      [checked]="allSelected()"
-                      [indeterminate]="someSelected()"
-                      (change)="onSelectAll()"
-                    />
-                  }
+                <th [class]="headerSelectionCellClass" scope="col">
+                  <div [class]="selectionCheckboxClass">
+                    @if (selectionMode() === 'checkbox' && !hideSelectAll()) {
+                      <div
+                        mznCheckbox
+                        [ngModel]="allSelected()"
+                        [indeterminate]="someSelected()"
+                        (ngModelChange)="onSelectAll()"
+                      ></div>
+                    }
+                  </div>
                 </th>
               }
               @if (isExpandableEnabled()) {
@@ -239,15 +249,26 @@ function nextSortOrder(current: SortOrder): SortOrder {
                       <span [class]="headerCellTitleClass">{{
                         col.title
                       }}</span>
-                      @if (col.sortOrder !== undefined) {
-                        <span [class]="sortIconsClass" (click)="onSort(col)">
-                          <span [class]="getSortIconClass(col, 'ascend')"
-                            >&#9650;</span
-                          >
-                          <span [class]="getSortIconClass(col, 'descend')"
-                            >&#9660;</span
-                          >
-                        </span>
+                      @if (col.onSort) {
+                        <button
+                          type="button"
+                          [class]="sortIconsClass"
+                          (click)="onSortIconClick($event, col)"
+                          (keydown)="onSortIconKeyDown($event, col)"
+                        >
+                          <i
+                            mznIcon
+                            [icon]="caretUpIcon"
+                            [size]="8"
+                            [class]="getSortIconClass(col, 'ascend')"
+                          ></i>
+                          <i
+                            mznIcon
+                            [icon]="caretDownIcon"
+                            [size]="8"
+                            [class]="getSortIconClass(col, 'descend')"
+                          ></i>
+                        </button>
                       }
                     </div>
                   </div>
@@ -356,25 +377,26 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </td>
               }
               @if (hasSelection()) {
-                <td [class]="selectionCellClass">
-                  @if (selectionMode() === 'radio') {
-                    <input
-                      type="radio"
-                      [class]="selectionCheckboxClass"
-                      name="mzn-table-radio"
-                      [checked]="isSelected(record)"
-                      [disabled]="isSelectionDisabled(record)"
-                      (change)="onToggleSelection(record)"
-                    />
-                  } @else {
-                    <input
-                      type="checkbox"
-                      [class]="selectionCheckboxClass"
-                      [checked]="isSelected(record)"
-                      [disabled]="isSelectionDisabled(record)"
-                      (change)="onToggleSelection(record)"
-                    />
-                  }
+                <td [class]="bodySelectionCellClass">
+                  <div [class]="selectionCheckboxClass">
+                    @if (selectionMode() === 'radio') {
+                      <div
+                        mznRadio
+                        name="mzn-table-radio"
+                        [value]="getRowKeyOf(record)"
+                        [ngModel]="selectedRadioValue()"
+                        [disabled]="isSelectionDisabled(record)"
+                        (ngModelChange)="onRadioNgModelChange($event)"
+                      ></div>
+                    } @else {
+                      <div
+                        mznCheckbox
+                        [ngModel]="isSelected(record)"
+                        [disabled]="isSelectionDisabled(record)"
+                        (ngModelChange)="onToggleSelection(record)"
+                      ></div>
+                    }
+                  </div>
                 </td>
               }
               @if (isExpandableEnabled()) {
@@ -833,6 +855,14 @@ export class MznTable {
   protected readonly bodyClass = tableClasses.body;
   protected readonly cellContentClass = tableClasses.cellContent;
   protected readonly selectionCellClass = tableClasses.selectionCell;
+  protected readonly bodySelectionCellClass = clsx(
+    tableClasses.cell,
+    tableClasses.selectionCell,
+  );
+  protected readonly headerSelectionCellClass = clsx(
+    tableClasses.headerCell,
+    tableClasses.selectionCell,
+  );
   protected readonly selectionCheckboxClass = tableClasses.selectionCheckbox;
   protected readonly expandCellClass = tableClasses.expandCell;
   protected readonly bodyExpandCellClass = clsx(
@@ -863,6 +893,8 @@ export class MznTable {
   protected readonly actionsCellClass = tableClasses.actionsCell;
   protected readonly actionButtonClass = `${tableClasses.actionsCell}__button`;
 
+  protected readonly caretDownIcon = CaretDownIcon;
+  protected readonly caretUpIcon = CaretUpIcon;
   protected readonly chevronRightIcon = ChevronRightIcon;
   protected readonly dotDragVerticalIcon = DotDragVerticalIcon;
   protected readonly pinFilledIcon = PinFilledIcon;
@@ -1004,19 +1036,40 @@ export class MznTable {
     return drag.fixedRowKeys?.includes(key) ?? false;
   }
 
-  private readonly allRowKeys = computed((): readonly string[] =>
-    this.dataSource().map(getRowKey).filter(Boolean),
-  );
+  /**
+   * Keys of rows that are actually selectable — excludes rows whose
+   * `isSelectionDisabled(record)` returns true. Mirrors React
+   * `useTableSelection.selectableKeys`, which determines:
+   *   - `isAllSelected` / `isIndeterminate`
+   *   - `toggleAll`'s target set
+   * so the header checkbox never toggles disabled rows on or off.
+   */
+  private readonly selectableRowKeys = computed((): readonly string[] => {
+    const rs = this.rowSelection();
+    const isDisabled =
+      typeof rs === 'object' && rs !== null && 'isSelectionDisabled' in rs
+        ? rs.isSelectionDisabled
+        : undefined;
+
+    const records = this.dataSource();
+
+    if (!isDisabled) return records.map(getRowKey).filter(Boolean);
+
+    return records
+      .filter((record) => !isDisabled(record))
+      .map(getRowKey)
+      .filter(Boolean);
+  });
 
   protected readonly allSelected = computed((): boolean => {
-    const keys = this.allRowKeys();
+    const keys = this.selectableRowKeys();
     const selected = this.resolvedSelectedKeys();
 
     return keys.length > 0 && keys.every((k) => selected.has(k));
   });
 
   protected readonly someSelected = computed((): boolean => {
-    const keys = this.allRowKeys();
+    const keys = this.selectableRowKeys();
     const selected = this.resolvedSelectedKeys();
     const count = keys.filter((k) => selected.has(k)).length;
 
@@ -1183,6 +1236,47 @@ export class MznTable {
   /* ---------------------------------------------------------------- */
   /*  Queries                                                          */
   /* ---------------------------------------------------------------- */
+
+  /** Helper for templates — exposes `getRowKey` as an instance method. */
+  protected getRowKeyOf(record: TableDataSource): string {
+    return getRowKey(record);
+  }
+
+  /**
+   * Current selected radio value — reads `rowSelection.selectedRowKey` in
+   * config-object mode, otherwise falls back to the first key of the
+   * internal selected set. Feeds the `<div mznRadio [ngModel]>` binding so
+   * the checked radio is determined by value match (not boolean).
+   */
+  protected readonly selectedRadioValue = computed((): string | undefined => {
+    const rs = this.rowSelection();
+
+    if (
+      typeof rs === 'object' &&
+      rs !== null &&
+      'mode' in rs &&
+      rs.mode === 'radio'
+    ) {
+      return (rs as TableRowSelection & { mode: 'radio' }).selectedRowKey;
+    }
+
+    const set = this.resolvedSelectedKeys();
+
+    return set.size > 0 ? [...set][0] : undefined;
+  });
+
+  /**
+   * Forward MznRadio's `ngModelChange` (new value string) to the
+   * existing `onToggleSelection(record)` handler by locating the record
+   * that matches the new key.
+   */
+  protected onRadioNgModelChange(newKey: string | undefined): void {
+    if (!newKey) return;
+
+    const record = this.dataSource().find((r) => getRowKey(r) === newKey);
+
+    if (record) this.onToggleSelection(record);
+  }
 
   protected isSelected(record: TableDataSource): boolean {
     return this.resolvedSelectedKeys().has(getRowKey(record));
@@ -1446,6 +1540,30 @@ export class MznTable {
     this.sortChange.emit({ key: col.key, order });
   }
 
+  /**
+   * Click handler for the sort-icon button. Mirrors React's `TableHeader`
+   * where the button's `onClick` stops propagation so clicking the sort
+   * control does not bubble up to an ancestor row handler.
+   */
+  protected onSortIconClick(event: Event, col: TableColumn): void {
+    event.stopPropagation();
+    this.onSort(col);
+  }
+
+  /**
+   * Keyboard handler — Enter / Space trigger sort, matching React's
+   * `TableHeader.onKeyDown` which prevents default to suppress page scroll
+   * and stops propagation so the handler does not bubble.
+   */
+  protected onSortIconKeyDown(event: KeyboardEvent, col: TableColumn): void {
+    event.stopPropagation();
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.onSort(col);
+    }
+  }
+
   onToggleSelection(record: TableDataSource): void {
     const key = getRowKey(record);
     const rs = this.rowSelection();
@@ -1498,53 +1616,79 @@ export class MznTable {
     this.selectedRowKeysChange.emit([...current]);
   }
 
-  onSelectAll(keys?: readonly string[]): void {
-    const allKeys = keys ?? this.allRowKeys();
+  /**
+   * Toggle the header "select all" checkbox. Mirrors React
+   * `useTableSelection.toggleAll`:
+   *
+   * - When `isAllSelected`:
+   *   - `preserveSelectedRowKeys=true`  → drop every key belonging to the
+   *     current `dataSource` (regardless of `isSelectionDisabled`).
+   *   - `preserveSelectedRowKeys=false` → drop only the `selectableRowKeys`
+   *     in the current page; other pages' keys stay untouched.
+   * - When not `isAllSelected`:
+   *   - `preserveSelectedRowKeys=true`  → keep selectedRowKeys whose rows
+   *     are **not** in the current `dataSource`, then append the current
+   *     page's `selectableRowKeys`.
+   *   - `preserveSelectedRowKeys=false` → replace with the current page's
+   *     `selectableRowKeys` only.
+   */
+  onSelectAll(_keys?: readonly string[]): void {
+    const selectable = this.selectableRowKeys();
+    const selected = this.resolvedSelectedKeys();
+    const currentDataKeys = this.dataSource().map(getRowKey);
     const rs = this.rowSelection();
+    const preserve =
+      typeof rs === 'object' &&
+      rs !== null &&
+      'mode' in rs &&
+      rs.mode === 'checkbox'
+        ? ((rs as TableRowSelectionCheckbox).preserveSelectedRowKeys ?? false)
+        : false;
+
+    const selectedArr = [...selected];
+
+    let nextKeys: string[];
+    let type: 'all' | 'none';
 
     if (this.allSelected()) {
-      // Config object mode
-      if (
-        typeof rs === 'object' &&
-        rs !== null &&
-        'mode' in rs &&
-        rs.mode === 'checkbox'
-      ) {
-        const checkboxConfig = rs as TableRowSelection & { mode: 'checkbox' };
+      type = 'none';
 
-        checkboxConfig.onChange([], null, []);
-        checkboxConfig.onSelectAll?.('none');
-
-        return;
+      if (preserve) {
+        nextKeys = selectedArr.filter((k) => !currentDataKeys.includes(k));
+      } else {
+        nextKeys = selectedArr.filter((k) => !selectable.includes(k));
       }
-
-      this.internalSelectedKeys.set(new Set());
-      this.selectedRowKeysChange.emit([]);
     } else {
-      // Config object mode
-      if (
-        typeof rs === 'object' &&
-        rs !== null &&
-        'mode' in rs &&
-        rs.mode === 'checkbox'
-      ) {
-        const checkboxConfig = rs as TableRowSelection & { mode: 'checkbox' };
-        const nextKeys = [...allKeys];
-        const selectedRows = this.dataSource().filter((r) =>
-          nextKeys.includes(getRowKey(r)),
-        );
+      type = 'all';
 
-        checkboxConfig.onChange(nextKeys, null, selectedRows);
-        checkboxConfig.onSelectAll?.('all');
+      const existingNonDataKeys = preserve
+        ? selectedArr.filter((k) => !currentDataKeys.includes(k))
+        : [];
 
-        return;
-      }
-
-      const next = new Set(allKeys);
-
-      this.internalSelectedKeys.set(next);
-      this.selectedRowKeysChange.emit([...next]);
+      nextKeys = [...existingNonDataKeys, ...selectable];
     }
+
+    // Config object mode.
+    if (
+      typeof rs === 'object' &&
+      rs !== null &&
+      'mode' in rs &&
+      rs.mode === 'checkbox'
+    ) {
+      const checkboxConfig = rs as TableRowSelectionCheckbox;
+      const selectedRows = this.dataSource().filter((r) =>
+        nextKeys.includes(getRowKey(r)),
+      );
+
+      checkboxConfig.onChange(nextKeys, null, selectedRows);
+      checkboxConfig.onSelectAll?.(type);
+
+      return;
+    }
+
+    // Plain boolean `rowSelection` / standalone `selectedRowKeys` input mode.
+    this.internalSelectedKeys.set(new Set(nextKeys));
+    this.selectedRowKeysChange.emit(nextKeys);
   }
 
   onToggleExpansion(record: TableDataSource): void {
