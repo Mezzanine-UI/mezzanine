@@ -1194,47 +1194,81 @@ export const WithBulkActions: Story = {
   }),
 };
 
+interface PaginationRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+}
+
 @Component({
   selector: 'story-table-pagination',
   standalone: true,
-  imports: [MznTable],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable, MznTableCellRender, MznTypography],
   template: `
     <div
       mznTable
-      [columns]="columns"
-      [dataSource]="paginated()"
-      [pagination]="paginationConfig()"
-    ></div>
+      [columns]="baseColumns"
+      [dataSource]="paginationData()"
+      [pagination]="pagination()"
+    >
+      <ng-template mznTableCellRender="age" let-record>
+        <span mznTypography variant="body-mono">{{ record.age }}</span>
+      </ng-template>
+    </div>
   `,
 })
 class WithPaginationStoryComponent {
-  readonly columns = basicColumns;
-  private readonly allData = Array.from({ length: 20 }, (_, i) => ({
-    key: String(i + 1),
-    name: `User ${i + 1}`,
-    age: 20 + i,
-    email: `user${i + 1}@example.com`,
-  }));
+  readonly baseColumns: TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name', width: 150 },
+    { key: 'age', title: 'Age', width: 100 },
+    { key: 'address', title: 'Address', dataIndex: 'address' },
+  ];
 
-  readonly pageSize = 5;
-  readonly page = signal(1);
+  private readonly itemsPerPage = signal(10);
+  readonly currentPage = signal(1);
 
-  readonly paginated = computed<TableDataSource[]>(() => {
-    const start = (this.page() - 1) * this.pageSize;
-    return this.allData.slice(start, start + this.pageSize);
+  /**
+   * React's WithPagination story synthesises `paginationData` on the fly
+   * by slicing a 100-row range out of an imaginary source, so we do the
+   * same here — no in-memory `originData`, just compute from page + size.
+   */
+  readonly paginationData = computed((): readonly PaginationRowType[] => {
+    const page = this.currentPage();
+    const size = this.itemsPerPage();
+
+    return Array.from({ length: size }, (_, i) => {
+      const index = i + (page - 1) * size;
+
+      return {
+        key: String(index + 1),
+        name: `User ${index + 1}`,
+        age: 20 + index,
+        address: `Address ${index + 1}`,
+      };
+    });
   });
 
-  readonly paginationConfig = computed(() => ({
-    current: this.page(),
-    pageSize: this.pageSize,
-    total: this.allData.length,
-    onChange: (p: number): void => {
-      this.page.set(p);
-    },
+  readonly pagination = computed(() => ({
+    current: this.currentPage(),
+    pageSize: this.itemsPerPage(),
+    total: 100,
+    showPageSizeOptions: true,
+    pageSizeLabel: '每頁顯示：',
+    renderResultSummary: (from: number, to: number, total: number): string =>
+      `目前顯示 ${from}-${to} 筆，共 ${total} 筆資料`,
+    showJumper: true,
+    inputPlaceholder: '頁碼',
+    hintText: '前往',
+    buttonText: '確定',
+    onChange: (page: number): void => this.currentPage.set(page),
+    onPageSizeChange: (size: number): void => this.itemsPerPage.set(size),
   }));
 }
 
 export const WithPagination: Story = {
+  name: 'With Pagination',
   parameters: { controls: { disable: true } },
   decorators: [moduleMetadata({ imports: [WithPaginationStoryComponent] })],
   render: () => ({
