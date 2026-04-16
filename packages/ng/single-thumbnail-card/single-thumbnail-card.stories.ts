@@ -1,6 +1,7 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { Component, signal } from '@angular/core';
 import { StarFilledIcon, StarOutlineIcon } from '@mezzanine-ui/icons';
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { MznSingleThumbnailCard } from './single-thumbnail-card.component';
 import { MznCardGroup } from '@mezzanine-ui/ng/card';
 
@@ -24,68 +25,23 @@ type Story = StoryObj;
 
 export const Playground: Story = {
   argTypes: {
-    filetype: {
-      control: { type: 'text' },
-      description: 'File extension string for the filetype badge.',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: '-' },
-      },
-    },
-    personalActionActive: {
-      control: { type: 'boolean' },
-      description: 'Whether the personal action is in active state.',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-    personalActionIcon: {
-      control: false,
-      description: 'Icon for the personal action button.',
-      table: {
-        type: { summary: 'IconDefinition' },
-        defaultValue: { summary: '-' },
-      },
-    },
-    personalActionActiveIcon: {
-      control: false,
-      description: 'Icon shown when personal action is active.',
-      table: {
-        type: { summary: 'IconDefinition' },
-        defaultValue: { summary: '-' },
-      },
-    },
-    subtitle: {
-      control: { type: 'text' },
-      description: 'Subtitle text shown in the info section.',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: '-' },
-      },
-    },
-    tag: {
-      control: { type: 'text' },
-      description: 'Optional tag label shown on top of the thumbnail.',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: '-' },
-      },
-    },
-    title: {
-      control: { type: 'text' },
-      description: 'Title text shown in the info section.',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: '-' },
-      },
+    filetype: { control: { type: 'text' } },
+    personalActionActive: { control: { type: 'boolean' } },
+    subtitle: { control: { type: 'text' } },
+    tag: { control: { type: 'text' } },
+    title: { control: { type: 'text' } },
+    type: {
+      control: { type: 'select' },
+      options: ['default', 'action', 'overflow'],
     },
   },
   args: {
+    filetype: '',
     personalActionActive: false,
     subtitle: '2024/01/15',
     tag: 'New',
     title: 'Document Title',
+    type: 'default',
   },
   render: (args) => ({
     props: {
@@ -102,7 +58,8 @@ export const Playground: Story = {
           [personalActionActiveIcon]="personalActionActiveIcon"
           [subtitle]="subtitle"
           [tag]="tag"
-          [title]="title"
+          [title]="title || ''"
+          [type]="type"
         >
           ${sampleImage}
         </div>
@@ -129,85 +86,87 @@ export const TypeDefault: Story = {
 };
 
 @Component({
-  selector: 'story-single-thumbnail-card-with-action',
+  selector: '[mznSingleThumbnailCardTypeActionDemo]',
   standalone: true,
   imports: [MznSingleThumbnailCard],
+  host: { style: 'width: 320px; display: block;' },
   template: `
-    <div style="width: 320px;">
-      <div
-        mznSingleThumbnailCard
-        [actionOptions]="actionOptions()"
-        filetype="pdf"
-        subtitle="2.4 MB"
-        title="report-2024.pdf"
-      >
-        ${sampleImage}
-      </div>
+    <div
+      mznSingleThumbnailCard
+      type="action"
+      actionName="Click"
+      filetype="pdf"
+      subtitle="2.4 MB"
+      title="report-2024.pdf"
+      (actionClick)="onActionClick()"
+    >
+      ${sampleImage}
     </div>
   `,
 })
-class SingleThumbnailCardWithActionComponent {
-  readonly actionOptions = signal({
-    type: 'action' as const,
-    actionName: 'Click',
-  });
+class SingleThumbnailCardTypeActionDemoComponent {
+  onActionClick(): void {
+    alert('Clicked');
+  }
 }
 
 export const TypeAction: Story = {
   name: 'Type: Action',
   decorators: [
     moduleMetadata({
-      imports: [SingleThumbnailCardWithActionComponent],
+      imports: [SingleThumbnailCardTypeActionDemoComponent],
     }),
   ],
   render: () => ({
-    template: `<story-single-thumbnail-card-with-action />`,
+    template: `<div mznSingleThumbnailCardTypeActionDemo></div>`,
   }),
 };
 
 @Component({
-  selector: 'story-single-thumbnail-card-with-overflow',
+  selector: '[mznSingleThumbnailCardTypeOverflowDemo]',
   standalone: true,
   imports: [MznSingleThumbnailCard],
+  host: { style: 'width: 320px; display: block;' },
   template: `
-    <div style="width: 320px;">
-      <div
-        mznSingleThumbnailCard
-        [actionOptions]="actionOptions()"
-        filetype="zip"
-        subtitle="15.2 MB"
-        title="project-files.zip"
-      >
-        ${sampleImage}
-      </div>
+    <div
+      mznSingleThumbnailCard
+      type="overflow"
+      filetype="zip"
+      subtitle="15.2 MB"
+      title="project-files.zip"
+      [options]="options"
+      (optionSelect)="onOptionSelect($event)"
+    >
+      ${sampleImage}
     </div>
   `,
 })
-class SingleThumbnailCardWithOverflowComponent {
-  readonly actionOptions = signal({
-    type: 'overflow' as const,
-    actionName: 'Options',
-    options: [
-      { id: 'download', name: 'Download' },
-      { id: 'share', name: 'Share' },
-      { id: 'delete', name: 'Delete' },
-    ] as const,
-  });
+class SingleThumbnailCardTypeOverflowDemoComponent {
+  readonly options: ReadonlyArray<DropdownOption> = [
+    { id: 'download', name: 'Download' },
+    { id: 'share', name: 'Share' },
+    { id: 'delete', name: 'Delete' },
+  ];
+
+  onOptionSelect(option: DropdownOption): void {
+    alert(`Selected: ${option.name}`);
+  }
 }
 
 export const TypeOverflow: Story = {
   name: 'Type: Overflow',
   decorators: [
     moduleMetadata({
-      imports: [SingleThumbnailCardWithOverflowComponent],
+      imports: [SingleThumbnailCardTypeOverflowDemoComponent],
     }),
   ],
   render: () => ({
-    template: `<story-single-thumbnail-card-with-overflow />`,
+    template: `<div mznSingleThumbnailCardTypeOverflowDemo></div>`,
   }),
 };
 
 export const WithTag: Story = {
+  name: 'With Tag',
   render: () => ({
     template: `
       <div style="width: 320px;">
@@ -224,31 +183,30 @@ export const WithTag: Story = {
 };
 
 @Component({
-  selector: 'story-single-thumbnail-card-with-personal-action',
+  selector: '[mznSingleThumbnailCardWithPersonalActionDemo]',
   standalone: true,
   imports: [MznSingleThumbnailCard],
+  host: { style: 'width: 320px; display: block;' },
   template: `
-    <div style="width: 320px;">
-      <div
-        mznSingleThumbnailCard
-        [personalActionActive]="isFavorite()"
-        [personalActionIcon]="starOutlineIcon"
-        [personalActionActiveIcon]="starFilledIcon"
-        (personalActionClick)="onPersonalActionClick($event)"
-        subtitle="800x600"
-        title="artwork.png"
-      >
-        ${sampleImage}
-      </div>
+    <div
+      mznSingleThumbnailCard
+      [personalActionActive]="isFavorite()"
+      [personalActionIcon]="starOutlineIcon"
+      [personalActionActiveIcon]="starFilledIcon"
+      (personalActionClick)="toggleFavorite()"
+      subtitle="800x600"
+      title="artwork.png"
+    >
+      ${sampleImage}
     </div>
   `,
 })
-class SingleThumbnailCardWithPersonalActionComponent {
+class SingleThumbnailCardWithPersonalActionDemoComponent {
   readonly starOutlineIcon = StarOutlineIcon;
   readonly starFilledIcon = StarFilledIcon;
   readonly isFavorite = signal(false);
 
-  onPersonalActionClick(_event: { event: MouseEvent; active: boolean }): void {
+  toggleFavorite(): void {
     this.isFavorite.update((v) => !v);
   }
 }
@@ -257,17 +215,28 @@ export const WithPersonalAction: Story = {
   name: 'With Personal Action',
   decorators: [
     moduleMetadata({
-      imports: [SingleThumbnailCardWithPersonalActionComponent],
+      imports: [SingleThumbnailCardWithPersonalActionDemoComponent],
     }),
   ],
   render: () => ({
-    template: `<story-single-thumbnail-card-with-personal-action />`,
+    template: `<div mznSingleThumbnailCardWithPersonalActionDemo></div>`,
   }),
 };
 
 export const FiletypeVariants: Story = {
   name: 'Filetype Variants',
   render: () => ({
+    props: {
+      items: [
+        { filetype: 'jpg', subtitle: 'Image', title: 'photo.jpg' },
+        { filetype: 'mp4', subtitle: 'Media', title: 'video.mp4' },
+        { filetype: 'docx', subtitle: 'Document', title: 'report.docx' },
+        { filetype: 'zip', subtitle: 'Archive', title: 'backup.zip' },
+        { filetype: 'ts', subtitle: 'Code', title: 'index.ts' },
+        { filetype: 'ini', subtitle: 'System', title: 'setup.ini' },
+        { filetype: 'xyz', subtitle: 'Unknown', title: 'file.xyz' },
+      ],
+    },
     template: `
       <div style="display: flex; flex-wrap: wrap; gap: 16px;">
         @for (item of items; track item.filetype) {
@@ -283,54 +252,44 @@ export const FiletypeVariants: Story = {
         }
       </div>
     `,
-    props: {
-      items: [
-        { filetype: 'jpg', subtitle: 'Image', title: 'photo.jpg' },
-        { filetype: 'mp4', subtitle: 'Media', title: 'video.mp4' },
-        { filetype: 'docx', subtitle: 'Document', title: 'report.docx' },
-        { filetype: 'zip', subtitle: 'Archive', title: 'backup.zip' },
-        { filetype: 'ts', subtitle: 'Code', title: 'index.ts' },
-        { filetype: 'ini', subtitle: 'System', title: 'setup.ini' },
-        { filetype: 'xyz', subtitle: 'Unknown', title: 'file.xyz' },
-      ],
-    },
   }),
 };
 
 @Component({
-  selector: 'story-single-thumbnail-card-full-featured',
+  selector: '[mznSingleThumbnailCardFullFeaturedDemo]',
   standalone: true,
   imports: [MznSingleThumbnailCard],
+  host: { style: 'width: 320px; display: block;' },
   template: `
-    <div style="width: 320px;">
-      <div
-        mznSingleThumbnailCard
-        [actionOptions]="actionOptions()"
-        [personalActionActive]="isFavorite()"
-        [personalActionIcon]="starOutlineIcon"
-        [personalActionActiveIcon]="starFilledIcon"
-        (personalActionClick)="onPersonalActionClick($event)"
-        filetype="pdf"
-        subtitle="Updated: 2024/01/15 • 2.4 MB"
-        tag="Important"
-        title="quarterly-report-q4-2024.pdf"
-      >
-        ${sampleImage}
-      </div>
+    <div
+      mznSingleThumbnailCard
+      type="action"
+      actionName="View Details"
+      filetype="pdf"
+      [personalActionActive]="isFavorite()"
+      [personalActionIcon]="starOutlineIcon"
+      [personalActionActiveIcon]="starFilledIcon"
+      (personalActionClick)="toggleFavorite()"
+      (actionClick)="onActionClick()"
+      subtitle="Updated: 2024/01/15 • 2.4 MB"
+      tag="Important"
+      title="quarterly-report-q4-2024.pdf"
+    >
+      ${sampleImage}
     </div>
   `,
 })
-class SingleThumbnailCardFullFeaturedComponent {
+class SingleThumbnailCardFullFeaturedDemoComponent {
   readonly starOutlineIcon = StarOutlineIcon;
   readonly starFilledIcon = StarFilledIcon;
   readonly isFavorite = signal(false);
-  readonly actionOptions = signal({
-    type: 'action' as const,
-    actionName: 'View Details',
-  });
 
-  onPersonalActionClick(_event: { event: MouseEvent; active: boolean }): void {
+  toggleFavorite(): void {
     this.isFavorite.update((v) => !v);
+  }
+
+  onActionClick(): void {
+    alert('View details clicked');
   }
 }
 
@@ -338,11 +297,11 @@ export const FullFeatured: Story = {
   name: 'Full Featured',
   decorators: [
     moduleMetadata({
-      imports: [SingleThumbnailCardFullFeaturedComponent],
+      imports: [SingleThumbnailCardFullFeaturedDemoComponent],
     }),
   ],
   render: () => ({
-    template: `<story-single-thumbnail-card-full-featured />`,
+    template: `<div mznSingleThumbnailCardFullFeaturedDemo></div>`,
   }),
 };
 
@@ -350,7 +309,7 @@ export const InCardGroup: Story = {
   name: 'In Card Group',
   render: () => ({
     template: `
-      <div mznCardGroup>
+      <div mznCardGroup cardType="single-thumbnail">
         <div mznSingleThumbnailCard
           filetype="jpg"
           subtitle="1920x1080"
@@ -360,7 +319,7 @@ export const InCardGroup: Story = {
         </div>
         <div mznSingleThumbnailCard
           filetype="png"
-          subtitle="800x600"
+          subtitle="尺寸: 800x600&#10;大小: 1.2 MB"
           title="portrait.png"
         >
           ${sampleImage}
@@ -390,13 +349,15 @@ export const AsLink: Story = {
     template: `
       <div style="display: flex; gap: 16px;">
         <div style="width: 320px;">
-          <div mznSingleThumbnailCard
+          <a mznSingleThumbnailCard
+            href="https://rytass.com/"
+            target="_blank"
             filetype="pdf"
             subtitle="Click to open in new tab"
             title="external-link.pdf"
           >
             ${sampleImage}
-          </div>
+          </a>
         </div>
       </div>
     `,
