@@ -341,7 +341,7 @@ function throttleRaf(
                       }
                     </div>
                   </div>
-                  @if (resizable()) {
+                  @if (resizable() && colIndex < columns().length - 1) {
                     <span
                       [class]="resizeHandleClass"
                       (pointerdown)="onResizeStart($event, colIndex)"
