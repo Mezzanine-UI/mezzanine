@@ -1377,18 +1377,135 @@ export const WithExpansion: Story = {
   }),
 };
 
+interface FixedColumnsRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+}
+
+@Component({
+  selector: 'story-table-fixed-columns',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable, MznTableCellRender, MznTypography],
+  template: `
+    <div
+      style="width: 100%; display: flex; flex-flow: column; align-items: flex-start; gap: 12px;"
+    >
+      <span
+        >Fixed Columns: "Name (start)", "Fixed Age (start)", "Fixed Address
+        (end)", "Action (end)"</span
+      >
+      <div style="width: 100%;">
+        <div
+          mznTable
+          [actions]="actions"
+          [columns]="fixedColumns"
+          [dataSource]="dataSource"
+          [fullWidth]="true"
+        >
+          <ng-template mznTableCellRender="age" let-record>
+            <span mznTypography variant="body-mono">{{ record.age }}</span>
+          </ng-template>
+          <ng-template mznTableCellRender="age2" let-record>
+            <span mznTypography variant="body-mono">{{ record.age }}</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  `,
+})
+class WithFixedColumnsStoryComponent {
+  readonly dataSource: readonly FixedColumnsRowType[] = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+    },
+    { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park' },
+    { key: '3', name: 'Joe Black', age: 35, address: 'Sydney No. 1 Lake Park' },
+    { key: '4', name: 'Jane Doe', age: 30, address: 'Tokyo No. 1 Lake Park' },
+    { key: '5', name: 'Jack Smith', age: 21, address: 'Paris No. 1 Lake Park' },
+    {
+      key: '6',
+      name: 'Emily Davis',
+      age: 45,
+      address: 'Berlin No. 1 Lake Park',
+    },
+    {
+      key: '7',
+      name: 'Michael Johnson',
+      age: 38,
+      address: 'Madrid No. 1 Lake Park',
+    },
+    {
+      key: '8',
+      name: 'Sarah Wilson',
+      age: 29,
+      address: 'Rome No. 1 Lake Park',
+    },
+    {
+      key: '9',
+      name: 'David Brown',
+      age: 33,
+      address: 'Dublin No. 1 Lake Park',
+    },
+  ];
+
+  readonly fixedColumns: TableColumn[] = [
+    {
+      dataIndex: 'name',
+      fixed: 'start',
+      key: 'name',
+      title: 'Name',
+      width: 120,
+    },
+    { key: 'age', title: 'Age', width: 140 },
+    { key: 'age2', title: 'Fixed Age', fixed: 'start', width: 120 },
+    {
+      dataIndex: 'address',
+      key: 'address1',
+      title: 'Address 1',
+      width: 400,
+    },
+    {
+      dataIndex: 'address',
+      key: 'address2',
+      title: 'Fixed Address',
+      fixed: 'end',
+      width: 200,
+    },
+    {
+      dataIndex: 'address',
+      key: 'address3',
+      title: 'Address 3',
+      width: 250,
+    },
+  ];
+
+  readonly actions: TableActions = {
+    fixed: 'end',
+    title: 'Action',
+    width: 100,
+    variant: 'base-text-link',
+    render: () => [
+      {
+        key: 'edit',
+        label: 'Edit',
+        onClick: (): void => {},
+      },
+    ],
+  };
+}
+
 export const WithFixedColumns: Story = {
   name: 'With Fixed Columns',
   parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [WithFixedColumnsStoryComponent] })],
   render: () => ({
-    props: {
-      columns: basicColumns,
-      dataSource: basicData,
-    },
-    template: `
-      <!-- NOTE: Fixed left/right columns (column.fixed) from React are not yet supported in Angular MznTable. -->
-      <div mznTable [columns]="columns" [dataSource]="dataSource" ></div>
-    `,
+    template: `<story-table-fixed-columns />`,
   }),
 };
 
