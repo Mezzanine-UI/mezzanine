@@ -559,6 +559,7 @@ function throttleRaf(
                 <td
                   [attr.colspan]="totalColumns()"
                   [class]="expandedRowCellClass"
+                  [style.padding-left.px]="expansionLeftPadding()"
                 >
                   <div [class]="expandedContentClass">
                     @if (expandedTemplate(); as tpl) {
@@ -752,6 +753,22 @@ export class MznTable {
   protected readonly isExpandableEnabled = computed(
     (): boolean => this.expandableConfig() !== null,
   );
+
+  /**
+   * Left padding for the expanded-row cell so the expanded content aligns
+   * with the first data column. Mirrors React `useTableExpansion`'s
+   * `expansionLeftPadding` (DRAG_OR_PIN_HANDLE_COLUMN_WIDTH +
+   * EXPANSION_COLUMN_WIDTH), excluding the selection column which React
+   * renders after the expand column.
+   */
+  protected readonly expansionLeftPadding = computed((): number => {
+    let padding = 0;
+
+    if (this.isDragEnabled() || this.isPinEnabled()) padding += 40;
+    if (this.isExpandableEnabled()) padding += 40;
+
+    return padding;
+  });
 
   /** 展開列內容模板（若未提供則回傳 null，不渲染自訂內容）。 */
   protected readonly expandedTemplate = computed(
