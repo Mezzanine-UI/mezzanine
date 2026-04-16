@@ -10,8 +10,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { FormsModule } from '@angular/forms';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznInput } from '@mezzanine-ui/ng/input';
+import { MznToggle } from '@mezzanine-ui/ng/toggle';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznTable } from './table.component';
 import { MznTableCellRender } from './table-cell-render.directive';
@@ -19,6 +21,7 @@ import { useTableDataSource } from './use-table-data-source';
 import type {
   HighlightMode as HighlightModeType,
   RowHeightPreset as RowHeightPresetType,
+  SortOrder as SortOrderType,
   TableActions,
   TableCollectable,
   TableColumn,
@@ -699,89 +702,320 @@ export const CreateDeleteTransitionWithExpansion: Story = {
   }),
 };
 
-export const WithSorting: Story = {
-  parameters: { controls: { disable: true } },
-  render: () => {
-    const columns: TableColumn[] = [
+interface SortingRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+}
+
+@Component({
+  selector: 'story-table-with-sorting',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable, MznTableCellRender, MznTypography],
+  template: `
+    <div style="display: grid; grid-auto-columns: row; gap: 12px;">
+      <span
+        >Controlled sort order: &#123; key: "{{ sortOrder()?.key }}", sortOrder:
+        "{{ sortOrder()?.order }}"&#125;</span
+      >
+      <div mznTable [columns]="columns()" [dataSource]="controlledDataSource()">
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
+    </div>
+  `,
+})
+class WithSortingStoryComponent {
+  private readonly baseData: readonly SortingRowType[] = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+    },
+    { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park' },
+    { key: '3', name: 'Joe Black', age: 35, address: 'Sydney No. 1 Lake Park' },
+    { key: '4', name: 'Jane Doe', age: 30, address: 'Tokyo No. 1 Lake Park' },
+    { key: '5', name: 'Jack Smith', age: 21, address: 'Paris No. 1 Lake Park' },
+    {
+      key: '6',
+      name: 'Emily Davis',
+      age: 45,
+      address: 'Berlin No. 1 Lake Park',
+    },
+    {
+      key: '7',
+      name: 'Michael Johnson',
+      age: 38,
+      address: 'Madrid No. 1 Lake Park',
+    },
+    {
+      key: '8',
+      name: 'Sarah Wilson',
+      age: 29,
+      address: 'Rome No. 1 Lake Park',
+    },
+    {
+      key: '9',
+      name: 'David Brown',
+      age: 33,
+      address: 'Dublin No. 1 Lake Park',
+    },
+  ];
+
+  readonly sortOrder = signal<{
+    readonly key: string;
+    readonly order: SortOrderType;
+  } | null>({ key: 'name', order: 'ascend' });
+
+  readonly controlledDataSource = signal<readonly SortingRowType[]>(
+    // Initial state matches React: sortOrder starts on { key: 'name', order: 'ascend' }.
+    [...this.baseData].sort((a, b) => a.name.localeCompare(b.name)),
+  );
+
+  readonly columns = computed((): TableColumn[] => {
+    const current = this.sortOrder();
+    const orderFor = (key: string): SortOrderType | undefined =>
+      current?.key === key ? current.order : undefined;
+
+    return [
       {
         key: 'name',
         title: 'Name',
         dataIndex: 'name',
-        width: 200,
-        sortOrder: null,
+        width: 150,
+        sortOrder: orderFor('name'),
+        onSort: (key, order) => this.handleSort(key, order, 'name'),
       },
       {
         key: 'age',
         title: 'Age',
-        dataIndex: 'age',
         width: 100,
-        align: 'center',
-        sortOrder: 'ascend',
+        sortOrder: orderFor('age'),
+        onSort: (key, order) => this.handleSort(key, order, 'age'),
       },
-      { key: 'email', title: 'Email', dataIndex: 'email' },
+      { key: 'address', title: 'Address', dataIndex: 'address' },
     ];
+  });
 
-    return {
-      props: {
-        columns,
-        dataSource: basicData,
-      },
-      template: `
-        <div mznTable
-          [columns]="columns"
-          [dataSource]="dataSource"
-        ></div>
-      `,
-    };
-  },
+  private handleSort(
+    key: string,
+    order: SortOrderType,
+    field: 'name' | 'age',
+  ): void {
+    this.sortOrder.set({ key, order });
+
+    if (!order) {
+      this.controlledDataSource.set(this.baseData);
+
+      return;
+    }
+
+    const sorted = [...this.controlledDataSource()].sort((a, b) => {
+      if (field === 'name') {
+        return order === 'ascend'
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
+      }
+
+      return order === 'ascend' ? a.age - b.age : b.age - a.age;
+    });
+
+    this.controlledDataSource.set(sorted);
+  }
+}
+
+export const WithSorting: Story = {
+  name: 'With Sorting',
+  parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [WithSortingStoryComponent] })],
+  render: () => ({
+    template: `<story-table-with-sorting />`,
+  }),
 };
+
+interface SelectionRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+  readonly disabled: boolean;
+}
 
 @Component({
   selector: 'story-table-row-selection',
   standalone: true,
-  imports: [MznTable],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FormsModule,
+    MznTable,
+    MznTableCellRender,
+    MznToggle,
+    MznTypography,
+  ],
   template: `
     <div>
       <div
-        style="margin: 0 0 16px; display: flex; flex-direction: column; gap: 4px;"
+        style="margin: 0 0 16px; display: flex; flex-flow: column; gap: 4px;"
       >
         <span>Mode: checkbox</span>
-        <span>Selected: [{{ selectedKeys().join(', ') }}]</span>
+        <span>- Selected: [{{ selectedRowKeys().join(', ') }}]</span>
+        <div
+          mznToggle
+          label="props.hideSelectAll"
+          [ngModel]="hideSelectAll()"
+          (ngModelChange)="hideSelectAll.set($event)"
+        ></div>
+        <div
+          mznToggle
+          label="props.preserveSelectedRowKeys"
+          [ngModel]="preserveSelectedRowKeys()"
+          (ngModelChange)="preserveSelectedRowKeys.set($event)"
+        ></div>
       </div>
       <div
         mznTable
-        [columns]="columns"
-        [dataSource]="dataSource"
+        [columns]="baseColumns"
+        [dataSource]="paginationData()"
         [rowSelection]="checkboxSelection()"
-      ></div>
+        [pagination]="pagination()"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
+
       <div
-        style="margin: 32px 0 16px; display: flex; flex-direction: column; gap: 4px;"
+        style="margin: 32px 0 16px; display: flex; flex-flow: column; gap: 4px;"
       >
         <span>Mode: radio</span>
-        <span>Selected: {{ selectedRadioKey() }}</span>
+        <span>- Selected: {{ selectedRadioKey() ?? '' }}</span>
       </div>
       <div
         mznTable
-        [columns]="columns"
-        [dataSource]="dataSource"
+        [columns]="baseColumns"
+        [dataSource]="baseData"
         [rowSelection]="radioSelection()"
-      ></div>
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
     </div>
   `,
 })
 class WithRowSelectionStoryComponent {
-  readonly columns = basicColumns;
-  readonly dataSource = basicData;
-  readonly selectedKeys = signal<readonly string[]>([]);
+  readonly baseColumns: TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name', width: 150 },
+    { key: 'age', title: 'Age', width: 100 },
+    { key: 'address', title: 'Address', dataIndex: 'address' },
+  ];
+
+  /** Mirrors React `baseData` — a few rows have age > 40 so the radio's
+   *  `isSelectionDisabled: (r) => r.age > 40` predicate actually disables
+   *  some rows (Jim Green age=42, Emily Davis age=45). */
+  readonly baseData: readonly SelectionRowType[] = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 35,
+      address: 'Sydney No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '4',
+      name: 'Jane Doe',
+      age: 30,
+      address: 'Tokyo No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '5',
+      name: 'Jack Smith',
+      age: 21,
+      address: 'Paris No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '6',
+      name: 'Emily Davis',
+      age: 45,
+      address: 'Berlin No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '7',
+      name: 'Michael Johnson',
+      age: 38,
+      address: 'Madrid No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '8',
+      name: 'Sarah Wilson',
+      age: 29,
+      address: 'Rome No. 1 Lake Park',
+      disabled: false,
+    },
+    {
+      key: '9',
+      name: 'David Brown',
+      age: 33,
+      address: 'Dublin No. 1 Lake Park',
+      disabled: false,
+    },
+  ];
+
+  private readonly originData: readonly SelectionRowType[] = Array.from(
+    { length: 100 },
+    (_, i): SelectionRowType => ({
+      key: String(i + 1),
+      name: `User ${i + 1}`,
+      age: 20 + (i % 50),
+      address: `Address ${i + 1}`,
+      disabled: i % 4 === 0,
+    }),
+  );
+
+  private readonly itemsPerPage = 10;
+
+  readonly currentPage = signal(1);
+  readonly selectedRowKeys = signal<readonly string[]>([]);
   readonly selectedRadioKey = signal<string | undefined>(undefined);
+  readonly hideSelectAll = signal(false);
+  readonly preserveSelectedRowKeys = signal(false);
+
+  readonly paginationData = computed((): readonly SelectionRowType[] => {
+    const start = (this.currentPage() - 1) * this.itemsPerPage;
+
+    return this.originData.slice(start, start + this.itemsPerPage);
+  });
 
   readonly checkboxSelection = computed(
     (): TableRowSelectionCheckbox => ({
       mode: 'checkbox',
-      selectedRowKeys: this.selectedKeys(),
-      onChange: (keys: readonly string[]): void => {
-        this.selectedKeys.set(keys);
-      },
+      hideSelectAll: this.hideSelectAll(),
+      preserveSelectedRowKeys: this.preserveSelectedRowKeys(),
+      selectedRowKeys: this.selectedRowKeys(),
+      isSelectionDisabled: (record) => (record as SelectionRowType).disabled,
+      onChange: (keys): void => this.selectedRowKeys.set(keys),
     }),
   );
 
@@ -789,15 +1023,30 @@ class WithRowSelectionStoryComponent {
     (): TableRowSelectionRadio => ({
       mode: 'radio',
       selectedRowKey: this.selectedRadioKey(),
-      onChange: (key: string | undefined): void => {
-        this.selectedRadioKey.set(key);
-      },
+      isSelectionDisabled: (record) => (record as SelectionRowType).age > 40,
+      onChange: (key): void => this.selectedRadioKey.set(key),
     }),
   );
+
+  readonly pagination = computed(() => ({
+    current: this.currentPage(),
+    pageSize: this.itemsPerPage,
+    total: this.originData.length,
+    onChange: (page: number): void => this.handlePageChange(page),
+  }));
+
+  /**
+   * React's `preserveSelectedRowKeys` only affects toggleAll, not page
+   * navigation — selectedRowKeys are untouched on page change and are
+   * trimmed (or kept) by MznTable's `onSelectAll` based on the flag.
+   */
+  private handlePageChange(page: number): void {
+    this.currentPage.set(page);
+  }
 }
 
 export const WithRowSelection: Story = {
-  name: 'With Selection',
+  name: 'With Row Selection',
   parameters: { controls: { disable: true } },
   decorators: [moduleMetadata({ imports: [WithRowSelectionStoryComponent] })],
   render: () => ({
