@@ -1509,44 +1509,144 @@ export const WithFixedColumns: Story = {
   }),
 };
 
+interface ResizableRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+  readonly tags: readonly string[];
+}
+
+@Component({
+  selector: 'story-table-resizable-columns',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable, MznTableCellRender, MznTypography],
+  template: `
+    <div style="width: 100%; display: flex; flex-flow: column; gap: 12px;">
+      <span style="white-space: pre-line;">{{ legendText }}</span>
+      <div
+        mznTable
+        [columns]="resizableColumns"
+        [dataSource]="dataSource"
+        [resizable]="true"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+        <ng-template mznTableCellRender="tags" let-record>{{
+          (record.tags ?? []).join(', ')
+        }}</ng-template>
+      </div>
+    </div>
+  `,
+})
+class WithResizableColumnsStoryComponent {
+  readonly legendText =
+    'Column 1: minWidth: 120, maxWidth: 220;\n' +
+    '          Column 2: minWidth: 80;\n' +
+    '          Column 3: width 200 minWidth: 140;\n' +
+    '          Column 4: minWidth: 220;';
+
+  readonly dataSource: readonly ResizableRowType[] = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+      tags: ['nice', 'developer'],
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+      tags: ['loser'],
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 35,
+      address: 'Sydney No. 1 Lake Park',
+      tags: ['cool', 'teacher'],
+    },
+    {
+      key: '4',
+      name: 'Jane Doe',
+      age: 30,
+      address: 'Tokyo No. 1 Lake Park',
+      tags: ['developer'],
+    },
+    {
+      key: '5',
+      name: 'Jack Smith',
+      age: 21,
+      address: 'Paris No. 1 Lake Park',
+      tags: ['nice', 'cool'],
+    },
+    {
+      key: '6',
+      name: 'Emily Davis',
+      age: 45,
+      address: 'Berlin No. 1 Lake Park',
+      tags: ['loser', 'teacher'],
+    },
+    {
+      key: '7',
+      name: 'Michael Johnson',
+      age: 38,
+      address: 'Madrid No. 1 Lake Park',
+      tags: ['developer', 'teacher'],
+    },
+    {
+      key: '8',
+      name: 'Sarah Wilson',
+      age: 29,
+      address: 'Rome No. 1 Lake Park',
+      tags: ['nice'],
+    },
+    {
+      key: '9',
+      name: 'David Brown',
+      age: 33,
+      address: 'Dublin No. 1 Lake Park',
+      tags: ['cool', 'developer'],
+    },
+  ];
+
+  readonly resizableColumns: TableColumn[] = [
+    {
+      key: 'name',
+      dataIndex: 'name',
+      title: 'Name',
+      minWidth: 120,
+      maxWidth: 220,
+    },
+    { key: 'age', title: 'Age', minWidth: 80 },
+    {
+      key: 'tags',
+      dataIndex: 'tags',
+      title: 'Tags',
+      width: 200,
+      minWidth: 140,
+    },
+    {
+      key: 'address',
+      dataIndex: 'address',
+      title: 'Address',
+      minWidth: 220,
+    },
+  ];
+}
+
 export const WithResizableColumns: Story = {
   name: 'With Resizable Columns',
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [WithResizableColumnsStoryComponent] }),
+  ],
   render: () => ({
-    props: {
-      columns: [
-        {
-          key: 'name',
-          title: 'Name',
-          dataIndex: 'name',
-          width: 200,
-          minWidth: 100,
-        },
-        {
-          key: 'age',
-          title: 'Age',
-          dataIndex: 'age',
-          width: 100,
-          minWidth: 60,
-          align: 'center' as const,
-        },
-        {
-          key: 'email',
-          title: 'Email',
-          dataIndex: 'email',
-          width: 300,
-          minWidth: 150,
-        },
-      ],
-      dataSource: basicData,
-    },
-    template: `
-      <div mznTable
-        [columns]="columns"
-        [dataSource]="dataSource"
-        [resizable]="true"
-      ></div>
-    `,
+    template: `<story-table-resizable-columns />`,
   }),
 };
 
