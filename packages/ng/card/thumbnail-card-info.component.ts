@@ -116,26 +116,29 @@ export type ThumbnailCardInfoType = 'default' | 'action' | 'overflow';
     }
     @if (type() === 'overflow') {
       <div [class]="infoActionClass">
-        <button
-          #overflowTrigger
-          mznButton
-          [disabled]="disabled()"
-          variant="base-text-link"
-          size="sub"
-          type="button"
-          (click)="toggleOverflow()"
-        >
-          <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
-        </button>
-        <div
-          mznDropdown
-          [anchor]="overflowTrigger"
-          [open]="overflowOpen()"
-          [options]="resolvedOptions()"
-          mode="single"
-          (selected)="onOptionSelect($event)"
-          (closed)="closeOverflow()"
-        ></div>
+        <div class="mzn-dropdown mzn-dropdown--outside">
+          <button
+            #overflowTrigger
+            mznButton
+            [disabled]="disabled()"
+            iconType="icon-only"
+            variant="base-text-link"
+            size="sub"
+            type="button"
+            (click)="toggleOverflow()"
+          >
+            <i mznIcon [icon]="dotHorizontalIcon" [size]="16"></i>
+          </button>
+          <div
+            mznDropdown
+            [anchor]="overflowTrigger"
+            [open]="overflowOpen()"
+            [options]="resolvedOptions()"
+            mode="single"
+            (selected)="onOptionSelect($event)"
+            (closed)="closeOverflow()"
+          ></div>
+        </div>
       </div>
     }
   `,
