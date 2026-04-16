@@ -30,6 +30,7 @@ import {
   StarFilledIcon,
   StarOutlineIcon,
 } from '@mezzanine-ui/icons';
+import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznEmpty } from '@mezzanine-ui/ng/empty';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPagination } from '@mezzanine-ui/ng/pagination';
@@ -43,7 +44,9 @@ import {
   type HighlightMode,
   type RowHeightPreset,
   type SortOrder,
+  type TableActionItem,
   type TableActions,
+  type TableActionVariant,
   type TableCollectable,
   type TableColumn,
   type TableDataSource,
@@ -103,6 +106,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
+    MznButton,
     MznEmpty,
     MznIcon,
     MznPagination,
@@ -277,9 +281,9 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </th>
               }
               @if (actions(); as act) {
-                <th [class]="actionsCellClass" scope="col">
+                <th [class]="headerCellClass" scope="col">
                   <div [class]="headerCellContentClass">
-                    <div [class]="headerCellActionsBaseClass">
+                    <div [class]="getActionsHeaderActionsClasses(act)">
                       <span [class]="headerCellTitleClass">{{
                         act.title ?? ''
                       }}</span>
@@ -436,22 +440,29 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </td>
               }
               @if (actions(); as act) {
-                <td [class]="actionsCellClass">
-                  <span [class]="cellContentClass">
-                    @for (action of act.render(record, idx); track action.key) {
-                      <button
-                        type="button"
-                        [class]="actionButtonClass"
-                        [disabled]="action.disabled ?? false"
-                        (click)="
-                          action.onClick?.(record, idx);
-                          $event.stopPropagation()
-                        "
-                      >
-                        {{ action.label }}
-                      </button>
-                    }
-                  </span>
+                <td [class]="cellClass">
+                  <div [class]="getActionsCellContentClasses(act)">
+                    <div [class]="actionsCellClass">
+                      @for (
+                        action of act.render(record, idx);
+                        track action.key
+                      ) {
+                        <button
+                          mznButton
+                          type="button"
+                          size="sub"
+                          [variant]="resolveActionVariant(action, act)"
+                          [disabled]="action.disabled ?? false"
+                          (click)="
+                            action.onClick?.(record, idx);
+                            $event.stopPropagation()
+                          "
+                        >
+                          {{ action.label }}
+                        </button>
+                      }
+                    </div>
+                  </div>
                 </td>
               }
             </tr>
@@ -835,6 +846,8 @@ export class MznTable {
   protected readonly resizeHandleClass = tableClasses.resizeHandle;
   protected readonly sortIconsClass = tableClasses.sortIcons;
 
+  protected readonly cellClass = tableClasses.cell;
+  protected readonly headerCellClass = tableClasses.headerCell;
   protected readonly actionsCellClass = tableClasses.actionsCell;
   protected readonly actionButtonClass = `${tableClasses.actionsCell}__button`;
 
@@ -1312,6 +1325,50 @@ export class MznTable {
   /* ---------------------------------------------------------------- */
   /*  Collectable queries                                              */
   /* ---------------------------------------------------------------- */
+
+  /**
+   * Inner cell-content div on an actions `<td>` mirrors React's
+   * `<div className={cx(classes.cellContent, alignClass)}>` with the
+   * align class defaulting to the actions column's `align ?? 'end'`.
+   */
+  protected getActionsCellContentClasses(actions: TableActions): string {
+    return clsx(
+      tableClasses.cellContent,
+      CELL_ALIGN_MAP[actions.align ?? 'end'],
+    );
+  }
+
+  /**
+   * Header-cell actions wrapper for the actions column. React's
+   * `columnsWithRightControls` in `Table.tsx` pushes the actions column
+   * into `columns` with `align: actions.align ?? 'end'`, so the shared
+   * `TableHeader` path renders it with align-end by default; mirror here.
+   */
+  protected getActionsHeaderActionsClasses(actions: TableActions): string {
+    return clsx(
+      tableClasses.headerCellActions,
+      CELL_ALIGN_MAP[actions.align ?? 'end'],
+    );
+  }
+
+  /**
+   * Resolve the variant applied to a single row action button.
+   *
+   * Priority mirrors React `TableActionsCell.tsx`:
+   *   item.variant → actions.variant → `danger` legacy fallback → `base-text-link`.
+   */
+  protected resolveActionVariant(
+    item: TableActionItem,
+    actions: TableActions,
+  ): TableActionVariant {
+    if (item.variant) return item.variant;
+
+    if (actions.variant) return actions.variant;
+
+    if (item.danger) return 'destructive-text-link';
+
+    return 'base-text-link';
+  }
 
   protected isCollected(record: TableDataSource): boolean {
     const rowKey = getRowKey(record);

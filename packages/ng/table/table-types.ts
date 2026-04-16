@@ -263,6 +263,25 @@ export type TableRowSelection =
 /*  Actions Column Types (mirrors React's TableActions)                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * 可套用於 row action button 的外觀變體。
+ * 對齊 @mezzanine-ui/core/button `ButtonVariant`，保留字串寬鬆型別避免
+ * 循環相依；`MznButton` 會驗證值。
+ */
+export type TableActionVariant =
+  | 'base-primary'
+  | 'base-secondary'
+  | 'base-tertiary'
+  | 'base-ghost'
+  | 'base-dashed'
+  | 'base-text-link'
+  | 'destructive-primary'
+  | 'destructive-secondary'
+  | 'destructive-ghost'
+  | 'destructive-text-link'
+  | 'inverse'
+  | 'inverse-ghost';
+
 /** 單一動作項目。 */
 export interface TableActionItem {
   /** 動作 key。 */
@@ -271,10 +290,18 @@ export interface TableActionItem {
   readonly label: string;
   /** 圖示。 */
   readonly icon?: unknown;
-  /** 是否為危險動作。 */
+  /**
+   * 是否為危險動作。保留與舊 API 相容；新程式應偏好 `variant`。
+   * @deprecated 使用 `variant: 'destructive-text-link'` 取代。
+   */
   readonly danger?: boolean;
   /** 是否停用。 */
   readonly disabled?: boolean;
+  /**
+   * 按鈕外觀變體，對齊 React `TableActionItemButton.variant`。
+   * 若未設定，使用 `TableActions.variant` 作為 fallback；再無則 `base-text-link`。
+   */
+  readonly variant?: TableActionVariant;
   /** 點擊回呼。 */
   readonly onClick?: (record: TableDataSource, index: number) => void;
 }
@@ -291,6 +318,12 @@ export interface TableActions {
   readonly minWidth?: number;
   /** 固定位置。 */
   readonly fixed?: 'start' | 'end';
+  /**
+   * 動作按鈕預設 variant，對齊 React `TableActions.variant`。
+   * 單個 `TableActionItem.variant` 可覆寫。
+   * @default 'base-text-link'
+   */
+  readonly variant?: TableActionVariant;
   /** 產生動作項目的函式。 */
   readonly render: (
     record: TableDataSource,

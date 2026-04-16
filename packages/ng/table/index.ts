@@ -20,6 +20,7 @@ export type {
   SortOrder,
   TableActionItem,
   TableActions,
+  TableActionVariant,
   TableCollectable,
   TableColumn,
   TableDataSource,
