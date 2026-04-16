@@ -12,6 +12,7 @@ import {
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -28,14 +29,17 @@ import {
   CaretDownIcon,
   CaretUpIcon,
   ChevronRightIcon,
+  CloseIcon,
   DotDragVerticalIcon,
   PinFilledIcon,
   PinIcon,
   StarFilledIcon,
   StarOutlineIcon,
 } from '@mezzanine-ui/icons';
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznCheckbox } from '@mezzanine-ui/ng/checkbox';
+import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
 import { MznEmpty } from '@mezzanine-ui/ng/empty';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPagination } from '@mezzanine-ui/ng/pagination';
@@ -53,6 +57,9 @@ import {
   type TableActionItem,
   type TableActions,
   type TableActionVariant,
+  type TableBulkActions,
+  type TableBulkGeneralAction,
+  type TableBulkOverflowAction,
   type TableCollectable,
   type TableColumn,
   type TableDataSource,
@@ -90,6 +97,60 @@ function nextSortOrder(current: SortOrder): SortOrder {
   return 'ascend';
 }
 
+/** Parse a CSS custom-property pixel string like `"24px"` → `24`. */
+function parsePxVar(value: string): number | null {
+  const trimmed = value.trim();
+
+  if (!trimmed) return null;
+
+  const num = parseFloat(trimmed);
+
+  return Number.isFinite(num) ? num : null;
+}
+
+/**
+ * Minimal trailing-edge throttle based on timestamps. Mirrors the cadence
+ * of `lodash.throttle(fn, wait)` used by React's `Table.tsx` — we purposely
+ * avoid a lodash dependency on the Angular side.
+ */
+function throttleRaf(
+  fn: () => void,
+  wait: number,
+): { readonly run: () => void; readonly cancel: () => void } {
+  let last = 0;
+  let pending: ReturnType<typeof setTimeout> | null = null;
+
+  const run = (): void => {
+    const now = Date.now();
+    const remaining = wait - (now - last);
+
+    if (remaining <= 0) {
+      if (pending) {
+        clearTimeout(pending);
+        pending = null;
+      }
+
+      last = now;
+      fn();
+    } else if (!pending) {
+      pending = setTimeout(() => {
+        last = Date.now();
+        pending = null;
+        fn();
+      }, remaining);
+    }
+  };
+
+  const cancel = (): void => {
+    if (pending) {
+      clearTimeout(pending);
+      pending = null;
+    }
+  };
+
+  return { run, cancel };
+}
+
 /**
  * 資料驅動的表格元件，以 `columns` 與 `dataSource` 定義結構與資料。
  *
@@ -116,6 +177,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
     FormsModule,
     MznButton,
     MznCheckbox,
+    MznDropdown,
     MznEmpty,
     MznIcon,
     MznPagination,
@@ -513,7 +575,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
       </table>
     </div>
     @if (pagination()) {
-      <div [class]="paginationWrapperClass">
+      <div #paginationHost [class]="paginationWrapperClass">
         <nav
           mznPagination
           [current]="pagination()!.current ?? 1"
@@ -523,6 +585,93 @@ function nextSortOrder(current: SortOrder): SortOrder {
           (pageChanged)="onPaginationChange($event)"
         ></nav>
       </div>
+    }
+
+    <!-- Bulk actions bar (mirrors React <TableBulkActions>) -->
+    @if (bulkActionsConfig(); as cfg) {
+      @if (resolvedSelectedKeys().size > 0) {
+        <div
+          [class]="bulkActionsClass"
+          [class.mzn-table__bulk-actions--fixed]="isBulkActionsFixed()"
+        >
+          <div [class]="bulkActionsSummaryClass">
+            <button
+              mznButton
+              type="button"
+              size="sub"
+              variant="inverse"
+              iconType="trailing"
+              (click)="onBulkClearSelection(cfg)"
+            >
+              {{ getBulkSummaryLabel(cfg) }}
+              <i mznIcon [icon]="closeIcon" [size]="16"></i>
+            </button>
+          </div>
+          <div [class]="bulkActionsActionAreaClass">
+            @for (
+              action of cfg.mainActions;
+              track action.label;
+              let i = $index
+            ) {
+              <button
+                mznButton
+                type="button"
+                size="sub"
+                variant="inverse-ghost"
+                iconType="leading"
+                (click)="onBulkMainAction(action)"
+              >
+                @if (action.icon) {
+                  <i mznIcon [icon]="action.icon" [size]="16"></i>
+                }
+                {{ action.label }}
+              </button>
+            }
+            @if (cfg.destructiveAction; as da) {
+              <div [class]="bulkActionsSeparatorClass"></div>
+              <button
+                mznButton
+                type="button"
+                size="sub"
+                variant="destructive-ghost"
+                iconType="leading"
+                (click)="onBulkMainAction(da)"
+              >
+                @if (da.icon) {
+                  <i mznIcon [icon]="da.icon" [size]="16"></i>
+                }
+                {{ da.label }}
+              </button>
+            }
+            @if (cfg.overflowAction; as oa) {
+              <div [class]="bulkActionsSeparatorClass"></div>
+              <button
+                #bulkOverflowAnchor
+                mznButton
+                type="button"
+                size="sub"
+                variant="inverse-ghost"
+                iconType="leading"
+                (click)="bulkOverflowOpen.set(!bulkOverflowOpen())"
+              >
+                @if (oa.icon) {
+                  <i mznIcon [icon]="oa.icon" [size]="16"></i>
+                }
+                {{ oa.label }}
+              </button>
+              <div
+                mznDropdown
+                [anchor]="bulkOverflowAnchor"
+                [open]="bulkOverflowOpen()"
+                [options]="oa.options"
+                [placement]="oa.placement ?? 'top'"
+                (selected)="onBulkOverflowSelect(oa, $event)"
+                (closed)="bulkOverflowOpen.set(false)"
+              ></div>
+            }
+          </div>
+        </div>
+      }
     }
   `,
 })
@@ -631,6 +780,112 @@ export class MznTable {
       ro.observe(el);
       this.destroyRef.onDestroy(() => ro.disconnect());
     });
+
+    // Track pagination element height and write it to a CSS variable on the
+    // table host (`--mzn-table-pagination-height`) so the bulk-actions
+    // fixed-bottom math can subtract it. Mirrors React `Table.tsx`'s
+    // `paginationRef` ResizeObserver.
+    afterNextRender(() => {
+      const paginationEl = this.paginationHostRef()?.nativeElement;
+
+      if (!paginationEl) return;
+
+      const apply = (): void => {
+        this.hostEl.nativeElement.style.setProperty(
+          '--mzn-table-pagination-height',
+          `${paginationEl.offsetHeight}px`,
+        );
+      };
+
+      apply();
+      const ro = new ResizeObserver(apply);
+
+      ro.observe(paginationEl);
+      this.destroyRef.onDestroy(() => ro.disconnect());
+    });
+
+    // Bulk-actions fixed-position state.
+    // Mirrors React `Table.tsx` `isBulkActionsFixed` effect:
+    //   shouldBeFixed =
+    //     hostRect.bottom > viewportHeight + paginationHeight
+    //     && hostRect.top < viewportHeight - bottomSpacing
+    //   (pin to the viewport bottom while the table is crossing it)
+    //
+    // Recalculates on scroll / resize, throttled to 50ms, plus an initial
+    // pass. Also sets `--mzn-bulk-actions-fixed-left` when fixed so the
+    // bar centers on the table even when the table isn't horizontally
+    // centered in the viewport.
+    afterNextRender(() => {
+      const apply = (): void => this.calculateBulkActionsFixed();
+
+      apply();
+
+      const throttled = throttleRaf(apply, 50);
+
+      window.addEventListener('scroll', throttled.run, { passive: true });
+      window.addEventListener('resize', throttled.run);
+
+      this.destroyRef.onDestroy(() => {
+        throttled.cancel();
+        window.removeEventListener('scroll', throttled.run);
+        window.removeEventListener('resize', throttled.run);
+      });
+    });
+
+    // Recompute on signal-driven state changes that affect the bar's
+    // visibility or position (selection count, rowSelection config,
+    // pagination layout). Scroll/resize listeners only catch viewport
+    // changes; this effect catches *data* changes.
+    effect(() => {
+      // Read signals so the effect tracks them.
+      this.resolvedSelectedKeys();
+      this.bulkActionsConfig();
+
+      queueMicrotask(() => this.calculateBulkActionsFixed());
+    });
+  }
+
+  /**
+   * Compute `isBulkActionsFixed` and (when fixed) publish the table's
+   * horizontal center as `--mzn-bulk-actions-fixed-left`. React's
+   * identical logic lives in `Table.tsx` `calculateFixedState`.
+   */
+  private calculateBulkActionsFixed(): void {
+    if (!this.bulkActionsConfig() || this.resolvedSelectedKeys().size === 0) {
+      this.isBulkActionsFixed.set(false);
+
+      return;
+    }
+
+    const hostEl = this.hostEl.nativeElement;
+    const rect = hostEl.getBoundingClientRect();
+    const hostStyle = window.getComputedStyle(hostEl);
+    const paginationHeight =
+      parsePxVar(hostStyle.getPropertyValue('--mzn-table-pagination-height')) ??
+      0;
+    const bottomSpacing =
+      parsePxVar(
+        window
+          .getComputedStyle(document.documentElement)
+          .getPropertyValue('--mzn-spacing-padding-vertical-relaxed'),
+      ) ?? 0;
+
+    const viewportHeight = window.innerHeight;
+    const bulkActionsFixedBottom = viewportHeight - bottomSpacing;
+    const shouldBeFixed =
+      rect.bottom > viewportHeight + paginationHeight &&
+      rect.top < bulkActionsFixedBottom;
+
+    this.isBulkActionsFixed.set(shouldBeFixed);
+
+    if (shouldBeFixed) {
+      const centerLeft = rect.left + rect.width / 2;
+
+      hostEl.style.setProperty(
+        '--mzn-bulk-actions-fixed-left',
+        `${centerLeft}px`,
+      );
+    }
   }
 
   /**
@@ -883,6 +1138,116 @@ export class MznTable {
   protected readonly emptyClass = tableClasses.empty;
   /** Pagination wrapper class — not in core, defined locally. */
   protected readonly paginationWrapperClass = `${tableClasses.root}__pagination`;
+
+  // Bulk actions bar classes (mirror React `TableBulkActions`).
+  protected readonly bulkActionsClass = tableClasses.bulkActions;
+  protected readonly bulkActionsSummaryClass =
+    tableClasses.bulkActionsSelectionSummary;
+  protected readonly bulkActionsActionAreaClass =
+    tableClasses.bulkActionsActionArea;
+  protected readonly bulkActionsSeparatorClass =
+    tableClasses.bulkActionsSeparator;
+  protected readonly closeIcon = CloseIcon;
+
+  /** Overflow dropdown open state for the bulk actions bar. */
+  protected readonly bulkOverflowOpen = signal(false);
+
+  /**
+   * Whether the bulk actions bar should pin to the bottom of the viewport.
+   * Mirrors React `Table.tsx`'s `isBulkActionsFixed` state — true when the
+   * table's top is above the bar's fixed slot AND its bottom is below the
+   * viewport (minus pagination height), meaning the user hasn't scrolled
+   * past the table.
+   */
+  protected readonly isBulkActionsFixed = signal(false);
+
+  /**
+   * `<div class="mzn-table__pagination">` element ref — used to read
+   * `offsetHeight` into the `--mzn-table-pagination-height` CSS variable
+   * so `calculateBulkActionsFixed` can offset for the pagination bar (see
+   * React `Table.tsx` `paginationRef` ResizeObserver).
+   */
+  private readonly paginationHostRef =
+    viewChild<ElementRef<HTMLElement>>('paginationHost');
+
+  /**
+   * Bulk actions configuration — returns the `bulkActions` object only when
+   * the current `rowSelection` is checkbox mode with `bulkActions` defined.
+   */
+  protected readonly bulkActionsConfig = computed(
+    (): TableBulkActions | null => {
+      const rs = this.rowSelection();
+
+      if (
+        typeof rs === 'object' &&
+        rs !== null &&
+        'mode' in rs &&
+        rs.mode === 'checkbox'
+      ) {
+        return rs.bulkActions ?? null;
+      }
+
+      return null;
+    },
+  );
+
+  /** Resolve row objects for keys currently in `selectedRowKeys`. */
+  private selectedRowsFromKeys(): readonly TableDataSource[] {
+    const selected = this.resolvedSelectedKeys();
+
+    return this.dataSource().filter((r) => selected.has(getRowKey(r)));
+  }
+
+  /** Summary label for the bulk actions bar. */
+  protected getBulkSummaryLabel(cfg: TableBulkActions): string {
+    const keys = [...this.resolvedSelectedKeys()];
+    const rows = this.selectedRowsFromKeys();
+
+    if (cfg.renderSelectionSummary) {
+      return cfg.renderSelectionSummary(keys.length, keys, rows);
+    }
+
+    return `${keys.length} item${keys.length > 1 ? 's' : ''} selected`;
+  }
+
+  /** Click handler for main / destructive actions. */
+  protected onBulkMainAction(action: TableBulkGeneralAction): void {
+    const keys = [...this.resolvedSelectedKeys()];
+    const rows = this.selectedRowsFromKeys();
+
+    action.onClick(keys, rows);
+  }
+
+  /** Overflow dropdown option selected handler. */
+  protected onBulkOverflowSelect(
+    oa: TableBulkOverflowAction,
+    option: DropdownOption,
+  ): void {
+    const keys = [...this.resolvedSelectedKeys()];
+    const rows = this.selectedRowsFromKeys();
+
+    oa.onSelect(option, keys, rows);
+    this.bulkOverflowOpen.set(false);
+  }
+
+  /** Close button clears the current selection. */
+  protected onBulkClearSelection(_cfg: TableBulkActions): void {
+    const rs = this.rowSelection();
+
+    if (
+      typeof rs === 'object' &&
+      rs !== null &&
+      'mode' in rs &&
+      rs.mode === 'checkbox'
+    ) {
+      (rs as TableRowSelectionCheckbox).onChange([], null, []);
+
+      return;
+    }
+
+    this.internalSelectedKeys.set(new Set());
+    this.selectedRowKeysChange.emit([]);
+  }
   protected readonly emptyRowClass = tableClasses.emptyRow;
   protected readonly pinHandleIconClass = tableClasses.pinHandleIcon;
   protected readonly resizeHandleClass = tableClasses.resizeHandle;
