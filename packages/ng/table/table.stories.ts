@@ -1308,9 +1308,18 @@ export const WithPagination: Story = {
       </div>
     </ng-template>
 
-    <!-- Expansion with sub-table (mirrors React 'expandableWithSubTable') -->
+    <!-- Expansion with sub-table (mirrors React 'expandableWithSubTable').
+         React's TableExpandedRow cloneElements any nested Table with
+         nested=true + showHeader=false automatically; Angular has no
+         equivalent injection, so we set them explicitly here. -->
     <ng-template #subTableTpl let-record>
-      <div mznTable [columns]="baseColumns" [dataSource]="record.subData ?? []">
+      <div
+        mznTable
+        [columns]="baseColumns"
+        [dataSource]="record.subData ?? []"
+        [nested]="true"
+        [showHeader]="false"
+      >
         <ng-template mznTableCellRender="age" let-sub>
           <span mznTypography variant="body-mono">{{ sub.age }}</span>
         </ng-template>
