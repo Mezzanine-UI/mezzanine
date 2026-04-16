@@ -1,9 +1,12 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   TemplateRef,
   computed,
+  contentChildren,
   effect,
   inject,
   input,
@@ -30,8 +33,10 @@ import {
 import { MznEmpty } from '@mezzanine-ui/ng/empty';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPagination } from '@mezzanine-ui/ng/pagination';
+import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
 import { MznToggle } from '@mezzanine-ui/ng/toggle';
 import clsx from 'clsx';
+import { MznTableCellRender } from './table-cell-render.directive';
 import { MZN_TABLE_CONTEXT, type TableContextValue } from './table-context';
 import {
   type ColumnAlign,
@@ -101,6 +106,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
     MznEmpty,
     MznIcon,
     MznPagination,
+    MznScrollbar,
     MznToggle,
     NgTemplateOutlet,
   ],
@@ -164,20 +170,46 @@ function nextSortOrder(current: SortOrder): SortOrder {
     '[attr.zebraStriping]': 'null',
   },
   template: `
-    <!-- scroll wrapper: applies max-height when scroll.y is set -->
+    <!-- Scrollbar wrapper mirrors React <Scrollbar class="mzn-table--sticky"> -->
     <div
-      [style.max-height]="scrollMaxHeight()"
-      [style.overflow-y]="scrollMaxHeight() ? 'auto' : null"
+      mznScrollbar
+      [class.mzn-table--sticky]="sticky()"
+      [disabled]="nested()"
+      [maxHeight]="scrollMaxHeight() ?? undefined"
     >
       <table [class]="rootClasses()">
+        <colgroup>
+          @if (isDragEnabled() || isPinEnabled()) {
+            <col style="width: 40px; min-width: 40px; max-width: 40px;" />
+          }
+          @if (isExpandableEnabled()) {
+            <col style="width: 40px; min-width: 40px; max-width: 40px;" />
+          }
+          @if (hasSelection()) {
+            <col style="width: 40px; min-width: 40px; max-width: 40px;" />
+          }
+          @for (col of columns(); track col.key; let colIndex = $index) {
+            <col
+              [style.width]="getColWidth(col, colIndex)"
+              [style.min-width]="formatWidth(col.minWidth)"
+              [style.max-width]="formatWidth(col.maxWidth)"
+            />
+          }
+          @if (collectable()?.enabled) {
+            <col style="width: 80px;" />
+          }
+          @if (toggleable()?.enabled) {
+            <col style="width: 80px;" />
+          }
+          @if (actions(); as act) {
+            <col [style.width]="formatWidth(act.width)" />
+          }
+        </colgroup>
         @if (showHeader()) {
           <thead [class]="headerClass">
             <tr>
               @if (isDragEnabled() || isPinEnabled()) {
-                <th
-                  [class]="dragOrPinHandleCellClass"
-                  style="width: 40px;"
-                ></th>
+                <th [class]="dragOrPinHandleCellClass"></th>
               }
               @if (hasSelection()) {
                 <th [class]="selectionCellClass">
@@ -196,59 +228,63 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 <th [class]="expandCellClass"></th>
               }
               @for (col of columns(); track col.key; let colIndex = $index) {
-                <th
-                  [class]="getHeaderCellClasses(col)"
-                  [style.width]="getColWidth(col, colIndex)"
-                >
-                  <span [class]="headerCellContentClass">
-                    <span [class]="headerCellTitleClass">{{ col.title }}</span>
-                    @if (col.sortOrder !== undefined) {
-                      <span [class]="sortIconsClass" (click)="onSort(col)">
-                        <span [class]="getSortIconClass(col, 'ascend')"
-                          >&#9650;</span
-                        >
-                        <span [class]="getSortIconClass(col, 'descend')"
-                          >&#9660;</span
-                        >
-                      </span>
-                    }
-                    @if (resizable()) {
-                      <span
-                        [class]="resizeHandleClass"
-                        (pointerdown)="onResizeStart($event, colIndex)"
-                      ></span>
-                    }
-                  </span>
+                <th [class]="getHeaderCellClasses(col)" scope="col">
+                  <div [class]="headerCellContentClass">
+                    <div [class]="getHeaderCellActionsClasses(col)">
+                      <span [class]="headerCellTitleClass">{{
+                        col.title
+                      }}</span>
+                      @if (col.sortOrder !== undefined) {
+                        <span [class]="sortIconsClass" (click)="onSort(col)">
+                          <span [class]="getSortIconClass(col, 'ascend')"
+                            >&#9650;</span
+                          >
+                          <span [class]="getSortIconClass(col, 'descend')"
+                            >&#9660;</span
+                          >
+                        </span>
+                      }
+                    </div>
+                  </div>
+                  @if (resizable()) {
+                    <span
+                      [class]="resizeHandleClass"
+                      (pointerdown)="onResizeStart($event, colIndex)"
+                    ></span>
+                  }
                 </th>
               }
               @if (collectable()?.enabled) {
-                <th style="width: 80px;">
-                  <span [class]="headerCellContentClass">
-                    <span [class]="headerCellTitleClass">{{
-                      collectable()!.title ?? '收藏'
-                    }}</span>
-                  </span>
+                <th scope="col">
+                  <div [class]="headerCellContentClass">
+                    <div [class]="headerCellActionsBaseClass">
+                      <span [class]="headerCellTitleClass">{{
+                        collectable()!.title ?? '收藏'
+                      }}</span>
+                    </div>
+                  </div>
                 </th>
               }
               @if (toggleable()?.enabled) {
-                <th style="width: 80px;">
-                  <span [class]="headerCellContentClass">
-                    <span [class]="headerCellTitleClass">{{
-                      toggleable()!.title ?? ''
-                    }}</span>
-                  </span>
+                <th scope="col">
+                  <div [class]="headerCellContentClass">
+                    <div [class]="headerCellActionsBaseClass">
+                      <span [class]="headerCellTitleClass">{{
+                        toggleable()!.title ?? ''
+                      }}</span>
+                    </div>
+                  </div>
                 </th>
               }
               @if (actions(); as act) {
-                <th
-                  [class]="actionsCellClass"
-                  [style.width]="formatWidth(act.width)"
-                >
-                  <span [class]="headerCellContentClass">
-                    <span [class]="headerCellTitleClass">{{
-                      act.title ?? ''
-                    }}</span>
-                  </span>
+                <th [class]="actionsCellClass" scope="col">
+                  <div [class]="headerCellContentClass">
+                    <div [class]="headerCellActionsBaseClass">
+                      <span [class]="headerCellTitleClass">{{
+                        act.title ?? ''
+                      }}</span>
+                    </div>
+                  </div>
                 </th>
               }
             </tr>
@@ -285,18 +321,16 @@ function nextSortOrder(current: SortOrder): SortOrder {
           ) {
             <tr
               [class]="getRowClasses(record, idx)"
+              [style.height]="resolvedRowHeight()"
               (click)="onRowClick(record)"
+              (mouseleave)="onRowMouseLeave()"
               cdkDrag
               [cdkDragDisabled]="!isDragEnabled() || isDragDisabled(record)"
               (cdkDragStarted)="onDragStarted($event)"
               (cdkDragEnded)="onDragEnded($event)"
             >
               @if (isDragEnabled()) {
-                <td
-                  [class]="dragOrPinHandleCellClass"
-                  style="width: 40px;"
-                  cdkDragHandle
-                >
+                <td [class]="dragOrPinHandleCellClass" cdkDragHandle>
                   <span [class]="dragOrPinHandleClass">
                     <i mznIcon [icon]="dotDragVerticalIcon" color="neutral"></i>
                   </span>
@@ -304,7 +338,6 @@ function nextSortOrder(current: SortOrder): SortOrder {
               } @else if (isPinEnabled()) {
                 <td
                   [class]="dragOrPinHandleCellClass"
-                  style="width: 40px;"
                   (click)="onPinClick(record); $event.stopPropagation()"
                 >
                   <span [class]="dragOrPinHandleClass">
@@ -352,15 +385,29 @@ function nextSortOrder(current: SortOrder): SortOrder {
               @for (col of columns(); track col.key; let colIndex = $index) {
                 <td
                   [class]="getCellClasses(col)"
-                  [style.width]="getColWidth(col, colIndex)"
+                  [class.mzn-table__cell--highlight]="
+                    isCellHighlighted(idx, colIndex)
+                  "
+                  (mouseenter)="onCellMouseEnter(idx, colIndex)"
                 >
-                  <span [class]="cellContentClass">{{
-                    getCellValue(record, col)
-                  }}</span>
+                  <div style="display: grid; width: 100%;">
+                    <div [class]="getCellContentClasses(col)">
+                      @if (cellRenderMap().get(col.key); as cellTpl) {
+                        <ng-container
+                          *ngTemplateOutlet="
+                            cellTpl;
+                            context: { $implicit: record, index: idx }
+                          "
+                        />
+                      } @else {
+                        {{ getCellValue(record, col) }}
+                      }
+                    </div>
+                  </div>
                 </td>
               }
               @if (collectable()?.enabled) {
-                <td style="width: 80px;">
+                <td>
                   <button
                     type="button"
                     [class]="collectHandleIconClass"
@@ -378,7 +425,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </td>
               }
               @if (toggleable()?.enabled) {
-                <td style="width: 80px;">
+                <td>
                   <div
                     mznToggle
                     [checked]="isToggled(record)"
@@ -389,10 +436,7 @@ function nextSortOrder(current: SortOrder): SortOrder {
                 </td>
               }
               @if (actions(); as act) {
-                <td
-                  [class]="actionsCellClass"
-                  [style.width]="formatWidth(act.width)"
-                >
+                <td [class]="actionsCellClass">
                   <span [class]="cellContentClass">
                     @for (action of act.render(record, idx); track action.key) {
                       <button
@@ -533,6 +577,22 @@ export class MznTable {
       ) {
         this.internalExpandedKeys.set(next);
       }
+    });
+
+    // Measure the MznTable host element's width — a block element whose width
+    // is dictated by the surrounding layout. Observing the scrollbar wrapper
+    // would collapse to the table's own width (chicken-and-egg). Mirrors
+    // React `useTableScroll` + `calculateColumnWidths`.
+    afterNextRender(() => {
+      const el = this.hostEl.nativeElement;
+
+      const apply = (): void => this.containerWidth.set(el.clientWidth);
+
+      apply();
+      const ro = new ResizeObserver(apply);
+
+      ro.observe(el);
+      this.destroyRef.onDestroy(() => ro.disconnect());
     });
   }
 
@@ -694,6 +754,14 @@ export class MznTable {
   readonly internalSelectedKeys = signal<ReadonlySet<string>>(new Set());
   readonly internalExpandedKeys = signal<ReadonlySet<string>>(new Set());
 
+  /**
+   * Hover highlight state, mirroring React `highlight` context (hoveredRowIndex
+   * / hoveredColumnIndex / setHoveredCell). Cell `mouseenter` sets both
+   * indices; row `mouseleave` clears them.
+   */
+  private readonly hoveredRowIndex = signal<number | null>(null);
+  private readonly hoveredColumnIndex = signal<number | null>(null);
+
   /** Resizable: index of column currently being resized (-1 = none). */
   private readonly resizingColIndex = signal<number | null>(null);
   /** Resizable: pointer X at drag start. */
@@ -704,6 +772,32 @@ export class MznTable {
   );
   /** Resizable: live overridden widths (col key → px). */
   readonly resizedWidths = signal<ReadonlyMap<string, number>>(new Map());
+
+  /**
+   * 測得的 scroll container 寬度，供 column width 分配使用。
+   * 對齊 React `useTableScroll` 的 containerWidth。
+   */
+  private readonly containerWidth = signal(0);
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  /**
+   * 收集所有 `<ng-template mznTableCellRender="...">`，依 column key 索引。
+   * 提供 cell 使用者自訂 render 的能力，對齊 React `column.render`。
+   */
+  private readonly cellRenderDirectives = contentChildren(MznTableCellRender);
+
+  protected readonly cellRenderMap = computed(
+    (): ReadonlyMap<string, TemplateRef<unknown>> => {
+      const map = new Map<string, TemplateRef<unknown>>();
+
+      for (const dir of this.cellRenderDirectives()) {
+        map.set(dir.mznTableCellRender(), dir.templateRef);
+      }
+
+      return map;
+    },
+  );
 
   private readonly hostEl = inject(ElementRef<HTMLElement>);
 
@@ -718,6 +812,8 @@ export class MznTable {
 
   protected readonly headerClass = tableClasses.header;
   protected readonly headerCellContentClass = tableClasses.headerCellContent;
+  protected readonly headerCellActionsBaseClass =
+    tableClasses.headerCellActions;
   protected readonly headerCellTitleClass = tableClasses.headerCellTitle;
   protected readonly bodyClass = tableClasses.body;
   protected readonly cellContentClass = tableClasses.cellContent;
@@ -782,10 +878,41 @@ export class MznTable {
     clsx(tableClasses.root, {
       [tableClasses.main]: this.size() === 'main',
       [tableClasses.sub]: this.size() === 'sub',
-      [tableClasses.sticky]: this.sticky(),
-      // TODO: apply resizable-specific class when core adds one
+      // sticky class lives on the scrollbar wrapper to mirror React DOM
     }),
   );
+
+  /**
+   * 依 `rowHeightPreset` 與 `size` 解析成對應的 `--mzn-spacing-size-*` CSS 變數。
+   *
+   * 對齊 React `Table.tsx` 的 rowHeight useMemo:
+   *   base      → main: container-minimized   / sub: container-minimal
+   *   condensed → main: container-condensed   / sub: container-reduced
+   *   detailed  → main: container-tiny        / sub: container-tightened
+   *   roomy     → main: container-small       / sub: container-medium
+   *
+   * 我們回傳 CSS var() 字串讓瀏覽器解析，不走 React 的 getComputedStyle 讀值邏輯。
+   */
+  protected readonly resolvedRowHeight = computed((): string => {
+    const preset = this.rowHeightPreset();
+    const isMain = this.size() === 'main';
+
+    const token = ((): string => {
+      switch (preset) {
+        case 'condensed':
+          return isMain ? 'container-condensed' : 'container-reduced';
+        case 'detailed':
+          return isMain ? 'container-tiny' : 'container-tightened';
+        case 'roomy':
+          return isMain ? 'container-small' : 'container-medium';
+        case 'base':
+        default:
+          return isMain ? 'container-minimized' : 'container-minimal';
+      }
+    })();
+
+    return `var(--mzn-spacing-size-${token})`;
+  });
 
   /* ---------------------------------------------------------------- */
   /*  Computed selection helpers                                       */
@@ -896,19 +1023,30 @@ export class MznTable {
   /*  Class builders                                                   */
   /* ---------------------------------------------------------------- */
 
-  protected getHeaderCellClasses(col: TableColumn): string {
+  protected getHeaderCellClasses(_col: TableColumn): string {
+    return tableClasses.headerCell;
+  }
+
+  protected getHeaderCellActionsClasses(col: TableColumn): string {
     return clsx(
-      tableClasses.headerCell,
-      tableClasses.cell,
-      col.align && CELL_ALIGN_MAP[col.align],
+      tableClasses.headerCellActions,
+      CELL_ALIGN_MAP[col.align ?? 'start'],
     );
   }
 
-  protected getCellClasses(col: TableColumn): string {
+  protected getCellClasses(_col: TableColumn): string {
+    return tableClasses.cell;
+  }
+
+  protected getCellContentClasses(col: TableColumn): string {
+    const ellipsis = col.ellipsis ?? true;
+
     return clsx(
-      tableClasses.bodyCell,
-      tableClasses.cell,
-      col.align && CELL_ALIGN_MAP[col.align],
+      tableClasses.cellContent,
+      CELL_ALIGN_MAP[col.align ?? 'start'],
+      {
+        [tableClasses.cellEllipsis]: ellipsis,
+      },
     );
   }
 
@@ -919,6 +1057,7 @@ export class MznTable {
     const sep = this.separatorAtRowIndexes();
 
     return clsx(tableClasses.bodyRow, {
+      [tableClasses.bodyRowHighlight]: this.isRowHighlighted(index),
       [tableClasses.bodyRowSelected]: this.resolvedSelectedKeys().has(key),
       [tableClasses.bodyRowZebra]: this.zebraStriping() && index % 2 === 1,
       [tableClasses.bodyRowAdding]: ts?.addingKeys.has(key) ?? false,
@@ -929,6 +1068,52 @@ export class MznTable {
       [tableClasses.bodyRowStateDeleted]: state === 'deleted',
       [tableClasses.bodyRowStateDisabled]: state === 'disabled',
     });
+  }
+
+  /**
+   * Row highlight matches React `useMemo` in `TableRow.tsx`:
+   * only `'row'` and `'cross'` highlight modes light up the row when hovered.
+   */
+  protected isRowHighlighted(rowIndex: number): boolean {
+    const hoveredRow = this.hoveredRowIndex();
+
+    if (hoveredRow === null) return false;
+
+    const mode = this.highlight();
+
+    return (mode === 'row' || mode === 'cross') && hoveredRow === rowIndex;
+  }
+
+  /**
+   * Cell highlight matches React `useMemo` in `TableCell.tsx`:
+   * `'cell'` lights up a single cell at the hovered intersection;
+   * `'column'` / `'cross'` light up the whole column on hover.
+   */
+  protected isCellHighlighted(rowIndex: number, columnIndex: number): boolean {
+    const hoveredRow = this.hoveredRowIndex();
+    const hoveredCol = this.hoveredColumnIndex();
+
+    if (hoveredRow === null || hoveredCol === null) return false;
+
+    switch (this.highlight()) {
+      case 'cell':
+        return hoveredRow === rowIndex && hoveredCol === columnIndex;
+      case 'column':
+      case 'cross':
+        return hoveredCol === columnIndex;
+      default:
+        return false;
+    }
+  }
+
+  protected onCellMouseEnter(rowIndex: number, columnIndex: number): void {
+    this.hoveredRowIndex.set(rowIndex);
+    this.hoveredColumnIndex.set(columnIndex);
+  }
+
+  protected onRowMouseLeave(): void {
+    this.hoveredRowIndex.set(null);
+    this.hoveredColumnIndex.set(null);
   }
 
   private getRowState(record: TableDataSource): string | undefined {
@@ -998,7 +1183,10 @@ export class MznTable {
   }
 
   /**
-   * Returns the effective width for a column, respecting any resized override.
+   * Returns the effective width for a column, respecting any resized override
+   * and falling back to the container-aware `resolvedColumnWidths` map so the
+   * table fills its container and flex columns receive the remaining space —
+   * mirroring React `calculateColumnWidths`.
    */
   protected getColWidth(col: TableColumn, colIndex: number): string | null {
     const overrideKey = `${col.key}_${colIndex}`;
@@ -1006,8 +1194,120 @@ export class MznTable {
 
     if (overrideWidth != null) return `${overrideWidth}px`;
 
+    const resolved = this.resolvedColumnWidths().get(col.key);
+
+    if (resolved != null) return `${resolved}px`;
+
     return this.formatWidth(col.width);
   }
+
+  /**
+   * Action column width total (drag/pin handle + expansion + selection).
+   * Mirrors React TableColGroup `actionColumnsWidth` useMemo.
+   */
+  private readonly actionColumnsWidth = computed((): number => {
+    let w = 0;
+
+    if (this.isDragEnabled() || this.isPinEnabled()) w += 40;
+    if (this.isExpandableEnabled()) w += 40;
+    if (this.hasSelection()) w += 40;
+
+    return w;
+  });
+
+  /**
+   * Right-control column (collectable / toggleable / actions) widths.
+   * They live **inside** `columns()` as reserved keys in React's
+   * `columnsWithRightControls`; Angular renders them outside `columns()`,
+   * so subtract their explicit widths from the available space.
+   */
+  private readonly rightControlColumnsWidth = computed((): number => {
+    let w = 0;
+    const coll = this.collectable();
+    const tog = this.toggleable();
+    const act = this.actions();
+
+    if (coll?.enabled) w += coll.minWidth ?? 80;
+    if (tog?.enabled) w += tog.minWidth ?? 80;
+
+    if (act) {
+      const aw =
+        typeof act.width === 'number'
+          ? act.width
+          : act.width
+            ? parseFloat(String(act.width))
+            : 0;
+
+      w += aw;
+    }
+
+    return w;
+  });
+
+  /**
+   * Resolved px widths for data columns, given container width and each
+   * column's explicit/min/max constraints. Mirrors React
+   * `utils/calculateColumnWidths.ts`.
+   */
+  protected readonly resolvedColumnWidths = computed(
+    (): ReadonlyMap<string, number> => {
+      const map = new Map<string, number>();
+      const cw = this.containerWidth();
+      const cols = this.columns();
+
+      if (cw <= 0 || cols.length === 0 || this.nested()) {
+        return map;
+      }
+
+      const available =
+        cw - this.actionColumnsWidth() - this.rightControlColumnsWidth();
+
+      if (available <= 0) return map;
+
+      let totalFixed = 0;
+      const flex: TableColumn[] = [];
+
+      const clamp = (w: number, col: TableColumn): number => {
+        let r = w;
+
+        if (col.minWidth !== undefined && r < col.minWidth) r = col.minWidth;
+        if (col.maxWidth !== undefined && r > col.maxWidth) r = col.maxWidth;
+
+        return r;
+      };
+
+      cols.forEach((col, index) => {
+        const resizedKey = `${col.key}_${index}`;
+        const resized = this.resizedWidths().get(resizedKey);
+
+        if (resized !== undefined) {
+          map.set(col.key, resized);
+          totalFixed += resized;
+        } else if (col.width !== undefined) {
+          const w =
+            typeof col.width === 'number'
+              ? col.width
+              : parseFloat(String(col.width));
+          const clamped = clamp(w, col);
+
+          map.set(col.key, clamped);
+          totalFixed += clamped;
+        } else {
+          flex.push(col);
+        }
+      });
+
+      if (flex.length > 0) {
+        const avg = (available - totalFixed) / flex.length;
+
+        for (const col of flex) {
+          map.set(col.key, clamp(avg, col));
+        }
+      }
+
+      return map;
+    },
+  );
 
   /* ---------------------------------------------------------------- */
   /*  Collectable queries                                              */

@@ -1,6 +1,8 @@
 import { Component, computed, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznTable } from './table.component';
+import { MznTableCellRender } from './table-cell-render.directive';
 import type {
   HighlightMode as HighlightModeType,
   RowHeightPreset as RowHeightPresetType,
@@ -18,28 +20,56 @@ import type {
 } from './table-types';
 
 const basicColumns: TableColumn[] = [
-  { key: 'name', title: 'Name', dataIndex: 'name', width: 200 },
-  { key: 'age', title: 'Age', dataIndex: 'age', width: 100, align: 'center' },
-  { key: 'email', title: 'Email', dataIndex: 'email' },
+  {
+    key: 'name',
+    title: 'Name',
+    dataIndex: 'name',
+    width: 150,
+    minWidth: 150,
+  },
+  {
+    key: 'age',
+    title: 'Age',
+    dataIndex: 'age',
+    width: 100,
+    minWidth: 100,
+    align: 'center',
+  },
+  { key: 'address', title: 'Address', dataIndex: 'address' },
 ];
 
 const basicData: TableDataSource[] = [
-  { key: '1', name: 'John Brown', age: 32, email: 'john@example.com' },
-  { key: '2', name: 'Jim Green', age: 42, email: 'jim@example.com' },
-  { key: '3', name: 'Joe Black', age: 35, email: 'joe@example.com' },
-  { key: '4', name: 'Jane Doe', age: 30, email: 'jane@example.com' },
-  { key: '5', name: 'Jack Smith', age: 21, email: 'jack@example.com' },
-  { key: '6', name: 'Emily Davis', age: 45, email: 'emily@example.com' },
-  { key: '7', name: 'Michael Johnson', age: 38, email: 'michael@example.com' },
-  { key: '8', name: 'Sarah Wilson', age: 29, email: 'sarah@example.com' },
-  { key: '9', name: 'David Brown', age: 33, email: 'david@example.com' },
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+  },
+  { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park' },
+  { key: '3', name: 'Joe Black', age: 35, address: 'Sydney No. 1 Lake Park' },
+  { key: '4', name: 'Jane Doe', age: 30, address: 'Tokyo No. 1 Lake Park' },
+  { key: '5', name: 'Jack Smith', age: 21, address: 'Paris No. 1 Lake Park' },
+  { key: '6', name: 'Emily Davis', age: 45, address: 'Berlin No. 1 Lake Park' },
+  {
+    key: '7',
+    name: 'Michael Johnson',
+    age: 38,
+    address: 'Madrid No. 1 Lake Park',
+  },
+  { key: '8', name: 'Sarah Wilson', age: 29, address: 'Rome No. 1 Lake Park' },
+  {
+    key: '9',
+    name: 'David Brown',
+    age: 33,
+    address: 'Dublin No. 1 Lake Park',
+  },
 ];
 
 export default {
   title: 'Data Display/Table',
   decorators: [
     moduleMetadata({
-      imports: [MznTable],
+      imports: [MznTable, MznTableCellRender, MznTypography],
     }),
   ],
 } satisfies Meta;
@@ -54,7 +84,11 @@ export const Basic: Story = {
       dataSource: basicData,
     },
     template: `
-      <div mznTable [columns]="columns" [dataSource]="dataSource" ></div>
+      <div mznTable [columns]="columns" [dataSource]="dataSource">
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
     `,
   }),
 };
@@ -71,7 +105,11 @@ export const SubSize: Story = {
         [columns]="columns"
         [dataSource]="dataSource"
         size="sub"
-      ></div>
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
     `,
   }),
 };

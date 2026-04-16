@@ -60,11 +60,17 @@ export interface TableColumn {
   readonly align?: ColumnAlign;
   /** 對應 dataSource 中的欄位名稱。 */
   readonly dataIndex?: string;
-  /** 欄位��一識別鍵。 */
+  /**
+   * 是否啟用內容超長省略 (ellipsis)。
+   * 對齊 React `TableColumn.ellipsis`，預設 `true`。
+   * @default true
+   */
+  readonly ellipsis?: boolean;
+  /** 欄位唯一識別鍵。 */
   readonly key: string;
   /** 最大欄位寬度（px）。搭配 resizable 使用。 */
   readonly maxWidth?: number;
-  /** 最小欄��寬度（px）。搭配 resizable 使用時為必填。 */
+  /** 最小欄位寬度（px）。搭配 resizable 使用時為必填。 */
   readonly minWidth?: number;
   /** 排序變更時的回呼函式。 */
   readonly onSort?: (key: string, order: SortOrder) => void;
