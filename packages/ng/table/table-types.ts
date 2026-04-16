@@ -1,3 +1,7 @@
+import type { IconDefinition } from '@mezzanine-ui/icons';
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import type { Placement } from '@floating-ui/dom';
+
 /**
  * 排序方向。
  * - `'ascend'` — 升冪排序
@@ -223,10 +227,84 @@ export interface TableRowSelectionBase {
   readonly isSelectionDisabled?: (record: TableDataSource) => boolean;
 }
 
+/**
+ * Bulk actions 的主要動作 / 破壞性動作設定。
+ * 對齊 React `TableBulkGeneralAction`。
+ */
+export interface TableBulkGeneralAction {
+  /** 按鈕圖示。 */
+  readonly icon?: IconDefinition;
+  /** 按鈕文字。 */
+  readonly label: string;
+  /** 點擊回呼，收到當前選取的 row keys 與 rows。 */
+  readonly onClick: (
+    selectedRowKeys: readonly string[],
+    selectedRows: readonly TableDataSource[],
+  ) => void;
+}
+
+/**
+ * Bulk actions 的溢出動作（dropdown menu）。
+ * 對齊 React `TableBulkOverflowAction`。
+ */
+export interface TableBulkOverflowAction {
+  /** 按鈕圖示。 */
+  readonly icon?: IconDefinition;
+  /** 按鈕文字。 */
+  readonly label: string;
+  /** Dropdown 列表最大高度。 */
+  readonly maxHeight?: number | string;
+  /** 選到 dropdown 選項時的回呼。 */
+  readonly onSelect: (
+    option: DropdownOption,
+    selectedRowKeys: readonly string[],
+    selectedRows: readonly TableDataSource[],
+  ) => void;
+  /** Dropdown 選項。 */
+  readonly options: readonly DropdownOption[];
+  /**
+   * Dropdown 相對 trigger 的位置。
+   * @default 'top'
+   */
+  readonly placement?: Placement;
+}
+
+/**
+ * Bulk actions 設定，對齊 React `TableBulkActions`。
+ * 啟用後，當勾選列數量 > 0 時，會於表格下方（或釘選於視窗底部）顯示
+ * 一列批次操作按鈕：`mainActions` → `destructiveAction` → `overflowAction`，
+ * 以分隔線分組。
+ */
+export interface TableBulkActions {
+  /** 破壞性動作（例如刪除），最多一個，會有分隔線。 */
+  readonly destructiveAction?: TableBulkGeneralAction;
+  /** 主要動作，至少一個，依序排列於左。 */
+  readonly mainActions: readonly [
+    TableBulkGeneralAction,
+    ...TableBulkGeneralAction[],
+  ];
+  /** 溢出 dropdown 動作，最多一個，與前方以分隔線分組。 */
+  readonly overflowAction?: TableBulkOverflowAction;
+  /**
+   * 依目前選取數量生成摘要文字。
+   * 預設顯示 `${count} item(s) selected`。
+   */
+  readonly renderSelectionSummary?: (
+    count: number,
+    selectedRowKeys: readonly string[],
+    selectedRows: readonly TableDataSource[],
+  ) => string;
+}
+
 /** Checkbox 模式的列選取設定。 */
 export interface TableRowSelectionCheckbox extends TableRowSelectionBase {
   /** 選取模式。 */
   readonly mode: 'checkbox';
+  /**
+   * 批次操作設定。啟用後會在選取列數量 > 0 時渲染浮動的 bulk actions bar。
+   * 對齊 React `TableRowSelectionCheckbox.bulkActions`。
+   */
+  readonly bulkActions?: TableBulkActions;
   /** 隱藏表頭的全選 checkbox。 */
   readonly hideSelectAll?: boolean;
   /**
