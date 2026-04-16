@@ -11,6 +11,13 @@ import {
 } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import {
+  CopyIcon,
+  DotHorizontalIcon,
+  DownloadIcon,
+  FolderMoveIcon,
+  TrashIcon,
+} from '@mezzanine-ui/icons';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznToggle } from '@mezzanine-ui/ng/toggle';
@@ -1054,67 +1061,128 @@ export const WithRowSelection: Story = {
   }),
 };
 
+interface BulkActionsRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+  readonly disabled: boolean;
+}
+
 @Component({
   selector: 'story-table-bulk-actions',
   standalone: true,
-  imports: [MznTable],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable, MznTableCellRender, MznTypography],
   template: `
-    <div style="display: flex; flex-direction: column; gap: 8px;">
-      @if (selectedKeys().length > 0) {
-        <div
-          style="display: flex; align-items: center; gap: 16px; padding: 8px 16px;
-                 background: #e3f2fd; border-radius: 4px;"
-        >
-          <span>{{ selectedKeys().length }} item(s) selected</span>
-          <button
-            (click)="deleteSelected()"
-            style="padding: 4px 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;"
-          >
-            Delete
-          </button>
-          <button
-            (click)="clearSelection()"
-            style="padding: 4px 12px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;"
-          >
-            Clear
-          </button>
-        </div>
-      }
+    <div>
+      <div style="width: 100%; height: 100px;"
+        >(Extra spaces for demo fixed bulk actions)</div
+      >
+      <div
+        style="margin: 0 0 16px; display: flex; flex-flow: column; gap: 4px;"
+      >
+        <span>Mode: checkbox + bulkActions</span>
+        <span>- Selected: [{{ selectedRowKeys().join(', ') }}]</span>
+      </div>
       <div
         mznTable
-        [columns]="columns"
-        [dataSource]="dataSource()"
+        [columns]="baseColumns"
+        [dataSource]="paginationData()"
         [rowSelection]="checkboxSelection()"
-      ></div>
+        [pagination]="pagination()"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
+      <div style="width: 100%; height: 600px;"></div>
     </div>
   `,
 })
 class WithBulkActionsStoryComponent {
-  readonly columns = basicColumns;
-  readonly dataSource = signal<TableDataSource[]>([...basicData]);
-  readonly selectedKeys = signal<readonly string[]>([]);
+  readonly baseColumns: TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name', width: 150 },
+    { key: 'age', title: 'Age', width: 100 },
+    { key: 'address', title: 'Address', dataIndex: 'address' },
+  ];
+
+  private readonly originData: readonly BulkActionsRowType[] = Array.from(
+    { length: 100 },
+    (_, i): BulkActionsRowType => ({
+      key: String(i + 1),
+      name: `User ${i + 1}`,
+      age: 20 + (i % 50),
+      address: `Address ${i + 1}`,
+      disabled: i % 4 === 0,
+    }),
+  );
+
+  private readonly itemsPerPage = 20;
+
+  readonly currentPage = signal(1);
+  readonly selectedRowKeys = signal<readonly string[]>([]);
+
+  readonly paginationData = computed((): readonly BulkActionsRowType[] => {
+    const start = (this.currentPage() - 1) * this.itemsPerPage;
+
+    return this.originData.slice(start, start + this.itemsPerPage);
+  });
 
   readonly checkboxSelection = computed(
     (): TableRowSelectionCheckbox => ({
       mode: 'checkbox',
-      selectedRowKeys: this.selectedKeys(),
-      onChange: (keys: readonly string[]): void => {
-        this.selectedKeys.set(keys);
+      selectedRowKeys: this.selectedRowKeys(),
+      isSelectionDisabled: (record) => (record as BulkActionsRowType).disabled,
+      bulkActions: {
+        mainActions: [
+          {
+            icon: FolderMoveIcon,
+            label: 'Move',
+            onClick: (): void => {},
+          },
+          {
+            icon: CopyIcon,
+            label: 'Copy',
+            onClick: (): void => {},
+          },
+          {
+            icon: DownloadIcon,
+            label: 'Download',
+            onClick: (): void => {},
+          },
+        ],
+        destructiveAction: {
+          icon: TrashIcon,
+          label: 'Delete',
+          onClick: (): void => {},
+        },
+        overflowAction: {
+          icon: DotHorizontalIcon,
+          label: 'More',
+          placement: 'top',
+          options: [
+            { id: 'opt1', name: 'Option 1' },
+            { id: 'opt2', name: 'Option 2' },
+            { id: 'opt3', name: 'Option 3' },
+          ],
+          onSelect: (option, keys): void => {
+            // eslint-disable-next-line no-console
+            console.log('Overflow action:', option, keys);
+          },
+        },
+        renderSelectionSummary: (count) => `已選擇 ${count} 筆資料`,
       },
+      onChange: (keys) => this.selectedRowKeys.set(keys),
     }),
   );
 
-  deleteSelected(): void {
-    const keys = new Set(this.selectedKeys());
-    this.dataSource.update((prev) =>
-      prev.filter((r) => !keys.has(String(r['key']))),
-    );
-    this.selectedKeys.set([]);
-  }
-
-  clearSelection(): void {
-    this.selectedKeys.set([]);
-  }
+  readonly pagination = computed(() => ({
+    current: this.currentPage(),
+    pageSize: this.itemsPerPage,
+    total: this.originData.length,
+    onChange: (page: number): void => this.currentPage.set(page),
+  }));
 }
 
 export const WithBulkActions: Story = {
