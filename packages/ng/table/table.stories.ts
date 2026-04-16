@@ -1,4 +1,14 @@
-import { Component, computed, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  TemplateRef,
+  computed,
+  effect,
+  input,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznInput } from '@mezzanine-ui/ng/input';
@@ -15,6 +25,7 @@ import type {
   TableDataSource,
   TableDraggable,
   TableEmptyProps,
+  TableExpandable,
   TablePinnable,
   TableRowSelectionCheckbox,
   TableRowSelectionRadio,
@@ -399,21 +410,292 @@ export const CreateDeleteTransition: Story = {
   }),
 };
 
+interface TransitionWithSubType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+  readonly subData?: readonly TransitionWithSubType[];
+}
+
+/** baseData with subData, mirroring React `baseData` in Table.stories.tsx. */
+const expansionBaseData: readonly TransitionWithSubType[] = [
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+    subData: [
+      {
+        key: '1-1',
+        name: 'Sub John Brown',
+        age: 10,
+        address: 'Sub New York No. 1 Lake Park',
+      },
+      {
+        key: '1-2',
+        name: 'Sub Jim Green',
+        age: 12,
+        address: 'Sub New York No. 2 Lake Park',
+      },
+    ],
+  },
+  { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park' },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 35,
+    address: 'Sydney No. 1 Lake Park',
+    subData: [
+      {
+        key: '3-1',
+        name: 'Sub John Brown',
+        age: 10,
+        address: 'Sub New York No. 1 Lake Park',
+      },
+      {
+        key: '3-2',
+        name: 'Sub Jim Green',
+        age: 12,
+        address: 'Sub New York No. 2 Lake Park',
+      },
+    ],
+  },
+  { key: '4', name: 'Jane Doe', age: 30, address: 'Tokyo No. 1 Lake Park' },
+  { key: '5', name: 'Jack Smith', age: 21, address: 'Paris No. 1 Lake Park' },
+  { key: '6', name: 'Emily Davis', age: 45, address: 'Berlin No. 1 Lake Park' },
+  {
+    key: '7',
+    name: 'Michael Johnson',
+    age: 38,
+    address: 'Madrid No. 1 Lake Park',
+  },
+  { key: '8', name: 'Sarah Wilson', age: 29, address: 'Rome No. 1 Lake Park' },
+  {
+    key: '9',
+    name: 'David Brown',
+    age: 33,
+    address: 'Dublin No. 1 Lake Park',
+  },
+];
+
+const expansionColumns: TableColumn[] = [
+  { key: 'name', title: 'Name', dataIndex: 'name', width: 150 },
+  { key: 'age', title: 'Age', width: 100 },
+  { key: 'address', title: 'Address', dataIndex: 'address' },
+];
+
+/**
+ * 展開列內部 component — 每個展開的 row 一份 instance，故擁有獨立的
+ * `useTableDataSource` state，對齊 React `ExpandedRowRender` 的設計。
+ */
+@Component({
+  selector: 'story-table-expanded-row-render',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznButton, MznTable, MznTableCellRender, MznTypography],
+  template: `
+    <div>
+      <div
+        style="display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 8px;"
+      >
+        <button
+          mznButton
+          variant="base-secondary"
+          size="sub"
+          type="button"
+          (click)="addSubItem()"
+          >Add Sub Item</button
+        >
+      </div>
+      <div
+        mznTable
+        [actions]="actions"
+        [columns]="columns()"
+        [dataSource]="dataSource()"
+        [nested]="true"
+        [showHeader]="false"
+        [transitionState]="transitionState()"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
+    </div>
+  `,
+})
+class ExpandedRowRenderStoryComponent {
+  readonly record = input.required<TransitionWithSubType>();
+  readonly columns = input.required<TableColumn[]>();
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- Angular factory, not React hook
+  private readonly ds = useTableDataSource<TransitionWithSubType>({
+    initialData: [],
+    highlightDuration: 1500,
+    fadeOutDuration: 300,
+  });
+
+  readonly dataSource = this.ds.dataSource;
+  readonly transitionState = this.ds.transitionState;
+
+  readonly actions: TableActions = {
+    title: 'Action',
+    width: 100,
+    variant: 'destructive-text-link',
+    render: () => [
+      {
+        key: 'delete',
+        label: 'Delete',
+        onClick: (r) => this.handleSubDelete(String(r['key'])),
+      },
+    ],
+  };
+
+  constructor() {
+    // Seed child dataSource from the parent row's subData once the record
+    // input is bound. React's `ExpandedRowRender` accomplishes the same via
+    // `useTableDataSource({ initialData: record.subData })`.
+    //
+    // `updateDataSource` reads AND writes `internalData` inside its body; if
+    // the effect tracked those signal accesses it would re-run every time we
+    // updated the data and loop forever. Keep the only tracked signal to
+    // `this.record()` and run the data mutation inside `untracked`.
+    effect(
+      () => {
+        const sub = this.record().subData ?? [];
+
+        untracked(() => {
+          this.ds.updateDataSource(sub as readonly TransitionWithSubType[]);
+        });
+      },
+      { allowSignalWrites: true },
+    );
+  }
+
+  addSubItem(): void {
+    const newItem: TransitionWithSubType = {
+      key: `new-${Date.now()}`,
+      name: 'New Sub Item',
+      age: 0,
+      address: 'New Address',
+    };
+
+    this.ds.updateDataSource([...this.dataSource(), newItem], {
+      addedKeys: [newItem.key],
+    });
+  }
+
+  private handleSubDelete(key: string): void {
+    this.ds.updateDataSource(
+      this.dataSource().filter((i) => i.key !== key),
+      { removedKeys: [key] },
+    );
+  }
+}
+
+@Component({
+  selector: 'story-table-create-delete-expansion',
+  standalone: true,
+  imports: [
+    ExpandedRowRenderStoryComponent,
+    MznTable,
+    MznTableCellRender,
+    MznTypography,
+  ],
+  template: `
+    <div style="width: 100%;">
+      <div
+        style="background: #f5f5f5; border-radius: 8px; margin-bottom: 16px; padding: 16px;"
+      >
+        <h4 style="margin: 0 0 8px 0;">Transition with Expansion Demo</h4>
+        <p style="margin: 0 0 4px 0;"
+          >1. 刪除父層資料時，展開區域會同步顯示刪除提示</p
+        >
+        <p style="margin: 0 0 4px 0;"
+          >2. 在展開區域內的子表格中刪除項目，該項目會有獨立的刪除過渡效果</p
+        >
+        <p style="color: #666; font-size: 14px; margin: 0;"
+          >點擊展開圖標查看子表格，然後嘗試刪除父層或子層項目</p
+        >
+      </div>
+
+      <ng-template #parentExpanded let-record>
+        <story-table-expanded-row-render
+          [record]="record"
+          [columns]="columns"
+        />
+      </ng-template>
+
+      <div
+        mznTable
+        [actions]="actions"
+        [columns]="columns"
+        [dataSource]="dataSource()"
+        [expandable]="expandable()"
+        [transitionState]="transitionState()"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+      </div>
+    </div>
+  `,
+})
+class CreateDeleteExpansionStoryComponent {
+  readonly columns = expansionColumns;
+
+  private readonly parentExpandedTpl =
+    viewChild.required<TemplateRef<{ $implicit: TransitionWithSubType }>>(
+      'parentExpanded',
+    );
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- Angular factory, not React hook
+  private readonly ds = useTableDataSource<TransitionWithSubType>({
+    initialData: expansionBaseData,
+    highlightDuration: 700,
+    fadeOutDuration: 150,
+  });
+
+  readonly dataSource = this.ds.dataSource;
+  readonly transitionState = this.ds.transitionState;
+
+  readonly actions: TableActions = {
+    title: 'Action',
+    width: 140,
+    variant: 'destructive-text-link',
+    render: () => [
+      {
+        key: 'delete',
+        label: 'Delete Parent',
+        onClick: (r) => this.handleDeleteParent(String(r['key'])),
+      },
+    ],
+  };
+
+  readonly expandable = computed(
+    (): TableExpandable => ({
+      template: this.parentExpandedTpl(),
+      rowExpandable: (record) =>
+        !!(record as TransitionWithSubType).subData?.length,
+    }),
+  );
+
+  private handleDeleteParent(key: string): void {
+    this.ds.updateDataSource(
+      this.dataSource().filter((i) => i.key !== key),
+      { removedKeys: [key] },
+    );
+  }
+}
+
 export const CreateDeleteTransitionWithExpansion: Story = {
   name: 'Create/Delete Transition With Expansion',
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [CreateDeleteExpansionStoryComponent] }),
+  ],
   render: () => ({
-    props: {
-      columns: basicColumns,
-      dataSource: basicData,
-    },
-    template: `
-      <div mznTable
-        [columns]="columns"
-        [dataSource]="dataSource"
-        [expandable]="true"
-      ></div>
-    `,
+    template: `<story-table-create-delete-expansion />`,
   }),
 };
 
