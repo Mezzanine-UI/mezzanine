@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.1...@mezzanine-ui/react@1.0.2) (2026-04-17)
+
+### Bug Fixes
+
+- **react/badge:** correct utils import path to use relative path ([67a01ea](https://github.com/Mezzanine-UI/mezzanine/commit/67a01eabf163335963ab2bf248f5e457da00af93))
+
 ## [1.0.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0...@mezzanine-ui/react@1.0.1) (2026-04-14)
 
 ### Bug Fixes
