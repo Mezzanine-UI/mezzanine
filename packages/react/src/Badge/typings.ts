@@ -5,7 +5,7 @@ import {
   BadgeTextVariant,
 } from '@mezzanine-ui/core/badge';
 import { ReactNode } from 'react';
-import { NativeElementPropsWithoutKeyAndRef } from 'react/src/utils/jsx-types';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export type BadgeProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'span'>,
