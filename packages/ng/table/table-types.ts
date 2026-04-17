@@ -58,6 +58,24 @@ export interface TableDraggable {
   ) => void;
 }
 
+/**
+ * 欄位標題 dropdown menu 設定。對齊 React `TableColumnTitleMenu`。
+ * 在表頭 title 右側渲染 menu 圖示，點擊後彈出選單。
+ */
+export interface TableColumnTitleMenu {
+  /** Dropdown 選項。 */
+  readonly options: readonly DropdownOption[];
+  /** 選到選項時的回呼。 */
+  readonly onSelect?: (option: DropdownOption) => void;
+  /** Dropdown 列表最大高度。 */
+  readonly maxHeight?: number | string;
+  /**
+   * Dropdown 相對於 trigger 的位置。
+   * @default 'bottom-end'
+   */
+  readonly placement?: Placement;
+}
+
 /** 欄位定義。 */
 export interface TableColumn {
   /** 欄位對齊方式。 */
@@ -89,6 +107,15 @@ export interface TableColumn {
   readonly sortOrder?: SortOrder;
   /** 欄位標題。 */
   readonly title?: string;
+  /**
+   * 欄位標題旁的說明 tooltip。對齊 React `TableColumn.titleHelp` —
+   * 以 help 圖示 + `mznTooltip` 呈現。
+   */
+  readonly titleHelp?: string;
+  /**
+   * 欄位標題旁的 dropdown menu。對齊 React `TableColumn.titleMenu`。
+   */
+  readonly titleMenu?: TableColumnTitleMenu;
   /** 欄位寬度。 */
   readonly width?: number | string;
 }
@@ -234,13 +261,13 @@ export interface TableTransitionState {
 }
 
 /**
- * 高亮模式。
- * - `'row'` — 整列高亮
+ * 高亮模式，對齊 `@mezzanine-ui/core/table` 的 `HighlightMode`。
  * - `'cell'` — 單格高亮
+ * - `'column'` — 整欄高亮
+ * - `'row'` — 整列高亮
  * - `'cross'` — 十字交叉高亮
- * - `'none'` — 不高亮
  */
-export type HighlightMode = 'row' | 'cell' | 'column' | 'cross' | 'none';
+export type HighlightMode = 'cell' | 'column' | 'row' | 'cross';
 
 /**
  * 列高預設值。
@@ -412,14 +439,24 @@ export type TableActionVariant =
   | 'inverse'
   | 'inverse-ghost';
 
-/** 單一動作項目。 */
-export interface TableActionItem {
+/**
+ * 按鈕型動作項目。對齊 React `TableActionItemButton`。
+ *
+ * `type` 欄位為 discriminated-union discriminator，省略或設 `undefined`
+ * 都會走 button 分支；`type === 'dropdown'` 則改走 `TableActionDropdownItem`。
+ */
+export interface TableActionButtonItem {
   /** 動作 key。 */
   readonly key: string;
   /** 動作標籤。 */
   readonly label: string;
-  /** 圖示。 */
-  readonly icon?: unknown;
+  /** 按鈕圖示。 */
+  readonly icon?: IconDefinition;
+  /**
+   * 圖示位置。目前僅支援 `'leading'`（label 左側），對齊 React 預設。
+   * @default 'leading'
+   */
+  readonly iconType?: 'leading';
   /**
    * 是否為危險動作。保留與舊 API 相容；新程式應偏好 `variant`。
    * @deprecated 使用 `variant: 'destructive-text-link'` 取代。
@@ -432,9 +469,49 @@ export interface TableActionItem {
    * 若未設定，使用 `TableActions.variant` 作為 fallback；再無則 `base-text-link`。
    */
   readonly variant?: TableActionVariant;
+  /** Discriminator — button item 不設此欄（或設為 `undefined`）。 */
+  readonly type?: undefined;
   /** 點擊回呼。 */
   readonly onClick?: (record: TableDataSource, index: number) => void;
 }
+
+/**
+ * Dropdown 型動作項目。點 trigger 按鈕後彈出 `MznDropdown` 選單，對齊
+ * React `TableActionItemDropdown`。
+ */
+export interface TableActionDropdownItem {
+  /** 動作 key。 */
+  readonly key: string;
+  /** Discriminator — 必須為 `'dropdown'`。 */
+  readonly type: 'dropdown';
+  /** Trigger 按鈕的文字，可留空（僅以圖示當 trigger）。 */
+  readonly label?: string;
+  /** Trigger 按鈕的圖示。 */
+  readonly icon?: IconDefinition;
+  /** 是否停用。 */
+  readonly disabled?: boolean;
+  /** Trigger 按鈕外觀變體。 */
+  readonly variant?: TableActionVariant;
+  /** Dropdown 選項。 */
+  readonly options: readonly DropdownOption[];
+  /**
+   * Dropdown 相對於 trigger 的位置。
+   * @default 'bottom-end'
+   */
+  readonly placement?: Placement;
+  /** 選到 dropdown 選項時的回呼。 */
+  readonly onSelect: (
+    option: DropdownOption,
+    record: TableDataSource,
+    index: number,
+  ) => void;
+}
+
+/**
+ * 單一動作項目 — 按鈕或 dropdown。對齊 React `TableActionItem`
+ * discriminated union。
+ */
+export type TableActionItem = TableActionButtonItem | TableActionDropdownItem;
 
 /** 動作欄設定。 */
 export interface TableActions {

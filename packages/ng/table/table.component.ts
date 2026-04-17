@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  NgZone,
   TemplateRef,
   computed,
   contentChildren,
@@ -21,6 +22,7 @@ import {
   CdkDragDrop,
   CdkDragEnd,
   CdkDragHandle,
+  type CdkDragMove,
   CdkDragStart,
   CdkDropList,
   moveItemInArray,
@@ -31,8 +33,11 @@ import {
   ChevronRightIcon,
   CloseIcon,
   DotDragVerticalIcon,
+  DotHorizontalIcon,
+  DotVerticalIcon,
   PinFilledIcon,
   PinIcon,
+  QuestionOutlineIcon,
   StarFilledIcon,
   StarOutlineIcon,
 } from '@mezzanine-ui/icons';
@@ -43,9 +48,12 @@ import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
 import { MznEmpty } from '@mezzanine-ui/ng/empty';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPagination } from '@mezzanine-ui/ng/pagination';
+import { MznPortal } from '@mezzanine-ui/ng/portal';
 import { MznRadio } from '@mezzanine-ui/ng/radio';
 import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
+import { MznSkeleton } from '@mezzanine-ui/ng/skeleton';
 import { MznToggle } from '@mezzanine-ui/ng/toggle';
+import { MznTooltip } from '@mezzanine-ui/ng/tooltip';
 import clsx from 'clsx';
 import { MznTableCellRender } from './table-cell-render.directive';
 import { MZN_TABLE_CONTEXT, type TableContextValue } from './table-context';
@@ -54,6 +62,7 @@ import {
   type HighlightMode,
   type RowHeightPreset,
   type SortOrder,
+  type TableActionDropdownItem,
   type TableActionItem,
   type TableActions,
   type TableActionVariant,
@@ -78,7 +87,21 @@ import {
   type TableTransitionState,
   getRowKey,
 } from './table-types';
-import { TABLE_ACTIONS_KEY, tableClasses } from '@mezzanine-ui/core/table';
+import {
+  COLLECTABLE_COLUMN_WIDTH,
+  COLLECTABLE_KEY,
+  DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+  DRAG_OR_PIN_HANDLE_KEY,
+  EXPANSION_COLUMN_WIDTH,
+  EXPANSION_KEY,
+  SELECTION_COLUMN_WIDTH,
+  SELECTION_KEY,
+  TABLE_ACTIONS_KEY,
+  TOGGLEABLE_COLUMN_WIDTH,
+  TOGGLEABLE_KEY,
+  tableClasses,
+} from '@mezzanine-ui/core/table';
+import { calculateColumnWidths } from './calculate-column-widths';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -181,9 +204,12 @@ function throttleRaf(
     MznEmpty,
     MznIcon,
     MznPagination,
+    MznPortal,
     MznRadio,
     MznScrollbar,
+    MznSkeleton,
     MznToggle,
+    MznTooltip,
     NgTemplateOutlet,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -252,16 +278,18 @@ function throttleRaf(
       [class.mzn-table--sticky]="sticky()"
       [disabled]="nested()"
       [maxHeight]="scrollMaxHeight() ?? undefined"
+      (viewportReady)="onScrollViewportReady($event)"
     >
       <table
         [class]="rootClasses()"
         [style.width]="fullWidth() ? '100%' : null"
       >
         <colgroup>
-          @if (isDragEnabled() || isPinEnabled()) {
+          <!-- Column order: Expand, Drag/Pin, Selection, data columns, Collectable, Toggleable, Actions. Mirrors React TableRow renderExpandCell then renderDragOrPinHandleCell then renderSelectionCell then renderCells(). -->
+          @if (isExpandableEnabled()) {
             <col style="width: 40px; min-width: 40px; max-width: 40px;" />
           }
-          @if (isExpandableEnabled()) {
+          @if (isDragEnabled() || isPinEnabled()) {
             <col style="width: 40px; min-width: 40px; max-width: 40px;" />
           }
           @if (hasSelection()) {
@@ -274,11 +302,21 @@ function throttleRaf(
               [style.max-width]="formatWidth(col.maxWidth)"
             />
           }
-          @if (collectable()?.enabled) {
-            <col style="width: 80px;" />
+          @if (toggleable(); as t) {
+            @if (t.enabled) {
+              <col
+                [style.width.px]="t.minWidth ?? 80"
+                [style.min-width.px]="t.minWidth ?? 80"
+              />
+            }
           }
-          @if (toggleable()?.enabled) {
-            <col style="width: 80px;" />
+          @if (collectable(); as c) {
+            @if (c.enabled) {
+              <col
+                [style.width.px]="c.minWidth ?? 80"
+                [style.min-width.px]="c.minWidth ?? 80"
+              />
+            }
           }
           @if (actions(); as act) {
             <col [style.width]="formatWidth(act.width)" />
@@ -287,11 +325,25 @@ function throttleRaf(
         @if (showHeader()) {
           <thead [class]="headerClass">
             <tr>
+              @if (isExpandableEnabled()) {
+                <th
+                  [class]="headerExpandCellClass()"
+                  [style]="expandCellStyle()"
+                  scope="col"
+                ></th>
+              }
               @if (isDragEnabled() || isPinEnabled()) {
-                <th [class]="dragOrPinHandleCellClass"></th>
+                <th
+                  [class]="dragOrPinCellClass()"
+                  [style]="dragOrPinCellStyle()"
+                ></th>
               }
               @if (hasSelection()) {
-                <th [class]="headerSelectionCellClass" scope="col">
+                <th
+                  [class]="headerSelectionCellClass()"
+                  [style]="selectionCellStyle()"
+                  scope="col"
+                >
                   <div [class]="selectionCheckboxClass">
                     @if (selectionMode() === 'checkbox' && !hideSelectAll()) {
                       <div
@@ -304,13 +356,10 @@ function throttleRaf(
                   </div>
                 </th>
               }
-              @if (isExpandableEnabled()) {
-                <th [class]="headerExpandCellClass" scope="col"></th>
-              }
               @for (col of columns(); track col.key; let colIndex = $index) {
                 <th
                   [class]="getHeaderCellClasses(col)"
-                  [style]="fixedOffsetStyle(col)"
+                  [style]="fixedOffsetStyleMap().get(col.key) ?? {}"
                   scope="col"
                 >
                   <div [class]="headerCellContentClass">
@@ -318,6 +367,16 @@ function throttleRaf(
                       <span [class]="headerCellTitleClass">{{
                         col.title
                       }}</span>
+                      @if (col.titleHelp) {
+                        <i
+                          mznIcon
+                          [icon]="questionOutlineIcon"
+                          [size]="16"
+                          [class]="headerCellIconClass"
+                          [mznTooltip]="col.titleHelp"
+                          tabindex="0"
+                        ></i>
+                      }
                       @if (col.onSort) {
                         <button
                           type="button"
@@ -340,6 +399,30 @@ function throttleRaf(
                         </button>
                       }
                     </div>
+                    @if (col.titleMenu; as tm) {
+                      <i
+                        #titleMenuAnchor
+                        mznIcon
+                        [icon]="dotVerticalIcon"
+                        [size]="16"
+                        [class]="headerCellIconClass"
+                        (click)="
+                          onTitleMenuToggle(col.key); $event.stopPropagation()
+                        "
+                      ></i>
+                      <div mznPortal>
+                        <div
+                          mznDropdown
+                          [anchor]="titleMenuAnchor"
+                          [maxHeight]="tm.maxHeight"
+                          [open]="titleMenuOpenKey() === col.key"
+                          [options]="tm.options"
+                          [placement]="tm.placement ?? 'bottom-end'"
+                          (selected)="onTitleMenuSelect(col, $event)"
+                          (closed)="titleMenuOpenKey.set(null)"
+                        ></div>
+                      </div>
+                    }
                   </div>
                   @if (resizable() && colIndex < columns().length - 1) {
                     <span
@@ -349,23 +432,31 @@ function throttleRaf(
                   }
                 </th>
               }
-              @if (collectable()?.enabled) {
-                <th scope="col">
+              @if (toggleable()?.enabled) {
+                <th
+                  [class]="toggleableHeaderClass()"
+                  [style]="toggleableCellStyle()"
+                  scope="col"
+                >
                   <div [class]="headerCellContentClass">
                     <div [class]="headerCellActionsBaseClass">
                       <span [class]="headerCellTitleClass">{{
-                        collectable()!.title ?? '收藏'
+                        toggleable()!.title ?? ''
                       }}</span>
                     </div>
                   </div>
                 </th>
               }
-              @if (toggleable()?.enabled) {
-                <th scope="col">
+              @if (collectable()?.enabled) {
+                <th
+                  [class]="collectableHeaderClass()"
+                  [style]="collectableCellStyle()"
+                  scope="col"
+                >
                   <div [class]="headerCellContentClass">
                     <div [class]="headerCellActionsBaseClass">
                       <span [class]="headerCellTitleClass">{{
-                        toggleable()!.title ?? ''
+                        collectable()!.title ?? '收藏'
                       }}</span>
                     </div>
                   </div>
@@ -395,7 +486,7 @@ function throttleRaf(
           [cdkDropListDisabled]="!isDragEnabled()"
           (cdkDropListDropped)="onDrop($event)"
         >
-          @if (dataSource().length === 0) {
+          @if (dataSourceForRender().length === 0 && !loading()) {
             <tr [class]="emptyRowClass">
               <td [attr.colspan]="totalColumns()" [class]="emptyClass">
                 @if (emptyProps(); as ep) {
@@ -414,45 +505,106 @@ function throttleRaf(
             </tr>
           }
           @for (
-            record of dataSource();
+            record of dataSourceForRender();
             track trackByRowKey($index, record);
             let idx = $index
           ) {
             <tr
-              [class]="getRowClasses(record, idx)"
+              [class]="rowClassesMap().get(idx) ?? ''"
               [style.height]="resolvedRowHeight()"
               (click)="onRowClick(record)"
               (mouseleave)="onRowMouseLeave()"
               cdkDrag
               [cdkDragDisabled]="!isDragEnabled() || isDragDisabled(record)"
+              [cdkDragPreviewClass]="dragPreviewClassNames"
               (cdkDragStarted)="onDragStarted($event)"
               (cdkDragEnded)="onDragEnded($event)"
+              (cdkDragMoved)="onDragMoved($event)"
             >
+              @if (isExpandableEnabled()) {
+                <td [class]="bodyExpandCellClass()" [style]="expandCellStyle()">
+                  @if (loading()) {
+                    <span
+                      mznSkeleton
+                      width="100%"
+                      variant="body-highlight"
+                    ></span>
+                  } @else if (canExpandRow(record)) {
+                    <button
+                      type="button"
+                      [class]="getExpandIconClasses(record)"
+                      (click)="onExpandIconClick($event, record)"
+                    >
+                      <i mznIcon [icon]="chevronRightIcon" color="inherit"></i>
+                    </button>
+                  }
+                </td>
+              }
               @if (isDragEnabled()) {
-                <td [class]="dragOrPinHandleCellClass" cdkDragHandle>
-                  <span [class]="dragOrPinHandleClass">
-                    <i mznIcon [icon]="dotDragVerticalIcon" color="neutral"></i>
-                  </span>
+                <td
+                  [class]="dragOrPinCellClass()"
+                  [style]="dragOrPinCellStyle()"
+                  cdkDragHandle
+                >
+                  @if (loading()) {
+                    <span
+                      mznSkeleton
+                      width="100%"
+                      variant="body-highlight"
+                    ></span>
+                  } @else {
+                    <span [class]="dragOrPinHandleClass">
+                      <i
+                        mznIcon
+                        [icon]="dotDragVerticalIcon"
+                        color="neutral"
+                      ></i>
+                    </span>
+                  }
                 </td>
               } @else if (isPinEnabled()) {
                 <td
-                  [class]="dragOrPinHandleCellClass"
-                  (click)="onPinClick(record); $event.stopPropagation()"
+                  [class]="dragOrPinCellClass()"
+                  [style]="dragOrPinCellStyle()"
                 >
-                  <span [class]="dragOrPinHandleClass">
-                    <i
-                      mznIcon
-                      [icon]="isPinned(record) ? pinFilledIcon : pinIcon"
-                      [class]="pinHandleIconClass"
-                      color="neutral"
-                    ></i>
-                  </span>
+                  @if (loading()) {
+                    <span
+                      mznSkeleton
+                      width="100%"
+                      variant="body-highlight"
+                    ></span>
+                  } @else {
+                    <button
+                      type="button"
+                      [class]="pinHandleButtonClass"
+                      [attr.aria-label]="
+                        isPinned(record) ? 'Unpin row' : 'Pin row'
+                      "
+                      [attr.aria-pressed]="isPinned(record)"
+                      (click)="onPinClick(record); $event.stopPropagation()"
+                    >
+                      <i
+                        mznIcon
+                        [icon]="isPinned(record) ? pinFilledIcon : pinIcon"
+                        [color]="isPinned(record) ? 'brand' : 'neutral'"
+                      ></i>
+                    </button>
+                  }
                 </td>
               }
               @if (hasSelection()) {
-                <td [class]="bodySelectionCellClass">
+                <td
+                  [class]="bodySelectionCellClass()"
+                  [style]="selectionCellStyle()"
+                >
                   <div [class]="selectionCheckboxClass">
-                    @if (selectionMode() === 'radio') {
+                    @if (loading()) {
+                      <span
+                        mznSkeleton
+                        width="100%"
+                        variant="body-highlight"
+                      ></span>
+                    } @else if (selectionMode() === 'radio') {
                       <div
                         mznRadio
                         name="mzn-table-radio"
@@ -472,31 +624,25 @@ function throttleRaf(
                   </div>
                 </td>
               }
-              @if (isExpandableEnabled()) {
-                <td [class]="bodyExpandCellClass">
-                  @if (canExpandRow(record)) {
-                    <button
-                      type="button"
-                      [class]="getExpandIconClasses(record)"
-                      (click)="onExpandIconClick($event, record)"
-                    >
-                      <i mznIcon [icon]="chevronRightIcon" color="inherit"></i>
-                    </button>
-                  }
-                </td>
-              }
               @for (col of columns(); track col.key; let colIndex = $index) {
                 <td
-                  [class]="getCellClasses(col)"
+                  [class]="cellClassesMap().get(col.key) ?? ''"
                   [class.mzn-table__cell--highlight]="
                     isCellHighlighted(idx, colIndex)
                   "
-                  [style]="fixedOffsetStyle(col)"
+                  [attr.data-column-key]="col.key"
+                  [style]="fixedOffsetStyleMap().get(col.key) ?? {}"
                   (mouseenter)="onCellMouseEnter(idx, colIndex)"
                 >
                   <div style="display: grid; width: 100%;">
-                    <div [class]="getCellContentClasses(col)">
-                      @if (cellRenderMap().get(col.key); as cellTpl) {
+                    <div [class]="cellContentClassesMap().get(col.key) ?? ''">
+                      @if (loading()) {
+                        <span
+                          mznSkeleton
+                          width="100%"
+                          variant="body-highlight"
+                        ></span>
+                      } @else if (cellRenderMap().get(col.key); as cellTpl) {
                         <ng-container
                           *ngTemplateOutlet="
                             cellTpl;
@@ -510,33 +656,62 @@ function throttleRaf(
                   </div>
                 </td>
               }
-              @if (collectable()?.enabled) {
-                <td>
-                  <button
-                    type="button"
-                    [class]="collectHandleIconClass"
-                    [disabled]="isCollectDisabled(record)"
-                    (click)="onCollectClick(record); $event.stopPropagation()"
-                  >
-                    <i
-                      mznIcon
-                      [icon]="
-                        isCollected(record) ? starFilledIcon : starOutlineIcon
-                      "
-                      color="neutral"
-                    ></i>
-                  </button>
+              @if (toggleable()?.enabled) {
+                <td
+                  [class]="toggleableCellClass()"
+                  [style]="toggleableCellStyle()"
+                >
+                  @if (loading()) {
+                    <span
+                      mznSkeleton
+                      width="100%"
+                      variant="body-highlight"
+                    ></span>
+                  } @else {
+                    <div
+                      mznToggle
+                      [checked]="isToggled(record)"
+                      [disabled]="isToggleDisabled(record)"
+                      size="sub"
+                      (click)="onToggleClick(record, $event)"
+                    ></div>
+                  }
                 </td>
               }
-              @if (toggleable()?.enabled) {
-                <td>
-                  <div
-                    mznToggle
-                    [checked]="isToggled(record)"
-                    [disabled]="isToggleDisabled(record)"
-                    size="sub"
-                    (click)="onToggleClick(record, $event)"
-                  ></div>
+              @if (collectable()?.enabled) {
+                <td
+                  [class]="collectableCellClass()"
+                  [style]="collectableCellStyle()"
+                >
+                  @if (loading()) {
+                    <span
+                      mznSkeleton
+                      width="100%"
+                      variant="body-highlight"
+                    ></span>
+                  } @else {
+                    <button
+                      type="button"
+                      [class]="getCollectButtonClass(record)"
+                      [attr.aria-disabled]="isCollectDisabled(record)"
+                      [attr.aria-label]="
+                        isCollected(record)
+                          ? 'Remove from collection'
+                          : 'Add to collection'
+                      "
+                      [attr.aria-pressed]="isCollected(record)"
+                      [disabled]="isCollectDisabled(record)"
+                      (click)="onCollectClick(record); $event.stopPropagation()"
+                    >
+                      <i
+                        mznIcon
+                        [icon]="
+                          isCollected(record) ? starFilledIcon : starOutlineIcon
+                        "
+                        [color]="isCollected(record) ? 'brand' : 'neutral'"
+                      ></i>
+                    </button>
+                  }
                 </td>
               }
               @if (actions(); as act) {
@@ -546,23 +721,85 @@ function throttleRaf(
                 >
                   <div [class]="getActionsCellContentClasses(act)">
                     <div [class]="actionsCellClass">
-                      @for (
-                        action of act.render(record, idx);
-                        track action.key
-                      ) {
-                        <button
-                          mznButton
-                          type="button"
-                          size="sub"
-                          [variant]="resolveActionVariant(action, act)"
-                          [disabled]="action.disabled ?? false"
-                          (click)="
-                            action.onClick?.(record, idx);
-                            $event.stopPropagation()
-                          "
-                        >
-                          {{ action.label }}
-                        </button>
+                      @if (loading()) {
+                        <span
+                          mznSkeleton
+                          width="100%"
+                          variant="body-highlight"
+                        ></span>
+                      } @else {
+                        @for (
+                          action of act.render(record, idx);
+                          track action.key
+                        ) {
+                          @if (action.type === 'dropdown') {
+                            <!-- Dropdown action trigger mirrors React TableActionsCell (iconType icon-only; default variant base-text-link, NOT inheriting actions.variant; icon fallback to DotHorizontalIcon). -->
+                            <button
+                              #rowActionDropdownAnchor
+                              mznButton
+                              type="button"
+                              size="sub"
+                              iconType="icon-only"
+                              [variant]="action.variant ?? 'base-text-link'"
+                              [disabled]="action.disabled ?? false"
+                              (click)="
+                                onRowActionDropdownToggle(idx, action.key);
+                                $event.stopPropagation()
+                              "
+                            >
+                              <i
+                                mznIcon
+                                [icon]="action.icon ?? dotHorizontalIcon"
+                                [size]="16"
+                              ></i>
+                            </button>
+                            <!--
+                              Portal the dropdown to the global layer so its
+                              popper escapes the overlayscrollbars viewport
+                              (contain: strict) and sticky-cell stacking
+                              contexts that would otherwise clip or cover it.
+                            -->
+                            <div mznPortal>
+                              <div
+                                mznDropdown
+                                [anchor]="rowActionDropdownAnchor"
+                                [open]="
+                                  rowActionDropdownOpenKey() ===
+                                  rowActionDropdownKey(idx, action.key)
+                                "
+                                [options]="action.options"
+                                [placement]="action.placement ?? 'bottom-end'"
+                                (selected)="
+                                  onRowActionDropdownSelect(
+                                    action,
+                                    record,
+                                    idx,
+                                    $event
+                                  )
+                                "
+                                (closed)="rowActionDropdownOpenKey.set(null)"
+                              ></div>
+                            </div>
+                          } @else {
+                            <button
+                              mznButton
+                              type="button"
+                              size="sub"
+                              iconType="leading"
+                              [variant]="resolveActionVariant(action, act)"
+                              [disabled]="action.disabled ?? false"
+                              (click)="
+                                action.onClick?.(record, idx);
+                                $event.stopPropagation()
+                              "
+                            >
+                              @if (action.icon) {
+                                <i mznIcon [icon]="action.icon" [size]="16"></i>
+                              }
+                              {{ action.label }}
+                            </button>
+                          }
+                        }
                       }
                     </div>
                   </div>
@@ -807,19 +1044,117 @@ export class MznTable {
   }
 
   /**
+   * Whether each action column is configured with `fixed: true`. Mirrors
+   * React `actionConfig.{expansion,dragOrPinHandle,selection,toggleable,
+   * collectable}Fixed` flags used in `useTableFixedOffsets`.
+   */
+  protected readonly isExpandFixed = computed(
+    (): boolean =>
+      this.isExpandableEnabled() &&
+      typeof this.expandable() === 'object' &&
+      !!(this.expandable() as TableExpandable).fixed,
+  );
+
+  protected readonly isDragOrPinFixed = computed((): boolean => {
+    // `TableDraggable` in Angular has no `fixed` field — draggable columns
+    // are never sticky. Only `TablePinnable.fixed` participates.
+    if (this.isPinEnabled()) return !!this.pinnable()?.fixed;
+
+    return false;
+  });
+
+  protected readonly isSelectionFixed = computed((): boolean => {
+    const rs = this.rowSelection();
+
+    return this.hasSelection() && typeof rs === 'object' && !!rs.fixed;
+  });
+
+  protected readonly isToggleableFixed = computed(
+    (): boolean => !!this.toggleable()?.enabled && !!this.toggleable()?.fixed,
+  );
+
+  protected readonly isCollectableFixed = computed(
+    (): boolean => !!this.collectable()?.enabled && !!this.collectable()?.fixed,
+  );
+
+  /**
+   * Per-action-column offsets (px) for start / end sticky positioning.
+   * Mirrors React `useTableFixedOffsets.fixedOffsets` — accumulates in
+   * DOM order (Expand → Drag/Pin → Selection on the left; Collectable →
+   * Toggleable → Actions on the right, read right-to-left).
+   */
+  protected readonly expandFixedOffset = computed((): number => 0);
+
+  protected readonly dragFixedOffset = computed((): number =>
+    this.isExpandFixed() ? DRAG_OR_PIN_HANDLE_COLUMN_WIDTH : 0,
+  );
+
+  protected readonly selectionFixedOffset = computed((): number => {
+    let acc = 0;
+
+    if (this.isExpandFixed()) acc += EXPANSION_COLUMN_WIDTH;
+    if (this.isDragOrPinFixed()) acc += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
+
+    return acc;
+  });
+
+  /** Total width of fixed-start action columns (sits before data columns). */
+  private readonly fixedStartLeadingWidth = computed((): number => {
+    let acc = 0;
+
+    if (this.isExpandFixed()) acc += EXPANSION_COLUMN_WIDTH;
+    if (this.isDragOrPinFixed()) acc += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
+    if (this.isSelectionFixed()) acc += SELECTION_COLUMN_WIDTH;
+
+    return acc;
+  });
+
+  /** Actions width when `actions.fixed === 'end'`, else 0. */
+  private readonly fixedActionsWidth = computed((): number => {
+    const act = this.actions();
+
+    if (act?.fixed !== 'end') return 0;
+
+    return typeof act.width === 'number'
+      ? act.width
+      : typeof act.width === 'string'
+        ? parseFloat(act.width) || 0
+        : (act.minWidth ?? 0);
+  });
+
+  /**
+   * Right-side offsets accumulate right-to-left over the actual DOM
+   * order, which mirrors React `Table.tsx:177-226`:
+   *   data columns → Toggleable → Collectable → Actions
+   * So Actions sits at the right edge (offset 0 when fixed); Collectable
+   * is one step inward (skips Actions if fixed); Toggleable is two steps
+   * inward (skips Collectable + Actions if those are fixed).
+   */
+  protected readonly collectableFixedOffset = computed((): number =>
+    this.fixedActionsWidth(),
+  );
+
+  protected readonly toggleableFixedOffset = computed((): number => {
+    let acc = this.fixedActionsWidth();
+    const c = this.collectable();
+
+    if (this.isCollectableFixed())
+      acc += c?.minWidth ?? COLLECTABLE_COLUMN_WIDTH;
+
+    return acc;
+  });
+
+  /**
    * Map of column key → cumulative left offset (px) for `fixed: 'start'`
-   * columns. Mirrors React `useTableFixedOffsets.startOffsets` — iterates
-   * columns left-to-right, each start-fixed column's offset is the sum of
-   * widths of preceding start-fixed columns.
-   *
-   * Note: selection / expand / drag columns with their own `fixed` are
-   * beyond the scope of this story (WithFixedColumns uses only
-   * `column.fixed` + `actions.fixed`) and are not accumulated here.
+   * data columns. Mirrors React `useTableFixedOffsets.startOffsets` —
+   * accumulates starting from the leading action columns' widths
+   * (`fixedStartLeadingWidth`) so a `column.fixed: 'start'` sits right
+   * after any fixed expand/drag/selection columns.
    */
   protected readonly fixedStartOffsets = computed(
     (): ReadonlyMap<string, number> => {
       const map = new Map<string, number>();
-      let acc = 0;
+      let acc = this.fixedStartLeadingWidth();
 
       for (const col of this.columns()) {
         if (col.fixed === 'start') {
@@ -831,6 +1166,236 @@ export class MznTable {
       return map;
     },
   );
+
+  /* ---------------------------------------------------------------- */
+  /*  Sticky-column shadow (mirrors React useTableFixedOffsets)        */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * Natural left-edge position (px) of every column in DOM order —
+   * Expand, Drag/Pin, Selection, data columns, Toggleable, Collectable,
+   * Actions. Mirrors React `useTableFixedOffsets.originalPositions`.
+   */
+  private readonly columnOriginalPositions = computed(
+    (): ReadonlyMap<string, number> => {
+      const map = new Map<string, number>();
+      let pos = 0;
+
+      if (this.isExpandableEnabled()) {
+        map.set(EXPANSION_KEY, pos);
+        pos += EXPANSION_COLUMN_WIDTH;
+      }
+
+      if (this.isDragEnabled() || this.isPinEnabled()) {
+        map.set(DRAG_OR_PIN_HANDLE_KEY, pos);
+        pos += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
+      }
+
+      if (this.hasSelection()) {
+        map.set(SELECTION_KEY, pos);
+        pos += SELECTION_COLUMN_WIDTH;
+      }
+
+      for (const col of this.columns()) {
+        map.set(col.key, pos);
+        pos += this.getColumnRenderedWidth(col);
+      }
+
+      if (this.toggleable()?.enabled) {
+        map.set(TOGGLEABLE_KEY, pos);
+        pos += this.toggleable()?.minWidth ?? TOGGLEABLE_COLUMN_WIDTH;
+      }
+
+      if (this.collectable()?.enabled) {
+        map.set(COLLECTABLE_KEY, pos);
+        pos += this.collectable()?.minWidth ?? COLLECTABLE_COLUMN_WIDTH;
+      }
+
+      const act = this.actions();
+
+      if (act) {
+        map.set(TABLE_ACTIONS_KEY, pos);
+      }
+
+      return map;
+    },
+  );
+
+  /** Natural rendered width (px) of a column key, using the same lookups
+   *  as `columnOriginalPositions`. */
+  private getColumnWidthByKey(key: string): number {
+    if (key === EXPANSION_KEY) return EXPANSION_COLUMN_WIDTH;
+    if (key === DRAG_OR_PIN_HANDLE_KEY) return DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
+    if (key === SELECTION_KEY) return SELECTION_COLUMN_WIDTH;
+
+    if (key === TOGGLEABLE_KEY) {
+      return this.toggleable()?.minWidth ?? TOGGLEABLE_COLUMN_WIDTH;
+    }
+
+    if (key === COLLECTABLE_KEY) {
+      return this.collectable()?.minWidth ?? COLLECTABLE_COLUMN_WIDTH;
+    }
+
+    if (key === TABLE_ACTIONS_KEY) {
+      const act = this.actions();
+
+      if (!act) return 0;
+
+      return typeof act.width === 'number'
+        ? act.width
+        : typeof act.width === 'string'
+          ? parseFloat(act.width) || 0
+          : (act.minWidth ?? 0);
+    }
+
+    const col = this.columns().find((c) => c.key === key);
+
+    return col ? this.getColumnRenderedWidth(col) : 0;
+  }
+
+  /**
+   * Ordered list of column keys that are `fixed: 'start'`, in DOM order
+   * (left-to-right). Mirrors React `useTableFixedOffsets.fixedStartKeys`.
+   */
+  private readonly fixedStartKeyList = computed((): readonly string[] => {
+    const keys: string[] = [];
+
+    if (this.isExpandFixed()) keys.push(EXPANSION_KEY);
+    if (this.isDragOrPinFixed()) keys.push(DRAG_OR_PIN_HANDLE_KEY);
+    if (this.isSelectionFixed()) keys.push(SELECTION_KEY);
+
+    for (const col of this.columns()) {
+      if (col.fixed === 'start') keys.push(col.key);
+    }
+
+    return keys;
+  });
+
+  /**
+   * Ordered list of column keys that are `fixed: 'end'`, in DOM order
+   * (left-to-right). Mirrors React `useTableFixedOffsets.fixedEndKeys`.
+   */
+  private readonly fixedEndKeyList = computed((): readonly string[] => {
+    const keys: string[] = [];
+
+    for (const col of this.columns()) {
+      if (col.fixed === 'end') keys.push(col.key);
+    }
+
+    if (this.isToggleableFixed()) keys.push(TOGGLEABLE_KEY);
+    if (this.isCollectableFixed()) keys.push(COLLECTABLE_KEY);
+    if (this.actions()?.fixed === 'end') keys.push(TABLE_ACTIONS_KEY);
+
+    return keys;
+  });
+
+  /** Cumulative right-edge offset (px) for every `fixed: 'end'` key. */
+  private readonly fixedEndOffsetMap = computed(
+    (): ReadonlyMap<string, number> => {
+      const keys = this.fixedEndKeyList();
+      const map = new Map<string, number>();
+      let acc = 0;
+
+      for (let i = keys.length - 1; i >= 0; i--) {
+        const key = keys[i];
+
+        map.set(key, acc);
+        acc += this.getColumnWidthByKey(key);
+      }
+
+      return map;
+    },
+  );
+
+  /** Cumulative left-edge offset (px) for every `fixed: 'start'` key —
+   *  including the synthetic action keys. */
+  private readonly fixedStartOffsetMap = computed(
+    (): ReadonlyMap<string, number> => {
+      const keys = this.fixedStartKeyList();
+      const map = new Map<string, number>();
+      let acc = 0;
+
+      for (const key of keys) {
+        map.set(key, acc);
+        acc += this.getColumnWidthByKey(key);
+      }
+
+      return map;
+    },
+  );
+
+  /**
+   * Per-key shadow flag. A fixed column shows its shadow only while it's
+   * currently covering a non-sticky neighbour. Mirrors React
+   * `useTableFixedOffsets.shouldShowShadow` exactly (left/right branches).
+   */
+  protected readonly shadowMap = computed((): ReadonlyMap<string, boolean> => {
+    const map = new Map<string, boolean>();
+    const scrollLeft = this.scrollLeft();
+    const containerWidth = this.containerWidth();
+    const starts = this.fixedStartKeyList();
+    const ends = this.fixedEndKeyList();
+    const startOffsets = this.fixedStartOffsetMap();
+    const endOffsets = this.fixedEndOffsetMap();
+    const positions = this.columnOriginalPositions();
+
+    for (let i = 0; i < starts.length; i++) {
+      const key = starts[i];
+      const offset = startOffsets.get(key) ?? 0;
+      const originalPos = positions.get(key) ?? 0;
+      const isSticky = scrollLeft > originalPos - offset;
+
+      if (!isSticky) {
+        map.set(key, false);
+        continue;
+      }
+
+      const nextIndex = i + 1;
+
+      if (nextIndex < starts.length) {
+        const nextKey = starts[nextIndex];
+        const nextOriginalPos = positions.get(nextKey) ?? 0;
+        const nextOffset = startOffsets.get(nextKey) ?? 0;
+        const isNextSticky = scrollLeft >= nextOriginalPos - nextOffset;
+
+        map.set(key, !isNextSticky);
+      } else {
+        map.set(key, true);
+      }
+    }
+
+    for (let i = 0; i < ends.length; i++) {
+      const key = ends[i];
+      const offset = endOffsets.get(key) ?? 0;
+      const originalPos = positions.get(key) ?? 0;
+      const colWidth = this.getColumnWidthByKey(key);
+      const isSticky =
+        scrollLeft + containerWidth < originalPos + colWidth + offset;
+
+      if (!isSticky) {
+        map.set(key, false);
+        continue;
+      }
+
+      const prevIndex = i - 1;
+
+      if (prevIndex >= 0) {
+        const prevKey = ends[prevIndex];
+        const prevOriginalPos = positions.get(prevKey) ?? 0;
+        const prevOffset = endOffsets.get(prevKey) ?? 0;
+        const prevColWidth = this.getColumnWidthByKey(prevKey);
+        const isPrevSticky =
+          scrollLeft + containerWidth <
+          prevOriginalPos + prevColWidth + prevOffset;
+
+        map.set(key, !isPrevSticky);
+      } else {
+        map.set(key, true);
+      }
+    }
+
+    return map;
+  });
 
   /**
    * Map of column key → cumulative right offset (px) for `fixed: 'end'`
@@ -1197,6 +1762,53 @@ export class MznTable {
   private readonly hoveredRowIndex = signal<number | null>(null);
   private readonly hoveredColumnIndex = signal<number | null>(null);
 
+  /**
+   * Cached reference to `MznScrollbar`'s OverlayScrollbars viewport —
+   * the actual scrollable element. Needed because CDK's built-in
+   * `_startScrollingIfNecessary` walks ancestors for `overflow:
+   * auto|scroll`, but OverlayScrollbars wraps the real scroll layer
+   * behind `overflow: hidden`, so CDK can't discover it. We use this
+   * ref in `onDragMoved` to auto-scroll when the pointer nears the
+   * edge — mirroring `@hello-pangea/dnd`'s built-in auto-scroller.
+   */
+  private scrollViewport: HTMLElement | null = null;
+
+  /**
+   * Live horizontal scroll position of the table's scroll container.
+   * Needed by the sticky-column shadow logic (mirrors React
+   * `useTableSuperContext().scrollLeft`): a fixed-start column only
+   * shows its shadow once `scrollLeft` has moved it past the next
+   * column's natural position.
+   */
+  private readonly scrollLeft = signal(0);
+
+  private scrollCleanup: (() => void) | null = null;
+
+  protected onScrollViewportReady(event: { viewport: HTMLElement }): void {
+    this.scrollViewport = event.viewport;
+
+    this.scrollCleanup?.();
+
+    this.scrollLeft.set(event.viewport.scrollLeft);
+
+    const handler = (): void => {
+      this.scrollLeft.set(event.viewport.scrollLeft);
+    };
+
+    this.ngZone.runOutsideAngular(() => {
+      event.viewport.addEventListener('scroll', handler, { passive: true });
+    });
+
+    this.scrollCleanup = (): void => {
+      event.viewport.removeEventListener('scroll', handler);
+    };
+
+    this.destroyRef.onDestroy(() => {
+      this.scrollCleanup?.();
+      this.scrollCleanup = null;
+    });
+  }
+
   /** Resizable: index of column currently being resized (-1 = none). */
   private readonly resizingColIndex = signal<number | null>(null);
   /** Resizable: pointer X at drag start. */
@@ -1215,6 +1827,8 @@ export class MznTable {
   private readonly containerWidth = signal(0);
 
   private readonly destroyRef = inject(DestroyRef);
+
+  private readonly ngZone = inject(NgZone);
 
   /**
    * 收集所有 `<ng-template mznTableCellRender="...">`，依 column key 索引。
@@ -1250,34 +1864,170 @@ export class MznTable {
   protected readonly headerCellActionsBaseClass =
     tableClasses.headerCellActions;
   protected readonly headerCellTitleClass = tableClasses.headerCellTitle;
+  protected readonly headerCellIconClass = tableClasses.headerCellIcon;
   protected readonly bodyClass = tableClasses.body;
   protected readonly cellContentClass = tableClasses.cellContent;
   protected readonly selectionCellClass = tableClasses.selectionCell;
-  protected readonly bodySelectionCellClass = clsx(
-    tableClasses.cell,
-    tableClasses.selectionCell,
-  );
-  protected readonly headerSelectionCellClass = clsx(
-    tableClasses.headerCell,
-    tableClasses.selectionCell,
-  );
   protected readonly selectionCheckboxClass = tableClasses.selectionCheckbox;
   protected readonly expandCellClass = tableClasses.expandCell;
-  protected readonly bodyExpandCellClass = clsx(
-    tableClasses.cell,
-    tableClasses.expandCell,
+
+  /**
+   * Sticky-aware class + style computeds for the selection / expand /
+   * drag-or-pin / toggleable / collectable action columns. Each reads
+   * its own `isXxxFixed` + `xxxFixedOffset` signal so the cells pick
+   * up `mzn-table__cell--fixed --fixed-start/--fixed-end` plus
+   * `--fixed-start-offset` / `--fixed-end-offset` CSS variables, same
+   * as React's `TableSelectionCell` / `TableExpandCell` etc.
+   */
+  protected readonly bodySelectionCellClass = computed((): string =>
+    clsx(tableClasses.cell, tableClasses.selectionCell, {
+      [tableClasses.cellFixed]: this.isSelectionFixed(),
+      [tableClasses.cellFixedStart]: this.isSelectionFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isSelectionFixed() && !!this.shadowMap().get(SELECTION_KEY),
+    }),
   );
-  protected readonly headerExpandCellClass = clsx(
-    tableClasses.headerCell,
-    tableClasses.expandCell,
+
+  protected readonly headerSelectionCellClass = computed((): string =>
+    clsx(tableClasses.headerCell, tableClasses.selectionCell, {
+      [tableClasses.cellFixed]: this.isSelectionFixed(),
+      [tableClasses.cellFixedStart]: this.isSelectionFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isSelectionFixed() && !!this.shadowMap().get(SELECTION_KEY),
+      [tableClasses.headerCellFixed]: this.isSelectionFixed(),
+    }),
+  );
+
+  protected readonly selectionCellStyle = computed(
+    (): Record<string, string> =>
+      this.isSelectionFixed()
+        ? { '--fixed-start-offset': `${this.selectionFixedOffset()}px` }
+        : {},
+  );
+
+  protected readonly bodyExpandCellClass = computed((): string =>
+    clsx(tableClasses.cell, tableClasses.expandCell, {
+      [tableClasses.cellFixed]: this.isExpandFixed(),
+      [tableClasses.cellFixedStart]: this.isExpandFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isExpandFixed() && !!this.shadowMap().get(EXPANSION_KEY),
+    }),
+  );
+
+  protected readonly headerExpandCellClass = computed((): string =>
+    clsx(tableClasses.headerCell, tableClasses.expandCell, {
+      [tableClasses.cellFixed]: this.isExpandFixed(),
+      [tableClasses.cellFixedStart]: this.isExpandFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isExpandFixed() && !!this.shadowMap().get(EXPANSION_KEY),
+      [tableClasses.headerCellFixed]: this.isExpandFixed(),
+    }),
+  );
+
+  protected readonly expandCellStyle = computed(
+    (): Record<string, string> =>
+      this.isExpandFixed()
+        ? { '--fixed-start-offset': `${this.expandFixedOffset()}px` }
+        : {},
+  );
+
+  protected readonly dragOrPinCellClass = computed((): string =>
+    clsx(tableClasses.dragOrPinHandleCell, {
+      [tableClasses.cellFixed]: this.isDragOrPinFixed(),
+      [tableClasses.cellFixedStart]: this.isDragOrPinFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isDragOrPinFixed() &&
+        !!this.shadowMap().get(DRAG_OR_PIN_HANDLE_KEY),
+    }),
+  );
+
+  protected readonly dragOrPinCellStyle = computed(
+    (): Record<string, string> =>
+      this.isDragOrPinFixed()
+        ? { '--fixed-start-offset': `${this.dragFixedOffset()}px` }
+        : {},
+  );
+
+  protected readonly toggleableCellClass = computed((): string =>
+    clsx(tableClasses.cell, {
+      [tableClasses.cellFixed]: this.isToggleableFixed(),
+      [tableClasses.cellFixedEnd]: this.isToggleableFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isToggleableFixed() && !!this.shadowMap().get(TOGGLEABLE_KEY),
+    }),
+  );
+
+  protected readonly toggleableHeaderClass = computed((): string =>
+    clsx(tableClasses.headerCell, {
+      [tableClasses.cellFixed]: this.isToggleableFixed(),
+      [tableClasses.cellFixedEnd]: this.isToggleableFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isToggleableFixed() && !!this.shadowMap().get(TOGGLEABLE_KEY),
+      [tableClasses.headerCellFixed]: this.isToggleableFixed(),
+    }),
+  );
+
+  protected readonly toggleableCellStyle = computed(
+    (): Record<string, string> =>
+      this.isToggleableFixed()
+        ? { '--fixed-end-offset': `${this.toggleableFixedOffset()}px` }
+        : {},
+  );
+
+  protected readonly collectableCellClass = computed((): string =>
+    clsx(tableClasses.cell, {
+      [tableClasses.cellFixed]: this.isCollectableFixed(),
+      [tableClasses.cellFixedEnd]: this.isCollectableFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isCollectableFixed() && !!this.shadowMap().get(COLLECTABLE_KEY),
+    }),
+  );
+
+  protected readonly collectableHeaderClass = computed((): string =>
+    clsx(tableClasses.headerCell, {
+      [tableClasses.cellFixed]: this.isCollectableFixed(),
+      [tableClasses.cellFixedEnd]: this.isCollectableFixed(),
+      [tableClasses.cellFixedShadow]:
+        this.isCollectableFixed() && !!this.shadowMap().get(COLLECTABLE_KEY),
+      [tableClasses.headerCellFixed]: this.isCollectableFixed(),
+    }),
+  );
+
+  protected readonly collectableCellStyle = computed(
+    (): Record<string, string> =>
+      this.isCollectableFixed()
+        ? { '--fixed-end-offset': `${this.collectableFixedOffset()}px` }
+        : {},
   );
   protected readonly expandedRowClass = tableClasses.expandedRow;
   protected readonly expandedRowCellClass = tableClasses.expandedRowCell;
   protected readonly expandedContentClass = tableClasses.expandedContent;
   protected readonly collectHandleIconClass = tableClasses.collectHandleIcon;
+
+  /**
+   * Mirrors React `cx(classes.collectHandleIcon, { [`${…}--disabled`]: isDisabled })`
+   * in `TableCollectableCell.tsx` — appends a BEM `--disabled` modifier
+   * so the core SCSS (`_table-styles.scss:485-497`) can apply the
+   * disabled cursor + opacity.
+   */
+  protected getCollectButtonClass(record: TableDataSource): string {
+    return clsx(tableClasses.collectHandleIcon, {
+      [`${tableClasses.collectHandleIcon}--disabled`]:
+        this.isCollectDisabled(record),
+    });
+  }
   protected readonly dragOrPinHandleClass = tableClasses.dragOrPinHandle;
-  protected readonly dragOrPinHandleCellClass =
-    tableClasses.dragOrPinHandleCell;
+  /**
+   * Classes applied to CDK's drag preview clone so the dragging row picks up
+   * `mzn-table__body__row--dragging` styles (drop-shadow, `display: flex`,
+   * border-bottom) — mirrors React `TableRow` composing `classes.bodyRowDragging`
+   * when `snapshot.isDragging` is true. Also reapplies `bodyRow` because the
+   * cdk-preview clone may lose tbody cascade and needs surface background.
+   */
+  protected readonly dragPreviewClassNames = [
+    tableClasses.bodyRow,
+    tableClasses.bodyRowDragging,
+  ];
   protected readonly emptyClass = tableClasses.empty;
   /** Pagination wrapper class — not in core, defined locally. */
   protected readonly paginationWrapperClass = `${tableClasses.root}__pagination`;
@@ -1294,6 +2044,37 @@ export class MznTable {
 
   /** Overflow dropdown open state for the bulk actions bar. */
   protected readonly bulkOverflowOpen = signal(false);
+
+  /**
+   * Single-open state for per-row dropdown actions. Stores a composite
+   * key `${rowIndex}::${actionKey}` so only one row's dropdown is open
+   * at a time, matching the typical UX of inline action dropdowns.
+   */
+  protected readonly rowActionDropdownOpenKey = signal<string | null>(null);
+
+  protected rowActionDropdownKey(rowIndex: number, actionKey: string): string {
+    return `${rowIndex}::${actionKey}`;
+  }
+
+  protected onRowActionDropdownToggle(
+    rowIndex: number,
+    actionKey: string,
+  ): void {
+    const key = this.rowActionDropdownKey(rowIndex, actionKey);
+    const current = this.rowActionDropdownOpenKey();
+
+    this.rowActionDropdownOpenKey.set(current === key ? null : key);
+  }
+
+  protected onRowActionDropdownSelect(
+    action: TableActionDropdownItem,
+    record: TableDataSource,
+    rowIndex: number,
+    option: DropdownOption,
+  ): void {
+    action.onSelect(option, record, rowIndex);
+    this.rowActionDropdownOpenKey.set(null);
+  }
 
   /**
    * Whether the bulk actions bar should pin to the bottom of the viewport.
@@ -1393,6 +2174,17 @@ export class MznTable {
   }
   protected readonly emptyRowClass = tableClasses.emptyRow;
   protected readonly pinHandleIconClass = tableClasses.pinHandleIcon;
+  /**
+   * Combined class for the pin `<button>` — mirrors React
+   * `cx(classes.dragOrPinHandle, classes.pinHandleIcon)` in
+   * `TableDragOrPinHandleCell.tsx`. The first gives flex centering,
+   * the second applies the button reset from
+   * `_table-styles.scss` so the native `<button>` chrome disappears.
+   */
+  protected readonly pinHandleButtonClass = clsx(
+    tableClasses.dragOrPinHandle,
+    tableClasses.pinHandleIcon,
+  );
   protected readonly resizeHandleClass = tableClasses.resizeHandle;
   protected readonly sortIconsClass = tableClasses.sortIcons;
 
@@ -1405,10 +2197,34 @@ export class MznTable {
   protected readonly caretUpIcon = CaretUpIcon;
   protected readonly chevronRightIcon = ChevronRightIcon;
   protected readonly dotDragVerticalIcon = DotDragVerticalIcon;
+  protected readonly dotHorizontalIcon = DotHorizontalIcon;
+  protected readonly dotVerticalIcon = DotVerticalIcon;
   protected readonly pinFilledIcon = PinFilledIcon;
   protected readonly pinIcon = PinIcon;
+  protected readonly questionOutlineIcon = QuestionOutlineIcon;
   protected readonly starFilledIcon = StarFilledIcon;
   protected readonly starOutlineIcon = StarOutlineIcon;
+
+  /**
+   * Per-column `titleMenu` open-state tracker. Keyed by column key so
+   * each header dropdown opens independently. Mirrors React
+   * `TableColumnTitleMenu`'s local `useState` + `Dropdown` trigger.
+   */
+  protected readonly titleMenuOpenKey = signal<string | null>(null);
+
+  protected onTitleMenuToggle(columnKey: string): void {
+    const current = this.titleMenuOpenKey();
+
+    this.titleMenuOpenKey.set(current === columnKey ? null : columnKey);
+  }
+
+  protected onTitleMenuSelect(
+    column: TableColumn,
+    option: DropdownOption,
+  ): void {
+    column.titleMenu?.onSelect?.(option);
+    this.titleMenuOpenKey.set(null);
+  }
 
   /* ---------------------------------------------------------------- */
   /*  Computed host / root classes                                     */
@@ -1521,6 +2337,21 @@ export class MznTable {
     (): boolean => this.pinnable()?.enabled === true,
   );
 
+  /**
+   * Data source used for body rendering. When `loading` is true, replaces
+   * the real `dataSource` with placeholder rows whose cells render skeletons.
+   * Mirrors React `dataSourceForRender` in `packages/react/src/Table/Table.tsx`.
+   */
+  protected readonly dataSourceForRender = computed(
+    (): readonly TableDataSource[] => {
+      if (!this.loading()) return this.dataSource();
+
+      const count = Math.max(this.loadingRowsCount(), 1);
+
+      return Array.from({ length: count }, (_, idx) => ({ key: `${idx}` }));
+    },
+  );
+
   protected readonly totalColumns = computed((): number => {
     let count = this.columns().length;
 
@@ -1613,6 +2444,8 @@ export class MznTable {
   protected getHeaderCellClasses(col: TableColumn): string {
     return clsx(tableClasses.headerCell, this.fixedClassesFor(col), {
       [tableClasses.headerCellFixed]: !!col.fixed,
+      [tableClasses.cellFixedShadow]:
+        !!col.fixed && !!this.shadowMap().get(col.key),
     });
   }
 
@@ -1622,6 +2455,31 @@ export class MznTable {
       CELL_ALIGN_MAP[col.align ?? 'start'],
     );
   }
+
+  /**
+   * Column-keyed map of static cell classes. Cached so the body template's
+   * per-row per-column `[class]` bindings resolve with a `Map.get(key)` O(1)
+   * lookup instead of rebuilding the class string on every CD cycle.
+   */
+  protected readonly cellClassesMap = computed(
+    (): ReadonlyMap<string, string> => {
+      const cols = this.columns();
+      const shadow = this.shadowMap();
+      const map = new Map<string, string>();
+
+      for (const col of cols) {
+        map.set(
+          col.key,
+          clsx(tableClasses.cell, this.fixedClassesFor(col), {
+            [tableClasses.cellFixedShadow]:
+              !!col.fixed && !!shadow.get(col.key),
+          }),
+        );
+      }
+
+      return map;
+    },
+  );
 
   protected getCellClasses(col: TableColumn): string {
     return clsx(tableClasses.cell, this.fixedClassesFor(col));
@@ -1640,6 +2498,36 @@ export class MznTable {
       [tableClasses.cellFixedEnd]: side === 'end',
     };
   }
+
+  /**
+   * Column-keyed map of fixed-offset CSS custom properties. Rebuilt only
+   * when `columns`, `fixedStartOffsets`, or `fixedEndOffsets` signals
+   * change — cheaper than recomputing the object literal per cell per CD.
+   */
+  protected readonly fixedOffsetStyleMap = computed(
+    (): ReadonlyMap<string, Record<string, string>> => {
+      const cols = this.columns();
+      const starts = this.fixedStartOffsets();
+      const ends = this.fixedEndOffsets();
+      const map = new Map<string, Record<string, string>>();
+
+      for (const col of cols) {
+        if (col.fixed === 'start') {
+          map.set(col.key, {
+            '--fixed-start-offset': `${starts.get(col.key) ?? 0}px`,
+          });
+        } else if (col.fixed === 'end') {
+          map.set(col.key, {
+            '--fixed-end-offset': `${ends.get(col.key) ?? 0}px`,
+          });
+        } else {
+          map.set(col.key, {});
+        }
+      }
+
+      return map;
+    },
+  );
 
   /** px offset to apply to a fixed column's `<td>`/`<th>` via CSS var. */
   protected fixedOffsetStyle(col: TableColumn): Record<string, string> {
@@ -1680,12 +2568,14 @@ export class MznTable {
     actions: TableActions,
   ): Record<string, boolean> {
     const side = actions.fixed;
+    const shadow = !!side && !!this.shadowMap().get(TABLE_ACTIONS_KEY);
 
     return {
       [tableClasses.headerCell]: true,
       [tableClasses.cellFixed]: !!side,
       [tableClasses.cellFixedStart]: side === 'start',
       [tableClasses.cellFixedEnd]: side === 'end',
+      [tableClasses.cellFixedShadow]: shadow,
       [tableClasses.headerCellFixed]: !!side,
     };
   }
@@ -1695,14 +2585,37 @@ export class MznTable {
     actions: TableActions,
   ): Record<string, boolean> {
     const side = actions.fixed;
+    const shadow = !!side && !!this.shadowMap().get(TABLE_ACTIONS_KEY);
 
     return {
       [tableClasses.cell]: true,
       [tableClasses.cellFixed]: !!side,
       [tableClasses.cellFixedStart]: side === 'start',
       [tableClasses.cellFixedEnd]: side === 'end',
+      [tableClasses.cellFixedShadow]: shadow,
     };
   }
+
+  /** Column-keyed map of cell-content classes (ellipsis + align). */
+  protected readonly cellContentClassesMap = computed(
+    (): ReadonlyMap<string, string> => {
+      const cols = this.columns();
+      const map = new Map<string, string>();
+
+      for (const col of cols) {
+        const ellipsis = col.ellipsis ?? true;
+
+        map.set(
+          col.key,
+          clsx(tableClasses.cellContent, CELL_ALIGN_MAP[col.align ?? 'start'], {
+            [tableClasses.cellEllipsis]: ellipsis,
+          }),
+        );
+      }
+
+      return map;
+    },
+  );
 
   protected getCellContentClasses(col: TableColumn): string {
     const ellipsis = col.ellipsis ?? true;
@@ -1715,6 +2628,54 @@ export class MznTable {
       },
     );
   }
+
+  /**
+   * Row-index-keyed cache of computed row classes. Built only when any of
+   * the source signals (dataSource, selection, transition, row state,
+   * separator, hover, zebra) change — turns per-CD-cycle per-row
+   * `getRowClasses()` work into a single `Map.get($index)` lookup in the
+   * template. Critical during drag, where CDK's pointermove lands inside
+   * NgZone and would otherwise force N×clsx allocations every frame.
+   */
+  protected readonly rowClassesMap = computed(
+    (): ReadonlyMap<number, string> => {
+      const data = this.dataSourceForRender();
+      const ts = this.transitionState();
+      const sep = this.separatorAtRowIndexes();
+      const selected = this.resolvedSelectedKeys();
+      const zebra = this.zebraStriping();
+      const hoveredRow = this.hoveredRowIndex();
+      const mode = this.highlight();
+      const highlightRow =
+        hoveredRow !== null && (mode === 'row' || mode === 'cross');
+
+      const map = new Map<number, string>();
+
+      data.forEach((record, idx) => {
+        const key = getRowKey(record);
+        const state = this.getRowState(record);
+
+        map.set(
+          idx,
+          clsx(tableClasses.bodyRow, {
+            [tableClasses.bodyRowHighlight]: highlightRow && hoveredRow === idx,
+            [tableClasses.bodyRowSelected]: selected.has(key),
+            [tableClasses.bodyRowZebra]: zebra && idx % 2 === 1,
+            [tableClasses.bodyRowAdding]: ts?.addingKeys.has(key) ?? false,
+            [tableClasses.bodyRowDeleting]: ts?.deletingKeys.has(key) ?? false,
+            [tableClasses.bodyRowFadingOut]:
+              ts?.fadingOutKeys.has(key) ?? false,
+            [tableClasses.bodyRowSeparator]: sep?.includes(idx) ?? false,
+            [tableClasses.bodyRowStateAdded]: state === 'added',
+            [tableClasses.bodyRowStateDeleted]: state === 'deleted',
+            [tableClasses.bodyRowStateDisabled]: state === 'disabled',
+          }),
+        );
+      });
+
+      return map;
+    },
+  );
 
   protected getRowClasses(record: TableDataSource, index: number): string {
     const key = getRowKey(record);
@@ -2077,7 +3038,11 @@ export class MznTable {
 
     if (actions.variant) return actions.variant;
 
-    if (item.danger) return 'destructive-text-link';
+    // Legacy `danger` fallback only makes sense on button-style items;
+    // dropdown items don't carry that field in React either.
+    if ('danger' in item && item.danger) {
+      return 'destructive-text-link';
+    }
 
     return 'base-text-link';
   }
@@ -2344,24 +3309,152 @@ export class MznTable {
   }
 
   protected onDragStarted(event: CdkDragStart): void {
-    const row = event.source.element.nativeElement as HTMLElement;
+    // Run the preview-styling pipeline outside Angular so neither the DOM
+    // measurements nor the RAF callback trigger change detection.
+    this.ngZone.runOutsideAngular(() => {
+      const row = event.source.element.nativeElement as HTMLTableRowElement;
+      const rowHeight = row.getBoundingClientRect().height;
+      const columns = this.columns();
 
-    row.querySelectorAll('td, th').forEach((cell) => {
-      const el = cell as HTMLElement;
+      // Derive width for each data column the same way React does
+      // (`calculateColumnWidths` → packages/react/src/Table/utils/…). This
+      // avoids measuring `getBoundingClientRect` which, with the default
+      // content-box box-sizing, would double-count horizontal padding and
+      // drift the preview cells a couple of pixels wider than their source.
+      const actionColumnsWidth =
+        (this.isDragEnabled() || this.isPinEnabled()
+          ? DRAG_OR_PIN_HANDLE_COLUMN_WIDTH
+          : 0) +
+        (this.hasSelection() ? SELECTION_COLUMN_WIDTH : 0) +
+        (this.isExpandableEnabled() ? EXPANSION_COLUMN_WIDTH : 0) +
+        (this.toggleable()?.enabled ? TOGGLEABLE_COLUMN_WIDTH : 0) +
+        (this.collectable()?.enabled ? COLLECTABLE_COLUMN_WIDTH : 0);
 
-      el.style.width = `${el.getBoundingClientRect().width}px`;
-      el.style.minWidth = `${el.getBoundingClientRect().width}px`;
+      const containerEl = row.closest<HTMLElement>('tbody')?.parentElement;
+      const containerWidth =
+        containerEl?.getBoundingClientRect().width ?? this.containerWidth();
+
+      const columnWidthMap = calculateColumnWidths({
+        actionColumnsWidth,
+        columns,
+        containerWidth,
+        getResizedColumnWidth: (key) => this.resizedWidths().get(key),
+      });
+
+      // Source cells: lock widths so the placeholder (invisible via
+      // `.cdk-drag-placeholder { opacity: 0 }`) keeps its footprint in
+      // tbody and the table layout doesn't collapse.
+      const sourceCells = Array.from(
+        row.querySelectorAll<HTMLElement>(':scope > td, :scope > th'),
+      );
+      const sourceWidths = sourceCells.map(
+        (cell) => cell.getBoundingClientRect().width,
+      );
+
+      sourceCells.forEach((el, i) => {
+        const w = sourceWidths[i];
+
+        if (w == null) return;
+
+        el.style.width = `${w}px`;
+        el.style.minWidth = `${w}px`;
+      });
+
+      const resolvePreviewCellWidth = (
+        el: HTMLElement,
+        fallback: number | undefined,
+      ): number | undefined => {
+        const key = el.getAttribute('data-column-key');
+
+        if (key && columnWidthMap.has(key)) {
+          return columnWidthMap.get(key);
+        }
+
+        return fallback;
+      };
+
+      const applyPreviewStyles = (): void => {
+        const preview =
+          document.querySelector<HTMLElement>('.cdk-drag-preview');
+
+        if (!preview) return;
+
+        preview.style.height = `${rowHeight}px`;
+        preview.style.boxSizing = 'border-box';
+
+        const previewCells = preview.querySelectorAll<HTMLElement>(
+          ':scope > td, :scope > th',
+        );
+
+        previewCells.forEach((el, i) => {
+          // Use border-box so inline `width: Xpx` matches the rendered box
+          // (no padding/border double-count from the default content-box).
+          el.style.boxSizing = 'border-box';
+
+          const width = resolvePreviewCellWidth(el, sourceWidths[i]);
+
+          if (width == null) return;
+
+          el.style.width = `${width}px`;
+          el.style.minWidth = `${width}px`;
+          el.style.flex = `0 0 ${width}px`;
+          el.style.height = `${rowHeight}px`;
+        });
+      };
+
+      applyPreviewStyles();
+      // Re-apply on the next frame — CDK positions the preview after the
+      // `cdkDragStarted` emit, which can reset inline styles on first paint.
+      requestAnimationFrame(applyPreviewStyles);
     });
   }
 
   protected onDragEnded(event: CdkDragEnd): void {
-    const row = event.source.element.nativeElement as HTMLElement;
+    this.ngZone.runOutsideAngular(() => {
+      const row = event.source.element.nativeElement as HTMLElement;
 
-    row.querySelectorAll('td, th').forEach((cell) => {
-      const el = cell as HTMLElement;
+      row
+        .querySelectorAll<HTMLElement>(':scope > td, :scope > th')
+        .forEach((el) => {
+          el.style.width = '';
+          el.style.minWidth = '';
+        });
+    });
+  }
 
-      el.style.width = '';
-      el.style.minWidth = '';
+  /**
+   * Manual auto-scroll for the scroll container. CDK's built-in
+   * `_startScrollingIfNecessary` walks ancestors looking for
+   * `overflow: auto/scroll`, but `overlayscrollbars` wraps the real
+   * scroll element in layers with `overflow: hidden` — CDK loses track.
+   * We instead grab the OverlayScrollbars viewport (data attribute set
+   * by the library) and scroll it directly when the pointer nears the
+   * top/bottom edge. Mirrors React `@hello-pangea/dnd`'s auto-scroller.
+   */
+  protected onDragMoved(event: CdkDragMove): void {
+    this.ngZone.runOutsideAngular(() => {
+      const viewport = this.scrollViewport;
+
+      if (!viewport) return;
+
+      const rect = viewport.getBoundingClientRect();
+      const pointerY = event.pointerPosition.y;
+      const threshold = 48; // px from edge to start scrolling
+      const maxStep = 14; // px per frame at the edge — matches dnd feel
+
+      let delta = 0;
+
+      if (pointerY < rect.top + threshold) {
+        const ratio = (rect.top + threshold - pointerY) / threshold;
+
+        delta = -Math.min(maxStep, maxStep * ratio);
+      } else if (pointerY > rect.bottom - threshold) {
+        const ratio = (pointerY - (rect.bottom - threshold)) / threshold;
+
+        delta = Math.min(maxStep, maxStep * ratio);
+      }
+
+      if (delta !== 0) viewport.scrollTop += delta;
     });
   }
 
