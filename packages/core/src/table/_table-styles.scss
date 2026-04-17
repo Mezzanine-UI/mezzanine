@@ -673,3 +673,35 @@ $z-index-config: (
     background-color: palette.semantic-variable(separator, neutral);
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * Angular CDK drag-drop integration                                   *
+ *                                                                     *
+ * Angular `MznTable` wires CDK's `cdkDropList` + `cdkDrag` on         *
+ * `<tbody>`/`<tr>`. CDK ships no CSS — it only applies marker         *
+ * classes (`.cdk-drag-placeholder`, `.cdk-drag-animating`,            *
+ * `.cdk-drop-list-dragging`) and expects consumers to style them to   *
+ * match `@hello-pangea/dnd`'s behaviour on the React side: the        *
+ * source row becomes an invisible space-reserving placeholder while   *
+ * sibling rows slide to reveal the drop target.                       *
+ *                                                                     *
+ * Rules are scoped inside `.#{$prefix}` so they only affect           *
+ * Mezzanine tables. React never emits these classes, so the block    *
+ * is a no-op there.                                                   *
+ * ------------------------------------------------------------------ */
+.#{$prefix} {
+  /* Source row while dragging — hide so only the preview is visible. */
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+
+  /* Sibling rows transition smoothly as the preview passes by. */
+  &__body.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+    transition: transition.standard(transform, moderate);
+  }
+
+  /* Ease the drop-settle animation when the user releases. */
+  .cdk-drag-animating {
+    transition: transition.standard(transform, moderate);
+  }
+}
