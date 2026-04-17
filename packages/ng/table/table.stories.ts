@@ -15,8 +15,10 @@ import {
   CopyIcon,
   DotHorizontalIcon,
   DownloadIcon,
+  EditIcon,
   FolderMoveIcon,
   TrashIcon,
+  UserIcon,
 } from '@mezzanine-ui/icons';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import {
@@ -24,7 +26,10 @@ import {
   MznDescriptionContent,
   MznDescriptionGroup,
 } from '@mezzanine-ui/ng/description';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznInput } from '@mezzanine-ui/ng/input';
+import { MznSlider } from '@mezzanine-ui/ng/slider';
+import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznToggle } from '@mezzanine-ui/ng/toggle';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznTable } from './table.component';
@@ -1650,36 +1655,176 @@ export const WithResizableColumns: Story = {
   }),
 };
 
+interface CustomRenderRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+  readonly tags: readonly string[];
+}
+
+@Component({
+  selector: 'story-table-custom-render',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable, MznTableCellRender, MznIcon, MznTag, MznTypography],
+  template: `
+    <div mznTable [columns]="customColumns" [dataSource]="dataSource">
+      <ng-template mznTableCellRender="name" let-record>
+        <div
+          style="display: flex; flex-flow: row; align-items: center; gap: 4px;"
+        >
+          <i mznIcon [icon]="userIcon" [size]="24"></i>
+          <span>{{ record.name }}</span>
+        </div>
+      </ng-template>
+      <ng-template mznTableCellRender="age" let-record>
+        <span mznTypography variant="body-mono">{{ record.age }}</span>
+      </ng-template>
+      <ng-template mznTableCellRender="tags" let-record>
+        <div style="display: flex; gap: 4px;">
+          @for (tag of record.tags ?? []; track tag) {
+            <span mznTag [label]="tag" size="sub"></span>
+          }
+        </div>
+      </ng-template>
+    </div>
+  `,
+})
+class WithCustomRenderStoryComponent {
+  readonly userIcon = UserIcon;
+
+  readonly dataSource: readonly CustomRenderRowType[] = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+      tags: ['nice', 'developer'],
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+      tags: ['loser'],
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 35,
+      address: 'Sydney No. 1 Lake Park',
+      tags: ['cool', 'teacher'],
+    },
+    {
+      key: '4',
+      name: 'Jane Doe',
+      age: 30,
+      address: 'Tokyo No. 1 Lake Park',
+      tags: ['developer'],
+    },
+    {
+      key: '5',
+      name: 'Jack Smith',
+      age: 21,
+      address: 'Paris No. 1 Lake Park',
+      tags: ['nice', 'cool'],
+    },
+    {
+      key: '6',
+      name: 'Emily Davis',
+      age: 45,
+      address: 'Berlin No. 1 Lake Park',
+      tags: ['loser', 'teacher'],
+    },
+    {
+      key: '7',
+      name: 'Michael Johnson',
+      age: 38,
+      address: 'Madrid No. 1 Lake Park',
+      tags: ['developer', 'teacher'],
+    },
+    {
+      key: '8',
+      name: 'Sarah Wilson',
+      age: 29,
+      address: 'Rome No. 1 Lake Park',
+      tags: ['nice'],
+    },
+    {
+      key: '9',
+      name: 'David Brown',
+      age: 33,
+      address: 'Dublin No. 1 Lake Park',
+      tags: ['cool', 'developer'],
+    },
+  ];
+
+  readonly customColumns: TableColumn[] = [
+    { key: 'name', title: 'Name', width: 150 },
+    { key: 'age', title: 'Age', width: 100 },
+    { key: 'tags', title: 'Tags', width: 200 },
+    {
+      key: 'address',
+      dataIndex: 'address',
+      ellipsis: true,
+      title: 'Address',
+      width: 150,
+    },
+  ];
+}
+
 export const WithCustomRender: Story = {
   name: 'With Custom Render',
   parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [WithCustomRenderStoryComponent] })],
   render: () => ({
-    props: {
-      columns: basicColumns,
-      dataSource: basicData,
-    },
-    template: `
-      <!-- NOTE: Custom cell rendering (column.render() returning JSX) from React
-           is not supported in Angular MznTable. Cells render string values via dataIndex. -->
-      <div mznTable [columns]="columns" [dataSource]="dataSource" ></div>
-    `,
+    template: `<story-table-custom-render />`,
   }),
 };
 
+@Component({
+  selector: 'story-table-loading',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, MznSlider, MznTable],
+  template: `
+    <div style="display: grid; grid-auto-columns: row; gap: 36px;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span>props.loadingRowsCount: </span>
+        <div style="width: 260px;">
+          <div
+            mznSlider
+            [(ngModel)]="loadingRowsCount"
+            [min]="1"
+            [max]="10"
+            [step]="1"
+          ></div>
+        </div>
+      </div>
+      <div
+        mznTable
+        [columns]="columns"
+        [dataSource]="emptyDataSource"
+        [loading]="true"
+        [loadingRowsCount]="loadingRowsCount"
+      ></div>
+    </div>
+  `,
+})
+class LoadingStoryComponent {
+  readonly columns: TableColumn[] = basicColumns;
+
+  readonly emptyDataSource: readonly TableDataSource[] = [];
+
+  loadingRowsCount = 10;
+}
+
 export const Loading: Story = {
   parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [LoadingStoryComponent] })],
   render: () => ({
-    props: {
-      columns: basicColumns,
-    },
-    template: `
-      <div mznTable
-        [columns]="columns"
-        [dataSource]="[]"
-        [loading]="true"
-        emptyText="Loading..."
-      ></div>
-    `,
+    template: `<story-table-loading />`,
   }),
 };
 
@@ -1766,6 +1911,7 @@ export const VirtualScrollingInDevelopment: Story = {
         [columns]="columns"
         [dataSource]="dataSource()"
         [draggable]="draggableConfig"
+        [scroll]="scroll"
       ></div>
     </div>
   `,
@@ -1773,6 +1919,8 @@ export const VirtualScrollingInDevelopment: Story = {
 class DraggableRowsStoryComponent {
   readonly columns = basicColumns;
   readonly dataSource = signal<TableDataSource[]>([...basicData]);
+
+  readonly scroll = { y: 300 };
 
   readonly draggableConfig: TableDraggable = {
     enabled: true,
@@ -1794,16 +1942,20 @@ export const DraggableRows: Story = {
 @Component({
   selector: 'story-table-draggable-refetch',
   standalone: true,
-  imports: [MznTable],
+  imports: [MznButton, MznTable],
   template: `
     <div>
       <p style="margin: 0 0 8px;">
         Simulates a refetch while data rows are still rendered inside Draggable.
-        Click the button to trigger loading.
+        Click the button to trigger loading — drag handles should remain
+        functional without dnd errors.
       </p>
       <button
+        mznButton
+        type="button"
+        variant="base-primary"
+        style="margin-bottom: 16px;"
         (click)="simulateRefetch()"
-        style="margin-bottom: 16px; padding: 4px 12px; cursor: pointer;"
       >
         Simulate Refetch
       </button>
@@ -1813,6 +1965,7 @@ export const DraggableRows: Story = {
         [dataSource]="dataSource()"
         [draggable]="draggableConfig"
         [loading]="loading()"
+        [scroll]="scroll"
       ></div>
     </div>
   `,
@@ -1821,6 +1974,7 @@ class DraggableRowsWithRefetchStoryComponent {
   readonly columns = basicColumns;
   readonly dataSource = signal<TableDataSource[]>([...basicData]);
   readonly loading = signal(false);
+  readonly scroll = { y: 300 };
 
   readonly draggableConfig: TableDraggable = {
     enabled: true,
@@ -1853,14 +2007,12 @@ export const DraggableRowsWithRefetch: Story = {
   template: `
     <div>
       <p style="margin: 0 0 16px;">Click the pin icon to pin/unpin rows.</p>
-      <p style="margin: 0 0 16px;"
-        >Pinned rows: [{{ pinnedRowKeys().join(', ') }}]</p
-      >
       <div
         mznTable
         [columns]="columns"
         [dataSource]="dataSource"
         [pinnable]="pinnableConfig()"
+        [scroll]="scroll"
       ></div>
     </div>
   `,
@@ -1869,6 +2021,7 @@ class PinnableRowsStoryComponent {
   readonly columns = basicColumns;
   readonly dataSource = basicData;
   readonly pinnedRowKeys = signal<readonly string[]>([]);
+  readonly scroll = { y: 300 };
 
   readonly pinnableConfig = computed(
     (): TablePinnable => ({
@@ -1970,6 +2123,7 @@ export const ToggleableRows: Story = {
         [columns]="columns"
         [dataSource]="dataSource"
         [collectable]="collectableConfig()"
+        [scroll]="scroll"
       ></div>
     </div>
   `,
@@ -1978,11 +2132,13 @@ class CollectableRowsStoryComponent {
   readonly columns = basicColumns;
   readonly dataSource = basicData;
   readonly collectedRowKeys = signal<readonly string[]>(['2']);
+  readonly scroll = { y: 300 };
 
   readonly collectableConfig = computed(
     (): TableCollectable => ({
       enabled: true,
       title: 'Favorite',
+      minWidth: 120,
       collectedRowKeys: [...this.collectedRowKeys()],
       isRowDisabled: (record: TableDataSource): boolean =>
         (record['age'] as number) < 25,
@@ -2008,37 +2164,49 @@ export const CollectableRows: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-table-row-state',
+  standalone: true,
+  imports: [MznTable],
+  template: `
+    <div>
+      <div
+        style="display: flex; gap: 16px; margin-bottom: 16px; font-size: 13px;"
+      >
+        <span>props.rowState for customizing row background color</span>
+      </div>
+      <div
+        mznTable
+        [columns]="columns"
+        [dataSource]="dataSource"
+        [rowState]="rowState"
+      ></div>
+    </div>
+  `,
+})
+class RowStateStoryComponent {
+  readonly columns = basicColumns;
+  readonly dataSource = basicData;
+
+  readonly rowState = (
+    record: TableDataSource,
+  ): 'added' | 'deleted' | 'disabled' | undefined => {
+    const age = record['age'] as number;
+
+    if (age >= 42) return 'deleted';
+    if (age >= 33) return 'disabled';
+    if (age < 25) return 'added';
+
+    return undefined;
+  };
+}
+
 export const RowState: Story = {
   name: 'Row State',
   parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [RowStateStoryComponent] })],
   render: () => ({
-    props: {
-      columns: basicColumns,
-      dataSource: basicData,
-      rowState: (
-        record: TableDataSource,
-      ): 'added' | 'deleted' | 'disabled' | undefined => {
-        const age = record['age'] as number;
-
-        if (age >= 42) return 'deleted';
-        if (age >= 33) return 'disabled';
-        if (age < 25) return 'added';
-
-        return undefined;
-      },
-    },
-    template: `
-      <div>
-        <div style="display: flex; gap: 16px; margin-bottom: 16px; font-size: 13px;">
-          <span>rowState: age &gt;= 42 deleted, age &gt;= 33 disabled, age &lt; 25 added</span>
-        </div>
-        <div mznTable
-          [columns]="columns"
-          [dataSource]="dataSource"
-          [rowState]="rowState"
-        ></div>
-      </div>
-    `,
+    template: `<story-table-row-state />`,
   }),
 };
 
@@ -2049,12 +2217,18 @@ export const RowState: Story = {
   template: `
     <div>
       <div style="margin-bottom: 16px;">
-        <label style="margin-right: 8px;">Select Highlight Mode:</label>
-        <select [value]="mode()" (change)="mode.set($any($event.target).value)">
+        <label for="highlight-mode-select" style="margin-right: 8px;"
+          >Select Highlight Mode:</label
+        >
+        <select
+          id="highlight-mode-select"
+          [value]="mode()"
+          (change)="mode.set($any($event.target).value)"
+        >
           <option value="row">Row</option>
           <option value="cell">Cell</option>
+          <option value="column">Column</option>
           <option value="cross">Cross</option>
-          <option value="none">None</option>
         </select>
       </div>
       <div
@@ -2081,16 +2255,152 @@ export const HighlightMode: Story = {
   }),
 };
 
+interface CombinedRowType extends TableDataSource {
+  readonly key: string;
+  readonly name: string;
+  readonly age: number;
+  readonly address: string;
+  readonly tags: readonly string[];
+  readonly subData?: readonly CombinedRowType[];
+}
+
+const combinedBaseData: readonly CombinedRowType[] = [
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+    tags: ['nice', 'developer'],
+    subData: [
+      {
+        key: '1-1',
+        name: 'Sub John Brown',
+        age: 10,
+        address: 'Sub New York No. 1 Lake Park',
+        tags: ['nice', 'developer'],
+      },
+      {
+        key: '1-2',
+        name: 'Sub Jim Green',
+        age: 12,
+        address: 'Sub New York No. 2 Lake Park',
+        tags: ['nice', 'developer'],
+      },
+    ],
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    age: 42,
+    address: 'London No. 1 Lake Park',
+    tags: ['loser'],
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 35,
+    address: 'Sydney No. 1 Lake Park',
+    tags: ['cool', 'teacher'],
+    subData: [
+      {
+        key: '3-1',
+        name: 'Sub John Brown',
+        age: 10,
+        address: 'Sub New York No. 1 Lake Park',
+        tags: ['nice', 'developer'],
+      },
+      {
+        key: '3-2',
+        name: 'Sub Jim Green',
+        age: 12,
+        address: 'Sub New York No. 2 Lake Park',
+        tags: ['nice', 'developer'],
+      },
+    ],
+  },
+  {
+    key: '4',
+    name: 'Jane Doe',
+    age: 30,
+    address: 'Tokyo No. 1 Lake Park',
+    tags: ['developer'],
+  },
+  {
+    key: '5',
+    name: 'Jack Smith',
+    age: 21,
+    address: 'Paris No. 1 Lake Park',
+    tags: ['nice', 'cool'],
+  },
+  {
+    key: '6',
+    name: 'Emily Davis',
+    age: 45,
+    address: 'Berlin No. 1 Lake Park',
+    tags: ['loser', 'teacher'],
+  },
+  {
+    key: '7',
+    name: 'Michael Johnson',
+    age: 38,
+    address: 'Madrid No. 1 Lake Park',
+    tags: ['developer', 'teacher'],
+  },
+  {
+    key: '8',
+    name: 'Sarah Wilson',
+    age: 29,
+    address: 'Rome No. 1 Lake Park',
+    tags: ['nice'],
+  },
+  {
+    key: '9',
+    name: 'David Brown',
+    age: 33,
+    address: 'Dublin No. 1 Lake Park',
+    tags: ['cool', 'developer'],
+  },
+];
+
 @Component({
   selector: 'story-table-combined',
   standalone: true,
-  imports: [MznTable],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable, MznTableCellRender, MznTag, MznTypography],
   template: `
+    <ng-template #expandedTpl let-record>
+      <!--
+        React's TableExpandedRow cloneElements any nested Table with
+        nested=true + showHeader=false automatically; Angular has no
+        runtime child-component injection, so we set the flags
+        explicitly here.
+      -->
+      <div
+        mznTable
+        [columns]="combinedColumns()"
+        [dataSource]="record.subData ?? []"
+        [nested]="true"
+        [rowSelection]="getChildSelection(record)"
+        [showHeader]="false"
+      >
+        <ng-template mznTableCellRender="age" let-row>
+          <span mznTypography variant="body-mono">{{ row.age }}</span>
+        </ng-template>
+        <ng-template mznTableCellRender="tags" let-row>
+          <div style="display: flex; gap: 4px;">
+            @for (tag of row.tags ?? []; track tag) {
+              <span mznTag [label]="tag" size="sub"></span>
+            }
+          </div>
+        </ng-template>
+      </div>
+    </ng-template>
+
     <div style="width: 100%;">
       <div
-        style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px;"
+        style="display: flex; flex-flow: column; gap: 4px; margin-bottom: 16px;"
       >
-        <span>Selected: [{{ selectedKeys().join(', ') }}]</span>
+        <span>Selected: {{ totalSelectionCount() }} items</span>
         <span>Toggled rows: [{{ toggledRowKeys().join(', ') }}]</span>
         <span>Collected rows: [{{ collectedRowKeys().join(', ') }}]</span>
       </div>
@@ -2098,86 +2408,219 @@ export const HighlightMode: Story = {
         mznTable
         [actions]="actionsConfig"
         [collectable]="collectableConfig()"
-        [columns]="columns"
-        [dataSource]="dataSource()"
+        [columns]="combinedColumns()"
+        [dataSource]="ds.dataSource()"
         [draggable]="draggableConfig"
-        [expandable]="true"
+        [expandable]="expandableConfig()"
         [fullWidth]="true"
         highlight="cross"
         [resizable]="true"
-        [rowSelection]="checkboxSelection()"
+        [rowSelection]="parentSelection()"
+        [scroll]="scroll"
         [toggleable]="toggleableConfig()"
-        [zebraStriping]="true"
-      ></div>
+        [transitionState]="ds.transitionState()"
+      >
+        <ng-template mznTableCellRender="age" let-record>
+          <span mznTypography variant="body-mono">{{ record.age }}</span>
+        </ng-template>
+        <ng-template mznTableCellRender="tags" let-record>
+          <div style="display: flex; gap: 4px;">
+            @for (tag of record.tags ?? []; track tag) {
+              <span mznTag [label]="tag" size="sub"></span>
+            }
+          </div>
+        </ng-template>
+      </div>
     </div>
   `,
 })
 class CombinedStoryComponent {
-  readonly columns: TableColumn[] = [
-    {
-      key: 'name',
-      title: 'Name',
-      dataIndex: 'name',
-      width: 200,
-      minWidth: 100,
-    },
-    {
-      key: 'age',
-      title: 'Age',
-      dataIndex: 'age',
-      width: 100,
-      minWidth: 60,
-      align: 'center',
-    },
-    {
-      key: 'email',
-      title: 'Email',
-      dataIndex: 'email',
-      width: 300,
-      minWidth: 150,
-    },
-  ];
+  readonly scroll = { y: 300 };
 
-  readonly dataSource = signal<TableDataSource[]>([...basicData]);
-  readonly selectedKeys = signal<readonly string[]>([]);
+  /**
+   * Parent + child selection entries mirroring React
+   * `useTableRowSelection`. Each entry carries the parent row `key` plus
+   * optional `subKeys` (the child rows the user has checked). Derived
+   * signals compute `parentSelectedKeys` (for the outer checkbox list)
+   * and `totalSelectionCount` (parent + all tracked child rows).
+   */
+  private readonly selectedEntries = signal<
+    readonly { key: string; subKeys?: readonly string[] }[]
+  >([]);
+
+  readonly parentSelectedKeys = computed((): readonly string[] =>
+    this.selectedEntries().map((entry) => entry.key),
+  );
+
+  readonly totalSelectionCount = computed((): number =>
+    this.selectedEntries().reduce(
+      (acc, entry) => acc + (entry.subKeys?.length ?? 0) + 1,
+      0,
+    ),
+  );
+
   readonly toggledRowKeys = signal<readonly string[]>(['1', '3']);
   readonly collectedRowKeys = signal<readonly string[]>(['2']);
 
-  readonly checkboxSelection = computed(
-    (): TableRowSelectionCheckbox => ({
-      mode: 'checkbox',
-      selectedRowKeys: this.selectedKeys(),
-      onChange: (keys: readonly string[]): void => {
-        this.selectedKeys.set(keys);
-      },
-    }),
-  );
+  private readonly sortOrderState = signal<{
+    key: string;
+    sortOrder: SortOrderType;
+  } | null>({ key: 'name', sortOrder: 'ascend' });
 
-  readonly draggableConfig: TableDraggable = {
-    enabled: true,
-    onDragEnd: (newData: readonly TableDataSource[]): void => {
-      this.dataSource.set([...newData]);
-    },
+  private readonly expandedTpl =
+    viewChild.required<TemplateRef<{ $implicit: CombinedRowType }>>(
+      'expandedTpl',
+    );
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- Angular factory, not React hook
+  readonly ds = useTableDataSource<CombinedRowType>({
+    initialData: combinedBaseData,
+    highlightDuration: 1000,
+    fadeOutDuration: 200,
+  });
+
+  readonly combinedColumns = computed((): TableColumn[] => {
+    const sort = this.sortOrderState();
+
+    return [
+      {
+        key: 'name',
+        dataIndex: 'name',
+        title: 'Name',
+        titleHelp: 'This is the name column',
+        titleMenu: {
+          options: [
+            { id: 'opt1', name: 'Option 1' },
+            { id: 'opt2', name: 'Option 2' },
+            { id: 'opt3', name: 'Option 3' },
+          ],
+          onSelect: () => {},
+        },
+        fixed: 'start',
+        width: 150,
+        minWidth: 100,
+        maxWidth: 300,
+      },
+      {
+        key: 'age',
+        title: 'Age',
+        titleMenu: {
+          options: [
+            { id: 'opt1', name: 'Option 1' },
+            { id: 'opt2', name: 'Option 2' },
+          ],
+          onSelect: () => {},
+        },
+        width: 100,
+        minWidth: 90,
+        maxWidth: 200,
+        sortOrder: sort?.key === 'age' ? sort.sortOrder : undefined,
+        onSort: (key: string, order: SortOrderType): void => {
+          this.sortOrderState.set({ key, sortOrder: order });
+
+          if (order) {
+            const sorted = [...this.ds.dataSource()].sort((a, b) => {
+              const diff = a.age - b.age;
+
+              return order === 'ascend' ? diff : -diff;
+            });
+
+            this.ds.updateDataSource(sorted);
+          } else {
+            this.ds.updateDataSource(combinedBaseData);
+          }
+        },
+      },
+      {
+        key: 'address',
+        dataIndex: 'address',
+        title: 'Address',
+        width: 250,
+        minWidth: 200,
+        maxWidth: 400,
+      },
+      {
+        key: 'address2',
+        dataIndex: 'address',
+        title: 'Address',
+        width: 600,
+        minWidth: 400,
+        maxWidth: 800,
+      },
+      {
+        key: 'tags',
+        title: 'Tags',
+        width: 200,
+        minWidth: 120,
+        maxWidth: 300,
+      },
+    ];
+  });
+
+  /**
+   * Row actions — mirrors React `TableActionItemButton` + `TableActionItemDropdown`.
+   * Edit fires `onClick`; the dropdown trigger opens a menu with
+   * Copy / Download / Delete, and routes selection through `onSelect`.
+   */
+  readonly actionsConfig: TableActions = {
+    variant: 'base-primary',
+    width: 220,
+    minWidth: 220,
+    render: (record) => [
+      { key: 'edit', label: 'Edit', icon: EditIcon, onClick: () => {} },
+      {
+        key: 'more',
+        type: 'dropdown',
+        options: [
+          { id: 'copy', name: 'Copy', icon: CopyIcon },
+          {
+            id: 'download',
+            name: 'Download',
+            icon: DownloadIcon,
+            showUnderline: true,
+          },
+          {
+            id: 'Delete',
+            name: 'Delete',
+            icon: TrashIcon,
+            validate: 'danger',
+          },
+        ],
+        onSelect: (option) => {
+          if (option.id === 'Delete') {
+            this.handleDelete(record as CombinedRowType);
+          }
+        },
+      },
+    ],
   };
 
-  readonly toggleableConfig = computed(
-    (): TableToggleable => ({
-      enabled: true,
-      title: 'Active',
-      toggledRowKeys: [...this.toggledRowKeys()],
-      isRowDisabled: (record: TableDataSource): boolean =>
-        (record['age'] as number) > 40,
-      onToggleChange: (record: TableDataSource, toggled: boolean): void => {
-        const key = String(record['key'] ?? record['id']);
+  private handleDelete(record: CombinedRowType): void {
+    const data = this.ds.dataSource();
+    const isFirstLayer = data.some((item) => item.key === record.key);
 
-        if (toggled) {
-          this.toggledRowKeys.update((prev) => [...prev, key]);
-        } else {
-          this.toggledRowKeys.update((prev) => prev.filter((k) => k !== key));
-        }
-      },
-    }),
-  );
+    if (isFirstLayer) {
+      this.ds.updateDataSource(
+        data.filter((item) => item.key !== record.key),
+        { removedKeys: [record.key] },
+      );
+
+      return;
+    }
+
+    const target = data.find((item) =>
+      item.subData?.some((sub) => sub.key === record.key),
+    );
+
+    if (!target?.subData) return;
+
+    const newSubData = target.subData.filter((sub) => sub.key !== record.key);
+    const newDataSource = data.map((item) =>
+      item.key === target.key ? { ...item, subData: newSubData } : item,
+    );
+
+    this.ds.updateDataSource(newDataSource, { removedKeys: [record.key] });
+  }
 
   readonly collectableConfig = computed(
     (): TableCollectable => ({
@@ -2198,15 +2641,128 @@ class CombinedStoryComponent {
     }),
   );
 
-  readonly actionsConfig: TableActions = {
-    title: 'Actions',
-    width: 180,
-    align: 'end',
-    render: (_record: TableDataSource, _index: number) => [
-      { key: 'edit', label: 'Edit', onClick: (): void => {} },
-      { key: 'delete', label: 'Delete', danger: true, onClick: (): void => {} },
-    ],
+  readonly toggleableConfig = computed(
+    (): TableToggleable => ({
+      enabled: true,
+      fixed: true,
+      title: 'Active',
+      toggledRowKeys: [...this.toggledRowKeys()],
+      isRowDisabled: (record: TableDataSource): boolean =>
+        (record['age'] as number) > 40,
+      onToggleChange: (record: TableDataSource, toggled: boolean): void => {
+        const key = String(record['key'] ?? record['id']);
+
+        if (toggled) {
+          this.toggledRowKeys.update((prev) => [...prev, key]);
+        } else {
+          this.toggledRowKeys.update((prev) => prev.filter((k) => k !== key));
+        }
+      },
+    }),
+  );
+
+  readonly draggableConfig: TableDraggable = {
+    enabled: true,
+    onDragEnd: (newData: readonly TableDataSource[]): void => {
+      this.ds.updateDataSource(newData as readonly CombinedRowType[]);
+    },
   };
+
+  readonly expandableConfig = computed(
+    (): TableExpandable => ({
+      template: this.expandedTpl() as TemplateRef<{
+        $implicit: TableDataSource;
+      }>,
+      rowExpandable: (record: TableDataSource): boolean =>
+        !!(record as CombinedRowType).subData?.length,
+    }),
+  );
+
+  readonly parentSelection = computed(
+    (): TableRowSelectionCheckbox => ({
+      mode: 'checkbox',
+      fixed: true,
+      selectedRowKeys: this.parentSelectedKeys(),
+      bulkActions: {
+        mainActions: [
+          { icon: CopyIcon, label: 'Copy', onClick: () => {} },
+          { icon: DownloadIcon, label: 'Download', onClick: () => {} },
+        ],
+        destructiveAction: {
+          icon: TrashIcon,
+          label: 'Delete',
+          onClick: () => {},
+        },
+        renderSelectionSummary: (): string =>
+          `${this.totalSelectionCount()} items selected`,
+      },
+      onChange: (
+        _keys: readonly string[],
+        selectedRow: TableDataSource | null,
+        selectedRows: readonly TableDataSource[],
+      ): void => {
+        // Mirror React `useTableRowSelection.parentOnChange`:
+        // preserve `subKeys` for rows not touched by this change, and
+        // refresh `subKeys` for the row just toggled / for select-all.
+        const current = this.selectedEntries();
+        const selectedRowKey = selectedRow
+          ? String((selectedRow as CombinedRowType).key)
+          : null;
+
+        const next = selectedRows.map((row) => {
+          const record = row as CombinedRowType;
+          const pk = record.key;
+          const isCurrentSelectedRow =
+            selectedRowKey !== null && selectedRowKey === pk;
+          const subData = record.subData;
+
+          const subKeys = ((): readonly string[] | undefined => {
+            if (isCurrentSelectedRow) {
+              return subData?.length
+                ? subData.map((sub) => sub.key)
+                : undefined;
+            }
+
+            if (selectedRow === null) {
+              // toggleAll: refresh every row's subKeys
+              return subData?.length
+                ? subData.map((sub) => sub.key)
+                : undefined;
+            }
+
+            return current.find((entry) => entry.key === pk)?.subKeys;
+          })();
+
+          return { key: pk, subKeys };
+        });
+
+        this.selectedEntries.set(next);
+      },
+    }),
+  );
+
+  protected getChildSelection(
+    parentRecord: CombinedRowType,
+  ): TableRowSelectionCheckbox {
+    const entry = this.selectedEntries().find(
+      (e) => e.key === parentRecord.key,
+    );
+
+    return {
+      mode: 'checkbox',
+      fixed: true,
+      selectedRowKeys: entry?.subKeys ?? [],
+      onChange: (keys: readonly string[]): void => {
+        this.selectedEntries.update((prev) => {
+          const others = prev.filter((e) => e.key !== parentRecord.key);
+
+          if (keys.length === 0) return others;
+
+          return [...others, { key: parentRecord.key, subKeys: [...keys] }];
+        });
+      },
+    };
+  }
 }
 
 export const Combined: Story = {
