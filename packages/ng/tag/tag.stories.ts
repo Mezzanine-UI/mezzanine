@@ -1,12 +1,18 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import { MznAutocomplete } from '@mezzanine-ui/ng/autocomplete';
+import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznTag } from './tag.component';
+import { MznTagGroup } from './tag-group.component';
 
 export default {
   title: 'Data Display/Tag',
   decorators: [
     moduleMetadata({
-      imports: [MznTag],
+      imports: [MznTag, MznTypography],
     }),
   ],
 } satisfies Meta;
@@ -66,82 +72,164 @@ export const Types: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 48px;">
         <div style="display: flex; flex-direction: column; gap: 16px;">
-          <h2>Static</h2>
+          <span mznTypography variant="h2">Static</span>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="static" label="Tag" size="main" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Enabled</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span mznTag type="static" label="Tag" size="main"></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Enabled</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="static" label="Tag" size="main" [readOnly]="true" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Read Only</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                type="static"
+                label="Tag"
+                size="main"
+                [readOnly]="true"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Read Only</span
+              >
             </div>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
-          <h2>Counter</h2>
-          <span mznTag type="counter" label="Tag" size="main" [count]="5" ></span>
+          <span mznTypography variant="h2">Counter</span>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span mznTag type="counter" label="Tag" size="main" [count]="5"></span>
+          </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
-          <h2>Overflow Counter</h2>
+          <span mznTypography variant="h2">Overflow Counter</span>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="overflow-counter" size="main" [count]="5" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Enabled</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span mznTag type="overflow-counter" size="main" [count]="5"></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Enabled</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="overflow-counter" size="main" [count]="5" [disabled]="true" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Disabled</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                type="overflow-counter"
+                size="main"
+                [count]="5"
+                [disabled]="true"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Disabled</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="overflow-counter" size="main" [count]="5" [readOnly]="true" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Read Only</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                type="overflow-counter"
+                size="main"
+                [count]="5"
+                [readOnly]="true"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Read Only</span
+              >
             </div>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
-          <h2>Dismissable</h2>
+          <span mznTypography variant="h2">Dismissable</span>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="dismissable" label="Tag" size="main" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Enabled</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span mznTag type="dismissable" label="Tag" size="main"></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Enabled</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag class="is-hover" type="dismissable" label="Tag" size="main" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Hover</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                class="is-hover"
+                type="dismissable"
+                label="Tag"
+                size="main"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Hover</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="dismissable" label="Tag" size="main" [active]="true" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Active</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                type="dismissable"
+                label="Tag"
+                size="main"
+                [active]="true"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Active</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="dismissable" label="Tag" size="main" [disabled]="true" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Disabled</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                type="dismissable"
+                label="Tag"
+                size="main"
+                [disabled]="true"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Disabled</span
+              >
             </div>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
-          <h2>Addable</h2>
+          <span mznTypography variant="h2">Addable</span>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="addable" label="Tag" size="main" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Enabled</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span mznTag type="addable" label="Tag" size="main"></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Enabled</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag class="is-hover" type="addable" label="Tag" size="main" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Hover</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                class="is-hover"
+                type="addable"
+                label="Tag"
+                size="main"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Hover</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="addable" label="Tag" size="main" [active]="true" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Active</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                type="addable"
+                label="Tag"
+                size="main"
+                [active]="true"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Active</span
+              >
             </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-              <span mznTag type="addable" label="Tag" size="main" [disabled]="true" ></span>
-              <span style="font-size: 12px; color: #6b7280;">Disabled</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span
+                mznTag
+                type="addable"
+                label="Tag"
+                size="main"
+                [disabled]="true"
+              ></span>
+              <span mznTypography variant="body" style="margin-inline: auto;"
+                >Disabled</span
+              >
             </div>
           </div>
         </div>
@@ -253,74 +341,95 @@ export const Sizes: Story = {
   }),
 };
 
+const autocompleteOptions: ReadonlyArray<DropdownOption> = [
+  { id: 'design', name: 'Design' },
+  { id: 'development', name: 'Development' },
+  { id: 'product', name: 'Product' },
+  { id: 'marketing', name: 'Marketing' },
+  { id: 'research', name: 'Research' },
+  { id: 'data', name: 'Data' },
+];
+
 @Component({
   selector: 'story-tag-addable-interactive',
   standalone: true,
-  imports: [MznTag],
+  imports: [FormsModule, MznAutocomplete, MznTag, MznTagGroup],
   template: `
     <div style="display: flex; flex-direction: column; gap: 8px;">
-      <div
-        style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"
-      >
-        @for (tag of tags(); track tag) {
+      <div mznTagGroup>
+        @for (id of selections; track id) {
           <span
             mznTag
             type="dismissable"
-            [label]="tag"
-            (close)="removeTag(tag)"
+            [label]="getOptionName(id)"
+            (close)="removeSelection(id)"
           ></span>
         }
         <span
           mznTag
           type="addable"
           [label]="open() ? '收起選單' : '新增標籤'"
-          (tagClick)="toggleOpen()"
+          (mousedown)="$event.stopPropagation()"
+          (click)="$event.stopPropagation(); toggleOpen()"
         ></span>
       </div>
-      @if (open()) {
-        <div
-          style="display: flex; gap: 8px; flex-wrap: wrap; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px;"
-        >
-          @for (option of availableOptions(); track option) {
-            <span
-              mznTag
-              type="addable"
-              [label]="option"
-              (tagClick)="addTag(option)"
-            ></span>
-          }
-        </div>
-      }
+      <div
+        mznAutocomplete
+        mode="multiple"
+        inputPosition="inside"
+        [addable]="true"
+        [onInsert]="handleInsert"
+        [onRemoveCreated]="handleRemoveCreated"
+        [options]="options()"
+        [open]="open()"
+        placeholder="搜尋或新增標籤..."
+        [(ngModel)]="selections"
+        (visibilityChange)="closeDropdown()"
+      ></div>
     </div>
   `,
 })
 class TagAddableInteractiveComponent {
-  readonly tags = signal<string[]>([]);
+  readonly options = signal<DropdownOption[]>([...autocompleteOptions]);
   readonly open = signal(false);
-  readonly allOptions = [
-    'Design',
-    'Development',
-    'Product',
-    'Marketing',
-    'Research',
-    'Data',
-  ];
+  selections: ReadonlyArray<string> = [];
+  private nextId = autocompleteOptions.length + 1;
 
-  readonly availableOptions = computed((): string[] =>
-    this.allOptions.filter((opt) => !this.tags().includes(opt)),
-  );
+  readonly handleInsert = (
+    text: string,
+    currentOptions: ReadonlyArray<DropdownOption>,
+  ): ReadonlyArray<DropdownOption> => {
+    const newOption: DropdownOption = {
+      id: `new-${this.nextId++}`,
+      name: text,
+    };
+    const updated = [...currentOptions, newOption];
+
+    this.options.set([...updated]);
+
+    return updated;
+  };
+
+  readonly handleRemoveCreated = (
+    cleanedOptions: ReadonlyArray<DropdownOption>,
+  ): void => {
+    this.options.set([...cleanedOptions]);
+  };
 
   toggleOpen(): void {
     this.open.update((v) => !v);
   }
 
-  addTag(tag: string): void {
-    this.tags.update((prev) => [...prev, tag]);
+  closeDropdown(): void {
     this.open.set(false);
   }
 
-  removeTag(tag: string): void {
-    this.tags.update((prev) => prev.filter((t) => t !== tag));
+  removeSelection(id: string): void {
+    this.selections = this.selections.filter((s) => s !== id);
+  }
+
+  getOptionName(id: string): string {
+    return this.options().find((o) => o.id === id)?.name ?? id;
   }
 }
 
@@ -339,19 +448,14 @@ export const Addable_Interactive: Story = {
 @Component({
   selector: 'story-tag-group',
   standalone: true,
-  imports: [MznTag],
+  imports: [MznButton, MznTag, MznTagGroup],
   template: `
     <div style="display: flex; flex-direction: column; gap: 16px;">
-      <button
-        type="button"
-        style="width: 120px; padding: 6px 16px; background: #2563eb; color: #fff; border: none; border-radius: 4px; cursor: pointer;"
-        (click)="addTag()"
-        >Add tag</button
-      >
+      <button mznButton type="button" style="width: 120px;" (click)="addTag()">
+        Add tag
+      </button>
 
-      <div
-        style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; max-width: 320px;"
-      >
+      <div mznTagGroup style="max-width: 320px;">
         @for (tag of tags(); track tag; let i = $index) {
           <span
             mznTag
