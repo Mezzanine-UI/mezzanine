@@ -23,6 +23,13 @@ import {
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const ARROW_WIDTH = 12;
 const ARROW_HEIGHT = 6;
+/**
+ * Padding passed to floating-ui's `arrow` middleware when the tooltip
+ * placement is `-start` or `-end`. Mirrors React's value —
+ * `padding-horizontal-comfort` token (12px) — so the arrow never sits
+ * exactly at the corner of the tooltip's edge-aligned side.
+ */
+const ARROW_EDGE_PADDING = 12;
 
 const SIDE_TO_ROTATION: Record<string, number> = {
   top: 0,
@@ -88,10 +95,11 @@ export class MznTooltip implements OnInit {
   readonly mznTooltip = input<string>();
 
   /**
-   * 主軸偏移距離（px）。
-   * @default 4
+   * 主軸偏移距離（px）。對齊 React `Tooltip.offsetMainAxis` 預設 —
+   * `gap-base` token (8px)。
+   * @default 8
    */
-  readonly tooltipOffset = input(4);
+  readonly tooltipOffset = input(8);
 
   /**
    * 強制開啟（受控模式）。
@@ -270,11 +278,48 @@ export class MznTooltip implements OnInit {
     const arrowElement = this.arrowEl;
     const placementVal = this.tooltipPlacement();
     const offsetVal = this.tooltipOffset();
+    const isPlacementAtEdge =
+      placementVal.endsWith('-start') || placementVal.endsWith('-end');
+    // The tooltip element's `style.position` is set in
+    // `createTooltipElement` based on `tooltipDisablePortal` — portal
+    // mode uses `fixed` (viewport-relative), inline mode uses
+    // `absolute` (offsetParent-relative). `computePosition` must be
+    // told the matching strategy, otherwise the returned `{x, y}` is
+    // computed against the wrong coordinate space and the tooltip
+    // drifts (most visibly: it doesn't follow the anchor when an
+    // overflow ancestor scrolls, because the absolute-strategy
+    // coordinates include scroll offset but a `position: fixed`
+    // element ignores it).
+    const strategyVal = this.tooltipDisablePortal() ? 'absolute' : 'fixed';
 
-    const middlewares = [offset(offsetVal), flip(), shift()];
+    // Mirror React `Tooltip.tsx` middleware composition:
+    //   - Base: `offset(mainAxis: gap-base)`.
+    //   - `flip({ crossAxis: 'alignment', fallbackAxisSideDirection: 'end' })`
+    //     keeps the `-start` / `-end` alignment when flipping sides.
+    //   - `shift` and `flip` conflict, so edge placements
+    //     (`-start` / `-end`) run `[offset, flip, shift]`;
+    //     centered placements run `[offset, shift, flip]`
+    //     (https://floating-ui.com/docs/flip#combining-with-shift).
+    //   - Arrow middleware gets `padding: 12` for edge placements so
+    //     the arrow never sits at the very corner (mirrors React's
+    //     `padding-horizontal-comfort` token).
+    const offsetMw = offset(offsetVal);
+    const flipMw = flip({
+      crossAxis: 'alignment',
+      fallbackAxisSideDirection: 'end',
+    });
+    const shiftMw = shift();
+    const middlewares = isPlacementAtEdge
+      ? [offsetMw, flipMw, shiftMw]
+      : [offsetMw, shiftMw, flipMw];
 
     if (arrowElement) {
-      middlewares.push(arrowMiddleware({ element: arrowElement }));
+      middlewares.push(
+        arrowMiddleware({
+          element: arrowElement,
+          padding: isPlacementAtEdge ? ARROW_EDGE_PADDING : 0,
+        }),
+      );
     }
 
     this.cleanupAutoUpdate = autoUpdate(reference, floating, () => {
@@ -287,6 +332,7 @@ export class MznTooltip implements OnInit {
 
       void computePosition(reference, floating, {
         placement: placementVal,
+        strategy: strategyVal,
         middleware: middlewares,
       }).then(({ x, y, placement, middlewareData }) => {
         Object.assign(floating.style, {
