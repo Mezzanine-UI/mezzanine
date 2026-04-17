@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   computed,
+  inject,
   input,
   output,
 } from '@angular/core';
@@ -38,7 +40,14 @@ import { MznBadge } from '@mezzanine-ui/ng/badge';
   imports: [MznIcon, MznBadge],
   host: {
     '[class]': 'hostClasses()',
-    '[attr.aria-disabled]': 'disabled() || null',
+    // For button-typed tags (addable / overflow-counter) the inner
+    // <button> carries all tag classes so React's SCSS selectors —
+    // `.mzn-tag--addable:is(button):disabled`, `:has(> :last-child.label)`
+    // padding rules, hover / active pseudo-class rules — match. The
+    // host <span> becomes `display: contents` so it's transparent in
+    // layout and doesn't intercept the cascade.
+    '[style.display]': "isButtonHost() ? 'contents' : null",
+    '[attr.aria-disabled]': 'isButtonHost() ? null : (disabled() || null)',
     '[attr.type]': 'null',
     '[attr.label]': 'null',
     '[attr.size]': 'null',
@@ -52,7 +61,7 @@ import { MznBadge } from '@mezzanine-ui/ng/badge';
       @case ('overflow-counter') {
         <button
           type="button"
-          style="display: inline-flex; align-items: center; gap: inherit; padding: 0; border: none; background: none; color: inherit; font: inherit; cursor: pointer;"
+          [class]="buttonHostClasses()"
           [disabled]="disabled()"
           (click)="tagClick.emit($event)"
         >
@@ -63,7 +72,7 @@ import { MznBadge } from '@mezzanine-ui/ng/badge';
       @case ('addable') {
         <button
           type="button"
-          style="display: inline-flex; align-items: center; gap: inherit; padding: 0; border: none; background: none; color: inherit; font: inherit; cursor: pointer;"
+          [class]="buttonHostClasses()"
           [disabled]="disabled()"
           (click)="tagClick.emit($event)"
         >
@@ -142,11 +151,48 @@ export class MznTag {
   /** 可點擊標籤（addable/overflow-counter）的點擊事件。 */
   readonly tagClick = output<MouseEvent>();
 
-  protected readonly hostClasses = computed((): string =>
+  /** True when the tag's host should be transparent and the inner
+   *  `<button>` carries the tag classes — mirrors React's Tag that
+   *  renders a `<button>` root for addable / overflow-counter. */
+  protected readonly isButtonHost = computed(
+    (): boolean =>
+      this.type() === 'addable' || this.type() === 'overflow-counter',
+  );
+
+  /**
+   * Any classes the consumer put on the host element in the template
+   * (e.g. `<span mznTag class="is-hover">` from the Types story).
+   * Captured once in the constructor — before Angular applies the
+   * `[class]` host binding — so we can forward them to the inner
+   * `<button>` when the tag is button-hosted. Without this step,
+   * `.mzn-tag--addable.is-hover` never matches any element because the
+   * managed tag classes live on the button while `is-hover` stays on
+   * the span.
+   */
+  private readonly hostExtraClass: string;
+
+  constructor() {
+    const el = inject(ElementRef<HTMLElement>).nativeElement;
+
+    this.hostExtraClass = Array.from(el.classList).join(' ');
+  }
+
+  /** Shared class composition used by whichever element actually owns
+   *  the tag styling (host span for static/counter/dismissable, or the
+   *  inner button for addable/overflow-counter). */
+  private readonly tagClasses = computed((): string =>
     clsx(classes.host, classes.size(this.size()), classes.type(this.type()), {
       [classes.disabled]: this.disabled(),
       [classes.active]: this.active(),
       [classes.readOnly]: this.readOnly(),
     }),
+  );
+
+  protected readonly hostClasses = computed((): string =>
+    this.isButtonHost() ? '' : this.tagClasses(),
+  );
+
+  protected readonly buttonHostClasses = computed((): string =>
+    clsx(this.tagClasses(), this.hostExtraClass),
   );
 }
