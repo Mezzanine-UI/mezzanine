@@ -54,13 +54,13 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
         [attr.aria-hidden]="!open()"
       >
         <div [class]="mainClass">
-          <div mznFade [in]="open()">
-            <div
-              [class]="backdropClasses()"
-              aria-hidden="true"
-              (click)="onBackdropClick()"
-            ></div>
-          </div>
+          <div
+            mznFade
+            [in]="open()"
+            [class]="backdropClasses()"
+            aria-hidden="true"
+            (click)="onBackdropClick()"
+          ></div>
           <div [class]="contentClass">
             <ng-content />
           </div>
