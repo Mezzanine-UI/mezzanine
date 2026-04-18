@@ -1,13 +1,29 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import dayjs from 'dayjs';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
+import {
+  MZN_CALENDAR_CONFIG,
+  createCalendarConfig,
+} from '@mezzanine-ui/ng/calendar';
 import { MznTimeRangePicker } from './time-range-picker.component';
 
 const meta: Meta<MznTimeRangePicker> = {
   title: 'Data Entry/TimeRangePicker',
   component: MznTimeRangePicker,
-  decorators: [moduleMetadata({ imports: [FormsModule] })],
+  decorators: [
+    moduleMetadata({
+      imports: [FormsModule, MznTimeRangePicker],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsDayjs),
+        },
+      ],
+    }),
+  ],
 };
 
 export default meta;
@@ -20,38 +36,38 @@ type Story = StoryObj<MznTimeRangePicker>;
   template: `
     <div
       mznTimeRangePicker
-      [clearable]="clearable"
-      [disabled]="disabled"
-      [error]="error"
-      [format]="format"
-      [fullWidth]="fullWidth"
-      [hideHour]="hideHour"
-      [hideMinute]="hideMinute"
-      [hideSecond]="hideSecond"
-      [hourStep]="hourStep"
-      [minuteStep]="minuteStep"
-      [placeholder]="placeholder"
-      [readOnly]="readOnly"
-      [secondStep]="secondStep"
+      [clearable]="clearable()"
+      [disabled]="disabled()"
+      [error]="error()"
+      [format]="format()"
+      [fullWidth]="fullWidth()"
+      [hideHour]="hideHour()"
+      [hideMinute]="hideMinute()"
+      [hideSecond]="hideSecond()"
+      [hourStep]="hourStep()"
+      [minuteStep]="minuteStep()"
+      [placeholder]="placeholder()"
+      [readOnly]="readOnly()"
+      [secondStep]="secondStep()"
       [value]="value()"
       (rangeChanged)="value.set($event)"
     ></div>
   `,
 })
 class TimeRangePickerPlaygroundComponent {
-  clearable = true;
-  disabled = false;
-  error = false;
-  format: string | undefined = 'HH:mm:ss';
-  fullWidth = false;
-  hideHour = false;
-  hideMinute = false;
-  hideSecond = false;
-  hourStep = 1;
-  minuteStep = 1;
-  placeholder = 'Select time range';
-  readOnly = false;
-  secondStep = 1;
+  readonly clearable = input(true);
+  readonly disabled = input(false);
+  readonly error = input(false);
+  readonly format = input<string | undefined>('HH:mm:ss');
+  readonly fullWidth = input(false);
+  readonly hideHour = input(false);
+  readonly hideMinute = input(false);
+  readonly hideSecond = input(false);
+  readonly hourStep = input(1);
+  readonly minuteStep = input(1);
+  readonly placeholder = input('Select time range');
+  readonly readOnly = input(false);
+  readonly secondStep = input(1);
   readonly value = signal<RangePickerValue | undefined>(undefined);
 }
 
@@ -236,19 +252,22 @@ export const WithSteps: Story = {
 
 export const States: Story = {
   render: () => ({
-    props: {},
+    props: {
+      now: dayjs().toISOString(),
+      later: dayjs().add(1, 'hour').toISOString(),
+    },
     template: `
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <div mznTimeRangePicker [disabled]="true" ></div>
+        <div mznTimeRangePicker [value]="[now, later]" [disabled]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>Read Only</strong></p>
-        <div mznTimeRangePicker [readOnly]="true" ></div>
+        <div mznTimeRangePicker [value]="[now, later]" [readOnly]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
         <p style="margin: 0 0 12px 0"><strong>With Error State</strong></p>
-        <div mznTimeRangePicker [error]="true" ></div>
+        <div mznTimeRangePicker [value]="[now, later]" [error]="true" ></div>
       </div>
     `,
   }),
@@ -264,7 +283,7 @@ export const Sizes: Story = {
       <p style="margin: 12px 0"><strong>Size: Main</strong></p>
       <div mznTimeRangePicker [(ngModel)]="range1" ></div>
       <p style="margin: 12px 0"><strong>Size: Sub</strong></p>
-      <div mznTimeRangePicker [(ngModel)]="range2" ></div>
+      <div mznTimeRangePicker [(ngModel)]="range2" size="sub" ></div>
     `,
   }),
 };
