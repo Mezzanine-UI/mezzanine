@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import clsx from 'clsx';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 
 /**
  * Modal 驗證碼輸入元件，用於 OTP / 驗證碼輸入場景。
@@ -50,6 +51,7 @@ import clsx from 'clsx';
     '[attr.value]': 'null',
   },
   standalone: true,
+  imports: [MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div [class]="inputsClass()">
@@ -72,12 +74,18 @@ import clsx from 'clsx';
     </div>
     @if (resendText()) {
       <div [class]="resendClass">
-        <span class="mzn-typography--caption mzn-typography--text-neutral">{{
+        <span mznTypography variant="caption" color="text-neutral">{{
           resendPrompt()
         }}</span>
-        <a [class]="resendLinkClass" (click)="onResendClick()">{{
-          resendText()
-        }}</a>
+        <span
+          mznTypography
+          variant="caption"
+          color="text-neutral"
+          [class]="resendLinkClass"
+          style="cursor: pointer; text-decoration: underline;"
+          (click)="onResendClick()"
+          >{{ resendText() }}</span
+        >
       </div>
     }
   `,
