@@ -200,8 +200,17 @@ export class MznMediaPreviewModal {
   /** Whether to show the pagination indicator. @default true */
   readonly showPaginationIndicator = input(true);
 
-  /** Whether to disable closing on backdrop click. @default false */
-  readonly disableCloseOnBackdropClick = input(false);
+  /**
+   * Whether to disable closing on backdrop click.
+   *
+   * Defaults to `true` (deviation from React's `false`): media previews are
+   * typically full-screen viewers where accidental overlay taps during
+   * zoom/inspection should not dismiss the content. Callers can opt back
+   * into the React default by passing `[disableCloseOnBackdropClick]="false"`.
+   *
+   * @default true
+   */
+  readonly disableCloseOnBackdropClick = input(true);
 
   /** Whether to disable closing on Escape key. @default false */
   readonly disableCloseOnEscapeKeyDown = input(false);

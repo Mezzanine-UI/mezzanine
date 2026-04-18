@@ -28,7 +28,7 @@ export default {
     disableCloseOnBackdropClick: {
       control: { type: 'boolean' },
       description: '是否停用點擊遮罩關閉。',
-      table: { defaultValue: { summary: 'false' } },
+      table: { defaultValue: { summary: 'true' } },
     },
     disableCloseOnEscapeKeyDown: {
       control: { type: 'boolean' },
@@ -63,9 +63,6 @@ type Story = StoryObj;
 export const Playground: Story = {
   args: {
     defaultIndex: 0,
-    // Media preview dismissal should be intentional (X button only) — avoid
-    // accidental overlay taps closing the viewer while the user is examining
-    // a zoomed/large image.
     disableCloseOnBackdropClick: true,
     disableCloseOnEscapeKeyDown: false,
     enableCircularNavigation: false,
