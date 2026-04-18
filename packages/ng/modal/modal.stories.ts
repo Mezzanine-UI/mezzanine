@@ -5,6 +5,7 @@ import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznButtonGroup } from '@mezzanine-ui/ng/button';
 import { MznModal } from './modal.component';
+import { MznModalBodyContainer } from './modal-body-container.directive';
 import { MznModalBodyForVerification } from './modal-body-for-verification.component';
 import { MznModalFooter } from './modal-footer.component';
 import { MznModalHeader } from './modal-header.component';
@@ -20,6 +21,7 @@ const meta: Meta = {
         MznButton,
         MznButtonGroup,
         MznModal,
+        MznModalBodyContainer,
         MznModalBodyForVerification,
         MznModalFooter,
         MznModalHeader,
@@ -854,7 +856,7 @@ export const BodySeparator: Story = {
 
       <div mznModal [open]="openStandard()" modalType="standard" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openStandard.set(false)">
         <div mznModalHeader title="Scroll-based Separator" ></div>
-        <div class="mzn-modal__body-container">
+        <div mznModalBodyContainer>
           @for (p of longBodyParagraphs; track $index) {
             <p style="margin: 0 0 12px;">{{ p }}</p>
           }
@@ -869,7 +871,7 @@ export const BodySeparator: Story = {
 
       <div mznModal [open]="openExtended()" modalType="extended" size="regular" [showModalHeader]="true" [showModalFooter]="true" (closed)="openExtended.set(false)">
         <div mznModalHeader title="Extended (Always Visible)" ></div>
-        <div class="mzn-modal__body-container">
+        <div mznModalBodyContainer>
           <p>Both separators are always visible in Extended Modal.</p>
         </div>
         <div mznModalFooter

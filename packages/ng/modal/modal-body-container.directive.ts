@@ -2,10 +2,10 @@ import {
   AfterViewInit,
   DestroyRef,
   Directive,
+  effect,
   ElementRef,
-  HostBinding,
-  computed,
   inject,
+  Renderer2,
   signal,
 } from '@angular/core';
 import { modalClasses } from '@mezzanine-ui/core/modal';
@@ -37,23 +37,42 @@ import { MZN_MODAL_CONTEXT } from './modal-context';
 })
 export class MznModalBodyContainer implements AfterViewInit {
   private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly renderer = inject(Renderer2);
   private readonly destroyRef = inject(DestroyRef);
   private readonly context = inject(MZN_MODAL_CONTEXT, { optional: true });
 
   private readonly hasTopSeparator = signal(false);
   private readonly hasBottomSeparator = signal(false);
 
-  @HostBinding('class')
-  protected get hostClassName(): string {
-    const isExtended = this.context?.modalType() === 'extended';
-    const top = isExtended || this.hasTopSeparator();
-    const bottom = isExtended || this.hasBottomSeparator();
-    const parts: string[] = [modalClasses.modalBodyContainer];
+  constructor() {
+    const node = this.hostRef.nativeElement;
 
-    if (top) parts.push(modalClasses.modalBodyContainerWithTopSeparator);
-    if (bottom) parts.push(modalClasses.modalBodyContainerWithBottomSeparator);
+    this.renderer.addClass(node, modalClasses.modalBodyContainer);
 
-    return parts.join(' ');
+    // Manually toggle separator classes when signals change. Going through
+    // a host-binding getter / [class]="..." was not reliably re-evaluated
+    // after the scroll signals updated across the content-projection boundary
+    // — projected directives do not share a change-detection parent with the
+    // Modal component, so OnPush dirty-checking never reached them when the
+    // directive wrote to its own signals.
+    effect(() => {
+      const isExtended = this.context?.modalType() === 'extended';
+      const top = isExtended || this.hasTopSeparator();
+      const bottom = isExtended || this.hasBottomSeparator();
+
+      this.toggleClass(modalClasses.modalBodyContainerWithTopSeparator, top);
+      this.toggleClass(
+        modalClasses.modalBodyContainerWithBottomSeparator,
+        bottom,
+      );
+    });
+  }
+
+  private toggleClass(name: string, enabled: boolean): void {
+    const node = this.hostRef.nativeElement;
+
+    if (enabled) this.renderer.addClass(node, name);
+    else this.renderer.removeClass(node, name);
   }
 
   ngAfterViewInit(): void {
