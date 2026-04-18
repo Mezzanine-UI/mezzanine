@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
-import { MOTION_DURATION } from '@mezzanine-ui/system/motion';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { ChevronLeftIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznBackdrop } from '@mezzanine-ui/ng/backdrop';
@@ -85,14 +85,15 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
             <div class="mzn-modal__media-preview-media-container">
               @for (idx of displayedIndices(); track idx) {
                 @if (isStringItem(mediaItems()[idx])) {
-                  <span mznFade [in]="true">
-                    <img
-                      class="mzn-modal__media-preview-image"
-                      [src]="asString(mediaItems()[idx])"
-                      [alt]="'Media ' + (idx + 1)"
-                      style="width: 100%; height: 100%; object-fit: contain;"
-                    />
-                  </span>
+                  <img
+                    mznFade
+                    [in]="idx === activeIndex()"
+                    [duration]="fadeDuration"
+                    [easing]="fadeEasing"
+                    class="mzn-modal__media-preview-image"
+                    [src]="asString(mediaItems()[idx])"
+                    [alt]="'Media ' + (idx + 1)"
+                  />
                 }
               }
             </div>
@@ -165,6 +166,16 @@ export class MznMediaPreviewModal {
   protected readonly chevronLeftIcon = ChevronLeftIcon;
   protected readonly chevronRightIcon = ChevronRightIcon;
 
+  /** Fade duration / easing for image crossfade (mirrors React). */
+  protected readonly fadeDuration = {
+    enter: MOTION_DURATION.fast,
+    exit: MOTION_DURATION.fast,
+  } as const;
+  protected readonly fadeEasing = {
+    enter: MOTION_EASING.standard,
+    exit: MOTION_EASING.standard,
+  } as const;
+
   // ─── Inputs ───────────────────────────────────────────────────
 
   /** Whether the modal is open. @default false */
@@ -218,7 +229,8 @@ export class MznMediaPreviewModal {
 
   private readonly _internalIndex = signal(0);
   private readonly _displayedIndices = signal<number[]>([]);
-  private readonly _activeIndex = signal(0);
+  /** Currently visible image index (template consumes via `activeIndex()`). */
+  protected readonly activeIndex = signal(0);
 
   // ─── Computed ──────────────────────────────────────────────────
 
@@ -286,14 +298,14 @@ export class MznMediaPreviewModal {
       if (isOpen && !isCtrl) {
         this._internalIndex.set(this.defaultIndex());
         this._displayedIndices.set([this.defaultIndex()]);
-        this._activeIndex.set(this.defaultIndex());
+        this.activeIndex.set(this.defaultIndex());
       }
     });
 
     // Handle index changes
     effect((onCleanup) => {
       const idx = this.resolvedIndex();
-      const active = this._activeIndex();
+      const active = this.activeIndex();
 
       if (idx !== active) {
         // Add new index to displayed indices
@@ -307,7 +319,7 @@ export class MznMediaPreviewModal {
 
         rafId1 = requestAnimationFrame(() => {
           rafId2 = requestAnimationFrame(() => {
-            this._activeIndex.set(idx);
+            this.activeIndex.set(idx);
           });
         });
 
