@@ -21,6 +21,7 @@ import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
+import { MznPortal } from '@mezzanine-ui/ng/portal';
 import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
 
@@ -52,48 +53,55 @@ export interface AlertBannerAction {
 @Component({
   selector: '[mznAlertBanner]',
   host: {
+    // Host is transparent — the portalized wrapper owns all layout
+    // and visuals, matching React's `<AlertBanner>` which renders
+    // via `<Portal>` without its own outer DOM element.
+    '[style.display]': "'contents'",
     '[attr.severity]': 'null',
     '[attr.message]': 'null',
     '[attr.actions]': 'null',
     '[attr.createdAt]': 'null',
     '[attr.closable]': 'null',
+    '[attr.disablePortal]': 'null',
     '[attr.icon]': 'null',
     '[attr.reference]': 'null',
   },
   standalone: true,
-  imports: [MznIcon, MznButton, MznClearActions],
+  imports: [MznIcon, MznButton, MznClearActions, MznPortal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (visible()) {
-      <div #wrapper [class]="wrapperClass">
-        <div [class]="hostClasses()" role="status" aria-live="polite">
-          <div [class]="bodyClass">
-            <i mznIcon [icon]="resolvedIcon()" [class]="iconClass"></i>
-            <span [class]="messageClass">{{ message() }}</span>
-          </div>
-          <div [class]="controlsClass">
-            @if (displayActions().length > 0) {
-              <div [class]="actionsClass">
-                @for (action of displayActions(); track $index) {
-                  <button
-                    mznButton
-                    variant="inverse"
-                    size="minor"
-                    (click)="action.onClick($event)"
-                    >{{ action.content }}</button
-                  >
-                }
-              </div>
-            }
-            @if (showCloseButton()) {
-              <button
-                mznClearActions
-                type="standard"
-                variant="inverse"
-                [class]="closeClass"
-                (clicked)="handleClose()"
-              ></button>
-            }
+      <div mznPortal layer="alert" [disablePortal]="disablePortal()">
+        <div #wrapper [class]="wrapperClass">
+          <div [class]="hostClasses()" role="status" aria-live="polite">
+            <div [class]="bodyClass">
+              <i mznIcon [icon]="resolvedIcon()" [class]="iconClass"></i>
+              <span [class]="messageClass">{{ message() }}</span>
+            </div>
+            <div [class]="controlsClass">
+              @if (displayActions().length > 0) {
+                <div [class]="actionsClass">
+                  @for (action of displayActions(); track $index) {
+                    <button
+                      mznButton
+                      variant="inverse"
+                      size="minor"
+                      (click)="action.onClick($event)"
+                      >{{ action.content }}</button
+                    >
+                  }
+                </div>
+              }
+              @if (showCloseButton()) {
+                <button
+                  mznClearActions
+                  type="standard"
+                  variant="inverse"
+                  [class]="closeClass"
+                  (clicked)="handleClose()"
+                ></button>
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -123,6 +131,15 @@ export class MznAlertBanner implements OnInit {
    * @internal
    */
   readonly createdAt = input<number>();
+
+  /**
+   * 是否停用 portal。`false`（預設）時 banner 會 portal 到全域
+   * `alert` layer（與 React `AlertBanner` 預設一致），inline 使用場景
+   * 可設 `true` 讓 banner 留在 host 原位。Group container 也會以
+   * `disablePortal: true` 餵進來、由外層容器統一 portal。
+   * @default false
+   */
+  readonly disablePortal = input(false);
 
   /**
    * 是否顯示關閉按鈕。
