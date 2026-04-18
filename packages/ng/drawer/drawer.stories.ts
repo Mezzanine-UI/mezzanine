@@ -19,6 +19,7 @@ import {
   MznModalFooter,
   MznModalHeader,
 } from '@mezzanine-ui/ng/modal';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznDrawer } from './drawer.component';
 
 // Icon mapping for Storybook controls — mirrors React's iconOptions.
@@ -285,7 +286,7 @@ export const Playground: Story = {
 @Component({
   selector: 'story-drawer-with-control-bar',
   standalone: true,
-  imports: [MznButton, MznDrawer],
+  imports: [MznButton, MznDrawer, MznTypography],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       開啟 Drawer (預設控制列)
@@ -309,7 +310,7 @@ export const Playground: Story = {
       (closed)="open.set(false)"
     >
       <div style="padding: 16px;">
-        <p
+        <span mznTypography variant="body"
           >當前篩選:
           {{
             filter() === 'all'
@@ -317,9 +318,11 @@ export const Playground: Story = {
               : filter() === 'read'
                 ? '進行中'
                 : '已完成'
-          }}</p
+          }}</span
         >
-        <p style="margin-top: 16px;">這是 Drawer 的內容區域</p>
+        <div style="margin-top: 16px;">
+          <span mznTypography variant="body">這是 Drawer 的內容區域</span>
+        </div>
       </div>
     </div>
   `,
@@ -343,7 +346,7 @@ export const WithControlBar: Story = {
 @Component({
   selector: 'story-drawer-with-control-bar-button-only',
   standalone: true,
-  imports: [MznButton, MznDrawer],
+  imports: [MznButton, MznDrawer, MznTypography],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       開啟 Drawer (僅控制列按鈕)
@@ -360,7 +363,9 @@ export const WithControlBar: Story = {
       (closed)="open.set(false)"
     >
       <div style="padding: 16px;">
-        <p>這個 Drawer 的控制列只有按鈕，沒有 Radio Group</p>
+        <span mznTypography variant="body"
+          >這個 Drawer 的控制列只有按鈕，沒有 Radio Group</span
+        >
       </div>
     </div>
   `,
@@ -385,7 +390,7 @@ export const WithControlBarButtonOnly: Story = {
 @Component({
   selector: 'story-drawer-with-bottom-action-states',
   standalone: true,
-  imports: [MznButton, MznDrawer],
+  imports: [MznButton, MznDrawer, MznTypography],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       開啟 Drawer (按鈕狀態控制)
@@ -409,13 +414,15 @@ export const WithControlBarButtonOnly: Story = {
       (closed)="close()"
     >
       <div style="padding: 16px;">
-        <p
+        <span mznTypography variant="body"
           >此範例展示如何使用 disabled 和 loading
-          狀態來控制按鈕的行為和外觀。</p
+          狀態來控制按鈕的行為和外觀。</span
         >
-        <p style="margin-top: 16px;"
-          >點擊「提交」按鈕會顯示 loading 狀態，並在 2 秒後關閉 Drawer。</p
-        >
+        <div style="margin-top: 16px;">
+          <span mznTypography variant="body"
+            >點擊「提交」按鈕會顯示 loading 狀態，並在 2 秒後關閉 Drawer。</span
+          >
+        </div>
       </div>
     </div>
   `,
@@ -451,7 +458,7 @@ export const WithBottomActionStates: Story = {
 @Component({
   selector: 'story-drawer-with-custom-button-variants',
   standalone: true,
-  imports: [MznButton, MznDrawer],
+  imports: [MznButton, MznDrawer, MznTypography],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       開啟 Drawer (自訂按鈕樣式)
@@ -481,7 +488,9 @@ export const WithBottomActionStates: Story = {
       (closed)="close()"
     >
       <div style="padding: 16px;">
-        <p>此範例展示如何自訂按鈕的 variant、size、icon 和 iconType。</p>
+        <span mznTypography variant="body"
+          >此範例展示如何自訂按鈕的 variant、size、icon 和 iconType。</span
+        >
       </div>
     </div>
   `,
@@ -516,6 +525,7 @@ export const WithCustomButtonVariants: Story = {
     MznModal,
     MznModalFooter,
     MznModalHeader,
+    MznTypography,
   ],
   template: `
     <button mznButton variant="base-text-link" (click)="drawerOpen.set(true)">
@@ -530,9 +540,9 @@ export const WithCustomButtonVariants: Story = {
       (closed)="onDrawerClose()"
     >
       <div style="padding: 16px;">
-        <p
+        <span mznTypography variant="body"
           >點擊下方按鈕可以在 Drawer 中打開一個
-          Modal，用於測試兩者的層級和互動關係。</p
+          Modal，用於測試兩者的層級和互動關係。</span
         >
         <div style="margin-top: 16px;">
           <button
@@ -555,8 +565,13 @@ export const WithCustomButtonVariants: Story = {
     >
       <div mznModalHeader title="基本 Modal"></div>
       <div class="mzn-modal__body-container">
-        <p>這是一個從 Drawer 中打開的基本 Modal。</p>
-        <p>測試 z-index 和背景遮罩是否正常運作。</p>
+        <span mznTypography variant="body"
+          >這是一個從 Drawer 中打開的基本 Modal。</span
+        >
+        <br />
+        <span mznTypography variant="body"
+          >測試 z-index 和背景遮罩是否正常運作。</span
+        >
       </div>
       <div mznModalFooter>
         <div mznButtonGroup>
@@ -601,7 +616,7 @@ export const WithModalWhileDrawerOpen: Story = {
 @Component({
   selector: 'story-drawer-with-filter-bar-dropdown',
   standalone: true,
-  imports: [MznButton, MznDrawer],
+  imports: [MznButton, MznDrawer, MznTypography],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       開啟 Drawer (篩選 Dropdown)
@@ -620,7 +635,9 @@ export const WithModalWhileDrawerOpen: Story = {
       (closed)="open.set(false)"
     >
       <div style="padding: 16px;">
-        <p>已選擇篩選：{{ selected() || '（尚未選擇）' }}</p>
+        <span mznTypography variant="body"
+          >已選擇篩選：{{ selected() || '（尚未選擇）' }}</span
+        >
       </div>
     </div>
   `,
@@ -692,7 +709,7 @@ export const WithFilterAreaOnCustomButton: Story = {
 @Component({
   selector: 'story-drawer-with-content-key-auto-fallback',
   standalone: true,
-  imports: [MznButton, MznDrawer],
+  imports: [MznButton, MznDrawer, MznTypography],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       開啟 Drawer (自動清理機制測試)
@@ -706,10 +723,14 @@ export const WithFilterAreaOnCustomButton: Story = {
       (closed)="open.set(false)"
     >
       <div style="padding: 16px;">
-        <p>目前項目數量: {{ items().length }}</p>
-        <p style="margin-top: 8px;"
-          >沒有傳入 contentKey，但當 Drawer 重新開啟時會自動清理內容。</p
+        <span mznTypography variant="body"
+          >目前項目數量: {{ items().length }}</span
         >
+        <div style="margin-top: 8px;">
+          <span mznTypography variant="body"
+            >沒有傳入 contentKey，但當 Drawer 重新開啟時會自動清理內容。</span
+          >
+        </div>
         <div style="margin-top: 16px; display: flex; gap: 8px;">
           <button
             mznButton
@@ -731,12 +752,14 @@ export const WithFilterAreaOnCustomButton: Story = {
             <div>{{ item }}</div>
           }
         </div>
-        <p style="margin-top: 16px;">
-          測試步驟:<br />
-          1. 減少到 3 個項目（可能會看到殘留）<br />
-          2. 關閉並重新開啟 Drawer（自動清理）<br />
-          3. 應該只會看到 3 個項目
-        </p>
+        <div style="margin-top: 16px;">
+          <span mznTypography variant="body">
+            測試步驟:<br />
+            1. 減少到 3 個項目（可能會看到殘留）<br />
+            2. 關閉並重新開啟 Drawer（自動清理）<br />
+            3. 應該只會看到 3 個項目
+          </span>
+        </div>
       </div>
     </div>
   `,
