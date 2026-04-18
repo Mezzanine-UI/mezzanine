@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznAlertBanner } from './alert-banner.component';
+import { MznAlertBannerContainer } from './alert-banner-container.component';
 import { MznAlertBannerService } from './alert-banner.service';
 import { MznNotifierService } from '../notifier/notifier.service';
 import { MznButton } from '../button/button.directive';
@@ -8,8 +9,9 @@ import { MznButton } from '../button/button.directive';
 @Component({
   selector: 'mzn-alert-banner-info-demo',
   standalone: true,
-  imports: [MznAlertBanner, MznButton],
+  imports: [MznAlertBanner, MznAlertBannerContainer, MznButton],
   template: `
+    <mzn-alert-banner-container />
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
@@ -37,6 +39,10 @@ class AlertBannerInfoDemoComponent {
     },
   ];
 
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.service.destroy());
+  }
+
   addBanner(): void {
     this.service.info('傳達一般提示、系統狀態或輔助性資訊。', {
       actions: this.actions,
@@ -47,8 +53,9 @@ class AlertBannerInfoDemoComponent {
 @Component({
   selector: 'mzn-alert-banner-warning-demo',
   standalone: true,
-  imports: [MznAlertBanner, MznButton],
+  imports: [MznAlertBanner, MznAlertBannerContainer, MznButton],
   template: `
+    <mzn-alert-banner-container />
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
@@ -82,6 +89,10 @@ class AlertBannerWarningDemoComponent {
     },
   ];
 
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.service.destroy());
+  }
+
   addBanner(): void {
     this.service.warning('提醒潛在風險或需要注意的情況。', {
       actions: this.actions,
@@ -92,8 +103,9 @@ class AlertBannerWarningDemoComponent {
 @Component({
   selector: 'mzn-alert-banner-error-demo',
   standalone: true,
-  imports: [MznAlertBanner, MznButton],
+  imports: [MznAlertBanner, MznAlertBannerContainer, MznButton],
   template: `
+    <mzn-alert-banner-container />
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
@@ -127,6 +139,10 @@ class AlertBannerErrorDemoComponent {
     },
   ];
 
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.service.destroy());
+  }
+
   addBanner(): void {
     this.service.error('傳達錯誤、失敗或需立即處理的問題。', {
       actions: this.actions,
@@ -137,8 +153,9 @@ class AlertBannerErrorDemoComponent {
 @Component({
   selector: 'mzn-alert-banner-interactive-demo',
   standalone: true,
-  imports: [MznButton],
+  imports: [MznAlertBannerContainer, MznButton],
   template: `
+    <mzn-alert-banner-container />
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
@@ -161,6 +178,10 @@ class AlertBannerErrorDemoComponent {
 })
 class AlertBannerInteractiveDemoComponent {
   private readonly service = inject(MznAlertBannerService);
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.service.destroy());
+  }
 
   private formatMessage(content: string): string {
     const now = new Date();
@@ -195,8 +216,9 @@ class AlertBannerInteractiveDemoComponent {
 @Component({
   selector: 'mzn-alert-banner-with-actions-demo',
   standalone: true,
-  imports: [MznButton],
+  imports: [MznAlertBannerContainer, MznButton],
   template: `
+    <mzn-alert-banner-container />
     <div
       style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;"
     >
@@ -227,6 +249,10 @@ class AlertBannerInteractiveDemoComponent {
 })
 class AlertBannerWithActionsDemoComponent {
   private readonly service = inject(MznAlertBannerService);
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.service.destroy());
+  }
 
   private formatMessage(content: string): string {
     const now = new Date();
