@@ -7,7 +7,6 @@ import {
   input,
   OnInit,
   output,
-  signal,
 } from '@angular/core';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import {
@@ -25,6 +24,9 @@ import { messageTimerController } from './message-timer-controller';
  * 單則全域 toast 訊息元件。
  *
  * 通常由 `MznMessageService` 動態建立，不需直接使用。
+ * 使用 `hostDirectives` 將 `MznTranslate` 套用到 host 本身，
+ * 讓 transform / opacity 樣式與 `.mzn-message` flex 佈局共用同一個 DOM 節點，
+ * 等效於 React `<Translate>` 用 `cloneElement` 注入 style 的行為。
  *
  * @example
  * ```html
@@ -36,7 +38,17 @@ import { messageTimerController } from './message-timer-controller';
 @Component({
   selector: '[mznMessage]',
   standalone: true,
-  imports: [MznIcon, MznSpin, MznTranslate],
+  imports: [MznIcon, MznSpin],
+  hostDirectives: [
+    {
+      // Note: do NOT expose MznTranslate's `duration`, `delay`, `easing` via
+      // hostDirectives — MznMessage's own `duration` input controls the
+      // auto-close timer and must not leak into transition timing (which
+      // should stay at MOTION_DURATION.moderate).
+      directive: MznTranslate,
+      inputs: ['keepMount'],
+    },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -53,24 +65,27 @@ import { messageTimerController } from './message-timer-controller';
     '[attr.severity]': 'null',
   },
   template: `
-    <div mznTranslate [in]="mounted()" from="bottom">
-      @if (severity() === 'loading') {
-        <span [class]="iconClass">
-          <div mznSpin [loading]="true" size="minor"></div>
-        </span>
-      } @else if (resolvedIcon(); as icon) {
-        <i mznIcon [icon]="icon" [class]="iconClass"></i>
-      }
-      <span [class]="contentClass">{{ message() }}</span>
-    </div>
+    @if (severity() === 'loading') {
+      <span [class]="iconClass">
+        <div mznSpin [loading]="true" size="minor"></div>
+      </span>
+    } @else if (resolvedIcon(); as icon) {
+      <i mznIcon [icon]="icon" [class]="iconClass"></i>
+    }
+    <span [class]="contentClass">{{ message() }}</span>
   `,
 })
 export class MznMessage implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(MznTranslate);
 
   private timerRef: ReturnType<typeof setTimeout> | null = null;
   private startTime = 0;
   private remainingTime = 0;
+
+  constructor() {
+    this.translate.from.set('bottom');
+  }
 
   /**
    * 自動關閉時間（毫秒）。設為 `false` 不自動關閉。
@@ -129,12 +144,11 @@ export class MznMessage implements OnInit {
 
   protected readonly iconClass = classes.icon;
   protected readonly contentClass = classes.content;
-  protected readonly mounted = signal(false);
 
   ngOnInit(): void {
     // Trigger enter transition on next microtask so MznTranslate observes
     // the false → true flip and plays the :enter animation.
-    queueMicrotask(() => this.mounted.set(true));
+    queueMicrotask(() => this.translate.in.set(true));
 
     this.remainingTime =
       typeof this.duration() === 'number' ? (this.duration() as number) : 0;
