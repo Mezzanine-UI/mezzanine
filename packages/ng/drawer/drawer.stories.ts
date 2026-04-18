@@ -22,6 +22,28 @@ import {
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznDrawer } from './drawer.component';
 
+/**
+ * Mirrors React `CustomComponent` (packages/react/src/Drawer/Drawer.stories.tsx).
+ * Purely renders a list of records; no internal state. Used by the
+ * Playground + WithContentKeyAutoFallback stories to demonstrate how
+ * Drawer's `contentKey` / `openCount` remount fallback interacts with
+ * child components when the records prop changes.
+ */
+@Component({
+  selector: 'story-drawer-custom-records',
+  standalone: true,
+  template: `
+    <div>
+      @for (item of records(); track item) {
+        <div>{{ item }}</div>
+      }
+    </div>
+  `,
+})
+class CustomRecordsComponent {
+  readonly records = input.required<readonly number[]>();
+}
+
 // Icon mapping for Storybook controls — mirrors React's iconOptions.
 const iconOptions = {
   None: undefined,
@@ -176,7 +198,7 @@ type Story = StoryObj;
 @Component({
   selector: 'story-drawer-playground',
   standalone: true,
-  imports: [MznButton, MznDrawer],
+  imports: [CustomRecordsComponent, MznButton, MznDrawer],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       OPEN
@@ -217,11 +239,7 @@ type Story = StoryObj;
       (bottomSecondaryActionClick)="close()"
       (closed)="close()"
     >
-      <div>
-        @for (item of items(); track item) {
-          <div>{{ item }}</div>
-        }
-      </div>
+      <story-drawer-custom-records [records]="items()" />
     </div>
   `,
 })
@@ -709,7 +727,7 @@ export const WithFilterAreaOnCustomButton: Story = {
 @Component({
   selector: 'story-drawer-with-content-key-auto-fallback',
   standalone: true,
-  imports: [MznButton, MznDrawer, MznTypography],
+  imports: [CustomRecordsComponent, MznButton, MznDrawer, MznTypography],
   template: `
     <button mznButton variant="base-text-link" (click)="open.set(true)">
       開啟 Drawer (自動清理機制測試)
@@ -720,7 +738,7 @@ export const WithFilterAreaOnCustomButton: Story = {
       headerTitle="自動清理機制測試"
       isHeaderDisplay
       size="medium"
-      (closed)="open.set(false)"
+      (closed)="close()"
     >
       <div style="padding: 16px;">
         <span mznTypography variant="body"
@@ -731,7 +749,7 @@ export const WithFilterAreaOnCustomButton: Story = {
             >沒有傳入 contentKey，但當 Drawer 重新開啟時會自動清理內容。</span
           >
         </div>
-        <div style="margin-top: 16px; display: flex; gap: 8px;">
+        <div style="margin-top: 16px;">
           <button
             mznButton
             size="minor"
@@ -743,14 +761,13 @@ export const WithFilterAreaOnCustomButton: Story = {
             mznButton
             size="minor"
             variant="base-secondary"
+            style="margin-left: 8px;"
             (click)="reset()"
             >重置為 10 個項目</button
           >
         </div>
         <div style="margin-top: 16px;">
-          @for (item of items(); track item) {
-            <div>{{ item }}</div>
-          }
+          <story-drawer-custom-records [records]="items()" />
         </div>
         <div style="margin-top: 16px;">
           <span mznTypography variant="body">
@@ -767,6 +784,9 @@ export const WithFilterAreaOnCustomButton: Story = {
 class WithContentKeyAutoFallbackStoryComponent {
   readonly open = signal(false);
   readonly items = signal<readonly number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  close(): void {
+    this.open.set(false);
+  }
   reduce(): void {
     this.items.update((prev) => prev.slice(0, 3));
   }
