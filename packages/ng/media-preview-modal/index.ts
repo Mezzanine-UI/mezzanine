@@ -1,1 +1,4 @@
-export { MznMediaPreviewModal } from './media-preview-modal.component';
+export {
+  MznMediaPreviewModal,
+  type MediaPreviewItem,
+} from './media-preview-modal.component';

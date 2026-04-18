@@ -7,7 +7,9 @@ import {
   input,
   output,
   signal,
+  TemplateRef,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { ChevronLeftIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
@@ -19,6 +21,9 @@ import { MznScale, MznFade } from '@mezzanine-ui/ng/transition';
 import { EscapeKeyService } from '@mezzanine-ui/ng/services';
 import { TopStackService } from '@mezzanine-ui/ng/services';
 import { ScrollLockService } from '@mezzanine-ui/ng/services';
+
+/** A single media item: image URL string or a TemplateRef for custom content. */
+export type MediaPreviewItem = string | TemplateRef<unknown>;
 
 /**
  * MediaPreviewModal displays a gallery of images with navigation controls and circular browsing.
@@ -55,7 +60,14 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
 @Component({
   selector: '[mznMediaPreviewModal]',
   standalone: true,
-  imports: [MznBackdrop, MznClearActions, MznIcon, MznScale, MznFade],
+  imports: [
+    MznBackdrop,
+    MznClearActions,
+    MznIcon,
+    MznScale,
+    MznFade,
+    NgTemplateOutlet,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -83,16 +95,27 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
         <div class="mzn-modal__media-preview-content">
           <div class="mzn-modal__media-preview-media-container">
             @for (idx of displayedIndices(); track idx) {
-              @if (isStringItem(mediaItems()[idx])) {
+              @let item = mediaItems()[idx];
+              @if (isStringItem(item)) {
                 <img
                   mznFade
                   [in]="idx === activeIndex()"
                   [duration]="fadeDuration"
                   [easing]="fadeEasing"
                   class="mzn-modal__media-preview-image"
-                  [src]="asString(mediaItems()[idx])"
+                  [src]="item"
                   [alt]="'Media ' + (idx + 1)"
                 />
+              } @else if (isTemplateItem(item)) {
+                <div
+                  mznFade
+                  [in]="idx === activeIndex()"
+                  [duration]="fadeDuration"
+                  [easing]="fadeEasing"
+                  class="mzn-modal__media-preview-image"
+                >
+                  <ng-container [ngTemplateOutlet]="item"></ng-container>
+                </div>
               }
             }
           </div>
@@ -179,8 +202,12 @@ export class MznMediaPreviewModal {
   /** Whether the modal is open. @default false */
   readonly open = input(false);
 
-  /** Array of media items (image URLs). */
-  readonly mediaItems = input<string[]>([]);
+  /**
+   * Array of media items. Each item is either an image URL string or an
+   * Angular TemplateRef for custom content (e.g. `<video>`, a styled `<div>`,
+   * or a picture with `<picture>` sources). Mirrors React's `(string | ReactNode)[]`.
+   */
+  readonly mediaItems = input<ReadonlyArray<MediaPreviewItem>>([]);
 
   /** Default index when opened (uncontrolled mode). @default 0 */
   readonly defaultIndex = input(0);
@@ -355,10 +382,10 @@ export class MznMediaPreviewModal {
         (i): i is number => i >= 0 && i < items.length,
       );
 
-      // Preload priority images
+      // Preload priority images — only URL items; TemplateRefs render on demand.
       priorityIndices.forEach((i) => {
         const item = items[i];
-        if (item !== undefined) {
+        if (typeof item === 'string') {
           const img = new Image();
           img.src = item;
         }
@@ -367,7 +394,7 @@ export class MznMediaPreviewModal {
       // Preload remaining images after delay
       const timer = setTimeout(() => {
         items.forEach((item, i) => {
-          if (item !== undefined && !priorityIndices.includes(i)) {
+          if (typeof item === 'string' && !priorityIndices.includes(i)) {
             const img = new Image();
             img.src = item;
           }
@@ -416,11 +443,13 @@ export class MznMediaPreviewModal {
     }
   }
 
-  protected isStringItem(item: string | undefined): boolean {
+  protected isStringItem(item: MediaPreviewItem | undefined): item is string {
     return typeof item === 'string';
   }
 
-  protected asString(item: string | undefined): string {
-    return item ?? '';
+  protected isTemplateItem(
+    item: MediaPreviewItem | undefined,
+  ): item is TemplateRef<unknown> {
+    return item instanceof TemplateRef;
   }
 }
