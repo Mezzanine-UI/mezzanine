@@ -763,25 +763,18 @@ export const ModalFooterWithPassword: Story = {
       <div [class]="splitContainerClasses()">
         <div class="mzn-modal__body-container__extended-split-right">
           <div
-            style="align-items: center; background-color: rgba(147,127,199,0.1); display: flex; flex: 1; justify-content: center; width: 100%;"
+            style="align-items: center; display: flex; justify-content: center; min-height: 200px; width: 150px;"
           >
-            <span
-              >Right Side Content (Slot) Lorem ipsum dolor sit amet, consectetur
-              adipisicing elit. Distinctio id quibusdam quis similique vitae? A
-              ab alias aperiam assumenda deleniti ducimus eligendi impedit magni
-              obcaecati rerum? Ad aliquid amet blanditiis cum cumque dolor, ea
-              eveniet exercitationem fugit hic id incidunt ipsam mollitia nemo
-              porro qui quibusdam quisquam similique temporibus ullam, veniam
-              voluptas voluptates voluptatum?</span
-            >
+            <span>Right Side Content (Slot)</span>
           </div>
         </div>
         <div class="mzn-modal__body-container__extended-split-left">
-          <div
-            class="mzn-modal__body-container__extended-split-left__content"
-            style="align-items: center; background-color: rgba(147,127,199,0.1); display: flex; height: 100%; justify-content: center; width: 100%;"
-          >
-            <span>Left Side Content (Slot)</span>
+          <div class="mzn-modal__body-container__extended-split-left__content">
+            <div
+              style="align-items: center; display: flex; justify-content: center; min-height: 200px;"
+            >
+              <span>Left Side Content (Slot)</span>
+            </div>
           </div>
           <div
             mznModalFooter
