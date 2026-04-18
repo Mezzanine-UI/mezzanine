@@ -8,6 +8,7 @@ import { MznModal } from './modal.component';
 import { MznModalBodyForVerification } from './modal-body-for-verification.component';
 import { MznModalFooter } from './modal-footer.component';
 import { MznModalHeader } from './modal-header.component';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 
 const meta: Meta = {
   title: 'Feedback/Modal',
@@ -739,7 +740,7 @@ export const ModalFooterWithPassword: Story = {
 @Component({
   selector: 'story-extended-split',
   standalone: true,
-  imports: [MznButton, MznModal, MznModalFooter, MznModalHeader],
+  imports: [MznButton, MznModal, MznModalFooter, MznModalHeader, MznTypography],
   template: `
     <div style="display: flex; gap: 8px;">
       <button mznButton variant="base-primary" (click)="openRight()"
@@ -763,17 +764,27 @@ export const ModalFooterWithPassword: Story = {
       <div [class]="splitContainerClasses()">
         <div class="mzn-modal__body-container__extended-split-right">
           <div
-            style="align-items: center; display: flex; justify-content: center; min-height: 200px; width: 150px;"
+            style="align-items: center; background-color: rgba(147,127,199,0.1); display: flex; flex: 1; justify-content: center; width: 100%;"
           >
-            <span>Right Side Content (Slot)</span>
+            <span mznTypography variant="body" color="text-neutral">
+              Right Side Content (Slot) Lorem ipsum dolor sit amet, consectetur
+              adipisicing elit. Distinctio id quibusdam quis similique vitae? A
+              ab alias aperiam assumenda deleniti ducimus eligendi impedit magni
+              obcaecati rerum? Ad aliquid amet blanditiis cum cumque dolor, ea
+              eveniet exercitationem fugit hic id incidunt ipsam mollitia nemo
+              porro qui quibusdam quisquam similique temporibus ullam, veniam
+              voluptas voluptates voluptatum?
+            </span>
           </div>
         </div>
         <div class="mzn-modal__body-container__extended-split-left">
           <div class="mzn-modal__body-container__extended-split-left__content">
             <div
-              style="align-items: center; display: flex; justify-content: center; min-height: 200px;"
+              style="align-items: center; background-color: rgba(147,127,199,0.1); display: flex; height: 100%; justify-content: center; width: 100%;"
             >
-              <span>Left Side Content (Slot)</span>
+              <span mznTypography variant="body" color="text-neutral"
+                >Left Side Content (Slot)</span
+              >
             </div>
           </div>
           <div
