@@ -7,25 +7,31 @@ import { MznDrawer } from './drawer.component';
   standalone: true,
   imports: [MznDrawer],
   template: `
-    <mzn-drawer
+    <div
+      mznDrawer
       [open]="open"
       [size]="size"
       [disablePortal]="true"
+      isHeaderDisplay
+      isBottomDisplay
       headerTitle="Test Drawer"
+      bottomPrimaryActionText="Confirm"
       (closed)="onClose()"
+      (bottomPrimaryActionClick)="onConfirm()"
     >
       <p class="content">Drawer content</p>
-      <div mznDrawerBottom class="bottom-area">
-        <button class="confirm">Confirm</button>
-      </div>
-    </mzn-drawer>
+    </div>
   `,
 })
 class TestHostComponent {
   open = false;
   size: 'medium' | 'narrow' | 'wide' = 'medium';
+  confirmed = false;
   onClose(): void {
     this.open = false;
+  }
+  onConfirm(): void {
+    this.confirmed = true;
   }
 }
 
@@ -103,12 +109,12 @@ describe('MznDrawer', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const closeBtn = fixture.nativeElement.querySelector('mzn-clear-actions');
+    const closeBtn = fixture.nativeElement.querySelector('.mzn-clear-actions');
 
     expect(closeBtn).toBeTruthy();
   });
 
-  it('should render content', () => {
+  it('should render projected content', () => {
     const { fixture, host } = createFixture(TestHostComponent);
 
     host.open = true;
@@ -122,7 +128,7 @@ describe('MznDrawer', () => {
     expect(content.textContent).toContain('Drawer content');
   });
 
-  it('should render bottom area', () => {
+  it('should render bottom area with flat-prop primary button', () => {
     const { fixture, host } = createFixture(TestHostComponent);
 
     host.open = true;
@@ -130,8 +136,9 @@ describe('MznDrawer', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const bottom = fixture.nativeElement.querySelector('.bottom-area');
+    const bottom = fixture.nativeElement.querySelector('.mzn-drawer__bottom');
 
     expect(bottom).toBeTruthy();
+    expect(bottom.textContent).toContain('Confirm');
   });
 });
