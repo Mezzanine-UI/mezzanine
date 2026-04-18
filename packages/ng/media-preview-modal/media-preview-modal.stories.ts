@@ -223,27 +223,58 @@ export const ControlledModeWithCircularNavigation: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-media-preview-modal-custom-media',
+  standalone: true,
+  imports: [MznMediaPreviewModal, MznButton],
+  template: `
+    <ng-template #customContent1>
+      <div
+        style="align-items: center; background-color: #f0f0f0; color: #333; display: flex; font-size: 24px; height: 400px; justify-content: center; width: 600px;"
+      >
+        Custom Content 1
+      </div>
+    </ng-template>
+    <ng-template #customContent2>
+      <div
+        style="align-items: center; background-color: #e0e0e0; color: #333; display: flex; font-size: 24px; height: 400px; justify-content: center; width: 600px;"
+      >
+        Custom Content 2
+      </div>
+    </ng-template>
+    <ng-template #customVideo>
+      <video
+        controls
+        src="https://www.w3schools.com/html/mov_bbb.mp4"
+        style="max-height: 600px; max-width: 800px;"
+      ></video>
+    </ng-template>
+
+    <button mznButton variant="base-primary" (click)="open.set(true)">
+      Open Custom Media
+    </button>
+    <div
+      mznMediaPreviewModal
+      [open]="open()"
+      [mediaItems]="[customContent1, customContent2, customVideo]"
+      (closed)="open.set(false)"
+    ></div>
+  `,
+})
+class MediaPreviewModalCustomMediaComponent {
+  readonly open = signal(false);
+}
+
 export const CustomMedia: Story = {
   name: 'Custom Media',
   parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({
+      imports: [MediaPreviewModalCustomMediaComponent],
+    }),
+  ],
   render: () => ({
-    props: {
-      open: signal(false),
-      customMediaItems: [
-        'https://picsum.photos/id/10/600/400',
-        'https://picsum.photos/id/20/600/400',
-      ],
-    },
-    template: `
-      <button mznButton variant="base-primary" (click)="open.set(true)">
-        Open Custom Media
-      </button>
-      <div mznMediaPreviewModal
-        [open]="open()"
-        [mediaItems]="customMediaItems"
-        (closed)="open.set(false)"
-      ></div>
-    `,
+    template: `<story-media-preview-modal-custom-media />`,
   }),
 };
 
