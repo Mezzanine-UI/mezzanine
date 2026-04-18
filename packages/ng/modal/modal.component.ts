@@ -104,29 +104,27 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
       (closed)="onBackdropClose()"
       (backdropClick)="backdropClick.emit()"
     >
-      <div [class]="contentWrapperClass">
-        <div mznScale [in]="open()">
-          <div
-            [class]="hostClasses()"
-            [style]="dialogStyle() ?? null"
-            role="dialog"
-          >
-            @if (showModalHeader()) {
-              <ng-content select="[mznModalHeader]" />
-            }
-            <ng-content />
-            @if (showModalFooter()) {
-              <ng-content select="[mznModalFooter]" />
-            }
-            @if (showDismissButton()) {
-              <button
-                mznClearActions
-                [class]="closeIconClass"
-                variant="base"
-                (clicked)="closed.emit()"
-              ></button>
-            }
-          </div>
+      <div mznScale [in]="open()" [class]="contentWrapperClass">
+        <div
+          [class]="hostClasses()"
+          [style]="dialogStyle() ?? null"
+          role="dialog"
+        >
+          @if (showModalHeader()) {
+            <ng-content select="[mznModalHeader]" />
+          }
+          <ng-content />
+          @if (showModalFooter()) {
+            <ng-content select="[mznModalFooter]" />
+          }
+          @if (showDismissButton()) {
+            <button
+              mznClearActions
+              [class]="closeIconClass"
+              variant="base"
+              (clicked)="closed.emit()"
+            ></button>
+          }
         </div>
       </div>
     </div>

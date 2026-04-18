@@ -79,24 +79,22 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
       [disablePortal]="disablePortal()"
       (closed)="onBackdropClose()"
     >
-      <div mznScale [in]="open()">
-        <div class="mzn-modal__content-wrapper">
-          <div class="mzn-modal__media-preview-content">
-            <div class="mzn-modal__media-preview-media-container">
-              @for (idx of displayedIndices(); track idx) {
-                @if (isStringItem(mediaItems()[idx])) {
-                  <img
-                    mznFade
-                    [in]="idx === activeIndex()"
-                    [duration]="fadeDuration"
-                    [easing]="fadeEasing"
-                    class="mzn-modal__media-preview-image"
-                    [src]="asString(mediaItems()[idx])"
-                    [alt]="'Media ' + (idx + 1)"
-                  />
-                }
+      <div mznScale [in]="open()" class="mzn-modal__content-wrapper">
+        <div class="mzn-modal__media-preview-content">
+          <div class="mzn-modal__media-preview-media-container">
+            @for (idx of displayedIndices(); track idx) {
+              @if (isStringItem(mediaItems()[idx])) {
+                <img
+                  mznFade
+                  [in]="idx === activeIndex()"
+                  [duration]="fadeDuration"
+                  [easing]="fadeEasing"
+                  class="mzn-modal__media-preview-image"
+                  [src]="asString(mediaItems()[idx])"
+                  [alt]="'Media ' + (idx + 1)"
+                />
               }
-            </div>
+            }
           </div>
         </div>
       </div>
