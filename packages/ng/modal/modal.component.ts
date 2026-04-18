@@ -54,6 +54,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
   selector: '[mznModal]',
   host: {
     '[attr.backdropClassName]': 'null',
+    '[attr.dialogStyle]': 'null',
     '[attr.disableCloseOnBackdropClick]': 'null',
     '[attr.disableCloseOnEscapeKeyDown]': 'null',
     '[attr.disablePortal]': 'null',
@@ -105,7 +106,11 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
     >
       <div [class]="contentWrapperClass">
         <div mznScale [in]="open()">
-          <div [class]="hostClasses()" role="dialog">
+          <div
+            [class]="hostClasses()"
+            [style]="dialogStyle() ?? null"
+            role="dialog"
+          >
             @if (showModalHeader()) {
               <ng-content select="[mznModalHeader]" />
             }
@@ -176,6 +181,13 @@ export class MznModal {
 
   /** Modal 尺寸。 */
   readonly size = input<ModalSize>('regular');
+
+  /**
+   * 套用在 Modal dialog 節點上的 inline style。對應 React `ModalProps.style`。
+   * 常見用例是在 `size='wide'`（`width: max-content`）時鎖定固定寬度，
+   * 例如 `{ width: '640px', maxWidth: '640px' }`。
+   */
+  readonly dialogStyle = input<Record<string, string>>();
 
   /** 遮罩點擊事件。 */
   readonly backdropClick = output<void>();
