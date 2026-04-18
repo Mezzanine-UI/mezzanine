@@ -70,7 +70,12 @@ export type MediaPreviewItem = string | TemplateRef<unknown>;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class]': 'hostClasses()',
+    // Host is a bare wrapper in the story/caller tree — all modal chrome is
+    // rendered inside the backdrop portal (see template). The `mzn-modal` +
+    // `mzn-modal--media-preview` classes therefore move onto the inner
+    // `role="dialog"` div so `pointer-events: auto` (from `.mzn-modal`) reaches
+    // portaled descendants like <video>. This mirrors React, whose dialog
+    // div sits inside `<ModalContainer>` rather than on the outer component.
     '[attr.open]': 'null',
     '[attr.mediaItems]': 'null',
     '[attr.defaultIndex]': 'null',
@@ -92,32 +97,34 @@ export type MediaPreviewItem = string | TemplateRef<unknown>;
       (closed)="onBackdropClose()"
     >
       <div mznScale [in]="open()" class="mzn-modal__content-wrapper">
-        <div class="mzn-modal__media-preview-content">
-          <div class="mzn-modal__media-preview-media-container">
-            @for (idx of displayedIndices(); track idx) {
-              @let item = mediaItems()[idx];
-              @if (isStringItem(item)) {
-                <img
-                  mznFade
-                  [in]="idx === activeIndex()"
-                  [duration]="fadeDuration"
-                  [easing]="fadeEasing"
-                  class="mzn-modal__media-preview-image"
-                  [src]="item"
-                  [alt]="'Media ' + (idx + 1)"
-                />
-              } @else if (isTemplateItem(item)) {
-                <div
-                  mznFade
-                  [in]="idx === activeIndex()"
-                  [duration]="fadeDuration"
-                  [easing]="fadeEasing"
-                  class="mzn-modal__media-preview-image"
-                >
-                  <ng-container [ngTemplateOutlet]="item"></ng-container>
-                </div>
+        <div [class]="dialogClasses()" role="dialog">
+          <div class="mzn-modal__media-preview-content">
+            <div class="mzn-modal__media-preview-media-container">
+              @for (idx of displayedIndices(); track idx) {
+                @let item = mediaItems()[idx];
+                @if (isStringItem(item)) {
+                  <img
+                    mznFade
+                    [in]="idx === activeIndex()"
+                    [duration]="fadeDuration"
+                    [easing]="fadeEasing"
+                    class="mzn-modal__media-preview-image"
+                    [src]="item"
+                    [alt]="'Media ' + (idx + 1)"
+                  />
+                } @else if (isTemplateItem(item)) {
+                  <div
+                    mznFade
+                    [in]="idx === activeIndex()"
+                    [duration]="fadeDuration"
+                    [easing]="fadeEasing"
+                    class="mzn-modal__media-preview-image"
+                  >
+                    <ng-container [ngTemplateOutlet]="item"></ng-container>
+                  </div>
+                }
               }
-            }
+            </div>
           </div>
         </div>
       </div>
@@ -294,7 +301,7 @@ export class MznMediaPreviewModal {
 
   protected readonly displayedIndices = this._displayedIndices;
 
-  protected readonly hostClasses = computed((): string =>
+  protected readonly dialogClasses = computed((): string =>
     clsx(classes.host, classes.mediaPreview),
   );
 
