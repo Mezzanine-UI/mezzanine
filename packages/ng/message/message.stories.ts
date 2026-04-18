@@ -1,67 +1,45 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { MznMessageService } from './message.service';
 import { MznNotifierService } from '../notifier/notifier.service';
 import { MznMessage } from './message.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MznButton } from '../button/button.directive';
+import { MznButton, MznButtonGroup } from '../button';
+
+function createRandomNumber(): number {
+  return Math.floor(Math.random() ** 7 * 1000000);
+}
 
 @Component({
   selector: 'mzn-message-basic-demo',
   standalone: true,
-  imports: [MznMessage, MznButton],
+  imports: [MznMessage, MznButton, MznButtonGroup],
   template: `
     <div
       style="display: flex; flex-direction: column; align-items: flex-start; gap: 16px;"
     >
       訊息上限為 4 筆，每筆訊息預設停留 3 秒鐘。 滑鼠懸停於訊息上可暫停計時器。
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <button
-          mznButton
-          variant="base-primary"
-          (click)="messageService.add({ message: '基礎訊息' })"
-        >
+      <div mznButtonGroup orientation="vertical">
+        <button mznButton variant="base-primary" (click)="handleAdd()">
           Add
         </button>
-        <button
-          mznButton
-          variant="base-primary"
-          (click)="messageService.success('成功訊息')"
-        >
+        <button mznButton variant="base-primary" (click)="handleSuccess()">
           Success
         </button>
-        <button
-          mznButton
-          variant="base-primary"
-          (click)="messageService.warning('警告訊息')"
-        >
+        <button mznButton variant="base-primary" (click)="handleWarning()">
           Warning
         </button>
-        <button
-          mznButton
-          variant="base-primary"
-          (click)="messageService.error('錯誤訊息')"
-        >
+        <button mznButton variant="base-primary" (click)="handleError()">
           Error
         </button>
-        <button
-          mznButton
-          variant="base-primary"
-          (click)="messageService.info('資訊訊息')"
-        >
+        <button mznButton variant="base-primary" (click)="handleInfo()">
           Info
         </button>
-        <button
-          mznButton
-          variant="base-primary"
-          (click)="messageService.loading('資料載入中...')"
-        >
+        <button mznButton variant="base-primary" (click)="handleLoading()">
           Loading (不會自動關閉)
         </button>
       </div>
-      <div
-        style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 9999;"
-      >
+      <div class="mzn-message__root">
         @for (n of notifier.displayed(); track n.key) {
           <div
             mznMessage
@@ -80,12 +58,40 @@ import { MznButton } from '../button/button.directive';
 class MessageBasicDemoComponent {
   protected readonly messageService = inject(MznMessageService);
   protected readonly notifier = inject(MznNotifierService);
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.messageService.destroy());
+  }
+
+  handleAdd(): void {
+    this.messageService.add({ message: `基礎訊息：${createRandomNumber()}` });
+  }
+
+  handleSuccess(): void {
+    this.messageService.success(`成功訊息：${createRandomNumber()}`);
+  }
+
+  handleWarning(): void {
+    this.messageService.warning(`警告訊息：${createRandomNumber()}`);
+  }
+
+  handleError(): void {
+    this.messageService.error(`錯誤訊息：${createRandomNumber()}`);
+  }
+
+  handleInfo(): void {
+    this.messageService.info(`資訊訊息：${createRandomNumber()}`);
+  }
+
+  handleLoading(): void {
+    this.messageService.loading('資料載入中...');
+  }
 }
 
 @Component({
   selector: 'mzn-message-loading-update-demo',
   standalone: true,
-  imports: [MznMessage, MznButton],
+  imports: [MznMessage, MznButton, MznButtonGroup],
   template: `
     <div
       style="display: flex; flex-direction: column; align-items: flex-start; gap: 16px;"
@@ -95,7 +101,7 @@ class MessageBasicDemoComponent {
         success/error/info 等其他狀態。 你可以透過儲存回傳 key 達到同樣效果
         (useState, useRef)
       </p>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div mznButtonGroup orientation="vertical">
         <button
           mznButton
           variant="base-primary"
@@ -114,9 +120,7 @@ class MessageBasicDemoComponent {
           多步驟更新 (Loading → Loading → Success)
         </button>
       </div>
-      <div
-        style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 9999;"
-      >
+      <div class="mzn-message__root">
         @for (n of notifier.displayed(); track n.key) {
           <div
             mznMessage
@@ -135,6 +139,10 @@ class MessageBasicDemoComponent {
 class MessageLoadingUpdateDemoComponent {
   protected readonly messageService = inject(MznMessageService);
   protected readonly notifier = inject(MznNotifierService);
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.messageService.destroy());
+  }
 
   handleLoadingSuccess(): void {
     const key = this.messageService.loading('正在加載資料...');
