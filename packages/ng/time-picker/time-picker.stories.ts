@@ -1,18 +1,20 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import dayjs from 'dayjs';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import {
   MZN_CALENDAR_CONFIG,
   createCalendarConfig,
 } from '@mezzanine-ui/ng/calendar';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznTimePicker } from './time-picker.component';
 
 const meta: Meta = {
   title: 'Data Entry/TimePicker',
   decorators: [
     moduleMetadata({
-      imports: [FormsModule],
+      imports: [FormsModule, MznTimePicker, MznTypography],
       providers: [
         {
           provide: MZN_CALENDAR_CONFIG,
@@ -228,23 +230,26 @@ export const Playground: Story = {
 
 export const Basic: Story = {
   render: () => ({
-    props: { time: undefined as string | undefined },
+    props: {
+      time: undefined as string | undefined,
+      now: dayjs().toISOString(),
+    },
     template: `
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Normal</strong></p>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Normal</h3>
         <div mznTimePicker [(ngModel)]="time" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Disabled</strong></p>
-        <div mznTimePicker [disabled]="true" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Disabled</h3>
+        <div mznTimePicker [value]="now" [disabled]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Error</strong></p>
-        <div mznTimePicker [error]="true" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Error</h3>
+        <div mznTimePicker [value]="now" [error]="true" ></div>
       </div>
       <div style="margin: 0 0 24px 0">
-        <p style="margin: 0 0 12px 0"><strong>Read only</strong></p>
-        <div mznTimePicker [readOnly]="true" ></div>
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0">Read only</h3>
+        <div mznTimePicker [value]="now" [readOnly]="true" ></div>
       </div>
     `,
   }),
