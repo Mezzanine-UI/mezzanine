@@ -1,4 +1,5 @@
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -305,7 +306,9 @@ export class MznDrawer {
   // ─── Bottom ghost action flat props ──────────────────────────────────────
 
   /** Ghost 按鈕 disabled 狀態。 */
-  readonly bottomGhostActionDisabled = input(false);
+  readonly bottomGhostActionDisabled = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** Ghost 按鈕圖示。 */
   readonly bottomGhostActionIcon = input<IconDefinition>();
@@ -314,7 +317,9 @@ export class MznDrawer {
   readonly bottomGhostActionIconType = input<ButtonIconType>();
 
   /** Ghost 按鈕 loading 狀態。 */
-  readonly bottomGhostActionLoading = input(false);
+  readonly bottomGhostActionLoading = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** Ghost 按鈕尺寸。 */
   readonly bottomGhostActionSize = input<ButtonSize>();
@@ -331,7 +336,9 @@ export class MznDrawer {
   // ─── Bottom primary action flat props ────────────────────────────────────
 
   /** Primary 按鈕 disabled 狀態。 */
-  readonly bottomPrimaryActionDisabled = input(false);
+  readonly bottomPrimaryActionDisabled = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** Primary 按鈕圖示。 */
   readonly bottomPrimaryActionIcon = input<IconDefinition>();
@@ -340,7 +347,9 @@ export class MznDrawer {
   readonly bottomPrimaryActionIconType = input<ButtonIconType>();
 
   /** Primary 按鈕 loading 狀態。 */
-  readonly bottomPrimaryActionLoading = input(false);
+  readonly bottomPrimaryActionLoading = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** Primary 按鈕尺寸。 */
   readonly bottomPrimaryActionSize = input<ButtonSize>();
@@ -357,7 +366,9 @@ export class MznDrawer {
   // ─── Bottom secondary action flat props ──────────────────────────────────
 
   /** Secondary 按鈕 disabled 狀態。 */
-  readonly bottomSecondaryActionDisabled = input(false);
+  readonly bottomSecondaryActionDisabled = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** Secondary 按鈕圖示。 */
   readonly bottomSecondaryActionIcon = input<IconDefinition>();
@@ -366,7 +377,9 @@ export class MznDrawer {
   readonly bottomSecondaryActionIconType = input<ButtonIconType>();
 
   /** Secondary 按鈕 loading 狀態。 */
-  readonly bottomSecondaryActionLoading = input(false);
+  readonly bottomSecondaryActionLoading = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** Secondary 按鈕尺寸。 */
   readonly bottomSecondaryActionSize = input<ButtonSize>();
@@ -399,7 +412,7 @@ export class MznDrawer {
    * 是否為空（用於禁用自訂按鈕）。
    * @default false
    */
-  readonly filterAreaIsEmpty = input(false);
+  readonly filterAreaIsEmpty = input(false, { transform: booleanAttribute });
 
   /**
    * Dropdown 選項列表。有值時取代自訂按鈕，改以 Dropdown 形式呈現。
@@ -413,13 +426,15 @@ export class MznDrawer {
    * 是否顯示篩選區域。
    * @default false
    */
-  readonly filterAreaShow = input(false);
+  readonly filterAreaShow = input(false, { transform: booleanAttribute });
 
   /**
    * 是否顯示未讀 radio。
    * @default false
    */
-  readonly filterAreaShowUnreadButton = input(false);
+  readonly filterAreaShowUnreadButton = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** 「未讀」radio 的標籤文字。 */
   readonly filterAreaUnreadRadioLabel = input<string>();
@@ -441,13 +456,17 @@ export class MznDrawer {
   readonly contentKey = input<string | number>();
 
   /** 是否禁用點擊遮罩關閉。 */
-  readonly disableCloseOnBackdropClick = input(false);
+  readonly disableCloseOnBackdropClick = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** 是否禁用 Escape 鍵關閉。 */
-  readonly disableCloseOnEscapeKeyDown = input(false);
+  readonly disableCloseOnEscapeKeyDown = input(false, {
+    transform: booleanAttribute,
+  });
 
   /** 是否禁用 Portal。 */
-  readonly disablePortal = input(false);
+  readonly disablePortal = input(false, { transform: booleanAttribute });
 
   /** 標題文字。 */
   readonly headerTitle = input<string>();
@@ -456,16 +475,16 @@ export class MznDrawer {
    * 是否顯示底部操作按鈕區域。
    * @default false
    */
-  readonly isBottomDisplay = input(false);
+  readonly isBottomDisplay = input(false, { transform: booleanAttribute });
 
   /**
    * 是否顯示標題列區域。
    * @default false
    */
-  readonly isHeaderDisplay = input(false);
+  readonly isHeaderDisplay = input(false, { transform: booleanAttribute });
 
   /** 是否開啟 Drawer。 */
-  readonly open = input(false);
+  readonly open = input(false, { transform: booleanAttribute });
 
   /**
    * 寬度尺寸。
