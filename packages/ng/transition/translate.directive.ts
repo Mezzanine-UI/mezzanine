@@ -1,13 +1,13 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
   computed,
+  Directive,
   effect,
   ElementRef,
+  inject,
   input,
+  model,
   output,
   signal,
-  viewChild,
 } from '@angular/core';
 import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
@@ -39,24 +39,27 @@ const defaultEasing: TransitionEasing = {
 };
 
 /**
- * Translate transition component that animates transform + opacity.
+ * Translate transition directive. Animates transform + opacity on the
+ * host element.
  *
- * Slides content in from a direction (top, bottom, left, right) with
- * a small 4px offset and opacity fade. Mirrors the React `Translate` component.
+ * Mirrors React's `<Translate>` which uses `cloneElement` to inject the
+ * style onto the child — the element receiving the transform is the same
+ * element carrying other styles/classes, with no wrapper in between.
  *
  * @example
  * ```html
- * <div mznTranslate [in]="isVisible" from="top">
- *   <div>Dropdown content</div>
+ * <div mznTranslate [in]="isVisible" from="top" class="mzn-message ...">
+ *   ...content...
  * </div>
  * ```
  */
-@Component({
+@Directive({
   selector: '[mznTranslate]',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[style.display]': '"contents"',
+    '[style.opacity]': 'opacityStyle()',
+    '[style.transform]': 'transformStyle()',
+    '[style.visibility]': 'visibilityStyle()',
     '[attr.delay]': 'null',
     '[attr.duration]': 'null',
     '[attr.easing]': 'null',
@@ -64,18 +67,10 @@ const defaultEasing: TransitionEasing = {
     '[attr.in]': 'null',
     '[attr.keepMount]': 'null',
   },
-  template: `
-    <div
-      #translateRoot
-      [style.opacity]="opacityStyle()"
-      [style.transform]="transformStyle()"
-      [style.visibility]="visibilityStyle()"
-    >
-      <ng-content />
-    </div>
-  `,
 })
 export class MznTranslate {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+
   /**
    * The delay of the transition, in milliseconds.
    * @default 0
@@ -96,15 +91,24 @@ export class MznTranslate {
 
   /**
    * The position the element will enter from.
+   *
+   * Declared as `model` so host-directive consumers (e.g. MznMessage) can pick
+   * a default direction ('bottom' for toasts) without requiring every caller
+   * to bind it explicitly.
+   *
    * @default 'top'
    */
-  readonly from = input<TranslateFrom>('top');
+  readonly from = model<TranslateFrom>('top');
 
   /**
    * The flag to trigger toggling transition between enter and exit state.
+   *
+   * Declared as `model` so host-directive consumers (e.g. MznMessage) can flip
+   * the state programmatically after mount without exposing a public setter.
+   *
    * @default false
    */
-  readonly in = input(false);
+  readonly in = model(false);
 
   /**
    * Whether to keep mounting the child if exited.
@@ -131,9 +135,6 @@ export class MznTranslate {
    * Callback fired after the exited state applied.
    */
   readonly onExited = output<{ element: HTMLElement }>();
-
-  private readonly translateRoot =
-    viewChild.required<ElementRef<HTMLElement>>('translateRoot');
 
   private readonly state = signal<
     'entered' | 'entering' | 'exiting' | 'exited'
@@ -194,7 +195,7 @@ export class MznTranslate {
   }
 
   private getRootElement(): HTMLElement {
-    return this.translateRoot().nativeElement;
+    return this.elementRef.nativeElement;
   }
 
   private setTransition(node: HTMLElement, mode: 'enter' | 'exit'): void {
@@ -220,11 +221,11 @@ export class MznTranslate {
     reflow(node);
     this.onEnter.emit({ element: node, isAppearing: false });
 
-    // When a popper parent toggles display:none → block in the same tick
-    // as our `in` signal flips, the browser can coalesce the exit-styles
-    // paint with the entering-styles paint and skip the transition.
-    // A double rAF gives the browser one frame to commit the starting
-    // opacity:0 / transform:-4px paint before we flip to entering.
+    // Fresh-mount case (e.g. toasts added to a @for loop): the element's first
+    // paint happens in the same task as the `in` flip, and the browser can
+    // coalesce the exited styles with the entering styles — skipping the
+    // transition entirely. A double rAF gives the browser one frame to commit
+    // the starting opacity:0 / transform:offset paint before we flip state.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         this.state.set('entering');
