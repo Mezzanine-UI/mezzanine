@@ -63,7 +63,10 @@ type Story = StoryObj;
 export const Playground: Story = {
   args: {
     defaultIndex: 0,
-    disableCloseOnBackdropClick: false,
+    // Media preview dismissal should be intentional (X button only) — avoid
+    // accidental overlay taps closing the viewer while the user is examining
+    // a zoomed/large image.
+    disableCloseOnBackdropClick: true,
     disableCloseOnEscapeKeyDown: false,
     enableCircularNavigation: false,
     showPaginationIndicator: true,
