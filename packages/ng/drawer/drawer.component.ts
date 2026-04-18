@@ -130,172 +130,170 @@ import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
       (closed)="closed.emit()"
       (backdropClick)="backdropClick.emit()"
     >
-      <div mznSlide [in]="open()" from="right">
-        <div [class]="hostClasses()">
-          @if (isHeaderDisplay()) {
-            <div [class]="headerClass">
-              {{ headerTitle() }}
-              <button mznClearActions (clicked)="closed.emit()"></button>
-            </div>
-          }
+      <div mznSlide [in]="open()" from="right" [class]="hostClasses()">
+        @if (isHeaderDisplay()) {
+          <div [class]="headerClass">
+            {{ headerTitle() }}
+            <button mznClearActions (clicked)="closed.emit()"></button>
+          </div>
+        }
 
-          @if (shouldRenderFilterArea()) {
-            <div [class]="filterAreaClass()">
-              @if (hasFilterRadios()) {
-                <div
-                  mznRadioGroup
+        @if (shouldRenderFilterArea()) {
+          <div [class]="filterAreaClass()">
+            @if (hasFilterRadios()) {
+              <div
+                mznRadioGroup
+                size="minor"
+                type="segment"
+                [ngModel]="resolvedFilterValue()"
+                (valueChange)="filterAreaRadioChange.emit($event)"
+              >
+                @if (filterAreaAllRadioLabel()) {
+                  <div mznRadio type="segment" value="all">{{
+                    filterAreaAllRadioLabel()
+                  }}</div>
+                }
+                @if (filterAreaReadRadioLabel()) {
+                  <div mznRadio type="segment" value="read">{{
+                    filterAreaReadRadioLabel()
+                  }}</div>
+                }
+                @if (
+                  filterAreaShowUnreadButton() && filterAreaUnreadRadioLabel()
+                ) {
+                  <div mznRadio type="segment" value="unread">{{
+                    filterAreaUnreadRadioLabel()
+                  }}</div>
+                }
+              </div>
+            }
+            @if (hasFilterButton()) {
+              @if ((filterAreaOptions()?.length ?? 0) > 0) {
+                <button
+                  #filterDropdownAnchor
+                  mznButton
+                  variant="base-ghost"
                   size="minor"
-                  type="segment"
-                  [ngModel]="resolvedFilterValue()"
-                  (valueChange)="filterAreaRadioChange.emit($event)"
+                  type="button"
+                  iconType="icon-only"
+                  (click)="filterDropdownOpen.set(!filterDropdownOpen())"
                 >
-                  @if (filterAreaAllRadioLabel()) {
-                    <div mznRadio type="segment" value="all">{{
-                      filterAreaAllRadioLabel()
-                    }}</div>
-                  }
-                  @if (filterAreaReadRadioLabel()) {
-                    <div mznRadio type="segment" value="read">{{
-                      filterAreaReadRadioLabel()
-                    }}</div>
-                  }
+                  <i mznIcon [icon]="dotHorizontalIcon"></i>
+                </button>
+                <div
+                  mznDropdown
+                  [anchor]="filterDropdownAnchor"
+                  [open]="filterDropdownOpen()"
+                  [options]="filterAreaOptions()!"
+                  placement="bottom-end"
+                  (selected)="onFilterOptionSelected($event)"
+                  (closed)="filterDropdownOpen.set(false)"
+                ></div>
+              } @else {
+                <button
+                  mznButton
+                  variant="base-ghost"
+                  size="minor"
+                  type="button"
+                  [disabled]="filterAreaIsEmpty()"
+                  (click)="filterAreaCustomButtonClick.emit()"
+                >
+                  {{ filterAreaCustomButtonLabel() }}
+                </button>
+              }
+            }
+          </div>
+        }
+
+        @for (instance of contentInstances(); track instance) {
+          <div [class]="contentClass">
+            <ng-content />
+          </div>
+        }
+
+        @if (isBottomDisplay()) {
+          <div [class]="bottomClass">
+            <div>
+              @if (bottomGhostActionText()) {
+                <button
+                  mznButton
+                  type="button"
+                  [variant]="bottomGhostActionVariant()"
+                  [size]="bottomGhostActionSize()"
+                  [disabled]="bottomGhostActionDisabled()"
+                  [loading]="bottomGhostActionLoading()"
+                  (click)="bottomGhostActionClick.emit()"
+                >
                   @if (
-                    filterAreaShowUnreadButton() && filterAreaUnreadRadioLabel()
+                    bottomGhostActionIcon() &&
+                    bottomGhostActionIconType() === 'leading'
                   ) {
-                    <div mznRadio type="segment" value="unread">{{
-                      filterAreaUnreadRadioLabel()
-                    }}</div>
+                    <i mznIcon [icon]="bottomGhostActionIcon()!"></i>
                   }
-                </div>
-              }
-              @if (hasFilterButton()) {
-                @if ((filterAreaOptions()?.length ?? 0) > 0) {
-                  <button
-                    #filterDropdownAnchor
-                    mznButton
-                    variant="base-ghost"
-                    size="minor"
-                    type="button"
-                    iconType="icon-only"
-                    (click)="filterDropdownOpen.set(!filterDropdownOpen())"
-                  >
-                    <i mznIcon [icon]="dotHorizontalIcon"></i>
-                  </button>
-                  <div
-                    mznDropdown
-                    [anchor]="filterDropdownAnchor"
-                    [open]="filterDropdownOpen()"
-                    [options]="filterAreaOptions()!"
-                    placement="bottom-end"
-                    (selected)="onFilterOptionSelected($event)"
-                    (closed)="filterDropdownOpen.set(false)"
-                  ></div>
-                } @else {
-                  <button
-                    mznButton
-                    variant="base-ghost"
-                    size="minor"
-                    type="button"
-                    [disabled]="filterAreaIsEmpty()"
-                    (click)="filterAreaCustomButtonClick.emit()"
-                  >
-                    {{ filterAreaCustomButtonLabel() }}
-                  </button>
-                }
+                  {{ bottomGhostActionText() }}
+                  @if (
+                    bottomGhostActionIcon() &&
+                    bottomGhostActionIconType() === 'trailing'
+                  ) {
+                    <i mznIcon [icon]="bottomGhostActionIcon()!"></i>
+                  }
+                </button>
               }
             </div>
-          }
-
-          @for (instance of contentInstances(); track instance) {
-            <div [class]="contentClass">
-              <ng-content />
+            <div [class]="bottomActionsClass">
+              @if (bottomSecondaryActionText()) {
+                <button
+                  mznButton
+                  type="button"
+                  [variant]="bottomSecondaryActionVariant()"
+                  [size]="bottomSecondaryActionSize()"
+                  [disabled]="bottomSecondaryActionDisabled()"
+                  [loading]="bottomSecondaryActionLoading()"
+                  (click)="bottomSecondaryActionClick.emit()"
+                >
+                  @if (
+                    bottomSecondaryActionIcon() &&
+                    bottomSecondaryActionIconType() === 'leading'
+                  ) {
+                    <i mznIcon [icon]="bottomSecondaryActionIcon()!"></i>
+                  }
+                  {{ bottomSecondaryActionText() }}
+                  @if (
+                    bottomSecondaryActionIcon() &&
+                    bottomSecondaryActionIconType() === 'trailing'
+                  ) {
+                    <i mznIcon [icon]="bottomSecondaryActionIcon()!"></i>
+                  }
+                </button>
+              }
+              @if (bottomPrimaryActionText()) {
+                <button
+                  mznButton
+                  type="button"
+                  [variant]="bottomPrimaryActionVariant()"
+                  [size]="bottomPrimaryActionSize()"
+                  [disabled]="bottomPrimaryActionDisabled()"
+                  [loading]="bottomPrimaryActionLoading()"
+                  (click)="bottomPrimaryActionClick.emit()"
+                >
+                  @if (
+                    bottomPrimaryActionIcon() &&
+                    bottomPrimaryActionIconType() === 'leading'
+                  ) {
+                    <i mznIcon [icon]="bottomPrimaryActionIcon()!"></i>
+                  }
+                  {{ bottomPrimaryActionText() }}
+                  @if (
+                    bottomPrimaryActionIcon() &&
+                    bottomPrimaryActionIconType() === 'trailing'
+                  ) {
+                    <i mznIcon [icon]="bottomPrimaryActionIcon()!"></i>
+                  }
+                </button>
+              }
             </div>
-          }
-
-          @if (isBottomDisplay()) {
-            <div [class]="bottomClass">
-              <div>
-                @if (bottomGhostActionText()) {
-                  <button
-                    mznButton
-                    type="button"
-                    [variant]="bottomGhostActionVariant()"
-                    [size]="bottomGhostActionSize()"
-                    [disabled]="bottomGhostActionDisabled()"
-                    [loading]="bottomGhostActionLoading()"
-                    (click)="bottomGhostActionClick.emit()"
-                  >
-                    @if (
-                      bottomGhostActionIcon() &&
-                      bottomGhostActionIconType() === 'leading'
-                    ) {
-                      <i mznIcon [icon]="bottomGhostActionIcon()!"></i>
-                    }
-                    {{ bottomGhostActionText() }}
-                    @if (
-                      bottomGhostActionIcon() &&
-                      bottomGhostActionIconType() === 'trailing'
-                    ) {
-                      <i mznIcon [icon]="bottomGhostActionIcon()!"></i>
-                    }
-                  </button>
-                }
-              </div>
-              <div [class]="bottomActionsClass">
-                @if (bottomSecondaryActionText()) {
-                  <button
-                    mznButton
-                    type="button"
-                    [variant]="bottomSecondaryActionVariant()"
-                    [size]="bottomSecondaryActionSize()"
-                    [disabled]="bottomSecondaryActionDisabled()"
-                    [loading]="bottomSecondaryActionLoading()"
-                    (click)="bottomSecondaryActionClick.emit()"
-                  >
-                    @if (
-                      bottomSecondaryActionIcon() &&
-                      bottomSecondaryActionIconType() === 'leading'
-                    ) {
-                      <i mznIcon [icon]="bottomSecondaryActionIcon()!"></i>
-                    }
-                    {{ bottomSecondaryActionText() }}
-                    @if (
-                      bottomSecondaryActionIcon() &&
-                      bottomSecondaryActionIconType() === 'trailing'
-                    ) {
-                      <i mznIcon [icon]="bottomSecondaryActionIcon()!"></i>
-                    }
-                  </button>
-                }
-                @if (bottomPrimaryActionText()) {
-                  <button
-                    mznButton
-                    type="button"
-                    [variant]="bottomPrimaryActionVariant()"
-                    [size]="bottomPrimaryActionSize()"
-                    [disabled]="bottomPrimaryActionDisabled()"
-                    [loading]="bottomPrimaryActionLoading()"
-                    (click)="bottomPrimaryActionClick.emit()"
-                  >
-                    @if (
-                      bottomPrimaryActionIcon() &&
-                      bottomPrimaryActionIconType() === 'leading'
-                    ) {
-                      <i mznIcon [icon]="bottomPrimaryActionIcon()!"></i>
-                    }
-                    {{ bottomPrimaryActionText() }}
-                    @if (
-                      bottomPrimaryActionIcon() &&
-                      bottomPrimaryActionIconType() === 'trailing'
-                    ) {
-                      <i mznIcon [icon]="bottomPrimaryActionIcon()!"></i>
-                    }
-                  </button>
-                }
-              </div>
-            </div>
-          }
-        </div>
+          </div>
+        }
       </div>
     </div>
   `,

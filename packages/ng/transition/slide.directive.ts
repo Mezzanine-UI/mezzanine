@@ -1,13 +1,12 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
   computed,
+  Directive,
   effect,
   ElementRef,
+  inject,
   input,
   output,
   signal,
-  viewChild,
 } from '@angular/core';
 import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
@@ -37,24 +36,32 @@ const defaultEasing: TransitionEasing = {
 };
 
 /**
- * Slide transition component that animates transform (translate3d).
+ * Slide transition directive. Animates transform (translate3d) on the
+ * host element.
  *
- * Slides content in from a direction (right or top) on enter,
- * and slides back out on exit. Mirrors the React `Slide` component.
+ * Mirrors React's `<Slide>` which uses `cloneElement` to inject the
+ * transform style onto the child — i.e. the element carrying the slide
+ * transform is the same element receiving other styles/classes, with
+ * no wrapper in between. Any intermediate wrapper element would
+ * establish a new containing block (via `transform`) for
+ * `position: absolute` descendants and shrink them to the wrapper's
+ * intrinsic size (see the Drawer `height: 0` regression we fixed by
+ * flattening this directive).
  *
  * @example
  * ```html
- * <div mznSlide [in]="isVisible" from="right">
- *   <div>Sliding panel content</div>
+ * <div mznSlide [in]="isVisible" from="right" class="mzn-drawer ...">
+ *   ...content...
  * </div>
  * ```
  */
-@Component({
+@Directive({
   selector: '[mznSlide]',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[style.display]': '"contents"',
+    '[style.transform]': 'transformStyle()',
+    '[style.transitionProperty]': '"transform"',
+    '[style.visibility]': 'visibilityStyle()',
     '[attr.delay]': 'null',
     '[attr.duration]': 'null',
     '[attr.easing]': 'null',
@@ -62,17 +69,10 @@ const defaultEasing: TransitionEasing = {
     '[attr.in]': 'null',
     '[attr.keepMount]': 'null',
   },
-  template: `
-    <div
-      #slideRoot
-      [style.transform]="transformStyle()"
-      [style.visibility]="visibilityStyle()"
-    >
-      <ng-content />
-    </div>
-  `,
 })
 export class MznSlide {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+
   /**
    * The delay of the transition, in milliseconds.
    * @default 0
@@ -129,9 +129,6 @@ export class MznSlide {
    */
   readonly onExited = output<{ element: HTMLElement }>();
 
-  private readonly slideRoot =
-    viewChild.required<ElementRef<HTMLElement>>('slideRoot');
-
   private readonly state = signal<
     'entered' | 'entering' | 'exiting' | 'exited'
   >('exited');
@@ -185,7 +182,7 @@ export class MznSlide {
   }
 
   private getRootElement(): HTMLElement {
-    return this.slideRoot().nativeElement;
+    return this.elementRef.nativeElement;
   }
 
   private setTransition(node: HTMLElement, mode: 'enter' | 'exit'): void {
