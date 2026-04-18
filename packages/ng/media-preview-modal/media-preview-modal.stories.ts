@@ -408,40 +408,8 @@ export const LocalFileUpload: Story = {
   }),
 };
 
-@Component({
-  selector: 'story-with-next-image-component',
-  standalone: true,
-  imports: [MznMediaPreviewModal, MznButton],
-  template: `
-    <button mznButton variant="base-primary" (click)="open.set(true)">
-      Open with Next/Image (Mock)
-    </button>
-    <div
-      mznMediaPreviewModal
-      [open]="open()"
-      [mediaItems]="imageUrls"
-      (closed)="open.set(false)"
-    ></div>
-  `,
-})
-class WithNextImageComponentComponent {
-  readonly open = signal(false);
-  readonly imageUrls = [
-    'https://picsum.photos/id/10/2560/1920',
-    'https://picsum.photos/id/20/2560/1920',
-    'https://picsum.photos/id/30/2560/1920',
-  ];
-}
-
-export const WithNextImageComponent: Story = {
-  name: 'With Next/Image Component',
-  parameters: { controls: { disable: true } },
-  decorators: [
-    moduleMetadata({
-      imports: [WithNextImageComponentComponent],
-    }),
-  ],
-  render: () => ({
-    template: `<story-with-next-image-component />`,
-  }),
-};
+// React ships a "With Next/Image Component" story to demonstrate interop
+// with `next/image`. Angular has no equivalent first-party Next.js story
+// scope — `next/image`'s optimisation pipeline is React-specific — so this
+// story is deliberately omitted here. Recorded as an intentional deviation
+// in DEVIATIONS.md.
