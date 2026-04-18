@@ -1,4 +1,4 @@
-import type { CropArea } from './cropper.component';
+import type { CropArea } from './cropper-element.component';
 
 export interface CropToBlobOptions {
   /**
