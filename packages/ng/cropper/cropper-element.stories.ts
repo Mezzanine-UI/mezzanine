@@ -1,12 +1,51 @@
-import { Component, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import type { ArgTypes } from '@storybook/angular';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
-import { MznCropper, type CropArea } from './cropper.component';
+import { MznCropperElement, type CropArea } from './cropper-element.component';
+
+const argTypes: Partial<ArgTypes> = {
+  aspectRatio: {
+    control: { type: 'number' },
+    description: 'Aspect ratio for the crop area (width / height)',
+    table: {
+      type: { summary: 'number' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  minHeight: {
+    control: { type: 'number' },
+    description: 'Minimum crop area height in pixels',
+    table: {
+      type: { summary: 'number' },
+      defaultValue: { summary: '50' },
+    },
+  },
+  minWidth: {
+    control: { type: 'number' },
+    description: 'Minimum crop area width in pixels',
+    table: {
+      type: { summary: 'number' },
+      defaultValue: { summary: '50' },
+    },
+  },
+  size: {
+    control: 'inline-radio',
+    description: 'The size of cropper',
+    options: ['main', 'sub', 'minor'],
+    table: {
+      defaultValue: { summary: "'main'" },
+      type: { summary: 'CropperSize' },
+    },
+  },
+};
 
 export default {
+  argTypes,
   title: 'Feedback/Cropper/CropperElement',
   decorators: [
     moduleMetadata({
-      imports: [MznCropper],
+      imports: [MznCropperElement],
     }),
   ],
 } satisfies Meta;
@@ -20,15 +59,16 @@ const DEFAULT_IMAGE_URL = 'https://rytass.com/logo.png';
 @Component({
   selector: 'story-cropper-element-basic',
   standalone: true,
-  imports: [MznCropper],
+  imports: [DecimalPipe, MznCropperElement],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 1rem; width: min(100%, 32rem);"
     >
       <div
-        mznCropper
+        mznCropperElement
         [imageSrc]="imageSrc"
-        [aspectRatio]="1"
+        [aspectRatio]="1 / 1"
         (cropChange)="onCropChange($event)"
       ></div>
       @if (cropArea()) {
@@ -54,7 +94,6 @@ class BasicStoryComponent {
 
 export const Basic: Story = {
   decorators: [moduleMetadata({ imports: [BasicStoryComponent] })],
-  parameters: { controls: { disable: true } },
   render: () => ({
     template: `<story-cropper-element-basic />`,
   }),
@@ -65,7 +104,8 @@ export const Basic: Story = {
 @Component({
   selector: 'story-cropper-element-aspect-ratio',
   standalone: true,
-  imports: [MznCropper],
+  imports: [DecimalPipe, MznCropperElement],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 1rem; width: min(100%, 32rem);"
@@ -75,19 +115,14 @@ export const Basic: Story = {
           <strong>Aspect Ratio:</strong>
           <select
             (change)="onAspectRatioChange($any($event.target).value)"
+            [value]="selectValue()"
             style="min-width: 7.5rem; padding: 0.25rem 0.5rem;"
           >
             <option value="">Free</option>
-            <option value="1" [selected]="aspectRatio() === 1">1:1</option>
-            <option value="16/9" [selected]="isClose(aspectRatio(), 16 / 9)"
-              >16:9</option
-            >
-            <option value="4/3" [selected]="isClose(aspectRatio(), 4 / 3)"
-              >4:3</option
-            >
-            <option value="3/2" [selected]="isClose(aspectRatio(), 3 / 2)"
-              >3:2</option
-            >
+            <option value="1">1:1</option>
+            <option value="16/9">16:9</option>
+            <option value="4/3">4:3</option>
+            <option value="3/2">3:2</option>
           </select>
         </label>
         @if (aspectRatio() !== undefined) {
@@ -97,7 +132,7 @@ export const Basic: Story = {
         }
       </div>
       <div
-        mznCropper
+        mznCropperElement
         [imageSrc]="imageSrc"
         [aspectRatio]="aspectRatio()"
         (cropChange)="onCropChange($event)"
@@ -118,6 +153,16 @@ class WithAspectRatioStoryComponent {
   readonly imageSrc = DEFAULT_IMAGE_URL;
   readonly aspectRatio = signal<number | undefined>(16 / 9);
   readonly cropArea = signal<CropArea | null>(null);
+
+  readonly selectValue = (): string => {
+    const ar = this.aspectRatio();
+    if (ar === undefined) return '';
+    if (ar === 1) return '1';
+    if (Math.abs(ar - 16 / 9) < 0.001) return '16/9';
+    if (Math.abs(ar - 4 / 3) < 0.001) return '4/3';
+    if (Math.abs(ar - 3 / 2) < 0.001) return '3/2';
+    return ar.toString();
+  };
 
   onAspectRatioChange(value: string): void {
     if (!value) {
@@ -142,16 +187,10 @@ class WithAspectRatioStoryComponent {
   onCropChange(area: CropArea): void {
     this.cropArea.set(area);
   }
-
-  isClose(a: number | undefined, b: number): boolean {
-    if (a === undefined) return false;
-    return Math.abs(a - b) < 0.001;
-  }
 }
 
 export const WithAspectRatio: Story = {
   decorators: [moduleMetadata({ imports: [WithAspectRatioStoryComponent] })],
-  parameters: { controls: { disable: true } },
   render: () => ({
     template: `<story-cropper-element-aspect-ratio />`,
   }),
@@ -162,7 +201,8 @@ export const WithAspectRatio: Story = {
 @Component({
   selector: 'story-cropper-element-file-input',
   standalone: true,
-  imports: [MznCropper],
+  imports: [MznCropperElement],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 1rem; width: min(100%, 32rem);"
@@ -174,7 +214,7 @@ export const WithAspectRatio: Story = {
       />
       @if (imageUrl()) {
         <div
-          mznCropper
+          mznCropperElement
           [imageSrc]="imageUrl()!"
           [aspectRatio]="16 / 9"
           (cropChange)="onCropChange($event)"
@@ -205,7 +245,6 @@ class WithFileInputStoryComponent {
 
 export const WithFileInput: Story = {
   decorators: [moduleMetadata({ imports: [WithFileInputStoryComponent] })],
-  parameters: { controls: { disable: true } },
   render: () => ({
     template: `<story-cropper-element-file-input />`,
   }),
