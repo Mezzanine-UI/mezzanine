@@ -1,13 +1,13 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
   computed,
+  Directive,
   effect,
   ElementRef,
+  inject,
   input,
+  model,
   output,
   signal,
-  viewChild,
 } from '@angular/core';
 import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
@@ -29,25 +29,31 @@ const defaultEasing: TransitionEasing = {
 };
 
 /**
- * Scale transition component that animates scale and opacity.
+ * Scale transition directive. Animates transform + opacity on the host
+ * element.
  *
- * Wraps projected content and controls transform + opacity
- * based on the `in` state. Scales from 0.95 to 1.0 on enter,
- * and from 1.0 to 0.95 on exit, matching the React Scale component.
+ * Mirrors React's `<Scale>` which uses `cloneElement` to inject the style
+ * onto the child — the element receiving the transform is the same element
+ * carrying other styles/classes, with no wrapper in between. Any
+ * intermediate wrapper (especially one defaulting to `display: inline-block`)
+ * would collapse descendants that rely on `width: 100%; height: 100%`
+ * cascade, as seen in the Modal / MediaPreviewModal content tree.
  *
  * @example
  * ```html
- * <div mznScale [in]="isVisible">
- *   <div>Scalable content</div>
+ * <div mznScale [in]="isVisible" class="mzn-modal__content-wrapper">
+ *   ...content...
  * </div>
  * ```
  */
-@Component({
+@Directive({
   selector: '[mznScale]',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[style.display]': '"contents"',
+    '[style.opacity]': 'opacityStyle()',
+    '[style.transform]': 'transformStyle()',
+    '[style.transform-origin]': 'transformOrigin()',
+    '[style.visibility]': 'visibilityStyle()',
     '[attr.appear]': 'null',
     '[attr.delay]': 'null',
     '[attr.duration]': 'null',
@@ -56,20 +62,10 @@ const defaultEasing: TransitionEasing = {
     '[attr.keepMount]': 'null',
     '[attr.transformOrigin]': 'null',
   },
-  template: `
-    <div
-      #scaleRoot
-      [style.display]="'inline-block'"
-      [style.opacity]="opacityStyle()"
-      [style.transform]="transformStyle()"
-      [style.transform-origin]="transformOrigin()"
-      [style.visibility]="visibilityStyle()"
-    >
-      <ng-content />
-    </div>
-  `,
 })
 export class MznScale {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+
   /**
    * Whether to perform the enter transition if in is true while it first mounts.
    * @default true
@@ -96,9 +92,13 @@ export class MznScale {
 
   /**
    * The flag to trigger toggling transition between enter and exit state.
+   *
+   * Declared as `model` so host-directive consumers can flip the state
+   * programmatically without exposing a public setter.
+   *
    * @default false
    */
-  readonly in = input(false);
+  readonly in = model(false);
 
   /**
    * Whether to keep mounting the child if exited.
@@ -131,9 +131,6 @@ export class MznScale {
    * @default 'center'
    */
   readonly transformOrigin = input('center');
-
-  private readonly scaleRoot =
-    viewChild.required<ElementRef<HTMLElement>>('scaleRoot');
 
   private readonly state = signal<
     'entered' | 'entering' | 'exiting' | 'exited'
@@ -197,7 +194,7 @@ export class MznScale {
   }
 
   private getRootElement(): HTMLElement {
-    return this.scaleRoot().nativeElement;
+    return this.elementRef.nativeElement;
   }
 
   private setTransition(node: HTMLElement, mode: 'enter' | 'exit'): void {
@@ -223,16 +220,20 @@ export class MznScale {
     reflow(node);
     this.onEnter.emit({ element: node, isAppearing: false });
 
-    this.state.set('entering');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.state.set('entering');
 
-    const handler = (): void => {
-      node.removeEventListener('transitionend', handler);
-      this.state.set('entered');
-      this.resetTransition(node);
-      this.onEntered.emit({ element: node, isAppearing: false });
-    };
+        const handler = (): void => {
+          node.removeEventListener('transitionend', handler);
+          this.state.set('entered');
+          this.resetTransition(node);
+          this.onEntered.emit({ element: node, isAppearing: false });
+        };
 
-    node.addEventListener('transitionend', handler);
+        node.addEventListener('transitionend', handler);
+      });
+    });
   }
 
   private handleExit(): void {
