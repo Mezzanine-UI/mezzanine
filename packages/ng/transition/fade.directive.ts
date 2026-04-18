@@ -1,13 +1,13 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
   computed,
+  Directive,
   effect,
   ElementRef,
+  inject,
   input,
+  model,
   output,
   signal,
-  viewChild,
 } from '@angular/core';
 import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
@@ -29,25 +29,25 @@ const defaultEasing: TransitionEasing = {
 };
 
 /**
- * Fade transition component that animates opacity.
+ * Fade transition directive. Animates opacity on the host element.
  *
- * Wraps projected content and controls opacity + visibility
- * based on the `in` state. When `in` is false and the exit
- * transition completes, sets `visibility: hidden` on the child.
+ * Mirrors React's `<Fade>` which uses `cloneElement` to inject the opacity
+ * style onto the child — the animated element is the same element carrying
+ * other styles/classes, with no wrapper in between. Any intermediate wrapper
+ * would break consumers that rely on positioning or flex parent context
+ * (e.g. `<img>` with `position: absolute` inside a relative container).
  *
  * @example
  * ```html
- * <div mznFade [in]="isVisible">
- *   <div style="width: 200px; height: 200px; background: blue;">Content</div>
- * </div>
+ * <img mznFade [in]="isVisible" class="mzn-modal__media-preview-image" src="..." />
  * ```
  */
-@Component({
+@Directive({
   selector: '[mznFade]',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[style.display]': '"contents"',
+    '[style.opacity]': 'opacityStyle()',
+    '[style.visibility]': 'visibilityStyle()',
     '[attr.appear]': 'null',
     '[attr.delay]': 'null',
     '[attr.duration]': 'null',
@@ -55,17 +55,10 @@ const defaultEasing: TransitionEasing = {
     '[attr.in]': 'null',
     '[attr.keepMount]': 'null',
   },
-  template: `
-    <div
-      #fadeRoot
-      [style.opacity]="opacityStyle()"
-      [style.visibility]="visibilityStyle()"
-    >
-      <ng-content />
-    </div>
-  `,
 })
 export class MznFade {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+
   /**
    * Whether to perform the enter transition if in is true while it first mounts.
    * @default true
@@ -92,9 +85,13 @@ export class MznFade {
 
   /**
    * The flag to trigger toggling transition between enter and exit state.
+   *
+   * Declared as `model` so host-directive consumers can flip the state
+   * programmatically without exposing a public setter.
+   *
    * @default false
    */
-  readonly in = input(false);
+  readonly in = model(false);
 
   /**
    * Whether to keep mounting the child if exited.
@@ -121,9 +118,6 @@ export class MznFade {
    * Callback fired after the exited state applied.
    */
   readonly onExited = output<{ element: HTMLElement }>();
-
-  private readonly fadeRoot =
-    viewChild.required<ElementRef<HTMLElement>>('fadeRoot');
 
   private readonly state = signal<
     'entered' | 'entering' | 'exiting' | 'exited'
@@ -173,7 +167,7 @@ export class MznFade {
   }
 
   private getRootElement(): HTMLElement {
-    return this.fadeRoot().nativeElement;
+    return this.elementRef.nativeElement;
   }
 
   private setTransition(node: HTMLElement, mode: 'enter' | 'exit'): void {
@@ -191,22 +185,24 @@ export class MznFade {
   private handleEnter(): void {
     const node = this.getRootElement();
 
-    // Set transition and trigger reflow
     this.setTransition(node, 'enter');
     reflow(node);
     this.onEnter.emit({ element: node, isAppearing: false });
 
-    // Apply entering state (opacity: 1)
-    this.state.set('entering');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.state.set('entering');
 
-    const handler = (): void => {
-      node.removeEventListener('transitionend', handler);
-      this.state.set('entered');
-      this.resetTransition(node);
-      this.onEntered.emit({ element: node, isAppearing: false });
-    };
+        const handler = (): void => {
+          node.removeEventListener('transitionend', handler);
+          this.state.set('entered');
+          this.resetTransition(node);
+          this.onEntered.emit({ element: node, isAppearing: false });
+        };
 
-    node.addEventListener('transitionend', handler);
+        node.addEventListener('transitionend', handler);
+      });
+    });
   }
 
   private handleExit(): void {
@@ -215,7 +211,6 @@ export class MznFade {
     this.setTransition(node, 'exit');
     this.onExit.emit({ element: node });
 
-    // Apply exiting state (opacity: 0)
     this.state.set('exiting');
 
     const handler = (): void => {
