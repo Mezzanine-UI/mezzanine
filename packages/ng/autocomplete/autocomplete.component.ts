@@ -5,7 +5,6 @@ import {
   Component,
   computed,
   contentChild,
-  DestroyRef,
   Directive,
   effect,
   ElementRef,
@@ -33,7 +32,6 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { SelectTriggerTagValue } from '@mezzanine-ui/ng/select';
 import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznTextField } from '@mezzanine-ui/ng/text-field';
-import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import { AutocompleteCreationTracker } from './creation-tracker';
 
@@ -348,7 +346,7 @@ export function getFullParsedList(
         [status]="dropdownInlineStatus()"
         [value]="internalValue()"
         (actionCustomClicked)="onCreateActionClick()"
-        (closed)="onDropdownCloseRequested()"
+        (closed)="handleClose()"
         (leaveBottom)="leaveBottom.emit()"
         (reachBottom)="reachBottom.emit()"
         (selected)="onOptionClick($event)"
@@ -406,7 +404,7 @@ export function getFullParsedList(
         [value]="internalValue()"
         [zIndex]="dropdownZIndex() ?? undefined"
         (actionCustomClicked)="onCreateActionClick()"
-        (closed)="onDropdownCloseRequested()"
+        (closed)="handleClose()"
         (leaveBottom)="leaveBottom.emit()"
         (reachBottom)="reachBottom.emit()"
         (selected)="onOptionClick($event)"
@@ -418,10 +416,7 @@ export function getFullParsedList(
 export class MznAutocomplete
   implements ControlValueAccessor, AfterViewInit, OnDestroy
 {
-  private readonly clickAway = inject(ClickAwayService);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   protected readonly triggerElRef =
     viewChild<ElementRef<HTMLElement>>('triggerEl');
@@ -1036,20 +1031,14 @@ export class MznAutocomplete
   // ────────────────────────────────────────────
 
   constructor() {
-    // Click-away to close dropdown
-    effect((onCleanup) => {
-      const open = this.isOpen();
-
-      if (open) {
-        const cleanup = this.clickAway.listen(
-          this.hostElRef.nativeElement,
-          () => this.handleClose(),
-          this.destroyRef,
-        );
-
-        onCleanup(() => cleanup());
-      }
-    });
+    // Click-away is owned by the nested MznDropdown — its listener already
+    // whitelists the trigger anchor + its own host + the portal'd popper
+    // element, then emits `closed` which MznAutocomplete translates to
+    // `handleClose()` below. Duplicating the listener here would either
+    // (a) fire twice on the same click or (b) fire incorrectly when the
+    // popper is portal'd to body because MznAutocomplete's host does not
+    // contain the portal target. Removed in the Dropdown delegation
+    // refactor (2026-04).
 
     // AsyncData: reset internalLoading when options change (search complete)
     effect(() => {
@@ -1322,18 +1311,6 @@ export class MznAutocomplete
   }
 
   /**
-   * MznDropdown 發出 `closed`(使用者按 Escape、點擊 outside、或 single
-   * mode 選完一項後內建關閉)時同步 wrapper 的 open 狀態。此事件不攜帶
-   * 值,僅代表 dropdown 應關閉。
-   */
-  protected onDropdownCloseRequested(): void {
-    if (this.isOpenInternal()) {
-      this.isOpenInternal.set(false);
-      this.visibilityChange.emit(false);
-    }
-  }
-
-  /**
    * MznDropdown 的 `visibilityChange` 反映 `open` input 轉換。inside 模式
    * 下 wrapper 是 open state 的 source of truth,因此這裡主要用於把「內部
    * 建立 close」的結果回推;當前實作僅處理 `false`(close),開啟動作由
@@ -1383,7 +1360,7 @@ export class MznAutocomplete
   //  Close / blur handling (A4)
   // ────────────────────────────────────────────
 
-  private handleClose(): void {
+  protected handleClose(): void {
     this.isOpenInternal.set(false);
     this.visibilityChange.emit(false);
 
