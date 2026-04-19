@@ -1,10 +1,29 @@
 import { Component, input, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import {
+  MZN_CALENDAR_CONFIG,
+  createCalendarConfig,
+} from '@mezzanine-ui/ng/calendar';
 import { MznTimePanel } from './time-panel.component';
 
 const meta: Meta<MznTimePanel> = {
   title: 'Internal/Time Panel',
   component: MznTimePanel,
+  decorators: [
+    moduleMetadata({
+      providers: [
+        // MznTimePanel 透過 `inject(MZN_CALENDAR_CONFIG)` 讀取日期/時間
+        // 處理工具。Storybook 的 standalone wrapper 沒有 app-level
+        // providers,這裡提供一份 Dayjs 版 config(對齊 date-time-range-picker
+        // 等 story 的作法)以避免 NG0201 No provider 錯誤。
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsDayjs),
+        },
+      ],
+    }),
+  ],
 };
 
 export default meta;
