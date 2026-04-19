@@ -573,15 +573,63 @@ function resolveInterfaceProps(
 
 /**
  * Extract React props by resolving `${pascalName}PropsBase` first, falling
- * back to `${pascalName}Props`. Follows `extends` chains recursively.
+ * back to `${pascalName}Props`, then `${pascalName}Data` (covers notifier-
+ * pattern components like `Message` whose FC is typed as `FC<MessageData>`).
+ * If none of those match, scan the component file for the FC's type
+ * annotation `FC<...>` or `FC<PropsWithChildren<...>>` and resolve the inner
+ * interface — this picks up shapes like `NotificationCenterFC:
+ * FC<PropsWithChildren<NotificationData>>` where the data interface is named
+ * without the component prefix. Follows `extends` chains recursively.
  */
-export function extractReactApi(_file: string, pascalName: string): ApiSet {
+export function extractReactApi(file: string, pascalName: string): ApiSet {
   const index = getInterfaceIndex();
-  const baseCandidates = [`${pascalName}PropsBase`, `${pascalName}Props`];
+  const baseCandidates = [
+    `${pascalName}PropsBase`,
+    `${pascalName}Props`,
+    `${pascalName}Data`,
+  ];
   for (const candidate of baseCandidates) {
     if (index.has(candidate)) return resolveInterfaceProps(candidate);
   }
+
+  // Fallback: parse the component source for an explicit FC<...> type
+  // annotation near the component declaration and resolve that inner type.
+  const fcInterface = findFcTypeAnnotation(file, pascalName);
+  if (fcInterface && index.has(fcInterface)) {
+    return resolveInterfaceProps(fcInterface);
+  }
   return { inputs: new Set(), outputs: new Set() };
+}
+
+/**
+ * Scan a React component source file for a declaration like
+ * `const FooFC: FC<X>` or `const FooFC: FC<PropsWithChildren<X>>` and
+ * return X. Used when the public data interface is not named after the
+ * component (e.g. `NotificationCenterFC: FC<PropsWithChildren<NotificationData>>`).
+ */
+function findFcTypeAnnotation(file: string, pascalName: string): string | null {
+  if (!existsSync(file)) return null;
+  const text = readFileSync(file, 'utf-8');
+  // Prefer the canonical `${pascalName}FC: FC<…>` shape first (avoids
+  // accidentally binding to a sibling `${pascalName}Container: FC<PropsWithChildren>`
+  // type annotation that predates the real implementation).
+  const specificPatterns = [
+    new RegExp(
+      `const\\s+${pascalName}FC\\s*:\\s*FC\\s*<\\s*(?:PropsWithChildren\\s*<\\s*)?(\\w+)`,
+    ),
+    new RegExp(
+      `const\\s+${pascalName}\\s*:\\s*FC\\s*<\\s*(?:PropsWithChildren\\s*<\\s*)?(\\w+)`,
+    ),
+  ];
+  for (const re of specificPatterns) {
+    const m = text.match(re);
+    if (!m) continue;
+    // Reject `PropsWithChildren` itself — that means the FC has no inner
+    // data interface and our regex caught the passthrough wrapper.
+    if (m[1] === 'PropsWithChildren') continue;
+    return m[1];
+  }
+  return null;
 }
 
 export function extractAngularApi(file: string): ApiSet {
