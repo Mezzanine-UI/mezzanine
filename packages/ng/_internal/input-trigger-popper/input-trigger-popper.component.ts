@@ -6,9 +6,11 @@ import {
   ElementRef,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 import { inputTriggerPopperClasses as classes } from '@mezzanine-ui/core/_internal/input-trigger-popper';
 import { MznPopper, PopperPlacement } from '@mezzanine-ui/ng/popper';
+import { MznPortal } from '@mezzanine-ui/ng/portal';
 import { size, type Middleware } from '@floating-ui/dom';
 
 /**
@@ -35,7 +37,7 @@ let popperOpenSequence = 0;
 @Component({
   selector: '[mznInputTriggerPopper]',
   standalone: true,
-  imports: [MznPopper],
+  imports: [MznPopper, MznPortal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClass',
@@ -44,20 +46,24 @@ let popperOpenSequence = 0;
     '(touchmove)': '$event.stopPropagation()',
     '(touchend)': '$event.stopPropagation()',
     '[attr.anchor]': 'null',
+    '[attr.globalPortal]': 'null',
     '[attr.open]': 'null',
     '[attr.sameWidth]': 'null',
   },
   template: `
-    <div
-      mznPopper
-      [anchor]="anchor()"
-      [open]="open()"
-      [placement]="placement"
-      [offsetOptions]="offsetOpts"
-      [middleware]="resolvedMiddleware()"
-      [style.z-index]="zIndex()"
-    >
-      <ng-content />
+    <div mznPortal [disablePortal]="!globalPortal()">
+      <div
+        #popperEl
+        mznPopper
+        [anchor]="anchor()"
+        [open]="open()"
+        [placement]="placement"
+        [offsetOptions]="offsetOpts"
+        [middleware]="resolvedMiddleware()"
+        [style.z-index]="zIndex()"
+      >
+        <ng-content />
+      </div>
     </div>
   `,
 })
@@ -66,6 +72,15 @@ export class MznInputTriggerPopper {
    * 參考（錨定）元素。
    */
   readonly anchor = input.required<HTMLElement | ElementRef<HTMLElement>>();
+
+  /**
+   * 是否啟用全域 Portal（將浮動層 render 到 body 層的 `#mzn-portal-container`）。
+   * 對齊 React `globalPortal` prop；設為 `true` 時 popup 可穿透 Modal / Drawer
+   * / 任何 `overflow: hidden/auto` 容器。設為 `false` 時保留在原 DOM 位置，
+   * 不跨越 stacking context。
+   * @default true
+   */
+  readonly globalPortal = input(true);
 
   /**
    * 是否顯示。
@@ -78,6 +93,13 @@ export class MznInputTriggerPopper {
    * @default false
    */
   readonly sameWidth = input(false);
+
+  /**
+   * 取得內層 popper 根元素（`<div mznPopper>` 本體），供父元件在 portal 啟用時
+   * 仍能把它列為 click-away 允許的 container 之一，避免點擊 popped-out 內容
+   * 被誤判為 click-outside 而關閉元件。
+   */
+  readonly popperElRef = viewChild<ElementRef<HTMLElement>>('popperEl');
 
   protected readonly hostClass = classes.host;
   protected readonly placement: PopperPlacement = 'bottom-start';
