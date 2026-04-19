@@ -11,6 +11,7 @@ import {
 import { FolderOpenIcon, IconDefinition } from '@mezzanine-ui/icons';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznSpin } from '@mezzanine-ui/ng/spin';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 
 /**
  * Dropdown 狀態元件，用於顯示載入中或空狀態。
@@ -38,7 +39,7 @@ import { MznSpin } from '@mezzanine-ui/ng/spin';
     '[attr.status]': 'null',
   },
   standalone: true,
-  imports: [MznIcon, MznSpin],
+  imports: [MznIcon, MznSpin, MznTypography],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (status() === 'loading') {
@@ -46,7 +47,9 @@ import { MznSpin } from '@mezzanine-ui/ng/spin';
     } @else {
       <i mznIcon [icon]="resolvedEmptyIcon()" [size]="16"></i>
     }
-    <span [class]="statusTextClass">{{ displayText() }}</span>
+    <span mznTypography variant="body" [class]="statusTextClass">{{
+      displayText()
+    }}</span>
   `,
 })
 export class MznDropdownStatus {
