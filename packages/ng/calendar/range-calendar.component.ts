@@ -325,6 +325,39 @@ export class MznRangeCalendar {
         this.internalSecondRef.set(this.getSecondCalendarDate(ref));
       }
     });
+
+    // Sync internal picking state with external `value` input.
+    // 兩步選取 UX 的 picking 狀態是必要的(第一擊後等第二擊),但當外部
+    // 直接改寫 value(例如 QuickSelect onClick 把 parent state 設成新的
+    // [start, end])時,pickingStart/pickingEnd 仍停留在上次使用者點選
+    // 的邊界 → calendarValue computed 優先回傳舊 picking → 頭尾 cell
+    // 高亮卡在舊日期。React 沒有獨立 picking state 直接從 value prop
+    // 推算邊界,所以天然無此問題。這段 effect 鏡像 React 行為:
+    // value 變動時把 picking 對齊新值。寫入相同值時 Angular signal 以
+    // `===` 判等 skip 傳遞,所以一般使用者點擊(先自己 set picking 再
+    // emit 給 parent → value 回饋)不會產生無限迴圈。
+    effect(() => {
+      const val = this.value();
+
+      if (!val) {
+        this.pickingStart.set(undefined);
+        this.pickingEnd.set(undefined);
+
+        return;
+      }
+
+      // DateType = string，用 typeof 比 Array.isArray 能更精確 narrow
+      // readonly array（TS 對 `ReadonlyArray` 的 isArray 收斂有已知限制）。
+      if (typeof val === 'string') {
+        this.pickingStart.set(val);
+        this.pickingEnd.set(undefined);
+
+        return;
+      }
+
+      this.pickingStart.set(val[0] ?? undefined);
+      this.pickingEnd.set(val.length >= 2 ? val[1] : undefined);
+    });
   }
 
   /** Calculate the offset between two calendars based on mode. */
