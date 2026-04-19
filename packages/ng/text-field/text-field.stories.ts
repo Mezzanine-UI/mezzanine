@@ -1,6 +1,8 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { Component, computed, signal } from '@angular/core';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
 import {
+  ChevronDownIcon,
   SearchIcon,
   EyeInvisibleIcon,
   InfoFilledIcon,
@@ -192,51 +194,233 @@ export const Clearable: Story = {
   }),
 };
 
-export const ComponentsExample: Story = {
-  parameters: { controls: { disable: true } },
-  render: () => ({
-    template: `
-      <div
-        style="display: inline-grid; grid-template-columns: 1fr; gap: 32px; min-width: 320px;"
-      >
-        <!--
-          Textarea (with resize):對齊 React 的 children-as-function pattern
-          (TextField.stories.tsx:297-307)。[noPadding]="true" 把 host 的
-          padding 清掉,改掛在 <textarea> 上(mzn-text-field__input-padding
-          + --main 尺寸變體)。這樣 resize handle 能碰到 host 邊界,不會被
-          host 的內建 padding 裁切。
-        -->
-        <div>
-          <h3 style="margin-top: 0; margin-bottom: 8px;">
-            Textarea (with resize)
-          </h3>
-          <div mznTextField [noPadding]="true">
-            <textarea
-              class="mzn-text-field__input-padding mzn-text-field__input-padding--main"
-              placeholder="Textarea with text-field padding"
-              rows="4"
-            ></textarea>
-          </div>
-        </div>
-        <div>
-          <h3 style="margin-top: 0; margin-bottom: 8px;">
-            Select-like Component
-          </h3>
-          <div mznTextField>
-            <div style="width: 100%;">Select an option...</div>
-          </div>
-        </div>
-        <div>
-          <h3 style="margin-top: 0; margin-bottom: 8px;">
-            AutoComplete-like Component
-          </h3>
-          <div mznTextField [hasPrefix]="true">
-            <i mznIcon prefix [icon]="SearchIcon"></i>
-            <input type="text" placeholder="Type to search..." />
-          </div>
+/**
+ * 對齊 React `TextField.stories.tsx:270-494` 的 ComponentsExample:
+ * 把 TextField 當底層 primitive 示範怎麼實作 Textarea + Select-like
+ * + AutoComplete-like 三種高階元件。
+ *
+ * - Textarea: [noPadding]="true" + 手動套 input-padding class 讓
+ *   resize handle 可達 host 邊界(React 的 children function 模式)。
+ * - Select-like: role="combobox" + aria-expanded,點擊 host 切換
+ *   listbox 的絕對定位浮層,suffix 的 ChevronDown 隨 open 旋轉。
+ * - AutoComplete-like: prefix 搜尋 icon + clearable(有值時顯示 close
+ *   button),輸入框 keystroke filter 選項清單,listbox 只在有命中選項
+ *   時顯示。
+ */
+@Component({
+  selector: 'story-text-field-components-example',
+  standalone: true,
+  imports: [MznTextField, MznIcon],
+  template: `
+    <div
+      style="display: inline-grid; grid-template-columns: 1fr; gap: 32px; min-width: 320px;"
+    >
+      <!-- Textarea (with resize) -->
+      <div>
+        <h3 style="margin-top: 0; margin-bottom: 8px;"
+          >Textarea (with resize)</h3
+        >
+        <div mznTextField [noPadding]="true">
+          <textarea
+            class="mzn-text-field__input-padding mzn-text-field__input-padding--main"
+            placeholder="Textarea with text-field padding"
+            rows="4"
+            [value]="textareaValue()"
+            (input)="onTextareaInput($event)"
+          ></textarea>
         </div>
       </div>
-    `,
-    props: { SearchIcon },
+
+      <!-- Select-like Component -->
+      <div>
+        <h3 style="margin-top: 0; margin-bottom: 8px;"
+          >Select-like Component</h3
+        >
+        <div style="position: relative;">
+          <div
+            mznTextField
+            [active]="selectOpen()"
+            [hasSuffix]="true"
+            role="combobox"
+            [attr.aria-expanded]="selectOpen()"
+            aria-haspopup="listbox"
+            aria-controls="select-listbox"
+            tabindex="0"
+            (click)="toggleSelect()"
+            (keydown)="onSelectKeyDown($event)"
+          >
+            <div style="width: 100%;">
+              @if (selectValue()) {
+                {{ selectValue() }}
+              } @else {
+                <span style="color: #999;">Select an option...</span>
+              }
+            </div>
+            <i
+              mznIcon
+              suffix
+              [icon]="chevronDownIcon"
+              [style.transform]="
+                selectOpen() ? 'rotate(180deg)' : 'rotate(0deg)'
+              "
+              style="transition: transform 0.2s;"
+            ></i>
+          </div>
+          @if (selectOpen()) {
+            <div
+              id="select-listbox"
+              role="listbox"
+              style="position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 4px; max-height: 200px; overflow: auto; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);"
+            >
+              @for (opt of options; track opt) {
+                <div
+                  role="option"
+                  [attr.aria-selected]="selectValue() === opt"
+                  tabindex="0"
+                  [style.background]="
+                    selectValue() === opt ? '#f0f0f0' : 'transparent'
+                  "
+                  style="padding: 8px 12px; cursor: pointer;"
+                  (click)="pickSelect(opt)"
+                  (keydown.enter)="pickSelect(opt)"
+                  (keydown.space)="$event.preventDefault(); pickSelect(opt)"
+                >
+                  {{ opt }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- AutoComplete-like Component -->
+      <div>
+        <h3 style="margin-top: 0; margin-bottom: 8px;"
+          >AutoComplete-like Component</h3
+        >
+        <div style="position: relative;">
+          <div
+            mznTextField
+            [hasPrefix]="true"
+            [clearable]="autocompleteValue().length > 0"
+            role="combobox"
+            [attr.aria-expanded]="
+              autocompleteOpen() && filteredOptions().length > 0
+            "
+            aria-haspopup="listbox"
+            aria-autocomplete="list"
+            aria-controls="autocomplete-listbox"
+            (cleared)="clearAutocomplete()"
+          >
+            <i mznIcon prefix [icon]="searchIcon"></i>
+            <input
+              type="text"
+              placeholder="Type to search..."
+              [value]="autocompleteValue()"
+              (input)="onAutocompleteInput($event)"
+              (focus)="
+                autocompleteValue().length > 0 && autocompleteOpen.set(true)
+              "
+            />
+          </div>
+          @if (autocompleteOpen() && filteredOptions().length > 0) {
+            <div
+              id="autocomplete-listbox"
+              role="listbox"
+              style="position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 4px; max-height: 200px; overflow: auto; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);"
+            >
+              @for (opt of filteredOptions(); track opt) {
+                <div
+                  role="option"
+                  [attr.aria-selected]="autocompleteValue() === opt"
+                  tabindex="0"
+                  style="padding: 8px 12px; cursor: pointer;"
+                  (click)="pickAutocomplete(opt)"
+                  (keydown.enter)="pickAutocomplete(opt)"
+                  (keydown.space)="
+                    $event.preventDefault(); pickAutocomplete(opt)
+                  "
+                >
+                  {{ opt }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  `,
+})
+class TextFieldComponentsExampleComponent {
+  protected readonly chevronDownIcon = ChevronDownIcon;
+  protected readonly searchIcon = SearchIcon;
+  protected readonly options = [
+    'Option 1',
+    'Option 2',
+    'Option 3',
+    'Very Long Option 4',
+  ];
+
+  protected readonly textareaValue = signal('');
+
+  protected readonly selectOpen = signal(false);
+  protected readonly selectValue = signal('');
+
+  protected readonly autocompleteValue = signal('');
+  protected readonly autocompleteOpen = signal(false);
+
+  protected readonly filteredOptions = computed(() => {
+    const keyword = this.autocompleteValue().toLowerCase();
+
+    return this.options.filter((opt) => opt.toLowerCase().includes(keyword));
+  });
+
+  toggleSelect(): void {
+    this.selectOpen.update((v) => !v);
+  }
+
+  onSelectKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.toggleSelect();
+    }
+  }
+
+  pickSelect(opt: string): void {
+    this.selectValue.set(opt);
+    this.selectOpen.set(false);
+  }
+
+  onTextareaInput(event: Event): void {
+    const value = (event.target as HTMLTextAreaElement).value;
+
+    this.textareaValue.set(value);
+  }
+
+  onAutocompleteInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.autocompleteValue.set(value);
+    this.autocompleteOpen.set(value.length > 0);
+  }
+
+  pickAutocomplete(opt: string): void {
+    this.autocompleteValue.set(opt);
+    this.autocompleteOpen.set(false);
+  }
+
+  clearAutocomplete(): void {
+    this.autocompleteValue.set('');
+    this.autocompleteOpen.set(false);
+  }
+}
+
+export const ComponentsExample: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [TextFieldComponentsExampleComponent] }),
+  ],
+  render: () => ({
+    template: `<story-text-field-components-example />`,
   }),
 };
