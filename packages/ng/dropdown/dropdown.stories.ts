@@ -1,7 +1,14 @@
 import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { type Placement } from '@floating-ui/dom';
+import { MznAutocomplete } from '@mezzanine-ui/ng/autocomplete';
+import { MznTag } from '@mezzanine-ui/ng/tag';
+import { MznTextField } from '@mezzanine-ui/ng/text-field';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
+import { DotVerticalIcon } from '@mezzanine-ui/icons';
+import { MznIcon } from '../icon/icon.component';
 import { MznDropdown } from './dropdown.component';
 import { MznButton } from '../button/button.directive';
 
@@ -85,26 +92,25 @@ const usStatesOptions: DropdownOption[] = [
 ];
 
 @Component({
-  selector: 'story-dropdown-playground',
+  selector: '[storyDropdownPlayground]',
   standalone: true,
   imports: [MznDropdown, MznButton],
+  host: { style: 'display: block;' },
   template: `
-    <div style="padding: 40px;">
-      <button #anchor mznButton variant="base-primary" (click)="toggle()">
-        {{ selectedLabel() }}
-      </button>
-      <div
-        mznDropdown
-        [anchor]="anchor"
-        [disabled]="disabled()"
-        [open]="open()"
-        [options]="options"
-        [placement]="placement()"
-        [value]="value()"
-        (selected)="onSelect($event)"
-        (closed)="open.set(false)"
-      ></div>
-    </div>
+    <button #anchor mznButton variant="base-primary" (click)="toggle()">
+      {{ selectedLabel() }}
+    </button>
+    <div
+      mznDropdown
+      [anchor]="anchor"
+      [disabled]="disabled()"
+      [open]="open()"
+      [options]="options"
+      [placement]="placement()"
+      [value]="value()"
+      (selected)="onSelect($event)"
+      (closed)="open.set(false)"
+    ></div>
   `,
 })
 class DropdownPlaygroundComponent {
@@ -117,6 +123,7 @@ class DropdownPlaygroundComponent {
 
   selectedLabel(): string {
     const matched = this.options.find((o) => o.id === this.value());
+
     return matched?.name ?? '請選擇';
   }
 
@@ -175,107 +182,94 @@ export const Playground: Story = {
   decorators: [moduleMetadata({ imports: [DropdownPlaygroundComponent] })],
   render: (args) => ({
     props: args,
-    template: `<story-dropdown-playground [disabled]="disabled" [placement]="placement" />`,
+    template: `<div storyDropdownPlayground [disabled]="disabled" [placement]="placement"></div>`,
   }),
 };
 
+/**
+ * 對齊 React `AutoCompleteExample`:React 用 `<AutoComplete>` 元件,Angular
+ * 對應的是 `[mznAutocomplete]` — 內建 text input + popper + filter 邏輯,
+ * 不需要自己手刻 raw `<input>` + `<div mznDropdown>` 組合。
+ */
 @Component({
-  selector: 'story-dropdown-autocomplete',
+  selector: '[storyDropdownAutocomplete]',
   standalone: true,
-  imports: [MznDropdown, MznButton],
+  imports: [FormsModule, MznAutocomplete, MznTag],
+  host: { style: 'display: block;' },
   template: `
-    <div style="width: 320px; padding: 40px;">
-      <div style="margin-bottom: 8px; font-size: 13px; font-weight: 600;"
-        >Combobox with AutoComplete</div
-      >
-      <div style="margin-top: 12px; position: relative;">
-        <input
-          #anchor
-          type="text"
-          [value]="inputValue()"
-          (input)="onInput($event)"
-          (focus)="open.set(true)"
-          placeholder="Type or select a state..."
-          style="width: 100%; padding: 8px; box-sizing: border-box;"
-        />
+    <div style="width: 320px;">
+      <div mznTag label="Combobox with AutoComplete"></div>
+      <div style="margin-top: 12px;">
         <div
-          mznDropdown
-          [anchor]="anchor"
-          [open]="open()"
-          [options]="filteredOptions()"
-          [value]="selectedId()"
-          (selected)="onSelect($event)"
-          (closed)="open.set(false)"
+          mznAutocomplete
+          [fullWidth]="true"
+          [menuMaxHeight]="300"
+          mode="single"
+          [options]="options"
+          placeholder="Type or select a state..."
         ></div>
       </div>
     </div>
   `,
 })
 class DropdownAutoCompleteComponent {
-  readonly open = signal(false);
-  readonly inputValue = signal('');
-  readonly selectedId = signal<string | undefined>(undefined);
-
-  readonly filteredOptions = (() => {
-    const filterFn = () => {
-      const keyword = this.inputValue().trim().toLowerCase();
-      if (!keyword) return usStatesOptions;
-      return usStatesOptions.filter((o) =>
-        o.name.toLowerCase().includes(keyword),
-      );
-    };
-    return filterFn;
-  })();
-
-  onInput(event: Event): void {
-    this.inputValue.set((event.target as HTMLInputElement).value);
-    this.open.set(true);
-  }
-
-  onSelect(option: DropdownOption): void {
-    this.inputValue.set(option.name);
-    this.selectedId.set(option.id);
-    this.open.set(false);
-  }
+  readonly options = usStatesOptions;
 }
 
 export const AutoCompleteExample: Story = {
   decorators: [moduleMetadata({ imports: [DropdownAutoCompleteComponent] })],
   render: () => ({
-    template: `<story-dropdown-autocomplete />`,
+    template: `<div storyDropdownAutocomplete></div>`,
   }),
 };
 
+/**
+ * 對齊 React `<Dropdown inputPosition="inside">` 的 `isInline` 分支
+ * (`Dropdown.tsx:986-1014`):**不用 popper,整個 dropdown in-flow 渲染**。
+ * MznDropdown 現在支援 `inputPosition="inside"` 的 inline 模式(本地 template
+ * 的 @if isInline 分支),消費端用 `[mznDropdownHeader]` 投影 TextField ——
+ * TextField 既是 trigger(closed 時唯一可見)也是 list 的 sticky header
+ * (open 時位於 option list 之上,與 options 同屬一張 .mzn-dropdown 卡片)。
+ * 展開動畫從 'bottom' 滑入,視覺上 list 由下方浮起、與 TextField 合成一張卡片。
+ */
 @Component({
-  selector: 'story-dropdown-inside',
+  selector: '[storyDropdownInside]',
   standalone: true,
-  imports: [MznDropdown, MznButton],
+  imports: [MznDropdown, MznTextField],
+  host: { style: 'display: block;' },
   template: `
     <div
-      style="display: flex; flex-direction: column; gap: 24px; max-width: 400px; padding: 40px;"
+      style="display: flex; flex-direction: column; gap: 24px; max-width: 400px;"
     >
-      <div
-        style="display: flex; gap: 8px; align-items: flex-start; flex-direction: column;"
-      >
-        <div style="flex: 1;">
-          <input
-            #anchor
-            type="text"
-            [value]="inputValue()"
-            (input)="onInput($event)"
-            (focus)="open.set(true)"
-            placeholder="請選擇或輸入..."
-            style="width: 100%; padding: 8px; box-sizing: border-box;"
-          />
-          <div
-            mznDropdown
-            [anchor]="anchor"
-            [open]="open()"
-            [options]="filteredOptions()"
-            [value]="selectedId()"
-            (selected)="onSelect($event)"
-            (closed)="open.set(false)"
-          ></div>
+      <div>
+        <div
+          style="display: flex; gap: 8px; align-items: flex-start; flex-direction: column;"
+        >
+          <div style="flex: 1;">
+            <div
+              mznDropdown
+              inputPosition="inside"
+              [followText]="inputValue()"
+              [open]="open()"
+              [options]="filteredOptions()"
+              [maxHeight]="360"
+              [value]="selectedId()"
+              (selected)="onSelect($event)"
+              (closed)="open.set(false)"
+            >
+              <div mznDropdownHeader>
+                <div mznTextField (click)="open.set(!open())">
+                  <input
+                    type="text"
+                    [value]="inputValue()"
+                    (input)="onInput($event)"
+                    (focus)="open.set(true)"
+                    placeholder="請選擇或輸入..."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -286,16 +280,15 @@ class DropdownInsideComponent {
   readonly inputValue = signal('');
   readonly selectedId = signal<string | undefined>(undefined);
 
-  readonly filteredOptions = (() => {
-    const filterFn = () => {
-      const keyword = this.inputValue().trim().toLowerCase();
-      if (!keyword) return usStatesOptions;
-      return usStatesOptions.filter((o) =>
-        o.name.toLowerCase().includes(keyword),
-      );
-    };
-    return filterFn;
-  })();
+  readonly filteredOptions = (): DropdownOption[] => {
+    const keyword = this.inputValue().trim().toLowerCase();
+
+    if (!keyword) return usStatesOptions;
+
+    return usStatesOptions.filter((o) =>
+      o.name.toLowerCase().includes(keyword),
+    );
+  };
 
   onInput(event: Event): void {
     this.inputValue.set((event.target as HTMLInputElement).value);
@@ -312,345 +305,201 @@ class DropdownInsideComponent {
 export const Inside: Story = {
   decorators: [moduleMetadata({ imports: [DropdownInsideComponent] })],
   render: () => ({
-    template: `<story-dropdown-inside />`,
+    template: `<div storyDropdownInside></div>`,
   }),
 };
 
+/**
+ * 單一 placement cell:對齊 React `PlacementItem`,width 160px,Tag +
+ * Button + Dropdown。未選取時 button 顯示 DotVertical icon,選中後顯示
+ * 選項 name。`globalPortal=false` 讓 Dropdown popup 保留在原 DOM 位置
+ * (否則所有 placement 的 popup 都會飛到全域 container 疊在一起)。
+ */
 @Component({
-  selector: 'story-dropdown-placement',
+  selector: '[storyDropdownPlacementItem]',
   standalone: true,
-  imports: [MznDropdown, MznButton],
+  imports: [MznButton, MznDropdown, MznIcon, MznTag],
+  host: {
+    style:
+      'display: flex; flex-direction: column; align-items: center; gap: 8px; width: 160px;',
+  },
   template: `
-    <div
-      style="display: inline-grid; gap: 30px; grid-auto-rows: minmax(min-content, max-content); grid-template-columns: repeat(5, max-content); justify-content: center; margin-top: 50px; width: 100%;"
+    <div mznTag [label]="label"></div>
+    <button
+      #anchor
+      mznButton
+      variant="base-secondary"
+      size="minor"
+      (click)="toggle()"
     >
-      <div></div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Top Start</span>
-        <button
-          #anchor1
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('top-start', anchor1)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor1"
-          [open]="isOpen('top-start')"
-          [options]="options"
-          placement="top-start"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Top</span>
-        <button
-          #anchor2
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('top', anchor2)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor2"
-          [open]="isOpen('top')"
-          [options]="options"
-          placement="top"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Top End</span>
-        <button
-          #anchor3
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('top-end', anchor3)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor3"
-          [open]="isOpen('top-end')"
-          [options]="options"
-          placement="top-end"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div></div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Left Start</span>
-        <button
-          #anchor4
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('left-start', anchor4)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor4"
-          [open]="isOpen('left-start')"
-          [options]="options"
-          placement="left-start"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div></div><div></div><div></div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Right Start</span>
-        <button
-          #anchor5
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('right-start', anchor5)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor5"
-          [open]="isOpen('right-start')"
-          [options]="options"
-          placement="right-start"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Left</span>
-        <button
-          #anchor6
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('left', anchor6)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor6"
-          [open]="isOpen('left')"
-          [options]="options"
-          placement="left"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div></div><div></div><div></div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Right</span>
-        <button
-          #anchor7
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('right', anchor7)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor7"
-          [open]="isOpen('right')"
-          [options]="options"
-          placement="right"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Left End</span>
-        <button
-          #anchor8
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('left-end', anchor8)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor8"
-          [open]="isOpen('left-end')"
-          [options]="options"
-          placement="left-end"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div></div><div></div><div></div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Right End</span>
-        <button
-          #anchor9
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('right-end', anchor9)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor9"
-          [open]="isOpen('right-end')"
-          [options]="options"
-          placement="right-end"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div></div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Bottom Start</span>
-        <button
-          #anchor10
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('bottom-start', anchor10)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor10"
-          [open]="isOpen('bottom-start')"
-          [options]="options"
-          placement="bottom-start"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Bottom</span>
-        <button
-          #anchor11
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('bottom', anchor11)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor11"
-          [open]="isOpen('bottom')"
-          [options]="options"
-          placement="bottom"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div
-        style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 120px;"
-      >
-        <span style="font-size: 12px;">Bottom End</span>
-        <button
-          #anchor12
-          mznButton
-          variant="base-secondary"
-          (click)="togglePlacement('bottom-end', anchor12)"
-          >...</button
-        >
-        <div
-          mznDropdown
-          [anchor]="anchor12"
-          [open]="isOpen('bottom-end')"
-          [options]="options"
-          placement="bottom-end"
-          (selected)="closeAll()"
-          (closed)="closeAll()"
-        ></div>
-      </div>
-      <div></div>
-    </div>
+      @if (selectedName()) {
+        {{ selectedName() }}
+      } @else {
+        <i mznIcon [icon]="dotVerticalIcon"></i>
+      }
+    </button>
+    <div
+      mznDropdown
+      [anchor]="anchor"
+      [open]="open()"
+      [options]="options"
+      [placement]="placement"
+      [globalPortal]="false"
+      [value]="value()"
+      (selected)="onSelect($event)"
+      (closed)="open.set(false)"
+    ></div>
   `,
 })
-class DropdownPlacementComponent {
+class DropdownPlacementItemComponent {
+  readonly dotVerticalIcon = DotVerticalIcon;
   readonly options = simpleOptions;
-  readonly openPlacement = signal<string | null>(null);
+  readonly value = signal<string | undefined>(undefined);
+  readonly open = signal(false);
 
-  isOpen(placement: string): boolean {
-    return this.openPlacement() === placement;
+  label = '';
+  placement: Placement = 'bottom-start';
+
+  selectedName(): string | undefined {
+    return this.options.find((o) => o.id === this.value())?.name;
   }
 
-  togglePlacement(placement: string, _anchor: HTMLElement): void {
-    this.openPlacement.set(
-      this.openPlacement() === placement ? null : placement,
-    );
+  toggle(): void {
+    this.open.set(!this.open());
   }
 
-  closeAll(): void {
-    this.openPlacement.set(null);
+  onSelect(option: DropdownOption): void {
+    this.value.set(option.id);
+    this.open.set(false);
   }
 }
+
+@Component({
+  selector: '[storyDropdownPlacement]',
+  standalone: true,
+  imports: [DropdownPlacementItemComponent],
+  host: {
+    style:
+      'display: inline-grid; gap: 30px; grid-auto-rows: minmax(min-content, max-content); grid-template-columns: repeat(5, max-content); justify-content: center; margin-top: 50px; width: 100%;',
+  },
+  template: `
+    <div></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Top Start'"
+      [placement]="'top-start'"
+    ></div>
+    <div storyDropdownPlacementItem [label]="'Top'" [placement]="'top'"></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Top End'"
+      [placement]="'top-end'"
+    ></div>
+    <div></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Left Start'"
+      [placement]="'left-start'"
+    ></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Right Start'"
+      [placement]="'right-start'"
+    ></div>
+    <div storyDropdownPlacementItem [label]="'Left'" [placement]="'left'"></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Right'"
+      [placement]="'right'"
+    ></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Left End'"
+      [placement]="'left-end'"
+    ></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Right End'"
+      [placement]="'right-end'"
+    ></div>
+    <div></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Bottom Start'"
+      [placement]="'bottom-start'"
+    ></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Bottom'"
+      [placement]="'bottom'"
+    ></div>
+    <div
+      storyDropdownPlacementItem
+      [label]="'Bottom End'"
+      [placement]="'bottom-end'"
+    ></div>
+    <div></div>
+  `,
+})
+class DropdownPlacementComponent {}
 
 export const PlacementExample: Story = {
   decorators: [moduleMetadata({ imports: [DropdownPlacementComponent] })],
   render: () => ({
-    template: `<story-dropdown-placement />`,
+    template: `<div storyDropdownPlacement></div>`,
   }),
 };
 
 @Component({
-  selector: 'story-dropdown-controlled',
+  selector: '[storyDropdownControlled]',
   standalone: true,
   imports: [MznDropdown, MznButton],
+  host: {
+    style:
+      'display: flex; flex-direction: column; gap: 12px; max-width: 240px;',
+  },
   template: `
-    <div
-      style="display: flex; flex-direction: column; gap: 12px; max-width: 240px; padding: 40px;"
-    >
-      <div style="display: flex; gap: 8px;">
-        <button
-          mznButton
-          size="minor"
-          variant="base-primary"
-          (mousedown)="$event.stopPropagation()"
-          (click)="$event.stopPropagation(); open.set(true)"
-          >開啟</button
-        >
-        <button
-          mznButton
-          size="minor"
-          variant="base-secondary"
-          (mousedown)="$event.stopPropagation()"
-          (click)="$event.stopPropagation(); open.set(false)"
-          >關閉</button
-        >
-      </div>
-      <button #anchor mznButton variant="base-primary" (click)="toggle()">{{
-        selectedLabel()
-      }}</button>
-      <div
-        mznDropdown
-        [anchor]="anchor"
-        [open]="open()"
-        [options]="options"
-        [value]="value()"
-        (selected)="onSelect($event)"
-        (closed)="open.set(false)"
-      ></div>
+    <div style="display: flex; gap: 8px;">
+      <button
+        mznButton
+        size="minor"
+        variant="base-primary"
+        (mousedown)="$event.stopPropagation()"
+        (click)="$event.stopPropagation(); open.set(true)"
+      >
+        開啟
+      </button>
+      <button
+        mznButton
+        size="minor"
+        variant="base-secondary"
+        (mousedown)="$event.stopPropagation()"
+        (click)="$event.stopPropagation(); open.set(false)"
+      >
+        關閉
+      </button>
     </div>
+    <button #anchor mznButton variant="base-primary" (click)="toggle()">
+      {{ selectedLabel() }}
+    </button>
+    <div
+      mznDropdown
+      [anchor]="anchor"
+      [open]="open()"
+      [options]="options"
+      [value]="value()"
+      (selected)="onSelect($event)"
+      (closed)="open.set(false)"
+    ></div>
   `,
 })
 class DropdownControlledComponent {
@@ -660,6 +509,7 @@ class DropdownControlledComponent {
 
   selectedLabel(): string {
     const matched = this.options.find((o) => o.id === this.value());
+
     return matched?.name ?? '請選擇';
   }
 
@@ -676,46 +526,49 @@ class DropdownControlledComponent {
 export const ControlledVisibility: Story = {
   decorators: [moduleMetadata({ imports: [DropdownControlledComponent] })],
   render: () => ({
-    template: `<story-dropdown-controlled />`,
+    template: `<div storyDropdownControlled></div>`,
   }),
 };
 
 @Component({
-  selector: 'story-dropdown-load-more',
+  selector: '[storyDropdownLoadMore]',
   standalone: true,
-  imports: [MznDropdown, MznButton],
+  imports: [MznDropdown, MznButton, MznTag, MznTypography],
+  host: {
+    style:
+      'display: flex; flex-direction: column; gap: 12px; max-width: 320px;',
+  },
   template: `
     <div
-      style="display: flex; flex-direction: column; gap: 12px; max-width: 320px; padding: 40px;"
-    >
-      <div style="font-size: 13px;"
-        >已載入 {{ options().length }} / {{ total }} 個選項</div
-      >
-      <div style="display: flex; gap: 8px; align-items: center;">
-        <button #anchor mznButton variant="base-primary" (click)="toggle()">{{
-          selectedLabel()
-        }}</button>
-        <div
-          mznDropdown
-          [anchor]="anchor"
-          [open]="open()"
-          [options]="options()"
-          [value]="value()"
-          [maxHeight]="300"
-          [status]="loading() ? 'loading' : undefined"
-          loadingPosition="bottom"
-          loadingText="載入中..."
-          placement="right-start"
-          (selected)="onSelect($event)"
-          (closed)="open.set(false)"
-          (reachBottom)="loadMore()"
-        ></div>
-      </div>
+      mznTag
+      [label]="'已載入 ' + options().length + ' / ' + total + ' 個選項'"
+    ></div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <button #anchor mznButton variant="base-primary" (click)="toggle()">
+        {{ selectedLabel() }}
+      </button>
+      <div
+        mznDropdown
+        [anchor]="anchor"
+        [open]="open()"
+        [options]="options()"
+        [value]="value()"
+        [maxHeight]="300"
+        [status]="loading() ? 'loading' : undefined"
+        loadingPosition="bottom"
+        loadingText="載入中..."
+        placement="right-start"
+        (selected)="onSelect($event)"
+        (closed)="open.set(false)"
+        (reachBottom)="loadMore()"
+      ></div>
+    </div>
+    <div style="font-size: 12px; color: #666;">
       @if (loading()) {
-        <div style="font-size: 12px; color: #666;">正在載入更多選項...</div>
+        <div mznTypography>正在載入更多選項...</div>
       }
       @if (!hasMore() && !loading()) {
-        <div style="font-size: 12px; color: #666;">已載入所有選項</div>
+        <div mznTypography>已載入所有選項</div>
       }
     </div>
   `,
@@ -730,6 +583,7 @@ class DropdownLoadMoreComponent {
 
   selectedLabel(): string {
     const matched = this.options().find((o) => o.id === this.value());
+
     return matched?.name ?? '請選擇';
   }
 
@@ -764,6 +618,6 @@ class DropdownLoadMoreComponent {
 export const LoadMoreOnReachBottom: Story = {
   decorators: [moduleMetadata({ imports: [DropdownLoadMoreComponent] })],
   render: () => ({
-    template: `<story-dropdown-load-more />`,
+    template: `<div storyDropdownLoadMore></div>`,
   }),
 };
