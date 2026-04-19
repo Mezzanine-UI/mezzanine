@@ -100,7 +100,8 @@ export const withCustomAction: Story = {
       <div style="background-color: #d3d3d3; height: 100px; width: 188px; display: flex; align-items: center;">
         <div mznDropdownAction
           [showActions]="true"
-          (confirmed)="onClick()"
+          mode="custom"
+          (customClicked)="onClick()"
         ></div>
       </div>
     `,
