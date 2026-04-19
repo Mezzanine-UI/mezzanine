@@ -180,7 +180,9 @@ import {
           [open]="openDropdown()"
           [options]="options()"
           placement="bottom-end"
+          zIndex="var(--mzn-z-index-popover)"
           (selected)="onBadgeSelect($event)"
+          (closed)="openDropdown.set(false)"
         ></div>
       }
     } @else {
