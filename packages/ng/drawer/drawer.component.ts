@@ -85,6 +85,7 @@ import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
     '[attr.bottomSecondaryActionSize]': 'null',
     '[attr.bottomSecondaryActionText]': 'null',
     '[attr.bottomSecondaryActionVariant]': 'null',
+    '[attr.className]': 'null',
     '[attr.contentKey]': 'null',
     '[attr.container]': 'null',
     '[attr.disableCloseOnBackdropClick]': 'null',
@@ -170,26 +171,36 @@ import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
             }
             @if (hasFilterButton()) {
               @if ((filterAreaOptions()?.length ?? 0) > 0) {
-                <button
-                  #filterDropdownAnchor
-                  mznButton
-                  variant="base-ghost"
-                  size="minor"
-                  type="button"
-                  iconType="icon-only"
-                  (click)="filterDropdownOpen.set(!filterDropdownOpen())"
-                >
-                  <i mznIcon [icon]="dotHorizontalIcon"></i>
-                </button>
-                <div
-                  mznDropdown
-                  [anchor]="filterDropdownAnchor"
-                  [open]="filterDropdownOpen()"
-                  [options]="filterAreaOptions()!"
-                  placement="bottom-end"
-                  (selected)="onFilterOptionSelected($event)"
-                  (closed)="filterDropdownOpen.set(false)"
-                ></div>
+                <!--
+                  wrapper 對齊 React Dropdown 的外層 div.mzn-dropdown，
+                  讓 button 與兄弟 mznDropdown popper div 合併成單一 flex item。
+                  否則 .mzn-drawer__filter-area 的 justify-content: space-between 在
+                  三個子元素下會把按鈕推到中間、mznDropdown 空 div 推到最右，整排
+                  layout 壞掉。
+                -->
+                <div>
+                  <button
+                    #filterDropdownAnchor
+                    mznButton
+                    variant="base-ghost"
+                    size="minor"
+                    type="button"
+                    iconType="icon-only"
+                    (click)="filterDropdownOpen.set(!filterDropdownOpen())"
+                  >
+                    <i mznIcon [icon]="dotHorizontalIcon"></i>
+                  </button>
+                  <div
+                    mznDropdown
+                    [anchor]="filterDropdownAnchor"
+                    [open]="filterDropdownOpen()"
+                    [options]="filterAreaOptions()!"
+                    placement="bottom-end"
+                    zIndex="var(--mzn-z-index-popover)"
+                    (selected)="onFilterOptionSelected($event)"
+                    (closed)="filterDropdownOpen.set(false)"
+                  ></div>
+                </div>
               } @else {
                 <button
                   mznButton
@@ -492,6 +503,13 @@ export class MznDrawer {
    */
   readonly size = input<DrawerSize>('medium');
 
+  /**
+   * 附加於 drawer 根元素（`.mzn-drawer`）的額外 class；對齊 React `className` prop。
+   * 消費者應以 `[className]="..."` 綁定，class 會與 `mzn-drawer` / `mzn-drawer--right` /
+   * size modifier 合併在同一個 DOM 元素上，與 React `cx(classes.host, ..., className)` 行為一致。
+   */
+  readonly className = input<string>();
+
   // ─── Outputs ─────────────────────────────────────────────────────────────
 
   /** 遮罩點擊事件。 */
@@ -537,7 +555,12 @@ export class MznDrawer {
   protected readonly bottomActionsClass = classes['bottom__actions'];
 
   protected readonly hostClasses = computed((): string =>
-    clsx(classes.host, classes.right, classes.size(this.size())),
+    clsx(
+      classes.host,
+      classes.right,
+      classes.size(this.size()),
+      this.className(),
+    ),
   );
 
   protected readonly hasFilterRadios = computed(
