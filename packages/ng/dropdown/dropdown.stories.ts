@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown';
@@ -324,7 +324,7 @@ export const Inside: Story = {
       'display: flex; flex-direction: column; align-items: center; gap: 8px; width: 160px;',
   },
   template: `
-    <div mznTag [label]="label"></div>
+    <div mznTag [label]="label()"></div>
     <button
       #anchor
       mznButton
@@ -343,7 +343,7 @@ export const Inside: Story = {
       [anchor]="anchor"
       [open]="open()"
       [options]="options"
-      [placement]="placement"
+      [placement]="placement()"
       [globalPortal]="false"
       [value]="value()"
       (selected)="onSelect($event)"
@@ -357,8 +357,8 @@ class DropdownPlacementItemComponent {
   readonly value = signal<string | undefined>(undefined);
   readonly open = signal(false);
 
-  label = '';
-  placement: Placement = 'bottom-start';
+  readonly label = input<string>('');
+  readonly placement = input<Placement>('bottom-start');
 
   selectedName(): string | undefined {
     return this.options.find((o) => o.id === this.value())?.name;
@@ -368,9 +368,10 @@ class DropdownPlacementItemComponent {
     this.open.set(!this.open());
   }
 
+  // MznDropdown 的 single mode 會自動 emit closed,透過 (closed) handler
+  // 同步 open signal。此處只更新 value,不需重複 open.set(false)。
   onSelect(option: DropdownOption): void {
     this.value.set(option.id);
-    this.open.set(false);
   }
 }
 
@@ -488,7 +489,20 @@ export const PlacementExample: Story = {
         關閉
       </button>
     </div>
-    <button #anchor mznButton variant="base-primary" (click)="toggle()">
+    <!--
+      React 端 trigger 包在 Dropdown 裡,其根 div.mzn-dropdown 為 block,
+      Button 為 inline-flex,寬度只吃自身內容。Angular 的 button 是 flex
+      column 的直接子元素,預設 align-items: stretch 會讓它撐滿 240px
+      (flex column 的 max-width)。加上 align-self: flex-start 關掉 stretch,
+      讓按鈕寬度僅與文字一致,對齊 React 視覺。
+    -->
+    <button
+      #anchor
+      mznButton
+      variant="base-primary"
+      style="align-self: flex-start;"
+      (click)="toggle()"
+    >
       {{ selectedLabel() }}
     </button>
     <div
@@ -517,9 +531,10 @@ class DropdownControlledComponent {
     this.open.set(!this.open());
   }
 
+  // 單選模式下 MznDropdown 自動 emit closed → 透過 (closed)="open.set(false)"
+  // 同步,這裡不需再手動設 false。
   onSelect(option: DropdownOption): void {
     this.value.set(option.id);
-    this.open.set(false);
   }
 }
 
