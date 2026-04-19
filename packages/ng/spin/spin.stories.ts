@@ -1,6 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MznDescription } from '@mezzanine-ui/ng/description';
+import { MznDescriptionContent } from '@mezzanine-ui/ng/description';
 import { MznSpin } from './spin.component';
 import { MznModal } from '../modal/modal.component';
 import { MznModalHeader } from '../modal/modal-header.component';
@@ -42,15 +44,19 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <div mznSpin
-        [loading]="loading"
-        [size]="size"
-        [stretch]="stretch"
-        [description]="description || undefined"
-        [descriptionClassName]="descriptionClassName || undefined"
-        [color]="color || undefined"
-        [trackColor]="trackColor || undefined"
-      ></div>
+      <div style="display: inline-grid; gap: 60px; grid-template-columns: repeat(3, 140px);">
+        <div style="height: 100%; width: 100%;">
+          <div mznSpin
+            [loading]="loading"
+            [size]="size"
+            [stretch]="stretch"
+            [description]="description || undefined"
+            [descriptionClassName]="descriptionClassName || undefined"
+            [color]="color || undefined"
+            [trackColor]="trackColor || undefined"
+          ></div>
+        </div>
+      </div>
     `,
   }),
 };
@@ -67,12 +73,21 @@ export const Basic: Story = {
 };
 
 export const Nested: Story = {
+  decorators: [
+    moduleMetadata({
+      imports: [MznDescription, MznDescriptionContent],
+    }),
+  ],
   render: () => ({
     template: `
       <div style="display: grid; gap: 16px;">
         <div mznSpin description="Loading..." [loading]="true">
-          <div style="width: 300px; height: 300px; padding: 16px; border: 1px solid #eee;">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          <div style="width: 300px; height: 300px;">
+            <div mznDescription title="Test Description">
+              <div mznDescriptionContent>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -81,7 +96,7 @@ export const Nested: Story = {
 };
 
 @Component({
-  selector: 'mzn-spin-on-modal-demo',
+  selector: '[storySpinOnModal]',
   standalone: true,
   imports: [MznSpin, MznModal, MznModalHeader, MznButton],
   template: `
@@ -104,18 +119,18 @@ export const Nested: Story = {
     </div>
   `,
 })
-class SpinOnModalDemoComponent {
+class StorySpinOnModalComponent {
   readonly open = signal(false);
 }
 
 export const OnModal: Story = {
   decorators: [
     moduleMetadata({
-      imports: [SpinOnModalDemoComponent, BrowserAnimationsModule],
+      imports: [StorySpinOnModalComponent, BrowserAnimationsModule],
     }),
   ],
   render: () => ({
-    template: `<mzn-spin-on-modal-demo />`,
+    template: `<div storySpinOnModal></div>`,
   }),
 };
 
