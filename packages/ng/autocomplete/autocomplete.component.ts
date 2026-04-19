@@ -776,25 +776,47 @@ export class MznAutocomplete
     },
   );
 
-  /** 在 filteredOptions 基礎上：created 項目 bubble to top。 */
+  /**
+   * 根據 mode + inputPosition 決定每個選項的 `checkSite`,對齊 React
+   * `AutoComplete.tsx:934-943`:
+   * - `multiple` + `outside` → `'prefix'`(Checkbox 顯示於選項左側)
+   * - `multiple` + `inside`  → `'suffix'`(check icon 於右側,視覺上更輕)
+   * - `single`(任一 inputPosition) → `'suffix'`
+   *
+   * 沒有此轉換時,MznDropdownItem 會依 `option.checkSite ?? 'suffix'` 預設
+   * 全部落到 suffix,導致 outside multi-select 缺少左側 Checkbox。
+   */
+  private readonly resolvedCheckSite = computed((): 'prefix' | 'suffix' =>
+    this.mode() === 'multiple' && this.inputPosition() !== 'inside'
+      ? 'prefix'
+      : 'suffix',
+  );
+
+  /**
+   * 在 filteredOptions 基礎上:
+   * - 將 `checkSite` 覆寫為 mode+inputPosition 計算出的結果。
+   * - 建立項 bubble to top 並加上 `shortcutText = 'New'`(對齊 React
+   *   `AutoComplete.tsx:947`)。
+   */
   protected readonly dropdownOptions = computed(
     (): ReadonlyArray<DropdownOption> => {
       const filtered = this.filteredOptions();
-
-      if (this.creationTracker.allSize === 0) return filtered;
-
+      const checkSite = this.resolvedCheckSite();
       const created: DropdownOption[] = [];
       const rest: DropdownOption[] = [];
 
       for (const opt of filtered) {
+        const mapped: DropdownOption = { ...opt, checkSite };
+
         if (this.creationTracker.hasCreated(opt.id)) {
-          created.push(opt);
+          mapped.shortcutText = mapped.shortcutText ?? 'New';
+          created.push(mapped);
         } else {
-          rest.push(opt);
+          rest.push(mapped);
         }
       }
 
-      return [...created, ...rest];
+      return created.length ? [...created, ...rest] : rest;
     },
   );
 

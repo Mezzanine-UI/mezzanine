@@ -140,6 +140,7 @@ export interface DropdownFlatTreeNode {
                   <div
                     mznDropdownItemCard
                     [active]="isActive(groupedOptionIndex(group, i))"
+                    [appendContent]="option.shortcutText"
                     [checked]="isSelected(option)"
                     [checkSite]="option.checkSite ?? 'suffix'"
                     [disabled]="disabled()"
@@ -323,6 +324,7 @@ export interface DropdownFlatTreeNode {
               <div
                 mznDropdownItemCard
                 [active]="isActive(i)"
+                [appendContent]="option.shortcutText"
                 [checked]="isSelected(option)"
                 [checkSite]="option.checkSite ?? 'suffix'"
                 [disabled]="disabled()"
