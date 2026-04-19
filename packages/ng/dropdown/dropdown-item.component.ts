@@ -96,282 +96,170 @@ export interface DropdownFlatTreeNode {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (resolvedMaxHeight()) {
-      <div
-        #listWrapper
-        [class]="listWrapperClass"
-        [style.max-height]="resolvedMaxHeight()"
-        [style.min-width]="resolvedMinWidth()"
-        [style.width]="resolvedCustomWidth()"
-        (scroll)="onListWrapperScroll($event)"
-      >
-        <ul
-          [id]="listboxId() ?? null"
-          [attr.aria-label]="resolvedListboxLabel()"
-          [class]="listClass"
-          [style.max-height]="resolvedMaxHeight()"
-          role="listbox"
-          [tabIndex]="-1"
-        >
-          @if (headerContentTemplate(); as tpl) {
-            <li [class]="listHeaderClass" role="presentation">
-              <div [class]="listHeaderInnerClass">
-                <ng-container *ngTemplateOutlet="tpl" />
-              </div>
-            </li>
-          }
-          @if (status() && shouldShowFullStatus()) {
-            <div
-              mznDropdownStatus
-              [status]="status()!"
-              [emptyIcon]="emptyIcon()"
-              [emptyText]="resolvedEmptyText()"
-              [loadingText]="resolvedLoadingText()"
-            ></div>
-          } @else {
-            @if (type() === 'grouped') {
-              @for (group of options(); track group.id) {
-                <span [class]="groupLabelClass">{{ group.name }}</span>
-                @for (
-                  option of group.children ?? [];
-                  track option.id;
-                  let i = $index
-                ) {
-                  <div
-                    mznDropdownItemCard
-                    [active]="isActive(groupedOptionIndex(group, i))"
-                    [appendContent]="option.shortcutText"
-                    [checked]="isSelected(option)"
-                    [checkSite]="option.checkSite ?? 'suffix'"
-                    [disabled]="disabled()"
-                    [followText]="followText()"
-                    [id]="optionId(groupedOptionIndex(group, i))"
-                    [label]="option.name"
-                    [mode]="mode()"
-                    [showUnderline]="option.showUnderline ?? false"
-                    [validate]="option.validate ?? 'default'"
-                    (clicked)="onOptionClick(option)"
-                    (hovered)="itemHovered.emit(groupedOptionIndex(group, i))"
-                  ></div>
-                }
-              }
-            } @else if (type() === 'tree') {
-              @for (item of flattenedTreeOptions(); track item.option.id) {
-                <div
-                  mznDropdownItemCard
-                  [active]="isActive(item.index)"
-                  [checked]="isTreeNodeChecked(item.option)"
-                  [checkSite]="
-                    resolveTreeCheckSite(item.option, item.hasChildren)
-                  "
-                  [disabled]="disabled()"
-                  [followText]="followText()"
-                  [id]="optionId(item.index)"
-                  [indeterminate]="isTreeNodeIndeterminate(item.option)"
-                  [label]="item.option.name"
-                  [level]="item.level"
-                  [mode]="mode()"
-                  [prependIcon]="
-                    resolveTreePrependIcon(
-                      item.option,
-                      item.hasChildren,
-                      item.level
-                    )
-                  "
-                  [showUnderline]="item.option.showUnderline ?? false"
-                  [validate]="item.option.validate ?? 'default'"
-                  (clicked)="onTreeOptionClick(item.option, item.hasChildren)"
-                  (checkedChange)="onTreeCheckedChange(item.option)"
-                  (hovered)="itemHovered.emit(item.index)"
-                ></div>
-              }
-            } @else {
-              @for (option of options(); track option.id; let i = $index) {
-                <div
-                  mznDropdownItemCard
-                  [active]="isActive(i)"
-                  [checked]="isSelected(option)"
-                  [checkSite]="option.checkSite ?? 'suffix'"
-                  [disabled]="disabled()"
-                  [followText]="followText()"
-                  [id]="optionId(i)"
-                  [label]="option.name"
-                  [mode]="mode()"
-                  [prependIcon]="option.icon"
-                  [showUnderline]="option.showUnderline ?? false"
-                  [validate]="option.validate ?? 'default'"
-                  (clicked)="onOptionClick(option)"
-                  (hovered)="itemHovered.emit(i)"
-                ></div>
-              }
-            }
-            @if (shouldShowBottomLoading()) {
-              <li [class]="loadingMoreClass" aria-live="polite" role="status">
-                <div
-                  mznDropdownStatus
-                  status="loading"
-                  [loadingText]="resolvedLoadingText()"
-                ></div>
-              </li>
-            }
-          }
-          @if (actionConfig(); as ac) {
-            @if (ac.showActions) {
-              <div>
-                <div
-                  mznDropdownAction
-                  [showActions]="ac.showActions ?? false"
-                  [showTopBar]="ac.showTopBar ?? false"
-                  [actionText]="ac.actionText"
-                  [cancelText]="ac.cancelText"
-                  [clearText]="ac.clearText"
-                  [confirmText]="ac.confirmText"
-                  [mode]="resolvedActionMode()"
-                  (cancelled)="actionCancelled.emit()"
-                  (confirmed)="actionConfirmed.emit()"
-                  (cleared)="actionCleared.emit()"
-                  (customClicked)="actionCustomClicked.emit()"
-                ></div>
-              </div>
-            }
-          }
-        </ul>
-      </div>
-    } @else {
-      <ul
-        [id]="listboxId() ?? null"
-        [attr.aria-label]="resolvedListboxLabel()"
-        [class]="listClass"
-        [style.min-width]="resolvedMinWidth()"
-        [style.width]="resolvedCustomWidth()"
-        role="listbox"
-        [tabIndex]="-1"
-        (scroll)="onListWrapperScroll($event)"
-      >
-        @if (headerContentTemplate(); as tpl) {
-          <li [class]="listHeaderClass" role="presentation">
-            <div [class]="listHeaderInnerClass">
-              <ng-container *ngTemplateOutlet="tpl" />
-            </div>
-          </li>
-        }
-        @if (status() && shouldShowFullStatus()) {
-          <div
-            mznDropdownStatus
-            [status]="status()!"
-            [emptyIcon]="emptyIcon()"
-            [emptyText]="resolvedEmptyText()"
-            [loadingText]="resolvedLoadingText()"
-          ></div>
-        } @else {
-          @if (type() === 'grouped') {
-            @for (group of options(); track group.id) {
-              <span [class]="groupLabelClass">{{ group.name }}</span>
-              @for (
-                option of group.children ?? [];
-                track option.id;
-                let i = $index
-              ) {
-                <div
-                  mznDropdownItemCard
-                  [active]="isActive(groupedOptionIndex(group, i))"
-                  [checked]="isSelected(option)"
-                  [checkSite]="option.checkSite ?? 'suffix'"
-                  [disabled]="disabled()"
-                  [followText]="followText()"
-                  [id]="optionId(groupedOptionIndex(group, i))"
-                  [label]="option.name"
-                  [mode]="mode()"
-                  [showUnderline]="option.showUnderline ?? false"
-                  [validate]="option.validate ?? 'default'"
-                  (clicked)="onOptionClick(option)"
-                  (hovered)="itemHovered.emit(groupedOptionIndex(group, i))"
-                ></div>
-              }
-            }
-          } @else if (type() === 'tree') {
-            @for (item of flattenedTreeOptions(); track item.option.id) {
+    <ng-template #bodyTpl>
+      @if (status() && shouldShowFullStatus()) {
+        <div
+          mznDropdownStatus
+          [status]="status()!"
+          [emptyIcon]="emptyIcon()"
+          [emptyText]="resolvedEmptyText()"
+          [loadingText]="resolvedLoadingText()"
+        ></div>
+      } @else {
+        @if (type() === 'grouped') {
+          @for (group of options(); track group.id) {
+            <span [class]="groupLabelClass">{{ group.name }}</span>
+            @for (
+              option of group.children ?? [];
+              track option.id;
+              let i = $index
+            ) {
               <div
                 mznDropdownItemCard
-                [active]="isActive(item.index)"
-                [checked]="isTreeNodeChecked(item.option)"
-                [checkSite]="
-                  resolveTreeCheckSite(item.option, item.hasChildren)
-                "
-                [disabled]="disabled()"
-                [followText]="followText()"
-                [id]="optionId(item.index)"
-                [indeterminate]="isTreeNodeIndeterminate(item.option)"
-                [label]="item.option.name"
-                [level]="item.level"
-                [mode]="mode()"
-                [prependIcon]="
-                  resolveTreePrependIcon(
-                    item.option,
-                    item.hasChildren,
-                    item.level
-                  )
-                "
-                [showUnderline]="item.option.showUnderline ?? false"
-                [validate]="item.option.validate ?? 'default'"
-                (clicked)="onTreeOptionClick(item.option, item.hasChildren)"
-                (checkedChange)="onTreeCheckedChange(item.option)"
-                (hovered)="itemHovered.emit(item.index)"
-              ></div>
-            }
-          } @else {
-            @for (option of options(); track option.id; let i = $index) {
-              <div
-                mznDropdownItemCard
-                [active]="isActive(i)"
+                [active]="isActive(groupedOptionIndex(group, i))"
                 [appendContent]="option.shortcutText"
                 [checked]="isSelected(option)"
                 [checkSite]="option.checkSite ?? 'suffix'"
                 [disabled]="disabled()"
                 [followText]="followText()"
-                [id]="optionId(i)"
+                [id]="optionId(groupedOptionIndex(group, i))"
                 [label]="option.name"
                 [mode]="mode()"
-                [prependIcon]="option.icon"
                 [showUnderline]="option.showUnderline ?? false"
                 [validate]="option.validate ?? 'default'"
                 (clicked)="onOptionClick(option)"
-                (hovered)="itemHovered.emit(i)"
+                (hovered)="itemHovered.emit(groupedOptionIndex(group, i))"
               ></div>
             }
           }
-          @if (shouldShowBottomLoading()) {
-            <li [class]="loadingMoreClass" aria-live="polite" role="status">
-              <div
-                mznDropdownStatus
-                status="loading"
-                [loadingText]="resolvedLoadingText()"
-              ></div>
-            </li>
+        } @else if (type() === 'tree') {
+          @for (item of flattenedTreeOptions(); track item.option.id) {
+            <div
+              mznDropdownItemCard
+              [active]="isActive(item.index)"
+              [appendContent]="item.option.shortcutText"
+              [checked]="isTreeNodeChecked(item.option)"
+              [checkSite]="resolveTreeCheckSite(item.option, item.hasChildren)"
+              [disabled]="disabled()"
+              [followText]="followText()"
+              [id]="optionId(item.index)"
+              [indeterminate]="isTreeNodeIndeterminate(item.option)"
+              [label]="item.option.name"
+              [level]="item.level"
+              [mode]="mode()"
+              [prependIcon]="
+                resolveTreePrependIcon(
+                  item.option,
+                  item.hasChildren,
+                  item.level
+                )
+              "
+              [showUnderline]="item.option.showUnderline ?? false"
+              [validate]="item.option.validate ?? 'default'"
+              (clicked)="onTreeOptionClick(item.option, item.hasChildren)"
+              (checkedChange)="onTreeCheckedChange(item.option)"
+              (hovered)="itemHovered.emit(item.index)"
+            ></div>
+          }
+        } @else {
+          @for (option of options(); track option.id; let i = $index) {
+            <div
+              mznDropdownItemCard
+              [active]="isActive(i)"
+              [appendContent]="option.shortcutText"
+              [checked]="isSelected(option)"
+              [checkSite]="option.checkSite ?? 'suffix'"
+              [disabled]="disabled()"
+              [followText]="followText()"
+              [id]="optionId(i)"
+              [label]="option.name"
+              [mode]="mode()"
+              [prependIcon]="option.icon"
+              [showUnderline]="option.showUnderline ?? false"
+              [validate]="option.validate ?? 'default'"
+              (clicked)="onOptionClick(option)"
+              (hovered)="itemHovered.emit(i)"
+            ></div>
           }
         }
-        @if (actionConfig(); as ac) {
-          @if (ac.showActions) {
-            <div>
-              <div
-                mznDropdownAction
-                [showActions]="ac.showActions ?? false"
-                [showTopBar]="ac.showTopBar ?? false"
-                [actionText]="ac.actionText"
-                [cancelText]="ac.cancelText"
-                [clearText]="ac.clearText"
-                [confirmText]="ac.confirmText"
-                [mode]="resolvedActionMode()"
-                (cancelled)="actionCancelled.emit()"
-                (confirmed)="actionConfirmed.emit()"
-                (cleared)="actionCleared.emit()"
-                (customClicked)="actionCustomClicked.emit()"
-              ></div>
-            </div>
-          }
+        @if (shouldShowBottomLoading()) {
+          <li [class]="loadingMoreClass" aria-live="polite" role="status">
+            <div
+              mznDropdownStatus
+              status="loading"
+              [loadingText]="resolvedLoadingText()"
+            ></div>
+          </li>
         }
-      </ul>
-    }
+      }
+    </ng-template>
+    <!--
+      React 的 DOM hierarchy(DropdownItem.tsx:992-1080):
+        <ul class="list">
+          {header ? <li class="list-header">...</li> : null}
+          {maxHeight
+            ? <div class="list-wrapper" style={{ maxHeight }}>{body}</div>
+            : {body}}
+          {action ? action : null}
+        </ul>
+      關鍵點:scroll container 是 <ul> 內的 <div class="list-wrapper">,
+      sticky <li class="list-header"> 是 ul 的直接子元素(與 wrapper 同層、
+      在其之上),這樣 header 永遠固定顯示、只有 options 區域在滾動。
+      如果把 wrapper 放在 ul 外面(舊 Angular 做法),ul 本身 overflow:hidden
+      會把 options 裁切到 max-height,wrapper 則看不到任何 overflow,
+      onScroll 永不觸發 → onReachBottom / onLeaveBottom 整條 infinite-scroll
+      鏈路失效。
+    -->
+    <ul
+      [id]="listboxId() ?? null"
+      [attr.aria-label]="resolvedListboxLabel()"
+      [class]="listClass"
+      [style.max-height]="resolvedMaxHeight()"
+      [style.min-width]="resolvedMinWidth()"
+      [style.width]="resolvedCustomWidth()"
+      role="listbox"
+      [tabIndex]="-1"
+    >
+      @if (headerContentTemplate(); as tpl) {
+        <li [class]="listHeaderClass" role="presentation">
+          <div [class]="listHeaderInnerClass">
+            <ng-container *ngTemplateOutlet="tpl" />
+          </div>
+        </li>
+      }
+      @if (resolvedMaxHeight()) {
+        <div
+          #listWrapper
+          [class]="listWrapperClass"
+          [style.max-height]="resolvedMaxHeight()"
+          (scroll)="onListWrapperScroll($event)"
+        >
+          <ng-container *ngTemplateOutlet="bodyTpl" />
+        </div>
+      } @else {
+        <ng-container *ngTemplateOutlet="bodyTpl" />
+      }
+      @if (actionConfig(); as ac) {
+        @if (ac.showActions) {
+          <div>
+            <div
+              mznDropdownAction
+              [showActions]="ac.showActions ?? false"
+              [showTopBar]="ac.showTopBar ?? false"
+              [actionText]="ac.actionText"
+              [cancelText]="ac.cancelText"
+              [clearText]="ac.clearText"
+              [confirmText]="ac.confirmText"
+              [mode]="resolvedActionMode()"
+              (cancelled)="actionCancelled.emit()"
+              (confirmed)="actionConfirmed.emit()"
+              (cleared)="actionCleared.emit()"
+              (customClicked)="actionCustomClicked.emit()"
+            ></div>
+          </div>
+        }
+      }
+    </ul>
   `,
 })
 export class MznDropdownItem {
