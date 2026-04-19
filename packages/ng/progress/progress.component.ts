@@ -64,12 +64,10 @@ export interface ProgressPercentProps {
   imports: [MznIcon, MznTypography],
   host: {
     '[class]': 'hostClasses()',
-    '[attr.error]': 'null',
     '[attr.icons]': 'null',
     '[attr.percent]': 'null',
     '[attr.percentProps]': 'null',
     '[attr.status]': 'null',
-    '[attr.success]': 'null',
     '[attr.tick]': 'null',
     '[attr.type]': 'null',
   },
@@ -106,13 +104,6 @@ export class MznProgress implements AfterViewInit {
   private readonly tickLeftSignal = signal<string | undefined>(undefined);
 
   /**
-   * 快速設定為錯誤狀態（等同 status="error"）。
-   * 若同時設定 `status`，`status` 優先。
-   * @default false
-   */
-  readonly error = input(false);
-
-  /**
    * 自訂狀態圖示。
    */
   readonly icons = input<{
@@ -132,16 +123,10 @@ export class MznProgress implements AfterViewInit {
   readonly percentProps = input<ProgressPercentProps>();
 
   /**
-   * 強制指定進度狀態。未設定時依 percent 自動判斷。
+   * 強制指定進度狀態。未設定時依 percent 自動判斷
+   * （percent < 100 ⇒ `enabled`，percent = 100 ⇒ `success`）。
    */
   readonly status = input<ProgressStatus>();
-
-  /**
-   * 快速設定為成功狀態（等同 status="success"）。
-   * 若同時設定 `status`，`status` 優先。
-   * @default false
-   */
-  readonly success = input(false);
 
   /**
    * 進度條上的標記位置（0～100）。
@@ -163,8 +148,6 @@ export class MznProgress implements AfterViewInit {
     const explicit = this.status();
 
     if (explicit) return explicit;
-    if (this.error()) return ProgressStatuses.error;
-    if (this.success()) return ProgressStatuses.success;
 
     return this.percent() < 100
       ? ProgressStatuses.enabled
