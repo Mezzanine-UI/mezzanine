@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznNotificationCenter } from './notification-center.component';
 import { MznNotificationCenterDrawer } from './notification-center-drawer.component';
 import type { NotificationItem } from './notification';
@@ -69,78 +70,84 @@ export const Severity: Story = {
 };
 
 @Component({
-  selector: 'story-notification-add-method',
+  selector: '[storyNotificationAddMethod]',
   standalone: true,
-  imports: [MznButton, MznNotificationCenter, MznNotificationCenterDrawer],
+  imports: [
+    MznButton,
+    MznTypography,
+    MznNotificationCenter,
+    MznNotificationCenterDrawer,
+  ],
+  host: {
+    style: 'display: flex; flex-direction: column; gap: 16px;',
+  },
   template: `
-    <div style="display: flex; flex-direction: column; gap: 16px;">
-      <h3 style="margin: 0; font-size: 24px;">
-        使用 NotificationCenter.add 方法
-      </h3>
-      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button mznButton variant="base-primary" (click)="addSuccess()">
-          添加成功通知（帶確認/取消）
-        </button>
-        <button mznButton variant="base-primary" (click)="addError()">
-          添加錯誤通知
-        </button>
-        <button mznButton variant="base-primary" (click)="addWarning()">
-          添加警告通知（3秒後自動移除）
-        </button>
-        <button mznButton variant="base-primary" (click)="addInfo()">
-          添加資訊通知（5秒自動關閉）
-        </button>
-        <button mznButton variant="base-primary" (click)="addMultiple()">
-          連續添加多個通知
-        </button>
-      </div>
+    <h3 mznTypography variant="h3" style="margin: 0;">
+      使用 NotificationCenter.add 方法
+    </h3>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button mznButton variant="base-primary" (click)="addSuccess()">
+        添加成功通知（帶確認/取消）
+      </button>
+      <button mznButton variant="base-primary" (click)="addError()">
+        添加錯誤通知
+      </button>
+      <button mznButton variant="base-primary" (click)="addWarning()">
+        添加警告通知（3秒後自動移除）
+      </button>
+      <button mznButton variant="base-primary" (click)="addInfo()">
+        添加資訊通知（5秒自動關閉）
+      </button>
+      <button mznButton variant="base-primary" (click)="addMultiple()">
+        連續添加多個通知
+      </button>
+    </div>
 
-      <!--
+    <!--
         Toast stack (top-right) — each entry is a per-item MznNotificationCenter
         in notification mode. Mirrors the floating notifications React renders
         via NotificationCenter.add() ({ type: 'notification' }) into the global
         notification-center-root portal.
       -->
-      <div
-        style="position: fixed; top: 16px; right: 32px; display: flex; flex-direction: column; align-items: flex-end; gap: 16px; z-index: 1000;"
-      >
-        @for (item of toasts(); track item.key) {
-          <div
-            mznNotificationCenter
-            type="notification"
-            [severity]="item.severity ?? 'info'"
-            [title]="item.title ?? ''"
-            [description]="item.description ?? ''"
-            [cancelButtonText]="item.cancelButtonText ?? 'Cancel'"
-            [confirmButtonText]="item.confirmButtonText ?? 'Confirm'"
-            [showConfirmButton]="!!item.confirmButtonText"
-            [showCancelButton]="!!item.cancelButtonText"
-            [duration]="item._duration ?? false"
-            [reference]="item.key ?? ''"
-            (confirmed)="remove(item.key)"
-            (cancelled)="remove(item.key)"
-            (closed)="remove($event)"
-          ></div>
-        }
-      </div>
+    <div
+      style="position: fixed; top: 16px; right: 32px; display: flex; flex-direction: column; align-items: flex-end; gap: 16px; z-index: 1000;"
+    >
+      @for (item of toasts(); track item.key) {
+        <div
+          mznNotificationCenter
+          type="notification"
+          [severity]="item.severity ?? 'info'"
+          [title]="item.title ?? ''"
+          [description]="item.description ?? ''"
+          [cancelButtonText]="item.cancelButtonText ?? 'Cancel'"
+          [confirmButtonText]="item.confirmButtonText ?? 'Confirm'"
+          [showConfirmButton]="!!item.confirmButtonText"
+          [showCancelButton]="!!item.cancelButtonText"
+          [duration]="item._duration ?? false"
+          [reference]="item.key ?? ''"
+          (confirmed)="remove(item.key)"
+          (cancelled)="remove(item.key)"
+          (closed)="remove($event)"
+        ></div>
+      }
+    </div>
 
-      <!--
+    <!--
         Drawer list — same items, presented as a grouped list.
       -->
-      <div
-        mznNotificationCenterDrawer
-        [open]="drawerOpen()"
-        title="通知中心"
-        [notificationList]="drawerList()"
-        [filterBarShow]="true"
-        filterBarAllRadioLabel="全部"
-        filterBarReadRadioLabel="已讀"
-        filterBarUnreadRadioLabel="未讀"
-        [filterBarShowUnreadButton]="true"
-        filterBarCustomButtonLabel="全部已讀"
-        (closed)="drawerOpen.set(false)"
-      ></div>
-    </div>
+    <div
+      mznNotificationCenterDrawer
+      [open]="drawerOpen()"
+      title="通知中心"
+      [notificationList]="drawerList()"
+      [filterBarShow]="true"
+      filterBarAllRadioLabel="全部"
+      filterBarReadRadioLabel="已讀"
+      filterBarUnreadRadioLabel="未讀"
+      [filterBarShowUnreadButton]="true"
+      filterBarCustomButtonLabel="全部已讀"
+      (closed)="drawerOpen.set(false)"
+    ></div>
   `,
 })
 class AddMethodComponent {
@@ -273,7 +280,7 @@ export const AddMethod: Story = {
       imports: [AddMethodComponent],
     }),
   ],
-  render: () => ({ template: `<story-notification-add-method />` }),
+  render: () => ({ template: `<div storyNotificationAddMethod></div>` }),
 };
 
 const SAMPLE_LIST: readonly NotificationItem[] = [
