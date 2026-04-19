@@ -30,9 +30,11 @@
       pointer-events: none;
     }
 
-    // Inside trigger uses a plain Input instead of SelectTrigger in some cases.
-    // Hide it consistently so the host collapses when dropdown is closed.
-    .#{input.$prefix} {
+    // Inside trigger uses a plain Input (React) or an [mznTextField] div
+    // (Angular) instead of SelectTrigger in some cases. Hide both so the
+    // host collapses when the dropdown is closed, regardless of platform.
+    .#{input.$prefix},
+    .#{text-field.$prefix} {
       opacity: 0;
       pointer-events: none;
     }
