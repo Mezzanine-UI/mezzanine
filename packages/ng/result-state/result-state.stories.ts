@@ -114,12 +114,30 @@ export const WithActions: Story = {
   render: () => ({
     template: `
       <div style="display: flex; flex-direction: column; gap: 48px;">
+        <!-- 對齊 React 變體 1：actions object（secondaryButton only）+ size="sub" -->
         <div mznResultState description="Your changes have been saved successfully." size="sub" title="Changes Saved" type="success">
-          <button mznButton actions variant="base-secondary">Continue</button>
+          <button mznButton actions size="sub" variant="base-secondary">Continue</button>
         </div>
+        <!-- 對齊 React 變體 2：actions object（secondary + primary）+ default size -->
         <div mznResultState description="The operation failed. You can try again or go back to the previous page." title="Operation Failed" type="error">
           <button mznButton actions variant="base-secondary">Go Back</button>
           <button mznButton actions variant="base-primary">Try Again</button>
+        </div>
+        <!--
+          對齊 React 變體 3：children 模式（單一 Button）。React 透過 cloneElement
+          將 size 與 variant="base-secondary" 注入 child；Angular 的 content projection
+          無法 cloneElement，需要呼叫端顯式宣告。
+        -->
+        <div mznResultState description="Your changes have been saved successfully." size="sub" title="Changes Saved" type="success">
+          <button mznButton actions size="sub" variant="base-secondary">Button 1</button>
+        </div>
+        <!--
+          對齊 React 變體 4：children 模式（雙 Button）。React cloneElement 會把
+          第一個 button 視為 secondary、第二個視為 primary；Angular 需顯式宣告。
+        -->
+        <div mznResultState description="Your changes have been saved successfully." size="sub" title="Changes Saved" type="success">
+          <button mznButton actions size="sub" variant="base-secondary">Button 1</button>
+          <button mznButton actions size="sub" variant="base-primary">Button 2</button>
         </div>
       </div>
     `,
