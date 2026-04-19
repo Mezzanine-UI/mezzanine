@@ -9,6 +9,7 @@ import {
   OnInit,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   notificationClasses as classes,
@@ -23,6 +24,8 @@ import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznBadge } from '@mezzanine-ui/ng/badge';
 import { MznButton, MznButtonGroup } from '@mezzanine-ui/ng/button';
+import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
+import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import {
   buildTransitionString,
@@ -55,7 +58,15 @@ import {
 @Component({
   selector: '[mznNotificationCenter]',
   standalone: true,
-  imports: [MznIcon, MznBadge, MznButton, MznButtonGroup, MznTypography],
+  imports: [
+    MznIcon,
+    MznBadge,
+    MznButton,
+    MznButtonGroup,
+    MznDropdown,
+    MznPopper,
+    MznTypography,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
@@ -123,16 +134,28 @@ import {
           [class]="timeStampClass"
           >{{ formattedTimeStamp() }}</span
         >
+        @if (isToday() && timeStampAnchor()) {
+          <div
+            mznPopper
+            [anchor]="timeStampAnchor()"
+            [open]="true"
+            placement="bottom"
+            [offsetOptions]="timeStampOffsetOptions"
+            [arrowOptions]="timeStampArrowOptions"
+            [class]="timeStampPopperClass"
+            [style.z-index]="'var(--mzn-z-index-popover)'"
+          >
+            <span mznTypography [class]="timeStampTextClass">{{
+              rawTimeStamp()
+            }}</span>
+          </div>
+        }
       }
     </div>
 
     @if (type() === 'drawer') {
-      <!--
-        TODO: 對齊 React 的 <Dropdown><Button>...</Button></Dropdown> 完整結構
-        與 timestamp hover <Popper>。目前先渲染 dot button + 紅點徽章，
-        DOM 跟 React 的 Dropdown portaled listbox 差一層，後續補上。
-      -->
       <button
+        #dotTrigger
         mznButton
         variant="base-ghost"
         [class]="dotIconButtonClass"
@@ -150,6 +173,16 @@ import {
           (click)="onBadgeClick($event)"
         ></i>
       </button>
+      @if (options().length > 0) {
+        <div
+          mznDropdown
+          [anchor]="dotTrigger"
+          [open]="openDropdown()"
+          [options]="options()"
+          placement="bottom-end"
+          (selected)="onBadgeSelect($event)"
+        ></div>
+      }
     } @else {
       <i
         mznIcon
@@ -251,6 +284,18 @@ export class MznNotificationCenter implements OnInit {
   protected readonly iconContainerClass = classes.iconContainer;
   protected readonly severityIconClass = classes.severityIcon;
   protected readonly bodyClass = classes.body;
+  protected readonly timeStampPopperClass = classes.timeStampPopper;
+  protected readonly timeStampTextClass = classes.timeStampText;
+  protected readonly timeStampOffsetOptions = { mainAxis: 8 };
+  protected readonly timeStampArrowOptions = {
+    className: classes.timeStampPopperArrow,
+    enabled: true,
+    padding: 0,
+  };
+
+  private readonly timeStampEl =
+    viewChild<ElementRef<HTMLElement>>('timeStampRef');
+  protected readonly timeStampAnchor = signal<HTMLElement | null>(null);
   protected readonly bodyContentClass = classes.bodyContent;
   protected readonly titleClass = classes.title;
   protected readonly contentClass = classes.content;
@@ -282,6 +327,23 @@ export class MznNotificationCenter implements OnInit {
     const ts = this.timeStamp();
     const d = ts instanceof Date ? ts : new Date(ts);
     return Number.isNaN(d.getTime()) ? null : d;
+  });
+
+  protected readonly isToday = computed((): boolean => {
+    const d = this.parsedTimeStamp();
+    if (!d) return false;
+    const now = new Date();
+    return (
+      d.getFullYear() === now.getFullYear() &&
+      d.getMonth() === now.getMonth() &&
+      d.getDate() === now.getDate()
+    );
+  });
+
+  protected readonly rawTimeStamp = computed((): string => {
+    const ts = this.timeStamp();
+    if (ts instanceof Date) return ts.toLocaleString(this.timeStampLocale());
+    return String(ts);
   });
 
   protected readonly formattedTimeStamp = computed((): string => {
@@ -401,14 +463,18 @@ export class MznNotificationCenter implements OnInit {
     }
   }
 
-  // TODO: when MznPopper is wired in, reinstate hover anchor tracking so the
-  // raw timeStamp popper shows on hover like React's <Popper anchor={...}>.
   protected onMouseEnter(): void {
-    // no-op
+    if (this.type() !== 'drawer' || !this.isToday()) return;
+    // Defer anchor pickup so the Popper reads a laid-out DOM element.
+    queueMicrotask(() => {
+      const el = this.timeStampEl()?.nativeElement ?? null;
+      this.timeStampAnchor.set(el);
+    });
   }
 
   protected onMouseLeave(): void {
-    // no-op
+    if (this.type() !== 'drawer') return;
+    this.timeStampAnchor.set(null);
   }
 
   protected onConfirmClick(): void {
