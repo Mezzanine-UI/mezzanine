@@ -16,37 +16,25 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
 import { ControlValueAccessor } from '@angular/forms';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
-import { dropdownClasses, DropdownOption } from '@mezzanine-ui/core/dropdown';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import {
   autocompleteClasses,
   AutoCompleteMode,
   AutoCompleteInputSize,
 } from '@mezzanine-ui/core/autocomplete';
 import { textFieldClasses } from '@mezzanine-ui/core/text-field';
-import {
-  ChevronDownIcon,
-  CheckedIcon,
-  CloseIcon,
-  FolderOpenIcon,
-  PlusIcon,
-} from '@mezzanine-ui/icons';
+import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
-import { checkboxClasses } from '@mezzanine-ui/core/checkbox';
-import { iconClasses as spinClasses } from '@mezzanine-ui/core/spin';
-import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import { MznInputTriggerPopper } from '@mezzanine-ui/ng/_internal';
 import { SelectTriggerTagValue } from '@mezzanine-ui/ng/select';
 import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznTextField } from '@mezzanine-ui/ng/text-field';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
-import { MznTranslate } from '@mezzanine-ui/ng/transition';
-import { highlightText, provideValueAccessor } from '@mezzanine-ui/ng/utils';
+import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import { AutocompleteCreationTracker } from './creation-tracker';
 
 /**
@@ -128,17 +116,7 @@ export function getFullParsedList(
 @Component({
   selector: '[mznAutocomplete]',
   standalone: true,
-  imports: [
-    NgTemplateOutlet,
-    MznButton,
-    MznClearActions,
-    MznDropdown,
-    MznIcon,
-    MznInputTriggerPopper,
-    MznTag,
-    MznTextField,
-    MznTranslate,
-  ],
+  imports: [MznClearActions, MznDropdown, MznIcon, MznTag, MznTextField],
   providers: [provideValueAccessor(MznAutocomplete)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -419,161 +397,6 @@ export function getFullParsedList(
         (visibilityChange)="onDropdownVisibilityChangeFromInline($event)"
       ></div>
     }
-    <!-- Shared dropdown content template -->
-    <ng-template #dropdownContentTpl>
-      <ul [class]="listClass" role="listbox">
-        @if (inputPosition() === 'inside') {
-          <li [class]="listHeaderClass" role="presentation">
-            <div [class]="listHeaderInnerClass">
-              <div
-                mznTextField
-                [active]="!isEffectiveLoading()"
-                [fullWidth]="true"
-                [disabled]="disabled() || isEffectiveLoading()"
-                [size]="insideInputTextFieldSize()"
-              >
-                <input
-                  #inputEl
-                  type="text"
-                  [placeholder]="placeholder()"
-                  [disabled]="disabled() || isEffectiveLoading()"
-                  [value]="searchText()"
-                  (input)="onSearchInput($event)"
-                  (keydown)="onInputKeydown($event)"
-                  (paste)="onPaste($event)"
-                />
-              </div>
-            </div>
-          </li>
-        }
-        @if (shouldShowFullStatus()) {
-          <li [class]="statusClass">
-            <div [class]="loadingSpinClass">
-              <span [class]="spinnerRingClass"
-                ><span [class]="spinnerTailClass"></span
-              ></span>
-            </div>
-            <span [class]="statusTextClass">{{ loadingText() }}</span>
-          </li>
-        } @else {
-          <div
-            [class]="listWrapperClass"
-            [style.maxHeight]="menuMaxHeight() ? menuMaxHeight() + 'px' : null"
-            (scroll)="onDropdownScroll($event)"
-          >
-            @for (option of dropdownOptions(); track option.id) {
-              <li
-                role="option"
-                [class]="optionClasses(option)"
-                [attr.aria-selected]="isSelected(option)"
-                (click)="onOptionClick(option); $event.stopPropagation()"
-              >
-                <div [class]="cardContainerClass">
-                  @if (checkSitePrefix()) {
-                    <div [class]="prependClass">
-                      @if (mode() === 'multiple') {
-                        <div
-                          [class]="inlineCheckboxClasses(isSelected(option))"
-                          (click)="$event.stopPropagation()"
-                          (mousedown)="$event.stopPropagation()"
-                        >
-                          <label [class]="cbLabelContainerClass">
-                            <div [class]="cbInputContainerClass">
-                              <div [class]="cbInputContentClass">
-                                <input
-                                  type="checkbox"
-                                  [class]="cbInputClass"
-                                  [checked]="isSelected(option)"
-                                  (change)="
-                                    onOptionClick(option);
-                                    $event.stopPropagation()
-                                  "
-                                />
-                                @if (isSelected(option)) {
-                                  <i
-                                    mznIcon
-                                    [icon]="checkedIcon"
-                                    [class]="cbIconClass"
-                                    color="fixed-light"
-                                    [size]="9"
-                                  ></i>
-                                }
-                              </div>
-                            </div>
-                          </label>
-                        </div>
-                      } @else if (isSelected(option)) {
-                        <i mznIcon [icon]="checkedIcon"></i>
-                      }
-                    </div>
-                  }
-                  <div [class]="cardBodyClass">
-                    <span [class]="cardTitleClass">
-                      @for (
-                        seg of highlightOptionText(option.name);
-                        track $index
-                      ) {
-                        <span
-                          [class]="seg.highlight ? highlightedTextClass : ''"
-                          >{{ seg.text }}</span
-                        >
-                      }
-                    </span>
-                  </div>
-                  @if (showAppendContent(option)) {
-                    <div [class]="appendClass">
-                      @if (isCreated(option.id)) {
-                        <span
-                          style="color: var(--mzn-text-neutral-light); font-size: 12px;"
-                          >New</span
-                        >
-                      }
-                      @if (!checkSitePrefix() && isSelected(option)) {
-                        <i mznIcon [icon]="checkedIcon"></i>
-                      }
-                    </div>
-                  }
-                </div>
-              </li>
-            }
-            @if (shouldShowBottomLoading()) {
-              <li [class]="loadingMoreClass" aria-live="polite" role="status">
-                <div [class]="statusClass">
-                  <div [class]="loadingSpinClass">
-                    <span [class]="spinnerRingClass"
-                      ><span [class]="spinnerTailClass"></span
-                    ></span>
-                  </div>
-                  <span [class]="statusTextClass">{{ loadingText() }}</span>
-                </div>
-              </li>
-            }
-            @if (dropdownOptions().length === 0 && !isEffectiveLoading()) {
-              <li [class]="statusClass">
-                <i mznIcon [icon]="folderOpenIcon" [size]="16"></i>
-                <span [class]="statusTextClass">{{ emptyText() }}</span>
-              </li>
-            }
-            @if (shouldShowCreateAction()) {
-              <div [class]="actionClass">
-                <i [class]="actionTopBarClass"></i>
-                <div [class]="actionToolsClass">
-                  <button
-                    mznButton
-                    variant="base-ghost"
-                    size="minor"
-                    (mousedown)="$event.preventDefault()"
-                    (click)="onCreateActionClick(); $event.stopPropagation()"
-                  >
-                    {{ createActionDisplayText() }}
-                  </button>
-                </div>
-              </div>
-            }
-          </div>
-        }
-      </ul>
-    </ng-template>
   `,
 })
 export class MznAutocomplete
@@ -599,9 +422,6 @@ export class MznAutocomplete
 
   // ── Creation Tracker (A8) ──
   private readonly creationTracker = new AutocompleteCreationTracker();
-
-  // ── Scroll state (A7) ──
-  private wasAtBottom = false;
 
   // ── Counter overflow state ──
   private counterResizeObserver: ResizeObserver | null = null;
@@ -850,10 +670,6 @@ export class MznAutocomplete
   // ────────────────────────────────────────────
 
   protected readonly chevronDownIcon = ChevronDownIcon;
-  protected readonly checkedIcon = CheckedIcon;
-  protected readonly timesCircleIcon = CloseIcon;
-  protected readonly folderOpenIcon = FolderOpenIcon;
-  protected readonly plusIcon = PlusIcon;
 
   // ────────────────────────────────────────────
   //  Internal signals
@@ -879,34 +695,12 @@ export class MznAutocomplete
   );
 
   /**
-   * 全畫面 loading 狀態：當 loading 中且 options 為空（或 loadingPosition 為 'full'）。
-   * 對齊 React DropdownItem shouldShowFullStatus 邏輯。
-   */
-  protected readonly shouldShowFullStatus = computed(
-    (): boolean =>
-      this.isEffectiveLoading() &&
-      (this.dropdownOptions().length === 0 ||
-        this.loadingPosition() !== 'bottom'),
-  );
-
-  /**
-   * 底部 loading 指示器：loading 中且 loadingPosition 為 'bottom'，且有選項顯示。
-   * 對齊 React DropdownItem shouldShowBottomLoading 邏輯。
-   */
-  protected readonly shouldShowBottomLoading = computed(
-    (): boolean =>
-      this.isEffectiveLoading() &&
-      this.loadingPosition() === 'bottom' &&
-      this.dropdownOptions().length > 0,
-  );
-
-  /**
-   * 傳給 inside 模式 `<div mznDropdown [status]>` 的非同步狀態:
+   * 傳給 `<div mznDropdown [status]>` 的非同步狀態:
    * - `loading` — 載入中。
    * - `empty` — 無選項且非載入中。
    * - `undefined` — 正常渲染選項。
-   * MznDropdownItem 會根據 loadingPosition 決定全畫面或底部指示器渲染,
-   * 不需要 wrapper 再重算 shouldShowFullStatus / shouldShowBottomLoading。
+   * MznDropdownItem 內部會根據 `loadingPosition` 自行決定全畫面或底部
+   * 載入指示,wrapper 不需重算 full/bottom 旗標。
    */
   protected readonly dropdownInlineStatus = computed(
     (): 'loading' | 'empty' | undefined => {
@@ -1043,24 +837,6 @@ export class MznAutocomplete
     );
   });
 
-  /**
-   * checkSite 是否為 prefix（左側 Checkbox/CheckedIcon）。
-   * React 邏輯：multiple + outside → prefix; single 或 inside → suffix。
-   */
-  protected readonly checkSitePrefix = computed(
-    (): boolean =>
-      this.mode() === 'multiple' && this.inputPosition() !== 'inside',
-  );
-
-  /** 是否顯示 append content（suffix checkmark 或 'New' 標記）。 */
-  protected showAppendContent(option: DropdownOption): boolean {
-    // React 邏輯：appendContent || (checkSite === 'suffix' && isChecked)
-    return (
-      this.isCreated(option.id) ||
-      (!this.checkSitePrefix() && this.isSelected(option))
-    );
-  }
-
   /** 是否應顯示建立動作按鈕。 */
   protected readonly shouldShowCreateAction = computed((): boolean => {
     if (!this.addable()) return false;
@@ -1147,60 +923,19 @@ export class MznAutocomplete
   );
 
   protected readonly triggerInputClass = classes.triggerInput;
-  protected readonly dropdownRootClass = computed((): string =>
-    clsx(
-      dropdownClasses.root,
-      dropdownClasses.inputPosition(this.inputPosition()),
-    ),
-  );
-  protected readonly listClass = dropdownClasses.list;
-  protected readonly listWrapperClass = dropdownClasses.listWrapper;
-  protected readonly cardBodyClass = dropdownClasses.cardBody;
-  protected readonly cardTitleClass = dropdownClasses.cardTitle;
-  protected readonly appendClass = dropdownClasses.cardAppendContent;
-  protected readonly statusClass = dropdownClasses.status;
-  protected readonly statusTextClass = dropdownClasses.statusText;
-  protected readonly loadingMoreClass = dropdownClasses.loadingMore;
-  protected readonly loadingSpinClass = clsx(
-    spinClasses.spin,
-    spinClasses.size('minor'),
-  );
-  protected readonly spinnerRingClass = spinClasses.spinnerRing;
-  protected readonly spinnerTailClass = spinClasses.spinnerTail;
   protected readonly clearIconClass = textFieldClasses.clearIcon;
   protected readonly suffixClass = textFieldClasses.suffix;
   protected readonly prefixClass = textFieldClasses.prefix;
-  protected readonly highlightedTextClass = dropdownClasses.cardHighlightedText;
-  protected readonly cardContainerClass = dropdownClasses.cardContainer;
-  protected readonly prependClass = dropdownClasses.cardPrependContent;
   protected readonly tagsInputClass = classes.triggerTagsInput;
   protected readonly counterTagsContainerClasses = clsx(
     classes.triggerTags,
     classes.triggerTagsEllipsis,
   );
   protected readonly fakeTagsContainerClass = classes.triggerTags;
-  protected readonly actionClass = dropdownClasses.action;
-  protected readonly actionTopBarClass = dropdownClasses.actionTopBar;
-  protected readonly actionToolsClass = dropdownClasses.actionTools;
-  protected readonly listHeaderClass = dropdownClasses.listHeader;
-  protected readonly listHeaderInnerClass = dropdownClasses.listHeaderInner;
 
   protected readonly insideInputTextFieldSize = computed((): 'main' | 'sub' =>
     this.size() === 'sub' ? 'sub' : 'main',
   );
-
-  // Inline checkbox classes (matching React's <Checkbox> without mzn-input-check wrapper)
-  protected readonly cbLabelContainerClass = checkboxClasses.labelContainer;
-  protected readonly cbInputContainerClass = checkboxClasses.inputContainer;
-  protected readonly cbInputContentClass = checkboxClasses.inputContent;
-  protected readonly cbInputClass = checkboxClasses.input;
-  protected readonly cbIconClass = checkboxClasses.icon;
-
-  protected inlineCheckboxClasses(checked: boolean): string {
-    return clsx(checkboxClasses.host, checkboxClasses.size('main'), {
-      [checkboxClasses.checked]: checked,
-    });
-  }
 
   // ────────────────────────────────────────────
   //  CVA
@@ -1394,32 +1129,6 @@ export class MznAutocomplete
   }
 
   // ────────────────────────────────────────────
-  //  Template helpers
-  // ────────────────────────────────────────────
-
-  protected highlightOptionText(
-    text: string,
-  ): ReadonlyArray<{ readonly text: string; readonly highlight: boolean }> {
-    return highlightText(text, this.searchText());
-  }
-
-  protected isSelected(option: DropdownOption): boolean {
-    return this.selectedIds().has(option.id);
-  }
-
-  protected isCreated(id: string): boolean {
-    return this.creationTracker.hasCreated(id);
-  }
-
-  protected optionClasses(option: DropdownOption): string {
-    const selected = this.isSelected(option);
-
-    return clsx(dropdownClasses.card, {
-      [dropdownClasses.cardActive]: selected,
-    });
-  }
-
-  // ────────────────────────────────────────────
   //  Event handlers
   // ────────────────────────────────────────────
 
@@ -1569,22 +1278,6 @@ export class MznAutocomplete
     this.cleared.emit();
   }
 
-  /** A7: 下拉選單滾動事件。 */
-  protected onDropdownScroll(event: Event): void {
-    const el = event.target as HTMLElement;
-    const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
-
-    if (isAtBottom && !this.wasAtBottom) {
-      this.reachBottom.emit();
-    }
-
-    if (!isAtBottom && this.wasAtBottom) {
-      this.leaveBottom.emit();
-    }
-
-    this.wasAtBottom = isAtBottom;
-  }
-
   /** A8: 建立動作按鈕點擊。 */
   protected onCreateActionClick(): void {
     this.handleActionCustom();
@@ -1655,7 +1348,6 @@ export class MznAutocomplete
   private handleClose(): void {
     this.isOpenInternal.set(false);
     this.visibilityChange.emit(false);
-    this.wasAtBottom = false;
 
     if (this.clearSearchText()) {
       // 恢復搜尋文字為選中項目名稱（單選）或清空（多選）
