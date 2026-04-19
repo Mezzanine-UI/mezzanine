@@ -73,6 +73,7 @@ import clsx from 'clsx';
       [attr.aria-disabled]="disabled() || null"
       [tabIndex]="-1"
       (click)="onClick()"
+      (mouseenter)="onMouseEnter()"
     >
       <div [class]="containerClass">
         @if (showPrependContent()) {
@@ -214,6 +215,13 @@ export class MznDropdownItemCard {
   /** 勾選狀態變更事件（多選 prefix 模式）。 */
   readonly checkedChange = output<void>();
 
+  /**
+   * 滑鼠進入(hover)事件。由 parent(MznDropdownItem / MznDropdown)
+   * 用來回報 `activeIndex`,對齊 React `DropdownItemCard` 的 `onMouseEnter`
+   * 行為。
+   */
+  readonly hovered = output<void>();
+
   protected readonly checkedIcon = CheckedIcon;
   protected readonly containerClass = classes.cardContainer;
   protected readonly bodyClass = classes.cardBody;
@@ -329,5 +337,13 @@ export class MznDropdownItemCard {
     if (this.disabled()) return;
 
     this.checkedChange.emit();
+  }
+
+  /**
+   * Disabled 的選項仍允許 hover 回報(對齊 React 行為:disabled card 依然
+   * 會呼叫 onMouseEnter)。Parent 可視需求自行忽略。
+   */
+  protected onMouseEnter(): void {
+    this.hovered.emit();
   }
 }

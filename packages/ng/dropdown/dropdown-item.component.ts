@@ -69,6 +69,7 @@ export interface DropdownFlatTreeNode {
     '[attr.actionConfig]': 'null',
     '[attr.activeIndex]': 'null',
     '[attr.customWidth]': 'null',
+    '[attr.keyboardActiveIndex]': 'null',
     '[attr.disabled]': 'null',
     '[attr.emptyIcon]': 'null',
     '[attr.emptyText]': 'null',
@@ -277,6 +278,7 @@ export interface DropdownFlatTreeNode {
                   [showUnderline]="option.showUnderline ?? false"
                   [validate]="option.validate ?? 'default'"
                   (clicked)="onOptionClick(option)"
+                  (hovered)="itemHovered.emit(groupedOptionIndex(group, i))"
                 ></div>
               }
             }
@@ -307,6 +309,7 @@ export interface DropdownFlatTreeNode {
                 [validate]="item.option.validate ?? 'default'"
                 (clicked)="onTreeOptionClick(item.option, item.hasChildren)"
                 (checkedChange)="onTreeCheckedChange(item.option)"
+                (hovered)="itemHovered.emit(item.index)"
               ></div>
             }
           } @else {
@@ -325,6 +328,7 @@ export interface DropdownFlatTreeNode {
                 [showUnderline]="option.showUnderline ?? false"
                 [validate]="option.validate ?? 'default'"
                 (clicked)="onOptionClick(option)"
+                (hovered)="itemHovered.emit(i)"
               ></div>
             }
           }
@@ -381,10 +385,16 @@ export class MznDropdownItem {
   );
 
   /**
-   * 目前鍵盤／滑鼠 active 選項的索引（0-indexed）。
-   * 對應 React 的 `activeIndex`。
+   * 目前 active 選項的索引(0-indexed),一般由 hover 驅動。
+   * 對應 React `DropdownItem.tsx` 的 `activeIndex`。
    */
   readonly activeIndex = input<number | null>(null);
+
+  /**
+   * 鍵盤 active 選項的索引。設定時會覆蓋 `activeIndex` 作為渲染依據
+   * (對齊 React `DropdownItem.tsx:476-477` 的 `keyboardActiveIndex ?? activeIndex`)。
+   */
+  readonly keyboardActiveIndex = input<number | null>(null);
 
   /** 自訂下拉選單寬度，接受數字（px）或 CSS 字串。 */
   readonly customWidth = input<number | string>();
@@ -485,6 +495,13 @@ export class MznDropdownItem {
 
   /** 選取事件，攜帶被點選的 DropdownOption。 */
   readonly selected = output<DropdownOption>();
+
+  /**
+   * 滑鼠進入選項時觸發,參數為該選項的 flat 0-indexed 位置(與 activeIndex
+   * 同座標系)。對齊 React `DropdownItem` 轉嫁 DropdownItemCard 的
+   * `onMouseEnter` 行為。
+   */
+  readonly itemHovered = output<number>();
 
   protected readonly listClass = classes.list;
   protected readonly listWrapperClass = classes.listWrapper;
@@ -654,12 +671,15 @@ export class MznDropdownItem {
   }
 
   /**
-   * Whether the option at the given index is currently active.
+   * Whether the option at the given index is currently active. Mirrors React
+   * `DropdownItem.tsx:476-477` 的 `keyboardActiveIndex ?? activeIndex` 規則:
+   * 鍵盤 index 優先,沒設定才退回 hover `activeIndex`。
    */
   protected isActive(index: number): boolean {
-    const active = this.activeIndex();
+    const kb = this.keyboardActiveIndex();
+    const effective = kb !== null ? kb : this.activeIndex();
 
-    return active !== null && active === index;
+    return effective !== null && effective === index;
   }
 
   protected isSelected(option: DropdownOption): boolean {

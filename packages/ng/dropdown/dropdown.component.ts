@@ -85,6 +85,7 @@ export interface DropdownActionConfig {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.name]': 'name() ?? null',
+    '(keydown)': 'onHostKeyDown($event)',
     '[attr.actionCancelText]': 'null',
     '[attr.actionClearText]': 'null',
     '[attr.actionConfirmText]': 'null',
@@ -98,8 +99,10 @@ export interface DropdownActionConfig {
     '[attr.emptyIcon]': 'null',
     '[attr.emptyText]': 'null',
     '[attr.followText]': 'null',
+    '[attr.globalPortal]': 'null',
     '[attr.inputPosition]': 'null',
     '[attr.isMatchInputValue]': 'null',
+    '[attr.keyboardActiveIndex]': 'null',
     '[attr.loadingPosition]': 'null',
     '[attr.loadingText]': 'null',
     '[attr.listboxId]': 'null',
@@ -110,11 +113,13 @@ export interface DropdownActionConfig {
     '[attr.open]': 'null',
     '[attr.options]': 'null',
     '[attr.placement]': 'null',
+    '[attr.sameWidth]': 'null',
     '[attr.showActionShowTopBar]': 'null',
     '[attr.showCheckIcon]': 'null',
     '[attr.showDropdownActions]': 'null',
     '[attr.showHeader]': 'null',
     '[attr.status]': 'null',
+    '[attr.toggleCheckedOnClick]': 'null',
     '[attr.type]': 'null',
     '[attr.value]': 'null',
     '[attr.zIndex]': 'null',
@@ -158,6 +163,7 @@ export interface DropdownActionConfig {
               mznDropdownItem
               [actionConfig]="resolvedActionConfig()"
               [activeIndex]="activeIndex()"
+              [keyboardActiveIndex]="effectiveKeyboardIndex()"
               [customWidth]="customWidth()"
               [disabled]="disabled()"
               [emptyIcon]="emptyIcon()"
@@ -180,6 +186,7 @@ export interface DropdownActionConfig {
               (actionCleared)="actionCleared.emit()"
               (actionConfirmed)="actionConfirmed.emit()"
               (actionCustomClicked)="actionCustomClicked.emit()"
+              (itemHovered)="itemHovered.emit($event)"
               (leaveBottom)="leaveBottom.emit()"
               (reachBottom)="reachBottom.emit()"
               (selected)="onItemSelected($event)"
@@ -209,6 +216,7 @@ export interface DropdownActionConfig {
               mznDropdownItem
               [actionConfig]="resolvedActionConfig()"
               [activeIndex]="activeIndex()"
+              [keyboardActiveIndex]="effectiveKeyboardIndex()"
               [customWidth]="customWidth()"
               [disabled]="disabled()"
               [emptyIcon]="emptyIcon()"
@@ -233,6 +241,7 @@ export interface DropdownActionConfig {
               (actionCleared)="actionCleared.emit()"
               (actionConfirmed)="actionConfirmed.emit()"
               (actionCustomClicked)="actionCustomClicked.emit()"
+              (itemHovered)="itemHovered.emit($event)"
               (leaveBottom)="leaveBottom.emit()"
               (reachBottom)="reachBottom.emit()"
               (selected)="onItemSelected($event)"
@@ -268,10 +277,17 @@ export class MznDropdown {
   readonly actionText = input<string>();
 
   /**
-   * 目前鍵盤／滑鼠 active 選項的索引（0-indexed）。
-   * 對應 React 的 `activeIndex`。
+   * 目前 active 選項的索引(0-indexed),通常反映滑鼠 hover;鍵盤導覽另由
+   * `keyboardActiveIndex` 追蹤,對齊 React `Dropdown.tsx:92`。
    */
   readonly activeIndex = input<number | null>(null);
+
+  /**
+   * 鍵盤導覽高亮 index(0-indexed),與 `activeIndex` 分離以支援
+   * "滑鼠 hover / 鍵盤 focus 可同時存在但視覺不同"的 pattern。
+   * 對齊 React `Dropdown.tsx:99` 的 `keyboardActiveIndex` prop。
+   */
+  readonly keyboardActiveIndex = input<number | null>(null);
 
   /**
    * 錨定元素。popper 模式(inputPosition='outside',預設)必填;inline 模式
@@ -320,6 +336,27 @@ export class MznDropdown {
    * 保留本 prop 以便未來支援。 @default false
    */
   readonly isMatchInputValue = input(false);
+
+  /**
+   * 是否讓下拉選單寬度與 anchor(trigger)等寬。僅在 popper 模式
+   * (inputPosition='outside')且 `customWidth` 未設定時生效。
+   * 對齊 React `Dropdown.tsx:206` 的 `sameWidth`。 @default false
+   */
+  readonly sameWidth = input(false);
+
+  /**
+   * popper 模式是否透過 `MznPortal` 渲染到 document.body,避開 overflow 裁切與
+   * stacking context 限制;inline 模式(inputPosition='inside')下無效。
+   * 對齊 React `Dropdown.tsx:257` 的 `globalPortal`。 @default true
+   */
+  readonly globalPortal = input(true);
+
+  /**
+   * Multiple mode 點擊選項是否 toggle 勾選(React 與 Autocomplete 預設行為
+   * 不同,此旗標用來細控)。未設時沿用內部預設(single 不 toggle、
+   * multiple toggle)。對齊 React `Dropdown.tsx:224` 的 `toggleCheckedOnClick`。
+   */
+  readonly toggleCheckedOnClick = input<boolean | undefined>(undefined);
 
   /**
    * 載入指示器位置。
@@ -428,8 +465,24 @@ export class MznDropdown {
   /** 自訂操作按鈕點擊事件（搭配 actionText 與 custom mode 使用）。 */
   readonly actionCustomClicked = output<void>();
 
-  /** 關閉事件。 */
+  /** 關閉事件。對齊 React `Dropdown.tsx:171` 的 `onClose`。 */
   readonly closed = output<void>();
+
+  /**
+   * 選項 hover 事件,參數為選項的 0-indexed 位置。通常由 parent 用來更新
+   * `activeIndex`(hover-style highlight)。對齊 React `Dropdown.tsx:175`
+   * 的 `onItemHover`。
+   */
+  readonly itemHovered = output<number>();
+
+  /** 開啟事件。對齊 React `Dropdown.tsx:179` 的 `onOpen`。 */
+  readonly opened = output<void>();
+
+  /**
+   * 開閉狀態統一事件,切換時 emit `true` / `false`。`opened` 與 `closed`
+   * 仍保留以向下相容。對齊 React `Dropdown.tsx:183` 的 `onVisibilityChange`。
+   */
+  readonly visibilityChange = output<boolean>();
 
   /** 離開列表底部時觸發。 */
   readonly leaveBottom = output<void>();
@@ -541,6 +594,83 @@ export class MznDropdown {
    */
   protected readonly popperOpen = signal(false);
 
+  /**
+   * 內部鍵盤 active index,對齊 React `Dropdown.tsx` 中的 `keyboardActiveIndex`
+   * 內建狀態機。當外部顯式指定 `keyboardActiveIndex` 時忽略此 signal;
+   * 否則由本元件的 keydown handler 維護(↑/↓/Home/End/Enter)。
+   * 以 -1 表示「無選中」(剛開啟或全部 disabled 時)。
+   */
+  private readonly internalKeyboardIndex = signal(-1);
+
+  /**
+   * 送入 MznDropdownItem 的鍵盤 active index:外部指定值優先,否則使用
+   * 內部 signal。對應 React `Dropdown.tsx:476-477`。
+   */
+  protected readonly effectiveKeyboardIndex = computed((): number | null => {
+    const explicit = this.keyboardActiveIndex();
+
+    if (explicit !== null && explicit !== undefined) return explicit;
+
+    return this.internalKeyboardIndex();
+  });
+
+  /**
+   * 扁平化可選 option 的總數(供鍵盤 nav 計算 wrap-around)。
+   * - 'default':`options().length`
+   * - 'grouped':所有 group children 加總
+   * - 'tree':目前不支援鍵盤 nav(由各 tree 節點自行處理),回傳 0
+   */
+  protected readonly flatOptionCount = computed((): number => {
+    const type = this.type();
+    const opts = this.options();
+
+    if (type === 'grouped') {
+      return opts.reduce((acc, g) => acc + (g.children?.length ?? 0), 0);
+    }
+
+    if (type === 'tree') return 0;
+
+    return opts.length;
+  });
+
+  /**
+   * 以 flat index 取得對應的 DropdownOption(跨 default / grouped)。
+   * tree 模式目前鍵盤 nav 不支援,回傳 undefined。
+   */
+  private optionAtFlatIndex(index: number): DropdownOption | undefined {
+    if (index < 0) return undefined;
+
+    const type = this.type();
+    const opts = this.options();
+
+    if (type === 'grouped') {
+      let offset = 0;
+
+      for (const g of opts) {
+        const children = g.children ?? [];
+
+        if (index < offset + children.length) {
+          return children[index - offset];
+        }
+
+        offset += children.length;
+      }
+
+      return undefined;
+    }
+
+    if (type === 'tree') return undefined;
+
+    return opts[index];
+  }
+
+  /**
+   * 前一次 `open()` 值,effect 比對後用來判斷本次是 false→true 還是
+   * true→false,以 emit 正確的 `opened` / `visibilityChange` 事件。
+   * 初始化為 open 的首次值,避免 mount 時立即誤 emit。
+   */
+  private lastOpen = this.open();
+
   constructor() {
     // Inline 模式 focus 續接:@if (open()) 會讓 header template 在 closed
     // branch 的 standalone outlet 與 open branch 的 DropdownItem 內部 outlet
@@ -559,6 +689,27 @@ export class MznDropdown {
             focusable.focus();
           }
         });
+      }
+    });
+
+    // Transition detector:比對 lastOpen 與 current open() 以判斷本次 run 是
+    // false→true 還是 true→false,對應 emit `opened` / `visibilityChange`。
+    // 使用 lastOpen 欄位而非 previousValue 參數的原因:Angular effect 在
+    // 首次 run 沒有 previous value,保存欄位可確保 mount 時不誤 emit。
+    effect(() => {
+      const isOpen = this.open();
+
+      if (isOpen === this.lastOpen) return;
+
+      this.lastOpen = isOpen;
+      this.visibilityChange.emit(isOpen);
+
+      if (isOpen) {
+        this.opened.emit();
+      } else {
+        // 關閉時重置內部鍵盤 index,避免下次開啟時仍停留在舊位置
+        // (對齊 React Dropdown 每次 open 都從 activeIndex 初始化的行為)。
+        this.internalKeyboardIndex.set(-1);
       }
     });
 
@@ -601,5 +752,80 @@ export class MznDropdown {
     if (this.mode() === 'single') {
       this.closed.emit();
     }
+  }
+
+  /**
+   * 內建鍵盤導覽:對齊 React `Dropdown.tsx:689-757` 的 handleBuiltinKeyDown。
+   * 僅在 `open()` 時處理。tree 模式目前交由 MznDropdownItem 內部處理,
+   * 此處略過 nav keys。
+   *
+   * 事件來源:
+   * - Inside 模式:`[mznDropdownHeader]` 內 <input> 的 keydown 會沿 DOM
+   *   bubble 到 host(<div mznDropdown>),直接被這個 host listener 接到。
+   * - Outside 模式:trigger <input> 是外部 `anchor`,與 host 無 DOM 關係,
+   *   事件到不了這裡 —— outside 模式由 wrapper(MznAutocomplete)自行
+   *   監聽 trigger 鍵盤並透過 `keyboardActiveIndex` input 控制高亮。
+   */
+  protected onHostKeyDown(event: KeyboardEvent): void {
+    if (!this.open() || this.disabled()) return;
+
+    const type = this.type();
+
+    if (type === 'tree') return;
+
+    const count = this.flatOptionCount();
+
+    if (count === 0) return;
+
+    const key = event.key;
+
+    if (key === 'Escape') {
+      event.preventDefault();
+      this.closed.emit();
+
+      return;
+    }
+
+    if (key === 'Enter') {
+      const current = this.effectiveKeyboardIndex();
+
+      if (current === null || current < 0) return;
+
+      const option = this.optionAtFlatIndex(current);
+
+      if (!option) return;
+
+      event.preventDefault();
+      this.onItemSelected(option);
+
+      return;
+    }
+
+    if (
+      key !== 'ArrowDown' &&
+      key !== 'ArrowUp' &&
+      key !== 'Home' &&
+      key !== 'End'
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const current = this.internalKeyboardIndex();
+    const next =
+      key === 'Home'
+        ? 0
+        : key === 'End'
+          ? count - 1
+          : key === 'ArrowDown'
+            ? current < 0
+              ? 0
+              : (current + 1) % count
+            : current <= 0
+              ? count - 1
+              : current - 1;
+
+    this.internalKeyboardIndex.set(next);
   }
 }
