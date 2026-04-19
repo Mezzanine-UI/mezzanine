@@ -156,6 +156,7 @@ const shortcutOptions: DropdownOption[] = [
     id: 'delete',
     icon: TrashIcon,
     validate: 'danger',
+    showUnderline: true,
     shortcutKeys: ['delete', 'backspace'],
   },
   { name: '快速搜尋', id: 'search', icon: ClockIcon, shortcutKeys: ['k'] },

@@ -79,7 +79,7 @@ import clsx from 'clsx';
         @if (showPrependContent()) {
           <div [class]="prependClass">
             @if (prependIcon()) {
-              <i mznIcon [icon]="prependIcon()!"></i>
+              <i mznIcon [icon]="prependIcon()!" [color]="iconColor()"></i>
             }
             @if (checkSite() === 'prefix' && mode() === 'multiple') {
               <div
@@ -135,7 +135,12 @@ import clsx from 'clsx';
               }}</span>
             }
             @if (appendIcon()) {
-              <i mznIcon [icon]="appendIcon()!" [size]="16"></i>
+              <i
+                mznIcon
+                [icon]="appendIcon()!"
+                [color]="iconColor()"
+                [size]="16"
+              ></i>
             }
             @if (checkSite() === 'suffix' && checked()) {
               <i
@@ -330,6 +335,21 @@ export class MznDropdownItemCard {
       if (this.validate() === 'danger') return 'error';
 
       return 'brand';
+    },
+  );
+
+  /**
+   * Regular prepend / append icon color,對齊 React `DropdownItemCard.tsx:189-193`
+   * 的 `iconColor`:disabled → neutral-light,danger → error,其他 → neutral。
+   * 跟 `checkIconColor`(check mark 用)區分 — check 用 'brand'(活躍藍),
+   * regular icon 則是 'neutral'(中性灰),danger 下兩者都變成 'error' 紅。
+   */
+  protected readonly iconColor = computed(
+    (): 'neutral-light' | 'error' | 'neutral' => {
+      if (this.disabled()) return 'neutral-light';
+      if (this.validate() === 'danger') return 'error';
+
+      return 'neutral';
     },
   );
 
