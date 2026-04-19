@@ -6,8 +6,14 @@ export type ClickAwayHandler = (event: ClickAwayEvent) => void;
 /**
  * Detects clicks occurring outside a specified container element.
  *
- * Listens for `click` and `touchend` events on the document. When the event target
- * is not contained within the provided container, the handler is called.
+ * Listens for `click` and `touchend` events at the document **capture phase**,
+ * so inner elements that call `event.stopPropagation()` (for example, a
+ * notification card's dot-icon click that opens its own menu while preventing
+ * the outer button handler) cannot suppress the click-away detection. This
+ * mirrors React's `useDocumentEvents`, which effectively also fires before any
+ * bubble-phase handler runs, enabling mutual-exclusion between multiple
+ * simultaneously-mounted dropdown / popper UIs: opening B's trigger fires
+ * click-away on A (because A's listener runs at capture on document).
  */
 @Injectable({ providedIn: 'root' })
 export class ClickAwayService {
@@ -34,8 +40,9 @@ export class ClickAwayService {
 
     const cleanup = (): void => {
       disposed = true;
-      document.removeEventListener('click', listener as EventListener);
-      document.removeEventListener('touchend', listener as EventListener);
+      // capture-phase listeners must be removed with the same capture flag.
+      document.removeEventListener('click', listener as EventListener, true);
+      document.removeEventListener('touchend', listener as EventListener, true);
     };
 
     // Defer listener registration to the next frame so the current click
@@ -45,8 +52,13 @@ export class ClickAwayService {
     // immediately close it.
     requestAnimationFrame(() => {
       if (!disposed) {
-        document.addEventListener('click', listener as EventListener);
-        document.addEventListener('touchend', listener as EventListener);
+        // capture=true: receive events at document on the way DOWN (before
+        // any target / ancestor `stopPropagation()` in bubble phase can
+        // suppress them). This is what makes mutual exclusion work across
+        // open popper / dropdown UIs even when an inner trigger stops
+        // propagation to avoid side-effects on its ancestor handlers.
+        document.addEventListener('click', listener as EventListener, true);
+        document.addEventListener('touchend', listener as EventListener, true);
       }
     });
 
