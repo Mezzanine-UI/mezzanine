@@ -414,7 +414,7 @@ export const Grouped: Story = {
 @Component({
   selector: 'story-dropdown-item-shortcuts',
   standalone: true,
-  imports: [MznDropdownItemCard, MznTag],
+  imports: [MznDropdownItem, MznTag],
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 20px; position: relative;"
@@ -424,32 +424,18 @@ export const Grouped: Story = {
         請先點擊下拉選單使其獲得焦點，然後按下快捷鍵測試功能。<br />
         支援的快捷鍵：⌘N / Ctrl+N、⌘O / Ctrl+O、⌘S / Ctrl+S、Delete /
         Backspace、K、⌘R / Ctrl+R / F5
+        <br />
+        注意:單一按鈕(如 K)需要不按任何修飾鍵才能觸發
       </div>
-      <div style="width: 300px; border: 1px solid #ddd; border-radius: 4px;">
-        <ul role="listbox" style="list-style: none; margin: 0; padding: 0;">
-          @for (option of shortcutOptions; track option.id) {
-            <li
-              style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px;"
-            >
-              <div
-                mznDropdownItemCard
-                [mode]="'single'"
-                [label]="option.name"
-                [prependIcon]="option.icon"
-                [validate]="option.validate || 'default'"
-                [checked]="selectedId() === option.id"
-                checkSite="suffix"
-                style="flex: 1;"
-                (clicked)="selectedId.set(option.id)"
-              ></div>
-              <span
-                style="font-size: 12px; color: #888; padding-right: 8px; white-space: nowrap;"
-                >{{ option.shortcutKeys[0] }}</span
-              >
-            </li>
-          }
-        </ul>
-      </div>
+      <div
+        mznDropdownItem
+        [options]="shortcutOptions"
+        mode="single"
+        type="default"
+        listboxId="dropdown-listbox"
+        [value]="selectedId() ?? undefined"
+        (selected)="selectedId.set($event.id)"
+      ></div>
       @if (selectedId()) {
         <div style="margin-top: 8px; font-size: 14px; color: #333;">
           已選擇：{{ getSelectedName() }}

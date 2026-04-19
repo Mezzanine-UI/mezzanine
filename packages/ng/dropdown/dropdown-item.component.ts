@@ -25,6 +25,7 @@ import type { DropdownActionProps } from './dropdown-action.component';
 import { MznDropdownAction } from './dropdown-action.component';
 import { MznDropdownItemCard } from './dropdown-item-card.component';
 import { MznDropdownStatus } from './dropdown-status.component';
+import { shortcutTextHandler } from './shortcut-text-handler';
 
 /** 扁平化後的樹狀選項節點，供模板迭代使用。 */
 export interface DropdownFlatTreeNode {
@@ -117,7 +118,7 @@ export interface DropdownFlatTreeNode {
               <div
                 mznDropdownItemCard
                 [active]="isActive(groupedOptionIndex(group, i))"
-                [appendContent]="option.shortcutText"
+                [appendContent]="resolveShortcutText(option)"
                 [checked]="isSelected(option)"
                 [checkSite]="option.checkSite ?? 'suffix'"
                 [disabled]="disabled()"
@@ -137,7 +138,7 @@ export interface DropdownFlatTreeNode {
             <div
               mznDropdownItemCard
               [active]="isActive(item.index)"
-              [appendContent]="item.option.shortcutText"
+              [appendContent]="resolveShortcutText(item.option)"
               [checked]="isTreeNodeChecked(item.option)"
               [checkSite]="resolveTreeCheckSite(item.option, item.hasChildren)"
               [disabled]="disabled()"
@@ -618,6 +619,20 @@ export class MznDropdownItem {
    */
   protected resolveTreeCardExtraClass(item: DropdownFlatTreeNode): string {
     return !item.hasChildren && item.level === 1 ? classes.cardLeafLevel1 : '';
+  }
+
+  /**
+   * 顯示給 `MznDropdownItemCard.appendContent` 的快捷鍵文字。優先使用
+   * `option.shortcutText`(使用者直接指定),否則用 `shortcutKeys` 經
+   * `shortcutTextHandler` 格式化成「⌘N / Ctrl+N」這類字串。對齊 React
+   * `DropdownItem.tsx:482-484 / 578-580 / 687-689`。
+   */
+  protected resolveShortcutText(option: DropdownOption): string | undefined {
+    if (option.shortcutText) return option.shortcutText;
+
+    const formatted = shortcutTextHandler(option.shortcutKeys);
+
+    return formatted || undefined;
   }
 
   protected resolveTreeCheckSite(
