@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznDropdownItem } from './dropdown-item.component';
 import { MznDropdownItemCard } from './dropdown-item-card.component';
 import { MznDropdownAction } from './dropdown-action.component';
@@ -17,7 +18,12 @@ export default {
   title: 'Internal/Dropdown/DropdownItem',
   decorators: [
     moduleMetadata({
-      imports: [MznDropdownItem, MznDropdownItemCard, MznDropdownAction],
+      imports: [
+        MznDropdownItem,
+        MznDropdownItemCard,
+        MznDropdownAction,
+        MznTag,
+      ],
     }),
   ],
 } satisfies Meta;
@@ -273,14 +279,14 @@ export const Basic: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px; position: relative;">
-        <div style="font-size: 13px; font-weight: 600;">Icons Dropdown</div>
+        <div mznTag label="Icons Dropdown"></div>
         <div mznDropdownItem
           [options]="iconsOptions"
           mode="multiple"
           type="default"
           listboxId="icons-listbox"
         ></div>
-        <div style="font-size: 13px; font-weight: 600;">Actions Dropdown</div>
+        <div mznTag label="Actions Dropdown"></div>
         <div mznDropdownItem
           [options]="actionsOptions"
           [actionConfig]="actionConfig"
@@ -299,14 +305,12 @@ export const Basic: Story = {
 @Component({
   selector: 'story-dropdown-item-tree',
   standalone: true,
-  imports: [MznDropdownItem],
+  imports: [MznDropdownItem, MznTag],
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 20px; position: relative;"
     >
-      <div style="font-size: 13px; font-weight: 600;"
-        >Single-Select Dropdown</div
-      >
+      <div mznTag label="Single-Select Dropdown"></div>
       <div
         mznDropdownItem
         [options]="treeOptions"
@@ -316,9 +320,7 @@ export const Basic: Story = {
         [value]="singleValue()"
         (selected)="selectSingle($event)"
       ></div>
-      <div style="font-size: 13px; font-weight: 600;"
-        >Multi-Select Dropdown</div
-      >
+      <div mznTag label="Multi-Select Dropdown"></div>
       <div
         mznDropdownItem
         [options]="treeCheckedOptions"
@@ -390,14 +392,14 @@ export const Grouped: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px; position: relative;">
-        <div style="font-size: 13px; font-weight: 600;">Grouped Dropdown</div>
+        <div mznTag label="Grouped Dropdown"></div>
         <div mznDropdownItem
           [options]="groupedOptions"
           mode="single"
           type="grouped"
           listboxId="grouped-listbox"
         ></div>
-        <div style="font-size: 13px; font-weight: 600;">Grouped Underline Dropdown</div>
+        <div mznTag label="Grouped Underline Dropdown"></div>
         <div mznDropdownItem
           [options]="groupedUnderlineOptions"
           mode="single"
@@ -412,14 +414,12 @@ export const Grouped: Story = {
 @Component({
   selector: 'story-dropdown-item-shortcuts',
   standalone: true,
-  imports: [MznDropdownItemCard],
+  imports: [MznDropdownItemCard, MznTag],
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 20px; position: relative;"
     >
-      <div style="font-size: 13px; font-weight: 600;"
-        >Shortcut Keys Dropdown</div
-      >
+      <div mznTag label="Shortcut Keys Dropdown"></div>
       <div style="margin-bottom: 8px; font-size: 14px; color: #666;">
         請先點擊下拉選單使其獲得焦點，然後按下快捷鍵測試功能。<br />
         支援的快捷鍵：⌘N / Ctrl+N、⌘O / Ctrl+O、⌘S / Ctrl+S、Delete /

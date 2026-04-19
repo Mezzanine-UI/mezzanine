@@ -1,4 +1,5 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznDropdownItemCard } from './dropdown-item-card.component';
 import { CaretRightIcon, FolderIcon } from '@mezzanine-ui/icons';
 
@@ -6,7 +7,7 @@ export default {
   title: 'Internal/Dropdown/DropdownItemCard',
   decorators: [
     moduleMetadata({
-      imports: [MznDropdownItemCard],
+      imports: [MznDropdownItemCard, MznTag],
     }),
   ],
 } satisfies Meta;
@@ -113,7 +114,7 @@ export const Single: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <div style="width: fit-content; min-width: 50%; background-color: #F3F4F6; padding: 40px;">
-          <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Default</div>
+          <div mznTag label="Default" size="main" style="margin-bottom: 12px;"></div>
           <table style="border-collapse: collapse; width: 100%;">
             <thead>
               <tr>
@@ -158,7 +159,7 @@ export const Single: Story = {
           </table>
         </div>
         <div style="width: fit-content; min-width: 50%; background-color: #F3F4F6; padding: 40px;">
-          <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Danger</div>
+          <div mznTag label="Danger" size="main" style="margin-bottom: 12px;"></div>
           <table style="border-collapse: collapse; width: 100%;">
             <thead>
               <tr>
@@ -215,7 +216,7 @@ export const Multiple: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <div style="width: fit-content; min-width: 50%; background-color: #F3F4F6; padding: 40px;">
-          <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Default</div>
+          <div mznTag label="Default" size="main" style="margin-bottom: 12px;"></div>
           <table style="border-collapse: collapse; width: 100%;">
             <thead>
               <tr>
