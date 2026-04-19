@@ -76,12 +76,27 @@ export function getFullParsedList(
 }
 
 /**
- * 自動完成選擇器元件，結合文字輸入與下拉選單過濾。
+ * 自動完成選擇器元件,結合文字輸入與下拉選單過濾。
  *
- * 支援單選與多選模式，搜尋過濾、clearable、loading 與 error 狀態。
- * 多選模式下已選項目以 Tag 顯示，支援 overflow counter/wrap 策略。
- * 支援動態新增選項（addable）、批次新增（bulk create）、inside 輸入模式、
- * 滾動到底載入更多（onReachBottom）等進階功能。
+ * 架構上是 `MznDropdown` 的 thin wrapper,對齊 React
+ * `<AutoComplete>` → `<Dropdown>` 的組合(`AutoComplete.tsx:1208`)。
+ * wrapper 本身負責:
+ * - 搜尋 debounce、`asyncData` 載入、`disabledOptionsFilter` 過濾
+ * - `addable` 模式的建立項追蹤(`AutocompleteCreationTracker`)、
+ *   bulk-create paste、`onRemoveCreated` 清理
+ * - Multiple mode 的 `SelectTrigger` tag 渲染 + counter/wrap overflow
+ *   策略、clearable 清除按鈕
+ * - ControlValueAccessor(ngModel)整合
+ *
+ * 清單渲染、鍵盤導覽、click-away、followText 高亮、selection 事件、
+ * 載入/空狀態、action bar 建立按鈕全部委派給內層 `<div mznDropdown>`
+ * (inside 模式用 `[mznDropdownHeader]` 投影輸入框;outside 模式用
+ * `[anchor]="triggerEl"` 綁定本元件的 SelectTrigger)。
+ *
+ * 支援單選與多選模式,搜尋過濾、clearable、loading 與 error 狀態。
+ * 多選模式下已選項目以 Tag 顯示,支援 overflow counter/wrap 策略。
+ * 支援動態新增選項(addable)、批次新增(bulk create)、inside 輸入模式、
+ * 滾動到底載入更多(onReachBottom)等進階功能。
  *
  * @example
  * ```html
@@ -111,6 +126,7 @@ export function getFullParsedList(
  * ></div>
  * ```
  *
+ * @see MznDropdown
  * @see MznSelect
  */
 @Component({

@@ -54,11 +54,21 @@ export interface DropdownActionConfig {
 }
 
 /**
- * 下拉選單元件，以 Popper 定位於錨定元素旁顯示選項列表。
+ * 下拉選單元件,支援 `inputPosition='outside'`(popper + anchor)與
+ * `inputPosition='inside'`(in-flow + `[mznDropdownHeader]` 投影 header)
+ * 兩種渲染模式,對齊 React `<Dropdown>` 介面 1:1。
  *
- * 支援單選與多選模式，扁平選項結構。
- * 使用 `ClickAwayService` 點擊外部時自動關閉。
- * 透過 `inputPosition` 控制搜尋框位置，透過 `type` 指定選項結構類型。
+ * 內建功能:
+ * - Popper 定位、click-away 自動關閉、mznTranslate 開合動畫
+ * - 鍵盤導覽(↑/↓/Home/End/Enter/Escape),滑鼠 hover 同步 `itemHovered`
+ * - `keyboardActiveIndex`(可由外部控制)與 `activeIndex`(hover)分離,
+ *   對齊 React `Dropdown.tsx:476-477`
+ * - `followText` 逐層傳至 `MznDropdownItemCard`,將符合子字串高亮
+ * - 擴充 props 如 `sameWidth`、`globalPortal`、`toggleCheckedOnClick`
+ *   亦與 React 同名(目前部分僅保留介面,行為擴充見各 input JSDoc)
+ *
+ * 作為 `MznAutocomplete` / `MznSelect` 的 list renderer,wrapper 只需
+ * 傳入 options + bindings 即可獲得一致的清單行為。
  *
  * @example
  * ```html
@@ -75,6 +85,7 @@ export interface DropdownActionConfig {
  * ></div>
  * ```
  *
+ * @see MznAutocomplete
  * @see MznSelect
  * @see MznPopper
  */
