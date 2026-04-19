@@ -1,5 +1,8 @@
 import { Component, ElementRef, signal, viewChild } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
+import { ChevronDownIcon } from '@mezzanine-ui/icons';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznOverflowTooltip } from './overflow-tooltip.component';
 import { MznOverflowCounterTag } from './overflow-counter-tag.component';
 
@@ -267,7 +270,7 @@ export const Placement: Story = {
 @Component({
   selector: 'story-overflow-tooltip-placement-on-click',
   standalone: true,
-  imports: [MznOverflowCounterTag],
+  imports: [MznIcon, MznOverflowCounterTag, MznTag],
   template: `
     <div
       style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 24px;"
@@ -295,10 +298,12 @@ export const Placement: Story = {
               style="flex: 1; display: flex; align-items: center; gap: 4px; overflow: hidden;"
             >
               <span
-                style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; white-space: nowrap;"
-              >
-                Option 1 &times;
-              </span>
+                mznTag
+                type="dismissable"
+                label="Option 1"
+                size="main"
+                (close)="noop()"
+              ></span>
               <span
                 mznOverflowCounterTag
                 [placement]="item.placement"
@@ -307,9 +312,11 @@ export const Placement: Story = {
                 (tagDismiss)="noop()"
               ></span>
             </div>
-            <span style="color: #8c8c8c; flex-shrink: 0; font-size: 12px;"
-              >&#8964;</span
-            >
+            <i
+              mznIcon
+              [icon]="chevronDownIcon"
+              style="color: #8c8c8c; flex-shrink: 0;"
+            ></i>
           </div>
         </div>
       }
@@ -327,6 +334,8 @@ class PlacementOnClickComponent {
   ];
 
   readonly tags = ['Option 2', 'Option 3', 'Option 4', 'Option 5'];
+
+  protected readonly chevronDownIcon = ChevronDownIcon;
 
   noop(): void {}
 }
