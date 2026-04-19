@@ -229,6 +229,7 @@ export interface DropdownActionConfig {
           mznPopper
           data-mzn-dropdown-popper="true"
           [anchor]="anchor()!"
+          [class]="popperWithPortalClass()"
           [open]="popperOpen()"
           [placement]="resolvedPlacement()"
           [offsetOptions]="{ mainAxis: 4 }"
@@ -530,6 +531,20 @@ export class MznDropdown {
   /** Root element class, including inputPosition modifier. */
   protected readonly resolvedRootClass = computed((): string =>
     clsx(classes.root, classes.inputPosition(this.inputPosition())),
+  );
+
+  /**
+   * 打在 outside-mode popper root 上的 class。`globalPortal=true` 時套用
+   * `.mzn-dropdown-popper--with-portal` 把 `pointer-events` 從 portal
+   * container 繼承的 `none` 重新打開為 `auto`,對齊 React
+   * `Dropdown.tsx:1019` + `_dropdown-styles.scss:200` 的處理。
+   *
+   * 若不套用,portal container 整張 fixed 全屏 + pointer-events: none 會
+   * 讓 popper 連同選項整張透明 —— 點擊穿過去打到後面元素,dropdown 本身
+   * 收不到任何點擊事件。
+   */
+  protected readonly popperWithPortalClass = computed((): string =>
+    this.globalPortal() ? classes.popperWithPortal : '',
   );
 
   /**
