@@ -738,6 +738,29 @@ export class MznDropdown {
         onCleanup(() => cleanup());
       }
     });
+
+    // Outside 模式 keyboard forwarding:popper 渲染的 list 不在 trigger 的
+    // DOM 樹裡,但使用者的 focus 通常停留在 trigger <input>,因此把 anchor
+    // 的 keydown 轉發到 host keyboard handler,讓 wrappers(MznAutocomplete、
+    // MznSelect)不需要各自重寫 nav 邏輯。`onHostKeyDown` 本身已有
+    // `defaultPrevented` 早退,所以 wrapper 若要吞 Enter / Backspace 做
+    // 自己的事,只要對該 event 呼叫 preventDefault 即可。
+    effect((onCleanup) => {
+      if (!this.open()) return;
+
+      const anchorRaw = this.anchor();
+      const anchorEl =
+        anchorRaw instanceof ElementRef ? anchorRaw.nativeElement : anchorRaw;
+
+      if (!anchorEl) return;
+      // Inline 模式的 anchor 若有設定也無所謂,hostEl 的 listener 已經
+      // handle 了同一個事件;但 inline 模式通常不設 anchor,故此處大多
+      // 只在 outside 模式起作用。
+      const handler = (event: KeyboardEvent): void => this.onHostKeyDown(event);
+
+      anchorEl.addEventListener('keydown', handler);
+      onCleanup(() => anchorEl.removeEventListener('keydown', handler));
+    });
   }
 
   protected onTranslateExited(): void {
@@ -762,9 +785,9 @@ export class MznDropdown {
    * 事件來源:
    * - Inside 模式:`[mznDropdownHeader]` 內 <input> 的 keydown 會沿 DOM
    *   bubble 到 host(<div mznDropdown>),直接被這個 host listener 接到。
-   * - Outside 模式:trigger <input> 是外部 `anchor`,與 host 無 DOM 關係,
-   *   事件到不了這裡 —— outside 模式由 wrapper(MznAutocomplete)自行
-   *   監聽 trigger 鍵盤並透過 `keyboardActiveIndex` input 控制高亮。
+   * - Outside 模式:trigger <input> 是外部 `anchor`,不在 host DOM 樹內,
+   *   由建構子內另一個 effect 將 anchor 的 keydown 轉發到同一個 handler,
+   *   讓 wrapper 不需自行實作 nav。
    */
   protected onHostKeyDown(event: KeyboardEvent): void {
     if (!this.open() || this.disabled()) return;

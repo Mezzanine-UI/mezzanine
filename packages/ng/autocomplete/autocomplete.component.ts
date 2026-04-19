@@ -382,19 +382,42 @@ export function getFullParsedList(
         </div>
       </div>
     } @else {
-      <!-- Outside mode: use popper for floating positioning -->
+      <!--
+        Outside mode: same delegation pattern as inside mode, but the
+        trigger lives in the component's own template (SelectTrigger)
+        and is passed via [anchor] so MznDropdown can position the
+        floating popper + sameWidth middleware takes the anchor width.
+        globalPortal mirrors the legacy default (render through
+        MznPortal for stacking-context isolation).
+      -->
       <div
-        mznInputTriggerPopper
+        mznDropdown
+        inputPosition="outside"
+        placement="bottom-start"
+        [actionText]="createActionDisplayText()"
         [anchor]="triggerElRef()!"
+        [emptyText]="emptyText()"
+        [followText]="searchText()"
+        [globalPortal]="true"
+        [loadingPosition]="loadingPosition()"
+        [loadingText]="loadingText()"
+        [maxHeight]="menuMaxHeight()"
+        [mode]="mode()"
         [open]="isOpen()"
+        [options]="dropdownOptions()"
         [sameWidth]="true"
-      >
-        <div mznTranslate [in]="isOpen()" from="top">
-          <div [class]="dropdownRootClass()">
-            <ng-container *ngTemplateOutlet="dropdownContentTpl" />
-          </div>
-        </div>
-      </div>
+        [showActionShowTopBar]="true"
+        [showDropdownActions]="shouldShowCreateAction()"
+        [status]="dropdownInlineStatus()"
+        [value]="internalValue()"
+        [zIndex]="dropdownZIndex() ?? undefined"
+        (actionCustomClicked)="onCreateActionClick()"
+        (closed)="onDropdownCloseRequested()"
+        (leaveBottom)="leaveBottom.emit()"
+        (reachBottom)="reachBottom.emit()"
+        (selected)="onOptionClick($event)"
+        (visibilityChange)="onDropdownVisibilityChangeFromInline($event)"
+      ></div>
     }
     <!-- Shared dropdown content template -->
     <ng-template #dropdownContentTpl>
