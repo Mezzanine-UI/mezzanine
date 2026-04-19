@@ -24,16 +24,27 @@ export class ClickAwayService {
    * @returns A cleanup function to manually stop listening.
    */
   listen(
-    container: HTMLElement,
+    containers: HTMLElement | readonly (HTMLElement | null | undefined)[],
     handler: ClickAwayHandler,
     destroyRef?: DestroyRef,
   ): () => void {
+    const containerList = Array.isArray(containers) ? containers : [containers];
     const listener: ClickAwayHandler = (event) => {
       const target = event.target as HTMLElement | null;
 
-      if (!(container.contains(target) || !document.contains(target!))) {
-        handler(event);
+      // 已經從 DOM 移除的 target（React 的等效行為）略過，避免誤觸關閉。
+      if (!document.contains(target!)) return;
+
+      // 只要 target 落在任一 container 內就視為「inside」，不觸發 handler。
+      // 典型多 container 用法：主元件 host + 被 portal 出去的 popper element，
+      // 讓點擊 popped-out 選項時不被當成 click-away。
+      for (const container of containerList) {
+        if (container && container.contains(target)) {
+          return;
+        }
       }
+
+      handler(event);
     };
 
     let disposed = false;
