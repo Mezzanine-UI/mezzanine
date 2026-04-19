@@ -3,6 +3,7 @@ import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { MznNotificationCenter } from './notification-center.component';
+import { MznNotificationCenterContainer } from './notification-center-container.component';
 import { MznNotificationCenterDrawer } from './notification-center-drawer.component';
 import type { NotificationItem } from './notification';
 
@@ -76,6 +77,7 @@ export const Severity: Story = {
     MznButton,
     MznTypography,
     MznNotificationCenter,
+    MznNotificationCenterContainer,
     MznNotificationCenterDrawer,
   ],
   host: {
@@ -104,15 +106,18 @@ export const Severity: Story = {
     </div>
 
     <!--
-        Toast stack (top-right) — each entry is a per-item MznNotificationCenter
-        in notification mode. Mirrors the floating notifications React renders
-        via NotificationCenter.add() ({ type: 'notification' }) into the global
-        notification-center-root portal.
+        Toast stack (top-right, via MznNotificationCenterContainer).
+        host gets \`.mzn-notification-center-root\` → position: fixed top/right
+        and the floating pointer-events cascade, matching React's auto-created
+        root portal. When toasts.length > 3, the container renders a
+        「查看更多」 button; (viewAllClicked) clears toasts and opens the drawer.
       -->
     <div
-      style="position: fixed; top: 16px; right: 32px; display: flex; flex-direction: column; align-items: flex-end; gap: 16px; z-index: 1000;"
+      mznNotificationCenterContainer
+      [items]="toasts()"
+      (viewAllClicked)="onViewAll()"
     >
-      @for (item of toasts(); track item.key) {
+      <ng-template #itemTemplate let-item>
         <div
           mznNotificationCenter
           type="notification"
@@ -129,7 +134,7 @@ export const Severity: Story = {
           (cancelled)="remove(item.key)"
           (closed)="remove($event)"
         ></div>
-      }
+      </ng-template>
     </div>
 
     <!--
@@ -273,6 +278,14 @@ class AddMethodComponent {
     if (key === undefined) return;
     this.toasts.update((prev) => prev.filter((t) => t.key !== key));
   }
+
+  // Mirror React `handleViewAll` — NotificationCenter.destroy() +
+  // setDrawerOpen(true). In Angular, the consumer owns the stack, so we
+  // clear `toasts` ourselves (the Container has no singleton to destroy).
+  onViewAll(): void {
+    this.toasts.set([]);
+    this.drawerOpen.set(true);
+  }
 }
 
 type ToastItem = NotificationItem & { readonly _duration?: number | false };
@@ -287,34 +300,47 @@ export const AddMethod: Story = {
   render: () => ({ template: `<div storyNotificationAddMethod></div>` }),
 };
 
+const DEFAULT_BADGE_OPTIONS = [
+  { id: 'mark', name: '標示已讀' },
+  { id: 'delete', name: '刪除已讀' },
+  { id: 'deleteMark', name: '刪除通知', validate: 'danger' },
+] as const;
+
 const SAMPLE_LIST: readonly NotificationItem[] = [
   {
     key: '1',
     title: '系統更新通知',
     description: '系統已完成更新，您現在可以使用最新版本功能。',
     severity: 'info',
-    timeStamp: new Date('2025-12-15T10:00:00'),
+    // 對齊 React story 字串 timestamp（'YYYY-MM-DD HH:mm:ss'），避免 Date 物件在
+    // 兩邊被序列化為不同的顯示格式。
+    timeStamp: '2025-12-15 10:00:00',
+    showBadge: true,
+    options: DEFAULT_BADGE_OPTIONS,
   },
   {
     key: '2',
     title: '帳號安全提醒',
     description: '您的登入地點異常，請確認是否為本人操作。',
     severity: 'warning',
-    timeStamp: new Date('2025-12-14T10:00:00'),
+    timeStamp: '2025-12-14 10:00:00',
+    options: DEFAULT_BADGE_OPTIONS,
   },
   {
     key: '3',
     title: '已上傳完成',
     description: '您的檔案「月報表.pdf」已成功上傳，可前往資料庫查看結果。',
     severity: 'success',
-    timeStamp: new Date('2025-12-14T10:00:00'),
+    timeStamp: '2025-12-14 10:00:00',
+    options: DEFAULT_BADGE_OPTIONS,
   },
   {
     key: '4',
     title: '上傳失敗',
     description: '您的檔案「月報表.pdf」上傳失敗，請重新上傳。',
     severity: 'error',
-    timeStamp: new Date('2025-12-14T10:00:00'),
+    timeStamp: '2025-12-14 10:00:00',
+    options: DEFAULT_BADGE_OPTIONS,
   },
   {
     key: '5',
@@ -322,14 +348,18 @@ const SAMPLE_LIST: readonly NotificationItem[] = [
     description:
       '後端資料庫已完成更新，若您在操作中遇到延遲，屬正常現象，稍後即會改善。',
     severity: 'info',
-    timeStamp: new Date('2025-12-14T10:00:00'),
+    timeStamp: '2025-12-14 10:00:00',
+    options: DEFAULT_BADGE_OPTIONS,
   },
 ];
 
 export const DrawerWithChildren: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
-    props: { open: signal(false) },
+    props: {
+      open: signal(false),
+      badgeOptions: DEFAULT_BADGE_OPTIONS,
+    },
     template: `
       <div>
       <button mznButton variant="base-primary" (click)="open.set(true)">
@@ -338,17 +368,41 @@ export const DrawerWithChildren: Story = {
       <div mznNotificationCenterDrawer
         [open]="open()"
         title="通知中心"
+        drawerSize="narrow"
+        [filterBarShow]="true"
+        filterBarAllRadioLabel="全部"
+        filterBarReadRadioLabel="已讀"
+        filterBarUnreadRadioLabel="未讀"
+        [filterBarShowUnreadButton]="true"
+        filterBarCustomButtonLabel="全部已讀"
         (closed)="open.set(false)"
       >
         <div mznNotificationCenter type="drawer" severity="info"
           title="系統更新通知" description="系統已完成更新，您現在可以使用最新版本功能。"
-          [timeStamp]="'2025-12-15T10:00:00'"></div>
+          reference="1"
+          [showBadge]="true"
+          [options]="badgeOptions"
+          [timeStamp]="'2025-12-15 10:00:00'"></div>
         <div mznNotificationCenter type="drawer" severity="warning"
           title="帳號安全提醒" description="您的登入地點異常，請確認是否為本人操作。"
-          [timeStamp]="'2025-12-14T10:00:00'"></div>
+          reference="2"
+          [options]="badgeOptions"
+          [timeStamp]="'2025-12-14 10:00:00'"></div>
         <div mznNotificationCenter type="drawer" severity="success"
-          title="已上傳完成" description="您的檔案「月報表.pdf」已成功上傳。"
-          [timeStamp]="'2025-12-14T10:00:00'"></div>
+          title="已上傳完成" description="您的檔案「月報表.pdf」已成功上傳，可前往資料庫查看結果。"
+          reference="3"
+          [options]="badgeOptions"
+          [timeStamp]="'2025-12-14 10:00:00'"></div>
+        <div mznNotificationCenter type="drawer" severity="error"
+          title="上傳失敗" description="您的檔案「月報表.pdf」上傳失敗，請重新上傳。"
+          reference="4"
+          [options]="badgeOptions"
+          [timeStamp]="'2025-12-14 10:00:00'"></div>
+        <div mznNotificationCenter type="drawer" severity="info"
+          title="資料更新通知" description="後端資料庫已完成更新，若您在操作中遇到延遲，屬正常現象，稍後即會改善。"
+          reference="5"
+          [options]="badgeOptions"
+          [timeStamp]="'2025-12-14 10:00:00'"></div>
       </div>
       </div>
     `,
@@ -367,7 +421,14 @@ export const DrawerWithNotificationList: Story = {
       <div mznNotificationCenterDrawer
         [open]="open()"
         title="通知中心"
+        drawerSize="narrow"
         [notificationList]="list"
+        [filterBarShow]="true"
+        filterBarAllRadioLabel="全部"
+        filterBarReadRadioLabel="已讀"
+        filterBarUnreadRadioLabel="未讀"
+        [filterBarShowUnreadButton]="true"
+        filterBarCustomButtonLabel="全部已讀"
         (closed)="open.set(false)"
       ></div>
       </div>
@@ -387,7 +448,14 @@ export const DrawerEmpty: Story = {
       <div mznNotificationCenterDrawer
         [open]="open()"
         title="通知中心"
+        drawerSize="narrow"
         [notificationList]="list"
+        [filterBarShow]="true"
+        filterBarAllRadioLabel="全部"
+        filterBarReadRadioLabel="已讀"
+        filterBarUnreadRadioLabel="未讀"
+        [filterBarShowUnreadButton]="true"
+        filterBarCustomButtonLabel="全部已讀"
         (closed)="open.set(false)"
       ></div>
       </div>
@@ -399,42 +467,139 @@ export const DrawerTimeStamp: Story = {
   parameters: { controls: { disable: true } },
   render: () => {
     const now = new Date();
-    const mk = (minutesAgo: number) => {
+
+    // 對齊 React `toISOString().replace('T', ' ').slice(0, 19)`
+    // 產出 'YYYY-MM-DD HH:mm:ss' 字串。
+    const formatTs = (d: Date): string =>
+      d.toISOString().replace('T', ' ').slice(0, 19);
+    // 僅日期（無時間）— 對齊 React `toISOString().split('T')[0]`。
+    const formatDate = (d: Date): string => d.toISOString().split('T')[0];
+
+    const offset = (
+      minutesAgo: number,
+      hour?: number,
+      minute?: number,
+    ): Date => {
       const d = new Date(now);
       d.setMinutes(d.getMinutes() - minutesAgo);
+      if (hour !== undefined) d.setHours(hour, minute ?? 0, 0, 0);
       return d;
     };
+
+    const today30min = offset(30);
+    const today2hours = offset(120);
+    const yesterday = offset(0);
+    yesterday.setDate(now.getDate() - 1);
+    yesterday.setHours(10, 0, 0, 0);
+    const twoDaysAgo = offset(0);
+    twoDaysAgo.setDate(now.getDate() - 2);
+    twoDaysAgo.setHours(14, 30, 0, 0);
+    const fourDaysAgo = offset(0);
+    fourDaysAgo.setDate(now.getDate() - 4);
+    fourDaysAgo.setHours(9, 15, 0, 0);
+    const sixDaysAgo = offset(0);
+    sixDaysAgo.setDate(now.getDate() - 6);
+    sixDaysAgo.setHours(16, 45, 0, 0);
+    const eightDaysAgo = offset(0);
+    eightDaysAgo.setDate(now.getDate() - 8);
+    eightDaysAgo.setHours(20, 8, 0, 0);
+    const tenDaysAgo = offset(0);
+    tenDaysAgo.setDate(now.getDate() - 10);
+    const elevenDaysAgo = offset(0);
+    elevenDaysAgo.setDate(now.getDate() - 11);
+    elevenDaysAgo.setHours(15, 30, 0, 0);
+
     return {
       props: {
         open: signal(false),
+        // 對齊 React `DrawerTimeStampExample` 的十項資料（含各種時間格式組合）。
         list: [
           {
-            key: '30m',
-            title: '今天 - 30 分鐘前',
-            description: '這是 30 分鐘前的通知',
+            key: 'today-30min',
+            title: '今天 - 30分鐘前',
+            description: '這是30分鐘前的通知，應該顯示「30 分鐘前」',
             severity: 'info',
-            timeStamp: mk(30),
+            timeStamp: formatTs(today30min),
+            showBadge: true,
+            options: DEFAULT_BADGE_OPTIONS,
           },
           {
-            key: '2h',
-            title: '今天 - 2 小時前',
-            description: '這是 2 小時前的通知',
+            key: 'today-2hours',
+            title: '今天 - 2小時前',
+            description: '這是2小時前的通知，應該顯示「2 小時前」',
             severity: 'success',
-            timeStamp: mk(120),
+            timeStamp: formatTs(today2hours),
+            options: DEFAULT_BADGE_OPTIONS,
           },
           {
-            key: 'yd',
+            key: 'yesterday',
             title: '昨天',
-            description: '這是昨天的通知',
+            description: '這是昨天的通知，應該顯示「1 天前」',
             severity: 'warning',
-            timeStamp: mk(60 * 24),
+            timeStamp: formatTs(yesterday),
+            options: DEFAULT_BADGE_OPTIONS,
           },
           {
-            key: '2d',
-            title: '2 天前',
-            description: '這是 2 天前的通知',
+            key: '2days-ago',
+            title: '過去7天 - 2天前',
+            description: '這是2天前的通知，應該顯示「2 天前」',
             severity: 'info',
-            timeStamp: mk(60 * 24 * 2),
+            timeStamp: formatTs(twoDaysAgo),
+            options: DEFAULT_BADGE_OPTIONS,
+          },
+          {
+            key: '4days-ago',
+            title: '過去7天 - 4天前',
+            description: '這是4天前的通知，應該顯示「4 天前」',
+            severity: 'success',
+            timeStamp: formatTs(fourDaysAgo),
+            options: DEFAULT_BADGE_OPTIONS,
+          },
+          {
+            key: '6days-ago',
+            title: '過去7天 - 6天前',
+            description: '這是6天前的通知，應該顯示「6 天前」',
+            severity: 'warning',
+            timeStamp: formatTs(sixDaysAgo),
+            options: DEFAULT_BADGE_OPTIONS,
+          },
+          {
+            key: '8days-ago-with-time',
+            title: '超過7天 - 有時間戳',
+            description:
+              '這是8天前的通知（有時間戳），應該顯示「2025-XX-XX 20:08」格式',
+            severity: 'error',
+            timeStamp: formatTs(eightDaysAgo),
+            options: DEFAULT_BADGE_OPTIONS,
+          },
+          {
+            key: '10days-ago-no-time',
+            title: '超過7天 - 無時間戳',
+            description:
+              '這是10天前的通知（無時間戳），應該顯示「2025-XX-XX」格式',
+            severity: 'info',
+            timeStamp: formatDate(tenDaysAgo),
+            options: DEFAULT_BADGE_OPTIONS,
+          },
+          {
+            key: '11days-ago-with-time',
+            title: '超過7天 - 有時間戳（11天前）',
+            description:
+              '這是11天前的通知（有時間戳），應該顯示「2025-XX-XX 15:30」格式',
+            severity: 'success',
+            timeStamp: formatTs(elevenDaysAgo),
+            options: DEFAULT_BADGE_OPTIONS,
+          },
+          {
+            // 對齊 React story：此筆 key 宣告為 12 天前但 React 原始碼重複使用
+            // `elevenDaysAgo` 作為 timeStamp（應是筆誤），完全照搬以保 DOM parity。
+            key: '12days-ago-with-time',
+            title: '超過7天 - 有時間戳（12天前）',
+            description:
+              '這是12天前的通知（有時間戳），應該顯示「2025-XX-XX 15:30」格式',
+            severity: 'warning',
+            timeStamp: formatTs(elevenDaysAgo),
+            options: DEFAULT_BADGE_OPTIONS,
           },
         ] as NotificationItem[],
       },
@@ -445,8 +610,17 @@ export const DrawerTimeStamp: Story = {
         </button>
         <div mznNotificationCenterDrawer
           [open]="open()"
-          title="通知中心 - 時間戳記"
+          title="通知中心 - 時間戳記顯示範例"
+          drawerSize="narrow"
           [notificationList]="list"
+          [filterBarShow]="true"
+          filterBarAllRadioLabel="全部"
+          filterBarReadRadioLabel="已讀"
+          filterBarUnreadRadioLabel="未讀"
+          [filterBarShowUnreadButton]="true"
+          filterBarCustomButtonLabel="全部已讀"
+          filterBarDefaultValue="all"
+          filterBarValue="all"
           (closed)="open.set(false)"
         ></div>
         </div>
@@ -460,11 +634,20 @@ export const DrawerWithFilterOptions: Story = {
   render: () => ({
     props: {
       open: signal(false),
-      list: SAMPLE_LIST,
-      options: [
-        { id: 'mark', name: '標示已讀' },
-        { id: 'delete', name: '刪除已讀' },
+      filter: signal<string>('all'),
+      // 對齊 React `DrawerWithFilterOptionsExample`：3 筆（system / account / upload-success）。
+      list: SAMPLE_LIST.slice(0, 3),
+      // 對齊 React `filterOptions` — 含 showUnderline / validate: 'danger'。
+      filterOptions: [
+        { id: 'mark-all-read', name: '全部標示已讀' },
+        { id: 'delete-read', name: '刪除已讀通知', showUnderline: true },
+        { id: 'delete-all', name: '刪除所有通知', validate: 'danger' },
       ],
+      // 對齊 React `filterBarOnSelect={(opt) => alert(...)}` 的行為。
+      onSelect: (opt: { name: string }): void => {
+         
+        alert(`已選擇：${opt.name}`);
+      },
     },
     template: `
       <div>
@@ -474,13 +657,18 @@ export const DrawerWithFilterOptions: Story = {
       <div mznNotificationCenterDrawer
         [open]="open()"
         title="通知中心"
+        drawerSize="narrow"
         [notificationList]="list"
         [filterBarShow]="true"
         filterBarAllRadioLabel="全部"
         filterBarReadRadioLabel="已讀"
         filterBarUnreadRadioLabel="未讀"
         [filterBarShowUnreadButton]="true"
-        [filterBarOptions]="options"
+        filterBarDefaultValue="all"
+        [filterBarValue]="filter()"
+        [filterBarOptions]="filterOptions"
+        (filterBarOnRadioChange)="filter.set($event)"
+        (filterBarOnSelect)="onSelect($event)"
         (closed)="open.set(false)"
       ></div>
       </div>
