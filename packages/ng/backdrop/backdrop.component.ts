@@ -4,6 +4,7 @@ import {
   computed,
   DestroyRef,
   effect,
+  ElementRef,
   inject,
   input,
   output,
@@ -37,6 +38,7 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
 @Component({
   selector: '[mznBackdrop]',
   host: {
+    '[attr.container]': 'null',
     '[attr.open]': 'null',
     '[attr.variant]': 'null',
     '[attr.disableScrollLock]': 'null',
@@ -47,7 +49,11 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
   imports: [MznPortal, MznFade],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div mznPortal [disablePortal]="disablePortal()">
+    <div
+      mznPortal
+      [container]="resolvedContainer()"
+      [disablePortal]="disablePortal()"
+    >
       <div
         [class]="hostClasses()"
         role="presentation"
@@ -103,6 +109,17 @@ export class MznBackdrop {
    */
   readonly disablePortal = input(false);
 
+  /**
+   * 自訂 Portal 目標容器元素；對齊 React `container` prop。
+   * 接受 `HTMLElement` 或 `ElementRef<HTMLElement>`；未設定時使用全域 portal
+   * 容器（body 底下的 `#mzn-portal-container`）。設定後 backdrop 會被渲染於
+   * 指定容器內（結合 `position: absolute` 的 `.mzn-backdrop--absolute` 效果，
+   * 可讓遮罩限縮在特定區塊而非全螢幕）。
+   */
+  readonly container = input<HTMLElement | ElementRef<HTMLElement> | null>(
+    null,
+  );
+
   /** 遮罩被點擊時觸發。 */
   readonly backdropClick = output<void>();
 
@@ -117,6 +134,21 @@ export class MznBackdrop {
 
   protected readonly backdropClasses = computed((): string =>
     clsx(classes.backdrop, classes.backdropVariant(this.variant())),
+  );
+
+  /**
+   * 將 `container` input 正規化為 `MznPortal` 所需的 `HTMLElement | undefined`。
+   * 接受 `HTMLElement` 或 `ElementRef<HTMLElement>`；`null` / `undefined` 回傳
+   * `undefined` 讓 Portal 使用預設全域容器。
+   */
+  protected readonly resolvedContainer = computed(
+    (): HTMLElement | undefined => {
+      const raw = this.container();
+
+      if (!raw) return undefined;
+
+      return raw instanceof ElementRef ? raw.nativeElement : raw;
+    },
   );
 
   protected readonly mainClass = classes.main;
