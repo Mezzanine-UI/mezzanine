@@ -104,6 +104,7 @@ const SIDE_TO_STATIC: Record<string, { property: string; value: string }> = {
     '[attr.data-popper-placement]': 'currentPlacement()',
     '[attr.anchor]': 'null',
     '[attr.arrowOptions]': 'null',
+    '[attr.disableFlip]': 'null',
     '[attr.middleware]': 'null',
     '[attr.offsetOptions]': 'null',
     '[attr.open]': 'null',
@@ -180,6 +181,14 @@ export class MznPopper {
    * @default 'absolute'
    */
   readonly strategy = input<PopperPositionStrategy>('absolute');
+
+  /**
+   * 是否停用 floating-ui `flip` middleware。關閉後 popper 始終維持使用者
+   * 指定的 placement(例如 `top` 不會因為上方空間不足而翻到 `bottom`),
+   * 對齊 React `<Popper>` 的行為 —— React 預設沒有套 flip。
+   * @default false
+   */
+  readonly disableFlip = input(false);
 
   /**
    * 位置更新事件。
@@ -269,7 +278,9 @@ export class MznPopper {
         middlewares.push(offset(offsetOpts));
       }
 
-      middlewares.push(flip());
+      if (!this.disableFlip()) {
+        middlewares.push(flip());
+      }
 
       if (arrowOpts?.enabled && arrowElRef) {
         middlewares.push(

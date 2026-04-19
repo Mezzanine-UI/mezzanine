@@ -230,6 +230,7 @@ export interface DropdownActionConfig {
           data-mzn-dropdown-popper="true"
           [anchor]="anchor()!"
           [class]="popperWithPortalClass()"
+          [disableFlip]="true"
           [open]="popperOpen()"
           [placement]="resolvedPlacement()"
           [offsetOptions]="{ mainAxis: 4 }"
