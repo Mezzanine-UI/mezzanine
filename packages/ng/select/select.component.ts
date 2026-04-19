@@ -143,10 +143,12 @@ interface FlatOption {
       }
     </div>
     <div
+      #triggerPopper
       mznInputTriggerPopper
       [anchor]="triggerElRef()!"
       [open]="isOpen()"
       [sameWidth]="true"
+      [globalPortal]="globalPortal()"
     >
       <div mznTranslate [in]="isOpen()" from="top">
         <ul
@@ -201,6 +203,8 @@ export class MznSelect implements ControlValueAccessor {
   protected readonly triggerElRef = viewChild(MznSelectTrigger, {
     read: ElementRef<HTMLElement>,
   });
+
+  private readonly triggerPopperRef = viewChild(MznInputTriggerPopper);
 
   /** 自訂 CSS class。 */
   readonly className = input<string>();
@@ -423,8 +427,13 @@ export class MznSelect implements ControlValueAccessor {
       const open = this.isOpen();
 
       if (open) {
+        // globalPortal=true 時 popper 會被搬到 body 層級，不再落在 host 內，
+        // 所以 click-away 需同時接受「host」與「popper 根元素」兩個 container —
+        // 否則點擊 popped-out 選項會被 capture-phase click-away 判定為 outside
+        // 而立刻關閉（multi-select 模式會中斷連續選取）。
+        const popperEl = this.triggerPopperRef()?.popperElRef()?.nativeElement;
         const cleanup = this.clickAway.listen(
-          this.hostElRef.nativeElement,
+          [this.hostElRef.nativeElement, popperEl],
           () => this.isOpen.set(false),
           this.destroyRef,
         );
