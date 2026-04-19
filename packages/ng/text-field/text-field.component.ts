@@ -67,6 +67,7 @@ import { MznTextFieldHost } from './text-field-host.directive';
     },
   ],
   host: {
+    '[class.mzn-text-field--clearing]': 'shouldShowClearable()',
     '[attr.active]': 'null',
     '[attr.clearable]': 'null',
     '[attr.forceShowClearable]': 'null',
@@ -88,7 +89,13 @@ import { MznTextFieldHost } from './text-field-host.directive';
       </div>
     }
     <ng-content />
-    @if (!hideSuffixWhenClearable() && shouldShowClearable()) {
+    <!--
+      Clear button 一律渲染(clearable=true 且非 hideSuffixWhenClearable 時),
+      讓 layout 從一開始就預留空間;實際顯示 / 隱藏用 host 的
+      .mzn-text-field--clearing modifier(opacity 0 → 1)控制。對齊 React
+      TextField.tsx:328-339,避免條件渲染在 hover 時整個欄位寬度跳動。
+    -->
+    @if (clearable() && !hideSuffixWhenClearable()) {
       <button
         mznClearActions
         type="clearable"
