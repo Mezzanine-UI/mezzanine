@@ -209,6 +209,14 @@ export class MznDropdownItemCard {
   /** 驗證樣式。 @default 'default' */
   readonly validate = input<DropdownItemValidate>('default');
 
+  /**
+   * 額外的 host class,對齊 React `DropdownItemCard` 的 `className` prop。
+   * 父元件(如 `MznDropdownItem`)可透過此 input 追加情境特定 class,例如
+   * tree mode 在 level-1 leaf 節點加上 `.mzn-dropdown-item-card--level-1-leaf`
+   * 讓文字靠左對齊到有 caret 的同層節點位置。
+   */
+  readonly extraClass = input<string>('');
+
   /** 點擊事件。 */
   readonly clicked = output<void>();
 
@@ -277,12 +285,17 @@ export class MznDropdownItemCard {
   );
 
   protected readonly hostClasses = computed((): string =>
-    clsx(classes.card, classes.cardLevel(this.level()), {
-      [classes.cardActive]: this.active() || this.checked(),
-      [classes.cardKeyboardActive]: this.active(),
-      [classes.cardDisabled]: this.disabled(),
-      [classes.cardDanger]: this.validate() === 'danger',
-    }),
+    clsx(
+      classes.card,
+      classes.cardLevel(this.level()),
+      {
+        [classes.cardActive]: this.active() || this.checked(),
+        [classes.cardKeyboardActive]: this.active(),
+        [classes.cardDisabled]: this.disabled(),
+        [classes.cardDanger]: this.validate() === 'danger',
+      },
+      this.extraClass(),
+    ),
   );
 
   protected readonly showPrependContent = computed((): boolean => {

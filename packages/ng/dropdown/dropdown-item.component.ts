@@ -141,6 +141,7 @@ export interface DropdownFlatTreeNode {
               [checked]="isTreeNodeChecked(item.option)"
               [checkSite]="resolveTreeCheckSite(item.option, item.hasChildren)"
               [disabled]="disabled()"
+              [extraClass]="resolveTreeCardExtraClass(item)"
               [followText]="followText()"
               [id]="optionId(item.index)"
               [indeterminate]="isTreeNodeIndeterminate(item.option)"
@@ -606,6 +607,17 @@ export class MznDropdownItem {
     if (!hasChildren || level >= 2) return undefined;
 
     return this.isExpanded(option.id) ? CaretDownIcon : CaretRightIcon;
+  }
+
+  /**
+   * 為 tree mode 的 leaf 節點(無 children)額外加上 `cardLeafLevel1` class,
+   * 讓文字左側對齊同層有 caret 的 parent 節點。對齊 React
+   * `DropdownItem.tsx:602-605` 的 `!hasChildren && level === 1` 邏輯。
+   * 沒有 caret 的 leaf 少了 prepend 欄位,若不補償就會比有 caret 的同層節點
+   * 多出一段左邊距讓文字更靠左,造成「Vue / Angular 跟 React 文字沒對齊」。
+   */
+  protected resolveTreeCardExtraClass(item: DropdownFlatTreeNode): string {
+    return !item.hasChildren && item.level === 1 ? classes.cardLeafLevel1 : '';
   }
 
   protected resolveTreeCheckSite(
