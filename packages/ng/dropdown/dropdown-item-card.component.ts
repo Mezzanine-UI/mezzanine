@@ -43,6 +43,13 @@ import clsx from 'clsx';
 @Component({
   selector: '[mznDropdownItemCard]',
   host: {
+    // React 的 <DropdownItemCard> 直接 render 一個 <li class="...width:100%">,
+    // Angular attribute directive 外包一層 host <div>/<li>,在 flex / block
+    // 容器裡沒有 explicit width 會 shrink 到 content。加 `display: block;
+    // width: 100%` 讓 host 填滿 parent,內層 <li class="mzn-dropdown-item-card">
+    // 的 `width: 100%` 才能拿到等同 React 的 layout box。對齊 Playground
+    // 240px 容器、也讓 MznDropdownItem 的 list-wrapper 內每個 card 填滿 ul。
+    style: 'display: block; width: 100%;',
     '[attr.active]': 'null',
     '[attr.appendContent]': 'null',
     '[attr.appendIcon]': 'null',
