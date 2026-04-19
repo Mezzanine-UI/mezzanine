@@ -88,8 +88,11 @@ export const Playground: Story = {
       },
     },
     template: `
-      <div style="background-color: #d3d3d3; height: 100px; width: 240px; display: flex; align-items: center;">
-        <div mznDropdownItemCard
+      <div
+        style="background-color: #d3d3d3; height: 100px; width: 240px; display: flex; align-items: center;"
+      >
+        <div
+          mznDropdownItemCard
           [mode]="mode"
           [level]="level"
           [label]="label"
@@ -113,95 +116,209 @@ export const Single: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px;">
-        <div style="width: fit-content; min-width: 50%; background-color: #F3F4F6; padding: 40px;">
-          <div mznTag label="Default" size="main" style="margin-bottom: 12px;"></div>
-          <table style="border-collapse: collapse; width: 100%;">
-            <thead>
-              <tr>
-                <th style="padding: 8px; text-align: center; width: 120px;"></th>
-                <th style="padding: 8px; text-align: center;">Icon Default</th>
-                <th style="padding: 8px; text-align: center;"></th>
-                <th style="padding: 8px; text-align: center;">Icon Selected</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Enabled / Hover</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" subTitle="Supporting text" [appendIcon]="folderIcon" appendContent="New" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" subTitle="Supporting text" appendContent="New" checkSite="suffix" [checked]="true" ></div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Matched</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" subTitle="Supporting text option" [appendIcon]="folderIcon" appendContent="New" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" subTitle="Supporting text option" appendContent="New" checkSite="suffix" [checked]="true" ></div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Disable</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" subTitle="Supporting text" [appendIcon]="folderIcon" appendContent="New" [disabled]="true" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" subTitle="Supporting text" [appendIcon]="folderIcon" appendContent="New" checkSite="suffix" [checked]="true" [disabled]="true" ></div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div
+          style="width: fit-content; min-width: 50%; height: 285px; background-color: #F3F4F6; padding: 40px;"
+        >
+          <div mznTag label="Default" size="main"></div>
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <table style="border-collapse: collapse; width: 100%;">
+              <thead>
+                <tr>
+                  <th style="padding: 8px; text-align: center; width: 120px;"></th>
+                  <th style="padding: 8px; text-align: center;">Icon Default</th>
+                  <th style="padding: 8px; text-align: center;"></th>
+                  <th style="padding: 8px; text-align: center;">Icon Selected</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Enabled / Hover</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      subTitle="Supporting text"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      subTitle="Supporting text"
+                      appendContent="New"
+                      checkSite="suffix"
+                      [checked]="true"
+                    ></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Matched</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      subTitle="Supporting text option"
+                      followText="opti"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      subTitle="Supporting text option"
+                      followText="op"
+                      appendContent="New"
+                      checkSite="suffix"
+                      [checked]="true"
+                    ></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Disable</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      subTitle="Supporting text"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                      [disabled]="true"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      subTitle="Supporting text"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                      checkSite="suffix"
+                      [checked]="true"
+                      [disabled]="true"
+                    ></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div style="width: fit-content; min-width: 50%; background-color: #F3F4F6; padding: 40px;">
-          <div mznTag label="Danger" size="main" style="margin-bottom: 12px;"></div>
-          <table style="border-collapse: collapse; width: 100%;">
-            <thead>
-              <tr>
-                <th style="padding: 8px; text-align: center; width: 120px;"></th>
-                <th style="padding: 8px; text-align: center;">Icon Default</th>
-                <th style="padding: 8px; text-align: center;"></th>
-                <th style="padding: 8px; text-align: center;">Icon Selected</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Enabled / Hover</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" validate="danger" subTitle="Supporting text" [appendIcon]="folderIcon" appendContent="New" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" validate="danger" subTitle="Supporting text" appendContent="New" checkSite="suffix" [checked]="true" ></div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Matched</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" validate="danger" subTitle="Supporting text option" [appendIcon]="folderIcon" appendContent="New" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" validate="danger" subTitle="Supporting text option" appendContent="New" checkSite="suffix" [checked]="true" ></div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Disable</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" validate="danger" subTitle="Supporting text" [appendIcon]="folderIcon" appendContent="New" [disabled]="true" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="single" label="Option" validate="danger" subTitle="Supporting text" [appendIcon]="folderIcon" appendContent="New" checkSite="suffix" [checked]="true" [disabled]="true" ></div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div
+          style="width: fit-content; min-width: 50%; height: 285px; background-color: #F3F4F6; padding: 40px;"
+        >
+          <div mznTag label="Danger" size="main"></div>
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <table style="border-collapse: collapse; width: 100%;">
+              <thead>
+                <tr>
+                  <th style="padding: 8px; text-align: center; width: 120px;"></th>
+                  <th style="padding: 8px; text-align: center;">Icon Default</th>
+                  <th style="padding: 8px; text-align: center;"></th>
+                  <th style="padding: 8px; text-align: center;">Icon Selected</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Enabled / Hover</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      validate="danger"
+                      subTitle="Supporting text"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      validate="danger"
+                      subTitle="Supporting text"
+                      appendContent="New"
+                      checkSite="suffix"
+                      [checked]="true"
+                    ></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Matched</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      validate="danger"
+                      subTitle="Supporting text option"
+                      followText="opti"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      validate="danger"
+                      subTitle="Supporting text option"
+                      followText="op"
+                      appendContent="New"
+                      checkSite="suffix"
+                      [checked]="true"
+                    ></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Disable</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      validate="danger"
+                      subTitle="Supporting text"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                      [disabled]="true"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="single"
+                      label="Option"
+                      validate="danger"
+                      subTitle="Supporting text"
+                      [appendIcon]="folderIcon"
+                      appendContent="New"
+                      checkSite="suffix"
+                      [checked]="true"
+                      [disabled]="true"
+                    ></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     `,
@@ -215,50 +332,100 @@ export const Multiple: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: 20px;">
-        <div style="width: fit-content; min-width: 50%; background-color: #F3F4F6; padding: 40px;">
-          <div mznTag label="Default" size="main" style="margin-bottom: 12px;"></div>
-          <table style="border-collapse: collapse; width: 100%;">
-            <thead>
-              <tr>
-                <th style="padding: 8px; text-align: center; width: 120px;"></th>
-                <th style="padding: 8px; text-align: center;">Basic</th>
-                <th style="padding: 8px; text-align: center;"></th>
-                <th style="padding: 8px; text-align: center;">Expandable</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Enabled / Hover</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="multiple" label="Option" subTitle="Supporting text" checkSite="suffix" appendContent="New" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="multiple" label="Option" subTitle="Supporting text" checkSite="suffix" [prependIcon]="caretRightIcon" ></div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Matched</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="multiple" label="Option" subTitle="Supporting text option" checkSite="suffix" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="multiple" label="Option" subTitle="Supporting text option" checkSite="suffix" [prependIcon]="caretRightIcon" [checked]="true" ></div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 8px; vertical-align: middle;">Disable</td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="multiple" label="Option" subTitle="Supporting text" [disabled]="true" checkSite="suffix" ></div>
-                </td>
-                <td></td>
-                <td style="padding: 8px;">
-                  <div mznDropdownItemCard mode="multiple" label="Option" subTitle="Supporting text" [disabled]="true" [checked]="true" checkSite="suffix" [prependIcon]="caretRightIcon" ></div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div
+          style="width: fit-content; min-width: 50%; height: 285px; background-color: #F3F4F6; padding: 40px;"
+        >
+          <div mznTag label="Default" size="main"></div>
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <table style="border-collapse: collapse; width: 100%;">
+              <thead>
+                <tr>
+                  <th style="padding: 8px; text-align: center; width: 120px;"></th>
+                  <th style="padding: 8px; text-align: center;">Basic</th>
+                  <th style="padding: 8px; text-align: center;"></th>
+                  <th style="padding: 8px; text-align: center;">Expandable</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Enabled / Hover</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="multiple"
+                      label="Option"
+                      subTitle="Supporting text"
+                      checkSite="suffix"
+                      appendContent="New"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="multiple"
+                      label="Option"
+                      subTitle="Supporting text"
+                      checkSite="suffix"
+                      [prependIcon]="caretRightIcon"
+                    ></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Matched</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="multiple"
+                      label="Option"
+                      subTitle="Supporting text option"
+                      followText="opti"
+                      checkSite="suffix"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="multiple"
+                      label="Option"
+                      subTitle="Supporting text option"
+                      followText="op"
+                      checkSite="suffix"
+                      [prependIcon]="caretRightIcon"
+                      [checked]="true"
+                    ></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; vertical-align: middle;">Disable</td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="multiple"
+                      label="Option"
+                      subTitle="Supporting text"
+                      [disabled]="true"
+                      checkSite="suffix"
+                    ></div>
+                  </td>
+                  <td></td>
+                  <td style="padding: 8px;">
+                    <div
+                      mznDropdownItemCard
+                      mode="multiple"
+                      label="Option"
+                      subTitle="Supporting text"
+                      [disabled]="true"
+                      [checked]="true"
+                      checkSite="suffix"
+                      [prependIcon]="caretRightIcon"
+                    ></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     `,
