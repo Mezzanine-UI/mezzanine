@@ -27,6 +27,80 @@ import { MznDropdownItemCard } from './dropdown-item-card.component';
 import { MznDropdownStatus } from './dropdown-status.component';
 import { shortcutTextHandler } from './shortcut-text-handler';
 
+/**
+ * 判斷 KeyboardEvent 是否吻合指定的 shortcut 字串(例如 'cmd+shift+n')。
+ * 對齊 React `DropdownItem.tsx:377-447` 的 `matchShortcut` 邏輯,但不依賴
+ * `keycode` lib — 直接用 `event.key`(modern browser 已穩定支援)做比對,
+ * 覆蓋一般字母鍵 / Delete / Backspace / Enter / F1–F12 / Arrow 系列等常用
+ * shortcut。number 型 shortcut 當作 keyCode 比對(跟 React 行為一致,
+ * 保留對 legacy key code 的相容)。
+ */
+function matchShortcut(
+  event: KeyboardEvent,
+  shortcut: string | number,
+): boolean {
+  if (typeof shortcut === 'number') {
+    return (event.which ?? event.keyCode) === shortcut;
+  }
+
+  const tokens = shortcut
+    .toLowerCase()
+    .split('+')
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  let requireMeta = false;
+  let requireCtrl = false;
+  let requireAlt = false;
+  let requireShift = false;
+  let mainToken: string | null = null;
+
+  tokens.forEach((token) => {
+    switch (token) {
+      case 'cmd':
+      case 'meta':
+      case 'command':
+        requireMeta = true;
+        break;
+      case 'ctrl':
+      case 'control':
+        requireCtrl = true;
+        break;
+      case 'alt':
+      case 'option':
+        requireAlt = true;
+        break;
+      case 'shift':
+        requireShift = true;
+        break;
+      default:
+        mainToken = token;
+        break;
+    }
+  });
+
+  if (!mainToken) return false;
+  if (requireMeta !== event.metaKey) return false;
+  if (requireCtrl !== event.ctrlKey) return false;
+  if (requireAlt !== event.altKey) return false;
+  if (requireShift !== event.shiftKey) return false;
+
+  const eventKey = event.key?.toLowerCase();
+
+  if (!eventKey) return false;
+
+  if (eventKey === mainToken) return true;
+
+  // 少量 key alias:token 使用者習慣寫法 → event.key 實際回傳值。
+  const aliasMap: Record<string, string> = {
+    esc: 'escape',
+    return: 'enter',
+    space: ' ',
+  };
+
+  return aliasMap[mainToken] === eventKey;
+}
+
 /** 扁平化後的樹狀選項節點，供模板迭代使用。 */
 export interface DropdownFlatTreeNode {
   /** 是否有子選項。 */
@@ -67,6 +141,12 @@ export interface DropdownFlatTreeNode {
 @Component({
   selector: '[mznDropdownItem]',
   host: {
+    // tabindex=-1 讓整個 host 可透過滑鼠點擊獲得焦點(不進 Tab key 序),
+    // 對齊 React <ul tabIndex={-1}>。host 作為 keydown 接收者:任何 child
+    // 元素獲得焦點後按鍵 bubble 到這裡,shortcut 判斷得以觸發,即使
+    // 使用者點擊的是 `.list-wrapper` / 選項 `<li>` 都沒關係。
+    tabindex: '-1',
+    '(keydown)': 'onHostKeyDown($event)',
     '[attr.actionConfig]': 'null',
     '[attr.activeIndex]': 'null',
     '[attr.customWidth]': 'null',
@@ -168,7 +248,7 @@ export interface DropdownFlatTreeNode {
             <div
               mznDropdownItemCard
               [active]="isActive(i)"
-              [appendContent]="option.shortcutText"
+              [appendContent]="resolveShortcutText(option)"
               [checked]="isSelected(option)"
               [checkSite]="option.checkSite ?? 'suffix'"
               [disabled]="disabled()"
@@ -633,6 +713,53 @@ export class MznDropdownItem {
     const formatted = shortcutTextHandler(option.shortcutKeys);
 
     return formatted || undefined;
+  }
+
+  /**
+   * 監聽 host keydown,比對每個 option 的 shortcutKeys — 匹配時觸發
+   * `selected.emit(option)` 並 `preventDefault` 不讓瀏覽器執行預設行為
+   * (如 Ctrl+R 重新整理)。對齊 React `DropdownItem.tsx:789-939`。
+   *
+   * Flat (`default`) / grouped 結構會掃自己的 options;tree 結構展開比對
+   * 所有 leaf 節點。 `event.repeat` 忽略長按重覆觸發。
+   */
+  protected onHostKeyDown(event: KeyboardEvent): void {
+    if (event.repeat || this.disabled()) return;
+
+    const match = this.findShortcutMatch(event);
+
+    if (!match) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.selected.emit(match);
+  }
+
+  /**
+   * 掃 options 找出第一個 shortcutKey 吻合此 KeyboardEvent 的選項。
+   * 遞迴下探 `children`,因此同時處理 grouped / tree / default 三種結構
+   * (flat options 沒 children,`walk` 退化為單層迭代)。
+   */
+  private findShortcutMatch(event: KeyboardEvent): DropdownOption | undefined {
+    const walk = (
+      opts: ReadonlyArray<DropdownOption>,
+    ): DropdownOption | undefined => {
+      for (const opt of opts) {
+        if (opt.shortcutKeys?.some((k) => matchShortcut(event, k))) {
+          return opt;
+        }
+
+        if (opt.children?.length) {
+          const nested = walk(opt.children);
+
+          if (nested) return nested;
+        }
+      }
+
+      return undefined;
+    };
+
+    return walk(this.options());
   }
 
   protected resolveTreeCheckSite(
