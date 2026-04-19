@@ -143,12 +143,14 @@ export interface DropdownFlatTreeNode {
                     [checked]="isSelected(option)"
                     [checkSite]="option.checkSite ?? 'suffix'"
                     [disabled]="disabled()"
+                    [followText]="followText()"
                     [id]="optionId(groupedOptionIndex(group, i))"
                     [label]="option.name"
                     [mode]="mode()"
                     [showUnderline]="option.showUnderline ?? false"
                     [validate]="option.validate ?? 'default'"
                     (clicked)="onOptionClick(option)"
+                    (hovered)="itemHovered.emit(groupedOptionIndex(group, i))"
                   ></div>
                 }
               }
@@ -162,6 +164,7 @@ export interface DropdownFlatTreeNode {
                     resolveTreeCheckSite(item.option, item.hasChildren)
                   "
                   [disabled]="disabled()"
+                  [followText]="followText()"
                   [id]="optionId(item.index)"
                   [indeterminate]="isTreeNodeIndeterminate(item.option)"
                   [label]="item.option.name"
@@ -178,6 +181,7 @@ export interface DropdownFlatTreeNode {
                   [validate]="item.option.validate ?? 'default'"
                   (clicked)="onTreeOptionClick(item.option, item.hasChildren)"
                   (checkedChange)="onTreeCheckedChange(item.option)"
+                  (hovered)="itemHovered.emit(item.index)"
                 ></div>
               }
             } @else {
@@ -188,6 +192,7 @@ export interface DropdownFlatTreeNode {
                   [checked]="isSelected(option)"
                   [checkSite]="option.checkSite ?? 'suffix'"
                   [disabled]="disabled()"
+                  [followText]="followText()"
                   [id]="optionId(i)"
                   [label]="option.name"
                   [mode]="mode()"
@@ -195,6 +200,7 @@ export interface DropdownFlatTreeNode {
                   [showUnderline]="option.showUnderline ?? false"
                   [validate]="option.validate ?? 'default'"
                   (clicked)="onOptionClick(option)"
+                  (hovered)="itemHovered.emit(i)"
                 ></div>
               }
             }
