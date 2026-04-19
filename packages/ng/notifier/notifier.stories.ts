@@ -1,162 +1,93 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
-import { Component, inject } from '@angular/core';
-import { MznNotifierService, NotifierData } from './notifier.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
+import { MznButton, MznButtonGroup } from '@mezzanine-ui/ng/button';
+import { MznNotifierService } from './notifier.service';
 
-// ---------------------------------------------------------------------------
-// Basic demo
-// ---------------------------------------------------------------------------
-
+/**
+ * 對齊 React `createNotifier.stories.tsx:Common`:
+ * - 固定 top-right 的通知卡片,藍底白字,`margin-bottom: 8px` 垂直間距。
+ * - 三個按鈕:Add a notification / Destroy all notifications /
+ *   remove first notification(當佇列為空時不渲染)。
+ * - 離開 story 時呼叫 `notifier.destroy()` 釋放殘留通知,對齊 React 的
+ *   `useEffect(() => () => Notifier.destroy(), [])`。
+ */
 @Component({
-  selector: 'mzn-notifier-demo',
+  selector: 'story-notifier-common',
   standalone: true,
+  imports: [MznButton, MznButtonGroup],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-      <button (click)="addNotification()">Add Notification</button>
-      <button (click)="destroyAll()">Destroy All</button>
+    <div mznButtonGroup style="margin-bottom: 16px;">
+      <button mznButton variant="base-primary" (click)="addNotification()">
+        Add a notification
+      </button>
+      <button mznButton variant="base-primary" (click)="destroyAll()">
+        Destroy all notifications
+      </button>
+      @if (messageKeys().length > 0) {
+        <button mznButton variant="base-primary" (click)="removeFirst()">
+          remove first notification
+        </button>
+      }
     </div>
-    <div style="display: flex; flex-direction: column; gap: 4px;">
-      <p>Displayed ({{ notifier.displayed().length }}):</p>
+    <div
+      style="position: fixed; top: 16px; right: 16px; z-index: 9999; min-width: 300px;"
+    >
       @for (n of notifier.displayed(); track n.key) {
         <div
-          style="padding: 8px; border: 1px solid #ccc; display: flex; justify-content: space-between;"
+          style="padding: 12px 16px; margin-bottom: 8px; background: #1976d2; color: white; border-radius: 4px;"
         >
-          <span>{{ n.message }} (key: {{ n.key }})</span>
-          <button (click)="notifier.remove(n.key)">×</button>
-        </div>
-      }
-      <p>Queued ({{ notifier.queued().length }}):</p>
-      @for (n of notifier.queued(); track n.key) {
-        <div style="padding: 8px; border: 1px dashed #999;">
-          {{ n.message }} (key: {{ n.key }})
+          {{ n.message }}
         </div>
       }
     </div>
   `,
 })
-class NotifierDemoComponent {
+class NotifierCommonComponent {
   protected readonly notifier = inject(MznNotifierService);
-  private count = 0;
+  protected readonly messageKeys = signal<ReadonlyArray<string>>([]);
 
   constructor() {
-    this.notifier.config({ maxCount: 3 });
+    this.notifier.config({ duration: 3000, maxCount: 4 });
+
+    // 對齊 React `useEffect(() => () => Notifier.destroy(), [])` 卸載清理。
+    inject(DestroyRef).onDestroy(() => {
+      this.notifier.destroy();
+    });
   }
 
   addNotification(): void {
-    this.notifier.add({ message: `Notification #${++this.count}` });
+    const key = this.notifier.add({ message: 'foo' });
+
+    this.messageKeys.update((prev) => [...prev, key]);
   }
 
   destroyAll(): void {
     this.notifier.destroy();
+    this.messageKeys.set([]);
+  }
+
+  removeFirst(): void {
+    const keys = this.messageKeys();
+
+    if (keys.length === 0) return;
+
+    this.notifier.remove(keys[0]);
+    this.messageKeys.set(keys.slice(1));
   }
 }
-
-// ---------------------------------------------------------------------------
-// sortBeforeUpdate demo
-// ---------------------------------------------------------------------------
-
-type SeverityLevel = 'error' | 'warning' | 'info';
-
-interface SeverityNotifierData extends NotifierData {
-  readonly severity: SeverityLevel;
-}
-
-function getSeverityPriority(severity: SeverityLevel): number {
-  const priorities: Record<SeverityLevel, number> = {
-    error: 0,
-    warning: 1,
-    info: 2,
-  };
-
-  return priorities[severity];
-}
-
-@Component({
-  selector: 'mzn-notifier-sort-demo',
-  standalone: true,
-  template: `
-    <p style="margin-bottom: 8px;">
-      Notifications are sorted: <strong>error → warning → info</strong> (within
-      maxCount: 4).
-    </p>
-    <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
-      <button (click)="add('error')">Add Error</button>
-      <button (click)="add('warning')">Add Warning</button>
-      <button (click)="add('info')">Add Info</button>
-      <button (click)="notifier.destroy()">Destroy All</button>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 4px;">
-      <p>Displayed ({{ notifier.displayed().length }}):</p>
-      @for (n of displayed(); track n.key) {
-        <div
-          [style.border-color]="borderColor(n.severity)"
-          style="padding: 8px; border: 2px solid; display: flex; justify-content: space-between;"
-        >
-          <span>[{{ n.severity }}] {{ n.message }}</span>
-          <button (click)="notifier.remove(n.key)">×</button>
-        </div>
-      }
-      <p>Queued ({{ notifier.queued().length }}):</p>
-      @for (n of queued(); track n.key) {
-        <div style="padding: 8px; border: 1px dashed #999;">
-          [{{ n.severity }}] {{ n.message }}
-        </div>
-      }
-    </div>
-  `,
-})
-class NotifierSortDemoComponent {
-  protected readonly notifier = inject(MznNotifierService);
-  private count = 0;
-
-  constructor() {
-    this.notifier.config({ maxCount: 4 });
-    this.notifier.setSortBeforeUpdate(
-      (items: ReadonlyArray<NotifierData>): ReadonlyArray<NotifierData> => {
-        const typed = items as ReadonlyArray<SeverityNotifierData>;
-
-        return [...typed].sort(
-          (a, b) =>
-            getSeverityPriority(a.severity) - getSeverityPriority(b.severity),
-        );
-      },
-    );
-  }
-
-  protected displayed(): ReadonlyArray<SeverityNotifierData> {
-    return this.notifier.displayed() as ReadonlyArray<SeverityNotifierData>;
-  }
-
-  protected queued(): ReadonlyArray<SeverityNotifierData> {
-    return this.notifier.queued() as ReadonlyArray<SeverityNotifierData>;
-  }
-
-  protected borderColor(severity: SeverityLevel): string {
-    const colors: Record<SeverityLevel, string> = {
-      error: '#d32f2f',
-      warning: '#f57c00',
-      info: '#1976d2',
-    };
-
-    return colors[severity];
-  }
-
-  add(severity: SeverityLevel): void {
-    this.notifier.add({
-      message: `${severity} #${++this.count}`,
-      severity,
-    });
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Meta
-// ---------------------------------------------------------------------------
 
 export default {
   title: 'Internal/Notifier',
   decorators: [
     moduleMetadata({
-      imports: [NotifierDemoComponent, NotifierSortDemoComponent],
+      imports: [NotifierCommonComponent],
     }),
   ],
 } satisfies Meta;
@@ -165,17 +96,6 @@ type Story = StoryObj;
 
 export const Common: Story = {
   render: () => ({
-    template: `<mzn-notifier-demo />`,
-  }),
-};
-
-/**
- * Demonstrates `setSortBeforeUpdate` — notifiers are re-ordered by severity
- * (error → warning → info) every time the list changes, mirroring the React
- * `sortBeforeUpdate` prop used by `AlertBanner`.
- */
-export const WithSortBeforeUpdate: Story = {
-  render: () => ({
-    template: `<mzn-notifier-sort-demo />`,
+    template: `<story-notifier-common />`,
   }),
 };
