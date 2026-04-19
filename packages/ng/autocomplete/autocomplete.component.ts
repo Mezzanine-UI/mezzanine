@@ -46,6 +46,7 @@ import { MznTextField } from '@mezzanine-ui/ng/text-field';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznTranslate } from '@mezzanine-ui/ng/transition';
 import { highlightText, provideValueAccessor } from '@mezzanine-ui/ng/utils';
+import { AutocompleteCreationTracker } from './creation-tracker';
 
 /**
  * 標記 AutoComplete 的 prefix 內容投影插槽。
@@ -532,11 +533,7 @@ export class MznAutocomplete
   private readonly prefixRef = contentChild(MznAutocompletePrefix);
 
   // ── Creation Tracker (A8) ──
-  private readonly creationTracker = {
-    newlyCreatedIds: new Set<string>(),
-    unselectedCreatedIds: new Set<string>(),
-    allCreatedIds: new Set<string>(),
-  };
+  private readonly creationTracker = new AutocompleteCreationTracker();
 
   // ── Scroll state (A7) ──
   private wasAtBottom = false;
@@ -893,13 +890,13 @@ export class MznAutocomplete
     (): ReadonlyArray<DropdownOption> => {
       const filtered = this.filteredOptions();
 
-      if (this.creationTracker.allCreatedIds.size === 0) return filtered;
+      if (this.creationTracker.allSize === 0) return filtered;
 
       const created: DropdownOption[] = [];
       const rest: DropdownOption[] = [];
 
       for (const opt of filtered) {
-        if (this.creationTracker.allCreatedIds.has(opt.id)) {
+        if (this.creationTracker.hasCreated(opt.id)) {
           created.push(opt);
         } else {
           rest.push(opt);
@@ -1330,7 +1327,7 @@ export class MznAutocomplete
   }
 
   protected isCreated(id: string): boolean {
-    return this.creationTracker.allCreatedIds.has(id);
+    return this.creationTracker.hasCreated(id);
   }
 
   protected optionClasses(option: DropdownOption): string {
@@ -1454,7 +1451,7 @@ export class MznAutocomplete
       this.insertText.set('');
 
       // Track unselected created items
-      if (wasSelected && this.creationTracker.allCreatedIds.has(option.id)) {
+      if (wasSelected && this.creationTracker.hasCreated(option.id)) {
         this.markUnselected([option.id]);
       } else {
         this.clearNewlyCreated([option.id]);
@@ -1469,7 +1466,7 @@ export class MznAutocomplete
     this.onChange(next);
     this.valueChange.emit(next);
 
-    if (this.creationTracker.allCreatedIds.has(item.id)) {
+    if (this.creationTracker.hasCreated(item.id)) {
       this.markUnselected([item.id]);
     }
   }
@@ -1479,7 +1476,7 @@ export class MznAutocomplete
     const currentValue = this.internalValue();
 
     for (const id of currentValue) {
-      if (this.creationTracker.allCreatedIds.has(id)) {
+      if (this.creationTracker.hasCreated(id)) {
         this.markUnselected([id]);
       }
     }
@@ -1589,36 +1586,29 @@ export class MznAutocomplete
   }
 
   private markCreated(id: string): void {
-    this.creationTracker.newlyCreatedIds.add(id);
-    this.creationTracker.allCreatedIds.add(id);
+    this.creationTracker.addNewly(id);
   }
 
   private clearNewlyCreated(ids: ReadonlyArray<string>): void {
     for (const id of ids) {
-      this.creationTracker.newlyCreatedIds.delete(id);
+      this.creationTracker.removeNewly(id);
     }
   }
 
   private markUnselected(ids: ReadonlyArray<string>): void {
     for (const id of ids) {
-      if (this.creationTracker.allCreatedIds.has(id)) {
-        this.creationTracker.unselectedCreatedIds.add(id);
-      }
+      this.creationTracker.markUnselected(id);
     }
   }
 
   private filterUnselected(
     options: ReadonlyArray<DropdownOption>,
   ): ReadonlyArray<DropdownOption> {
-    if (this.creationTracker.unselectedCreatedIds.size === 0) return options;
-
-    return options.filter(
-      (o) => !this.creationTracker.unselectedCreatedIds.has(o.id),
-    );
+    return this.creationTracker.filterOutUnselected(options);
   }
 
   private clearUnselected(): void {
-    this.creationTracker.unselectedCreatedIds.clear();
+    this.creationTracker.clearUnselected();
   }
 
   private cleanupUnselectedCreated(): void {
