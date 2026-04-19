@@ -74,6 +74,7 @@ export interface DropdownActionProps {
 @Component({
   selector: '[mznDropdownAction]',
   host: {
+    '[class]': 'hostClasses()',
     '[attr.actionText]': 'null',
     '[attr.cancelText]': 'null',
     '[attr.clearText]': 'null',
@@ -85,50 +86,58 @@ export interface DropdownActionProps {
   standalone: true,
   imports: [MznButton, MznIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // Apply `.mzn-dropdown-action` directly on the host element instead of
+  // wrapping an inner <div>. React's <DropdownAction> renders a single
+  // <div class="mzn-dropdown-action"> — any extra wrapper on the Angular
+  // side collapses to content width (flex parents don't stretch unknown
+  // children), which breaks the `width: 100%` + `justify-content:
+  // space-between` that spaces cancel/confirm buttons to opposite ends.
+  // `@if (showActions())` now toggles visibility via `display: none` at
+  // runtime (via the hostClasses computed dropping classes when hidden)
+  // rather than unmounting the host, so existing layout math in
+  // MznDropdownItem keeps working.
   template: `
     @if (showActions()) {
-      <div [class]="actionClass">
-        @if (showTopBar()) {
-          <i [class]="actionTopBarClass"></i>
+      @if (showTopBar()) {
+        <i [class]="actionTopBarClass"></i>
+      }
+      <div [class]="actionToolsClass">
+        @if (mode() === 'default') {
+          <button
+            mznButton
+            variant="base-ghost"
+            size="minor"
+            (click)="cancelled.emit()"
+          >
+            {{ resolvedCancelText() }}
+          </button>
+          <button mznButton size="minor" (click)="confirmed.emit()">
+            {{ resolvedConfirmText() }}
+          </button>
         }
-        <div [class]="actionToolsClass">
-          @if (mode() === 'default') {
-            <button
-              mznButton
-              variant="base-ghost"
-              size="minor"
-              (click)="cancelled.emit()"
-            >
-              {{ resolvedCancelText() }}
-            </button>
-            <button mznButton size="minor" (click)="confirmed.emit()">
-              {{ resolvedConfirmText() }}
-            </button>
-          }
-          @if (mode() === 'clear') {
-            <button
-              mznButton
-              variant="base-ghost"
-              size="minor"
-              iconType="leading"
-              (click)="cleared.emit()"
-            >
-              <i mznIcon [icon]="closeIcon"></i>
-              {{ resolvedClearText() }}
-            </button>
-          }
-          @if (mode() === 'custom') {
-            <button
-              mznButton
-              variant="base-ghost"
-              size="minor"
-              (mousedown)="$event.preventDefault()"
-              (click)="customClicked.emit()"
-            >
-              {{ resolvedActionText() }}
-            </button>
-          }
-        </div>
+        @if (mode() === 'clear') {
+          <button
+            mznButton
+            variant="base-ghost"
+            size="minor"
+            iconType="leading"
+            (click)="cleared.emit()"
+          >
+            <i mznIcon [icon]="closeIcon"></i>
+            {{ resolvedClearText() }}
+          </button>
+        }
+        @if (mode() === 'custom') {
+          <button
+            mznButton
+            variant="base-ghost"
+            size="minor"
+            (mousedown)="$event.preventDefault()"
+            (click)="customClicked.emit()"
+          >
+            {{ resolvedActionText() }}
+          </button>
+        }
       </div>
     }
   `,
@@ -174,9 +183,18 @@ export class MznDropdownAction {
   readonly customClicked = output<void>();
 
   protected readonly closeIcon = CloseIcon;
-  protected readonly actionClass = classes.action;
   protected readonly actionTopBarClass = classes.actionTopBar;
   protected readonly actionToolsClass = classes.actionTools;
+
+  /**
+   * 送到 host 的 class。`showActions()=false` 時不掛任何 class,搭配
+   * template 的 `@if (showActions())` 一起讓元件完全不佔 layout
+   * (host 變成空 div 不帶 .mzn-dropdown-action,也就沒有 flex/padding
+   * 等 style 殘留)。
+   */
+  protected readonly hostClasses = computed((): string =>
+    this.showActions() ? classes.action : '',
+  );
 
   protected readonly resolvedActionText = computed(
     (): string => this.actionText() ?? 'Custom Action',
