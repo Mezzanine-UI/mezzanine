@@ -769,6 +769,12 @@ export class MznDropdown {
   protected onHostKeyDown(event: KeyboardEvent): void {
     if (!this.open() || this.disabled()) return;
 
+    // 若有外層 wrapper(如 MznAutocomplete)在同一事件上已呼叫
+    // `event.preventDefault()` 表示它已消化掉此 key(例如以 Enter 觸發
+    // creation、Backspace 刪除 tag),MznDropdown 不應重複處理以免
+    // 同一 Enter 先建立後又選取。
+    if (event.defaultPrevented) return;
+
     const type = this.type();
 
     if (type === 'tree') return;

@@ -38,6 +38,7 @@ import { checkboxClasses } from '@mezzanine-ui/core/checkbox';
 import { iconClasses as spinClasses } from '@mezzanine-ui/core/spin';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
+import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznInputTriggerPopper } from '@mezzanine-ui/ng/_internal';
 import { SelectTriggerTagValue } from '@mezzanine-ui/ng/select';
@@ -131,6 +132,7 @@ export function getFullParsedList(
     NgTemplateOutlet,
     MznButton,
     MznClearActions,
+    MznDropdown,
     MznIcon,
     MznInputTriggerPopper,
     MznTag,
@@ -327,16 +329,56 @@ export function getFullParsedList(
         <ng-content select="[mznAutocompletePrefix]" />
       </div>
     }
-    <!-- Inside mode: render inline (no popper), matching React Dropdown isInline behavior -->
+    <!--
+      Inside mode: delegate list/popper/keyboard to MznDropdown. 輸入框經
+      [mznDropdownHeader] 投影進 <ul class="mzn-dropdown-list"> 的第一個
+      <li>,與 options 共享同一張卡片;鍵盤 nav、click-away、followText
+      highlight 全由 MznDropdown 內建邏輯負責,MznAutocomplete 只處理
+      搜尋 debounce、建立新項、tag 渲染等 wrapper 層專屬邏輯。
+    -->
     @if (inputPosition() === 'inside') {
-      <div mznTranslate [in]="isOpen()" from="top">
-        <div
-          [class]="dropdownRootClass()"
-          (click)="$event.stopPropagation()"
-          (touchstart)="$event.stopPropagation()"
-          (touchend)="$event.stopPropagation()"
-        >
-          <ng-container *ngTemplateOutlet="dropdownContentTpl" />
+      <div
+        mznDropdown
+        inputPosition="inside"
+        [actionText]="createActionDisplayText()"
+        [emptyText]="emptyText()"
+        [followText]="searchText()"
+        [loadingPosition]="loadingPosition()"
+        [loadingText]="loadingText()"
+        [maxHeight]="menuMaxHeight()"
+        [mode]="mode()"
+        [open]="isOpen()"
+        [options]="dropdownOptions()"
+        [showActionShowTopBar]="true"
+        [showDropdownActions]="shouldShowCreateAction()"
+        [status]="dropdownInlineStatus()"
+        [value]="internalValue()"
+        (actionCustomClicked)="onCreateActionClick()"
+        (closed)="onDropdownCloseRequested()"
+        (leaveBottom)="leaveBottom.emit()"
+        (reachBottom)="reachBottom.emit()"
+        (selected)="onOptionClick($event)"
+        (visibilityChange)="onDropdownVisibilityChangeFromInline($event)"
+      >
+        <div mznDropdownHeader>
+          <div
+            mznTextField
+            [active]="!isEffectiveLoading()"
+            [fullWidth]="true"
+            [disabled]="disabled() || isEffectiveLoading()"
+            [size]="insideInputTextFieldSize()"
+          >
+            <input
+              #inputEl
+              type="text"
+              [placeholder]="placeholder()"
+              [disabled]="disabled() || isEffectiveLoading()"
+              [value]="searchText()"
+              (input)="onSearchInput($event)"
+              (keydown)="onInputKeydown($event)"
+              (paste)="onPaste($event)"
+            />
+          </div>
         </div>
       </div>
     } @else {
@@ -833,6 +875,22 @@ export class MznAutocomplete
       this.isEffectiveLoading() &&
       this.loadingPosition() === 'bottom' &&
       this.dropdownOptions().length > 0,
+  );
+
+  /**
+   * 傳給 inside 模式 `<div mznDropdown [status]>` 的非同步狀態:
+   * - `loading` — 載入中。
+   * - `empty` — 無選項且非載入中。
+   * - `undefined` — 正常渲染選項。
+   * MznDropdownItem 會根據 loadingPosition 決定全畫面或底部指示器渲染,
+   * 不需要 wrapper 再重算 shouldShowFullStatus / shouldShowBottomLoading。
+   */
+  protected readonly dropdownInlineStatus = computed(
+    (): 'loading' | 'empty' | undefined => {
+      if (this.isEffectiveLoading()) return 'loading';
+
+      return this.dropdownOptions().length === 0 ? 'empty' : undefined;
+    },
   );
 
   private readonly selectedIds = computed(
@@ -1507,6 +1565,31 @@ export class MznAutocomplete
   /** A8: 建立動作按鈕點擊。 */
   protected onCreateActionClick(): void {
     this.handleActionCustom();
+  }
+
+  /**
+   * MznDropdown 發出 `closed`(使用者按 Escape、點擊 outside、或 single
+   * mode 選完一項後內建關閉)時同步 wrapper 的 open 狀態。此事件不攜帶
+   * 值,僅代表 dropdown 應關閉。
+   */
+  protected onDropdownCloseRequested(): void {
+    if (this.isOpenInternal()) {
+      this.isOpenInternal.set(false);
+      this.visibilityChange.emit(false);
+    }
+  }
+
+  /**
+   * MznDropdown 的 `visibilityChange` 反映 `open` input 轉換。inside 模式
+   * 下 wrapper 是 open state 的 source of truth,因此這裡主要用於把「內部
+   * 建立 close」的結果回推;當前實作僅處理 `false`(close),開啟動作由
+   * wrapper 的 focus / click 流程自行完成。
+   */
+  protected onDropdownVisibilityChangeFromInline(open: boolean): void {
+    if (!open && this.isOpenInternal()) {
+      this.isOpenInternal.set(false);
+      this.visibilityChange.emit(false);
+    }
   }
 
   /** A9: 貼上事件。 */
