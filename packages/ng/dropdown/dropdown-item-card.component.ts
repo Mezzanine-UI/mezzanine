@@ -17,6 +17,7 @@ import { MznCheckbox } from '@mezzanine-ui/ng/checkbox';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznSeparator } from '@mezzanine-ui/ng/separator';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
+import { HighlightSegment, highlightText } from '@mezzanine-ui/ng/utils';
 import clsx from 'clsx';
 
 /**
@@ -48,6 +49,7 @@ import clsx from 'clsx';
     '[attr.checked]': 'null',
     '[attr.checkSite]': 'null',
     '[attr.disabled]': 'null',
+    '[attr.followText]': 'null',
     '[attr.id]': 'null',
     '[attr.indeterminate]': 'null',
     '[attr.label]': 'null',
@@ -106,13 +108,22 @@ import clsx from 'clsx';
               variant="body"
               [class]="titleClass"
               [attr.id]="labelId()"
-              ><span>{{ label() }}</span></p
             >
+              @for (part of labelParts(); track $index) {
+                <span [class]="part.highlight ? highlightedClass() : ''">{{
+                  part.text
+                }}</span>
+              }
+            </p>
           }
           @if (subTitle()) {
-            <p mznTypography variant="caption" [class]="descriptionClass">{{
-              subTitle()
-            }}</p>
+            <p mznTypography variant="caption" [class]="descriptionClass">
+              @for (part of subTitleParts(); track $index) {
+                <span [class]="part.highlight ? highlightedClass() : ''">{{
+                  part.text
+                }}</span>
+              }
+            </p>
           }
         </div>
         @if (showAppendContent()) {
@@ -163,6 +174,13 @@ export class MznDropdownItemCard {
   /** 是否禁用。 @default false */
   readonly disabled = input(false);
 
+  /**
+   * 高亮關鍵字;若提供,會將 `label` / `subTitle` 中(大小寫不敏感)符合的
+   * 子字串以 `.mzn-dropdown-item-card-highlighted-text` 包裹。
+   * 對應 React 的 `followText` prop(`DropdownItemCard.tsx:68`)。
+   */
+  readonly followText = input<string>();
+
   /** DOM id，用於 aria-activedescendant。 */
   readonly id = input<string>();
 
@@ -204,6 +222,51 @@ export class MznDropdownItemCard {
   protected readonly prependClass = classes.cardPrependContent;
   protected readonly appendClass = classes.cardAppendContent;
   protected readonly underlineClass = classes.cardUnderline;
+
+  /**
+   * 高亮 span 套用的 class。`validate === 'danger'` 時清空,對齊 React
+   * `DropdownItemCard.tsx:242`(danger 狀態下不顯示高亮底色)。
+   */
+  protected readonly highlightedClass = computed((): string =>
+    this.validate() === 'danger' ? '' : classes.cardHighlightedText,
+  );
+
+  /**
+   * 將 `label` 按 `followText` 切成 `{ text, highlight }` 片段陣列,
+   * 無 followText 時整段回傳 `highlight: false`。
+   * 對應 React `DropdownItemCard.tsx:195-204` 的 `labelParts`。
+   */
+  protected readonly labelParts = computed(
+    (): ReadonlyArray<HighlightSegment> => {
+      const label = this.label();
+
+      if (!label) return [];
+
+      const keyword = this.followText();
+
+      return keyword
+        ? highlightText(label, keyword)
+        : [{ text: label, highlight: false }];
+    },
+  );
+
+  /**
+   * 將 `subTitle` 按 `followText` 切片。無 subTitle 時回傳空陣列。
+   * 對應 React `DropdownItemCard.tsx:218-229`。
+   */
+  protected readonly subTitleParts = computed(
+    (): ReadonlyArray<HighlightSegment> => {
+      const subTitle = this.subTitle();
+
+      if (!subTitle) return [];
+
+      const keyword = this.followText();
+
+      return keyword
+        ? highlightText(subTitle, keyword)
+        : [{ text: subTitle, highlight: false }];
+    },
+  );
 
   protected readonly hostClasses = computed((): string =>
     clsx(classes.card, classes.cardLevel(this.level()), {

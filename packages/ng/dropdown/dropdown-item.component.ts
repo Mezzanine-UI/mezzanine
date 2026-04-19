@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,6 +6,7 @@ import {
   input,
   output,
   signal,
+  TemplateRef,
 } from '@angular/core';
 import {
   dropdownClasses as classes,
@@ -70,6 +72,7 @@ export interface DropdownFlatTreeNode {
     '[attr.disabled]': 'null',
     '[attr.emptyIcon]': 'null',
     '[attr.emptyText]': 'null',
+    '[attr.followText]': 'null',
     '[attr.loadingPosition]': 'null',
     '[attr.loadingText]': 'null',
     '[attr.listboxLabel]': 'null',
@@ -84,7 +87,12 @@ export interface DropdownFlatTreeNode {
     '[attr.value]': 'null',
   },
   standalone: true,
-  imports: [MznDropdownAction, MznDropdownItemCard, MznDropdownStatus],
+  imports: [
+    MznDropdownAction,
+    MznDropdownItemCard,
+    MznDropdownStatus,
+    NgTemplateOutlet,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (resolvedMaxHeight()) {
@@ -104,6 +112,13 @@ export interface DropdownFlatTreeNode {
           role="listbox"
           [tabIndex]="-1"
         >
+          @if (headerContentTemplate(); as tpl) {
+            <li [class]="listHeaderClass" role="presentation">
+              <div [class]="listHeaderInnerClass">
+                <ng-container *ngTemplateOutlet="tpl" />
+              </div>
+            </li>
+          }
           @if (status() && shouldShowFullStatus()) {
             <div
               mznDropdownStatus
@@ -225,6 +240,13 @@ export interface DropdownFlatTreeNode {
         [tabIndex]="-1"
         (scroll)="onListWrapperScroll($event)"
       >
+        @if (headerContentTemplate(); as tpl) {
+          <li [class]="listHeaderClass" role="presentation">
+            <div [class]="listHeaderInnerClass">
+              <ng-container *ngTemplateOutlet="tpl" />
+            </div>
+          </li>
+        }
         @if (status() && shouldShowFullStatus()) {
           <div
             mznDropdownStatus
@@ -248,6 +270,7 @@ export interface DropdownFlatTreeNode {
                   [checked]="isSelected(option)"
                   [checkSite]="option.checkSite ?? 'suffix'"
                   [disabled]="disabled()"
+                  [followText]="followText()"
                   [id]="optionId(groupedOptionIndex(group, i))"
                   [label]="option.name"
                   [mode]="mode()"
@@ -267,6 +290,7 @@ export interface DropdownFlatTreeNode {
                   resolveTreeCheckSite(item.option, item.hasChildren)
                 "
                 [disabled]="disabled()"
+                [followText]="followText()"
                 [id]="optionId(item.index)"
                 [indeterminate]="isTreeNodeIndeterminate(item.option)"
                 [label]="item.option.name"
@@ -293,6 +317,7 @@ export interface DropdownFlatTreeNode {
                 [checked]="isSelected(option)"
                 [checkSite]="option.checkSite ?? 'suffix'"
                 [disabled]="disabled()"
+                [followText]="followText()"
                 [id]="optionId(i)"
                 [label]="option.name"
                 [mode]="mode()"
@@ -345,6 +370,17 @@ export class MznDropdownItem {
   readonly actionConfig = input<DropdownActionProps>();
 
   /**
+   * Sticky header template rendered as first `<li class="mzn-dropdown-list-header">`
+   * inside the `<ul class="mzn-dropdown-list">`. Enables the React-parity
+   * pattern where a trigger(如 TextField)與 options 共享同一張 .mzn-dropdown-list
+   * 卡片(shared background + border-radius + shadow)。對齊 React DropdownItem
+   * 的 `headerContent` prop(`DropdownItem.tsx:1004-1012`)。
+   */
+  readonly headerContentTemplate = input<TemplateRef<unknown> | undefined>(
+    undefined,
+  );
+
+  /**
    * 目前鍵盤／滑鼠 active 選項的索引（0-indexed）。
    * 對應 React 的 `activeIndex`。
    */
@@ -361,6 +397,12 @@ export class MznDropdownItem {
 
   /** 空狀態顯示文字。 @default 'No matching options.' */
   readonly emptyText = input<string>();
+
+  /**
+   * 選項高亮關鍵字,會逐一傳遞給 MznDropdownItemCard。
+   * 對應 React `DropdownItem.tsx:77` 的 `followText` prop。
+   */
+  readonly followText = input<string>();
 
   /**
    * 載入指示器位置。
@@ -446,6 +488,8 @@ export class MznDropdownItem {
 
   protected readonly listClass = classes.list;
   protected readonly listWrapperClass = classes.listWrapper;
+  protected readonly listHeaderClass = classes.listHeader;
+  protected readonly listHeaderInnerClass = classes.listHeaderInner;
   protected readonly groupLabelClass = classes.groupLabel;
   protected readonly loadingMoreClass = classes.loadingMore;
 
