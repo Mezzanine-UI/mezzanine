@@ -226,8 +226,8 @@ export interface DropdownActionConfig {
     } @else {
       <div mznPortal [disablePortal]="!globalPortal()">
         <div
-          #popperEl
           mznPopper
+          data-mzn-dropdown-popper="true"
           [anchor]="anchor()!"
           [open]="popperOpen()"
           [placement]="resolvedPlacement()"
@@ -550,13 +550,6 @@ export class MznDropdown {
     viewChild<TemplateRef<unknown>>('headerTpl');
 
   /**
-   * Outside-mode popper 的 root element,globalPortal 啟用時它會被搬到
-   * document.body。click-away listener 需要把它列為「inside」避免點擊
-   * portal 內的選項被判定為外部點擊而觸發 close。
-   */
-  private readonly popperElRef = viewChild<ElementRef<HTMLElement>>('popperEl');
-
-  /**
    * Resolved placement: forces 'bottom' when inputPosition is 'inside',
    * otherwise uses the placement input.
    */
@@ -819,15 +812,24 @@ export class MznDropdown {
         // Dropdown 的 `!anchor.contains(target) && !popper.contains(target)`。
         // - anchor:使用者點 trigger(如 TextField)時不可被判外部。
         // - host:inline 模式整個 dropdown 都在 host 內。
-        // - popperElRef:globalPortal=true 時 popper 內容被搬到 body,
-        //   host 已不包含它,若不加會導致點選項立刻觸發 close。
+        // - popper:globalPortal=true 時 popper 內容被 MznPortal 移到
+        //   `<body>`,host 已不包含它;也不能單靠 `popperElRef` viewChild
+        //   因為 `<ng-content>` → `<ng-template>` 的穿透使得 viewChild
+        //   在某些 change detection 時序下未解析。改用 selector 檢查
+        //   `target.closest('[data-mzn-dropdown-popper]')`,不論 popper
+        //   被搬到哪裡都能正確判定。
         const anchorRaw = this.anchor();
         const anchorEl =
           anchorRaw instanceof ElementRef ? anchorRaw.nativeElement : anchorRaw;
-        const popperEl = this.popperElRef()?.nativeElement;
         const cleanup = this.clickAway.listen(
-          [this.hostElRef.nativeElement, anchorEl, popperEl],
-          () => this.closed.emit(),
+          [this.hostElRef.nativeElement, anchorEl],
+          (event) => {
+            const target = event.target as HTMLElement | null;
+
+            if (target?.closest('[data-mzn-dropdown-popper="true"]')) return;
+
+            this.closed.emit();
+          },
           this.destroyRef,
         );
 
