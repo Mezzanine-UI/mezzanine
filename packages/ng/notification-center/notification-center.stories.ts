@@ -71,97 +71,200 @@ export const Severity: Story = {
 @Component({
   selector: 'story-notification-add-method',
   standalone: true,
-  imports: [MznButton, MznNotificationCenter],
+  imports: [MznButton, MznNotificationCenter, MznNotificationCenterDrawer],
   template: `
     <div style="display: flex; flex-direction: column; gap: 16px;">
+      <h3 style="margin: 0; font-size: 24px;">
+        使用 NotificationCenter.add 方法
+      </h3>
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <button mznButton variant="base-primary" (click)="addSuccess()">
-          添加成功通知
+          添加成功通知（帶確認/取消）
         </button>
         <button mznButton variant="base-primary" (click)="addError()">
           添加錯誤通知
         </button>
         <button mznButton variant="base-primary" (click)="addWarning()">
-          添加警告通知
+          添加警告通知（3秒後自動移除）
         </button>
         <button mznButton variant="base-primary" (click)="addInfo()">
-          添加資訊通知
+          添加資訊通知（5秒自動關閉）
+        </button>
+        <button mznButton variant="base-primary" (click)="addMultiple()">
+          連續添加多個通知
         </button>
       </div>
+
+      <!--
+        Toast stack (top-right) — each entry is a per-item MznNotificationCenter
+        in notification mode. Mirrors the floating notifications React renders
+        via NotificationCenter.add() ({ type: 'notification' }) into the global
+        notification-center-root portal.
+      -->
       <div
-        style="display: flex; flex-direction: column; align-items: flex-end; gap: 16px;"
+        style="position: fixed; top: 16px; right: 32px; display: flex; flex-direction: column; align-items: flex-end; gap: 16px; z-index: 1000;"
       >
-        @for (item of items(); track item.key) {
+        @for (item of toasts(); track item.key) {
           <div
             mznNotificationCenter
             type="notification"
             [severity]="item.severity ?? 'info'"
             [title]="item.title ?? ''"
             [description]="item.description ?? ''"
+            [cancelButtonText]="item.cancelButtonText ?? 'Cancel'"
+            [confirmButtonText]="item.confirmButtonText ?? 'Confirm'"
+            [showConfirmButton]="!!item.confirmButtonText"
+            [showCancelButton]="!!item.cancelButtonText"
+            [duration]="item._duration ?? false"
             [reference]="item.key ?? ''"
+            (confirmed)="remove(item.key)"
+            (cancelled)="remove(item.key)"
             (closed)="remove($event)"
           ></div>
         }
       </div>
+
+      <!--
+        Drawer list — same items, presented as a grouped list.
+      -->
+      <div
+        mznNotificationCenterDrawer
+        [open]="drawerOpen()"
+        title="通知中心"
+        [notificationList]="drawerList()"
+        [filterBarShow]="true"
+        filterBarAllRadioLabel="全部"
+        filterBarReadRadioLabel="已讀"
+        filterBarUnreadRadioLabel="未讀"
+        [filterBarShowUnreadButton]="true"
+        filterBarCustomButtonLabel="全部已讀"
+        (closed)="drawerOpen.set(false)"
+      ></div>
     </div>
   `,
 })
 class AddMethodComponent {
-  readonly items = signal<NotificationItem[]>([]);
+  readonly toasts = signal<ToastItem[]>([]);
+  readonly drawerList = signal<NotificationItem[]>([]);
+  readonly drawerOpen = signal(false);
+
+  private push(toast: ToastItem, drawer: NotificationItem): void {
+    this.toasts.update((prev) => [...prev, toast]);
+    this.drawerList.update((prev) => [...prev, drawer]);
+  }
 
   addSuccess(): void {
-    this.items.update((prev) => [
-      ...prev,
+    const key = `success-${Date.now()}`;
+    this.push(
       {
-        key: `success-${Date.now()}`,
-        title: '操作成功',
-        description: '使用 add 方法添加的通知',
+        key,
         severity: 'success',
+        title: '操作成功',
+        description: '使用 NotificationCenter.add 方法添加的通知',
+        cancelButtonText: '取消',
+        confirmButtonText: '確認',
       },
-    ]);
+      {
+        key,
+        severity: 'success',
+        title: '操作成功',
+        description: '使用 NotificationCenter.add 方法添加的通知',
+        timeStamp: new Date(),
+      },
+    );
   }
 
   addError(): void {
-    this.items.update((prev) => [
-      ...prev,
+    const key = `error-${Date.now()}`;
+    this.push(
       {
-        key: `error-${Date.now()}`,
+        key,
+        severity: 'error',
         title: '操作失敗',
         description: '這是一個錯誤通知，使用 add 方法添加',
-        severity: 'error',
       },
-    ]);
+      {
+        key,
+        severity: 'error',
+        title: '操作失敗',
+        description: '這是一個錯誤通知，使用 add 方法添加',
+        timeStamp: new Date(),
+      },
+    );
   }
 
   addWarning(): void {
-    this.items.update((prev) => [
-      ...prev,
+    const key = `warning-${Date.now()}`;
+    this.push(
       {
-        key: `warning-${Date.now()}`,
-        title: '警告',
-        description: '這是一個警告通知',
+        key,
         severity: 'warning',
+        title: '警告',
+        description: '這是一個警告通知，可以通過 reference 來控制',
       },
-    ]);
+      {
+        key,
+        severity: 'warning',
+        title: '警告',
+        description: '這是一個警告通知，可以通過 reference 來控制',
+        timeStamp: new Date(),
+      },
+    );
+    // Mirror React's `setTimeout(() => NotificationCenter.remove(ref), 3000)`.
+    setTimeout(() => this.remove(key), 3000);
   }
 
   addInfo(): void {
-    this.items.update((prev) => [
-      ...prev,
+    const key = `info-${Date.now()}`;
+    this.push(
       {
-        key: `info-${Date.now()}`,
-        title: '資訊通知',
-        description: '這是一個資訊通知',
+        key,
         severity: 'info',
+        title: '資訊通知',
+        description: '這是一個資訊通知，展示 add 方法的基本用法',
+        _duration: 5000,
       },
-    ]);
+      {
+        key,
+        severity: 'info',
+        title: '資訊通知',
+        description: '這是一個資訊通知，展示 add 方法的基本用法',
+        timeStamp: new Date(),
+      },
+    );
+  }
+
+  addMultiple(): void {
+    const severities = ['success', 'warning', 'error', 'info'] as const;
+    severities.forEach((severity, index) => {
+      setTimeout(() => {
+        const key = `${severity}-multi-${Date.now()}-${index}`;
+        this.push(
+          {
+            key,
+            severity,
+            title: `${severity} 通知`,
+            description: `這是第 ${index + 1} 個通知`,
+          },
+          {
+            key,
+            severity,
+            title: `${severity} 通知`,
+            description: `這是第 ${index + 1} 個通知`,
+            timeStamp: new Date(),
+          },
+        );
+      }, index * 500);
+    });
   }
 
   remove(key: string | number | undefined): void {
     if (key === undefined) return;
-    this.items.update((prev) => prev.filter((n) => n.key !== key));
+    this.toasts.update((prev) => prev.filter((t) => t.key !== key));
   }
 }
+
+type ToastItem = NotificationItem & { readonly _duration?: number | false };
 
 export const AddMethod: Story = {
   parameters: { controls: { disable: true } },
