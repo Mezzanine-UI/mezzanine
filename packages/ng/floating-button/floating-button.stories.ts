@@ -3,7 +3,9 @@ import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { CloseIcon, PlusIcon } from '@mezzanine-ui/icons';
 
 import { MznButton } from '../button/button.directive';
+import { MznIcon } from '../icon/icon.component';
 import { MznModal } from '../modal/modal.component';
+import { MznModalBodyContainer } from '../modal/modal-body-container.directive';
 import { MznModalHeader } from '../modal/modal-header.component';
 import { MznFloatingButton } from './floating-button.component';
 
@@ -43,7 +45,7 @@ export const IconOnly: Story = {
 @Component({
   selector: '[storyAutoHideWhenOpen]',
   standalone: true,
-  imports: [MznFloatingButton, MznButton],
+  imports: [MznFloatingButton, MznButton, MznIcon],
   host: {
     style: 'width: 100%; height: 200vh; display: flex; flex-flow: row;',
   },
@@ -63,12 +65,19 @@ export const IconOnly: Story = {
       <div
         style="width: 250px; height: 100%; background-color: rgba(0,0,0,0.1);"
       >
+        <!--
+          MznButton 是 directive，[icon] input 只用於 CSS class 計算，不會自動
+          渲染 icon element（不像 React Button 是 component 會 render children）。
+          icon-only 模式必須手動放 <i mznIcon> 作為 button 的 child content。
+        -->
         <button
           mznButton
           iconType="icon-only"
           [icon]="closeIcon"
           (click)="open.set(false)"
-        ></button>
+        >
+          <i mznIcon [icon]="closeIcon"></i>
+        </button>
       </div>
     }
   `,
@@ -96,7 +105,7 @@ export const AutoHideWhenOpen: Story = {
 @Component({
   selector: '[storyWithModal]',
   standalone: true,
-  imports: [MznFloatingButton, MznModal, MznModalHeader],
+  imports: [MznFloatingButton, MznModal, MznModalBodyContainer, MznModalHeader],
   host: {
     style: 'width: 100%; height: 200vh;',
   },
@@ -105,14 +114,20 @@ export const AutoHideWhenOpen: Story = {
     <div mznFloatingButton [open]="open()" (click)="open.set(true)">
       Open Modal
     </div>
+    <!--
+      MznModal 的 showModalHeader input 沒加 booleanAttribute transform,
+      bare attribute 會以空字串存入 signal 讓 @if 判定 falsy 不 render header
+      slot。顯式 [showModalHeader]="true" 對齊 React <Modal showModalHeader>。
+    -->
     <div
       mznModal
       [open]="open()"
       modalType="standard"
+      [showModalHeader]="true"
       (closed)="open.set(false)"
     >
       <div mznModalHeader title="Modal Title"></div>
-      <div class="mzn-modal__body-container">
+      <div mznModalBodyContainer>
         <p>Modal Content</p>
       </div>
     </div>
