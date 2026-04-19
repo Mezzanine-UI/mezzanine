@@ -189,6 +189,10 @@ class AddMethodComponent {
         severity: 'error',
         title: '操作失敗',
         description: '這是一個錯誤通知，使用 add 方法添加',
+        // Mirror React `{ onClose: () => NotificationCenter.remove(ref) }` →
+        // React's showCancelButton is `cancelButtonText && (onCancel || onClose)`,
+        // so a Cancel button surfaces even though onConfirm was not given.
+        cancelButtonText: 'Cancel',
       },
       {
         key,
