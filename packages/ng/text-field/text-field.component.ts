@@ -58,6 +58,7 @@ import { MznTextFieldHost } from './text-field-host.directive';
         'fullWidth',
         'hasPrefix',
         'hasSuffix',
+        'noPadding',
         'readonly',
         'size',
         'typing',

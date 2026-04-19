@@ -196,26 +196,47 @@ export const ComponentsExample: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `
-      <div style="display: inline-grid; grid-template-columns: 1fr; gap: 32px; min-width: 320px;">
+      <div
+        style="display: inline-grid; grid-template-columns: 1fr; gap: 32px; min-width: 320px;"
+      >
+        <!--
+          Textarea (with resize):對齊 React 的 children-as-function pattern
+          (TextField.stories.tsx:297-307)。[noPadding]="true" 把 host 的
+          padding 清掉,改掛在 <textarea> 上(mzn-text-field__input-padding
+          + --main 尺寸變體)。這樣 resize handle 能碰到 host 邊界,不會被
+          host 的內建 padding 裁切。
+        -->
         <div>
-          <h3 style="margin-top: 0; margin-bottom: 8px;">Textarea (with resize)</h3>
-          <div mznTextField>
-            <textarea placeholder="Textarea with text-field padding" rows="4"></textarea>
+          <h3 style="margin-top: 0; margin-bottom: 8px;">
+            Textarea (with resize)
+          </h3>
+          <div mznTextField [noPadding]="true">
+            <textarea
+              class="mzn-text-field__input-padding mzn-text-field__input-padding--main"
+              placeholder="Textarea with text-field padding"
+              rows="4"
+            ></textarea>
           </div>
         </div>
         <div>
-          <h3 style="margin-top: 0; margin-bottom: 8px;">Select-like Component</h3>
+          <h3 style="margin-top: 0; margin-bottom: 8px;">
+            Select-like Component
+          </h3>
           <div mznTextField>
             <div style="width: 100%;">Select an option...</div>
           </div>
         </div>
         <div>
-          <h3 style="margin-top: 0; margin-bottom: 8px;">AutoComplete-like Component</h3>
-          <div mznTextField>
+          <h3 style="margin-top: 0; margin-bottom: 8px;">
+            AutoComplete-like Component
+          </h3>
+          <div mznTextField [hasPrefix]="true">
+            <i mznIcon prefix [icon]="SearchIcon"></i>
             <input type="text" placeholder="Type to search..." />
           </div>
         </div>
       </div>
     `,
+    props: { SearchIcon },
   }),
 };

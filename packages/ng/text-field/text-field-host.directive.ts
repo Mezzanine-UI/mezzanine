@@ -98,6 +98,14 @@ export class MznTextFieldHost implements AfterViewInit {
   readonly readonly = input(false);
 
   /**
+   * 是否移除 host 的 padding。對齊 React `TextField.tsx:316` 的
+   * `classes.noPadding`:當消費端用 `mzn-text-field__input-padding` 將
+   * padding 搬到子元素(例如 textarea)時,host 需要把自己的 padding
+   * 清掉,避免雙重 padding。@default false
+   */
+  readonly noPadding = input(false);
+
+  /**
    * 欄位尺寸。
    * @default 'main'
    */
@@ -145,6 +153,7 @@ export class MznTextFieldHost implements AfterViewInit {
       [classes.disabled]: this.disabled(),
       [classes.error]: this.error(),
       [classes.fullWidth]: this.fullWidth(),
+      [classes.noPadding]: this.noPadding(),
       [classes.readonly]: this.readonly(),
       [classes.typing]: this.resolvedTyping(),
       [classes.active]: this.active(),
