@@ -1,31 +1,66 @@
 import { Component, signal } from '@angular/core';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
-import { MznPopper } from './popper.component';
+import { flip, type Middleware, shift } from '@floating-ui/dom';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
+import { getCSSVariablePixelValue } from '@mezzanine-ui/ng/utils';
+import { MznPopper, type PopperPlacement } from './popper.component';
 import { MznButton } from '../button/button.directive';
 
 export default {
   title: 'Internal/Popper',
   decorators: [
     moduleMetadata({
-      imports: [MznPopper, MznButton],
+      imports: [MznPopper, MznButton, MznTypography],
     }),
   ],
 } satisfies Meta;
 
 type Story = StoryObj;
 
+/**
+ * 對齊 React `Popper.stories.tsx:16-31` 的 `DemoPopperContent`:
+ * 白底圓角、2px 黑灰陰影、80px 寬,中央放一個 Typography 文字「Content」。
+ * Angular 不支援 story 間共享 JSX fragment,改用一個獨立 @Component 讓 5 個
+ * story 都能 reuse 同一份內容。
+ */
+@Component({
+  selector: 'story-popper-demo-content',
+  standalone: true,
+  imports: [MznTypography],
+  template: `
+    <div
+      style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
+    >
+      <span mznTypography color="text-neutral">Content</span>
+    </div>
+  `,
+})
+class DemoPopperContentComponent {}
+
+/**
+ * 對齊 React `Popper.stories.tsx:107-115`:offset 從
+ * `--mzn-spacing-gap-base` 讀,React 用 `parseFloat(rem 值) * 16` 換算成 px。
+ * Angular 有同等工具 `getCSSVariablePixelValue`,可一步完成 rem / px 判讀。
+ * React 預設沒有 flip middleware,Angular MznPopper 有,各 story 傳
+ * `[disableFlip]="true"` 關閉以保留 React 的「placement 永遠忠於指定」行為。
+ */
+const OFFSET_MAIN_AXIS = getCSSVariablePixelValue('--mzn-spacing-gap-base', 8);
+
+// ─── Basic ──────────────────────────────────────────────────────────
+
 @Component({
   selector: 'story-popper-basic',
   standalone: true,
-  imports: [MznPopper, MznButton],
+  imports: [MznPopper, MznButton, MznTypography, DemoPopperContentComponent],
   template: `
-    <div style="display: flex; gap: 10px; padding: 40px;">
-      <div mznPopper [anchor]="hoverAnchor()" [open]="hoverAnchor() !== null">
-        <div
-          style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
-        >
-          Content
-        </div>
+    <div style="display: flex; gap: 10px;">
+      <div
+        mznPopper
+        [anchor]="hoverAnchor()"
+        [open]="hoverAnchor() !== null"
+        [disableFlip]="true"
+      >
+        <story-popper-demo-content />
       </div>
       <button
         #hoverBtn
@@ -48,12 +83,13 @@ type Story = StoryObj;
       >
         Click me
       </button>
-      <div mznPopper [anchor]="clickAnchor()" [open]="clickAnchor() !== null">
-        <div
-          style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
-        >
-          Content
-        </div>
+      <div
+        mznPopper
+        [anchor]="clickAnchor()"
+        [open]="clickAnchor() !== null"
+        [disableFlip]="true"
+      >
+        <story-popper-demo-content />
       </div>
     </div>
   `,
@@ -70,10 +106,12 @@ export const Basic: Story = {
   }),
 };
 
+// ─── Placement ──────────────────────────────────────────────────────
+
 @Component({
   selector: 'story-popper-placement',
   standalone: true,
-  imports: [MznPopper, MznButton],
+  imports: [MznPopper, MznButton, DemoPopperContentComponent],
   template: `
     <div
       style="display: inline-grid; gap: 30px; grid-auto-rows: minmax(min-content, max-content); grid-template-columns: repeat(5, max-content); justify-content: center; margin-top: 50px; width: 100%;"
@@ -83,13 +121,10 @@ export const Basic: Story = {
         [anchor]="anchor()"
         [open]="anchor() !== null"
         [placement]="placement()"
-        [offsetOptions]="{ mainAxis: 8 }"
+        [offsetOptions]="offsetOptions"
+        [disableFlip]="true"
       >
-        <div
-          style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
-        >
-          Content
-        </div>
+        <story-popper-demo-content />
       </div>
       <div></div>
       <button
@@ -117,7 +152,9 @@ export const Basic: Story = {
         (click)="setAnchor('left-start', ls)"
         >left-start</button
       >
-      <div></div><div></div><div></div>
+      <div></div>
+      <div></div>
+      <div></div>
       <button
         #rs
         mznButton
@@ -128,7 +165,9 @@ export const Basic: Story = {
       <button #l mznButton variant="base-primary" (click)="setAnchor('left', l)"
         >left</button
       >
-      <div></div><div></div><div></div>
+      <div></div>
+      <div></div>
+      <div></div>
       <button
         #r
         mznButton
@@ -143,7 +182,9 @@ export const Basic: Story = {
         (click)="setAnchor('left-end', le)"
         >left-end</button
       >
-      <div></div><div></div><div></div>
+      <div></div>
+      <div></div>
+      <div></div>
       <button
         #re
         mznButton
@@ -179,9 +220,10 @@ export const Basic: Story = {
 })
 class PopperPlacementComponent {
   readonly anchor = signal<HTMLElement | null>(null);
-  readonly placement = signal<string>('top');
+  readonly placement = signal<PopperPlacement>('top');
+  protected readonly offsetOptions = { mainAxis: OFFSET_MAIN_AXIS };
 
-  setAnchor(placement: string, el: HTMLElement): void {
+  setAnchor(placement: PopperPlacement, el: HTMLElement): void {
     if (this.anchor() === el) {
       this.anchor.set(null);
     } else {
@@ -198,10 +240,12 @@ export const Placement: Story = {
   }),
 };
 
+// ─── WithArrow ──────────────────────────────────────────────────────
+
 @Component({
   selector: 'story-popper-with-arrow',
   standalone: true,
-  imports: [MznPopper, MznButton],
+  imports: [MznPopper, MznButton, DemoPopperContentComponent],
   template: `
     <div
       style="display: inline-grid; gap: 30px; grid-auto-rows: minmax(min-content, max-content); grid-template-columns: repeat(5, max-content); justify-content: center; margin-top: 50px; width: 100%;"
@@ -211,14 +255,11 @@ export const Placement: Story = {
         [anchor]="anchor()"
         [open]="anchor() !== null"
         [placement]="placement()"
-        [offsetOptions]="{ mainAxis: 8 }"
-        [arrowOptions]="{ enabled: true, className: 'foo', padding: 0 }"
+        [offsetOptions]="offsetOptions"
+        [arrowOptions]="arrowOptions"
+        [disableFlip]="true"
       >
-        <div
-          style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
-        >
-          Content
-        </div>
+        <story-popper-demo-content />
       </div>
       <div></div>
       <button
@@ -246,7 +287,9 @@ export const Placement: Story = {
         (click)="setAnchor('left-start', ls)"
         >left-start</button
       >
-      <div></div><div></div><div></div>
+      <div></div>
+      <div></div>
+      <div></div>
       <button
         #rs
         mznButton
@@ -257,7 +300,9 @@ export const Placement: Story = {
       <button #l mznButton variant="base-primary" (click)="setAnchor('left', l)"
         >left</button
       >
-      <div></div><div></div><div></div>
+      <div></div>
+      <div></div>
+      <div></div>
       <button
         #r
         mznButton
@@ -272,7 +317,9 @@ export const Placement: Story = {
         (click)="setAnchor('left-end', le)"
         >left-end</button
       >
-      <div></div><div></div><div></div>
+      <div></div>
+      <div></div>
+      <div></div>
       <button
         #re
         mznButton
@@ -308,9 +355,15 @@ export const Placement: Story = {
 })
 class PopperWithArrowComponent {
   readonly anchor = signal<HTMLElement | null>(null);
-  readonly placement = signal<string>('top');
+  readonly placement = signal<PopperPlacement>('top');
+  protected readonly offsetOptions = { mainAxis: OFFSET_MAIN_AXIS };
+  protected readonly arrowOptions = {
+    enabled: true,
+    className: 'foo',
+    padding: 0,
+  };
 
-  setAnchor(placement: string, el: HTMLElement): void {
+  setAnchor(placement: PopperPlacement, el: HTMLElement): void {
     if (this.anchor() === el) {
       this.anchor.set(null);
     } else {
@@ -327,32 +380,36 @@ export const WithArrow: Story = {
   }),
 };
 
+// ─── WithMiddleware ─────────────────────────────────────────────────
+
+/**
+ * 對齊 React `Popper.stories.tsx:253-280`:示範 `shift` + `flip` middleware
+ * 組合。這裡明確關掉 MznPopper 內建 `flip`(`disableFlip=true`),由自定
+ * middleware 清單處理翻面,並加上 `fallbackAxisSideDirection: 'end'` 讓
+ * 空間不足時偏向 `-end` 對齊位置。
+ */
 @Component({
   selector: 'story-popper-with-middleware',
   standalone: true,
-  imports: [MznPopper, MznButton],
+  imports: [MznPopper, MznButton, MznTypography, DemoPopperContentComponent],
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 20px; height: 200vh; padding-top: 50vh;"
     >
-      <div>Scroll to test flip and shift middleware</div>
+      <span mznTypography variant="body">
+        Scroll to test flip and shift middleware
+      </span>
       <div
         mznPopper
         [anchor]="anchor()"
         [open]="anchor() !== null"
         placement="top"
-        [offsetOptions]="{ mainAxis: 8 }"
-        [arrowOptions]="{
-          enabled: true,
-          className: 'custom-arrow',
-          padding: 0,
-        }"
+        [offsetOptions]="offsetOptions"
+        [arrowOptions]="arrowOptions"
+        [middleware]="middleware"
+        [disableFlip]="true"
       >
-        <div
-          style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
-        >
-          Content
-        </div>
+        <story-popper-demo-content />
       </div>
       <button
         #btn
@@ -367,6 +424,16 @@ export const WithArrow: Story = {
 })
 class PopperWithMiddlewareComponent {
   readonly anchor = signal<HTMLElement | null>(null);
+  protected readonly offsetOptions = { mainAxis: OFFSET_MAIN_AXIS };
+  protected readonly arrowOptions = {
+    enabled: true,
+    className: 'custom-arrow',
+    padding: 0,
+  };
+  protected readonly middleware: ReadonlyArray<Middleware> = [
+    shift(),
+    flip({ fallbackAxisSideDirection: 'end' }),
+  ];
 }
 
 export const WithMiddleware: Story = {
@@ -376,25 +443,28 @@ export const WithMiddleware: Story = {
   }),
 };
 
+// ─── DisablePortal ──────────────────────────────────────────────────
+
+/**
+ * MznPopper 目前沒有 portal 行為(always in-place),跟 React `disablePortal`
+ * 語義等同。這個 story 仍保留以對齊 React 的 story 目錄,並示範
+ * `position: relative` 父層下的就地定位。
+ */
 @Component({
   selector: 'story-popper-disable-portal',
   standalone: true,
-  imports: [MznPopper, MznButton],
+  imports: [MznPopper, MznButton, DemoPopperContentComponent],
   template: `
-    <div style="display: flex; gap: 10px; position: relative; padding: 40px;">
+    <div style="display: flex; gap: 10px; position: relative;">
       <div
         mznPopper
         [anchor]="anchor()"
         [open]="anchor() !== null"
         placement="bottom"
-        [offsetOptions]="{ mainAxis: 8 }"
-        strategy="fixed"
+        [offsetOptions]="offsetOptions"
+        [disableFlip]="true"
       >
-        <div
-          style="align-items: center; background-color: white; border-radius: 5px; box-shadow: 0px 2px 4px grey; display: flex; justify-content: center; padding: 10px; width: 80px;"
-        >
-          Content
-        </div>
+        <story-popper-demo-content />
       </div>
       <button
         #btn
@@ -409,6 +479,7 @@ export const WithMiddleware: Story = {
 })
 class PopperDisablePortalComponent {
   readonly anchor = signal<HTMLElement | null>(null);
+  protected readonly offsetOptions = { mainAxis: OFFSET_MAIN_AXIS };
 }
 
 export const DisablePortal: Story = {
