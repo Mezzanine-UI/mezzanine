@@ -21,14 +21,24 @@ import {
   DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown';
-import { type Placement } from '@floating-ui/dom';
+import { type Middleware, type Placement, size } from '@floating-ui/dom';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
+import { MznPortal } from '@mezzanine-ui/ng/portal';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznTranslate } from '@mezzanine-ui/ng/transition';
 import type { DropdownActionProps } from './dropdown-action.component';
 import { MznDropdownItem } from './dropdown-item.component';
+
+/**
+ * 跨所有 MznDropdown 實例共用的遞增計數器,確保後開啟的 popper z-index
+ * 永遠高於先開啟的(包含 Select / Autocomplete 等 wrapper 嵌套情境)。
+ * 跟 `MznInputTriggerPopper` 的 popperOpenSequence 同機制但分離維護,
+ * 因為兩邊使用的 z-index 基底不同時不應互相干涉。
+ * @internal
+ */
+let mznDropdownPopperSequence = 0;
 
 /**
  * 傳遞給 MznDropdownAction 的整合設定物件。
@@ -92,7 +102,13 @@ export interface DropdownActionConfig {
 @Component({
   selector: '[mznDropdown]',
   standalone: true,
-  imports: [MznPopper, MznDropdownItem, MznTranslate, NgTemplateOutlet],
+  imports: [
+    MznPopper,
+    MznPortal,
+    MznDropdownItem,
+    MznTranslate,
+    NgTemplateOutlet,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.name]': 'name() ?? null',
@@ -208,55 +224,59 @@ export interface DropdownActionConfig {
         <ng-container *ngTemplateOutlet="headerTplRef() ?? null" />
       }
     } @else {
-      <div
-        mznPopper
-        [anchor]="anchor()!"
-        [open]="popperOpen()"
-        [placement]="resolvedPlacement()"
-        [offsetOptions]="{ mainAxis: 4 }"
-        [style.z-index]="zIndex() ?? null"
-      >
+      <div mznPortal [disablePortal]="!globalPortal()">
         <div
-          mznTranslate
-          [in]="open()"
-          [from]="translateFrom()"
-          (onExited)="onTranslateExited()"
+          #popperEl
+          mznPopper
+          [anchor]="anchor()!"
+          [open]="popperOpen()"
+          [placement]="resolvedPlacement()"
+          [offsetOptions]="{ mainAxis: 4 }"
+          [middleware]="popperMiddleware()"
+          [style.z-index]="resolvedZIndex()"
         >
-          <div [class]="resolvedRootClass()">
-            <div
-              mznDropdownItem
-              [actionConfig]="resolvedActionConfig()"
-              [activeIndex]="activeIndex()"
-              [keyboardActiveIndex]="effectiveKeyboardIndex()"
-              [customWidth]="customWidth()"
-              [disabled]="disabled()"
-              [emptyIcon]="emptyIcon()"
-              [emptyText]="emptyText()"
-              [followText]="resolvedFollowText()"
-              [headerContentTemplate]="
-                showHeader() ? (headerTplRef() ?? undefined) : undefined
-              "
-              [listboxId]="listboxId()"
-              [listboxLabel]="listboxLabel()"
-              [loadingPosition]="loadingPosition()"
-              [loadingText]="loadingText()"
-              [maxHeight]="maxHeight()"
-              [minWidth]="minWidth()"
-              [mode]="mode()"
-              [options]="options()"
-              [showCheckIcon]="showCheckIcon()"
-              [status]="status()"
-              [type]="type()"
-              [value]="value()"
-              (actionCancelled)="actionCancelled.emit()"
-              (actionCleared)="actionCleared.emit()"
-              (actionConfirmed)="actionConfirmed.emit()"
-              (actionCustomClicked)="actionCustomClicked.emit()"
-              (itemHovered)="itemHovered.emit($event)"
-              (leaveBottom)="leaveBottom.emit()"
-              (reachBottom)="reachBottom.emit()"
-              (selected)="onItemSelected($event)"
-            ></div>
+          <div
+            mznTranslate
+            [in]="open()"
+            [from]="translateFrom()"
+            (onExited)="onTranslateExited()"
+          >
+            <div [class]="resolvedRootClass()">
+              <div
+                mznDropdownItem
+                [actionConfig]="resolvedActionConfig()"
+                [activeIndex]="activeIndex()"
+                [keyboardActiveIndex]="effectiveKeyboardIndex()"
+                [customWidth]="customWidth()"
+                [disabled]="disabled()"
+                [emptyIcon]="emptyIcon()"
+                [emptyText]="emptyText()"
+                [followText]="resolvedFollowText()"
+                [headerContentTemplate]="
+                  showHeader() ? (headerTplRef() ?? undefined) : undefined
+                "
+                [listboxId]="listboxId()"
+                [listboxLabel]="listboxLabel()"
+                [loadingPosition]="loadingPosition()"
+                [loadingText]="loadingText()"
+                [maxHeight]="maxHeight()"
+                [minWidth]="minWidth()"
+                [mode]="mode()"
+                [options]="options()"
+                [showCheckIcon]="showCheckIcon()"
+                [status]="status()"
+                [type]="type()"
+                [value]="value()"
+                (actionCancelled)="actionCancelled.emit()"
+                (actionCleared)="actionCleared.emit()"
+                (actionConfirmed)="actionConfirmed.emit()"
+                (actionCustomClicked)="actionCustomClicked.emit()"
+                (itemHovered)="itemHovered.emit($event)"
+                (leaveBottom)="leaveBottom.emit()"
+                (reachBottom)="reachBottom.emit()"
+                (selected)="onItemSelected($event)"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -530,6 +550,13 @@ export class MznDropdown {
     viewChild<TemplateRef<unknown>>('headerTpl');
 
   /**
+   * Outside-mode popper 的 root element,globalPortal 啟用時它會被搬到
+   * document.body。click-away listener 需要把它列為「inside」避免點擊
+   * portal 內的選項被判定為外部點擊而觸發 close。
+   */
+  private readonly popperElRef = viewChild<ElementRef<HTMLElement>>('popperEl');
+
+  /**
    * Resolved placement: forces 'bottom' when inputPosition is 'inside',
    * otherwise uses the placement input.
    */
@@ -604,6 +631,51 @@ export class MznDropdown {
    * popper 的 `display: none` 不會在動畫結束前就把元素隱藏掉。
    */
   protected readonly popperOpen = signal(false);
+
+  /**
+   * 每次開啟 popper 時以遞增序號計算 z-index,對齊
+   * `MznInputTriggerPopper` 的 popperOpenSequence 機制:後開啟的 popper
+   * 永遠蓋在先開啟的之上,即使在 Modal / Drawer 內也不被其他 popover
+   * 遮住。外部若用 `zIndex` input 明確指定,則以該值為準。
+   */
+  private readonly openSequenceZIndex = signal<string | null>(null);
+
+  /**
+   * 送入 `[style.z-index]` 的最終值:`zIndex` input > 內部 sequence。
+   * 未顯式提供 zIndex 時,每次 `open` → true 會遞增 sequence 以超越已
+   * 開啟的同類 popper;回退到 CSS 變數 `--mzn-z-index-popover` 作為基值。
+   */
+  protected readonly resolvedZIndex = computed((): string | null => {
+    const explicit = this.zIndex();
+
+    if (explicit !== undefined && explicit !== null) {
+      return typeof explicit === 'number' ? `${explicit}` : explicit;
+    }
+
+    return this.openSequenceZIndex();
+  });
+
+  /**
+   * 額外的 floating-ui middleware。`sameWidth=true` 時加上 `size` middleware
+   * 讓 floating 元素 `minWidth` 與 anchor 同寬,對齊 React
+   * `Dropdown.tsx:535-568` 的 sameWidthMiddleware。`customWidth` 有值時
+   * 優先,此 middleware 直接不套用避免互打。
+   */
+  protected readonly popperMiddleware = computed(
+    (): ReadonlyArray<Middleware> => {
+      if (!this.sameWidth() || this.customWidth() !== undefined) return [];
+
+      return [
+        size({
+          apply({ rects, elements }) {
+            Object.assign(elements.floating.style, {
+              minWidth: `${rects.reference.width}px`,
+            });
+          },
+        }),
+      ];
+    },
+  );
 
   /**
    * 內部鍵盤 active index,對齊 React `Dropdown.tsx` 中的 `keyboardActiveIndex`
@@ -729,19 +801,32 @@ export class MznDropdown {
 
       if (isOpen) {
         this.popperOpen.set(true);
+
+        // Bump sequence and reflect onto resolvedZIndex so the latest-opened
+        // popper always sits above previously opened ones (Modal / Drawer
+        // scenarios). Intentionally not reset on close so the closing
+        // popper retains its stacking position through the exit animation,
+        // mirroring `MznInputTriggerPopper`'s popperOpenSequence behaviour.
+        if (!this.isInline()) {
+          this.openSequenceZIndex.set(
+            `calc(var(--mzn-z-index-popover) + ${++mznDropdownPopperSequence})`,
+          );
+        }
       }
 
       if (isOpen && !this.disableClickAway()) {
-        // 把 anchor 與 host(含 popper)一併視為「inside」,對齊 React
+        // 把 anchor、host、以及 popper root 一併視為「inside」,對齊 React
         // Dropdown 的 `!anchor.contains(target) && !popper.contains(target)`。
-        // 少了 anchor 那側會導致使用者點 anchor 本身(如 TextField 內的
-        // <input>)時被 capture-phase click-away 判成 outside 而直接關閉,
-        // 表現為「點擊失敗/時好時壞」。
+        // - anchor:使用者點 trigger(如 TextField)時不可被判外部。
+        // - host:inline 模式整個 dropdown 都在 host 內。
+        // - popperElRef:globalPortal=true 時 popper 內容被搬到 body,
+        //   host 已不包含它,若不加會導致點選項立刻觸發 close。
         const anchorRaw = this.anchor();
         const anchorEl =
           anchorRaw instanceof ElementRef ? anchorRaw.nativeElement : anchorRaw;
+        const popperEl = this.popperElRef()?.nativeElement;
         const cleanup = this.clickAway.listen(
-          [this.hostElRef.nativeElement, anchorEl],
+          [this.hostElRef.nativeElement, anchorEl, popperEl],
           () => this.closed.emit(),
           this.destroyRef,
         );
