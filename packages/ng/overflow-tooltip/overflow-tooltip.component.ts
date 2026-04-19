@@ -11,12 +11,13 @@ import {
 } from '@angular/core';
 import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
 import { TagSize } from '@mezzanine-ui/core/tag';
-import { type Placement } from '@floating-ui/dom';
+import { flip, type Middleware, type Placement, shift } from '@floating-ui/dom';
 import { MOTION_DURATION } from '@mezzanine-ui/system/motion/duration';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion/easing';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznFade } from '@mezzanine-ui/ng/transition';
+import { getCSSVariablePixelValue } from '@mezzanine-ui/ng/utils';
 import clsx from 'clsx';
 
 const FADE_FAST_DURATION = {
@@ -72,6 +73,8 @@ const FADE_FAST_EASING = {
       [placement]="placement()"
       [arrowOptions]="arrowConfig"
       [offsetOptions]="offsetConfig"
+      [disableFlip]="true"
+      [middleware]="extraMiddleware()"
       [class]="hostClasses()"
     >
       <div
@@ -111,13 +114,53 @@ export class MznOverflowTooltip {
   protected readonly fadeFastDuration = FADE_FAST_DURATION;
   protected readonly fadeFastEasing = FADE_FAST_EASING;
 
+  /**
+   * 對齊 React `OverflowTooltip.tsx:57-78`:offset / arrow padding / 中線
+   * middleware 串都從 CSS 變數讀,而非寫死 10 / 12。
+   * - offset.mainAxis = `--mzn-spacing-gap-base` + `--mzn-spacing-size-element-tight`
+   *   (預設 8 + 6 = 14,之前 Angular 寫死 10 造成 tooltip 離 anchor 距離偏近)
+   * - arrow.padding   = `--mzn-spacing-padding-horizontal-comfort`(預設 12,跟
+   *   舊寫死值相同,但轉為 CSS 變數讓 theme compact 模式也能正確縮放)
+   * - 額外 middleware:`flip` + `shift`,順序依 placement 是否帶 '-' 分 alignment
+   *   模式。React 這段邏輯決定 viewport 空間不足時的 fallback 行為(`shift` 平移
+   *   而非 `flip` 翻面),Angular 之前完全沒套這組 middleware,導致 tooltip 在
+   *   視窗邊緣會彈到另一側、視覺跟 React 不一致。
+   */
+  private readonly offsetMainAxis =
+    getCSSVariablePixelValue('--mzn-spacing-gap-base', 8) +
+    getCSSVariablePixelValue('--mzn-spacing-size-element-tight', 6);
+
+  private readonly arrowPadding = getCSSVariablePixelValue(
+    '--mzn-spacing-padding-horizontal-comfort',
+    12,
+  );
+
   protected readonly arrowConfig = {
     enabled: true,
     className: classes.arrow,
-    padding: 12,
+    padding: this.arrowPadding,
   };
 
-  protected readonly offsetConfig = { mainAxis: 10 };
+  protected readonly offsetConfig = { mainAxis: this.offsetMainAxis };
+
+  /**
+   * 依 React `OverflowTooltip.tsx:67-78` 的規則組 middleware:有 alignment
+   * (例如 `top-start`)時 flip 優先,無 alignment(例如 `top`)則 shift 優先,
+   * 讓對齊側的 tooltip 傾向在空間不夠時平移而非翻面。
+   */
+  protected readonly extraMiddleware = computed(
+    (): ReadonlyArray<Middleware> => {
+      const flipMiddleware = flip({
+        crossAxis: 'alignment',
+        fallbackAxisSideDirection: 'end',
+      });
+      const shiftMiddleware = shift();
+
+      return this.placement().includes('-')
+        ? [flipMiddleware, shiftMiddleware]
+        : [shiftMiddleware, flipMiddleware];
+    },
+  );
 
   private readonly contentElRef =
     viewChild<ElementRef<HTMLElement>>('contentEl');
