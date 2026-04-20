@@ -18,12 +18,14 @@ import {
   CheckboxSeverity,
   CheckboxSize,
 } from '@mezzanine-ui/core/checkbox';
+import { inputClasses } from '@mezzanine-ui/core/input';
+import { textFieldClasses } from '@mezzanine-ui/core/text-field';
 import { TypographyColor } from '@mezzanine-ui/core/typography';
 import { inputCheckClasses } from '@mezzanine-ui/core/_internal/input-check';
 import { CheckedIcon, type IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import { MznInput } from '@mezzanine-ui/ng/input';
+import { MznTextField } from '@mezzanine-ui/ng/text-field';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import {
   MZN_CHECKBOX_GROUP,
@@ -104,7 +106,7 @@ export interface CheckboxEditableInput {
 @Component({
   selector: '[mznCheckbox]',
   standalone: true,
-  imports: [MznIcon, MznInput, MznTypography],
+  imports: [MznIcon, MznTextField, MznTypography],
   providers: [provideValueAccessor(MznCheckbox)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -211,30 +213,51 @@ export interface CheckboxEditableInput {
     ) {
       @let cfg = resolvedEditableInputConfig();
       <label [class]="editableInputContainerClass" [attr.for]="resolvedId()">
-        <div
-          mznInput
-          #editableInputEl
-          variant="base"
-          [active]="cfg.active ?? false"
-          [clearable]="cfg.clearable"
-          [defaultValue]="cfg.defaultValue"
-          [disabled]="resolvedEditableInputDisabled()"
-          [error]="cfg.error ?? false"
-          [fullWidth]="cfg.fullWidth ?? true"
-          [inputId]="cfg.id"
-          [inputName]="cfg.name"
-          [inputType]="cfg.inputType ?? 'text'"
-          [placeholder]="cfg.placeholder"
-          [prefixIcon]="cfg.prefixIcon"
-          [prefixText]="cfg.prefixText"
-          [readonly]="cfg.readonly ?? false"
-          [size]="cfg.size ?? 'main'"
-          [suffixText]="cfg.suffixText"
-          [typing]="cfg.typing"
-          [value]="cfg.value ?? ''"
-          (valueChange)="onEditableInputValueChange($event)"
-          (mousedown)="onEditableInputMouseDown($event)"
-        ></div>
+        <div [class]="mznInputContainerClass">
+          <div [class]="mznInputHostClass">
+            <div
+              mznTextField
+              #editableInputEl
+              [active]="cfg.active ?? false"
+              [clearable]="cfg.clearable ?? false"
+              [disabled]="resolvedEditableInputDisabled()"
+              [error]="cfg.error ?? false"
+              [fullWidth]="cfg.fullWidth ?? true"
+              [hasPrefix]="hasEditableInputPrefix()"
+              [hasSuffix]="hasEditableInputSuffix()"
+              [readonly]="cfg.readonly ?? false"
+              [size]="cfg.size ?? 'main'"
+              [typing]="cfg.typing"
+              (cleared)="onEditableInputClear()"
+              (mousedown)="onEditableInputMouseDown($event)"
+            >
+              @if (cfg.prefixIcon || cfg.prefixText) {
+                <span prefix [class]="textFieldPrefixClass">
+                  @if (cfg.prefixIcon; as icon) {
+                    <i mznIcon [icon]="icon"></i>
+                  } @else {
+                    {{ cfg.prefixText }}
+                  }
+                </span>
+              }
+              <input
+                [attr.id]="cfg.id"
+                [attr.name]="cfg.name"
+                [attr.placeholder]="cfg.placeholder"
+                [type]="cfg.inputType ?? 'text'"
+                [disabled]="resolvedEditableInputDisabled()"
+                [readOnly]="cfg.readonly ?? false"
+                [value]="cfg.value ?? ''"
+                (input)="onEditableInput($event)"
+              />
+              @if (cfg.suffixText; as suffixText) {
+                <span suffix [class]="textFieldSuffixClass">
+                  {{ suffixText }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
       </label>
     }
   `,
@@ -462,6 +485,20 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
   protected readonly indeterminateLineClass = classes.indeterminateLine;
   protected readonly editableInputContainerClass =
     classes.editableInputContainer;
+  protected readonly mznInputContainerClass = inputClasses.container;
+  protected readonly mznInputHostClass = inputClasses.host;
+  protected readonly textFieldPrefixClass = textFieldClasses.prefix;
+  protected readonly textFieldSuffixClass = textFieldClasses.suffix;
+
+  protected readonly hasEditableInputPrefix = computed((): boolean => {
+    const cfg = this.editableInput();
+
+    return !!(cfg?.prefixIcon || cfg?.prefixText);
+  });
+
+  protected readonly hasEditableInputSuffix = computed(
+    (): boolean => !!this.editableInput()?.suffixText,
+  );
   protected readonly checkIcon = CheckedIcon;
 
   protected readonly shouldShowEditableInput = computed((): boolean =>
@@ -501,8 +538,14 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
     }
   }
 
-  protected onEditableInputValueChange(value: string): void {
+  protected onEditableInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+
     this.editableInputChange.emit(value);
+  }
+
+  protected onEditableInputClear(): void {
+    this.editableInputChange.emit('');
   }
 
   // CVA
