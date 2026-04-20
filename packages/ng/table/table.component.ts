@@ -62,6 +62,7 @@ import {
   type HighlightMode,
   type RowHeightPreset,
   type SortOrder,
+  type TableActionButtonItem,
   type TableActionDropdownItem,
   type TableActionItem,
   type TableActions,
@@ -400,16 +401,17 @@ function throttleRaf(
                       }
                     </div>
                     @if (col.titleMenu; as tm) {
-                      <i
-                        #titleMenuAnchor
-                        mznIcon
-                        [icon]="dotVerticalIcon"
-                        [size]="16"
-                        [class]="headerCellIconClass"
-                        (click)="
-                          onTitleMenuToggle(col.key); $event.stopPropagation()
-                        "
-                      ></i>
+                      <span #titleMenuAnchor>
+                        <i
+                          mznIcon
+                          [icon]="dotVerticalIcon"
+                          [size]="16"
+                          [class]="headerCellIconClass"
+                          (click)="
+                            onTitleMenuToggle(col.key); $event.stopPropagation()
+                          "
+                        ></i>
+                      </span>
                       <div mznPortal>
                         <div
                           mznDropdown
@@ -732,7 +734,7 @@ function throttleRaf(
                           action of act.render(record, idx);
                           track action.key
                         ) {
-                          @if (action.type === 'dropdown') {
+                          @if (asDropdownAction(action); as dropAction) {
                             <!-- Dropdown action trigger mirrors React TableActionsCell (iconType icon-only; default variant base-text-link, NOT inheriting actions.variant; icon fallback to DotHorizontalIcon). -->
                             <button
                               #rowActionDropdownAnchor
@@ -740,16 +742,16 @@ function throttleRaf(
                               type="button"
                               size="sub"
                               iconType="icon-only"
-                              [variant]="action.variant ?? 'base-text-link'"
-                              [disabled]="action.disabled ?? false"
+                              [variant]="dropAction.variant ?? 'base-text-link'"
+                              [disabled]="dropAction.disabled ?? false"
                               (click)="
-                                onRowActionDropdownToggle(idx, action.key);
+                                onRowActionDropdownToggle(idx, dropAction.key);
                                 $event.stopPropagation()
                               "
                             >
                               <i
                                 mznIcon
-                                [icon]="action.icon ?? dotHorizontalIcon"
+                                [icon]="dropAction.icon ?? dotHorizontalIcon"
                                 [size]="16"
                               ></i>
                             </button>
@@ -765,13 +767,15 @@ function throttleRaf(
                                 [anchor]="rowActionDropdownAnchor"
                                 [open]="
                                   rowActionDropdownOpenKey() ===
-                                  rowActionDropdownKey(idx, action.key)
+                                  rowActionDropdownKey(idx, dropAction.key)
                                 "
-                                [options]="action.options"
-                                [placement]="action.placement ?? 'bottom-end'"
+                                [options]="dropAction.options"
+                                [placement]="
+                                  dropAction.placement ?? 'bottom-end'
+                                "
                                 (selected)="
                                   onRowActionDropdownSelect(
-                                    action,
+                                    dropAction,
                                     record,
                                     idx,
                                     $event
@@ -780,23 +784,27 @@ function throttleRaf(
                                 (closed)="rowActionDropdownOpenKey.set(null)"
                               ></div>
                             </div>
-                          } @else {
+                          } @else if (asButtonAction(action); as btnAction) {
                             <button
                               mznButton
                               type="button"
                               size="sub"
                               iconType="leading"
-                              [variant]="resolveActionVariant(action, act)"
-                              [disabled]="action.disabled ?? false"
+                              [variant]="resolveActionVariant(btnAction, act)"
+                              [disabled]="btnAction.disabled ?? false"
                               (click)="
-                                action.onClick?.(record, idx);
+                                btnAction.onClick?.(record, idx);
                                 $event.stopPropagation()
                               "
                             >
-                              @if (action.icon) {
-                                <i mznIcon [icon]="action.icon" [size]="16"></i>
+                              @if (btnAction.icon) {
+                                <i
+                                  mznIcon
+                                  [icon]="btnAction.icon"
+                                  [size]="16"
+                                ></i>
                               }
-                              {{ action.label }}
+                              {{ btnAction.label }}
                             </button>
                           }
                         }
@@ -2415,27 +2423,29 @@ export class MznTable {
     return count > 0 && count < keys.length;
   });
 
-  private readonly resolvedSelectedKeys = computed((): ReadonlySet<string> => {
-    const rs = this.rowSelection();
+  protected readonly resolvedSelectedKeys = computed(
+    (): ReadonlySet<string> => {
+      const rs = this.rowSelection();
 
-    // Config object: use selectedRowKeys from config
-    if (typeof rs === 'object' && rs !== null && 'mode' in rs) {
-      if (rs.mode === 'checkbox' && 'selectedRowKeys' in rs) {
-        return new Set(rs.selectedRowKeys);
+      // Config object: use selectedRowKeys from config
+      if (typeof rs === 'object' && rs !== null && 'mode' in rs) {
+        if (rs.mode === 'checkbox' && 'selectedRowKeys' in rs) {
+          return new Set(rs.selectedRowKeys);
+        }
+
+        if (rs.mode === 'radio' && 'selectedRowKey' in rs) {
+          return rs.selectedRowKey ? new Set([rs.selectedRowKey]) : new Set();
+        }
       }
 
-      if (rs.mode === 'radio' && 'selectedRowKey' in rs) {
-        return rs.selectedRowKey ? new Set([rs.selectedRowKey]) : new Set();
-      }
-    }
+      // Fallback: use the standalone selectedRowKeys input or internal state
+      const controlled = this.selectedRowKeys();
 
-    // Fallback: use the standalone selectedRowKeys input or internal state
-    const controlled = this.selectedRowKeys();
-
-    return controlled.length > 0
-      ? new Set(controlled)
-      : this.internalSelectedKeys();
-  });
+      return controlled.length > 0
+        ? new Set(controlled)
+        : this.internalSelectedKeys();
+    },
+  );
 
   /* ---------------------------------------------------------------- */
   /*  Class builders                                                   */
@@ -3030,6 +3040,29 @@ export class MznTable {
    * Priority mirrors React `TableActionsCell.tsx`:
    *   item.variant → actions.variant → `danger` legacy fallback → `base-text-link`.
    */
+  /**
+   * Narrowing helper for templates. Angular strict-template type
+   * inference on discriminated unions through `@if (action.type ===
+   * 'dropdown')` is unreliable, so we return the narrowed item (or
+   * null) and rely on `@if (...; as dropAction)` to bind the alias.
+   */
+  protected asDropdownAction(
+    action: TableActionItem,
+  ): TableActionDropdownItem | null {
+    return action.type === 'dropdown'
+      ? (action as TableActionDropdownItem)
+      : null;
+  }
+
+  /** Narrowing counterpart for the button branch. */
+  protected asButtonAction(
+    action: TableActionItem,
+  ): TableActionButtonItem | null {
+    return action.type !== 'dropdown'
+      ? (action as TableActionButtonItem)
+      : null;
+  }
+
   protected resolveActionVariant(
     item: TableActionItem,
     actions: TableActions,

@@ -32,6 +32,7 @@ import clsx from 'clsx';
  */
 @Component({
   selector: '[mznIcon]',
+  exportAs: 'mznIcon',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
