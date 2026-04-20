@@ -105,22 +105,11 @@ export class MznCheckAll {
 
     const groupValue = group.value();
     const enabled = this.enabledValues();
-    const isCurrentlyChecked = this.checked();
+    const disabledSelected = groupValue.filter((v) => !enabled.includes(v));
+    const next: readonly string[] = this.checked()
+      ? disabledSelected
+      : [...enabled, ...disabledSelected];
 
-    if (isCurrentlyChecked) {
-      // Uncheck all enabled options, keep disabled ones that were checked
-      enabled.forEach((v) => {
-        if (groupValue.includes(v)) {
-          group.toggle(v);
-        }
-      });
-    } else {
-      // Check all enabled options
-      enabled.forEach((v) => {
-        if (!groupValue.includes(v)) {
-          group.toggle(v);
-        }
-      });
-    }
+    group.setValue(next);
   }
 }

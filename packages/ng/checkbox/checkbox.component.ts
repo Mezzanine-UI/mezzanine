@@ -1,9 +1,9 @@
 import {
+  afterRenderEffect,
   AfterContentInit,
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   ElementRef,
   inject,
   input,
@@ -229,7 +229,6 @@ export interface CheckboxEditableInput {
               [size]="cfg.size ?? 'main'"
               [typing]="cfg.typing"
               (cleared)="onEditableInputClear()"
-              (mousedown)="onEditableInputMouseDown($event)"
             >
               @if (cfg.prefixIcon || cfg.prefixText) {
                 <span prefix [class]="textFieldPrefixClass">
@@ -249,6 +248,7 @@ export interface CheckboxEditableInput {
                 [readOnly]="cfg.readonly ?? false"
                 [value]="cfg.value ?? ''"
                 (input)="onEditableInput($event)"
+                (mousedown)="onEditableInputMouseDown($event)"
               />
               @if (cfg.suffixText; as suffixText) {
                 <span suffix [class]="textFieldSuffixClass">
@@ -365,29 +365,55 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
    */
   readonly editableInputChange = output<string>();
 
-  private readonly autoId = `mzn-checkbox-${++checkboxAutoIdCounter}`;
+  /**
+   * 是否脫離外層 `MznCheckboxGroup` 的狀態同步。
+   *
+   * 主要供 `MznCheckboxGroup` 內部的 level（全選）checkbox 使用：
+   * 它本身在 group 的 template 裡，若按標準流程 inject group，會被
+   * 當成群組成員，點擊時會 `group.toggle('')` 污染 value。設為 `true`
+   * 可強制此 checkbox 進入 standalone 模式，其 `[checked]`、
+   * `(change)` 綁定與 CVA 走正常 form control 路徑，完全不透過 group
+   * 共享狀態。
+   *
+   * 一般消費端不應使用，保留給內部組合。
+   *
+   * @default false
+   */
+  readonly detached = input(false);
 
-  private readonly editableInputElRef =
-    viewChild<ElementRef<HTMLElement>>('editableInputEl');
+  private readonly autoId = `mzn-checkbox-${++checkboxAutoIdCounter}`;
 
   private readonly internalChecked = signal(false);
 
+  /**
+   * 對 `detached` input 敏感的 effective group。
+   * `detached=true` 時回傳 null，等同於此 checkbox 完全無 group context。
+   */
+  private readonly effectiveGroup = computed(
+    (): CheckboxGroupContextValue | null =>
+      this.detached() ? null : this.group,
+  );
+
   readonly resolvedChecked = computed((): boolean => {
-    if (this.group) {
-      return this.group.value().includes(this.value());
+    const grp = this.effectiveGroup();
+
+    if (grp) {
+      return grp.value().includes(this.value());
     }
 
     return this.checked() ?? this.internalChecked();
   });
 
   readonly resolvedDisabled = computed(
-    (): boolean => this.group?.disabled() || this.disabled(),
+    (): boolean => this.effectiveGroup()?.disabled() || this.disabled(),
   );
 
-  readonly resolvedMode = computed((): CheckboxMode => this.mode());
+  readonly resolvedMode = computed(
+    (): CheckboxMode => this.effectiveGroup()?.mode() ?? this.mode(),
+  );
 
   readonly resolvedName = computed(
-    (): string => this.group?.name() ?? this.name() ?? '',
+    (): string => this.effectiveGroup()?.name() ?? this.name() ?? '',
   );
 
   /**
@@ -429,7 +455,7 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
   });
 
   readonly resolvedSize = computed(
-    (): CheckboxSize => this.group?.size() ?? this.size(),
+    (): CheckboxSize => this.effectiveGroup()?.size() ?? this.size(),
   );
 
   protected readonly hostClasses = computed((): string => {
@@ -508,17 +534,22 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
   private prevChecked = false;
 
   constructor() {
-    effect(() => {
+    // 在 DOM render 後執行：checked 由 false → true 且會顯示 editable
+    // input 時，自動 focus 到 editable input。改用 afterRenderEffect
+    // 取代 effect + queueMicrotask，避免 @if 條件塊尚未 flush 時 query
+    // 不到剛插入的 input 元素。
+    afterRenderEffect(() => {
       const checked = this.resolvedChecked();
       const show = this.shouldShowEditableInput();
 
       if (checked && !this.prevChecked && show) {
-        queueMicrotask(() => {
-          const el = this.editableInputElRef()?.nativeElement;
-          const input = el?.querySelector('input');
+        // 直接走 host element 查詢，避開 viewChild signal 在 @if 塊
+        // 內於 afterRenderEffect 執行時仍未 resolve 的時序問題。
+        const input = this.hostElRef.nativeElement.querySelector(
+          'label[for] input:not([type="checkbox"])',
+        ) as HTMLInputElement | null;
 
-          input?.focus();
-        });
+        input?.focus();
       }
 
       this.prevChecked = checked;
@@ -567,9 +598,10 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
   protected onInputChange(event: Event): void {
     const target = event.target as HTMLInputElement;
     const newChecked = target.checked;
+    const grp = this.effectiveGroup();
 
-    if (this.group) {
-      this.group.toggle(this.value());
+    if (grp) {
+      grp.toggle(this.value());
     } else {
       this.internalChecked.set(newChecked);
       this.onChange(newChecked);

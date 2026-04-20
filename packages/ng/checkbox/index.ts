@@ -5,3 +5,4 @@ export { MznCheckAll } from './check-all.component';
 export { MznCheckbox } from './checkbox.component';
 export type { CheckboxEditableInput } from './checkbox.component';
 export { MznCheckboxGroup } from './checkbox-group.component';
+export type { CheckboxGroupLevelConfig } from './checkbox-group.component';

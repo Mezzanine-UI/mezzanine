@@ -210,7 +210,7 @@ export const VerticalChips: Story = {
 @Component({
   selector: 'story-chips-level-horizontal',
   standalone: true,
-  imports: [MznCheckbox, MznTypography],
+  imports: [FormsModule, MznCheckbox, MznCheckboxGroup, MznTypography],
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;"
@@ -220,24 +220,15 @@ export const VerticalChips: Story = {
         使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能。
       </p>
       <div
-        style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;"
+        mznCheckboxGroup
+        [(ngModel)]="values"
+        layout="horizontal"
+        mode="chip"
+        name="chips-level-group"
+        [level]="levelConfig"
       >
-        <div
-          mznCheckbox
-          mode="chip"
-          [checked]="isAllSelected()"
-          [indeterminate]="isIndeterminate()"
-          (change)="onSelectAll($event)"
-          >全選</div
-        >
-        <i class="mzn-checkbox-group--level-control-separator"></i>
         @for (opt of options; track opt.id) {
-          <div
-            mznCheckbox
-            mode="chip"
-            [checked]="values.includes(opt.id)"
-            [disabled]="opt.disabled ?? false"
-            (change)="onToggle(opt.id, $event)"
+          <div mznCheckbox [value]="opt.id" [disabled]="opt.disabled ?? false"
             >Checkbox Label</div
           >
         }
@@ -257,28 +248,13 @@ class ChipsWithLevelHorizontalComponent {
     { id: '8' },
   ];
 
-  private readonly allIds = this.options.map((o) => o.id);
+  readonly levelConfig = {
+    active: true,
+    label: '全選',
+    mode: 'chip' as const,
+  };
+
   values: string[] = ['2', '4'];
-
-  isAllSelected(): boolean {
-    return this.allIds.every((id) => this.values.includes(id));
-  }
-
-  isIndeterminate(): boolean {
-    return this.values.length > 0 && !this.isAllSelected();
-  }
-
-  onSelectAll(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.values = checked ? [...this.allIds] : [];
-  }
-
-  onToggle(id: string, event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.values = checked
-      ? [...this.values, id]
-      : this.values.filter((v) => v !== id);
-  }
 }
 
 export const ChipsWithLevelControl: Story = {
@@ -294,7 +270,7 @@ export const ChipsWithLevelControl: Story = {
 @Component({
   selector: 'story-chips-level-vertical',
   standalone: true,
-  imports: [MznCheckbox, MznTypography],
+  imports: [FormsModule, MznCheckbox, MznCheckboxGroup, MznTypography],
   template: `
     <div
       style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 600px;"
@@ -305,22 +281,16 @@ export const ChipsWithLevelControl: Story = {
       <p mznTypography variant="body" color="text-neutral">
         使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能，垂直排列。
       </p>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div
-          mznCheckbox
-          mode="chip"
-          [checked]="isAllSelected()"
-          [indeterminate]="isIndeterminate()"
-          (change)="onSelectAll($event)"
-          >全選</div
-        >
+      <div
+        mznCheckboxGroup
+        [(ngModel)]="values"
+        layout="vertical"
+        mode="chip"
+        name="chips-level-group-vertical"
+        [level]="levelConfig"
+      >
         @for (opt of options; track opt.id) {
-          <div
-            mznCheckbox
-            mode="chip"
-            [checked]="values.includes(opt.id)"
-            [disabled]="opt.disabled ?? false"
-            (change)="onToggle(opt.id, $event)"
+          <div mznCheckbox [value]="opt.id" [disabled]="opt.disabled ?? false"
             >Checkbox Label</div
           >
         }
@@ -340,28 +310,13 @@ class ChipsWithLevelVerticalComponent {
     { id: '8' },
   ];
 
-  private readonly allIds = this.options.map((o) => o.id);
+  readonly levelConfig = {
+    active: true,
+    label: '全選',
+    mode: 'chip' as const,
+  };
+
   values: string[] = ['2', '4'];
-
-  isAllSelected(): boolean {
-    return this.allIds.every((id) => this.values.includes(id));
-  }
-
-  isIndeterminate(): boolean {
-    return this.values.length > 0 && !this.isAllSelected();
-  }
-
-  onSelectAll(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.values = checked ? [...this.allIds] : [];
-  }
-
-  onToggle(id: string, event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.values = checked
-      ? [...this.values, id]
-      : this.values.filter((v) => v !== id);
-  }
 }
 
 export const ChipsWithLevelControlVertical: Story = {
@@ -378,13 +333,11 @@ export const ChipsWithLevelControlVertical: Story = {
   imports: [FormsModule, MznCheckbox, MznCheckboxGroup],
   template: `
     <div
-      mznCheckbox
-      [checked]="isAllSelected()"
-      [indeterminate]="isIndeterminate()"
-      (change)="onSelectAll($event)"
-      >全選</div
+      mznCheckboxGroup
+      [(ngModel)]="values"
+      name="level-control-group"
+      [level]="levelConfig"
     >
-    <div mznCheckboxGroup [(ngModel)]="values" name="level-control-group">
       <div mznCheckbox value="1">Checkbox Label</div>
       <div mznCheckbox value="2">Checkbox Label</div>
       <div mznCheckbox value="3" [disabled]="true">Checkbox Label</div>
@@ -409,21 +362,13 @@ export const ChipsWithLevelControlVertical: Story = {
   `,
 })
 class LevelControlCustomizationComponent {
-  private readonly allIds = Array.from({ length: 20 }, (_, i) => String(i + 1));
+  readonly levelConfig = {
+    active: true,
+    label: '全選',
+    disabled: false,
+  };
+
   values: string[] = ['2', '4'];
-
-  isAllSelected(): boolean {
-    return this.allIds.every((id) => this.values.includes(id));
-  }
-
-  isIndeterminate(): boolean {
-    return this.values.length > 0 && !this.isAllSelected();
-  }
-
-  onSelectAll(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.values = checked ? [...this.allIds] : [];
-  }
 }
 
 export const WithLevelControlCustomization: Story = {
