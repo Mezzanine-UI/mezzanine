@@ -8,8 +8,8 @@ import { IconDefinition } from '@mezzanine-ui/icons';
 import { ButtonIconType } from '@mezzanine-ui/core/button';
 import { floatingButtonClasses as classes } from '@mezzanine-ui/core/floating-button';
 
-import { MznButton } from '../button/button.directive';
-import { MznIcon } from '../icon/icon.component';
+import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
 
 /**
  * 浮動按鈕元件，固定於畫面角落的操作按鈕容器。

@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import {
   MZN_BUTTON_GROUP,
   MznButtonGroupContext,
-} from '../button/button-group.token';
+} from '@mezzanine-ui/ng/button';
 
 /**
  * 手風琴操作列元件，用於在 `MznAccordionTitle` 中放置操作按鈕。
