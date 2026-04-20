@@ -5,7 +5,7 @@ description: Angular 元件必須 prop-for-prop 鏡像 React 對應元件的 pro
 
 # Architecting Angular Components
 
-> **強制規範（2026-04-11 起）** — 任何在 `packages/ng/` 下新建或重構的元件必須遵守此規則。權威來源：`tools/parity/REFACTOR.md` 的 `Angular Component Input Architecture` 區段。
+> **強制規範（2026-04-11 起）** — 任何在 `packages/ng/` 下新建或重構的元件必須遵守此規則。本檔案為權威來源。
 
 ## 核心規則
 
@@ -223,6 +223,5 @@ Angular output 名稱必須跟 React 對齊（去掉 `on` 前綴、lowerCamelCas
 
 ## 參考
 
-- **權威規範**：`tools/parity/REFACTOR.md` → `Angular Component Input Architecture` 區段
 - **首個實作範例**：`packages/ng/date-time-picker/date-time-picker.component.ts`
 - **Parity 工具實作**：`tools/parity/api.ts` 的 `resolveInterfaceProps` + `resolveTypeExpression`
