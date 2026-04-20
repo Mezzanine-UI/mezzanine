@@ -5451,7 +5451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mezzanine-ui/core@npm:1.0.3-rc.0, @mezzanine-ui/core@workspace:packages/core":
+"@mezzanine-ui/core@npm:1.0.3-rc.1, @mezzanine-ui/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/core@workspace:packages/core"
   dependencies:
@@ -5486,7 +5486,7 @@ __metadata:
   resolution: "@mezzanine-ui/ng@workspace:packages/ng"
   dependencies:
     "@floating-ui/dom": "npm:^1.7.4"
-    "@mezzanine-ui/core": "npm:1.0.3-rc.0"
+    "@mezzanine-ui/core": "npm:1.0.3-rc.1"
     "@mezzanine-ui/icons": "npm:1.0.2"
     "@mezzanine-ui/system": "npm:1.0.2"
     overlayscrollbars: "npm:^2.13.0"
