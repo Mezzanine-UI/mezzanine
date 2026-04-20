@@ -11,8 +11,8 @@
 **/storybook-ng-static
 /storybook-hub-static
 **/storybook-hub-static
-/storybook-composed
-**/storybook-composed
+/storybook-static-react-tmp
+**/storybook-static-react-tmp
 /.storybook-ng/preview.js
 /.storybook-ng/preview.d.ts
 /.storybook-hub/preview.js
