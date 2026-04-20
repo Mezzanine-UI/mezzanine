@@ -17,8 +17,10 @@ Current stable release: **v1.0.0**
 
 ## 📚 Documentation
 
-- **[Storybook](https://storybook.mezzanine-ui.org)** - Interactive component documentation and examples
-- **[Migration Guide](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations)** - Upgrading from previous versions
+- **[Storybook](https://storybook.mezzanine-ui.org)** — unified hub that composes the React and Angular Storybooks side by side
+  - `https://storybook.mezzanine-ui.org/react/` — React canonical URL
+  - `https://storybook.mezzanine-ui.org/angular/` — Angular canonical URL
+- **[Migration Guide](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations)** — Upgrading from previous versions
 
 ## 🌐 Browser Support
 

@@ -1,0 +1,41 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Welcome" />
+
+# Mezzanine UI
+
+Unified Storybook for the Mezzanine UI design system.
+
+## Frameworks
+
+This hub composes two framework-specific Storybooks into a single sidebar:
+
+- **React** — `@mezzanine-ui/react`, hosted under `/react`.
+- **Angular** — `@mezzanine-ui/ng`, hosted under `/angular`.
+
+Use the sidebar groups on the left to browse each framework's components.
+Both frameworks share the same underlying `@mezzanine-ui/core` styles and
+`@mezzanine-ui/system` design tokens, so visual output is identical; the
+two trees exist to document the framework-specific API surfaces.
+
+## Installation
+
+### React
+
+```bash
+npm install @mezzanine-ui/react @mezzanine-ui/core @mezzanine-ui/system @mezzanine-ui/icons
+```
+
+### Angular
+
+```bash
+npm install @mezzanine-ui/ng @mezzanine-ui/core @mezzanine-ui/icons @mezzanine-ui/system
+# Peer deps
+npm install @angular/core @angular/common @angular/animations @angular/cdk
+```
+
+## Links
+
+- **GitHub**: [Mezzanine-UI/mezzanine](https://github.com/Mezzanine-UI/mezzanine)
+- **React API reference**: browse the `React` group in the sidebar
+- **Angular API reference**: browse the `Angular` group in the sidebar
