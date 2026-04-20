@@ -71,7 +71,7 @@ import {
           <i mznIcon [class]="iconClass" [icon]="icon()!"></i>
         }
         <span [class]="titleWrapperClass">
-          <span [class]="titleClass">{{ title() }}</span>
+          <span [class]="titleClass">{{ displayTitle() }}</span>
         </span>
         <ng-content select="[navBadge]" />
         @if (hasChildren()) {
@@ -169,6 +169,16 @@ export class MznNavigationOption implements NavigationOptionLevel {
   protected readonly toggleIcon = computed(() =>
     this.open() ? ChevronUpIcon : ChevronDownIcon,
   );
+
+  protected readonly displayTitle = computed((): string => {
+    const title = this.title();
+
+    if (this.navState?.collapsed && !this.icon()) {
+      return Array.from(title).slice(0, 2).join('');
+    }
+
+    return title;
+  });
 
   protected readonly hostClasses = computed((): string => {
     const key = this.currentKey();
