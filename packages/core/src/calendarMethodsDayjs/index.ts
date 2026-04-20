@@ -411,18 +411,24 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
       return result.format(format.replace('n', halfYear.toString()));
     }
 
-    // Handle week-year formats (moment-compatible tokens not native to dayjs)
-    // gggg = locale week year, ww = locale week number
-    // GGGG = ISO week year, WW = ISO week number
+    // Handle week-year formats (moment-compatible tokens not native to dayjs).
+    // - gggg / ww: locale-aware week year / number (Sunday-first locales use
+    //   dayjs default `year()` + `week()`; Monday-first locales fall back to
+    //   ISO values because dayjs does not expose a locale `weekYear()`).
+    // - GGGG / WW: ISO-8601 week year / number regardless of locale.
     if (format.includes('gggg') || format.includes('GGGG')) {
       const isMon = isMondayFirst(locale);
-      const weekYear = isMon ? result.isoWeekYear() : result.year();
-      const weekNum = isMon ? result.isoWeek() : result.week();
+      const localeYear = isMon ? result.isoWeekYear() : result.year();
+      const localeWeek = isMon ? result.isoWeek() : result.week();
+      const isoYear = result.isoWeekYear();
+      const isoWeek = result.isoWeek();
 
       return format
-        .replace(/gggg|GGGG/, String(weekYear))
-        .replace(/\[([^\]]*)\]/g, '$1')
-        .replace(/ww|WW/, String(weekNum).padStart(2, '0'));
+        .replace(/GGGG/g, String(isoYear))
+        .replace(/WW/g, String(isoWeek).padStart(2, '0'))
+        .replace(/gggg/g, String(localeYear))
+        .replace(/ww/g, String(localeWeek).padStart(2, '0'))
+        .replace(/\[([^\]]*)\]/g, '$1');
     }
 
     return result.format(format);
