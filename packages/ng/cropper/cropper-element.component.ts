@@ -194,7 +194,7 @@ export class MznCropperElement {
   private imageLoadId = 0;
   private baseDisplaySize: { height: number; width: number } | null = null;
 
-  private readonly scaleSignal = signal(1);
+  protected readonly scaleSignal = signal(1);
   private readonly cropAreaSignal = signal<CropArea | null>(null);
   private readonly imagePositionSignal = signal<ImagePosition>({
     offsetX: 0,

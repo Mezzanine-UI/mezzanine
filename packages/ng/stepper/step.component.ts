@@ -234,7 +234,7 @@ export class MznStep {
     }),
   );
 
-  protected handleInteractiveKey(event: KeyboardEvent): void {
+  protected handleInteractiveKey(event: Event): void {
     if (!this.interactive()) return;
 
     event.preventDefault();

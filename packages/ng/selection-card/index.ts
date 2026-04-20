@@ -1,4 +1,1 @@
-export {
-  MznSelectionCard,
-  SelectionCardConfig,
-} from './selection-card.component';
+export { MznSelectionCard } from './selection-card.component';

@@ -34,7 +34,7 @@ import { MZN_TABS_CONTEXT, TabsContext } from './tab-context';
   host: {
     type: 'button',
     '[class]': 'hostClasses()',
-    '[disabled]': 'disabled()',
+    '[attr.disabled]': 'disabled() ? "" : null',
     '[attr.aria-disabled]': 'disabled()',
     '(click)': 'onTabClick()',
     '[attr.key]': 'null',
