@@ -49,4 +49,4 @@ React 是 hybrid 模式 — 常用設定用 flat top-level props（如 `disabled
 
 例外：`prefix`/`suffix`（ReactNode）用 content projection、`xxxRef` 用 ViewChild、無對應物的 React 專屬 lib（如 `fadeProps`）寫入 `DEVIATIONS.md`。
 
-**完整規範、使用端 OnPush 陷阱警告、遷移 checklist、範例** 見 `.claude/skills/architecting-angular-components/SKILL.md`。2026-04-11 確立，所有新元件與重構必須遵守。
+**完整規範、使用端 OnPush 陷阱警告、遷移 checklist、範例** 見 `.claude/skills/architecting-angular-components/SKILL.md`。所有新元件與重構必須遵守。
