@@ -323,7 +323,7 @@ export interface DropdownFlatTreeNode {
       }
       @if (actionConfig(); as ac) {
         @if (ac.showActions) {
-          <div>
+          <div style="position: relative; z-index: 0">
             <div
               mznDropdownAction
               [showActions]="ac.showActions ?? false"
