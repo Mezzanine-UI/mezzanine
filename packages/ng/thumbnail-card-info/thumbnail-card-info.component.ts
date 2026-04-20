@@ -43,7 +43,7 @@ export type ThumbnailCardInfoType = 'default' | 'action' | 'overflow';
  *
  * @example
  * ```html
- * import { MznThumbnailCardInfo } from '@mezzanine-ui/ng/card';
+ * import { MznThumbnailCardInfo } from '@mezzanine-ui/ng/thumbnail-card-info';
  *
  * <!-- 預設（無操作） -->
  * <div mznThumbnailCardInfo title="Report.pdf" subtitle="2.4 MB" filetype="pdf" ></div>

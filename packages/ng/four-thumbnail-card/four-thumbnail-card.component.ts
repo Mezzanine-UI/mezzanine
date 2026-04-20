@@ -16,7 +16,7 @@ import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznThumbnail } from '@mezzanine-ui/ng/thumbnail';
-import { MznThumbnailCardInfo } from '@mezzanine-ui/ng/card';
+import { MznThumbnailCardInfo } from '@mezzanine-ui/ng/thumbnail-card-info';
 
 const MAX_THUMBNAILS = 4;
 const EMPTY_SLOT_CLASS = `${classes.fourThumbnailThumbnail} ${classes.fourThumbnailThumbnailEmpty}`;

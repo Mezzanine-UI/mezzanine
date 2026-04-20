@@ -9,7 +9,7 @@ import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import { MznThumbnailCardInfo } from '@mezzanine-ui/ng/card';
+import { MznThumbnailCardInfo } from '@mezzanine-ui/ng/thumbnail-card-info';
 
 export type SingleThumbnailCardType = 'default' | 'action' | 'overflow';
 
