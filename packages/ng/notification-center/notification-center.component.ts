@@ -27,10 +27,7 @@ import { MznButton, MznButtonGroup } from '@mezzanine-ui/ng/button';
 import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
-import {
-  buildTransitionString,
-  reflow,
-} from '@mezzanine-ui/ng/transition/transition-utils';
+import { buildTransitionString, reflow } from '@mezzanine-ui/ng/transition';
 
 /**
  * 單項通知元件，對齊 React `<NotificationCenter />` 的 per-item render。
