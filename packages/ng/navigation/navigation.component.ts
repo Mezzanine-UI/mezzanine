@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { navigationClasses as classes } from '@mezzanine-ui/core/navigation';
+import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznScrollbar } from '@mezzanine-ui/ng/scrollbar';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
@@ -86,7 +87,12 @@ export type NavigationItemConfig =
   selector: '[mznNavigation]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznNavigationOption, MznNavigationOptionCategory, MznScrollbar],
+  imports: [
+    MznInput,
+    MznNavigationOption,
+    MznNavigationOptionCategory,
+    MznScrollbar,
+  ],
   providers: [
     {
       provide: MZN_NAVIGATION_ACTIVATED,
@@ -96,6 +102,9 @@ export type NavigationItemConfig =
         },
         get collapsed(): boolean {
           return nav.resolvedCollapsed();
+        },
+        get filterText(): string {
+          return nav.internalFilterText();
         },
         setActivatedPath(path: readonly string[]): void {
           nav.onActivatedPathChange(path);
@@ -124,6 +133,17 @@ export type NavigationItemConfig =
   template: `
     <ng-content select="[mznNavigationHeader]" />
     <div [class]="contentClass">
+      @if (filter()) {
+        <div [class]="searchInputClass">
+          <div
+            mznInput
+            variant="search"
+            size="sub"
+            [value]="internalFilterText()"
+            (valueChange)="internalFilterText.set($event)"
+          ></div>
+        </div>
+      }
       <div
         mznScrollbar
         [disabled]="resolvedCollapsed()"
@@ -213,8 +233,12 @@ export class MznNavigation {
   private readonly internalCollapsed = signal(false);
   private readonly internalActivatedPath = signal<readonly string[]>([]);
 
+  /** @internal 搜尋輸入值；Mirrors React's `filterText` useState. */
+  readonly internalFilterText = signal('');
+
   protected readonly contentClass = classes.content;
   protected readonly listClass = classes.list;
+  protected readonly searchInputClass = classes.searchInput;
 
   /** 啟用的路徑陣列。 */
   readonly activatedPath = input<readonly string[]>();

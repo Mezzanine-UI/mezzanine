@@ -4,6 +4,11 @@ import { InjectionToken } from '@angular/core';
 export interface NavigationActivatedState {
   readonly activatedPath: readonly string[];
   readonly collapsed: boolean;
+  /**
+   * 搜尋過濾字串。空字串表示不過濾。
+   * 對應 React `NavigationActivatedContext.filterText`。
+   */
+  readonly filterText: string;
   setActivatedPath(path: readonly string[]): void;
   handleCollapseChange(collapsed: boolean): void;
 }

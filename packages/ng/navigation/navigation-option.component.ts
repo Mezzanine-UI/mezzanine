@@ -180,17 +180,34 @@ export class MznNavigationOption implements NavigationOptionLevel {
     return title;
   });
 
+  /**
+   * 是否符合目前的搜尋關鍵字；空關鍵字時恆為 true。
+   * 對應 React NavigationOption 內部的 `filter` useState（title/href includes 比對）。
+   */
+  protected readonly matchesFilter = computed((): boolean => {
+    const filterText = this.navState?.filterText ?? '';
+
+    if (!filterText) return true;
+
+    return (
+      this.title().includes(filterText) ||
+      (this.href()?.includes(filterText) ?? false)
+    );
+  });
+
   protected readonly hostClasses = computed((): string => {
     const key = this.currentKey();
     const level = this.currentLevel();
     const activatedPath = this.navState?.activatedPath ?? [];
     const isActive = this.active() ?? activatedPath[level - 1] === key;
+    const collapsed = this.navState?.collapsed;
 
     return clsx(classes.host, {
       [classes.open]: this.open(),
       [classes.basic]: !this.hasChildren(),
       [classes.active]: isActive,
-      [classes.collapsed]: this.navState?.collapsed,
+      [classes.collapsed]: collapsed,
+      [classes.hidden]: !collapsed && !this.matchesFilter(),
     });
   });
 
