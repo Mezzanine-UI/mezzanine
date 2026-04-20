@@ -304,6 +304,7 @@ $image-size: spacing.primitive-variable(140);
         position: relative;
 
         &::before {
+          // allow-hardcoded: focus ring 2px border width for visual emphasis; no token for border-width > 1px
           border-width: 2px;
           border-style: solid;
           border-color: palette.semantic-variable(border, fixed-light);

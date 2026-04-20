@@ -131,13 +131,13 @@ $thumbnail-image-size: spacing.primitive-variable(40);
       border-color: palette.semantic-variable(text, fixed-light);
       border-radius: 50%;
       content: '';
-      height: 10px;
+      height: spacing.primitive-variable(10);
       left: 50%;
       pointer-events: none;
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: 10px;
+      width: spacing.primitive-variable(10);
     }
   }
 

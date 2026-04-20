@@ -321,7 +321,7 @@ $file-icon-color: (
       flex-shrink: 0;
       width: spacing.semantic-variable(size, element, roomy);
       height: spacing.semantic-variable(size, element, roomy);
-      margin: 2px;
+      margin: spacing.primitive-variable(2);
       border-radius: radius.variable(base);
       background-color: map.get($file-icon-color, default);
       display: flex;
