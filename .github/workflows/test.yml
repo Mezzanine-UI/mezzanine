@@ -37,5 +37,8 @@ jobs:
       - name: Lint ng-content selectors (parity guard)
         run: yarn parity:lint-ng-content
 
+      - name: Check hardcoded tokens in core scss (parity guard)
+        run: yarn parity:check-tokens
+
       - name: Angular Storybook AOT build (catch template regressions)
         run: yarn ng:build-storybook
