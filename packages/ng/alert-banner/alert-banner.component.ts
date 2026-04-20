@@ -1,10 +1,10 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
   input,
-  OnInit,
   output,
   signal,
   viewChild,
@@ -108,8 +108,16 @@ export interface AlertBannerAction {
     }
   `,
 })
-export class MznAlertBanner implements OnInit {
+export class MznAlertBanner {
   private readonly wrapperRef = viewChild<ElementRef<HTMLElement>>('wrapper');
+
+  constructor() {
+    // afterNextRender 只在瀏覽器端且於 view render 完成後執行一次，
+    // SSR 階段自動 no-op，免去 requestAnimationFrame 未定義的崩潰。
+    afterNextRender(() => {
+      this.animateEnter();
+    });
+  }
 
   /**
    * 嚴重程度。
@@ -193,12 +201,6 @@ export class MznAlertBanner implements OnInit {
   protected readonly controlsClass = classes.controls;
   protected readonly actionsClass = classes.actions;
   protected readonly closeClass = classes.close;
-
-  ngOnInit(): void {
-    requestAnimationFrame(() => {
-      this.animateEnter();
-    });
-  }
 
   protected handleClose(): void {
     this.animateExit(() => {
