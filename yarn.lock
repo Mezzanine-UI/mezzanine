@@ -5427,12 +5427,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mezzanine-ui/core@npm:1.0.0-rc.8":
-  version: 1.0.0-rc.8
-  resolution: "@mezzanine-ui/core@npm:1.0.0-rc.8"
+"@mezzanine-ui/core@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@mezzanine-ui/core@npm:1.0.2"
   dependencies:
-    "@mezzanine-ui/icons": "npm:1.0.0-rc.8"
-    "@mezzanine-ui/system": "npm:1.0.0-rc.8"
+    "@mezzanine-ui/icons": "npm:1.0.2"
+    "@mezzanine-ui/system": "npm:1.0.2"
     lodash: "npm:^4.17.21"
     tslib: "npm:^2.8.1"
   peerDependencies:
@@ -5447,11 +5447,11 @@ __metadata:
       optional: true
     moment:
       optional: true
-  checksum: 10c0/ced56506f17ac546c31728bb6ea80189bebec9c1b9f9c51c68f689f0f0af4b448bca3c5363f7be1e1ab249b6f35de075dbc1e9094e35e5572c747a649ab5f1ef
+  checksum: 10c0/b77c7ee736ef7c065dec05a6b7eb25c9102ce0792a62c3401c028985c627ea7c2b60777dbd73e86fc640495ea4cc02961b1bf216c55091eedee71d0db336ad38
   languageName: node
   linkType: hard
 
-"@mezzanine-ui/core@npm:1.0.2, @mezzanine-ui/core@workspace:packages/core":
+"@mezzanine-ui/core@npm:1.0.3-rc.0, @mezzanine-ui/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/core@workspace:packages/core"
   dependencies:
@@ -5475,13 +5475,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mezzanine-ui/icons@npm:1.0.0-rc.8":
-  version: 1.0.0-rc.8
-  resolution: "@mezzanine-ui/icons@npm:1.0.0-rc.8"
-  checksum: 10c0/501c74f41840c72192912756fe5ea295d37eab7f0b08948b02f3d8ce6e2d736cfc1714779311867eb367f714fc659952913e137f4e5716ac7c7ba2346f5b6f97
-  languageName: node
-  linkType: hard
-
 "@mezzanine-ui/icons@npm:1.0.2, @mezzanine-ui/icons@workspace:packages/icons":
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/icons@workspace:packages/icons"
@@ -5493,9 +5486,9 @@ __metadata:
   resolution: "@mezzanine-ui/ng@workspace:packages/ng"
   dependencies:
     "@floating-ui/dom": "npm:^1.7.4"
-    "@mezzanine-ui/core": "npm:1.0.0-rc.8"
-    "@mezzanine-ui/icons": "npm:1.0.0-rc.8"
-    "@mezzanine-ui/system": "npm:1.0.0-rc.8"
+    "@mezzanine-ui/core": "npm:1.0.3-rc.0"
+    "@mezzanine-ui/icons": "npm:1.0.2"
+    "@mezzanine-ui/system": "npm:1.0.2"
     overlayscrollbars: "npm:^2.13.0"
     tslib: "npm:^2.8.1"
   peerDependencies:
@@ -5540,15 +5533,6 @@ __metadata:
     react-dom: ">=18"
   languageName: unknown
   linkType: soft
-
-"@mezzanine-ui/system@npm:1.0.0-rc.8":
-  version: 1.0.0-rc.8
-  resolution: "@mezzanine-ui/system@npm:1.0.0-rc.8"
-  dependencies:
-    tslib: "npm:^2.8.1"
-  checksum: 10c0/52b6f2c253d858a37faa0432234dc7ad4fc87a114e04fe009b5dd8fa6847d8e696ad4a142fc6460d9dd5287e772e6c0fd1ec586bc16630877a9768ecad297db3
-  languageName: node
-  linkType: hard
 
 "@mezzanine-ui/system@npm:1.0.2, @mezzanine-ui/system@workspace:packages/system":
   version: 0.0.0-use.local
