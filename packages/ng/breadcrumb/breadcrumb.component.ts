@@ -5,9 +5,10 @@ import {
   input,
 } from '@angular/core';
 import { breadcrumbClasses as classes } from '@mezzanine-ui/core/breadcrumb';
-import { DotHorizontalIcon, SlashIcon } from '@mezzanine-ui/icons';
+import { SlashIcon } from '@mezzanine-ui/icons';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznBreadcrumbItem } from './breadcrumb-item.component';
+import { MznBreadcrumbOverflowMenu } from './breadcrumb-overflow-menu.component';
 
 /** 麵包屑資料項目介面。 */
 export interface BreadcrumbItemData {
@@ -65,7 +66,7 @@ type BreadcrumbSlot = BreadcrumbItemSlot | BreadcrumbOverflowSlot;
   selector: '[mznBreadcrumb]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznIcon, MznBreadcrumbItem],
+  imports: [MznIcon, MznBreadcrumbItem, MznBreadcrumbOverflowMenu],
   host: {
     '[class]': 'hostClass',
     'aria-label': 'Breadcrumb',
@@ -88,22 +89,14 @@ type BreadcrumbSlot = BreadcrumbItemSlot | BreadcrumbOverflowSlot;
           (itemClick)="slot.data.onClick?.()"
         ></span>
       } @else {
-        <button
-          type="button"
-          aria-label="more options"
-          [class]="iconButtonClass"
-        >
-          <i mznIcon [icon]="dotIcon" [size]="14"></i>
-        </button>
+        <span mznBreadcrumbOverflowMenu [collapsed]="slot.collapsed"></span>
       }
     }
   `,
 })
 export class MznBreadcrumb {
   protected readonly hostClass = classes.host;
-  protected readonly iconButtonClass = classes.iconButton;
   protected readonly slashIcon = SlashIcon;
-  protected readonly dotIcon = DotHorizontalIcon;
 
   /**
    * 是否啟用精簡模式。
