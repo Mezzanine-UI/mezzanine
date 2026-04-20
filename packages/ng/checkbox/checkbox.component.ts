@@ -20,16 +20,71 @@ import {
 } from '@mezzanine-ui/core/checkbox';
 import { TypographyColor } from '@mezzanine-ui/core/typography';
 import { inputCheckClasses } from '@mezzanine-ui/core/_internal/input-check';
-import { CheckedIcon } from '@mezzanine-ui/icons';
+import { CheckedIcon, type IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
-import { MznTextField } from '@mezzanine-ui/ng/text-field';
+import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import {
   MZN_CHECKBOX_GROUP,
   CheckboxGroupContextValue,
 } from './checkbox-group-context';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
+
+let checkboxAutoIdCounter = 0;
+
+/**
+ * Checkbox 勾選後顯示的附加輸入框設定。
+ * 對應 React Checkbox 的 `editableInput` bundle prop
+ * （`Omit<BaseInputProps, 'variant'>`）。
+ *
+ * 實作上會 forward 到 `<div mznInput variant="base">`。React 端是
+ * `<Input variant="base" />`，兩邊 DOM 結構一致
+ * （`.mzn-input-container > .mzn-input > .mzn-text-field > input`）。
+ */
+export interface CheckboxEditableInput {
+  /** Active 狀態（focused/expanded）。 */
+  active?: boolean;
+  /** 是否顯示清除按鈕。 */
+  clearable?: boolean;
+  /** 非受控模式初始值。 */
+  defaultValue?: string;
+  /**
+   * 是否禁用（獨立於 checkbox 本身）。
+   * 若未提供則跟隨 checkbox 的 disabled 狀態。
+   */
+  disabled?: boolean;
+  /** 是否為錯誤狀態。 */
+  error?: boolean;
+  /** 是否佔滿容器寬度。 */
+  fullWidth?: boolean;
+  /**
+   * 原生 input 的 id。未提供時使用 `{checkboxId}_input`。
+   */
+  id?: string;
+  /** 原生 input 的 type（預設 'text'）。 */
+  inputType?: string;
+  /**
+   * 原生 input 的 name。未提供時使用 `{checkboxName || checkboxId}_input`。
+   */
+  name?: string;
+  /** placeholder（預設 'Please enter...'）。 */
+  placeholder?: string;
+  /** 前綴圖示。 */
+  prefixIcon?: IconDefinition;
+  /** 前綴文字。 */
+  prefixText?: string;
+  /** 是否唯讀。 */
+  readonly?: boolean;
+  /** 尺寸。 */
+  size?: 'main' | 'sub';
+  /** 後綴文字。 */
+  suffixText?: string;
+  /** 是否處於輸入狀態（覆蓋自動偵測）。 */
+  typing?: boolean;
+  /** 輸入值（受控模式）。 */
+  value?: string;
+}
 
 /**
  * 核取方塊元件。
@@ -49,7 +104,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 @Component({
   selector: '[mznCheckbox]',
   standalone: true,
-  imports: [MznIcon, MznTextField, MznTypography],
+  imports: [MznIcon, MznInput, MznTypography],
   providers: [provideValueAccessor(MznCheckbox)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -67,8 +122,8 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     '[attr.size]': 'null',
     '[attr.value]': 'null',
     '[attr.withEditInput]': 'null',
-    '[attr.editableInputPlaceholder]': 'null',
-    '[attr.editableInputValue]': 'null',
+    '[attr.editableInput]': 'null',
+    '[attr.id]': 'null',
   },
   template: `
     <label [class]="labelContainerClass">
@@ -77,6 +132,7 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
           <input
             type="checkbox"
             [class]="inputClass"
+            [id]="resolvedId()"
             [checked]="resolvedChecked()"
             [disabled]="resolvedDisabled()"
             [indeterminate]="indeterminate()"
@@ -153,22 +209,32 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     @if (
       shouldShowEditableInput() && resolvedMode() !== 'chip' && !indeterminate()
     ) {
-      <label [class]="editableInputContainerClass">
+      @let cfg = resolvedEditableInputConfig();
+      <label [class]="editableInputContainerClass" [attr.for]="resolvedId()">
         <div
-          mznTextField
+          mznInput
           #editableInputEl
-          size="main"
+          variant="base"
+          [active]="cfg.active ?? false"
+          [clearable]="cfg.clearable"
+          [defaultValue]="cfg.defaultValue"
+          [disabled]="resolvedEditableInputDisabled()"
+          [error]="cfg.error ?? false"
+          [fullWidth]="cfg.fullWidth ?? true"
+          [inputId]="cfg.id"
+          [inputName]="cfg.name"
+          [inputType]="cfg.inputType ?? 'text'"
+          [placeholder]="cfg.placeholder"
+          [prefixIcon]="cfg.prefixIcon"
+          [prefixText]="cfg.prefixText"
+          [readonly]="cfg.readonly ?? false"
+          [size]="cfg.size ?? 'main'"
+          [suffixText]="cfg.suffixText"
+          [typing]="cfg.typing"
+          [value]="cfg.value ?? ''"
+          (valueChange)="onEditableInputValueChange($event)"
           (mousedown)="onEditableInputMouseDown($event)"
-        >
-          <input
-            type="text"
-            [disabled]="resolvedDisabled()"
-            [placeholder]="editableInputPlaceholder()"
-            [name]="editableInputName()"
-            [value]="editableInputValue()"
-            (input)="onEditableInput($event)"
-          />
-        </div>
+        ></div>
       </label>
     }
   `,
@@ -248,32 +314,35 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
   readonly value = input<string>('');
 
   /**
+   * Checkbox 原生 `<input>` 的 id。未提供時自動產生
+   * `mzn-checkbox-{n}`，對應 React 的 `id` + `useId()` fallback。
+   */
+  readonly id = input<string>();
+
+  /**
    * 是否在勾選時顯示附加輸入框。
    * @default false
    */
   readonly withEditInput = input(false);
 
   /**
-   * 附加輸入框的 placeholder。
-   * @default 'Please enter...'
+   * 附加輸入框設定 bundle，對應 React `editableInput`
+   * （`Omit<BaseInputProps, 'variant'>`）。
+   *
+   * 未提供任一欄位時使用 React 定義的預設值：
+   * - `placeholder`: `'Please enter...'`
+   * - `name`: `{checkboxName || checkboxId}_input`
+   * - `id`: `{checkboxId}_input`
    */
-  readonly editableInputPlaceholder = input('Please enter...');
+  readonly editableInput = input<CheckboxEditableInput>();
 
   /**
-   * 附加輸入框的目前值（受控模式）。
-   * @default ''
+   * 附加輸入框值變更事件。對應 React `editableInput.onChange`
+   * 的 handler；Angular 依慣例以 EventEmitter output 實作。
    */
-  readonly editableInputValue = input('');
-
-  /** 附加輸入框值變更事件。 */
   readonly editableInputChange = output<string>();
 
-  /**
-   * 附加輸入框的 name。預設由 checkbox name 或 id 衍生。
-   */
-  readonly editableInputName = computed(
-    (): string => `${this.resolvedName() || 'checkbox'}_input`,
-  );
+  private readonly autoId = `mzn-checkbox-${++checkboxAutoIdCounter}`;
 
   private readonly editableInputElRef =
     viewChild<ElementRef<HTMLElement>>('editableInputEl');
@@ -297,6 +366,44 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
   readonly resolvedName = computed(
     (): string => this.group?.name() ?? this.name() ?? '',
   );
+
+  /**
+   * 決定 checkbox 原生 input 的 id。對應 React:
+   * `finalInputId = id ?? useId()`.
+   */
+  readonly resolvedId = computed((): string => this.id() ?? this.autoId);
+
+  /**
+   * 解析後的 editable input 設定：合併使用者傳入的 bundle
+   * 與 React 定義的預設值（placeholder / name / id）。
+   */
+  protected readonly resolvedEditableInputConfig = computed(
+    (): CheckboxEditableInput => {
+      const provided = this.editableInput() ?? {};
+      const checkboxId = this.resolvedId();
+      const defaultName = this.resolvedName()
+        ? `${this.resolvedName()}_input`
+        : `${checkboxId}_input`;
+      const defaultId = `${checkboxId}_input`;
+
+      return {
+        placeholder: 'Please enter...',
+        ...provided,
+        id: provided.id ?? defaultId,
+        name: provided.name ?? defaultName,
+      };
+    },
+  );
+
+  /**
+   * editable input 的 disabled：bundle 明確指定則覆寫，
+   * 否則跟隨 checkbox 的 disabled 狀態（維持舊行為）。
+   */
+  protected readonly resolvedEditableInputDisabled = computed((): boolean => {
+    const provided = this.editableInput()?.disabled;
+
+    return provided ?? this.resolvedDisabled();
+  });
 
   readonly resolvedSize = computed(
     (): CheckboxSize => this.group?.size() ?? this.size(),
@@ -394,9 +501,7 @@ export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
     }
   }
 
-  protected onEditableInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-
+  protected onEditableInputValueChange(value: string): void {
     this.editableInputChange.emit(value);
   }
 

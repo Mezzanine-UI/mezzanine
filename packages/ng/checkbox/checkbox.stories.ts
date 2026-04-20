@@ -504,7 +504,7 @@ export const WithForm: Story = {
           label="其他"
           name="otherChecked"
           [withEditInput]="true"
-          [editableInputValue]="otherOption"
+          [editableInput]="{ value: otherOption }"
           (editableInputChange)="otherOption = $event"
         ></div>
       </div>

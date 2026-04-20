@@ -3,4 +3,5 @@
 // plumbing (React uses hidden Context) and stay unexported.
 export { MznCheckAll } from './check-all.component';
 export { MznCheckbox } from './checkbox.component';
+export type { CheckboxEditableInput } from './checkbox.component';
 export { MznCheckboxGroup } from './checkbox-group.component';

@@ -492,7 +492,7 @@ export const WithChildren: Story = {
           mznCheckbox
           value="other"
           [withEditInput]="true"
-          [editableInputValue]="otherText"
+          [editableInput]="{ value: otherText }"
           (editableInputChange)="otherText = $event"
           >其他</div
         >
@@ -555,7 +555,7 @@ export const WithEditableInput: Story = {
           mznCheckbox
           value="custom1"
           [withEditInput]="true"
-          [editableInputValue]="editableValues['custom1'] ?? ''"
+          [editableInput]="{ value: editableValues['custom1'] ?? '' }"
           (editableInputChange)="onEditableChange('custom1', $event)"
           >自訂選項 1</div
         >
@@ -563,7 +563,7 @@ export const WithEditableInput: Story = {
           mznCheckbox
           value="custom2"
           [withEditInput]="true"
-          [editableInputValue]="editableValues['custom2'] ?? ''"
+          [editableInput]="{ value: editableValues['custom2'] ?? '' }"
           (editableInputChange)="onEditableChange('custom2', $event)"
           >自訂選項 2</div
         >
@@ -572,7 +572,7 @@ export const WithEditableInput: Story = {
           mznCheckbox
           value="other"
           [withEditInput]="true"
-          [editableInputValue]="editableValues['other'] ?? ''"
+          [editableInput]="{ value: editableValues['other'] ?? '' }"
           (editableInputChange)="onEditableChange('other', $event)"
           >其他</div
         >
