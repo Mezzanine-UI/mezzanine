@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.2...@mezzanine-ui/ng@1.0.0-rc.3) (2026-04-21)
+
+### Bug Fixes
+
+- **ng:** declare `clsx` as an explicit dependency so the package can be installed standalone without relying on `@mezzanine-ui/react` hoisting it through the workspace ([2acd076](https://github.com/Mezzanine-UI/mezzanine/commit/2acd076c5ebf3c8f57d87953da6ce8091bc72e13))
+
 # [1.0.0-rc.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.1...@mezzanine-ui/ng@1.0.0-rc.2) (2026-04-21)
 
 ### Dependencies
