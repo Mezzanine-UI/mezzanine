@@ -8,6 +8,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 - **ng:** declare `clsx` as an explicit dependency so the package can be installed standalone without relying on `@mezzanine-ui/react` hoisting it through the workspace ([2acd076](https://github.com/Mezzanine-UI/mezzanine/commit/2acd076c5ebf3c8f57d87953da6ce8091bc72e13))
+- **ng:** whitelist `clsx` in `ng-package.json` `allowedNonPeerDependencies` so ng-packagr can emit the package manifest during build
 
 # [1.0.0-rc.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.1...@mezzanine-ui/ng@1.0.0-rc.2) (2026-04-21)
 

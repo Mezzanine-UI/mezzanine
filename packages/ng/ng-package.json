@@ -8,6 +8,7 @@
     "@mezzanine-ui/core",
     "@mezzanine-ui/icons",
     "@mezzanine-ui/system",
+    "clsx",
     "overlayscrollbars",
     "tslib"
   ],
