@@ -26,6 +26,7 @@
     "@mezzanine-ui/core": "1.0.3",
     "@mezzanine-ui/icons": "1.0.2",
     "@mezzanine-ui/system": "1.0.2",
+    "clsx": "^2.1.1",
     "overlayscrollbars": "^2.13.0",
     "tslib": "^2.8.1"
   },
