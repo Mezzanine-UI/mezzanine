@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.3-rc.1...@mezzanine-ui/core@1.0.3) (2026-04-21)
+
+**Note:** Graduated from `1.0.3-rc.1` to stable. No functional changes since the rc tag.
+
 ## [1.0.3-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.3-rc.0...@mezzanine-ui/core@1.0.3-rc.1) (2026-04-20)
 
 ### Features
