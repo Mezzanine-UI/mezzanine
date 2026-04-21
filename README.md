@@ -1,19 +1,22 @@
 # Mezzanine UI
 
-A comprehensive React component library with a complete design system, built for modern web applications.
+A comprehensive React and Angular component library with a complete design system, built for modern web applications.
 
 ## 📦 Version
 
-Current stable release: **v1.0.0**
+Current releases:
 
 ```json
 {
-  "@mezzanine-ui/core": "1.0.0",
-  "@mezzanine-ui/react": "1.0.0",
-  "@mezzanine-ui/system": "1.0.0",
-  "@mezzanine-ui/icons": "1.0.0"
+  "@mezzanine-ui/core": "1.0.3",
+  "@mezzanine-ui/react": "1.0.3",
+  "@mezzanine-ui/ng": "1.0.0-rc.2",
+  "@mezzanine-ui/system": "1.0.2",
+  "@mezzanine-ui/icons": "1.0.2"
 }
 ```
+
+> `@mezzanine-ui/ng` is published under the `rc` dist-tag while the Angular port stabilises. Install with `@rc` (see below).
 
 ## 📚 Documentation
 
@@ -58,10 +61,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ## 📦 Installation
 
-Install all required packages:
+### React
 
 ```bash
 yarn add @mezzanine-ui/core @mezzanine-ui/react @mezzanine-ui/system @mezzanine-ui/icons
+```
+
+### Angular (release candidate)
+
+Requires Angular 21+.
+
+```bash
+yarn add @mezzanine-ui/core @mezzanine-ui/system @mezzanine-ui/icons
+yarn add @mezzanine-ui/ng@rc
+yarn add @angular/animations @angular/cdk @angular/common @angular/core
 ```
 
 If you plan to use date-related components (DatePicker, Calendar, TimePicker, etc.), install one of the supported date libraries:
@@ -252,6 +265,46 @@ function App({ children }) {
 | Day.js  | ~2KB        | Yes            | Yes              | Recommended for most projects   |
 | Moment  | ~70KB       | No             | Yes              | Legacy support                  |
 | Luxon   | ~20KB       | Yes            | Yes (ISO only)   | Always uses Monday as first day |
+
+---
+
+## 🅰️ Angular Quick Start
+
+The Angular package mirrors the React API prop-for-prop. Components are distributed as **secondary entry points** — import each component from its own path so that Angular's tree-shaker only pulls in what you use.
+
+### 1. Share the same SCSS setup
+
+`@mezzanine-ui/ng` consumes the same `@mezzanine-ui/core` + `@mezzanine-ui/system` tokens as React. Reuse the `main.scss` shown in the [React Quick Start](#1-setup-styles) verbatim and load it from your Angular app's `styles` array (`angular.json`) or global stylesheet.
+
+### 2. Import components from secondary entry points
+
+```ts
+// app.component.ts
+import { Component } from '@angular/core';
+import { MznButton } from '@mezzanine-ui/ng/button';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { PlusIcon } from '@mezzanine-ui/icons';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [MznButton, MznTypography, MznIcon],
+  template: `
+    <mzn-typography variant="h1">Welcome to Mezzanine UI</mzn-typography>
+    <mzn-button variant="base-primary" size="main" [icon]="plusIcon" iconType="leading"> Click Me </mzn-button>
+  `,
+})
+export class AppComponent {
+  plusIcon = PlusIcon;
+}
+```
+
+> ⚠️ **Do not** barrel-import from `@mezzanine-ui/ng`. Always use the per-component path (e.g. `@mezzanine-ui/ng/button`) so ng-packagr's secondary entry points can be code-split correctly.
+
+### 3. API parity with React
+
+Angular inputs/outputs mirror React props 1:1, including both flat top-level props (e.g. `disabledMonthSwitch`, `placeholderLeft`) and bundle props (e.g. `calendarProps`, `popperProps`). When both are provided, flat props win. See `.claude/skills/architecting-angular-components/SKILL.md` for the full contract.
 
 ---
 
@@ -771,4 +824,9 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 - [GitHub Repository](https://github.com/Mezzanine-UI/mezzanine)
 - [Storybook Documentation](https://storybook.mezzanine-ui.org)
-- [NPM Package](https://www.npmjs.com/package/@mezzanine-ui/react)
+- NPM Packages:
+  - [@mezzanine-ui/react](https://www.npmjs.com/package/@mezzanine-ui/react)
+  - [@mezzanine-ui/ng](https://www.npmjs.com/package/@mezzanine-ui/ng)
+  - [@mezzanine-ui/core](https://www.npmjs.com/package/@mezzanine-ui/core)
+  - [@mezzanine-ui/system](https://www.npmjs.com/package/@mezzanine-ui/system)
+  - [@mezzanine-ui/icons](https://www.npmjs.com/package/@mezzanine-ui/icons)
