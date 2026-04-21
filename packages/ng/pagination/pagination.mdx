@@ -1,0 +1,32 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as PaginationStories from './pagination.stories';
+
+<Meta of={PaginationStories} />
+
+# Pagination
+
+分頁導覽元件，提供頁碼切換、頁碼跳轉輸入框以及每頁筆數選擇器。
+
+傳入 `total` 與 `pageSize` 自動計算總頁數並渲染頁碼列表；`boundaryCount` 控制首尾
+始終顯示的頁數，`siblingCount` 控制當前頁兩側的頁數。啟用 `showJumper` 可直接輸入頁碼跳轉，
+啟用 `showPageSizeOptions` 可讓使用者選擇每頁顯示筆數。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/pagination/pagination.component.ts)
+
+<ArgTypes of={PaginationStories.Playground} />
+
+# PaginationItem
+
+分頁項目元件，渲染單一頁碼按鈕、省略號或上/下一頁按鈕。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/pagination/pagination-item.component.ts)
+
+<ArgTypes of={PaginationStories.PaginationItemPlayground} />
+
+# PaginationJumper
+
+頁碼跳轉元件，提供文字輸入框讓使用者直接跳至指定頁碼。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/pagination/pagination-jumper.component.ts)
+
+<ArgTypes of={PaginationStories.PaginationJumperPlayground} />

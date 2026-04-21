@@ -113,7 +113,7 @@
 
   &__separator {
     width: 1px;
-    height: 16px;
+    height: spacing.semantic-variable(size, element, base);
     background-color: palette.semantic-variable(separator, neutral-light);
     flex-shrink: 0;
   }

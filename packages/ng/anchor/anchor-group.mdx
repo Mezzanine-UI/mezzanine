@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AnchorGroupStories from './anchor-group.stories';
+
+<Meta of={AnchorGroupStories} />
+
+# AnchorGroup
+
+錨點群組元件,以資料驅動方式渲染一組錨點導航連結。
+
+透過 `anchors` 陣列傳入巢狀結構(最多三層,每層最多三項),自動追蹤 URL hash
+以標示當前錨點,並將 `disabled` / `autoScrollTo` 沿層遞繼承給子 anchor。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/anchor/anchor-group.component.ts)
+
+<ArgTypes of={AnchorGroupStories.All} />

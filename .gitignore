@@ -7,6 +7,12 @@
 /out-tsc
 /storybook-static
 **/storybook-static
+/storybook-ng-static
+**/storybook-ng-static
+/storybook-static-react-tmp
+**/storybook-static-react-tmp
+/.storybook-ng/preview.js
+/.storybook-ng/preview.d.ts
 documentation.json
 **/documentation.json
 
@@ -54,8 +60,15 @@ Thumbs.db
 
 
 
+# Angular
+.angular/cache
+
 .nx/cache
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 dependency-graph.html
+
+# Parity harness output
+tools/parity/.out/
+tools/parity/node_modules/

@@ -143,8 +143,8 @@ $modalSizes: (
     }
 
     &__status-type-icon {
-      width: 32px;
-      height: 32px;
+      width: spacing.semantic-variable(size, element, roomy);
+      height: spacing.semantic-variable(size, element, roomy);
       display: flex;
       flex-shrink: 0;
       align-items: center;

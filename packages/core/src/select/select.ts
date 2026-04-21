@@ -33,6 +33,8 @@ export const selectClasses = {
   triggerReadOnly: `${selectTriggerPrefix}--readonly`,
   triggerDisabled: `${selectTriggerPrefix}--disabled`,
   triggerInput: `${selectTriggerPrefix}__input`,
+  triggerPrefix: `${selectTriggerPrefix}__prefix`,
+  triggerClearIcon: `${selectTriggerPrefix}__clear-icon`,
   triggerTagsInputWrapper: `${selectTriggerPrefix}__tags-input-wrapper`,
   triggerTagsInputWrapperEllipsis: `${selectTriggerPrefix}__tags-input-wrapper--ellipsis`,
   triggerTagsInputWrapperWrap: `${selectTriggerPrefix}__tags-input-wrapper--wrap`,

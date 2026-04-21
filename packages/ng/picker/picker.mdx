@@ -1,0 +1,15 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import * as PickerStories from './picker.stories';
+
+<Meta of={PickerStories} />
+
+# Picker
+
+Picker is an internal toolkit of trigger components shared by Date, Time, DateRange, DateTime, MultipleDate, and other date/time picker entry-points. It has no public root component — consume the higher-level entry points instead.
+
+Components:
+
+- `MznPickerTrigger` — base single-value trigger
+- `MznPickerTriggerWithSeparator` — trigger with internal separator slots
+- `MznRangePickerTrigger` — paired triggers for range selection
+- `MznFormattedInput` — controlled formatted text input shared by triggers

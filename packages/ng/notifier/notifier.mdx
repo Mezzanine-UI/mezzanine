@@ -1,0 +1,33 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as NotifierStories from './notifier.stories';
+
+<Meta of={NotifierStories} />
+
+# Notifier
+
+`MznNotifierService` is an Angular service that manages a global notification queue.
+It corresponds to the React `createNotifier` factory and is used internally by
+`MznMessageService` and `MznAlertBannerService`.
+
+## API
+
+- **`add(data)`** — Add a notification. Returns the unique key.
+- **`remove(key)`** — Remove a notification by key. Automatically dequeues the next item.
+- **`destroy()`** — Remove all notifications (displayed and queued).
+- **`config(cfg)`** — Update `duration` and/or `maxCount` settings.
+- **`getConfig()`** — Read the current settings.
+- **`setSortBeforeUpdate(fn)`** — Set a custom sort function applied before every list update. Pass `null` to disable.
+
+The `displayed` and `queued` signals expose the current state reactively.
+
+## Basic Usage
+
+<ArgTypes of={NotifierStories.Common} />
+
+## With Sort Order (`setSortBeforeUpdate`)
+
+Corresponds to the `sortBeforeUpdate` prop of the React `createNotifier` factory.
+Call `setSortBeforeUpdate` with a comparator to enforce a custom display order
+(e.g. `error → warning → info`).
+
+<ArgTypes of={NotifierStories.WithSortBeforeUpdate} />

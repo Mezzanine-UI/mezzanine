@@ -61,7 +61,9 @@
     &::before {
       content: '';
       inset-block: 0;
+      // allow-hardcoded: column resize handle hit-area 向左偏 4px 讓觸擊範圍跨越 divider
       inset-inline-start: -4px;
+      // allow-hardcoded: 9px 觸擊寬度（divider 1px 左右各 4px 擴充），不在 primitive scale
       inline-size: 9px;
       position: absolute;
     }

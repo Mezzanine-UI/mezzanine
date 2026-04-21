@@ -1,0 +1,610 @@
+import {
+  afterRenderEffect,
+  AfterContentInit,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { ControlValueAccessor } from '@angular/forms';
+import {
+  checkboxClasses as classes,
+  CheckboxMode,
+  CheckboxSeverity,
+  CheckboxSize,
+} from '@mezzanine-ui/core/checkbox';
+import { inputClasses } from '@mezzanine-ui/core/input';
+import { textFieldClasses } from '@mezzanine-ui/core/text-field';
+import { TypographyColor } from '@mezzanine-ui/core/typography';
+import { inputCheckClasses } from '@mezzanine-ui/core/_internal/input-check';
+import { CheckedIcon, type IconDefinition } from '@mezzanine-ui/icons';
+import clsx from 'clsx';
+import { MznIcon } from '@mezzanine-ui/ng/icon';
+import { MznTextField } from '@mezzanine-ui/ng/text-field';
+import { MznTypography } from '@mezzanine-ui/ng/typography';
+import {
+  MZN_CHECKBOX_GROUP,
+  CheckboxGroupContextValue,
+} from './checkbox-group-context';
+import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
+
+let checkboxAutoIdCounter = 0;
+
+/**
+ * Checkbox 勾選後顯示的附加輸入框設定。
+ * 對應 React Checkbox 的 `editableInput` bundle prop
+ * （`Omit<BaseInputProps, 'variant'>`）。
+ *
+ * 實作上會 forward 到 `<div mznInput variant="base">`。React 端是
+ * `<Input variant="base" />`，兩邊 DOM 結構一致
+ * （`.mzn-input-container > .mzn-input > .mzn-text-field > input`）。
+ */
+export interface CheckboxEditableInput {
+  /** Active 狀態（focused/expanded）。 */
+  active?: boolean;
+  /** 是否顯示清除按鈕。 */
+  clearable?: boolean;
+  /** 非受控模式初始值。 */
+  defaultValue?: string;
+  /**
+   * 是否禁用（獨立於 checkbox 本身）。
+   * 若未提供則跟隨 checkbox 的 disabled 狀態。
+   */
+  disabled?: boolean;
+  /** 是否為錯誤狀態。 */
+  error?: boolean;
+  /** 是否佔滿容器寬度。 */
+  fullWidth?: boolean;
+  /**
+   * 原生 input 的 id。未提供時使用 `{checkboxId}_input`。
+   */
+  id?: string;
+  /** 原生 input 的 type（預設 'text'）。 */
+  inputType?: string;
+  /**
+   * 原生 input 的 name。未提供時使用 `{checkboxName || checkboxId}_input`。
+   */
+  name?: string;
+  /** placeholder（預設 'Please enter...'）。 */
+  placeholder?: string;
+  /** 前綴圖示。 */
+  prefixIcon?: IconDefinition;
+  /** 前綴文字。 */
+  prefixText?: string;
+  /** 是否唯讀。 */
+  readonly?: boolean;
+  /** 尺寸。 */
+  size?: 'main' | 'sub';
+  /** 後綴文字。 */
+  suffixText?: string;
+  /** 是否處於輸入狀態（覆蓋自動偵測）。 */
+  typing?: boolean;
+  /** 輸入值（受控模式）。 */
+  value?: string;
+}
+
+/**
+ * 核取方塊元件。
+ *
+ * 支援 `default`（標準）與 `chip`（標籤）兩種顯示模式，
+ * 可獨立使用或搭配 `MznCheckboxGroup` 使用。
+ * 實作 `ControlValueAccessor` 以支援 Angular Forms。
+ *
+ * @example
+ * ```html
+ * import { MznCheckbox } from '@mezzanine-ui/ng/checkbox';
+ *
+ * <div mznCheckbox [(ngModel)]="checked">同意條款</div>
+ * <div mznCheckbox mode="chip" size="minor">標籤選項</div>
+ * ```
+ */
+@Component({
+  selector: '[mznCheckbox]',
+  standalone: true,
+  imports: [MznIcon, MznTextField, MznTypography],
+  providers: [provideValueAccessor(MznCheckbox)],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class]': 'hostClasses()',
+    '[attr.checked]': 'null',
+    '[attr.disabled]': 'null',
+    '[attr.error]': 'null',
+    '[attr.hint]': 'null',
+    '[attr.indeterminate]': 'null',
+    '[attr.label]': 'null',
+    '[attr.description]': 'null',
+    '[attr.mode]': 'null',
+    '[attr.name]': 'null',
+    '[attr.severity]': 'null',
+    '[attr.size]': 'null',
+    '[attr.value]': 'null',
+    '[attr.withEditInput]': 'null',
+    '[attr.editableInput]': 'null',
+    '[attr.id]': 'null',
+  },
+  template: `
+    <label [class]="labelContainerClass">
+      <div [class]="inputContainerClass">
+        <div [class]="inputContentClass">
+          <input
+            type="checkbox"
+            [class]="inputClass"
+            [id]="resolvedId()"
+            [checked]="resolvedChecked()"
+            [disabled]="resolvedDisabled()"
+            [indeterminate]="indeterminate()"
+            [name]="resolvedName()"
+            [value]="value()"
+            (change)="onInputChange($event)"
+            (focus)="onTouched()"
+          />
+          @if (resolvedMode() === 'chip') {
+            @if (resolvedChecked()) {
+              <i
+                mznIcon
+                [icon]="checkIcon"
+                [class]="chipIconClass"
+                color="brand"
+                [size]="16"
+              ></i>
+            }
+          } @else {
+            @if (indeterminate()) {
+              <span [class]="indeterminateLineClass"></span>
+            } @else if (resolvedChecked()) {
+              <i
+                mznIcon
+                [icon]="checkIcon"
+                [class]="iconClass"
+                color="fixed-light"
+                [size]="9"
+              ></i>
+            }
+          }
+        </div>
+      </div>
+      <span
+        [class]="hasTextContent() ? textContainerClass : ''"
+        [style.display]="hasTextContent() ? null : 'contents'"
+      >
+        <span
+          mznTypography
+          variant="label-primary"
+          [color]="labelColor()"
+          [class]="labelClass"
+          [style.display]="hasTextContent() ? null : 'none'"
+        >
+          @if (label()) {
+            {{ label() }}
+          }
+          <span #contentSlot style="display: contents"><ng-content /></span>
+        </span>
+        @if (
+          description() &&
+          resolvedMode() !== 'chip' &&
+          !shouldShowEditableInput()
+        ) {
+          <span
+            mznTypography
+            variant="caption"
+            color="text-neutral"
+            [class]="descriptionClass"
+            >{{ description() }}</span
+          >
+        }
+        @if (hint()) {
+          <span
+            mznTypography
+            variant="caption"
+            color="text-neutral"
+            [class]="hintClass"
+            >{{ hint() }}</span
+          >
+        }
+      </span>
+    </label>
+    @if (
+      shouldShowEditableInput() && resolvedMode() !== 'chip' && !indeterminate()
+    ) {
+      @let cfg = resolvedEditableInputConfig();
+      <label [class]="editableInputContainerClass" [attr.for]="resolvedId()">
+        <div [class]="mznInputContainerClass">
+          <div [class]="mznInputHostClass">
+            <div
+              mznTextField
+              #editableInputEl
+              [active]="cfg.active ?? false"
+              [clearable]="cfg.clearable ?? false"
+              [disabled]="resolvedEditableInputDisabled()"
+              [error]="cfg.error ?? false"
+              [fullWidth]="cfg.fullWidth ?? true"
+              [hasPrefix]="hasEditableInputPrefix()"
+              [hasSuffix]="hasEditableInputSuffix()"
+              [readonly]="cfg.readonly ?? false"
+              [size]="cfg.size ?? 'main'"
+              [typing]="cfg.typing"
+              (cleared)="onEditableInputClear()"
+            >
+              @if (cfg.prefixIcon || cfg.prefixText) {
+                <span prefix [class]="textFieldPrefixClass">
+                  @if (cfg.prefixIcon; as icon) {
+                    <i mznIcon [icon]="icon"></i>
+                  } @else {
+                    {{ cfg.prefixText }}
+                  }
+                </span>
+              }
+              <input
+                [attr.id]="cfg.id"
+                [attr.name]="cfg.name"
+                [attr.placeholder]="cfg.placeholder"
+                [type]="cfg.inputType ?? 'text'"
+                [disabled]="resolvedEditableInputDisabled()"
+                [readOnly]="cfg.readonly ?? false"
+                [value]="cfg.value ?? ''"
+                (input)="onEditableInput($event)"
+                (mousedown)="onEditableInputMouseDown($event)"
+              />
+              @if (cfg.suffixText; as suffixText) {
+                <span suffix [class]="textFieldSuffixClass">
+                  {{ suffixText }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      </label>
+    }
+  `,
+})
+export class MznCheckbox implements AfterContentInit, ControlValueAccessor {
+  private readonly group = inject<CheckboxGroupContextValue>(
+    MZN_CHECKBOX_GROUP,
+    { optional: true },
+  );
+
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
+  private readonly contentSlotRef =
+    viewChild<ElementRef<HTMLElement>>('contentSlot');
+
+  /** Whether there is any visible text content (label, description, hint, or projected content). */
+  protected readonly hasTextContent = signal(false);
+
+  ngAfterContentInit(): void {
+    this.updateHasTextContent();
+  }
+
+  private updateHasTextContent(): void {
+    const hasInputs = !!(this.label() || this.description() || this.hint());
+
+    if (hasInputs) {
+      this.hasTextContent.set(true);
+
+      return;
+    }
+
+    const slot = this.contentSlotRef()?.nativeElement;
+
+    if (slot) {
+      const hasProjected = Array.from(slot.childNodes).some(
+        (n) =>
+          n.nodeType === Node.ELEMENT_NODE ||
+          (n.nodeType === Node.TEXT_NODE && n.textContent?.trim()),
+      );
+      this.hasTextContent.set(hasProjected);
+    }
+  }
+
+  /** 是否勾選（獨立使用時）。 */
+  readonly checked = input<boolean>();
+
+  /** 是否禁用。 */
+  readonly disabled = input(false);
+
+  /** 是否為錯誤狀態。 */
+  readonly error = input(false);
+
+  /** 提示文字。 */
+  readonly hint = input<string>();
+
+  /** 是否為不定狀態。 */
+  readonly indeterminate = input(false);
+
+  /** 標籤文字（顯示於 checkbox 旁）。等同於直接投影文字內容，但方便程式化設定。 */
+  readonly label = input<string | undefined>(undefined);
+
+  /** 標籤下方的說明文字（chip 模式下不顯示）。 */
+  readonly description = input<string | undefined>(undefined);
+
+  /** 顯示模式。 */
+  readonly mode = input<CheckboxMode>('default');
+
+  /** input name。 */
+  readonly name = input<string>();
+
+  /** 嚴重性。 */
+  readonly severity = input<CheckboxSeverity>();
+
+  /** 尺寸。 */
+  readonly size = input<CheckboxSize>('main');
+
+  /** Checkbox 值（用於群組）。 */
+  readonly value = input<string>('');
+
+  /**
+   * Checkbox 原生 `<input>` 的 id。未提供時自動產生
+   * `mzn-checkbox-{n}`，對應 React 的 `id` + `useId()` fallback。
+   */
+  readonly id = input<string>();
+
+  /**
+   * 是否在勾選時顯示附加輸入框。
+   * @default false
+   */
+  readonly withEditInput = input(false);
+
+  /**
+   * 附加輸入框設定 bundle，對應 React `editableInput`
+   * （`Omit<BaseInputProps, 'variant'>`）。
+   *
+   * 未提供任一欄位時使用 React 定義的預設值：
+   * - `placeholder`: `'Please enter...'`
+   * - `name`: `{checkboxName || checkboxId}_input`
+   * - `id`: `{checkboxId}_input`
+   */
+  readonly editableInput = input<CheckboxEditableInput>();
+
+  /**
+   * 附加輸入框值變更事件。對應 React `editableInput.onChange`
+   * 的 handler；Angular 依慣例以 EventEmitter output 實作。
+   */
+  readonly editableInputChange = output<string>();
+
+  /**
+   * 是否脫離外層 `MznCheckboxGroup` 的狀態同步。
+   *
+   * 主要供 `MznCheckboxGroup` 內部的 level（全選）checkbox 使用：
+   * 它本身在 group 的 template 裡，若按標準流程 inject group，會被
+   * 當成群組成員，點擊時會 `group.toggle('')` 污染 value。設為 `true`
+   * 可強制此 checkbox 進入 standalone 模式，其 `[checked]`、
+   * `(change)` 綁定與 CVA 走正常 form control 路徑，完全不透過 group
+   * 共享狀態。
+   *
+   * 一般消費端不應使用，保留給內部組合。
+   *
+   * @default false
+   */
+  readonly detached = input(false);
+
+  private readonly autoId = `mzn-checkbox-${++checkboxAutoIdCounter}`;
+
+  private readonly internalChecked = signal(false);
+
+  /**
+   * 對 `detached` input 敏感的 effective group。
+   * `detached=true` 時回傳 null，等同於此 checkbox 完全無 group context。
+   */
+  private readonly effectiveGroup = computed(
+    (): CheckboxGroupContextValue | null =>
+      this.detached() ? null : this.group,
+  );
+
+  readonly resolvedChecked = computed((): boolean => {
+    const grp = this.effectiveGroup();
+
+    if (grp) {
+      return grp.value().includes(this.value());
+    }
+
+    return this.checked() ?? this.internalChecked();
+  });
+
+  readonly resolvedDisabled = computed(
+    (): boolean => this.effectiveGroup()?.disabled() || this.disabled(),
+  );
+
+  readonly resolvedMode = computed(
+    (): CheckboxMode => this.effectiveGroup()?.mode() ?? this.mode(),
+  );
+
+  readonly resolvedName = computed(
+    (): string => this.effectiveGroup()?.name() ?? this.name() ?? '',
+  );
+
+  /**
+   * 決定 checkbox 原生 input 的 id。對應 React:
+   * `finalInputId = id ?? useId()`.
+   */
+  readonly resolvedId = computed((): string => this.id() ?? this.autoId);
+
+  /**
+   * 解析後的 editable input 設定：合併使用者傳入的 bundle
+   * 與 React 定義的預設值（placeholder / name / id）。
+   */
+  protected readonly resolvedEditableInputConfig = computed(
+    (): CheckboxEditableInput => {
+      const provided = this.editableInput() ?? {};
+      const checkboxId = this.resolvedId();
+      const defaultName = this.resolvedName()
+        ? `${this.resolvedName()}_input`
+        : `${checkboxId}_input`;
+      const defaultId = `${checkboxId}_input`;
+
+      return {
+        placeholder: 'Please enter...',
+        ...provided,
+        id: provided.id ?? defaultId,
+        name: provided.name ?? defaultName,
+      };
+    },
+  );
+
+  /**
+   * editable input 的 disabled：bundle 明確指定則覆寫，
+   * 否則跟隨 checkbox 的 disabled 狀態（維持舊行為）。
+   */
+  protected readonly resolvedEditableInputDisabled = computed((): boolean => {
+    const provided = this.editableInput()?.disabled;
+
+    return provided ?? this.resolvedDisabled();
+  });
+
+  readonly resolvedSize = computed(
+    (): CheckboxSize => this.effectiveGroup()?.size() ?? this.size(),
+  );
+
+  protected readonly hostClasses = computed((): string => {
+    const mode = this.resolvedMode();
+
+    if (mode === 'chip') {
+      return clsx(
+        classes.host,
+        classes.mode('chip'),
+        classes.size(this.resolvedSize()),
+        {
+          [classes.checked]: this.resolvedChecked(),
+          [classes.disabled]: this.resolvedDisabled(),
+        },
+        this.severity() ? classes.severity(this.severity()!) : undefined,
+      );
+    }
+
+    // Default mode: match React's root class composition so that
+    // `.mzn-checkbox__input { appearance: none; border: 1px solid; ... }`
+    // from _checkbox-styles.scss applies to the native input. Previously
+    // this emitted `.mzn-input-check` which activated the shared
+    // `.mzn-input-check input { opacity: 0 }` rule and hid the visible
+    // box entirely. React emits `mzn-checkbox mzn-checkbox--<severity>
+    // mzn-checkbox--<size>` with optional state modifiers.
+    return clsx(
+      classes.host,
+      classes.size(this.resolvedSize()),
+      classes.severity(this.severity() ?? 'info'),
+      {
+        [classes.checked]: this.resolvedChecked(),
+        [classes.indeterminate]: this.indeterminate(),
+        [classes.disabled]: this.resolvedDisabled(),
+      },
+    );
+  });
+
+  protected readonly labelColor = computed(
+    (): TypographyColor =>
+      this.resolvedDisabled() ? 'text-neutral-light' : 'text-neutral-solid',
+  );
+
+  protected readonly labelContainerClass = classes.labelContainer;
+  protected readonly inputContainerClass = classes.inputContainer;
+  protected readonly inputContentClass = classes.inputContent;
+  protected readonly textContainerClass = classes.textContainer;
+  protected readonly labelClass = classes.label;
+  protected readonly descriptionClass = classes.description;
+  protected readonly hintClass = inputCheckClasses.hint;
+  protected readonly inputClass = classes.input;
+  protected readonly iconClass = classes.icon;
+  protected readonly chipIconClass = clsx(classes.icon, classes.chipIcon);
+  protected readonly indeterminateLineClass = classes.indeterminateLine;
+  protected readonly editableInputContainerClass =
+    classes.editableInputContainer;
+  protected readonly mznInputContainerClass = inputClasses.container;
+  protected readonly mznInputHostClass = inputClasses.host;
+  protected readonly textFieldPrefixClass = textFieldClasses.prefix;
+  protected readonly textFieldSuffixClass = textFieldClasses.suffix;
+
+  protected readonly hasEditableInputPrefix = computed((): boolean => {
+    const cfg = this.editableInput();
+
+    return !!(cfg?.prefixIcon || cfg?.prefixText);
+  });
+
+  protected readonly hasEditableInputSuffix = computed(
+    (): boolean => !!this.editableInput()?.suffixText,
+  );
+  protected readonly checkIcon = CheckedIcon;
+
+  protected readonly shouldShowEditableInput = computed((): boolean =>
+    this.withEditInput(),
+  );
+
+  private prevChecked = false;
+
+  constructor() {
+    // 在 DOM render 後執行：checked 由 false → true 且會顯示 editable
+    // input 時，自動 focus 到 editable input。改用 afterRenderEffect
+    // 取代 effect + queueMicrotask，避免 @if 條件塊尚未 flush 時 query
+    // 不到剛插入的 input 元素。
+    afterRenderEffect(() => {
+      const checked = this.resolvedChecked();
+      const show = this.shouldShowEditableInput();
+
+      if (checked && !this.prevChecked && show) {
+        // 直接走 host element 查詢，避開 viewChild signal 在 @if 塊
+        // 內於 afterRenderEffect 執行時仍未 resolve 的時序問題。
+        const input = this.hostElRef.nativeElement.querySelector(
+          'label[for] input:not([type="checkbox"])',
+        ) as HTMLInputElement | null;
+
+        input?.focus();
+      }
+
+      this.prevChecked = checked;
+    });
+  }
+
+  protected onEditableInputMouseDown(event: MouseEvent): void {
+    if (!this.resolvedChecked() && !this.resolvedDisabled()) {
+      event.preventDefault();
+
+      const hostEl = this.hostElRef.nativeElement;
+      const checkboxInput = hostEl.querySelector(
+        'input[type="checkbox"]',
+      ) as HTMLInputElement | null;
+
+      checkboxInput?.click();
+    }
+  }
+
+  protected onEditableInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.editableInputChange.emit(value);
+  }
+
+  protected onEditableInputClear(): void {
+    this.editableInputChange.emit('');
+  }
+
+  // CVA
+  private onChange: (value: boolean) => void = () => {};
+  protected onTouched: () => void = () => {};
+
+  writeValue(value: boolean): void {
+    this.internalChecked.set(!!value);
+  }
+
+  registerOnChange(fn: (value: boolean) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  protected onInputChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const newChecked = target.checked;
+    const grp = this.effectiveGroup();
+
+    if (grp) {
+      grp.toggle(this.value());
+    } else {
+      this.internalChecked.set(newChecked);
+      this.onChange(newChecked);
+    }
+  }
+}

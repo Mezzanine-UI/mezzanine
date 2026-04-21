@@ -1,0 +1,20 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './button.stories';
+
+<Meta of={ButtonStories} />
+
+# Button
+
+通用按鈕元件，支援多種外觀變體與尺寸。
+
+使用 attribute directive `[mznButton]`，可套用於 `<button>`、`<a>` 或任意 host element，實現多型態功能。
+透過 `variant` 控制外觀、`size` 控制尺寸、`iconType` 決定圖示排列方式。
+支援 `loading` 狀態，以及透過不同 host element 實現多型態渲染。
+
+當 `iconType` 為 `'icon-only'` 時，可透過 `tooltipText` 設定 hover 顯示的 tooltip 文字，
+等效於 React 版 Button 的 `children` + `<Tooltip>` 包裹行為。
+使用 `disabledTooltip` 可禁用 tooltip，`tooltipPosition` 可控制 tooltip 位置。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/button/button.directive.ts)
+
+<ArgTypes of={ButtonStories.Playground} />

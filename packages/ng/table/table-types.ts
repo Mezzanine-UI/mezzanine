@@ -1,0 +1,610 @@
+import type { IconDefinition } from '@mezzanine-ui/icons';
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import type { Placement } from '@floating-ui/dom';
+
+/**
+ * 排序方向。
+ * - `'ascend'` — 升冪排序
+ * - `'descend'` — 降冪排序
+ * - `null` — 未排序
+ */
+export type SortOrder = 'ascend' | 'descend' | null;
+
+/**
+ * 欄位對齊方式。
+ * - `'start'` — 靠左對齊
+ * - `'center'` — 置中對齊
+ * - `'end'` — 靠右對齊
+ */
+export type ColumnAlign = 'start' | 'center' | 'end';
+
+/**
+ * 表格尺寸。
+ * - `'main'` — 標準尺寸
+ * - `'sub'` — 較小尺寸
+ */
+export type TableSize = 'main' | 'sub';
+
+/**
+ * 資料列狀態。
+ * - `'added'` — 新增列
+ * - `'deleted'` — 刪除列
+ * - `'disabled'` — 停用列
+ */
+export type TableRowState = 'added' | 'deleted' | 'disabled';
+
+/** 表格資料來源基礎型別，每筆資料至少需有 `key` 或 `id` 供辨識。 */
+export interface TableDataSource {
+  readonly [key: string]: unknown;
+  readonly key?: string;
+  readonly id?: string;
+}
+
+/** 取得資料列的唯一辨識鍵。優先使用 `key`，其次 `id`。 */
+export function getRowKey(record: TableDataSource): string {
+  if (record['key'] != null) return String(record['key']);
+  if (record['id'] != null) return String(record['id']);
+
+  return '';
+}
+
+/** Drag-and-drop configuration for the table. */
+export interface TableDraggable {
+  readonly enabled: boolean;
+  readonly fixedRowKeys?: readonly string[];
+  readonly onDragEnd?: (
+    newDataSource: readonly TableDataSource[],
+    options: { draggingId: string; fromIndex: number; toIndex: number },
+  ) => void;
+}
+
+/**
+ * 欄位標題 dropdown menu 設定。對齊 React `TableColumnTitleMenu`。
+ * 在表頭 title 右側渲染 menu 圖示，點擊後彈出選單。
+ */
+export interface TableColumnTitleMenu {
+  /** Dropdown 選項。 */
+  readonly options: readonly DropdownOption[];
+  /** 選到選項時的回呼。 */
+  readonly onSelect?: (option: DropdownOption) => void;
+  /** Dropdown 列表最大高度。 */
+  readonly maxHeight?: number | string;
+  /**
+   * Dropdown 相對於 trigger 的位置。
+   * @default 'bottom-end'
+   */
+  readonly placement?: Placement;
+}
+
+/** 欄位定義。 */
+export interface TableColumn {
+  /** 欄位對齊方式。 */
+  readonly align?: ColumnAlign;
+  /** 對應 dataSource 中的欄位名稱。 */
+  readonly dataIndex?: string;
+  /**
+   * 是否啟用內容超長省略 (ellipsis)。
+   * 對齊 React `TableColumn.ellipsis`，預設 `true`。
+   * @default true
+   */
+  readonly ellipsis?: boolean;
+  /**
+   * 將欄位釘選到表格視窗的左/右側。
+   * 對齊 React `TableColumn.fixed`。
+   * - `'start'` — 捲動時保持在左側，多個 start 欄位依宣告順序疊加 offset。
+   * - `'end'` — 捲動時保持在右側，多個 end 欄位依反向順序疊加 offset。
+   */
+  readonly fixed?: 'start' | 'end';
+  /** 欄位唯一識別鍵。 */
+  readonly key: string;
+  /** 最大欄位寬度（px）。搭配 resizable 使用。 */
+  readonly maxWidth?: number;
+  /** 最小欄位寬度（px）。搭配 resizable 使用時為必填。 */
+  readonly minWidth?: number;
+  /** 排序變更時的回呼函式。 */
+  readonly onSort?: (key: string, order: SortOrder) => void;
+  /** 當前排序方向，設為 `undefined` 代表不可排序。 */
+  readonly sortOrder?: SortOrder;
+  /** 欄位標題。 */
+  readonly title?: string;
+  /**
+   * 欄位標題旁的說明 tooltip。對齊 React `TableColumn.titleHelp` —
+   * 以 help 圖示 + `mznTooltip` 呈現。
+   */
+  readonly titleHelp?: string;
+  /**
+   * 欄位標題旁的 dropdown menu。對齊 React `TableColumn.titleMenu`。
+   */
+  readonly titleMenu?: TableColumnTitleMenu;
+  /** 欄位寬度。 */
+  readonly width?: number | string;
+}
+
+/**
+ * 收藏欄位設定。
+ * 啟用後會在表格新增一個收藏按鈕欄，追蹤每列是否已收藏。
+ */
+export interface TableCollectable {
+  /** 欄位對齊方式。 */
+  readonly align?: ColumnAlign;
+  /** 已收藏的列 key 陣列。 */
+  readonly collectedRowKeys?: readonly string[];
+  /** 是否啟用收藏功能。 */
+  readonly enabled: boolean;
+  /** 固定欄位位置。 */
+  readonly fixed?: boolean;
+  /** 判斷特定列的收藏功能是否停用。 */
+  readonly isRowDisabled?: (record: TableDataSource) => boolean;
+  /** 欄位最小寬度（px）。 */
+  readonly minWidth?: number;
+  /** 收藏狀態變更時的回呼。 */
+  readonly onCollectChange?: (
+    record: TableDataSource,
+    collected: boolean,
+  ) => void;
+  /** 欄位標題文字。 */
+  readonly title?: string;
+  /** 欄位標題說明。 */
+  readonly titleHelp?: string;
+}
+
+/**
+ * 分頁設定，對應 MznPagination 的 inputs。
+ */
+export interface TablePagination {
+  /** 目前頁碼。 */
+  readonly current?: number;
+  /** 是否停用。 */
+  readonly disabled?: boolean;
+  /** 每頁筆數。 */
+  readonly pageSize?: number;
+  /** 總筆數。 */
+  readonly total: number;
+  /** 頁碼變更時的回呼。 */
+  readonly onChange?: (page: number) => void;
+  /**
+   * 是否顯示每頁筆數切換器。
+   * 對齊 React `TablePaginationProps.showPageSizeOptions`。
+   * @default false
+   */
+  readonly showPageSizeOptions?: boolean;
+  /** 每頁筆數切換器的 label 文字，對齊 React `pageSizeLabel`。 */
+  readonly pageSizeLabel?: string;
+  /** 每頁筆數的選項陣列，對齊 React `pageSizeOptions`。 */
+  readonly pageSizeOptions?: readonly number[];
+  /**
+   * 結果摘要文字的 render 函式，對齊 React `renderResultSummary`。
+   * 回傳 `${from}-${to} of ${total}` 形式的字串。
+   */
+  readonly renderResultSummary?: (
+    from: number,
+    to: number,
+    total: number,
+  ) => string;
+  /**
+   * 是否顯示「跳至指定頁」欄位，對齊 React `showJumper`。
+   * @default false
+   */
+  readonly showJumper?: boolean;
+  /** Jumper 輸入框 placeholder，對齊 React `inputPlaceholder`。 */
+  readonly inputPlaceholder?: string;
+  /** Jumper 前綴提示文字，對齊 React `hintText`。 */
+  readonly hintText?: string;
+  /** Jumper 送出按鈕文字，對齊 React `buttonText`。 */
+  readonly buttonText?: string;
+  /** 每頁筆數切換時的回呼。 */
+  readonly onPageSizeChange?: (pageSize: number) => void;
+}
+
+/**
+ * 列釘選設定。
+ * 啟用後可將特定列釘選至頂端。
+ * 注意：draggable 與 pinnable 不可同時啟用。
+ */
+export interface TablePinnable {
+  /** 是否啟用釘選功能。 */
+  readonly enabled: boolean;
+  /** 固定欄位位置。 */
+  readonly fixed?: boolean;
+  /** 釘選狀態變更時的回呼。 */
+  readonly onPinChange?: (record: TableDataSource, pinned: boolean) => void;
+  /** 已釘選的列 key 陣列。 */
+  readonly pinnedRowKeys?: readonly string[];
+}
+
+/**
+ * 捲動設定，支援虛擬捲動。
+ */
+export interface TableScroll {
+  /**
+   * 垂直捲動高度限制。
+   * 設定捲動容器的 max-height。
+   */
+  readonly y?: number | string;
+}
+
+/**
+ * 欄位顯示切換設定。
+ * 啟用後會在表格新增一個開關欄，追蹤每列是否顯示。
+ */
+export interface TableToggleable {
+  /** 欄位對齊方式。 */
+  readonly align?: ColumnAlign;
+  /** 是否啟用切換功能。 */
+  readonly enabled: boolean;
+  /** 固定欄位位置。 */
+  readonly fixed?: boolean;
+  /** 判斷特定列的切換功能是否停用。 */
+  readonly isRowDisabled?: (record: TableDataSource) => boolean;
+  /** 欄位最小寬度（px）。 */
+  readonly minWidth?: number;
+  /** 切換狀態變更時的回呼。 */
+  readonly onToggleChange?: (record: TableDataSource, toggled: boolean) => void;
+  /** 欄位標題文字。 */
+  readonly title?: string;
+  /** 欄位標題說明。 */
+  readonly titleHelp?: string;
+  /** 已切換啟用的列 key 陣列。 */
+  readonly toggledRowKeys?: readonly string[];
+}
+
+/**
+ * 資料列進入／離開動畫的過渡狀態，搭配 useTableDataSource hook 使用。
+ */
+export interface TableTransitionState {
+  /** 正在「新增中」高亮動畫的列 key 集合。 */
+  readonly addingKeys: ReadonlySet<string>;
+  /** 正在「刪除中」紅色高亮動畫的列 key 集合。 */
+  readonly deletingKeys: ReadonlySet<string>;
+  /** 正在淡出動畫的列 key 集合。 */
+  readonly fadingOutKeys: ReadonlySet<string>;
+}
+
+/**
+ * 高亮模式，對齊 `@mezzanine-ui/core/table` 的 `HighlightMode`。
+ * - `'cell'` — 單格高亮
+ * - `'column'` — 整欄高亮
+ * - `'row'` — 整列高亮
+ * - `'cross'` — 十字交叉高亮
+ */
+export type HighlightMode = 'cell' | 'column' | 'row' | 'cross';
+
+/**
+ * 列高預設值。
+ * - `'base'` — 標準列高
+ * - `'condensed'` — 緊湊列高
+ * - `'detailed'` — 詳細列高
+ * - `'roomy'` — 寬鬆列高
+ */
+export type RowHeightPreset = 'base' | 'condensed' | 'detailed' | 'roomy';
+
+/* ------------------------------------------------------------------ */
+/*  Row Selection Types (mirrors React's TableRowSelection)            */
+/* ------------------------------------------------------------------ */
+
+/** 勾選模式。 */
+export type TableSelectionMode = 'checkbox' | 'radio';
+
+/** 列選取基礎設定。 */
+export interface TableRowSelectionBase {
+  /** 固定選取欄位位置。 */
+  readonly fixed?: boolean;
+  /** 判斷該列的選取控件是否停用。 */
+  readonly isSelectionDisabled?: (record: TableDataSource) => boolean;
+}
+
+/**
+ * Bulk actions 的主要動作 / 破壞性動作設定。
+ * 對齊 React `TableBulkGeneralAction`。
+ */
+export interface TableBulkGeneralAction {
+  /** 按鈕圖示。 */
+  readonly icon?: IconDefinition;
+  /** 按鈕文字。 */
+  readonly label: string;
+  /** 點擊回呼，收到當前選取的 row keys 與 rows。 */
+  readonly onClick: (
+    selectedRowKeys: readonly string[],
+    selectedRows: readonly TableDataSource[],
+  ) => void;
+}
+
+/**
+ * Bulk actions 的溢出動作（dropdown menu）。
+ * 對齊 React `TableBulkOverflowAction`。
+ */
+export interface TableBulkOverflowAction {
+  /** 按鈕圖示。 */
+  readonly icon?: IconDefinition;
+  /** 按鈕文字。 */
+  readonly label: string;
+  /** Dropdown 列表最大高度。 */
+  readonly maxHeight?: number | string;
+  /** 選到 dropdown 選項時的回呼。 */
+  readonly onSelect: (
+    option: DropdownOption,
+    selectedRowKeys: readonly string[],
+    selectedRows: readonly TableDataSource[],
+  ) => void;
+  /** Dropdown 選項。 */
+  readonly options: readonly DropdownOption[];
+  /**
+   * Dropdown 相對 trigger 的位置。
+   * @default 'top'
+   */
+  readonly placement?: Placement;
+}
+
+/**
+ * Bulk actions 設定，對齊 React `TableBulkActions`。
+ * 啟用後，當勾選列數量 > 0 時，會於表格下方（或釘選於視窗底部）顯示
+ * 一列批次操作按鈕：`mainActions` → `destructiveAction` → `overflowAction`，
+ * 以分隔線分組。
+ */
+export interface TableBulkActions {
+  /** 破壞性動作（例如刪除），最多一個，會有分隔線。 */
+  readonly destructiveAction?: TableBulkGeneralAction;
+  /** 主要動作，至少一個，依序排列於左。 */
+  readonly mainActions: readonly [
+    TableBulkGeneralAction,
+    ...TableBulkGeneralAction[],
+  ];
+  /** 溢出 dropdown 動作，最多一個，與前方以分隔線分組。 */
+  readonly overflowAction?: TableBulkOverflowAction;
+  /**
+   * 依目前選取數量生成摘要文字。
+   * 預設顯示 `${count} item(s) selected`。
+   */
+  readonly renderSelectionSummary?: (
+    count: number,
+    selectedRowKeys: readonly string[],
+    selectedRows: readonly TableDataSource[],
+  ) => string;
+}
+
+/** Checkbox 模式的列選取設定。 */
+export interface TableRowSelectionCheckbox extends TableRowSelectionBase {
+  /** 選取模式。 */
+  readonly mode: 'checkbox';
+  /**
+   * 批次操作設定。啟用後會在選取列數量 > 0 時渲染浮動的 bulk actions bar。
+   * 對齊 React `TableRowSelectionCheckbox.bulkActions`。
+   */
+  readonly bulkActions?: TableBulkActions;
+  /** 隱藏表頭的全選 checkbox。 */
+  readonly hideSelectAll?: boolean;
+  /**
+   * 全選 / 全不選時，是否保留當前頁以外列的選取狀態。
+   * 對齊 React `TableRowSelectionCheckbox.preserveSelectedRowKeys`。
+   *
+   * - `false`（預設）— 全選只把當前頁可選列加入、全不選只移除當前頁可選列的 key；
+   *   其他頁 (`dataSource` 以外) 的 key 保留原樣，但也不會被補回。
+   * - `true` — 全選同時保留當前 `dataSource` 以外的 key；全不選則移除當前
+   *   `dataSource` 所有列的 key（不論是否 `isSelectionDisabled`）。
+   *
+   * 切頁本身不觸發任何篩選；此 flag 只在 toggleAll 生效。
+   * @default false
+   */
+  readonly preserveSelectedRowKeys?: boolean;
+  /** 選取變更時的回呼。 */
+  readonly onChange: (
+    selectedRowKeys: readonly string[],
+    selectedRow: TableDataSource | null,
+    selectedRows: readonly TableDataSource[],
+  ) => void;
+  /** 全選觸發時的回呼，在 onChange 之後呼叫。 */
+  readonly onSelectAll?: (type: 'all' | 'none') => void;
+  /** 已選取的列 key 陣列。 */
+  readonly selectedRowKeys: readonly string[];
+}
+
+/** Radio 模式的列選取設定。 */
+export interface TableRowSelectionRadio extends TableRowSelectionBase {
+  /** 選取模式。 */
+  readonly mode: 'radio';
+  /** 選取變更時的回呼。 */
+  readonly onChange: (
+    selectedRowKey: string | undefined,
+    selectedRow: TableDataSource | null,
+  ) => void;
+  /** 已選取的列 key。 */
+  readonly selectedRowKey: string | undefined;
+}
+
+/** 列選取設定——discriminated union。 */
+export type TableRowSelection =
+  | TableRowSelectionCheckbox
+  | TableRowSelectionRadio;
+
+/* ------------------------------------------------------------------ */
+/*  Actions Column Types (mirrors React's TableActions)                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * 可套用於 row action button 的外觀變體。
+ * 對齊 @mezzanine-ui/core/button `ButtonVariant`，保留字串寬鬆型別避免
+ * 循環相依；`MznButton` 會驗證值。
+ */
+export type TableActionVariant =
+  | 'base-primary'
+  | 'base-secondary'
+  | 'base-tertiary'
+  | 'base-ghost'
+  | 'base-dashed'
+  | 'base-text-link'
+  | 'destructive-primary'
+  | 'destructive-secondary'
+  | 'destructive-ghost'
+  | 'destructive-text-link'
+  | 'inverse'
+  | 'inverse-ghost';
+
+/**
+ * 按鈕型動作項目。對齊 React `TableActionItemButton`。
+ *
+ * `type` 欄位為 discriminated-union discriminator，省略或設 `undefined`
+ * 都會走 button 分支；`type === 'dropdown'` 則改走 `TableActionDropdownItem`。
+ */
+export interface TableActionButtonItem {
+  /** 動作 key。 */
+  readonly key: string;
+  /** 動作標籤。 */
+  readonly label: string;
+  /** 按鈕圖示。 */
+  readonly icon?: IconDefinition;
+  /**
+   * 圖示位置。目前僅支援 `'leading'`（label 左側），對齊 React 預設。
+   * @default 'leading'
+   */
+  readonly iconType?: 'leading';
+  /**
+   * 是否為危險動作。保留與舊 API 相容；新程式應偏好 `variant`。
+   * @deprecated 使用 `variant: 'destructive-text-link'` 取代。
+   */
+  readonly danger?: boolean;
+  /** 是否停用。 */
+  readonly disabled?: boolean;
+  /**
+   * 按鈕外觀變體，對齊 React `TableActionItemButton.variant`。
+   * 若未設定，使用 `TableActions.variant` 作為 fallback；再無則 `base-text-link`。
+   */
+  readonly variant?: TableActionVariant;
+  /** Discriminator — button item 不設此欄（或設為 `undefined`）。 */
+  readonly type?: undefined;
+  /** 點擊回呼。 */
+  readonly onClick?: (record: TableDataSource, index: number) => void;
+}
+
+/**
+ * Dropdown 型動作項目。點 trigger 按鈕後彈出 `MznDropdown` 選單，對齊
+ * React `TableActionItemDropdown`。
+ */
+export interface TableActionDropdownItem {
+  /** 動作 key。 */
+  readonly key: string;
+  /** Discriminator — 必須為 `'dropdown'`。 */
+  readonly type: 'dropdown';
+  /** Trigger 按鈕的文字，可留空（僅以圖示當 trigger）。 */
+  readonly label?: string;
+  /** Trigger 按鈕的圖示。 */
+  readonly icon?: IconDefinition;
+  /** 是否停用。 */
+  readonly disabled?: boolean;
+  /** Trigger 按鈕外觀變體。 */
+  readonly variant?: TableActionVariant;
+  /** Dropdown 選項。 */
+  readonly options: readonly DropdownOption[];
+  /**
+   * Dropdown 相對於 trigger 的位置。
+   * @default 'bottom-end'
+   */
+  readonly placement?: Placement;
+  /** 選到 dropdown 選項時的回呼。 */
+  readonly onSelect: (
+    option: DropdownOption,
+    record: TableDataSource,
+    index: number,
+  ) => void;
+}
+
+/**
+ * 單一動作項目 — 按鈕或 dropdown。對齊 React `TableActionItem`
+ * discriminated union。
+ */
+export type TableActionItem = TableActionButtonItem | TableActionDropdownItem;
+
+/** 動作欄設定。 */
+export interface TableActions {
+  /** 欄位對齊方式。 @default 'end' */
+  readonly align?: ColumnAlign;
+  /** 欄位標題文字。 */
+  readonly title?: string;
+  /** 欄位寬度。 */
+  readonly width?: number | string;
+  /** 欄位最小寬度。 */
+  readonly minWidth?: number;
+  /** 固定位置。 */
+  readonly fixed?: 'start' | 'end';
+  /**
+   * 動作按鈕預設 variant，對齊 React `TableActions.variant`。
+   * 單個 `TableActionItem.variant` 可覆寫。
+   * @default 'base-text-link'
+   */
+  readonly variant?: TableActionVariant;
+  /** 產生動作項目的函式。 */
+  readonly render: (
+    record: TableDataSource,
+    index: number,
+  ) => readonly TableActionItem[];
+}
+
+/* ------------------------------------------------------------------ */
+/*  Expandable                                                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * 展開列設定，對應 React 的 `TableExpandable<T>`。
+ *
+ * Angular 版以 `TemplateRef` 取代 React 的 `expandedRowRender` function
+ * prop：消費端宣告 `<ng-template #tpl let-record>…</ng-template>` 後
+ * 將其傳入 `template`。`$implicit` 會綁到當前 row 資料。
+ *
+ * @example
+ * ```html
+ * <ng-template #expandedTpl let-record>
+ *   <div>Details for {{ record.name }}</div>
+ * </ng-template>
+ *
+ * <div mznTable
+ *   [columns]="columns"
+ *   [dataSource]="data"
+ *   [expandable]="{
+ *     template: expandedTpl,
+ *     expandedRowKeys: openKeys,
+ *     onExpand: handleExpand,
+ *   }"
+ * ></div>
+ * ```
+ */
+export interface TableExpandable<T extends TableDataSource = TableDataSource> {
+  /** 展開列內容模板。row 資料透過 `$implicit` 綁定。 */
+  readonly template?: import('@angular/core').TemplateRef<{
+    $implicit: T;
+  }>;
+  /** 受控的展開列 key 陣列。未提供則元件內部自行管理 state。 */
+  readonly expandedRowKeys?: readonly string[];
+  /**
+   * 展開圖示欄位是否固定於左側。
+   * @default false
+   */
+  readonly fixed?: boolean;
+  /** 單列展開狀態變更的回呼。 */
+  readonly onExpand?: (expanded: boolean, record: T) => void;
+  /** 展開列集合變更的回呼。 */
+  readonly onExpandedRowsChange?: (expandedRowKeys: readonly string[]) => void;
+  /** 判斷某列是否允許展開。回傳 false 的列會隱藏展開圖示。 */
+  readonly rowExpandable?: (record: T) => boolean;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Empty Props (mirrors React's EmptyProps subset used in Table)      */
+/* ------------------------------------------------------------------ */
+
+/** 空狀態設定，對應 MznEmpty 元件的 inputs。 */
+export interface TableEmptyProps {
+  /** 空狀態標題。 */
+  readonly title: string;
+  /** 空狀態描述文字。 */
+  readonly description?: string;
+  /** 空狀態類型。 @default 'initial-data' */
+  readonly type?:
+    | 'initial-data'
+    | 'result'
+    | 'system'
+    | 'notification'
+    | 'custom';
+  /** 空狀態尺寸。 @default 'main' */
+  readonly size?: 'main' | 'sub' | 'minor';
+  /** 容器高度。 */
+  readonly height?: number | string;
+}

@@ -234,7 +234,7 @@ $status-hierarchy: (
     top: 50%;
     transform: translate(-50%, -50%);
     width: 1px;
-    height: 4px;
+    height: spacing.semantic-variable(size, element, tiny);
     margin-top: calc(-1 * (2px + #{spacing.semantic-variable(gap, slim)} / 2));
     pointer-events: none;
     background-color: palette.semantic-variable(border, neutral-strong);

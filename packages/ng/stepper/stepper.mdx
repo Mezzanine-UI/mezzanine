@@ -1,0 +1,31 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as StepperStories from './stepper.stories';
+
+<Meta of={StepperStories} />
+
+# Stepper
+
+<ArgTypes of={StepperStories.Playground} />
+
+# MznStepperState
+
+`MznStepperState` 是 React 版 `useStepper` hook 的 Angular 對應實作。
+透過直接實例化提供步驟導航狀態管理，可在元件類別中直接使用。
+
+## Options
+
+| 屬性          | 型別     | 預設值             | 說明                 |
+| ------------- | -------- | ------------------ | -------------------- |
+| `defaultStep` | `number` | `0`                | 起始步驟索引（零基） |
+| `totalSteps`  | `number` | `Number.MAX_VALUE` | 步驟總數             |
+
+## API
+
+| 屬性 / 方法      | 型別                     | 說明                 |
+| ---------------- | ------------------------ | -------------------- |
+| `currentStep`    | `Signal<number>`         | 當前步驟索引（零基） |
+| `isFirstStep`    | `Signal<boolean>`        | 是否為第一步         |
+| `isLastStep`     | `Signal<boolean>`        | 是否為最後一步       |
+| `goToStep(step)` | `(step: number) => void` | 跳至指定步驟         |
+| `nextStep()`     | `() => void`             | 前進至下一步         |
+| `prevStep()`     | `() => void`             | 返回上一步           |

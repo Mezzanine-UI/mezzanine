@@ -243,6 +243,11 @@ $drawer-container-config: (
 
   &__dot-icon-button {
     padding: spacing.semantic-variable(padding, vertical, tight);
+    // 讓 dot 按鈕對齊區塊右上（而非預設 align-items: stretch 造成的垂直置中）。
+    // React 該按鈕外層還包一層 `<div class="mzn-dropdown">`，wrapper 是 flex item
+    // 而 button 不是；Angular 的 `<button>` 直接當 flex item 會被拉成全高並把 icon
+    // 置中，因此以 align-self: flex-start 補齊 — React 側 button 非 flex item，no-op。
+    align-self: flex-start;
   }
 
   &__body-content {

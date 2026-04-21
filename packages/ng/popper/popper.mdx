@@ -1,0 +1,16 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as PopperStories from './popper.stories';
+
+<Meta of={PopperStories} />
+
+# Popper
+
+以 `@floating-ui/dom` 為基礎的浮動定位元件。
+
+接收 `anchor` 參考元素，將投影內容定位於其周圍。
+支援自動翻轉（`flip`）、偏移（`offset`）、箭頭（`arrow`），
+以及 anchor 隱藏時自動隱藏。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/popper/popper.component.ts)
+
+<ArgTypes of={PopperStories.Basic} />

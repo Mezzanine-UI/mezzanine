@@ -1,0 +1,19 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AutocompleteStories from './autocomplete.stories';
+
+<Meta of={AutocompleteStories} />
+
+# AutoComplete
+
+自動完成選擇器元件，結合文字輸入與下拉選單過濾。
+
+支援單選與多選模式，搜尋過濾、clearable、loading 與 error 狀態。
+多選模式下已選項目以 Tag 顯示，支援 overflow counter/wrap 策略。
+支援動態新增選項（addable）、批次新增（bulk create）、inside 輸入模式、
+滾動到底載入更多（onReachBottom）等進階功能。
+
+也可透過 `MznAutocompletePrefix` directive 投影 prefix icon。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/autocomplete/autocomplete.component.ts)
+
+<ArgTypes of={AutocompleteStories} />
