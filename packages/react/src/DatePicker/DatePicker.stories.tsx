@@ -5,6 +5,8 @@ import moment from 'moment';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import { CSSProperties, useState } from 'react';
 import DatePicker from './DatePicker';
+import Button from '../Button';
+import Modal from '../Modal';
 import Typography from '../Typography';
 import {
   CalendarConfigProviderDayjs,
@@ -711,6 +713,85 @@ export const CalendarIntegration: Story = {
               }}
             />
           </div>
+        </div>
+      </CalendarConfigProviderMoment>
+    );
+  },
+};
+
+/**
+ * Regression guard for DatePicker rendered inside a Modal: because the Modal
+ * body has `overflow: hidden` / `overflow-y: auto`, the calendar popper must
+ * portal out of the modal DOM subtree so it can visually overflow the modal
+ * bounds when anchored near the bottom. The trigger is deliberately placed at
+ * the end of a tall body so the dropdown would otherwise be clipped.
+ */
+export const InsideModal: Story = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [val, setVal] = useState<DateType | undefined>();
+
+    return (
+      <CalendarConfigProviderMoment>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Open Modal
+        </Button>
+        <Modal
+          cancelText="Cancel"
+          confirmText="OK"
+          modalType="standard"
+          onCancel={() => setOpen(false)}
+          onClose={() => setOpen(false)}
+          onConfirm={() => setOpen(false)}
+          open={open}
+          showModalFooter
+          showModalHeader
+          size="regular"
+          title="DatePicker inside Modal"
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: 360,
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Typography style={{ margin: '0 0 12px 0' }} variant="body">
+              The calendar popper should visually overflow the modal bounds.
+            </Typography>
+            <DatePicker onChange={setVal} placeholder="選擇日期" value={val} />
+          </div>
+        </Modal>
+      </CalendarConfigProviderMoment>
+    );
+  },
+};
+
+/**
+ * Regression guard for DatePicker anchored near the bottom edge of the
+ * viewport: floating-ui's `flip` middleware must detect insufficient bottom
+ * space and render the calendar above the trigger instead of clipping it.
+ */
+export const NearViewportEdge: Story = {
+  render: function Render() {
+    const [val, setVal] = useState<DateType | undefined>();
+
+    return (
+      <CalendarConfigProviderMoment>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            justifyContent: 'flex-end',
+            padding: 16,
+          }}
+        >
+          <Typography style={{ margin: '0 0 12px 0' }} variant="body">
+            Trigger sits at the bottom edge — calendar should flip upward.
+          </Typography>
+          <DatePicker onChange={setVal} placeholder="選擇日期" value={val} />
         </div>
       </CalendarConfigProviderMoment>
     );

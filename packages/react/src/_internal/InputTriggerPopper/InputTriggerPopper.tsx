@@ -1,5 +1,5 @@
 import { inputTriggerPopperClasses as classes } from '@mezzanine-ui/core/_internal/input-trigger-popper';
-import { offset, size } from '@floating-ui/react-dom';
+import { flip, offset, size } from '@floating-ui/react-dom';
 import { forwardRef } from 'react';
 import Popper, { PopperProps } from '../../Popper';
 import { Fade, FadeProps } from '../../Transition';
@@ -49,7 +49,6 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
           open
           anchor={anchor}
           className={cx(classes.host, className)}
-          disablePortal
           /** Prevent event bubble (Because popper may use portal, then click away function would be buggy) */
           onClick={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
@@ -60,6 +59,7 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
             ...restPopperOptions,
             middleware: [
               offset({ mainAxis: 4 }),
+              flip({ fallbackAxisSideDirection: 'end', padding: 8 }),
               ...(sameWidth ? [sameWidthMiddleware] : []),
               ...middleware,
             ],
