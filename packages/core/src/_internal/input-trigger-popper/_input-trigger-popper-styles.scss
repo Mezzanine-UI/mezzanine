@@ -2,5 +2,6 @@
 @use './input-trigger-popper' as *;
 
 .#{$prefix} {
+  pointer-events: auto;
   z-index: z-index.get(popover);
 }
