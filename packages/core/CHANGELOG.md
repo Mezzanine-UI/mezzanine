@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.3...@mezzanine-ui/core@1.0.4) (2026-04-22)
+
+### Bug Fixes
+
+- **core/input-trigger-popper:** enable pointer-events inside portal container ([81e48a7](https://github.com/Mezzanine-UI/mezzanine/commit/81e48a735847d6924ab6404c48603bdface5228c))
+
 ## [1.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.3-rc.1...@mezzanine-ui/core@1.0.3) (2026-04-21)
 
 **Note:** Graduated from `1.0.3-rc.1` to stable. No functional changes since the rc tag.

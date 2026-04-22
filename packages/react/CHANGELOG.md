@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.3...@mezzanine-ui/react@1.0.4) (2026-04-22)
+
+### Bug Fixes
+
+- **react/input-trigger-popper:** flip placement when bottom space is insufficient ([ad35aab](https://github.com/Mezzanine-UI/mezzanine/commit/ad35aabbebb90c33c028af09c7b1ecaf44a499d8))
+- **react/input-trigger-popper:** restore portal rendering ([c657c63](https://github.com/Mezzanine-UI/mezzanine/commit/c657c63607ef963e2cf39acc09f617c55ae61d2e))
+
 ## [1.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.2...@mezzanine-ui/react@1.0.3) (2026-04-21)
 
 ### Dependencies
