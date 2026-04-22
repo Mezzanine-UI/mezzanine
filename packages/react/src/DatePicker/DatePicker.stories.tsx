@@ -767,3 +767,33 @@ export const InsideModal: Story = {
     );
   },
 };
+
+/**
+ * Regression guard for DatePicker anchored near the bottom edge of the
+ * viewport: floating-ui's `flip` middleware must detect insufficient bottom
+ * space and render the calendar above the trigger instead of clipping it.
+ */
+export const NearViewportEdge: Story = {
+  render: function Render() {
+    const [val, setVal] = useState<DateType | undefined>();
+
+    return (
+      <CalendarConfigProviderMoment>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            justifyContent: 'flex-end',
+            padding: 16,
+          }}
+        >
+          <Typography style={{ margin: '0 0 12px 0' }} variant="body">
+            Trigger sits at the bottom edge — calendar should flip upward.
+          </Typography>
+          <DatePicker onChange={setVal} placeholder="選擇日期" value={val} />
+        </div>
+      </CalendarConfigProviderMoment>
+    );
+  },
+};

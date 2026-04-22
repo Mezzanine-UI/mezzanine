@@ -1,5 +1,5 @@
 import { inputTriggerPopperClasses as classes } from '@mezzanine-ui/core/_internal/input-trigger-popper';
-import { offset, size } from '@floating-ui/react-dom';
+import { flip, offset, size } from '@floating-ui/react-dom';
 import { forwardRef } from 'react';
 import Popper, { PopperProps } from '../../Popper';
 import { Fade, FadeProps } from '../../Transition';
@@ -59,6 +59,7 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
             ...restPopperOptions,
             middleware: [
               offset({ mainAxis: 4 }),
+              flip({ fallbackAxisSideDirection: 'end', padding: 8 }),
               ...(sameWidth ? [sameWidthMiddleware] : []),
               ...middleware,
             ],
