@@ -158,7 +158,7 @@ describe('<DatePicker />', () => {
       jest.useRealTimers();
     });
 
-    it('should close calendar when tab key down', async () => {
+    it('should redirect focus into calendar when tab key down from input', async () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DatePicker />
@@ -183,7 +183,44 @@ describe('<DatePicker />', () => {
       });
 
       act(() => {
-        fireEvent.keyDown(document, { key: 'Tab' });
+        fireEvent.keyDown(inputElement, { key: 'Tab' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        const popper = document.querySelector('.mzn-calendar');
+        expect(popper?.contains(document.activeElement)).toBe(true);
+      });
+    });
+
+    it('should close calendar when shift+tab key down from input', async () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DatePicker />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputElement] = element.getElementsByTagName('input');
+
+      act(() => {
+        fireEvent.focus(inputElement!);
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+      });
+
+      act(() => {
+        inputElement.focus();
+      });
+
+      act(() => {
+        fireEvent.keyDown(inputElement, { key: 'Tab', shiftKey: true });
       });
 
       await waitFor(() => {
@@ -418,7 +455,7 @@ describe('<DatePicker />', () => {
 
       await waitFor(() => {
         inputElement.focus();
-        fireEvent.keyDown(document, { key: 'Tab' });
+        fireEvent.keyDown(inputElement, { key: 'Tab', shiftKey: true });
       });
 
       await waitFor(() => {
