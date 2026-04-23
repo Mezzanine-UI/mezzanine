@@ -169,7 +169,7 @@ describe('<DateRangePicker />', () => {
       });
     });
 
-    it('should close calendar when tab key down on inputTo element', async () => {
+    it('should redirect focus into calendar when tab key down on inputTo element', async () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateRangePicker />
@@ -192,7 +192,39 @@ describe('<DateRangePicker />', () => {
       });
 
       await act(async () => {
-        fireEvent.keyDown(document, { key: 'Tab' });
+        fireEvent.keyDown(inputToElement, { key: 'Tab' });
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+        expect(getRangeCalendar()?.contains(document.activeElement)).toBe(true);
+      });
+    });
+
+    it('should close calendar when shift+tab key down on inputTo element', async () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [, inputToElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputToElement!);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      await act(async () => {
+        inputToElement.focus();
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(inputToElement, { key: 'Tab', shiftKey: true });
       });
 
       await waitFor(() => {
