@@ -90,7 +90,7 @@ export interface TableContextValue<
   rowState?:
     | TableRowState
     | ((rowData: TableDataSource) => TableRowState | undefined);
-  rowHeight: number;
+  rowHeight: number | undefined;
   scroll?: TableScroll;
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   selection?: TableSelectionState<T>;

@@ -99,7 +99,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       () => ({
         ...style,
         ...draggableProvided?.draggableProps.style,
-        height: rowHeight,
+        ...(rowHeight !== undefined && { height: rowHeight }),
       }),
       [style, rowHeight, draggableProvided?.draggableProps.style],
     );

@@ -48,6 +48,7 @@ import { useTableScroll } from './hooks/useTableScroll';
 import { useTableSelection } from './hooks/useTableSelection';
 import { useTableSorting } from './hooks/useTableSorting';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import TableBulkActions from './components/TableBulkActions';
 import { useComposeRefs } from '../hooks/useComposeRefs';
@@ -106,43 +107,33 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     : dataSource;
 
   /** Feature: Row Height Preset */
-  const rowHeight = useMemo(() => {
+  const rowHeightVariableName = useMemo(() => {
     switch (rowHeightPreset) {
       case 'condensed':
         return size === 'main'
-          ? getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-condensed`,
-            )
-          : getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-reduced`,
-            );
+          ? `--${spacingPrefix}-size-container-condensed`
+          : `--${spacingPrefix}-size-container-reduced`;
       case 'detailed':
         return size === 'main'
-          ? getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-tiny`,
-            )
-          : getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-tightened`,
-            );
+          ? `--${spacingPrefix}-size-container-tiny`
+          : `--${spacingPrefix}-size-container-tightened`;
       case 'roomy':
         return size === 'main'
-          ? getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-small`,
-            )
-          : getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-medium`,
-            );
+          ? `--${spacingPrefix}-size-container-small`
+          : `--${spacingPrefix}-size-container-medium`;
       case 'base':
       default:
         return size === 'main'
-          ? getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-minimized`,
-            )
-          : getNumericCSSVariablePixelValue(
-              `--${spacingPrefix}-size-container-minimal`,
-            );
+          ? `--${spacingPrefix}-size-container-minimized`
+          : `--${spacingPrefix}-size-container-minimal`;
     }
   }, [rowHeightPreset, size]);
+
+  const [rowHeight, setRowHeight] = useState<number | undefined>(undefined);
+
+  useIsomorphicLayoutEffect(() => {
+    setRowHeight(getNumericCSSVariablePixelValue(rowHeightVariableName));
+  }, [rowHeightVariableName]);
 
   /** Feature: Highlight */
   const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null);
