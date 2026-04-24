@@ -497,12 +497,14 @@ export const SelectInput = () => {
   const [bothValue, setBothValue] = useState('.com');
   const [sizeMainValue, setSizeMainValue] = useState('.com');
   const [sizeSubValue, setSizeSubValue] = useState('.com');
+  const [keepOpenValue, setKeepOpenValue] = useState('.com');
 
   const handlePrefixSelect = (value: string) => setPrefixValue(value);
   const handleSuffixSelect = (value: string) => setSuffixValue(value);
   const handleBothSelect = (value: string) => setBothValue(value);
   const handleSizeMainSelect = (value: string) => setSizeMainValue(value);
   const handleSizeSubSelect = (value: string) => setSizeSubValue(value);
+  const handleKeepOpenSelect = (value: string) => setKeepOpenValue(value);
 
   // Helper to create select input props with proper typing
   const createSelectProps = (
@@ -515,6 +517,7 @@ export const SelectInput = () => {
         'variant' | 'options' | 'selectedValue' | 'onSelect' | 'selectButton'
       >
     >,
+    selectButtonOverrides?: { closeOnSelect?: boolean },
   ): SelectInputProps =>
     ({
       variant: 'select',
@@ -524,6 +527,7 @@ export const SelectInput = () => {
       selectButton: {
         position,
         value: selectedValue,
+        ...selectButtonOverrides,
       },
       ...additionalProps,
     }) as SelectInputProps;
@@ -586,6 +590,21 @@ export const SelectInput = () => {
             size: 'sub',
             placeholder: 'Placeholder',
           })}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          closeOnSelect = false (dropdown stays open after selecting)
+        </Typography>
+        <Input
+          {...createSelectProps(
+            keepOpenValue,
+            handleKeepOpenSelect,
+            'suffix',
+            { placeholder: 'Placeholder' },
+            { closeOnSelect: false },
+          )}
         />
       </section>
     </div>
