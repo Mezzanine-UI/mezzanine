@@ -52,7 +52,7 @@ export function useTableVirtualization<T extends TableDataSource>({
         return measuredHeight;
       }
 
-      return rowHeight;
+      return rowHeight ?? 0;
     },
     [dataSource, rowHeight],
   );
