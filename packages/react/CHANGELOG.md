@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.4...@mezzanine-ui/react@1.1.0) (2026-04-24)
+
+### Bug Fixes
+
+- **react/picker:** restore keyboard navigation across portalled popper ([8da724f](https://github.com/Mezzanine-UI/mezzanine/commit/8da724f554e3a111f7947d6c14f0d77391b53074))
+- **react/table:** prevent SSR hydration mismatch from CSS variable read ([29a9532](https://github.com/Mezzanine-UI/mezzanine/commit/29a9532b03025393aba8964c820db724bc4679fb))
+
+### Features
+
+- **react/select-button:** add closeOnSelect prop with controlled dropdown ([e12a111](https://github.com/Mezzanine-UI/mezzanine/commit/e12a111d04b7f60f845f85a263543a455ff87b3e))
+
 ## [1.0.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.3...@mezzanine-ui/react@1.0.4) (2026-04-22)
 
 ### Bug Fixes
