@@ -21,6 +21,11 @@ export interface SelectButtonProps
     'disabled' | 'onSelect' | 'type' | 'selectedValue'
   > {
   /**
+   * Whether clicking an option should automatically close the dropdown.
+   * @default true
+   */
+  closeOnSelect?: boolean;
+  /**
    * Whether the select button is disabled.
    */
   disabled?: boolean;
@@ -59,6 +64,7 @@ const SelectButton = forwardRef<HTMLButtonElement, SelectButtonProps>(
   function SelectButton(props, ref) {
     const {
       className,
+      closeOnSelect = true,
       disabled,
       dropdownMaxHeight = 114,
       dropdownPlacement = 'bottom-start',
@@ -72,21 +78,23 @@ const SelectButton = forwardRef<HTMLButtonElement, SelectButtonProps>(
 
     const [open, setOpen] = useState(false);
 
-    const handleOpen = useCallback(() => {
-      if (!disabled) {
-        setOpen(true);
-      }
-    }, [disabled]);
-
-    const handleClose = useCallback(() => {
-      setOpen(false);
-    }, []);
+    const handleVisibilityChange = useCallback(
+      (next: boolean) => {
+        if (disabled && next) return;
+        setOpen(next);
+      },
+      [disabled],
+    );
 
     const handleSelect = useCallback(
       (option: DropdownOption) => {
         onSelect?.(option.id);
+
+        if (closeOnSelect) {
+          setOpen(false);
+        }
       },
-      [onSelect],
+      [closeOnSelect, onSelect],
     );
 
     const dropdownOptions: DropdownOption[] = options.map((option) => ({
@@ -99,9 +107,9 @@ const SelectButton = forwardRef<HTMLButtonElement, SelectButtonProps>(
         customWidth={dropdownWidth}
         disabled={disabled}
         maxHeight={dropdownMaxHeight}
-        onClose={handleClose}
-        onOpen={handleOpen}
         onSelect={handleSelect}
+        onVisibilityChange={handleVisibilityChange}
+        open={open}
         options={dropdownOptions}
         placement={dropdownPlacement}
         value={value}
