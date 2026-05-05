@@ -97,6 +97,7 @@ const PaginationPageSize = forwardRef<HTMLDivElement, PaginationPageSizeProps>(
         ) : null}
         <Dropdown
           disabled={disabled}
+          flip
           minWidth={0}
           onSelect={dropDownOnSelect}
           onVisibilityChange={setOpen}
