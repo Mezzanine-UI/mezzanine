@@ -24,7 +24,7 @@ import {
   DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 
-import { offset, size } from '@floating-ui/react-dom';
+import { flip as flipMiddlewareFn, offset, size } from '@floating-ui/react-dom';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { TransitionGroup } from 'react-transition-group';
 
@@ -205,6 +205,14 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   sameWidth?: boolean;
   /**
+   * Whether to enable floating-ui `flip` middleware.
+   * When `true`, the dropdown automatically flips to the opposite side
+   * (e.g. `bottom-start` → `top-start`) if it would overflow the viewport.
+   * Off by default to preserve existing placement behavior across consumers.
+   * @default false
+   */
+  flip?: boolean;
+  /**
    * If true, display a bar at the top of the dropdown action area.
    * @default false
    */
@@ -369,6 +377,7 @@ export default function Dropdown(props: DropdownProps) {
     placement = 'bottom-start',
     customWidth,
     sameWidth = false,
+    flip = false,
     listboxId: listboxIdProp,
     listboxLabel,
     onClose,
@@ -569,6 +578,15 @@ export default function Dropdown(props: DropdownProps) {
   const offsetMiddleware = useMemo(() => {
     return offset({ mainAxis: 4 });
   }, []);
+
+  const flipMiddleware = useMemo(() => {
+    if (!flip) return null;
+
+    return flipMiddlewareFn({
+      fallbackStrategy: 'bestFit',
+      padding: 8,
+    });
+  }, [flip]);
 
   // Set z-index for popper only when explicitly provided via the `zIndex` prop.
   // When not provided, do NOT apply any inline z-index so that elements inside
@@ -1024,6 +1042,7 @@ export default function Dropdown(props: DropdownProps) {
             placement: popoverPlacement,
             middleware: [
               offsetMiddleware,
+              ...(flipMiddleware ? [flipMiddleware] : []),
               ...(zIndexMiddleware ? [zIndexMiddleware] : []),
               ...(customWidthMiddleware ? [customWidthMiddleware] : []),
               ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
