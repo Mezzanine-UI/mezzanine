@@ -174,6 +174,18 @@ const isMondayFirst = (locale: string): boolean => {
   return getActualFirstDayOfWeek(locale) === 1;
 };
 
+/**
+ * Whether the locale should be week-numbered using the ISO 8601 algorithm.
+ * Requires BOTH Monday-first AND `isISOWeekLocale` (i.e. minimalDays=4 per
+ * CLDR). For Monday-first locales whose CLDR `minimalDays` is 1 (en-AU,
+ * en-NZ, ro-RO, tr-TR, sl-SI, hr-HR, uk-UA, lv-LV …) this returns false so
+ * `getWeek`/`getWeekYear`/format `gggg/ww` use locale week numbering and
+ * stay consistent with `getDefaultModeFormat`.
+ */
+const usesISOWeekRules = (locale: string): boolean => {
+  return isMondayFirst(locale) && isISOWeekLocale(locale);
+};
+
 const CalendarMethodsDayjs: CalendarMethodsType = {
   /** Locale helpers */
   getFirstDayOfWeek: (locale) => getActualFirstDayOfWeek(locale),
@@ -186,16 +198,34 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getHour: (date) => dayjs(date).hour(),
   getDate: (date) => dayjs(date).date(),
   getWeek: (date, locale) => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return dayjs(date).isoWeek();
     }
-    return dayjs(date).week();
+    // `.week()` reads the dayjs instance's locale (firstDayOfWeek + doy).
+    // Apply the requested locale explicitly — otherwise the global default
+    // (usually `en` Sunday-first) would be used, breaking Monday-first
+    // non-ISO locales such as en-AU / ro-RO.
+    return dayjs(date).locale(localeMapping(locale)).week();
   },
   getWeekYear: (date, locale) => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return dayjs(date).isoWeekYear();
     }
-    return dayjs(date).year(); // dayjs doesn't have weekYear, use year as approximation
+    // dayjs has no native locale `.weekYear()`. Use the same heuristic as
+    // moment.js: when the date sits on a year boundary that crosses week
+    // boundaries, the weekYear differs from the calendar year.
+    //   • early-January (month=0) with week >= 52 → previous calendar's
+    //     final week. weekYear = year - 1.
+    //   • late-December (month=11) with week === 1 → next calendar's first
+    //     week. weekYear = year + 1.
+    //   • otherwise weekYear = year.
+    const d = dayjs(date).locale(localeMapping(locale));
+    const week = d.week();
+    const month = d.month();
+    const year = d.year();
+    if (month === 0 && week >= 52) return year - 1;
+    if (month === 11 && week === 1) return year + 1;
+    return year;
   },
   getWeekDay: (date) => {
     const clone = dayjs(date).locale('en');
@@ -258,7 +288,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     dayjs(target).startOf(granularity).toISOString(),
 
   getCurrentWeekFirstDate: (value, locale) => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return dayjs(value)
         .startOf('isoWeek')
         .hour(0)
@@ -267,7 +297,10 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
         .millisecond(0)
         .toISOString();
     }
+    // `.startOf('week')` honors the instance locale's firstDayOfWeek, so
+    // apply the requested locale before truncating.
     return dayjs(value)
+      .locale(localeMapping(locale))
       .startOf('week')
       .hour(0)
       .minute(0)
@@ -365,22 +398,27 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   isSameDate: (dateOne, dateTwo) =>
     dayjs(dateOne).isSame(dayjs(dateTwo), 'date'),
   isSameWeek: (dateOne, dateTwo, locale) => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return dayjs(dateOne).isSame(dayjs(dateTwo), 'isoWeek');
     }
-    return dayjs(dateOne).isSame(dayjs(dateTwo), 'week');
+    // `'week'` granularity uses the calling instance's locale — set locale
+    // on the comparator so non-ISO Monday-first locales align correctly.
+    return dayjs(dateOne)
+      .locale(localeMapping(locale))
+      .isSame(dayjs(dateTwo), 'week');
   },
   isInMonth: (target, month) => dayjs(target).month() === month,
   isDateIncluded: (date, targets) =>
     targets.some((target) => dayjs(date).isSame(dayjs(target), 'day')),
   isWeekIncluded: (firstDateOfWeek, targets, locale) => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return targets.some((target) =>
         dayjs(firstDateOfWeek).isSame(dayjs(target), 'isoWeek'),
       );
     }
+    const mappedLocale = localeMapping(locale);
     return targets.some((target) =>
-      dayjs(firstDateOfWeek).isSame(dayjs(target), 'week'),
+      dayjs(firstDateOfWeek).locale(mappedLocale).isSame(dayjs(target), 'week'),
     );
   },
   isMonthIncluded: (date, targets) =>
@@ -417,9 +455,12 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     //   ISO values because dayjs does not expose a locale `weekYear()`).
     // - GGGG / WW: ISO-8601 week year / number regardless of locale.
     if (format.includes('gggg') || format.includes('GGGG')) {
-      const isMon = isMondayFirst(locale);
-      const localeYear = isMon ? result.isoWeekYear() : result.year();
-      const localeWeek = isMon ? result.isoWeek() : result.week();
+      // Use ISO values for `gggg`/`ww` only when the locale truly uses
+      // ISO 8601 week rules. Monday-first non-ISO locales (e.g. en-AU,
+      // ro-RO) must emit locale-week values so format and getWeek agree.
+      const useISO = usesISOWeekRules(locale);
+      const localeYear = useISO ? result.isoWeekYear() : result.year();
+      const localeWeek = useISO ? result.isoWeek() : result.week();
       const isoYear = result.isoWeekYear();
       const isoWeek = result.isoWeek();
 

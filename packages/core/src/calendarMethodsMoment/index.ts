@@ -20,6 +20,18 @@ const isMondayFirst = (locale: string): boolean => {
   return getActualFirstDayOfWeek(locale) === 1;
 };
 
+/**
+ * Whether the locale should be week-numbered using the ISO 8601 algorithm.
+ * Requires BOTH Monday-first AND `isISOWeekLocale` (i.e. minimalDays=4 per
+ * CLDR). For Monday-first locales whose CLDR `minimalDays` is 1 (en-AU,
+ * en-NZ, ro-RO, tr-TR, sl-SI, hr-HR, uk-UA, lv-LV …) this returns false so
+ * `getWeek`/`getWeekYear` use locale week numbering and stay consistent
+ * with `getDefaultModeFormat`.
+ */
+const usesISOWeekRules = (locale: string): boolean => {
+  return isMondayFirst(locale) && isISOWeekLocale(locale);
+};
+
 const CalendarMethodsMoment: CalendarMethodsType = {
   /** Get date infos */
   getNow: () => moment().toISOString(),
@@ -28,16 +40,20 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   getHour: (date) => moment(date).hour(),
   getDate: (date) => moment(date).date(),
   getWeek: (date, locale) => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return moment(date).isoWeek();
     }
-    return moment(date).week();
+    // `.week()` reads the moment instance's locale (firstDayOfWeek + doy).
+    // Apply the requested locale explicitly — otherwise the global default
+    // (usually `en-US` Sunday-first) would be used, breaking Monday-first
+    // non-ISO locales such as ro-RO / tr-TR.
+    return moment(date).locale(locale).week();
   },
   getWeekYear: (date, locale) => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return moment(date).isoWeekYear();
     }
-    return moment(date).weekYear();
+    return moment(date).locale(locale).weekYear();
   },
   getWeekDay: (date) => {
     const clone = moment(date).locale('en_US');
@@ -151,10 +167,9 @@ const CalendarMethodsMoment: CalendarMethodsType = {
     moment(target).startOf(granularity).toISOString(),
 
   getCurrentWeekFirstDate: (value, locale) => {
-    const m = moment(value);
-    if (isMondayFirst(locale)) {
-      // Monday-first: starts on Monday
-      return m
+    if (usesISOWeekRules(locale)) {
+      // Monday-first AND ISO: starts on Monday using ISO week.
+      return moment(value)
         .startOf('isoWeek')
         .hour(0)
         .minute(0)
@@ -162,8 +177,10 @@ const CalendarMethodsMoment: CalendarMethodsType = {
         .millisecond(0)
         .toISOString();
     }
-    // Locale week: starts on Sunday (for en-us, zh-tw, etc.)
-    return m
+    // Otherwise: locale-week start. `.startOf('week')` uses the instance
+    // locale's firstDayOfWeek, so apply the requested locale first.
+    return moment(value)
+      .locale(locale)
       .startOf('week')
       .hour(0)
       .minute(0)
@@ -266,22 +283,23 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   isSameDate: (dateOne, dateTwo) =>
     moment(dateOne).isSame(moment(dateTwo), 'date'),
   isSameWeek: (dateOne, dateTwo, locale = 'en-us') => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return moment(dateOne).isSame(moment(dateTwo), 'isoWeek');
     }
-    return moment(dateOne).isSame(moment(dateTwo), 'week');
+    // `'week'` granularity uses the calling instance's locale.
+    return moment(dateOne).locale(locale).isSame(moment(dateTwo), 'week');
   },
   isInMonth: (target, month) => moment(target).month() === month,
   isDateIncluded: (date, targets) =>
     targets.some((target) => moment(date).isSame(moment(target), 'day')),
   isWeekIncluded: (firstDateOfWeek, targets, locale = 'en-us') => {
-    if (isMondayFirst(locale)) {
+    if (usesISOWeekRules(locale)) {
       return targets.some((target) =>
         moment(firstDateOfWeek).isSame(moment(target), 'isoWeek'),
       );
     }
     return targets.some((target) =>
-      moment(firstDateOfWeek).isSame(moment(target), 'week'),
+      moment(firstDateOfWeek).locale(locale).isSame(moment(target), 'week'),
     );
   },
   isMonthIncluded: (date, targets) =>
