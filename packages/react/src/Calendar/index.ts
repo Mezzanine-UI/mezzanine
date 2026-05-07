@@ -21,6 +21,8 @@ export { default as CalendarConfigProviderMoment } from './CalendarConfigProvide
 export type { CalendarConfigProviderMomentProps } from './CalendarConfigProviderMoment';
 export { default as CalendarConfigProviderLuxon } from './CalendarConfigProviderLuxon';
 export type { CalendarConfigProviderLuxonProps } from './CalendarConfigProviderLuxon';
+export { default as CalendarConfigProviderTemporal } from './CalendarConfigProviderTemporal';
+export type { CalendarConfigProviderTemporalProps } from './CalendarConfigProviderTemporal';
 export type { CalendarYearsProps } from './CalendarYears';
 export { default as CalendarYears } from './CalendarYears';
 export type { CalendarQuartersProps } from './CalendarQuarters';
