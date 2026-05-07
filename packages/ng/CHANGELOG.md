@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.4...@mezzanine-ui/ng@1.0.0-rc.5) (2026-05-07)
+
+### Features
+
+- **ng/calendar:** add Temporal column to multi-adapter stories ([d1f070f](https://github.com/Mezzanine-UI/mezzanine/commit/d1f070fee47ae767f0a5f7a03e769acc90ff4ce3))
+
 # [1.0.0-rc.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.3...@mezzanine-ui/ng@1.0.0-rc.4) (2026-04-22)
 
 **Note:** Version bump only for package @mezzanine-ui/ng

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.1.0...@mezzanine-ui/react@1.2.0) (2026-05-07)
+
+### Features
+
+- **react/dropdown:** add opt-in flip middleware prop ([eb830da](https://github.com/Mezzanine-UI/mezzanine/commit/eb830da61cd22e2ecd5710b4f3622b9c448ae483))
+- **react/pagination:** enable flip on page size dropdown to avoid clipping ([0f8dfbe](https://github.com/Mezzanine-UI/mezzanine/commit/0f8dfbe37b5800fa027b14f7c50cb63d121d15e5))
+- **react/temporal:** add CalendarConfigProviderTemporal sub-path entry ([fcd363b](https://github.com/Mezzanine-UI/mezzanine/commit/fcd363b524aba7a86d693a9aa55fd8c2dc142330))
+
 # [1.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.4...@mezzanine-ui/react@1.1.0) (2026-04-24)
 
 ### Bug Fixes

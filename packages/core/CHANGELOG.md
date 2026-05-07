@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.4...@mezzanine-ui/core@1.1.0) (2026-05-07)
+
+### Bug Fixes
+
+- **core/calendar:** align ISO_WEEK_LOCALES with CLDR weekInfo ([1e736cc](https://github.com/Mezzanine-UI/mezzanine/commit/1e736cc2973bd6135e53e6a2af3f5b15bb788b38))
+- **core/calendarMethodsDayjs:** align week math with CLDR for non-ISO Monday-first locales ([c628e51](https://github.com/Mezzanine-UI/mezzanine/commit/c628e513e7bef92bc2a315c6f19549e023c28437))
+- **core/calendarMethodsMoment:** align week math with CLDR for non-ISO Monday-first locales ([b915ff6](https://github.com/Mezzanine-UI/mezzanine/commit/b915ff680ee72bdafb6716b89af4c6aeaa890363))
+
+### Features
+
+- **core/calendarMethodsTemporal:** add JS-native Temporal adapter ([d1f3f35](https://github.com/Mezzanine-UI/mezzanine/commit/d1f3f35e273126205f927c463ab47d43fd3228a4))
+
 ## [1.0.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.3...@mezzanine-ui/core@1.0.4) (2026-04-22)
 
 ### Bug Fixes
