@@ -16,19 +16,87 @@ import * as CalendarStories from './Calendar.stories';
 
 <Description of={Calendar} />
 
-### For typescript users (currently set to Moment as default)
+### Choosing a date adapter
 
-When using calendar, you should declare an exported `DateType` with your desired date library.
-For example, having below code in your `index.d.ts`:
-(Currently don't need to set this)
+Calendar requires a `CalendarMethods` adapter for the underlying date math.
+Mezzanine ships four interchangeable adapters — pick **one** based on which
+date library is already in your app, or pick **Temporal** to avoid pulling
+any third-party date library at all:
 
-```ts
-import { Moment } from 'moment';
+| Adapter  | Sub-path entry                 | Peer dependency                    | Notes                                                                 |
+| -------- | ------------------------------ | ---------------------------------- | --------------------------------------------------------------------- |
+| Moment   | `@mezzanine-ui/react/moment`   | `moment`                           | Heaviest, most features.                                              |
+| Dayjs    | `@mezzanine-ui/react/dayjs`    | `dayjs`                            | Lightweight; same API surface as moment.                              |
+| Luxon    | `@mezzanine-ui/react/luxon`    | `luxon`                            | ISO-week only (Monday-first).                                         |
+| Temporal | `@mezzanine-ui/react/temporal` | `@js-temporal/polyfill` (optional) | JS-native, no extra date library; needs polyfill on Safari / Node 22. |
 
-declare module '@mezzanine-ui/core/calendar' {
-  export type DateType = Moment;
+#### Temporal — polyfill setup
+
+Native Temporal is available in Chrome 144+, Firefox 139+, Edge 144+. Safari
+and Node ≤ 23 do **not** ship Temporal natively, so any application that
+needs to support those environments must register
+[`@js-temporal/polyfill`](https://www.npmjs.com/package/@js-temporal/polyfill)
+on `globalThis` once **before** `CalendarMethodsTemporal` is imported
+anywhere. **The polyfill must run on the client**, not just the server —
+in SSR setups where the layout is a Server Component the global assignment
+on the server does not reach the browser.
+
+##### Vite / CRA / non-RSC setups
+
+Add the registration to your client entry (`main.tsx` / `index.tsx`):
+
+```tsx
+// main.tsx — single client entry point.
+import { Temporal } from '@js-temporal/polyfill';
+(globalThis as { Temporal?: unknown }).Temporal = Temporal;
+
+import {
+  CalendarConfigProviderTemporal,
+  CalendarLocale,
+} from '@mezzanine-ui/react/temporal';
+// …
+```
+
+##### Next.js App Router (Server Components by default)
+
+Layouts run on the server, so place the polyfill in a Client Component and
+import that component from your layout. The Client Component's module-level
+side effect runs in the browser before render.
+
+```tsx
+// app/temporal-polyfill.tsx
+'use client';
+import { Temporal } from '@js-temporal/polyfill';
+(globalThis as { Temporal?: unknown }).Temporal = Temporal;
+export function TemporalPolyfill() {
+  return null;
 }
 ```
+
+```tsx
+// app/layout.tsx
+import { TemporalPolyfill } from './temporal-polyfill';
+import {
+  CalendarConfigProviderTemporal,
+  CalendarLocale,
+} from '@mezzanine-ui/react/temporal';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <TemporalPolyfill />
+        <CalendarConfigProviderTemporal locale={CalendarLocale.ZH_TW}>
+          {children}
+        </CalendarConfigProviderTemporal>
+      </body>
+    </html>
+  );
+}
+```
+
+If `globalThis.Temporal` is absent at the time `CalendarMethodsTemporal`
+runs, every method throws a descriptive error pointing at this section.
 
 [Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Calendar/Calendar.tsx)
 

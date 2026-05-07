@@ -150,37 +150,41 @@
 
 ## Utility（工具）
 
-| 元件                   | 匯入名稱                 | 說明                                                                                 |
-| ---------------------- | ------------------------ | ------------------------------------------------------------------------------------ |
-| Calendar               | `Calendar`               | 完整日曆元件，支援日/週/月/季/半年/年視圖切換                                        |
-| RangeCalendar          | `RangeCalendar`          | 範圍日曆，支援選取起始至結束日期範圍                                                 |
-| CalendarCell           | `CalendarCell`           | 日曆中的單一日期格子                                                                 |
-| CalendarConfigProvider | `CalendarConfigProvider` | 日曆全域設定提供者，設定語系與格式                                                   |
-| CalendarControls       | `CalendarControls`       | 日曆的月份/年份切換控制列                                                            |
-| CalendarDayOfWeek      | `CalendarDayOfWeek`      | 日曆的週幾標題列                                                                     |
-| CalendarDays           | `CalendarDays`           | 日曆的日期格子區域                                                                   |
-| CalendarHalfYears      | `CalendarHalfYears`      | 日曆的半年視圖                                                                       |
-| CalendarMonths         | `CalendarMonths`         | 日曆的月份視圖                                                                       |
-| CalendarQuarters       | `CalendarQuarters`       | 日曆的季度視圖                                                                       |
-| CalendarWeeks          | `CalendarWeeks`          | 日曆的週視圖                                                                         |
-| CalendarYears          | `CalendarYears`          | 日曆的年份視圖                                                                       |
-| Dropdown               | `Dropdown`               | 下拉選單面板，由 Select、AutoComplete、Cascader 等元件內部使用                       |
-| DropdownAction         | `DropdownAction`         | Dropdown 中的操作按鈕項目                                                            |
-| DropdownItem           | `DropdownItem`           | Dropdown 中的標準選項項目                                                            |
-| DropdownItemCard       | `DropdownItemCard`       | Dropdown 中的卡片式選項項目                                                          |
-| DropdownStatus         | `DropdownStatus`         | Dropdown 的狀態提示顯示（空狀態、載入中等）                                          |
-| Popper                 | `Popper`                 | 定位浮層元件，基於 Floating UI，Tooltip / Dropdown 的定位基底                        |
-| Portal                 | `Portal`                 | 將子元件渲染到指定 DOM 節點，Modal、Drawer 使用此元件脫離文件流                      |
-| TimePanel              | `TimePanel`              | 時間選取面板，包含時/分/秒的滾輪選取                                                 |
-| TimePanelColumn        | `TimePanelColumn`        | TimePanel 中的單一時間欄（時、分或秒）的滾輪列                                       |
-| Transition             | `Transition`             | 動畫過渡基底元件，提供 Collapse / Fade / Rotate / Scale / Slide / Translate 六種動畫 |
-| Collapse               | `Collapse`               | 收合展開動畫（高度過渡）                                                             |
-| Fade                   | `Fade`                   | 淡入淡出動畫                                                                         |
-| Rotate                 | `Rotate`                 | 旋轉動畫                                                                             |
-| Scale                  | `Scale`                  | 縮放動畫                                                                             |
-| Slide                  | `Slide`                  | 滑動動畫，Drawer 使用此元件進行進出場                                                |
-| Translate              | `Translate`              | 位移動畫                                                                             |
-| createNotifier         | `createNotifier`         | 工廠函式，建立通知管理器實例，用於指令式顯示 toast / 通知訊息                        |
+| 元件                           | 匯入名稱                         | 說明                                                                                                                                                        |
+| ------------------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Calendar                       | `Calendar`                       | 完整日曆元件，支援日/週/月/季/半年/年視圖切換                                                                                                               |
+| RangeCalendar                  | `RangeCalendar`                  | 範圍日曆，支援選取起始至結束日期範圍                                                                                                                        |
+| CalendarCell                   | `CalendarCell`                   | 日曆中的單一日期格子                                                                                                                                        |
+| CalendarConfigProvider         | `CalendarConfigProvider`         | 日曆全域設定提供者，設定語系與格式                                                                                                                          |
+| CalendarConfigProviderDayjs    | `CalendarConfigProviderDayjs`    | 預設綁定 dayjs 實作的 CalendarConfigProvider，sub-path entry `@mezzanine-ui/react/dayjs`                                                                    |
+| CalendarConfigProviderLuxon    | `CalendarConfigProviderLuxon`    | 預設綁定 luxon 實作的 CalendarConfigProvider，sub-path entry `@mezzanine-ui/react/luxon`                                                                    |
+| CalendarConfigProviderMoment   | `CalendarConfigProviderMoment`   | 預設綁定 moment 實作的 CalendarConfigProvider，sub-path entry `@mezzanine-ui/react/moment`                                                                  |
+| CalendarConfigProviderTemporal | `CalendarConfigProviderTemporal` | 預設綁定 JS-native Temporal 實作的 CalendarConfigProvider，sub-path entry `@mezzanine-ui/react/temporal`；Safari / Node 22 須先安裝 `@js-temporal/polyfill` |
+| CalendarControls               | `CalendarControls`               | 日曆的月份/年份切換控制列                                                                                                                                   |
+| CalendarDayOfWeek              | `CalendarDayOfWeek`              | 日曆的週幾標題列                                                                                                                                            |
+| CalendarDays                   | `CalendarDays`                   | 日曆的日期格子區域                                                                                                                                          |
+| CalendarHalfYears              | `CalendarHalfYears`              | 日曆的半年視圖                                                                                                                                              |
+| CalendarMonths                 | `CalendarMonths`                 | 日曆的月份視圖                                                                                                                                              |
+| CalendarQuarters               | `CalendarQuarters`               | 日曆的季度視圖                                                                                                                                              |
+| CalendarWeeks                  | `CalendarWeeks`                  | 日曆的週視圖                                                                                                                                                |
+| CalendarYears                  | `CalendarYears`                  | 日曆的年份視圖                                                                                                                                              |
+| Dropdown                       | `Dropdown`                       | 下拉選單面板，由 Select、AutoComplete、Cascader 等元件內部使用                                                                                              |
+| DropdownAction                 | `DropdownAction`                 | Dropdown 中的操作按鈕項目                                                                                                                                   |
+| DropdownItem                   | `DropdownItem`                   | Dropdown 中的標準選項項目                                                                                                                                   |
+| DropdownItemCard               | `DropdownItemCard`               | Dropdown 中的卡片式選項項目                                                                                                                                 |
+| DropdownStatus                 | `DropdownStatus`                 | Dropdown 的狀態提示顯示（空狀態、載入中等）                                                                                                                 |
+| Popper                         | `Popper`                         | 定位浮層元件，基於 Floating UI，Tooltip / Dropdown 的定位基底                                                                                               |
+| Portal                         | `Portal`                         | 將子元件渲染到指定 DOM 節點，Modal、Drawer 使用此元件脫離文件流                                                                                             |
+| TimePanel                      | `TimePanel`                      | 時間選取面板，包含時/分/秒的滾輪選取                                                                                                                        |
+| TimePanelColumn                | `TimePanelColumn`                | TimePanel 中的單一時間欄（時、分或秒）的滾輪列                                                                                                              |
+| Transition                     | `Transition`                     | 動畫過渡基底元件，提供 Collapse / Fade / Rotate / Scale / Slide / Translate 六種動畫                                                                        |
+| Collapse                       | `Collapse`                       | 收合展開動畫（高度過渡）                                                                                                                                    |
+| Fade                           | `Fade`                           | 淡入淡出動畫                                                                                                                                                |
+| Rotate                         | `Rotate`                         | 旋轉動畫                                                                                                                                                    |
+| Scale                          | `Scale`                          | 縮放動畫                                                                                                                                                    |
+| Slide                          | `Slide`                          | 滑動動畫，Drawer 使用此元件進行進出場                                                                                                                       |
+| Translate                      | `Translate`                      | 位移動畫                                                                                                                                                    |
+| createNotifier                 | `createNotifier`                 | 工廠函式，建立通知管理器實例，用於指令式顯示 toast / 通知訊息                                                                                               |
 
 ---
 

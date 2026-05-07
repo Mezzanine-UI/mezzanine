@@ -17,6 +17,10 @@ import { useCalendarControls } from './useCalendarControls';
 import Toggle from '../Toggle';
 import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import { Temporal } from '@js-temporal/polyfill';
+// Register the polyfill so CalendarMethodsTemporal can use globalThis.Temporal.
+(globalThis as { Temporal?: unknown }).Temporal = Temporal;
+import CalendarMethodsTemporal from '@mezzanine-ui/core/calendarMethodsTemporal';
 
 const meta: Meta<typeof Calendar> = {
   title: 'Internal/Calendar',
@@ -238,6 +242,15 @@ export const CalendarPlayground: Story = {
           Luxon
           <CalendarConfigProvider
             methods={CalendarMethodsLuxon}
+            locale={locale}
+          >
+            <InnerCalendarPlayground mode={mode} locale={locale} />
+          </CalendarConfigProvider>
+        </div>
+        <div>
+          Temporal
+          <CalendarConfigProvider
+            methods={CalendarMethodsTemporal}
             locale={locale}
           >
             <InnerCalendarPlayground mode={mode} locale={locale} />
