@@ -109,9 +109,24 @@ export function getCalendarYearRange(year: number) {
 }
 
 /**
- * Locales that use ISO week (Monday as first day of week).
- * These are primarily European and Middle Eastern locales.
- * Includes both full locale codes (e.g., 'de-de') and short codes (e.g., 'de').
+ * Locales that follow ISO 8601 week rules — Monday is the first day of week
+ * AND week 1 contains at least 4 days of the new year (`minimalDays = 4`).
+ *
+ * Audited against `Intl.Locale#weekInfo` (CLDR). Entries previously listed
+ * here that disagree with CLDR were removed:
+ *  - `pt-pt`, `pt`  → Sunday-first per CLDR (was emitting wrong week
+ *    boundaries for Portuguese)
+ *  - `he-il`, `he`  → Sunday-first per CLDR
+ *  - `ar-sa`, `ar`  → Sunday-first / Saturday-first per CLDR
+ *  - `en-au`, `en-nz` → Monday-first BUT minimalDays=1, NOT ISO
+ *  - `ro-ro`, `ro`, `sl-si`, `sl`, `hr-hr`, `hr`, `tr-tr`, `tr`,
+ *    `uk-ua`, `uk`, `lv-lv`, `lv` → Monday-first BUT minimalDays=1
+ *
+ * The Temporal adapter consumes `Intl.Locale#weekInfo` directly (see
+ * `usesISOWeekRules` in calendarMethodsTemporal). The dayjs/moment
+ * adapters still use this static set; the removals above also fix
+ * silent format/getWeek divergences in those adapters for the affected
+ * locales when CLDR data is the desired source of truth.
  */
 export const ISO_WEEK_LOCALES = new Set([
   'de-de',
@@ -126,8 +141,6 @@ export const ISO_WEEK_LOCALES = new Set([
   'nl',
   'pl-pl',
   'pl',
-  'pt-pt',
-  'pt',
   'ru-ru',
   'ru',
   'sv-se',
@@ -142,35 +155,17 @@ export const ISO_WEEK_LOCALES = new Set([
   'cs',
   'hu-hu',
   'hu',
-  'ro-ro',
-  'ro',
   'sk-sk',
   'sk',
-  'sl-si',
-  'sl',
-  'hr-hr',
-  'hr',
   'bg-bg',
   'bg',
   'el-gr',
   'el',
-  'tr-tr',
-  'tr',
-  'uk-ua',
-  'uk',
-  'he-il',
-  'he',
-  'ar-sa',
-  'ar',
   'et-ee',
   'et',
-  'lv-lv',
-  'lv',
   'lt-lt',
   'lt',
   'en-gb',
-  'en-au',
-  'en-nz',
 ]);
 
 /**
