@@ -11,6 +11,10 @@ import {
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
+import { Temporal } from '@js-temporal/polyfill';
+// Register the polyfill so CalendarMethodsTemporal can use globalThis.Temporal.
+(globalThis as { Temporal?: unknown }).Temporal = Temporal;
+import CalendarMethodsTemporal from '@mezzanine-ui/core/calendarMethodsTemporal';
 import { MznToggle } from '@mezzanine-ui/ng/toggle';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import {
@@ -213,6 +217,10 @@ class InnerCalendarPlaygroundComponent {
         <p mznTypography>Luxon</p>
         <story-inner-calendar-playground [mode]="mode" />
       </div>
+      <div mznCalendarConfigProvider [methods]="temporalMethods" locale="en-US">
+        <p mznTypography>Temporal</p>
+        <story-inner-calendar-playground [mode]="mode" />
+      </div>
     </div>
   `,
 })
@@ -222,6 +230,7 @@ class CalendarPlaygroundComponent {
   readonly momentMethods = CalendarMethodsMoment;
   readonly dayjsMethods = CalendarMethodsDayjs;
   readonly luxonMethods = CalendarMethodsLuxon;
+  readonly temporalMethods = CalendarMethodsTemporal;
 }
 
 export const CalendarPlayground: Story = {

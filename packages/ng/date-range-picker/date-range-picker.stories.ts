@@ -9,6 +9,10 @@ import {
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
+import { Temporal } from '@js-temporal/polyfill';
+// Register the polyfill so CalendarMethodsTemporal can use globalThis.Temporal.
+(globalThis as { Temporal?: unknown }).Temporal = Temporal;
+import CalendarMethodsTemporal from '@mezzanine-ui/core/calendarMethodsTemporal';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import {
   MZN_CALENDAR_CONFIG,
@@ -313,15 +317,30 @@ export const Basic: Story = {
         ></div>
       </div>
     </div>
+    <div [mznCalendarConfigProvider] [methods]="temporalMethods" locale="zh-TW">
+      <div style="margin: 0 0 24px 0;">
+        <h3 mznTypography variant="h3" style="margin: 0 0 12px 0;"
+          >CalendarMethodsTemporal</h3
+        >
+        <div
+          mznDateRangePicker
+          [(ngModel)]="rangeTemporal"
+          inputFromPlaceholder="Start Date"
+          inputToPlaceholder="End Date"
+        ></div>
+      </div>
+    </div>
   `,
 })
 class DateRangePickerMethodStoryComponent {
   readonly momentMethods = CalendarMethodsMoment;
   readonly dayjsMethods = CalendarMethodsDayjs;
   readonly luxonMethods = CalendarMethodsLuxon;
+  readonly temporalMethods = CalendarMethodsTemporal;
   rangeMoment: RangePickerValue | undefined;
   rangeDayjs: RangePickerValue | undefined;
   rangeLuxon: RangePickerValue | undefined;
+  rangeTemporal: RangePickerValue | undefined;
 }
 
 export const Method: Story = {

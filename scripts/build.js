@@ -61,6 +61,7 @@ const externals = [
   'moment',
   'dayjs',
   'luxon',
+  '@js-temporal/polyfill',
   'events',
 ];
 
@@ -126,7 +127,7 @@ async function run() {
    */
   const indexFiles = await getFilesByGlob(`${packageSrcPath}/**/index.ts`);
   const entryFiles = await getFilesByGlob(
-    `${packageSrcPath}/{dayjs,moment,luxon}.ts`,
+    `${packageSrcPath}/{dayjs,moment,luxon,temporal}.ts`,
   );
   const input = [...indexFiles, ...entryFiles];
 
@@ -159,7 +160,8 @@ async function run() {
         if (
           id.includes('calendarMethodsDayjs') ||
           id.includes('calendarMethodsMoment') ||
-          id.includes('calendarMethodsLuxon')
+          id.includes('calendarMethodsLuxon') ||
+          id.includes('calendarMethodsTemporal')
         ) {
           return true;
         }
