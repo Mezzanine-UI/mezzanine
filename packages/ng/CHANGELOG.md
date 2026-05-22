@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.5...@mezzanine-ui/ng@1.0.0-rc.6) (2026-05-22)
+
+### Bug Fixes
+
+- **ng/table:** align resize donor strategy with React ([bc3e604](https://github.com/Mezzanine-UI/mezzanine/commit/bc3e604f0a0eb89ea1d2651746708845fb07dcb2))
+
 # [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.4...@mezzanine-ui/ng@1.0.0-rc.5) (2026-05-07)
 
 ### Features

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.2.0...@mezzanine-ui/react@1.3.0) (2026-05-22)
+
+### Features
+
+- **react/table:** use last column as resize donor ([6d6255b](https://github.com/Mezzanine-UI/mezzanine/commit/6d6255b0a91d74825fa07002a0febc8c84ae1aab))
+
 # [1.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.1.0...@mezzanine-ui/react@1.2.0) (2026-05-07)
 
 ### Features
