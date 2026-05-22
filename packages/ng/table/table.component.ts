@@ -3585,32 +3585,79 @@ export class MznTable {
     const delta = event.clientX - this.resizeStartX();
     const colDefs = this.columns();
     const currentCol = colDefs[colIndex];
+    const nextCol = colDefs[colIndex + 1];
 
-    if (!currentCol) return;
+    // Last column has no resize handle rendered; nothing to compensate against
+    if (!currentCol || !nextCol) return;
+
+    const lastIdx = colDefs.length - 1;
+    const lastCol = colDefs[lastIdx];
+    const isAdjacentToLast = colIndex + 1 === lastIdx;
 
     const startWidths = this.resizeStartWidths();
-    const currentKey = `${currentCol.key}_${colIndex}`;
+    const makeKey = (key: string, idx: number): string => `${key}_${idx}`;
+    const currentKey = makeKey(currentCol.key, colIndex);
+    const nextKey = makeKey(nextCol.key, colIndex + 1);
+    const lastKey = makeKey(lastCol.key, lastIdx);
+
     const currentStartWidth = startWidths.get(currentKey) ?? 100;
-    const minCurrent = (currentCol as { minWidth?: number }).minWidth ?? 40;
-    const newCurrentWidth = Math.max(minCurrent, currentStartWidth + delta);
+    const nextStartWidth = startWidths.get(nextKey) ?? 100;
+    const lastStartWidth = startWidths.get(lastKey) ?? 100;
+
+    const minCurrent = currentCol.minWidth ?? 40;
+    const maxCurrent = currentCol.maxWidth;
+    const minNext = nextCol.minWidth ?? 40;
+    const maxNext = nextCol.maxWidth;
+
+    const newCurrentWidth = currentStartWidth + delta;
+
+    // Current column constraint checks — reject instead of clamp so that
+    // total table width stays conserved.
+    if (newCurrentWidth < minCurrent) return;
+    if (maxCurrent !== undefined && newCurrentWidth > maxCurrent) return;
 
     const updated = new Map(this.resizedWidths());
 
-    updated.set(currentKey, newCurrentWidth);
+    if (isAdjacentToLast) {
+      // Donor === N+1 === last; collapse to legacy adjacent compensation
+      // to avoid writing the same key twice.
+      const newNextWidth = nextStartWidth - delta;
 
-    // Adjust next column in opposite direction
-    const nextCol = colDefs[colIndex + 1];
+      if (newNextWidth < minNext) return;
+      if (maxNext !== undefined && newNextWidth > maxNext) return;
 
-    if (nextCol) {
-      const nextKey = `${nextCol.key}_${colIndex + 1}`;
-      const nextStartWidth = startWidths.get(nextKey) ?? 100;
-      const minNext = (nextCol as { minWidth?: number }).minWidth ?? 40;
-      const widthDiff = newCurrentWidth - currentStartWidth;
-      const newNextWidth = Math.max(minNext, nextStartWidth - widthDiff);
-
+      updated.set(currentKey, newCurrentWidth);
       updated.set(nextKey, newNextWidth);
+      this.resizedWidths.set(updated);
+
+      return;
     }
 
+    // Last-column donor strategy:
+    // Project `delta` onto the last column first (clamped to its budget).
+    // Any overflow falls back to the adjacent column (N+1).
+    const minLast = lastCol.minWidth ?? 40;
+    const maxLast = lastCol.maxWidth;
+    const lastShrinkBudget = lastStartWidth - minLast;
+    const lastGrowBudget =
+      maxLast !== undefined ? maxLast - lastStartWidth : Infinity;
+
+    const toLast =
+      delta >= 0
+        ? Math.min(delta, lastShrinkBudget)
+        : Math.max(delta, -lastGrowBudget);
+    const overflow = delta - toLast;
+    const newLastWidth = lastStartWidth - toLast;
+    // Always write N+1 too — when overflow returns to 0 on the return drag,
+    // this restores N+1 to its start width (LIFO donor restoration).
+    const newNextWidth = nextStartWidth - overflow;
+
+    if (newNextWidth < minNext) return;
+    if (maxNext !== undefined && newNextWidth > maxNext) return;
+
+    updated.set(currentKey, newCurrentWidth);
+    updated.set(lastKey, newLastWidth);
+    updated.set(nextKey, newNextWidth);
     this.resizedWidths.set(updated);
   }
 

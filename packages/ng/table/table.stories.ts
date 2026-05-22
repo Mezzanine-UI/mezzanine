@@ -1539,19 +1539,36 @@ interface ResizableRowType extends TableDataSource {
         <ng-template mznTableCellRender="age" let-record>
           <span mznTypography variant="body-mono">{{ record.age }}</span>
         </ng-template>
-        <ng-template mznTableCellRender="tags" let-record>{{
-          (record.tags ?? []).join(', ')
-        }}</ng-template>
+        <ng-template mznTableCellRender="status" let-record>
+          <span mznTypography variant="body2">{{
+            record.tags?.[0] ?? '-'
+          }}</span>
+        </ng-template>
+        <ng-template mznTableCellRender="role" let-record>
+          <span mznTypography variant="body2">{{
+            record.tags?.[1] ?? '-'
+          }}</span>
+        </ng-template>
+        <ng-template mznTableCellRender="tagsCount" let-record>
+          <span mznTypography variant="body-mono">{{
+            record.tags?.length ?? 0
+          }}</span>
+        </ng-template>
       </div>
     </div>
   `,
 })
 class WithResizableColumnsStoryComponent {
   readonly legendText =
-    'Column 1: minWidth: 120, maxWidth: 220;\n' +
-    '          Column 2: minWidth: 80;\n' +
-    '          Column 3: width 200 minWidth: 140;\n' +
-    '          Column 4: minWidth: 220;';
+    `Resize strategy: drag any column's right handle — the rightmost column (Address) absorbs the change first, so middle columns stay put. Once Address shrinks to its minWidth (200), the next column to the right of the dragged handle starts to compensate.\n\n` +
+    `Try: drag "Name" right → only Address shrinks. Keep dragging until Address hits 200px → "Age" starts shrinking.\n\n` +
+    `Columns:\n` +
+    `  Name      width 120, minWidth 80\n` +
+    `  Age       width  70, minWidth 50\n` +
+    `  Status    width 100, minWidth 80\n` +
+    `  Role      width 100, minWidth 80\n` +
+    `  Tags      width  80, minWidth 60\n` +
+    `  Address   minWidth 200 (donor)`;
 
   readonly dataSource: readonly ResizableRowType[] = [
     {
@@ -1624,22 +1641,18 @@ class WithResizableColumnsStoryComponent {
       key: 'name',
       dataIndex: 'name',
       title: 'Name',
-      minWidth: 120,
-      maxWidth: 220,
+      width: 120,
+      minWidth: 80,
     },
-    { key: 'age', title: 'Age', minWidth: 80 },
-    {
-      key: 'tags',
-      dataIndex: 'tags',
-      title: 'Tags',
-      width: 200,
-      minWidth: 140,
-    },
+    { key: 'age', title: 'Age', width: 70, minWidth: 50 },
+    { key: 'status', title: 'Status', width: 100, minWidth: 80 },
+    { key: 'role', title: 'Role', width: 100, minWidth: 80 },
+    { key: 'tagsCount', title: 'Tags', width: 80, minWidth: 60 },
     {
       key: 'address',
       dataIndex: 'address',
       title: 'Address',
-      minWidth: 220,
+      minWidth: 200,
     },
   ];
 }
