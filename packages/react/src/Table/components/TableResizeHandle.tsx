@@ -81,11 +81,21 @@ export const TableResizeHandle = memo(function TableResizeHandle({
         return;
       }
 
+      const lastColumnIndex = columns.length - 1;
+      const lastColumn = columns[lastColumnIndex];
+      // When resizing the second-to-last column, nextColumn === lastColumn.
+      // We collapse to the legacy adjacent-compensation path to avoid
+      // double-writing the same key.
+      const isAdjacentToLast = columnIndex + 1 === lastColumnIndex;
+
       // Get the actual rendered widths from the DOM
       const currentWidth = getColumnActualWidth(columnIndex);
       const nextWidth = getColumnActualWidth(columnIndex + 1);
+      const lastWidth = isAdjacentToLast
+        ? nextWidth
+        : getColumnActualWidth(lastColumnIndex);
 
-      if (currentWidth === 0 || nextWidth === 0) {
+      if (currentWidth === 0 || nextWidth === 0 || lastWidth === 0) {
         return;
       }
 
@@ -97,42 +107,62 @@ export const TableResizeHandle = memo(function TableResizeHandle({
       const maxWidth = column.maxWidth;
       const nextMinWidth = nextColumn.minWidth;
       const nextMaxWidth = nextColumn.maxWidth;
+      const lastMinWidth = lastColumn.minWidth;
+      const lastMaxWidth = lastColumn.maxWidth;
+
+      // Slack the last column can absorb (signed against `diff`):
+      // - positive `diff` shrinks last → capped by lastShrinkBudget
+      // - negative `diff` grows last → capped by lastGrowBudget
+      const lastShrinkBudget = lastWidth - (lastMinWidth ?? 0);
+      const lastGrowBudget =
+        lastMaxWidth !== undefined ? lastMaxWidth - lastWidth : Infinity;
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const diff = moveEvent.clientX - startXRef.current;
-
         const newWidth = startWidthRef.current + diff;
-        const newNextWidth = nextStartWidthRef.current - diff;
 
-        let isConstrained = false;
+        // Current column constraint checks
+        if (minWidth !== undefined && newWidth < minWidth) return;
+        if (maxWidth !== undefined && newWidth > maxWidth) return;
+        if (newWidth < 0) return;
 
-        // Check current column constraints
-        if (minWidth !== undefined && newWidth < minWidth) {
-          isConstrained = true;
-        }
+        if (isAdjacentToLast) {
+          // Legacy adjacent compensation: donor === N+1 === last
+          const newNextWidth = nextStartWidthRef.current - diff;
 
-        if (maxWidth !== undefined && newWidth > maxWidth) {
-          isConstrained = true;
-        }
+          if (nextMinWidth !== undefined && newNextWidth < nextMinWidth) return;
+          if (nextMaxWidth !== undefined && newNextWidth > nextMaxWidth) return;
+          if (newNextWidth < 0) return;
 
-        // Check next column constraints
-        if (nextMinWidth !== undefined && newNextWidth < nextMinWidth) {
-          isConstrained = true;
-        }
+          setResizedColumnWidth?.(column.key, newWidth);
+          setResizedColumnWidth?.(nextColumn.key, newNextWidth);
 
-        if (nextMaxWidth !== undefined && newNextWidth > nextMaxWidth) {
-          isConstrained = true;
-        }
-
-        if (isConstrained) {
           return;
         }
 
-        if (newWidth < 0 || newNextWidth < 0) {
-          return;
+        // Last-column donor strategy:
+        // Project `diff` onto the last column first (clamped to its budget).
+        // Any overflow falls back to the adjacent column (N+1).
+        let toLast: number;
+
+        if (diff >= 0) {
+          toLast = Math.min(diff, lastShrinkBudget);
+        } else {
+          toLast = Math.max(diff, -lastGrowBudget);
         }
+
+        const overflow = diff - toLast;
+        const newLastWidth = lastWidth - toLast;
+        // Always write N+1 too — when overflow returns to 0 on the return
+        // drag, this restores N+1 to its start width (LIFO donor restoration).
+        const newNextWidth = nextStartWidthRef.current - overflow;
+
+        if (nextMinWidth !== undefined && newNextWidth < nextMinWidth) return;
+        if (nextMaxWidth !== undefined && newNextWidth > nextMaxWidth) return;
+        if (newNextWidth < 0) return;
 
         setResizedColumnWidth?.(column.key, newWidth);
+        setResizedColumnWidth?.(lastColumn.key, newLastWidth);
         setResizedColumnWidth?.(nextColumn.key, newNextWidth);
       };
 

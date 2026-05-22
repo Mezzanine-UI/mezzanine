@@ -1233,10 +1233,11 @@ export const WithResizableColumns: Story = {
           dataIndex: 'name',
           key: 'name',
           title: 'Name',
-          minWidth: 120,
-          maxWidth: 220,
+          width: 120,
+          minWidth: 80,
         },
         {
+          align: 'center',
           key: 'age',
           render: (record) => (
             <Typography component="span" variant="body-mono">
@@ -1244,20 +1245,48 @@ export const WithResizableColumns: Story = {
             </Typography>
           ),
           title: 'Age',
+          width: 70,
+          minWidth: 50,
+        },
+        {
+          key: 'status',
+          render: (record) => (
+            <Typography component="span" variant="body2">
+              {record.tags?.[0] ?? '-'}
+            </Typography>
+          ),
+          title: 'Status',
+          width: 100,
           minWidth: 80,
         },
         {
-          dataIndex: 'tags',
-          key: 'tags',
+          key: 'role',
+          render: (record) => (
+            <Typography component="span" variant="body2">
+              {record.tags?.[1] ?? '-'}
+            </Typography>
+          ),
+          title: 'Role',
+          width: 100,
+          minWidth: 80,
+        },
+        {
+          align: 'center',
+          key: 'tagsCount',
+          render: (record) => (
+            <Typography component="span" variant="body-mono">
+              {record.tags?.length ?? 0}
+            </Typography>
+          ),
           title: 'Tags',
-          width: 200,
-          minWidth: 140,
+          width: 80,
+          minWidth: 60,
         },
         {
           dataIndex: 'address',
           key: 'address',
           title: 'Address',
-          minWidth: 220,
+          minWidth: 200,
         },
       ],
       [],
@@ -1273,10 +1302,17 @@ export const WithResizableColumns: Story = {
         }}
       >
         <span style={{ whiteSpace: 'pre-line' }}>
-          {`Column 1: minWidth: 120, maxWidth: 220;
-          Column 2: minWidth: 80;
-          Column 3: width 200 minWidth: 140;
-          Column 4: minWidth: 220;`}
+          {`Resize strategy: drag any column's right handle — the rightmost column (Address) absorbs the change first, so middle columns stay put. Once Address shrinks to its minWidth (200), the next column to the right of the dragged handle starts to compensate.
+
+Try: drag "Name" right → only Address shrinks. Keep dragging until Address hits 200px → "Age" starts shrinking.
+
+Columns:
+  Name      width 120, minWidth 80
+  Age       width  70, minWidth 50
+  Status    width 100, minWidth 80
+  Role      width 100, minWidth 80
+  Tags      width  80, minWidth 60
+  Address   minWidth 200 (donor)`}
         </span>
         <Table<DataType>
           columns={resizableColumns}
