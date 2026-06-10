@@ -452,33 +452,6 @@ class StoryFormBinding {
   ctrl = new FormControl('');
 }
 
-/**
- * Wrapper component for MisuseGuard story.
- *
- * Demonstrates the new dev-time guard: placing `mznInput` on a native
- * `<input>` now throws an actionable error at init instead of silently failing.
- * The red error overlay in the canvas is the *expected* behavior.
- */
-@Component({
-  selector: 'story-misuse-guard',
-  standalone: true,
-  imports: [MznInput, FormsModule],
-  template: `
-    <div
-      style="display: flex; flex-direction: column; gap: 12px; max-width: 360px;"
-    >
-      <p style="margin: 0; color: #7f1d1d;"
-        >⚠️ 此 story 預期會跳出紅色錯誤——那正是新防呆在運作（把
-        <code>mznInput</code> 誤套在原生 <code>&lt;input&gt;</code> 上）。</p
-      >
-      <input mznInput type="text" [(ngModel)]="value" />
-    </div>
-  `,
-})
-class StoryMisuseGuard {
-  value = '';
-}
-
 const meta: Meta<MznInput> = {
   title: 'Data Entry/Input',
   component: MznInput,
@@ -494,7 +467,6 @@ const meta: Meta<MznInput> = {
         StorySelectInput,
         StoryFormatterParser,
         StoryFormBinding,
-        StoryMisuseGuard,
       ],
     }),
   ],
@@ -763,12 +735,5 @@ export const FormBinding: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `<story-form-binding />`,
-  }),
-};
-
-export const MisuseGuard: Story = {
-  parameters: { controls: { disable: true } },
-  render: () => ({
-    template: `<story-misuse-guard />`,
   }),
 };

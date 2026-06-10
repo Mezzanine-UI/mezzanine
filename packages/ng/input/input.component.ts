@@ -283,6 +283,25 @@ export class MznInput implements ControlValueAccessor, OnInit {
 
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
+  constructor() {
+    // mznInput is a Component that renders its own <input>; placing it on a
+    // native <input>/<textarea> decouples the host from the internal CVA and
+    // makes ngModel silently fail. Throw here (not ngOnInit) so the error fires
+    // before any CVA lifecycle calls (e.g. writeValue from FormControlDirective).
+    const tag = this.elementRef.nativeElement.tagName.toUpperCase();
+
+    if (tag === 'INPUT' || tag === 'TEXTAREA') {
+      throw new Error(
+        `[mznInput] must be applied to a container element (e.g. <div mznInput>) — ` +
+          `the component renders its own <input> internally. ` +
+          `Detected host: <${tag.toLowerCase()}>. ` +
+          `Placing mznInput on a native form element decouples the host from the internal CVA, ` +
+          `causing ngModel / formControl bindings to silently fail. ` +
+          `Use <div mznInput [(ngModel)]="..."> or <div mznInput [value]="..." (valueChange)="..."> instead.`,
+      );
+    }
+  }
+
   private onChangeFn: (value: string) => void = () => {};
   private onTouchedFn: () => void = () => {};
 
@@ -652,21 +671,6 @@ export class MznInput implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit(): void {
-    // Guard against misuse: mznInput is a Component that renders its own
-    // <input>; it must be placed on a container element (e.g. <div mznInput>).
-    // Putting it on a native <input>/<textarea> decouples the host from the
-    // internal CVA and makes ngModel silently fail with no error — so we throw
-    // an actionable error to surface the mistake at init time.
-    const tag = (this.elementRef.nativeElement.tagName ?? '').toUpperCase();
-
-    if (tag === 'INPUT' || tag === 'TEXTAREA') {
-      throw new Error(
-        `[mznInput] 必須套在容器元素上（例如 <div mznInput>），它會自行渲染 <input>。` +
-          `偵測到 host 為 <${tag.toLowerCase()}>，此時 ngModel / CVA 會靜默失敗。` +
-          `請改用 <div mznInput [(ngModel)]="..."> 或 <div mznInput [value]="..." (valueChange)="...">。`,
-      );
-    }
-
     // Set internalValue from defaultValue if no external value is bound
     const dv = this.defaultValue();
 
