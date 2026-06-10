@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { CopyIcon, UserIcon } from '@mezzanine-ui/icons';
@@ -370,6 +371,114 @@ class StorySelectInput {
   sizeSubValue = '.com';
 }
 
+/**
+ * Wrapper component for FormBinding story.
+ *
+ * Verifies the *correct* usage of `mznInput`: it is placed on a container
+ * element (`<div mznInput>`) and two-way binds through Angular forms. The live
+ * read-outs beside each field prove that typing updates the bound model — this
+ * is the confirmation that the CVA works when used as designed.
+ */
+@Component({
+  selector: 'story-form-binding',
+  standalone: true,
+  imports: [MznInput, FormsModule, ReactiveFormsModule],
+  template: `
+    <div
+      style="display: flex; flex-direction: column; gap: 24px; max-width: 360px;"
+    >
+      <div>
+        <p style="margin: 0 0 12px 0; font-size: 18px; font-weight: bold;"
+          >Form Binding（正確用法）</p
+        >
+        <p style="margin: 0; color: #475569;"
+          >host 為
+          <code>&lt;div mznInput&gt;</code>，打字時右側即時值會同步更新。</p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Template-driven（[(ngModel)]）</p>
+        <div mznInput placeholder="請輸入" [(ngModel)]="ngModelValue"></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Model：<b>{{ ngModelValue || '(空)' }}</b></p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Reactive Forms（[formControl]）</p>
+        <div mznInput placeholder="請輸入" [formControl]="ctrl"></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Form value：<b>{{ ctrl.value || '(空)' }}</b></p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Number 變體（[(ngModel)]）</p>
+        <div
+          mznInput
+          variant="number"
+          [min]="0"
+          placeholder="0"
+          [(ngModel)]="qtyValue"
+        ></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Quantity：<b>{{ qtyValue || '(空)' }}</b></p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Measure 變體（[(ngModel)]）</p>
+        <div
+          mznInput
+          variant="measure"
+          suffixText="px"
+          [(ngModel)]="measureValue"
+        ></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Measure：<b>{{ measureValue || '(空)' }}</b></p
+        >
+      </div>
+    </div>
+  `,
+})
+class StoryFormBinding {
+  ngModelValue = '';
+
+  qtyValue = '';
+
+  measureValue = '';
+
+  ctrl = new FormControl('');
+}
+
+/**
+ * Wrapper component for MisuseGuard story.
+ *
+ * Demonstrates the new dev-time guard: placing `mznInput` on a native
+ * `<input>` now throws an actionable error at init instead of silently failing.
+ * The red error overlay in the canvas is the *expected* behavior.
+ */
+@Component({
+  selector: 'story-misuse-guard',
+  standalone: true,
+  imports: [MznInput, FormsModule],
+  template: `
+    <div
+      style="display: flex; flex-direction: column; gap: 12px; max-width: 360px;"
+    >
+      <p style="margin: 0; color: #7f1d1d;"
+        >⚠️ 此 story 預期會跳出紅色錯誤——那正是新防呆在運作（把
+        <code>mznInput</code> 誤套在原生 <code>&lt;input&gt;</code> 上）。</p
+      >
+      <input mznInput type="text" [(ngModel)]="value" />
+    </div>
+  `,
+})
+class StoryMisuseGuard {
+  value = '';
+}
+
 const meta: Meta<MznInput> = {
   title: 'Data Entry/Input',
   component: MznInput,
@@ -384,6 +493,8 @@ const meta: Meta<MznInput> = {
         StoryPasswordInput,
         StorySelectInput,
         StoryFormatterParser,
+        StoryFormBinding,
+        StoryMisuseGuard,
       ],
     }),
   ],
@@ -645,5 +756,19 @@ export const FormatterAndParser: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `<story-formatter-parser />`,
+  }),
+};
+
+export const FormBinding: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => ({
+    template: `<story-form-binding />`,
+  }),
+};
+
+export const MisuseGuard: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => ({
+    template: `<story-misuse-guard />`,
   }),
 };

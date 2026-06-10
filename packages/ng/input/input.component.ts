@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   ElementRef,
+  inject,
   input,
   OnInit,
   output,
@@ -46,6 +47,11 @@ export type InputVariant =
  * 實作 `ControlValueAccessor`，可搭配 Angular Reactive Forms 或 Template-driven Forms。
  * `search` 變體預設帶搜尋圖示與清除按鈕；`password` 變體提供密碼可見性切換及強度指示器；
  * `measure` 變體支援 Spinner 微調按鈕；`action` 變體支援外部動作按鈕。
+ *
+ * ⚠️ **務必套在容器元素上**（如 `<div mznInput>`），本元件會自行渲染 `<input>`。
+ * **切勿**把 `mznInput` 加在原生 `<input>` / `<textarea>` 上——那會讓 host 與元件內部的 CVA
+ * 脫鉤、`ngModel` 靜默失敗（誤用時元件會於初始化 throw 明確錯誤）。表單請在 host div 綁
+ * `[(ngModel)]`、`[formControl]` 或 `[value]` + `(valueChange)`。
  *
  * @example
  * ```html
@@ -274,6 +280,8 @@ export class MznInput implements ControlValueAccessor, OnInit {
   protected readonly eyeInvisibleIcon = EyeInvisibleIcon;
 
   private readonly inputEl = viewChild<ElementRef<HTMLInputElement>>('inputEl');
+
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   private onChangeFn: (value: string) => void = () => {};
   private onTouchedFn: () => void = () => {};
@@ -644,6 +652,21 @@ export class MznInput implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit(): void {
+    // Guard against misuse: mznInput is a Component that renders its own
+    // <input>; it must be placed on a container element (e.g. <div mznInput>).
+    // Putting it on a native <input>/<textarea> decouples the host from the
+    // internal CVA and makes ngModel silently fail with no error — so we throw
+    // an actionable error to surface the mistake at init time.
+    const tag = (this.elementRef.nativeElement.tagName ?? '').toUpperCase();
+
+    if (tag === 'INPUT' || tag === 'TEXTAREA') {
+      throw new Error(
+        `[mznInput] 必須套在容器元素上（例如 <div mznInput>），它會自行渲染 <input>。` +
+          `偵測到 host 為 <${tag.toLowerCase()}>，此時 ngModel / CVA 會靜默失敗。` +
+          `請改用 <div mznInput [(ngModel)]="..."> 或 <div mznInput [value]="..." (valueChange)="...">。`,
+      );
+    }
+
     // Set internalValue from defaultValue if no external value is bound
     const dv = this.defaultValue();
 
