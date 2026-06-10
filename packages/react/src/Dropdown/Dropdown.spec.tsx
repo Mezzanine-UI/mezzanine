@@ -23,7 +23,7 @@ describe('<Dropdown />', () => {
       render(
         <Dropdown options={mockOptions}>
           <Button>Click me</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       expect(screen.getByText('Click me')).toBeInTheDocument();
     });
@@ -34,7 +34,7 @@ describe('<Dropdown />', () => {
           <TextField>
             <input placeholder="Search" />
           </TextField>
-        </Dropdown>
+        </Dropdown>,
       );
       const input = screen.getByPlaceholderText('Search');
       expect(input).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe('<Dropdown />', () => {
         render(
           <Dropdown options={mockOptions} inputPosition="outside">
             <Button>Trigger</Button>
-          </Dropdown>
+          </Dropdown>,
         );
         expect(screen.getByText('Trigger')).toBeInTheDocument();
       });
@@ -57,7 +57,7 @@ describe('<Dropdown />', () => {
         render(
           <Dropdown options={mockOptions} inputPosition="outside">
             <Button>Trigger</Button>
-          </Dropdown>
+          </Dropdown>,
         );
         const trigger = screen.getByText('Trigger');
         await user.click(trigger);
@@ -75,7 +75,7 @@ describe('<Dropdown />', () => {
             <TextField>
               <input placeholder="Search" />
             </TextField>
-          </Dropdown>
+          </Dropdown>,
         );
         const input = screen.getByPlaceholderText('Search');
         expect(input).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe('<Dropdown />', () => {
             <TextField>
               <input placeholder="Search" />
             </TextField>
-          </Dropdown>
+          </Dropdown>,
         );
         const input = screen.getByPlaceholderText('Search');
         await user.click(input);
@@ -107,7 +107,7 @@ describe('<Dropdown />', () => {
               </TextField>
             </Dropdown>
             <button>Outside</button>
-          </div>
+          </div>,
         );
         const input = screen.getByPlaceholderText('Search');
         await user.click(input);
@@ -130,7 +130,7 @@ describe('<Dropdown />', () => {
       render(
         <Dropdown options={mockOptions} onOpen={onOpen} inputPosition="outside">
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -144,11 +144,15 @@ describe('<Dropdown />', () => {
       const onClose = jest.fn();
       render(
         <div>
-          <Dropdown options={mockOptions} onClose={onClose} inputPosition="outside">
+          <Dropdown
+            options={mockOptions}
+            onClose={onClose}
+            inputPosition="outside"
+          >
             <Button>Trigger</Button>
           </Dropdown>
           <button>Outside</button>
-        </div>
+        </div>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -168,9 +172,13 @@ describe('<Dropdown />', () => {
       const user = userEvent.setup();
       const onSelect = jest.fn();
       render(
-        <Dropdown options={mockOptions} onSelect={onSelect} inputPosition="outside">
+        <Dropdown
+          options={mockOptions}
+          onSelect={onSelect}
+          inputPosition="outside"
+        >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -186,13 +194,9 @@ describe('<Dropdown />', () => {
   describe('prop: activeIndex', () => {
     it('should use controlled activeIndex', () => {
       render(
-        <Dropdown
-          options={mockOptions}
-          activeIndex={1}
-          inputPosition="outside"
-        >
+        <Dropdown options={mockOptions} activeIndex={1} inputPosition="outside">
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       // Active index should be controlled
       expect(screen.getByText('Trigger')).toBeInTheDocument();
@@ -211,7 +215,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -236,7 +240,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -251,13 +255,9 @@ describe('<Dropdown />', () => {
     it('should use placement for popper', async () => {
       const user = userEvent.setup();
       render(
-        <Dropdown
-          options={mockOptions}
-          placement="top"
-          inputPosition="outside"
-        >
+        <Dropdown options={mockOptions} placement="top" inputPosition="outside">
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -278,7 +278,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -307,7 +307,7 @@ describe('<Dropdown />', () => {
               />
             )}
           </TextField>
-        </Dropdown>
+        </Dropdown>,
       );
       const input = screen.getByPlaceholderText('Search');
       await user.click(input);
@@ -338,7 +338,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -360,7 +360,7 @@ describe('<Dropdown />', () => {
       render(
         <Dropdown options={treeOptions} type="tree" inputPosition="outside">
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -391,7 +391,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       await user.click(screen.getByText('Trigger'));
       await waitFor(() => {
@@ -399,7 +399,9 @@ describe('<Dropdown />', () => {
       });
 
       await user.click(screen.getByText('Parent'));
-      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: '1' }),
+      );
     });
   });
 
@@ -414,7 +416,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -436,7 +438,7 @@ describe('<Dropdown />', () => {
             <Button>Trigger</Button>
           </Dropdown>
           <button>Outside</button>
-        </div>
+        </div>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -457,7 +459,7 @@ describe('<Dropdown />', () => {
       render(
         <Dropdown options={mockOptions} inputPosition="outside">
           <Button ref={childRef}>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       // 驗證 ref 被正確設置
       expect(childRef.current).toBeInstanceOf(HTMLButtonElement);
@@ -470,7 +472,7 @@ describe('<Dropdown />', () => {
       render(
         <Dropdown options={mockOptions} inputPosition="outside">
           <Button onClick={handleClick}>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -497,7 +499,7 @@ describe('<Dropdown />', () => {
             </TextField>
           </Dropdown>
           <button>Outside</button>
-        </div>
+        </div>,
       );
       const input = screen.getByTestId('test-input');
       await user.click(input);
@@ -523,7 +525,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -546,7 +548,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -558,7 +560,9 @@ describe('<Dropdown />', () => {
       });
       // 驗證底部 loading 存在（通過查找 loading-more class）
       await waitFor(() => {
-        const loadingMore = document.querySelector('.mzn-dropdown-loading-more');
+        const loadingMore = document.querySelector(
+          '.mzn-dropdown-loading-more',
+        );
         expect(loadingMore).toBeInTheDocument();
         // 驗證底部 loading 中有 loading 文字
         expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -575,7 +579,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -588,7 +592,9 @@ describe('<Dropdown />', () => {
         );
         expect(fullStatus).not.toBeInTheDocument();
         // 應顯示底部 loading，避免空白狀態
-        const loadingMore = document.querySelector('.mzn-dropdown-loading-more');
+        const loadingMore = document.querySelector(
+          '.mzn-dropdown-loading-more',
+        );
         expect(loadingMore).toBeInTheDocument();
         expect(screen.getByText('Loading...')).toBeInTheDocument();
       });
@@ -597,13 +603,9 @@ describe('<Dropdown />', () => {
     it('should use full as default loadingPosition', async () => {
       const user = userEvent.setup();
       render(
-        <Dropdown
-          options={[]}
-          status="loading"
-          inputPosition="outside"
-        >
+        <Dropdown options={[]} status="loading" inputPosition="outside">
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
@@ -625,7 +627,7 @@ describe('<Dropdown />', () => {
           inputPosition="outside"
         >
           <Button>Trigger</Button>
-        </Dropdown>
+        </Dropdown>,
       );
       const trigger = screen.getByText('Trigger');
       await user.click(trigger);
