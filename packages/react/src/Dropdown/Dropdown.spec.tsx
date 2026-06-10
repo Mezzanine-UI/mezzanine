@@ -466,6 +466,24 @@ describe('<Dropdown />', () => {
       expect(childRef.current?.textContent).toBe('Trigger');
     });
 
+    it('should not log a ref warning when children has ref', () => {
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      try {
+        const childRef = React.createRef<HTMLButtonElement>();
+        render(
+          <Dropdown options={mockOptions} inputPosition="outside">
+            <Button ref={childRef}>Trigger</Button>
+          </Dropdown>,
+        );
+        // 驗證沒有觸發 React dev mode 的 ref 警告
+        // （React 18: "`ref` is not a prop" / React 19: "Accessing element.ref was removed"）
+        expect(errorSpy).not.toHaveBeenCalled();
+      } finally {
+        errorSpy.mockRestore();
+      }
+    });
+
     it('should call original onClick handler from children', async () => {
       const user = userEvent.setup();
       const handleClick = jest.fn();
