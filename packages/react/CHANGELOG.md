@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.3.0...@mezzanine-ui/react@1.3.1) (2026-06-11)
+
+### Bug Fixes
+
+- **react/dropdown:** remove deprecated props ([211ffa8](https://github.com/Mezzanine-UI/mezzanine/commit/211ffa846810d92dbb541d820e3afa252dab4d60))
+- **react:** avoid React 18 ref-is-not-a-prop warning when Dropdown reads child ref ([cfef09b](https://github.com/Mezzanine-UI/mezzanine/commit/cfef09b1d2fc471ddad023a69f77d0960ca0f686))
+
 # [1.3.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.2.0...@mezzanine-ui/react@1.3.0) (2026-05-22)
 
 ### Features

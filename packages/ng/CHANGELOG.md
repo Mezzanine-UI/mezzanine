@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.6...@mezzanine-ui/ng@1.0.0-rc.7) (2026-06-11)
+
+### Bug Fixes
+
+- **ng/input:** throw on native input host to prevent silent CVA failure ([17f53ad](https://github.com/Mezzanine-UI/mezzanine/commit/17f53adb3a2680f11d559bc9017c64cd3030a187))
+
 # [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.5...@mezzanine-ui/ng@1.0.0-rc.6) (2026-05-22)
 
 ### Bug Fixes
