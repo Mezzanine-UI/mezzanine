@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { CopyIcon, UserIcon } from '@mezzanine-ui/icons';
@@ -370,6 +371,106 @@ class StorySelectInput {
   sizeSubValue = '.com';
 }
 
+/**
+ * Wrapper component for FormBinding story.
+ *
+ * Verifies the *correct* usage of `mznInput`: it is placed on a container
+ * element (`<div mznInput>`) and two-way binds through Angular forms. The live
+ * read-outs beside each field prove that typing updates the bound model — this
+ * is the confirmation that the CVA works when used as designed.
+ */
+@Component({
+  selector: 'story-form-binding',
+  standalone: true,
+  imports: [MznInput, FormsModule, ReactiveFormsModule],
+  template: `
+    <div
+      style="display: flex; flex-direction: column; gap: 24px; max-width: 360px;"
+    >
+      <div>
+        <p style="margin: 0 0 12px 0; font-size: 18px; font-weight: bold;"
+          >Form Binding（正確用法）</p
+        >
+        <p style="margin: 0; color: #475569;"
+          >host 為
+          <code>&lt;div mznInput&gt;</code>，打字時右側即時值會同步更新。</p
+        >
+      </div>
+
+      <div
+        style="border-left: 4px solid #dc2626; background: #fef2f2; padding: 12px 16px; border-radius: 0 6px 6px 0;"
+      >
+        <p style="margin: 0 0 6px 0; font-weight: bold; color: #991b1b;"
+          >⚠️ 不要把 <code>mznInput</code> 放在原生 <code>&lt;input&gt;</code> /
+          <code>&lt;textarea&gt;</code> 上。</p
+        >
+        <p style="margin: 0; color: #7f1d1d;"
+          ><code>mznInput</code> 是會自行渲染
+          <code>&lt;input&gt;</code> 的元件，套在原生表單元素上會讓 host 與內部
+          CVA 脫鉤、<code>ngModel</code>
+          靜默失敗（此情況元件會於初始化 throw 明確錯誤）。請一律把
+          <code>mznInput</code> 套在容器元素上（如
+          <code>&lt;div mznInput&gt;</code>）， 並在該 host 上綁
+          <code>[(ngModel)]</code>、<code>[formControl]</code> 或
+          <code>[value]</code> + <code>(valueChange)</code>。</p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Template-driven（[(ngModel)]）</p>
+        <div mznInput placeholder="請輸入" [(ngModel)]="ngModelValue"></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Model：<b>{{ ngModelValue || '(空)' }}</b></p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Reactive Forms（[formControl]）</p>
+        <div mznInput placeholder="請輸入" [formControl]="ctrl"></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Form value：<b>{{ ctrl.value || '(空)' }}</b></p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Number 變體（[(ngModel)]）</p>
+        <div
+          mznInput
+          variant="number"
+          [min]="0"
+          placeholder="0"
+          [(ngModel)]="qtyValue"
+        ></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Quantity：<b>{{ qtyValue || '(空)' }}</b></p
+        >
+      </div>
+
+      <div>
+        <p style="margin: 0 0 12px 0;">Measure 變體（[(ngModel)]）</p>
+        <div
+          mznInput
+          variant="measure"
+          suffixText="px"
+          [(ngModel)]="measureValue"
+        ></div>
+        <p style="margin: 8px 0 0 0; color: #1a4d8f;"
+          >Measure：<b>{{ measureValue || '(空)' }}</b></p
+        >
+      </div>
+    </div>
+  `,
+})
+class StoryFormBinding {
+  ngModelValue = '';
+
+  qtyValue = '';
+
+  measureValue = '';
+
+  ctrl = new FormControl('');
+}
+
 const meta: Meta<MznInput> = {
   title: 'Data Entry/Input',
   component: MznInput,
@@ -384,6 +485,7 @@ const meta: Meta<MznInput> = {
         StoryPasswordInput,
         StorySelectInput,
         StoryFormatterParser,
+        StoryFormBinding,
       ],
     }),
   ],
@@ -645,5 +747,12 @@ export const FormatterAndParser: Story = {
   parameters: { controls: { disable: true } },
   render: () => ({
     template: `<story-formatter-parser />`,
+  }),
+};
+
+export const FormBinding: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => ({
+    template: `<story-form-binding />`,
   }),
 };

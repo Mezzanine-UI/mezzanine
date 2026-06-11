@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   ElementRef,
+  inject,
   input,
   OnInit,
   output,
@@ -46,6 +47,11 @@ export type InputVariant =
  * 實作 `ControlValueAccessor`，可搭配 Angular Reactive Forms 或 Template-driven Forms。
  * `search` 變體預設帶搜尋圖示與清除按鈕；`password` 變體提供密碼可見性切換及強度指示器；
  * `measure` 變體支援 Spinner 微調按鈕；`action` 變體支援外部動作按鈕。
+ *
+ * ⚠️ **務必套在容器元素上**（如 `<div mznInput>`），本元件會自行渲染 `<input>`。
+ * **切勿**把 `mznInput` 加在原生 `<input>` / `<textarea>` 上——那會讓 host 與元件內部的 CVA
+ * 脫鉤、`ngModel` 靜默失敗（誤用時元件會於初始化 throw 明確錯誤）。表單請在 host div 綁
+ * `[(ngModel)]`、`[formControl]` 或 `[value]` + `(valueChange)`。
  *
  * @example
  * ```html
@@ -274,6 +280,27 @@ export class MznInput implements ControlValueAccessor, OnInit {
   protected readonly eyeInvisibleIcon = EyeInvisibleIcon;
 
   private readonly inputEl = viewChild<ElementRef<HTMLInputElement>>('inputEl');
+
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  constructor() {
+    // mznInput is a Component that renders its own <input>; placing it on a
+    // native <input>/<textarea> decouples the host from the internal CVA and
+    // makes ngModel silently fail. Throw here (not ngOnInit) so the error fires
+    // before any CVA lifecycle calls (e.g. writeValue from FormControlDirective).
+    const tag = this.elementRef.nativeElement.tagName.toUpperCase();
+
+    if (tag === 'INPUT' || tag === 'TEXTAREA') {
+      throw new Error(
+        `[mznInput] must be applied to a container element (e.g. <div mznInput>) — ` +
+          `the component renders its own <input> internally. ` +
+          `Detected host: <${tag.toLowerCase()}>. ` +
+          `Placing mznInput on a native form element decouples the host from the internal CVA, ` +
+          `causing ngModel / formControl bindings to silently fail. ` +
+          `Use <div mznInput [(ngModel)]="..."> or <div mznInput [value]="..." (valueChange)="..."> instead.`,
+      );
+    }
+  }
 
   private onChangeFn: (value: string) => void = () => {};
   private onTouchedFn: () => void = () => {};
