@@ -34,35 +34,14 @@ import { InputProps } from '../Input';
 import Popper, { PopperPlacement } from '../Popper';
 import Translate, { TranslateFrom } from '../Transition/Translate';
 import { composeRefs } from '../utils/composeRefs';
+import { getElementRef, ReactElementWithRef } from '../utils/getElementRef';
 
 import { IconDefinition } from '@mezzanine-ui/icons';
 import DropdownItem from './DropdownItem';
 
-// Helper type to extract ref from a ReactElement.
-// Models `ref` on the element itself, which is compatible with React 18 and 19.
-type ReactElementWithRef<
-  P,
-  E extends Element = HTMLElement,
-> = ReactElement<P> & {
-  ref?: Ref<E>;
-};
-
 type TriggerElementProps = Partial<ButtonProps & InputProps> & {
   ref?: Ref<HTMLElement>;
 };
-
-/**
- * Extracts ref from a ReactElement, supporting both React 18 and 19.
- * In React 18, ref is on the element itself; in React 19, ref is in props.
- */
-function getElementRef<E extends Element = HTMLElement>(
-  element: ReactElementWithRef<unknown, E>,
-): Ref<E> | undefined {
-  // React 19: ref is in props
-  const propsRef = (element.props as { ref?: Ref<E> })?.ref;
-  // React 18: ref is on the element itself
-  return propsRef ?? element.ref;
-}
 
 export interface DropdownProps extends DropdownItemSharedProps {
   /**
