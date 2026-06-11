@@ -168,7 +168,6 @@ export const AutoCompleteExample: Story = {
           <Tag label="Combobox with AutoComplete" />
           <div style={{ marginTop: 12 }}>
             <AutoComplete
-              fullWidth
               menuMaxHeight={300}
               mode="single"
               onChange={handleChange}
