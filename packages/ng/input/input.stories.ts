@@ -397,6 +397,25 @@ class StorySelectInput {
         >
       </div>
 
+      <div
+        style="border-left: 4px solid #dc2626; background: #fef2f2; padding: 12px 16px; border-radius: 0 6px 6px 0;"
+      >
+        <p style="margin: 0 0 6px 0; font-weight: bold; color: #991b1b;"
+          >⚠️ 不要把 <code>mznInput</code> 放在原生 <code>&lt;input&gt;</code> /
+          <code>&lt;textarea&gt;</code> 上。</p
+        >
+        <p style="margin: 0; color: #7f1d1d;"
+          ><code>mznInput</code> 是會自行渲染
+          <code>&lt;input&gt;</code> 的元件，套在原生表單元素上會讓 host 與內部
+          CVA 脫鉤、<code>ngModel</code>
+          靜默失敗（此情況元件會於初始化 throw 明確錯誤）。請一律把
+          <code>mznInput</code> 套在容器元素上（如
+          <code>&lt;div mznInput&gt;</code>）， 並在該 host 上綁
+          <code>[(ngModel)]</code>、<code>[formControl]</code> 或
+          <code>[value]</code> + <code>(valueChange)</code>。</p
+        >
+      </div>
+
       <div>
         <p style="margin: 0 0 12px 0;">Template-driven（[(ngModel)]）</p>
         <div mznInput placeholder="請輸入" [(ngModel)]="ngModelValue"></div>
