@@ -28,6 +28,12 @@ export default {
       description: '是否為錯誤狀態',
       table: { defaultValue: { summary: 'false' } },
     },
+    flip: {
+      control: { type: 'boolean' },
+      description:
+        '空間不足時下拉選單是否自動向上翻轉（沿主軸 flip，保持與輸入框同寬與水平對齊）',
+      table: { defaultValue: { summary: 'false' } },
+    },
     fullWidth: {
       control: { type: 'boolean' },
       description: '是否撐滿父容器寬度',
@@ -411,5 +417,25 @@ export const WithTree: Story = {
   ],
   render: () => ({
     template: `<story-select-with-tree />`,
+  }),
+};
+
+export const WithFlip: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => ({
+    props: {
+      options: simpleOptions,
+    },
+    template: `
+      <div style="display: flex; flex-direction: column; gap: 8px; justify-content: flex-end; min-height: calc(100vh - 48px); max-width: 300px;">
+        <p mznTypography variant="body">flip = true：靠近視窗底部，開啟時自動向上翻轉</p>
+        <div mznSelect
+          [flip]="true"
+          [fullWidth]="true"
+          [options]="options"
+          placeholder="請選擇"
+        ></div>
+      </div>
+    `,
   }),
 };

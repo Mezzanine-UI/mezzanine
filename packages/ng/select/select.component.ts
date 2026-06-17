@@ -146,11 +146,13 @@ interface FlatOption {
       #triggerPopper
       mznInputTriggerPopper
       [anchor]="triggerElRef()!"
+      [flip]="flip()"
       [open]="isOpen()"
       [sameWidth]="true"
       [globalPortal]="globalPortal()"
+      (placementChange)="onPlacementChange($event)"
     >
-      <div mznTranslate [in]="isOpen()" from="top">
+      <div mznTranslate [in]="isOpen()" [from]="translateFrom()">
         <ul
           [class]="listClass"
           [style.max-height.px]="menuMaxHeight()"
@@ -251,6 +253,13 @@ export class MznSelect implements ControlValueAccessor {
   /** 是否啟用全域 Portal。 */
   readonly globalPortal = input(true);
 
+  /**
+   * 空間不足時下拉選單是否自動向上翻轉(沿主軸 flip,保持與輸入框同寬與水平
+   * 對齊),並讓進場動畫方向跟隨翻轉後的位置。鏡像 React `Select` 的 `flip` prop。
+   * @default false
+   */
+  readonly flip = input(false);
+
   /** 下拉選單 Z軸層級。 */
   readonly dropdownZIndex = input<number>();
 
@@ -286,6 +295,30 @@ export class MznSelect implements ControlValueAccessor {
   protected readonly loadingIcon = SpinnerIcon;
 
   protected readonly isOpen = signal(false);
+
+  /**
+   * MznInputTriggerPopper 內層 popper 解析(含 flip 翻轉)後的實際 placement,
+   * 僅在 flip 啟用時用於決定進場動畫方向。
+   */
+  private readonly menuPlacement = signal<string>('bottom-start');
+
+  /**
+   * mznTranslate 的 from 方向:
+   * - 未啟用 flip → 維持 'top'(選單在下方,由上往下滑入,既有行為)。
+   * - 啟用 flip 且實際翻轉到上方 → 'bottom'(選單在上方,由下往上浮現)。
+   */
+  protected readonly translateFrom = computed((): 'top' | 'bottom' => {
+    if (!this.flip()) return 'top';
+
+    const placementBase = this.menuPlacement().split('-')[0];
+
+    return placementBase === 'top' ? 'bottom' : 'top';
+  });
+
+  protected onPlacementChange(placement: string): void {
+    this.menuPlacement.set(placement);
+  }
+
   private readonly internalValue = signal<ReadonlyArray<string>>([]);
   private readonly expandedNodes = signal<ReadonlySet<string>>(new Set());
   private wasAtBottom = false;
