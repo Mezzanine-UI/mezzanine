@@ -21,6 +21,7 @@ const MOCK_OPTIONS: DropdownOption[] = [
       [options]="options"
       [value]="value"
       [disableClickAway]="true"
+      [flip]="flip"
       (selected)="onSelect($event)"
       (closed)="open = false"
     />
@@ -31,6 +32,7 @@ class TestHostComponent {
   open = false;
   options = MOCK_OPTIONS;
   value = '';
+  flip = false;
   lastSelected: DropdownOption | null = null;
 
   onSelect(option: DropdownOption): void {
@@ -68,6 +70,20 @@ describe('MznDropdown', () => {
     const { fixture, host } = createFixture(TestHostComponent);
 
     host.open = true;
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+    fixture.detectChanges();
+
+    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+
+    expect(items.length).toBe(3);
+  });
+
+  it('should render options when open and flip is enabled', () => {
+    const { fixture, host } = createFixture(TestHostComponent);
+
+    host.open = true;
+    host.flip = true;
     fixture.changeDetectorRef.markForCheck();
     fixture.detectChanges();
     fixture.detectChanges();
