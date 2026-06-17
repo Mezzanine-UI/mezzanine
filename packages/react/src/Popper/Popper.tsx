@@ -48,6 +48,13 @@ export interface PopperProps
    */
   controllerRef?: Ref<PopperController>;
   /**
+   * Callback fired whenever the resolved placement changes, including when
+   * floating-ui middleware (e.g. `flip`) flips the popper to the opposite
+   * side. Receives the actual placement after all middleware run, which may
+   * differ from `options.placement`.
+   */
+  onPlacementChange?: (placement: PopperPlacement) => void;
+  /**
    * The portal element will show if open=true
    * @default false
    */
@@ -67,6 +74,7 @@ const Popper = forwardRef<HTMLDivElement, PopperProps>(
       container,
       controllerRef,
       disablePortal,
+      onPlacementChange,
       open = false,
       options,
       style,
@@ -108,6 +116,12 @@ const Popper = forwardRef<HTMLDivElement, PopperProps>(
         update();
       }
     }, [open, update]);
+
+    // Notify consumers of the resolved placement so they can react to
+    // middleware-driven flips (e.g. adjusting enter-transition direction).
+    useEffect(() => {
+      onPlacementChange?.(floatingReturn.placement);
+    }, [floatingReturn.placement, onPlacementChange]);
 
     // 計算箭頭的位置和旋轉角度
     const arrowX = floatingReturn.middlewareData.arrow?.x;
