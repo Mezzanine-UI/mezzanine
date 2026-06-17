@@ -113,34 +113,36 @@ interface FlatOption {
     '[attr.overflowStrategy]': 'null',
   },
   template: `
-    <div
-      mznSelectTrigger
-      [active]="isOpen()"
-      [clearable]="clearable()"
-      [disabled]="disabled()"
-      [displayText]="displayText()"
-      [error]="error()"
-      [hasValue]="hasValue()"
-      [mode]="mode()"
-      [placeholder]="placeholder()"
-      [prefix]="prefix()"
-      [readOnly]="readOnly()"
-      [size]="size()"
-      [suffixActionIcon]="resolvedSuffixIcon()"
-      (cleared)="onClear($event)"
-      (triggerClicked)="toggleOpen()"
-    >
-      @if (mode() === 'multiple' && hasValue()) {
-        <div
-          mznSelectTriggerTags
-          [disabled]="disabled()"
-          [overflowStrategy]="overflowStrategy()"
-          [readOnly]="readOnly()"
-          [size]="size()"
-          [value]="selectedTagValues()"
-          (tagClosed)="onTagClose($event)"
-        ></div>
-      }
+    <div [class]="dropdownWrapperClass">
+      <div
+        mznSelectTrigger
+        [active]="isOpen()"
+        [clearable]="clearable()"
+        [disabled]="disabled()"
+        [displayText]="displayText()"
+        [error]="error()"
+        [hasValue]="hasValue()"
+        [mode]="mode()"
+        [placeholder]="placeholder()"
+        [prefix]="prefix()"
+        [readOnly]="readOnly()"
+        [size]="size()"
+        [suffixActionIcon]="resolvedSuffixIcon()"
+        (cleared)="onClear($event)"
+        (triggerClicked)="toggleOpen()"
+      >
+        @if (mode() === 'multiple' && hasValue()) {
+          <div
+            mznSelectTriggerTags
+            [disabled]="disabled()"
+            [overflowStrategy]="overflowStrategy()"
+            [readOnly]="readOnly()"
+            [size]="size()"
+            [value]="selectedTagValues()"
+            (tagClosed)="onTagClose($event)"
+          ></div>
+        }
+      </div>
     </div>
     <div
       #triggerPopper
@@ -435,6 +437,15 @@ export class MznSelect implements ControlValueAccessor {
       },
       this.className(),
     ),
+  );
+
+  /**
+   * 觸發器外層 wrapper 的 class，鏡像 React `Select` 透過 `Dropdown` 渲染的
+   * `mzn-dropdown mzn-dropdown--outside` 容器層,使 DOM 結構與 React 對齊。
+   */
+  protected readonly dropdownWrapperClass = clsx(
+    dropdownClasses.root,
+    dropdownClasses.inputPosition('outside'),
   );
 
   protected readonly listClass = dropdownClasses.list;
