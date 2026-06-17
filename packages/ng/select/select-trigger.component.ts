@@ -47,6 +47,10 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
   host: {
     '[class]': 'hostClasses()',
     '(click)': 'onTriggerClick()',
+    // ARIA — 鏡像 React SelectTrigger（TextField host div）的組合框語意。
+    '[attr.role]': '"combobox"',
+    '[attr.aria-expanded]': 'active()',
+    '[attr.aria-haspopup]': '"listbox"',
     '[attr.active]': 'null',
     '[attr.clearable]': 'null',
     '[attr.disabled]': 'null',
@@ -67,17 +71,19 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 
     <input
       readonly
+      role="combobox"
       type="text"
       aria-autocomplete="list"
       aria-haspopup="listbox"
       autocomplete="off"
       [class]="triggerInputClass"
       [value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
+      [attr.value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
       [attr.placeholder]="hasValue() ? null : placeholder()"
     />
     <ng-content />
 
-    @if (clearable() && hasValue()) {
+    @if (clearable() && hasValue() && !readOnly()) {
       <button
         mznClearActions
         type="clearable"
@@ -91,6 +97,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
     <div class="mzn-text-field__suffix">
       <i
         mznIcon
+        [clickable]="true"
         [icon]="resolvedSuffixIcon()"
         [class]="suffixIconClasses()"
       ></i>
