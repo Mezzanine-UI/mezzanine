@@ -117,6 +117,14 @@ export interface SelectBaseProps
    */
   dropdownZIndex?: number | string;
   /**
+   * Whether to enable floating-ui `flip` middleware for the dropdown menu.
+   * When `true`, the menu flips from below to above the input (and back) along
+   * the main axis if it would overflow the viewport, keeping its width and
+   * horizontal alignment with the input. Forwarded to the underlying `Dropdown`.
+   * @default false
+   */
+  flip?: boolean;
+  /**
    * Whether to enable portal for the dropdown.
    * @default true
    */
@@ -268,6 +276,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       type = 'default',
       value: valueProp,
       dropdownZIndex,
+      flip = false,
       globalPortal = true,
     } = props;
 
@@ -568,6 +577,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
         >
           <Dropdown
             disabled={readOnly || disabled}
+            flip={flip}
             globalPortal={globalPortal}
             loadingPosition={loadingPosition}
             loadingText={loadingText}

@@ -23,6 +23,12 @@ export default {
       description: '是否為錯誤狀態',
       table: { defaultValue: { summary: 'false' } },
     },
+    flip: {
+      control: { type: 'boolean' },
+      description:
+        '空間不足時下拉選單是否自動向上翻轉（沿主軸 flip，保持與輸入框同寬與水平對齊）',
+      table: { defaultValue: { summary: 'false' } },
+    },
     fullWidth: {
       control: { type: 'boolean' },
       description: '是否撐滿父容器寬度',
@@ -428,4 +434,35 @@ const WithTreeComponent = () => {
 
 export const WithTree: StoryObj<typeof Select> = {
   render: () => <WithTreeComponent />,
+};
+
+const WithFlipComponent = () => {
+  const flipOptions: DropdownOption[] = Array.from({ length: 6 }, (_, i) => ({
+    id: String(i + 1),
+    name: `item${i + 1}`,
+  }));
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        // Push the trigger near the bottom of the viewport so there is not
+        // enough room below — opening the menu should flip it above the input.
+        justifyContent: 'flex-end',
+        minHeight: 'calc(100vh - 48px)',
+        maxWidth: '300px',
+      }}
+    >
+      <Typography variant="body">
+        flip = true：靠近視窗底部，開啟時自動向上翻轉
+      </Typography>
+      <Select flip fullWidth options={flipOptions} placeholder="請選擇" />
+    </div>
+  );
+};
+
+export const WithFlip: StoryObj<typeof Select> = {
+  render: () => <WithFlipComponent />,
 };

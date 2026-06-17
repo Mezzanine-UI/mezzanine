@@ -3,7 +3,13 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { createRef, RefObject } from 'react';
-import { act, cleanupHook, fireEvent, render, waitFor } from '../../__test-utils__';
+import {
+  act,
+  cleanupHook,
+  fireEvent,
+  render,
+  waitFor,
+} from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Icon from '../Icon';
 import Select from './Select';
@@ -12,9 +18,9 @@ import { SelectValue } from './typings';
 // Mock ResizeObserver - jsdom 不支援此 API
 const originalResizeObserver = (global as typeof globalThis).ResizeObserver;
 class ResizeObserverMock {
-  observe() { }
-  unobserve() { }
-  disconnect() { }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
 }
 
 beforeAll(() => {
@@ -78,17 +84,38 @@ describe('<Select />', () => {
       const { getHostHTMLElement } = render(<Select />);
       const element = getHostHTMLElement();
 
-      expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeNull();
+      expect(
+        document.querySelector('.mzn-dropdown-popper--with-portal'),
+      ).toBeNull();
 
       await testTextFieldClicked(element);
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeInstanceOf(
-          HTMLDivElement,
-        );
+        expect(
+          document.querySelector('.mzn-dropdown-popper--with-portal'),
+        ).toBeInstanceOf(HTMLDivElement);
         expect(document.querySelector('.mzn-dropdown-list')).toBeInstanceOf(
           HTMLUListElement,
         );
+      });
+    });
+  });
+
+  describe('prop: flip', () => {
+    it('should open dropdown and forward flip to the underlying Dropdown', async () => {
+      const { getHostHTMLElement } = render(<Select flip />);
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      await waitFor(() => {
+        const popper = document.querySelector(
+          '.mzn-dropdown-popper--with-portal',
+        );
+        expect(popper).toBeInstanceOf(HTMLDivElement);
+        expect(
+          (popper as HTMLElement).hasAttribute('data-popper-placement'),
+        ).toBe(true);
       });
     });
   });
@@ -266,9 +293,7 @@ describe('<Select />', () => {
 
   describe('mode: single', () => {
     const defaultValue: SelectValue = { id: '1', name: 'foo' };
-    const singleOptions: DropdownOption[] = [
-      { id: '1', name: 'foo' },
-    ];
+    const singleOptions: DropdownOption[] = [{ id: '1', name: 'foo' }];
 
     let element: HTMLElement;
     const onChange = jest.fn();
@@ -316,7 +341,9 @@ describe('<Select />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeNull();
+        expect(
+          document.querySelector('.mzn-dropdown-popper--with-portal'),
+        ).toBeNull();
       });
     });
 
@@ -372,16 +399,24 @@ describe('<Select />', () => {
 
     it('should remove tag when close icon is clicked', async () => {
       // Wait for tags to render and ResizeObserver to complete
-      await waitFor(() => {
-        const tags = element.querySelector('.mzn-select-trigger__tags');
-        expect(tags).toBeTruthy();
-        expect(tags?.children.length).toBeGreaterThan(0);
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          const tags = element.querySelector('.mzn-select-trigger__tags');
+          expect(tags).toBeTruthy();
+          expect(tags?.children.length).toBeGreaterThan(0);
+        },
+        { timeout: 5000 },
+      );
 
-      await waitFor(() => {
-        const tagCloseIcons = element.querySelectorAll('.mzn-tag__close-button');
-        expect(tagCloseIcons.length).toBeGreaterThan(0);
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          const tagCloseIcons = element.querySelectorAll(
+            '.mzn-tag__close-button',
+          );
+          expect(tagCloseIcons.length).toBeGreaterThan(0);
+        },
+        { timeout: 5000 },
+      );
 
       const tagCloseIcons = element.querySelectorAll('.mzn-tag__close-button');
 
@@ -440,7 +475,9 @@ describe('<Select />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeTruthy();
+        expect(
+          document.querySelector('.mzn-dropdown-popper--with-portal'),
+        ).toBeTruthy();
       });
     });
   });
@@ -487,21 +524,32 @@ describe('<Select />', () => {
       const element = getHostHTMLElement();
 
       // Wait for tags to render and ResizeObserver to complete
-      await waitFor(() => {
-        const tags = element.querySelector('.mzn-select-trigger__tags');
-        expect(tags).toBeTruthy();
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          const tags = element.querySelector('.mzn-select-trigger__tags');
+          expect(tags).toBeTruthy();
+        },
+        { timeout: 5000 },
+      );
 
       // In multiple mode, clearable shows when value array is not empty
-      await waitFor(() => {
-        const textField = element.querySelector('.mzn-text-field--clearable');
-        expect(textField).toBeTruthy();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          const textField = element.querySelector('.mzn-text-field--clearable');
+          expect(textField).toBeTruthy();
+        },
+        { timeout: 3000 },
+      );
 
-      await waitFor(() => {
-        const clearIcon = element.querySelector('.mzn-text-field__clear-icon');
-        expect(clearIcon).toBeTruthy();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          const clearIcon = element.querySelector(
+            '.mzn-text-field__clear-icon',
+          );
+          expect(clearIcon).toBeTruthy();
+        },
+        { timeout: 3000 },
+      );
 
       const clearIcon = element.querySelector('.mzn-text-field__clear-icon');
 
@@ -524,7 +572,9 @@ describe('<Select />', () => {
 
       await testTextFieldClicked(element);
 
-      expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeNull();
+      expect(
+        document.querySelector('.mzn-dropdown-popper--with-portal'),
+      ).toBeNull();
     });
 
     it('should not open dropdown via keyboard when readOnly is true', async () => {
@@ -541,7 +591,9 @@ describe('<Select />', () => {
       });
 
       expect(onFocus).toHaveBeenCalledTimes(0);
-      expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeNull();
+      expect(
+        document.querySelector('.mzn-dropdown-popper--with-portal'),
+      ).toBeNull();
     });
   });
 
@@ -578,9 +630,7 @@ describe('<Select />', () => {
     });
 
     it('should render only options from options prop', async () => {
-      const { getHostHTMLElement } = render(
-        <Select options={flatOptions} />,
-      );
+      const { getHostHTMLElement } = render(<Select options={flatOptions} />);
       const element = getHostHTMLElement();
 
       await testTextFieldClicked(element);
@@ -750,7 +800,9 @@ describe('<Select />', () => {
       await testTextFieldClicked(element);
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeTruthy();
+        expect(
+          document.querySelector('.mzn-dropdown-popper--with-portal'),
+        ).toBeTruthy();
       });
 
       await waitFor(() => {
@@ -764,7 +816,9 @@ describe('<Select />', () => {
       await waitFor(() => {
         expect(onChange).toHaveBeenCalled();
         const calledWith = onChange.mock.calls[0][0] as SelectValue[];
-        expect(calledWith.find((v) => String(v.id) === 'parent')).toBeUndefined();
+        expect(
+          calledWith.find((v) => String(v.id) === 'parent'),
+        ).toBeUndefined();
         expect(calledWith.find((v) => String(v.id) === 'leaf-a')).toBeDefined();
         expect(calledWith.find((v) => String(v.id) === 'leaf-b')).toBeDefined();
       });
@@ -789,7 +843,9 @@ describe('<Select />', () => {
       await testTextFieldClicked(element);
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeTruthy();
+        expect(
+          document.querySelector('.mzn-dropdown-popper--with-portal'),
+        ).toBeTruthy();
       });
 
       await waitFor(() => {
