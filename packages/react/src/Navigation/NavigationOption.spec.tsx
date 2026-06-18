@@ -4,6 +4,7 @@ import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Navigation from './Navigation';
 import NavigationOption from './NavigationOption';
 import NavigationOptionCategory from './NavigationOptionCategory';
+import Badge from '../Badge';
 
 // Mock ResizeObserver
 class ResizeObserverMock {
@@ -163,6 +164,99 @@ describe('<NavigationOption />', () => {
 
       expect(
         option?.classList.contains('mzn-navigation-option--basic'),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('children: lone Badge (leaf with badge)', () => {
+    it('should render the badge inline', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Review" icon={PlusIcon} href="/review">
+            <Badge variant="count-alert" count={5} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.querySelector('.mzn-badge')).toBeTruthy();
+    });
+
+    it('should not render a group toggle chevron', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Review" icon={PlusIcon} href="/review">
+            <Badge variant="count-alert" count={5} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element.querySelector('.mzn-navigation-option__toggle-icon'),
+      ).toBeFalsy();
+    });
+
+    it('should stay an anchor with href instead of downgrading to a div', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Review" icon={PlusIcon} href="/review">
+            <Badge variant="count-alert" count={5} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const content = element.querySelector('.mzn-navigation-option__content');
+
+      expect(content?.tagName.toLowerCase()).toBe('a');
+      expect(content?.getAttribute('href')).toBe('/review');
+    });
+
+    it('should keep the basic leaf styling', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Review" icon={PlusIcon} href="/review">
+            <Badge variant="count-alert" count={5} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const option = element.querySelector('.mzn-navigation-option');
+
+      expect(
+        option?.classList.contains('mzn-navigation-option--basic'),
+      ).toBeTruthy();
+    });
+
+    it('should not mount a collapsible group', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Review" icon={PlusIcon} href="/review">
+            <Badge variant="count-alert" count={5} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element.querySelector('.mzn-navigation-option__children-wrapper'),
+      ).toBeFalsy();
+    });
+
+    it('should still render chevron and group when a badge sits alongside sub-options', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Orders" icon={PlusIcon}>
+            <Badge variant="count-brand" count={5} />
+            <NavigationOption title="Pending" />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.querySelector('.mzn-badge')).toBeTruthy();
+      expect(
+        element.querySelector('.mzn-navigation-option__toggle-icon'),
       ).toBeTruthy();
     });
   });
