@@ -77,8 +77,8 @@ import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
         [maxHeight]="dropdownMaxHeight()"
         [placement]="dropdownPlacement()"
         [zIndex]="1000"
-        (selected)="onOptionSelect($event)"
-        (closed)="open.set(false)"
+        (select)="onOptionSelect($event)"
+        (close)="open.set(false)"
       ></div>
     }
   `,

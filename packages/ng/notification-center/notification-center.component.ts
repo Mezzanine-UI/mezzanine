@@ -178,8 +178,8 @@ import { buildTransitionString, reflow } from '@mezzanine-ui/ng/transition';
           [options]="options()"
           placement="bottom-end"
           zIndex="var(--mzn-z-index-popover)"
-          (selected)="onBadgeSelect($event)"
-          (closed)="openDropdown.set(false)"
+          (select)="onBadgeSelect($event)"
+          (close)="openDropdown.set(false)"
         ></div>
       }
     } @else {

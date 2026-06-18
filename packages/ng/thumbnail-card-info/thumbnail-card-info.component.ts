@@ -135,8 +135,8 @@ export type ThumbnailCardInfoType = 'default' | 'action' | 'overflow';
             [open]="overflowOpen()"
             [options]="resolvedOptions()"
             mode="single"
-            (selected)="onOptionSelect($event)"
-            (closed)="closeOverflow()"
+            (select)="onOptionSelect($event)"
+            (close)="closeOverflow()"
           ></div>
         </div>
       </div>

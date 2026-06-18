@@ -197,8 +197,8 @@ import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
                     [options]="filterAreaOptions()!"
                     placement="bottom-end"
                     zIndex="var(--mzn-z-index-popover)"
-                    (selected)="onFilterOptionSelected($event)"
-                    (closed)="filterDropdownOpen.set(false)"
+                    (select)="onFilterOptionSelected($event)"
+                    (close)="filterDropdownOpen.set(false)"
                   ></div>
                 </div>
               } @else {

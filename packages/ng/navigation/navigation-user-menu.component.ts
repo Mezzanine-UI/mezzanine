@@ -97,8 +97,8 @@ import { MZN_NAVIGATION_ACTIVATED } from './navigation-context';
       [open]="isOpen()"
       [placement]="currentPlacement()"
       [options]="options()"
-      (selected)="handleOptionSelected($event)"
-      (closed)="handleClose()"
+      (select)="handleOptionSelected($event)"
+      (close)="handleClose()"
     ></div>
   `,
 })

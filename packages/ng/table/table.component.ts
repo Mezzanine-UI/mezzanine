@@ -420,8 +420,8 @@ function throttleRaf(
                           [open]="titleMenuOpenKey() === col.key"
                           [options]="tm.options"
                           [placement]="tm.placement ?? 'bottom-end'"
-                          (selected)="onTitleMenuSelect(col, $event)"
-                          (closed)="titleMenuOpenKey.set(null)"
+                          (select)="onTitleMenuSelect(col, $event)"
+                          (close)="titleMenuOpenKey.set(null)"
                         ></div>
                       </div>
                     }
@@ -773,7 +773,7 @@ function throttleRaf(
                                 [placement]="
                                   dropAction.placement ?? 'bottom-end'
                                 "
-                                (selected)="
+                                (select)="
                                   onRowActionDropdownSelect(
                                     dropAction,
                                     record,
@@ -781,7 +781,7 @@ function throttleRaf(
                                     $event
                                   )
                                 "
-                                (closed)="rowActionDropdownOpenKey.set(null)"
+                                (close)="rowActionDropdownOpenKey.set(null)"
                               ></div>
                             </div>
                           } @else if (asButtonAction(action); as btnAction) {
@@ -935,8 +935,8 @@ function throttleRaf(
                 [open]="bulkOverflowOpen()"
                 [options]="oa.options"
                 [placement]="oa.placement ?? 'top'"
-                (selected)="onBulkOverflowSelect(oa, $event)"
-                (closed)="bulkOverflowOpen.set(false)"
+                (select)="onBulkOverflowSelect(oa, $event)"
+                (close)="bulkOverflowOpen.set(false)"
               ></div>
             }
           </div>
