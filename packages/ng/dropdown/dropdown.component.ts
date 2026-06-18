@@ -230,12 +230,13 @@ export interface DropdownActionConfig {
           data-mzn-dropdown-popper="true"
           [anchor]="anchor()!"
           [class]="popperWithPortalClass()"
-          [disableFlip]="true"
+          [disableFlip]="!flip()"
           [open]="popperOpen()"
           [placement]="resolvedPlacement()"
           [offsetOptions]="{ mainAxis: 4 }"
           [middleware]="popperMiddleware()"
           [style.z-index]="resolvedZIndex()"
+          (positionUpdated)="onPositionUpdated($event)"
         >
           <div
             mznTranslate
@@ -440,6 +441,15 @@ export class MznDropdown {
   readonly placement = input<Placement>('bottom-start');
 
   /**
+   * 是否啟用 floating-ui `flip` middleware。設為 `true` 時,當選單於下方空間
+   * 不足會沿主軸自動翻轉到對側(例如 `bottom-start` → `top-start`),且進場
+   * 動畫方向會跟隨實際翻轉後的 placement。預設關閉以保留既有 placement 行為。
+   * 鏡像 React `Dropdown` 的 `flip` prop。
+   * @default false
+   */
+  readonly flip = input(false);
+
+  /**
    * 是否在操作區頂部顯示分隔線。
    * @default false
    */
@@ -587,10 +597,24 @@ export class MznDropdown {
   protected readonly translateFrom = computed((): 'top' | 'bottom' => {
     if (this.inputPosition() === 'inside') return 'bottom';
 
-    const placementBase = this.resolvedPlacement().split('-')[0];
+    // 啟用 flip 時跟隨 floating-ui 實際翻轉後的 placement,讓進場動畫從正確
+    // 的方向滑入;未啟用時維持靜態 placement,保留既有 consumer 行為。
+    const placementBase = (
+      this.flip() ? this.flippedPlacement() : this.resolvedPlacement()
+    ).split('-')[0];
 
     return placementBase === 'top' ? 'top' : 'bottom';
   });
+
+  /**
+   * floating-ui 實際解析(含 flip 翻轉)後的 placement,僅在 `flip` 啟用時用於
+   * 決定進場動畫方向。由 MznPopper 的 `positionUpdated` 輸出驅動。
+   */
+  private readonly flippedPlacement = signal<Placement>('bottom-start');
+
+  protected onPositionUpdated(placement: Placement): void {
+    this.flippedPlacement.set(placement);
+  }
 
   /**
    * Build the unified DropdownActionProps passed to MznDropdownItem.

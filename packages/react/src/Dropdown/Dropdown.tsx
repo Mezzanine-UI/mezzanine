@@ -185,8 +185,12 @@ export interface DropdownProps extends DropdownItemSharedProps {
   sameWidth?: boolean;
   /**
    * Whether to enable floating-ui `flip` middleware.
-   * When `true`, the dropdown automatically flips to the opposite side
-   * (e.g. `bottom-start` → `top-start`) if it would overflow the viewport.
+   * When `true`, the dropdown automatically flips to the opposite side along
+   * the main axis (e.g. `bottom-start` → `top-start`) if it would overflow the
+   * viewport, and the enter transition slides from the resolved side. The flip
+   * is main-axis only (no `shift`/`crossAxis`), so a `sameWidth` menu stays
+   * horizontally aligned with its anchor — matching the `InputTriggerPopper`
+   * behavior used by the DatePicker/TimePicker menus.
    * Off by default to preserve existing placement behavior across consumers.
    * @default false
    */
@@ -520,6 +524,11 @@ export default function Dropdown(props: DropdownProps) {
     return 'bottom';
   }, [inputPosition, placement]);
 
+  // Tracks the placement actually resolved by floating-ui. Only meaningful when
+  // `flip` is enabled, where it may differ from `popoverPlacement` after a flip.
+  const [resolvedPlacement, setResolvedPlacement] =
+    useState<PopperPlacement>(popoverPlacement);
+
   const customWidthMiddleware = useMemo(() => {
     if (!customWidth) {
       return null;
@@ -561,8 +570,11 @@ export default function Dropdown(props: DropdownProps) {
   const flipMiddleware = useMemo(() => {
     if (!flip) return null;
 
+    // Main-axis flip only (bottom <-> top), aligned with `InputTriggerPopper`.
+    // No `shift`/`crossAxis` so a sameWidth menu keeps its horizontal alignment
+    // with the anchor instead of being pushed sideways.
     return flipMiddlewareFn({
-      fallbackStrategy: 'bestFit',
+      fallbackAxisSideDirection: 'end',
       padding: 8,
     });
   }, [flip]);
@@ -596,9 +608,14 @@ export default function Dropdown(props: DropdownProps) {
       return 'bottom';
     }
 
-    const placementBase = popoverPlacement.split('-')[0];
+    // When flip is enabled, follow the placement resolved by floating-ui so the
+    // enter transition slides from the correct side after a flip. Otherwise keep
+    // the static placement to preserve existing behavior for non-flip consumers.
+    const placementBase = (flip ? resolvedPlacement : popoverPlacement).split(
+      '-',
+    )[0];
     return placementBase === 'top' ? 'top' : 'bottom';
-  }, [isInline, popoverPlacement]);
+  }, [flip, isInline, popoverPlacement, resolvedPlacement]);
 
   const setOpen = useCallback(
     (next: boolean | ((prev: boolean) => boolean)) => {
@@ -1015,6 +1032,7 @@ export default function Dropdown(props: DropdownProps) {
           anchor={anchorRef}
           className={dropdownClasses.popperWithPortal}
           controllerRef={popperControllerRef}
+          onPlacementChange={setResolvedPlacement}
           open={isOpen}
           disablePortal={!globalPortal}
           options={{

@@ -18,6 +18,7 @@ const MOCK_OPTIONS: DropdownOption[] = [
     <mzn-select
       [options]="options"
       [(ngModel)]="selected"
+      [flip]="flip"
       placeholder="Choose"
     />
   `,
@@ -25,6 +26,7 @@ const MOCK_OPTIONS: DropdownOption[] = [
 class TestHostComponent {
   options = MOCK_OPTIONS;
   selected = '';
+  flip = false;
 }
 
 function createFixture<T>(component: new () => T): {
@@ -85,6 +87,22 @@ describe('MznSelect', () => {
     const items = fixture.nativeElement.querySelectorAll('[role="option"]');
 
     expect(items.length).toBe(3);
+  });
+
+  it('should open dropdown when flip is enabled', () => {
+    const { fixture, host } = createFixture(TestHostComponent);
+    host.flip = true;
+    fixture.detectChanges();
+
+    const trigger = fixture.nativeElement.querySelector('.mzn-select-trigger');
+
+    trigger.click();
+    fixture.detectChanges();
+    fixture.detectChanges();
+
+    const listbox = fixture.nativeElement.querySelector('[role="listbox"]');
+
+    expect(listbox).toBeTruthy();
   });
 
   it('should select option and close', async () => {

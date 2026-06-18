@@ -97,6 +97,27 @@ describe('<Popper />', () => {
     });
   });
 
+  describe('prop: onPlacementChange', () => {
+    it('should be called with the resolved placement when open', async () => {
+      const onPlacementChange = jest.fn();
+
+      await act(async () => {
+        await render(
+          <Popper
+            anchor={document.body}
+            open
+            onPlacementChange={onPlacementChange}
+            options={{ placement: 'top-start' }}
+          >
+            <div />
+          </Popper>,
+        );
+      });
+
+      expect(onPlacementChange).toHaveBeenCalledWith('top-start');
+    });
+  });
+
   describe('prop: options', () => {
     describe('middleware', () => {
       it('should pass middleware to useFloating', async () => {

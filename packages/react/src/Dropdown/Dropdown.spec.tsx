@@ -268,6 +268,23 @@ describe('<Dropdown />', () => {
     });
   });
 
+  describe('prop: flip', () => {
+    it('should render popper when flip is enabled', async () => {
+      const user = userEvent.setup();
+      render(
+        <Dropdown options={mockOptions} flip inputPosition="outside">
+          <Button>Trigger</Button>
+        </Dropdown>,
+      );
+      const trigger = screen.getByText('Trigger');
+      await user.click(trigger);
+      await waitFor(() => {
+        const popper = getPopperContainer();
+        expect(popper).toBeInTheDocument();
+      });
+    });
+  });
+
   describe('prop: sameWidth', () => {
     it('should apply sameWidth middleware', async () => {
       const user = userEvent.setup();

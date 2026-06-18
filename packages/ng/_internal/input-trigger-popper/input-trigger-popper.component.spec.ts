@@ -11,6 +11,7 @@ import { MznInputTriggerPopper } from './input-trigger-popper.component';
       [anchor]="anchorEl()"
       [open]="open"
       [sameWidth]="sameWidth"
+      [flip]="flip"
     >
       <div class="dropdown-content">Options</div>
     </mzn-input-trigger-popper>
@@ -20,10 +21,13 @@ class TestHostComponent {
   readonly anchorEl = viewChild.required<ElementRef<HTMLElement>>('anchor');
   open = false;
   sameWidth = false;
+  flip = false;
 }
 
 function createFixture(
-  overrides: Partial<Pick<TestHostComponent, 'open' | 'sameWidth'>> = {},
+  overrides: Partial<
+    Pick<TestHostComponent, 'open' | 'sameWidth' | 'flip'>
+  > = {},
 ): {
   fixture: ReturnType<typeof TestBed.createComponent<TestHostComponent>>;
   host: TestHostComponent;
@@ -62,6 +66,12 @@ describe('MznInputTriggerPopper', () => {
 
   it('should render content', () => {
     const { getHostElement } = createFixture({ open: true });
+
+    expect(getHostElement().querySelector('.dropdown-content')).toBeTruthy();
+  });
+
+  it('should render content when flip is enabled', () => {
+    const { getHostElement } = createFixture({ open: true, flip: true });
 
     expect(getHostElement().querySelector('.dropdown-content')).toBeTruthy();
   });

@@ -5,6 +5,7 @@ import {
   effect,
   ElementRef,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -46,6 +47,7 @@ let popperOpenSequence = 0;
     '(touchmove)': '$event.stopPropagation()',
     '(touchend)': '$event.stopPropagation()',
     '[attr.anchor]': 'null',
+    '[attr.flip]': 'null',
     '[attr.globalPortal]': 'null',
     '[attr.open]': 'null',
     '[attr.sameWidth]': 'null',
@@ -56,11 +58,13 @@ let popperOpenSequence = 0;
         #popperEl
         mznPopper
         [anchor]="anchor()"
+        [disableFlip]="!flip()"
         [open]="open()"
         [placement]="placement"
         [offsetOptions]="offsetOpts"
         [middleware]="resolvedMiddleware()"
         [style.z-index]="zIndex()"
+        (positionUpdated)="placementChange.emit($event)"
       >
         <ng-content />
       </div>
@@ -83,6 +87,13 @@ export class MznInputTriggerPopper {
   readonly globalPortal = input(true);
 
   /**
+   * 是否啟用 floating-ui `flip` middleware。設為 `true` 時,當浮層於下方空間
+   * 不足會沿主軸自動翻轉到對側。預設關閉,維持固定 `bottom-start` 定位。
+   * @default false
+   */
+  readonly flip = input(false);
+
+  /**
    * 是否顯示。
    * @default false
    */
@@ -100,6 +111,12 @@ export class MznInputTriggerPopper {
    * 被誤判為 click-outside 而關閉元件。
    */
   readonly popperElRef = viewChild<ElementRef<HTMLElement>>('popperEl');
+
+  /**
+   * 轉發內層 MznPopper 解析(含 flip 翻轉)後的實際 placement,供父元件
+   * (如 Select)調整進場動畫方向。
+   */
+  readonly placementChange = output<PopperPlacement>();
 
   protected readonly hostClass = classes.host;
   protected readonly placement: PopperPlacement = 'bottom-start';
