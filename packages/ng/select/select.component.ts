@@ -71,7 +71,7 @@ interface FlatOption {
  *   [options]="fruits"
  *   [(ngModel)]="selectedFruit"
  *   placeholder="請選擇水果"
- *   (selectionChange)="onFruitChange($event)"
+ *   (change)="onFruitChange($event)"
  * ></div>
  * ```
  *
@@ -285,17 +285,29 @@ export class MznSelect implements ControlValueAccessor {
   /** 多選模式下的溢位策略。 */
   readonly overflowStrategy = input<'counter' | 'wrap'>('counter');
 
-  /** 滾動事件。 */
-  readonly onScroll = output<{ scrollTop: number; maxScrollTop: number }>();
+  /** 選單滾動事件。鏡像 React `onScroll`（去 `on` 前綴）。 */
+  readonly scroll = output<{ scrollTop: number; maxScrollTop: number }>();
 
-  /** 滾動到底部事件。 */
-  readonly onReachBottom = output<void>();
+  /** 選單滾動到底部事件。鏡像 React `onReachBottom`。 */
+  readonly reachBottom = output<void>();
 
-  /** 離開底部事件。 */
-  readonly onLeaveBottom = output<void>();
+  /** 選單離開底部事件。鏡像 React `onLeaveBottom`。 */
+  readonly leaveBottom = output<void>();
 
-  /** 選取變更事件。 */
-  readonly selectionChange = output<DropdownOption>();
+  /** 選取值變更事件。鏡像 React `onChange`。 */
+  readonly change = output<DropdownOption>();
+
+  /** 聚焦（展開）事件。鏡像 React `onFocus`。 */
+  readonly focus = output<void>();
+
+  /** 失焦（收合）事件。鏡像 React `onBlur`。 */
+  readonly blur = output<void>();
+
+  /** 清除事件。鏡像 React `onClear`。 */
+  readonly clear = output<void>();
+
+  /** 多選標籤關閉事件。鏡像 React `onTagClose`。 */
+  readonly tagClose = output<SelectTriggerTagValue>();
 
   protected readonly chevronDownIcon = ChevronDownIcon;
   protected readonly checkedIcon = CheckedIcon;
@@ -607,7 +619,7 @@ export class MznSelect implements ControlValueAccessor {
       this.onChange(next);
     }
 
-    this.selectionChange.emit(option);
+    this.change.emit(option);
   }
 
   private onTreeLeafSelect(option: DropdownOption): void {
@@ -630,30 +642,34 @@ export class MznSelect implements ControlValueAccessor {
 
     this.internalValue.set(next);
     this.onChange(next);
-    this.selectionChange.emit(this.findOptionById(option.id, opts) ?? option);
+    this.change.emit(this.findOptionById(option.id, opts) ?? option);
   }
 
   protected toggleOpen(): void {
     if (this.disabled() || this.readOnly()) return;
 
-    this.isOpen.update((v) => !v);
+    const next = !this.isOpen();
+    this.isOpen.set(next);
     this.onTouched();
+    (next ? this.focus : this.blur).emit();
   }
 
   protected onClear(_event: MouseEvent): void {
     this.internalValue.set([]);
     this.onChange(this.mode() === 'single' ? '' : []);
-    this.selectionChange.emit({ id: '', name: '' } as DropdownOption);
+    this.change.emit({ id: '', name: '' } as DropdownOption);
+    this.clear.emit();
   }
 
   protected onTagClose(item: SelectTriggerTagValue): void {
     const next = this.internalValue().filter((id) => id !== item.id);
     this.internalValue.set(next);
     this.onChange(next);
-    this.selectionChange.emit({
+    this.change.emit({
       id: item.id,
       name: item.name,
     } as DropdownOption);
+    this.tagClose.emit(item);
   }
 
   protected onListScroll(event: Event): void {
@@ -661,17 +677,17 @@ export class MznSelect implements ControlValueAccessor {
     const { scrollTop, scrollHeight, clientHeight } = target;
     const maxScrollTop = scrollHeight - clientHeight;
 
-    this.onScroll.emit({ scrollTop, maxScrollTop });
+    this.scroll.emit({ scrollTop, maxScrollTop });
 
     // Check if scrolled to bottom (with 1px threshold for sub-pixel rounding errors)
     const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
 
     if (isAtBottom && !this.wasAtBottom) {
-      this.onReachBottom.emit();
+      this.reachBottom.emit();
     }
 
     if (!isAtBottom && this.wasAtBottom) {
-      this.onLeaveBottom.emit();
+      this.leaveBottom.emit();
     }
 
     this.wasAtBottom = isAtBottom;

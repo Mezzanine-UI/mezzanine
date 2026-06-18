@@ -262,8 +262,8 @@ export const WithReadOnly: Story = {
       [menuMaxHeight]="200"
       [options]="options()"
       placeholder="滾動載入更多"
-      (onReachBottom)="loadMore()"
-      (onLeaveBottom)="onLeaveBottom()"
+      (reachBottom)="loadMore()"
+      (leaveBottom)="onLeaveBottom()"
     ></div>
   `,
 })
