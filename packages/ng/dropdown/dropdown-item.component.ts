@@ -332,6 +332,7 @@ export interface DropdownFlatTreeNode {
               [cancelText]="ac.cancelText"
               [clearText]="ac.clearText"
               [confirmText]="ac.confirmText"
+              [customActionButtonProps]="ac.customActionButtonProps"
               [mode]="resolvedActionMode()"
               (cancelled)="actionCancelled.emit()"
               (confirmed)="actionConfirmed.emit()"
@@ -473,6 +474,12 @@ export class MznDropdownItem {
 
   /** 選取事件，攜帶被點選的 DropdownOption。 */
   readonly selected = output<DropdownOption>();
+
+  /**
+   * 列表捲動事件,payload 為 `{ scrollTop, maxScrollTop }`。由 list-wrapper 的
+   * scroll event 計算,供 MznDropdown 轉發為對齊 React `onScroll` 的 `scroll` output。
+   */
+  readonly scroll = output<{ scrollTop: number; maxScrollTop: number }>();
 
   /**
    * 滑鼠進入選項時觸發,參數為該選項的 flat 0-indexed 位置(與 activeIndex
@@ -806,6 +813,9 @@ export class MznDropdownItem {
   protected onListWrapperScroll(event: Event): void {
     const target = event.target as HTMLDivElement;
     const { scrollTop, scrollHeight, clientHeight } = target;
+
+    this.scroll.emit({ scrollTop, maxScrollTop: scrollHeight - clientHeight });
+
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 5;
 
     if (isAtBottom && !this.wasAtBottom) {
