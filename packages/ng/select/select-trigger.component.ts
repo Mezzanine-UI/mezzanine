@@ -80,8 +80,12 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
       [class]="triggerInputClass"
       [disabled]="disabled()"
       [value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
-      [attr.value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
-      [attr.placeholder]="placeholder()"
+      [attr.value]="
+        mode() === 'multiple' ? null : hasValue() ? displayText() : ''
+      "
+      [attr.placeholder]="
+        hasValue() && mode() !== 'multiple' ? displayText() : placeholder()
+      "
     />
     <ng-content />
 
