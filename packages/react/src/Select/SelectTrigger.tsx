@@ -24,6 +24,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     className,
     clearable: clearableProp = false,
     disabled,
+    error,
     forceHideSuffixActionIcon,
     inputProps,
     innerRef,
@@ -45,7 +46,8 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     ...restTextFieldProps
   } = props;
 
-  const renderValueProp = 'renderValue' in props ? props.renderValue : undefined;
+  const renderValueProp =
+    'renderValue' in props ? props.renderValue : undefined;
 
   // Exclude renderValue to avoid leaking unknown props to DOM.
   const sanitizedTextFieldProps = (() => {
@@ -125,7 +127,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
         },
         className,
       )}
-      error={type === 'error'}
+      error={error || type === 'error'}
       clearable={shouldEnableClearable}
       forceShowClearable={shouldEnableClearable}
       size={size}
@@ -146,25 +148,21 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
         value={renderValue()}
       />
 
-      {
-        isMultipleSelection(props) && props.value?.length
-          ? (
-            <SelectTriggerTags
-              disabled={disabled}
-              overflowStrategy={overflowStrategy}
-              inputProps={inputProps}
-              inputRef={inputRef}
-              onTagClose={onTagClose}
-              readOnly={readOnly}
-              required={required}
-              searchText={searchText}
-              size={size}
-              showTextInputAfterTags={showTextInputAfterTags}
-              value={props.value}
-            />
-          )
-          : null
-      }
+      {isMultipleSelection(props) && props.value?.length ? (
+        <SelectTriggerTags
+          disabled={disabled}
+          overflowStrategy={overflowStrategy}
+          inputProps={inputProps}
+          inputRef={inputRef}
+          onTagClose={onTagClose}
+          readOnly={readOnly}
+          required={required}
+          searchText={searchText}
+          size={size}
+          showTextInputAfterTags={showTextInputAfterTags}
+          value={props.value}
+        />
+      ) : null}
     </TextField>
   );
 }
@@ -172,11 +170,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
 const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>(
   (props, ref) => {
     if (props.mode === 'multiple') {
-      const {
-        mode: _mode,
-        value,
-        ...multipleModeProps
-      } = props;
+      const { mode: _mode, value, ...multipleModeProps } = props;
 
       return (
         <SelectTriggerComponent
