@@ -78,6 +78,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
       aria-haspopup="listbox"
       autocomplete="off"
       [class]="triggerInputClass"
+      [disabled]="disabled()"
       [value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
       [attr.value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
       [attr.placeholder]="hasValue() ? null : placeholder()"
