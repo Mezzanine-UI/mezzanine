@@ -246,24 +246,23 @@ export const WithReadOnly: Story = {
 
 // WithScroll: demonstrates lazy-loading via onReachBottom event
 @Component({
-  selector: 'story-select-with-scroll',
+  selector: 'div[storySelectWithScroll]',
   standalone: true,
   imports: [MznSelect],
+  host: { '[style.max-width.px]': '300' },
   template: `
-    <div style="max-width: 300px;">
-      <div
-        mznSelect
-        [clearable]="true"
-        [fullWidth]="true"
-        [loading]="loading()"
-        loadingText="載入中..."
-        [menuMaxHeight]="200"
-        [options]="options()"
-        placeholder="滾動載入更多"
-        (onReachBottom)="loadMore()"
-        (onLeaveBottom)="onLeaveBottom()"
-      ></div>
-    </div>
+    <div
+      mznSelect
+      [clearable]="true"
+      [fullWidth]="true"
+      [loading]="loading()"
+      loadingText="載入中..."
+      [menuMaxHeight]="200"
+      [options]="options()"
+      placeholder="滾動載入更多"
+      (onReachBottom)="loadMore()"
+      (onLeaveBottom)="onLeaveBottom()"
+    ></div>
   `,
 })
 class SelectWithScrollStoryComponent {
@@ -309,7 +308,7 @@ export const WithScroll: Story = {
   parameters: { controls: { disable: true } },
   decorators: [moduleMetadata({ imports: [SelectWithScrollStoryComponent] })],
   render: () => ({
-    template: `<story-select-with-scroll />`,
+    template: `<div storySelectWithScroll></div>`,
   }),
 };
 
@@ -352,42 +351,42 @@ const treeOptions: DropdownOption[] = [
 ];
 
 @Component({
-  selector: 'story-select-with-tree',
+  selector: 'div[storySelectWithTree]',
   standalone: true,
   imports: [MznSelect, MznTypography],
+  host: {
+    '[style.display]': "'flex'",
+    '[style.flex-direction]': "'column'",
+    '[style.gap.px]': '24',
+    '[style.max-width.px]': '400',
+  },
   template: `
-    <div
-      style="display: flex; flex-direction: column; gap: 24px; max-width: 400px;"
-    >
-      <div>
-        <p mznTypography variant="body" style="margin-bottom: 8px;">
-          Multiple Mode (Tree) - 所有選項都有 checkbox:
-        </p>
-        <div
-          mznSelect
-          [clearable]="true"
-          [fullWidth]="true"
-          mode="multiple"
-          [options]="treeOptions"
-          [(ngModel)]="selectedValue"
-          placeholder="請選擇多個技術棧"
-        ></div>
-      </div>
-      @if (selectedValue.length > 0) {
-        <div
-          style="padding: 8px; background-color: #f5f5f5; border-radius: 4px;"
-        >
-          <p mznTypography variant="body" style="margin-bottom: 4px;">
-            已選擇 ({{ selectedValue.length }} 項):
-          </p>
-          @for (id of selectedValue; track id) {
-            <p mznTypography variant="body" style="font-size: 12px;">
-              • {{ getOptionName(id) }} (ID: {{ id }})
-            </p>
-          }
-        </div>
-      }
+    <div>
+      <p mznTypography variant="body" style="margin-bottom: 8px;">
+        Multiple Mode (Tree) - 所有選項都有 checkbox:
+      </p>
+      <div
+        mznSelect
+        [clearable]="true"
+        [fullWidth]="true"
+        mode="multiple"
+        [options]="treeOptions"
+        [(ngModel)]="selectedValue"
+        placeholder="請選擇多個技術棧"
+      ></div>
     </div>
+    @if (selectedValue.length > 0) {
+      <div style="padding: 8px; background-color: #f5f5f5; border-radius: 4px;">
+        <p mznTypography variant="body" style="margin-bottom: 4px;">
+          已選擇 ({{ selectedValue.length }} 項):
+        </p>
+        @for (id of selectedValue; track id) {
+          <p mznTypography variant="body" style="font-size: 12px;">
+            • {{ getOptionName(id) }} (ID: {{ id }})
+          </p>
+        }
+      </div>
+    }
   `,
 })
 class SelectWithTreeStoryComponent {
@@ -416,7 +415,7 @@ export const WithTree: Story = {
     moduleMetadata({ imports: [FormsModule, SelectWithTreeStoryComponent] }),
   ],
   render: () => ({
-    template: `<story-select-with-tree />`,
+    template: `<div storySelectWithTree></div>`,
   }),
 };
 
