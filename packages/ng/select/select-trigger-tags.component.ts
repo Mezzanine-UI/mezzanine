@@ -15,7 +15,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
-import { tagClasses, TagSize } from '@mezzanine-ui/core/tag';
+import { TagSize } from '@mezzanine-ui/core/tag';
 import clsx from 'clsx';
 import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznTagGroup } from '@mezzanine-ui/ng/tag';
@@ -90,11 +90,7 @@ export interface SelectTriggerTagValue {
         </span>
       }
     } @else {
-      <div
-        #tagsContainer
-        [class]="tagsContainerClasses()"
-        style="position: relative;"
-      >
+      <div #tagsContainer [class]="tagsContainerClasses()">
         <div mznTagGroup>
           @for (item of visibleItems(); track item.id) {
             <span>
@@ -132,33 +128,33 @@ export interface SelectTriggerTagValue {
           }
         </div>
 
-        <!-- Fake tags for measurement (React useSelectTriggerTags pattern) -->
+        <!-- Fake tags for measurement (mirrors React useSelectTriggerTags:
+             a .mzn-select-trigger__tags container with .__fake-tag /
+             .__fake-ellipsis spans, no tag-group wrapper). -->
         <div
-          [class]="fakeTagsClasses()"
+          [class]="fakeTagsClass"
           aria-hidden="true"
           style="position: absolute; pointer-events: none; visibility: hidden; opacity: 0; inset: 0;"
         >
-          <div mznTagGroup>
-            @for (item of value(); track item.id) {
-              <span>
-                <span
-                  mznTag
-                  type="dismissable"
-                  [disabled]="true"
-                  [size]="size()"
-                  [label]="item.name"
-                ></span>
-              </span>
-            }
-            <span>
+          @for (item of value(); track item.id) {
+            <span class="mzn-select-trigger__fake-tag">
               <span
                 mznTag
-                type="overflow-counter"
-                [count]="99"
+                type="dismissable"
+                [disabled]="true"
                 [size]="size()"
+                [label]="item.name"
               ></span>
             </span>
-          </div>
+          }
+          <span class="mzn-select-trigger__fake-ellipsis">
+            <span
+              mznTag
+              type="overflow-counter"
+              [count]="99"
+              [size]="size()"
+            ></span>
+          </span>
         </div>
       </div>
     }
@@ -226,8 +222,7 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
     }),
   );
 
-  protected readonly fakeTagsClasses = (): string =>
-    clsx(classes.triggerTags, classes.triggerTagsEllipsis);
+  protected readonly fakeTagsClass = classes.triggerTags;
 
   protected readonly visibleItems = computed(
     (): ReadonlyArray<SelectTriggerTagValue> => {
@@ -292,19 +287,16 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
     );
     if (!fakeTagsWrapper) return;
 
-    const tagGroupEl = fakeTagsWrapper.querySelector<HTMLElement>(
-      `.${tagClasses.group}`,
+    // Mirrors React: measure the `.__fake-tag` spans and the `.__fake-ellipsis`
+    // span directly under the fake container (no tag-group wrapper).
+    const fakeTags = Array.from(
+      fakeTagsWrapper.querySelectorAll<HTMLElement>(
+        '.mzn-select-trigger__fake-tag',
+      ),
     );
-    if (!tagGroupEl) return;
-
-    // Each child is a wrapper <span> (mirroring React TagGroup) whose inner
-    // element is the mzn-tag; detect the overflow counter on either level.
-    const children = Array.from(tagGroupEl.children) as HTMLElement[];
-    const isOverflowCounter = (el: HTMLElement): boolean =>
-      el.classList.contains('mzn-tag--overflow-counter') ||
-      el.querySelector('.mzn-tag--overflow-counter') !== null;
-    const fakeTags = children.filter((el) => !isOverflowCounter(el));
-    const fakeEllipsis = children.find((el) => isOverflowCounter(el));
+    const fakeEllipsis = fakeTagsWrapper.querySelector<HTMLElement>(
+      '.mzn-select-trigger__fake-ellipsis',
+    );
 
     if (fakeTags.length === 0) return;
 

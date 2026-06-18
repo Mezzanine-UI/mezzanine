@@ -81,7 +81,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
       [disabled]="disabled()"
       [value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
       [attr.value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
-      [attr.placeholder]="hasValue() ? null : placeholder()"
+      [attr.placeholder]="placeholder()"
     />
     <ng-content />
 
