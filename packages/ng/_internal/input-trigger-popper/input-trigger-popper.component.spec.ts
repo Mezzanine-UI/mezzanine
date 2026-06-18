@@ -1,5 +1,6 @@
 import { Component, ElementRef, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { MznInputTriggerPopper } from './input-trigger-popper.component';
 
 @Component({
@@ -7,14 +8,15 @@ import { MznInputTriggerPopper } from './input-trigger-popper.component';
   imports: [MznInputTriggerPopper],
   template: `
     <button #anchor>Trigger</button>
-    <mzn-input-trigger-popper
+    <ng-template
+      mznInputTriggerPopper
       [anchor]="anchorEl()"
       [open]="open"
       [sameWidth]="sameWidth"
       [flip]="flip"
     >
       <div class="dropdown-content">Options</div>
-    </mzn-input-trigger-popper>
+    </ng-template>
   `,
 })
 class TestHostComponent {
@@ -31,7 +33,6 @@ function createFixture(
 ): {
   fixture: ReturnType<typeof TestBed.createComponent<TestHostComponent>>;
   host: TestHostComponent;
-  getHostElement: () => HTMLElement;
 } {
   const fixture = TestBed.createComponent(TestHostComponent);
   const host = fixture.componentInstance;
@@ -39,51 +40,68 @@ function createFixture(
   Object.assign(host, overrides);
   fixture.detectChanges();
 
-  return {
-    fixture,
-    host,
-    getHostElement: () =>
-      fixture.nativeElement.querySelector(
-        'mzn-input-trigger-popper',
-      ) as HTMLElement,
-  };
+  return { fixture, host };
 }
 
 describe('MznInputTriggerPopper', () => {
+  let overlayContainerElement: HTMLElement;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TestHostComponent],
     });
+    overlayContainerElement =
+      TestBed.inject(OverlayContainer).getContainerElement();
   });
 
-  it('should render with host class', () => {
-    const { getHostElement } = createFixture();
+  afterEach(() => {
+    TestBed.inject(OverlayContainer).ngOnDestroy();
+  });
+
+  it('should not portal content into the overlay when closed', () => {
+    createFixture({ open: false });
 
     expect(
-      getHostElement().classList.contains('mzn-input-trigger-popper'),
-    ).toBe(true);
+      overlayContainerElement.querySelector('.dropdown-content'),
+    ).toBeNull();
   });
 
-  it('should render content', () => {
-    const { getHostElement } = createFixture({ open: true });
+  it('should portal content into the cdk overlay when open', () => {
+    createFixture({ open: true });
 
-    expect(getHostElement().querySelector('.dropdown-content')).toBeTruthy();
+    expect(
+      overlayContainerElement.querySelector('.dropdown-content'),
+    ).toBeTruthy();
   });
 
-  it('should render content when flip is enabled', () => {
-    const { getHostElement } = createFixture({ open: true, flip: true });
+  it('should apply the popper class to the overlay pane when open', () => {
+    createFixture({ open: true });
 
-    expect(getHostElement().querySelector('.dropdown-content')).toBeTruthy();
+    expect(
+      overlayContainerElement.querySelector('.mzn-input-trigger-popper'),
+    ).toBeTruthy();
   });
 
-  it('should stop click propagation', () => {
-    const { getHostElement } = createFixture({ open: true });
-    const spy = jest.fn();
+  it('should portal content into the cdk overlay when flip is enabled', () => {
+    createFixture({ open: true, flip: true });
 
-    document.addEventListener('click', spy);
-    getHostElement().click();
-    document.removeEventListener('click', spy);
+    expect(
+      overlayContainerElement.querySelector('.dropdown-content'),
+    ).toBeTruthy();
+  });
 
-    expect(spy).not.toHaveBeenCalled();
+  it('should detach the overlay when toggled closed', () => {
+    const { fixture, host } = createFixture({ open: true });
+
+    expect(
+      overlayContainerElement.querySelector('.dropdown-content'),
+    ).toBeTruthy();
+
+    host.open = false;
+    fixture.detectChanges();
+
+    expect(
+      overlayContainerElement.querySelector('.dropdown-content'),
+    ).toBeNull();
   });
 });

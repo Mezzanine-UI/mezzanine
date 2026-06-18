@@ -35,7 +35,8 @@
             "tsConfig": ".storybook-ng/tsconfig.json",
             "styles": [
               ".storybook-ng/global.scss",
-              "node_modules/overlayscrollbars/styles/overlayscrollbars.css"
+              "node_modules/overlayscrollbars/styles/overlayscrollbars.css",
+              "node_modules/@angular/cdk/overlay-prebuilt.css"
             ],
             "scripts": [],
             "stylePreprocessorOptions": {

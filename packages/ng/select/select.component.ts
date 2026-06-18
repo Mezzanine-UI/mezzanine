@@ -148,9 +148,9 @@ interface FlatOption {
         }
       </div>
     </div>
-    <div
-      #triggerPopper
+    <ng-template
       mznInputTriggerPopper
+      #triggerPopper="mznInputTriggerPopper"
       [anchor]="triggerElRef()!"
       [flip]="flip()"
       [open]="isOpen()"
@@ -201,7 +201,7 @@ interface FlatOption {
           </div>
         </ul>
       </div>
-    </div>
+    </ng-template>
   `,
 })
 export class MznSelect implements ControlValueAccessor {
@@ -483,7 +483,7 @@ export class MznSelect implements ControlValueAccessor {
         // 所以 click-away 需同時接受「host」與「popper 根元素」兩個 container —
         // 否則點擊 popped-out 選項會被 capture-phase click-away 判定為 outside
         // 而立刻關閉（multi-select 模式會中斷連續選取）。
-        const popperEl = this.triggerPopperRef()?.popperElRef()?.nativeElement;
+        const popperEl = this.triggerPopperRef()?.popperElRef ?? undefined;
         const cleanup = this.clickAway.listen(
           [this.hostElRef.nativeElement, popperEl],
           () => this.isOpen.set(false),
