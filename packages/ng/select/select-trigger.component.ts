@@ -100,14 +100,16 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
       ></button>
     }
 
-    <div class="mzn-text-field__suffix">
-      <i
-        mznIcon
-        [clickable]="true"
-        [icon]="resolvedSuffixIcon()"
-        [class]="suffixIconClasses()"
-      ></i>
-    </div>
+    @if (!forceHideSuffixActionIcon()) {
+      <div class="mzn-text-field__suffix">
+        <i
+          mznIcon
+          [clickable]="true"
+          [icon]="resolvedSuffixIcon()"
+          [class]="suffixIconClasses()"
+        ></i>
+      </div>
+    }
   `,
 })
 export class MznSelectTrigger {
@@ -186,6 +188,18 @@ export class MznSelectTrigger {
    */
   readonly suffixActionIcon = input<typeof ChevronDownIcon>(ChevronDownIcon);
 
+  /** 是否為警告狀態。鏡像 React TextField `warning`。 */
+  readonly warning = input(false);
+
+  /** 強制隱藏後綴動作圖示。鏡像 React `forceHideSuffixActionIcon`。 */
+  readonly forceHideSuffixActionIcon = input(false);
+
+  /** 不論是否有值都強制啟用清除。鏡像 React `isForceClearable`。 */
+  readonly isForceClearable = input(false);
+
+  /** 強制顯示清除按鈕。鏡像 React `forceShowClearable`。 */
+  readonly forceShowClearable = input(false);
+
   /** 點擊清除按鈕時發出。 */
   readonly cleared = output<MouseEvent>();
 
@@ -201,7 +215,9 @@ export class MznSelectTrigger {
    */
   protected readonly shouldEnableClearable = computed(
     (): boolean =>
-      this.clearable() && this.hasValue() && this.mode() === 'multiple',
+      this.isForceClearable() ||
+      this.forceShowClearable() ||
+      (this.clearable() && this.hasValue() && this.mode() === 'multiple'),
   );
 
   protected readonly hostClasses = computed((): string =>
@@ -223,6 +239,7 @@ export class MznSelectTrigger {
         [textFieldClasses.disabled]: this.disabled(),
         [textFieldClasses.readonly]: this.readOnly(),
         [textFieldClasses.error]: this.error(),
+        [textFieldClasses.warning]: this.warning(),
       },
     ),
   );

@@ -114,6 +114,19 @@ interface FlatOption {
     '[attr.size]': 'null',
     '[attr.required]': 'null',
     '[attr.overflowStrategy]': 'null',
+    '[attr.value]': 'null',
+    '[attr.defaultValue]': 'null',
+    '[attr.warning]': 'null',
+    '[attr.searchText]': 'null',
+    '[attr.inputProps]': 'null',
+    '[attr.showTextInputAfterTags]': 'null',
+    '[attr.isForceClearable]': 'null',
+    '[attr.forceShowClearable]': 'null',
+    '[attr.forceHideSuffixActionIcon]': 'null',
+    '[attr.hideSuffixWhenClearable]': 'null',
+    '[attr.suffixAction]': 'null',
+    '[attr.computed]': 'null',
+    '[attr.target]': 'null',
   },
   template: `
     <div [class]="dropdownWrapperClass">
@@ -132,6 +145,10 @@ interface FlatOption {
         [readOnly]="readOnly()"
         [size]="size()"
         [suffixActionIcon]="resolvedSuffixIcon()"
+        [warning]="warning()"
+        [forceHideSuffixActionIcon]="forceHideSuffixActionIcon()"
+        [isForceClearable]="isForceClearable()"
+        [forceShowClearable]="forceShowClearable()"
         (cleared)="onClear($event)"
         (triggerClicked)="toggleOpen()"
       >
@@ -284,6 +301,54 @@ export class MznSelect implements ControlValueAccessor {
 
   /** 多選模式下的溢位策略。 */
   readonly overflowStrategy = input<'counter' | 'wrap'>('counter');
+
+  // ─── 鏡像 React Select / SelectTrigger 的 props（prop-for-prop） ───
+
+  /** 受控選取值。鏡像 React `value`。 */
+  readonly value = input<ReadonlyArray<string> | string | null>();
+
+  /** 非受控初始值。鏡像 React `defaultValue`。 */
+  readonly defaultValue = input<ReadonlyArray<string> | string>();
+
+  /** 是否為警告狀態。鏡像 React `warning`。 */
+  readonly warning = input(false);
+
+  /** 搜尋文字（搭配可搜尋模式）。鏡像 React `searchText`。 */
+  readonly searchText = input<string>();
+
+  /** 原生 input 屬性 bag。鏡像 React `inputProps`。 */
+  readonly inputProps = input<Record<string, unknown>>();
+
+  /** 多選時於標籤後顯示文字輸入。鏡像 React `showTextInputAfterTags`。 */
+  readonly showTextInputAfterTags = input(false);
+
+  /** 不論是否有值都強制啟用清除。鏡像 React `isForceClearable`。 */
+  readonly isForceClearable = input(false);
+
+  /** 強制顯示清除按鈕。鏡像 React `forceShowClearable`。 */
+  readonly forceShowClearable = input(false);
+
+  /** 強制隱藏後綴動作圖示。鏡像 React `forceHideSuffixActionIcon`。 */
+  readonly forceHideSuffixActionIcon = input(false);
+
+  /** clearable 時以覆蓋方式隱藏後綴。鏡像 React `hideSuffixWhenClearable`。 */
+  readonly hideSuffixWhenClearable = input(false);
+
+  /** 自訂後綴動作 callback。鏡像 React `suffixAction`。 */
+  readonly suffixAction = input<(() => void) | undefined>(undefined);
+
+  /**
+   * 虛擬捲動 computed 設定。鏡像 React `computed`。
+   * React 專屬的虛擬捲動 API;Angular 以 `menuMaxHeight` + 原生捲動對應,此 input
+   * 僅為 prop 對齊保留。
+   */
+  readonly computed = input<unknown>();
+
+  /**
+   * 捲動容器參考。鏡像 React `target`。
+   * 同 `computed`,Angular 以原生捲動容器處理,此 input 僅為 prop 對齊保留。
+   */
+  readonly target = input<unknown>();
 
   /** 選單滾動事件。鏡像 React `onScroll`（去 `on` 前綴）。 */
   readonly scroll = output<{ scrollTop: number; maxScrollTop: number }>();
@@ -487,6 +552,17 @@ export class MznSelect implements ControlValueAccessor {
   );
 
   constructor() {
+    // 鏡像 React value(controlled) / defaultValue(uncontrolled):同步到內部值。
+    // value 優先;兩者皆未設時不覆寫(交由 ngModel / CVA writeValue)。
+    effect(() => {
+      const controlled = this.value();
+      const initial = this.defaultValue();
+      const v =
+        controlled !== undefined && controlled !== null ? controlled : initial;
+      if (v === undefined) return;
+      this.internalValue.set(typeof v === 'string' ? (v ? [v] : []) : [...v]);
+    });
+
     effect((onCleanup) => {
       const open = this.isOpen();
 
