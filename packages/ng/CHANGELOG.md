@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.7...@mezzanine-ui/ng@1.0.0-rc.8) (2026-06-18)
+
+### Features
+
+- **ng/dropdown:** add flip input mirroring React Dropdown ([861b71e](https://github.com/Mezzanine-UI/mezzanine/commit/861b71e9dc103f14275034c0f3f5cce249d024fc))
+- **ng/select:** forward flip through InputTriggerPopper with placement-aware transition ([da9c9b6](https://github.com/Mezzanine-UI/mezzanine/commit/da9c9b6666b1ba134ae599de1f4ef5c19dc5a668))
+
 # [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.6...@mezzanine-ui/ng@1.0.0-rc.7) (2026-06-11)
 
 ### Bug Fixes

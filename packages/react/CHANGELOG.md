@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.3.1...@mezzanine-ui/react@1.4.0) (2026-06-18)
+
+### Features
+
+- **react/dropdown:** flip menu along main axis with placement-aware transition ([4c27d33](https://github.com/Mezzanine-UI/mezzanine/commit/4c27d336ad39abd633079dedef816dfaa9723b65))
+- **react/popper:** emit onPlacementChange when resolved placement changes ([5e1c35d](https://github.com/Mezzanine-UI/mezzanine/commit/5e1c35de35cadda57779cd7f685c4f3e5a3e7f6e))
+- **react/select:** forward flip prop to enable dropdown menu flipping ([70bee74](https://github.com/Mezzanine-UI/mezzanine/commit/70bee7409727762a31696e96a3f8467b8da3216d))
+
 ## [1.3.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.3.0...@mezzanine-ui/react@1.3.1) (2026-06-11)
 
 ### Bug Fixes
