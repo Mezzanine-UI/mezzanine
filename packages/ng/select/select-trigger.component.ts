@@ -83,7 +83,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
     />
     <ng-content />
 
-    @if (clearable() && hasValue() && !readOnly()) {
+    @if (shouldEnableClearable()) {
       <button
         mznClearActions
         type="clearable"
@@ -184,6 +184,15 @@ export class MznSelectTrigger {
   protected readonly prefixClass = clsx(classes.triggerPrefix);
   protected readonly triggerInputClass = classes.triggerInput;
 
+  /**
+   * 對齊 React SelectTrigger 的 `shouldEnableClearable`:inline clear 僅在多選且
+   * 有值時啟用(單選模式 React 不顯示 inline clear)。
+   */
+  protected readonly shouldEnableClearable = computed(
+    (): boolean =>
+      this.clearable() && this.hasValue() && this.mode() === 'multiple',
+  );
+
   protected readonly hostClasses = computed((): string =>
     clsx(
       textFieldClasses.host,
@@ -195,7 +204,11 @@ export class MznSelectTrigger {
       {
         [classes.triggerDisabled]: this.disabled(),
         [classes.triggerReadOnly]: this.readOnly(),
-        [textFieldClasses.clearable]: this.clearable() && this.hasValue(),
+        // 鏡像 React TextField:clearable 用 shouldEnableClearable;
+        // slim-gap = (prefix && suffix) || clearable，suffix icon 恆存在。
+        [textFieldClasses.clearable]: this.shouldEnableClearable(),
+        [textFieldClasses.slimGap]:
+          this.shouldEnableClearable() || !!this.prefix(),
         [textFieldClasses.disabled]: this.disabled(),
         [textFieldClasses.readonly]: this.readOnly(),
         [textFieldClasses.error]: this.error(),
