@@ -97,34 +97,38 @@ export interface SelectTriggerTagValue {
       >
         <div mznTagGroup>
           @for (item of visibleItems(); track item.id) {
-            @if (readOnly()) {
-              <span
-                mznTag
-                type="static"
-                [size]="size()"
-                [label]="item.name"
-                [readOnly]="true"
-              ></span>
-            } @else {
-              <span
-                mznTag
-                type="dismissable"
-                [disabled]="disabled()"
-                [label]="item.name"
-                [size]="size()"
-                (close)="onTagClose($event, item)"
-              ></span>
-            }
+            <span>
+              @if (readOnly()) {
+                <span
+                  mznTag
+                  type="static"
+                  [size]="size()"
+                  [label]="item.name"
+                  [readOnly]="true"
+                ></span>
+              } @else {
+                <span
+                  mznTag
+                  type="dismissable"
+                  [disabled]="disabled()"
+                  [label]="item.name"
+                  [size]="size()"
+                  (close)="onTagClose($event, item)"
+                ></span>
+              }
+            </span>
           }
           @if (overflowCount() > 0) {
-            <span
-              mznTag
-              type="overflow-counter"
-              [count]="overflowCount()"
-              [disabled]="disabled()"
-              [size]="size()"
-              (tagClick)="$event.stopPropagation()"
-            ></span>
+            <span>
+              <span
+                mznTag
+                type="overflow-counter"
+                [count]="overflowCount()"
+                [disabled]="disabled()"
+                [size]="size()"
+                (tagClick)="$event.stopPropagation()"
+              ></span>
+            </span>
           }
         </div>
 
@@ -136,20 +140,24 @@ export interface SelectTriggerTagValue {
         >
           <div mznTagGroup>
             @for (item of value(); track item.id) {
+              <span>
+                <span
+                  mznTag
+                  type="dismissable"
+                  [disabled]="true"
+                  [size]="size()"
+                  [label]="item.name"
+                ></span>
+              </span>
+            }
+            <span>
               <span
                 mznTag
-                type="dismissable"
-                [disabled]="true"
+                type="overflow-counter"
+                [count]="99"
                 [size]="size()"
-                [label]="item.name"
               ></span>
-            }
-            <span
-              mznTag
-              type="overflow-counter"
-              [count]="99"
-              [size]="size()"
-            ></span>
+            </span>
           </div>
         </div>
       </div>
@@ -289,14 +297,14 @@ export class MznSelectTriggerTags implements AfterViewInit, OnDestroy {
     );
     if (!tagGroupEl) return;
 
+    // Each child is a wrapper <span> (mirroring React TagGroup) whose inner
+    // element is the mzn-tag; detect the overflow counter on either level.
     const children = Array.from(tagGroupEl.children) as HTMLElement[];
-    // Last child is the overflow counter tag
-    const fakeTags = children.filter(
-      (el) => !el.classList.contains('mzn-tag--overflow-counter'),
-    );
-    const fakeEllipsis = children.find((el) =>
-      el.classList.contains('mzn-tag--overflow-counter'),
-    );
+    const isOverflowCounter = (el: HTMLElement): boolean =>
+      el.classList.contains('mzn-tag--overflow-counter') ||
+      el.querySelector('.mzn-tag--overflow-counter') !== null;
+    const fakeTags = children.filter((el) => !isOverflowCounter(el));
+    const fakeEllipsis = children.find((el) => isOverflowCounter(el));
 
     if (fakeTags.length === 0) return;
 

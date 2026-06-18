@@ -116,6 +116,7 @@ export const Basic: Story = {
       simpleOptions,
       basicOptions,
       multipleOptions,
+      multiValue: ['1', '2'],
     },
     template: `
       <div style="display: inline-grid; grid-template-columns: repeat(2, 300px); gap: 16px; align-items: center;">
@@ -143,6 +144,7 @@ export const Basic: Story = {
           [fullWidth]="true"
           mode="multiple"
           [options]="multipleOptions"
+          [(ngModel)]="multiValue"
           placeholder="我是多選"
         ></div>
       </div>
