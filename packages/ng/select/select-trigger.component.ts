@@ -51,6 +51,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
     '[attr.role]': '"combobox"',
     '[attr.aria-expanded]': 'active()',
     '[attr.aria-haspopup]': '"listbox"',
+    '[attr.aria-controls]': 'listboxId() ?? null',
     '[attr.active]': 'null',
     '[attr.clearable]': 'null',
     '[attr.disabled]': 'null',
@@ -110,6 +111,11 @@ export class MznSelectTrigger {
    * @default false
    */
   readonly active = input(false);
+
+  /**
+   * 關聯的 listbox 元素 id,設於 host 的 `aria-controls`,鏡像 React combobox 語意。
+   */
+  readonly listboxId = input<string>();
 
   /**
    * 是否顯示清除按鈕。清除按鈕僅在有值時才顯示。

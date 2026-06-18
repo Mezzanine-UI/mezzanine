@@ -44,6 +44,9 @@ import {
   SelectTriggerTagValue,
 } from './select-trigger-tags.component';
 
+/** Module-level sequence for generating stable, unique listbox ids. */
+let selectListboxIdSeq = 0;
+
 /** Flattened tree node for rendering. */
 interface FlatOption {
   readonly option: DropdownOption;
@@ -117,6 +120,7 @@ interface FlatOption {
       <div
         mznSelectTrigger
         [active]="isOpen()"
+        [listboxId]="listboxId"
         [clearable]="clearable()"
         [disabled]="disabled()"
         [displayText]="displayText()"
@@ -156,6 +160,7 @@ interface FlatOption {
     >
       <div mznTranslate [in]="isOpen()" [from]="translateFrom()">
         <ul
+          [id]="listboxId"
           [class]="listClass"
           [style.max-height.px]="menuMaxHeight()"
           role="listbox"
@@ -447,6 +452,9 @@ export class MznSelect implements ControlValueAccessor {
     dropdownClasses.root,
     dropdownClasses.inputPosition('outside'),
   );
+
+  /** Stable unique id for the listbox, wired to the trigger's aria-controls. */
+  protected readonly listboxId = `mzn-select-listbox-${(selectListboxIdSeq += 1)}`;
 
   protected readonly listClass = dropdownClasses.list;
   protected readonly listWrapperClass = dropdownClasses.listWrapper;
