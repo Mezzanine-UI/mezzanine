@@ -650,6 +650,12 @@ export function extractAngularApi(file: string): ApiSet {
     if (kind.startsWith('output')) outputs.add(name);
     else inputs.add(name);
   }
+  // Apply the same skip-list as the React side (className/prefix/suffix/… are
+  // content-projection / framework-intrinsic and not part of prop parity).
+  for (const name of SKIP_PROP_NAMES) {
+    inputs.delete(name);
+    outputs.delete(name);
+  }
   return { inputs, outputs };
 }
 
