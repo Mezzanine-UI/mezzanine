@@ -54,7 +54,7 @@ import { MznOverflowTooltip } from './overflow-tooltip.component';
   },
   template: `
     <span #triggerEl>
-      <span
+      <button
         mznTag
         type="overflow-counter"
         [count]="tags().length"
@@ -62,7 +62,7 @@ import { MznOverflowTooltip } from './overflow-tooltip.component';
         [readOnly]="readOnly()"
         [size]="tagSize()"
         (tagClick)="toggle()"
-      ></span>
+      ></button>
     </span>
     <div
       mznOverflowTooltip

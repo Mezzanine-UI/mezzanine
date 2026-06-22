@@ -116,14 +116,14 @@ export interface SelectTriggerTagValue {
           }
           @if (overflowCount() > 0) {
             <span>
-              <span
+              <button
                 mznTag
                 type="overflow-counter"
                 [count]="overflowCount()"
                 [disabled]="disabled()"
                 [size]="size()"
                 (tagClick)="$event.stopPropagation()"
-              ></span>
+              ></button>
             </span>
           }
         </div>
@@ -148,12 +148,12 @@ export interface SelectTriggerTagValue {
             </span>
           }
           <span class="mzn-select-trigger__fake-ellipsis">
-            <span
+            <button
               mznTag
               type="overflow-counter"
               [count]="99"
               [size]="size()"
-            ></span>
+            ></button>
           </span>
         </div>
       </div>

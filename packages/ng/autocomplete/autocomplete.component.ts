@@ -205,13 +205,13 @@ export function getFullParsedList(
                   }
                 }
                 @if (counterOverflowCount() > 0) {
-                  <span
+                  <button
                     mznTag
                     type="overflow-counter"
                     [count]="counterOverflowCount()"
                     [disabled]="disabled()"
                     [size]="size()"
-                  ></span>
+                  ></button>
                 }
                 <!-- Fake tags for measurement (hidden, uses triggerTags WITHOUT --ellipsis so tags don't shrink) -->
                 <div
@@ -231,12 +231,12 @@ export function getFullParsedList(
                     </span>
                   }
                   <span class="mzn-select-trigger__fake-ellipsis">
-                    <span
+                    <button
                       mznTag
                       type="overflow-counter"
                       [count]="99"
                       [size]="size()"
-                    ></span>
+                    ></button>
                   </span>
                 </div>
               </div>
@@ -345,11 +345,11 @@ export function getFullParsedList(
         [showDropdownActions]="shouldShowCreateAction()"
         [status]="dropdownInlineStatus()"
         [value]="internalValue()"
-        (actionCustomClicked)="onCreateActionClick()"
-        (closed)="handleClose()"
+        (actionCustom)="onCreateActionClick()"
+        (close)="handleClose()"
         (leaveBottom)="leaveBottom.emit()"
         (reachBottom)="reachBottom.emit()"
-        (selected)="onOptionClick($event)"
+        (select)="onOptionClick($event)"
         (visibilityChange)="onDropdownVisibilityChangeFromInline($event)"
       >
         <div mznDropdownHeader>
@@ -403,11 +403,11 @@ export function getFullParsedList(
         [status]="dropdownInlineStatus()"
         [value]="internalValue()"
         [zIndex]="dropdownZIndex() ?? undefined"
-        (actionCustomClicked)="onCreateActionClick()"
-        (closed)="handleClose()"
+        (actionCustom)="onCreateActionClick()"
+        (close)="handleClose()"
         (leaveBottom)="leaveBottom.emit()"
         (reachBottom)="reachBottom.emit()"
-        (selected)="onOptionClick($event)"
+        (select)="onOptionClick($event)"
         (visibilityChange)="onDropdownVisibilityChangeFromInline($event)"
       ></div>
     }

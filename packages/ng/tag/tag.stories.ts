@@ -106,31 +106,31 @@ export const Types: Story = {
           <span mznTypography variant="h2">Overflow Counter</span>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span mznTag type="overflow-counter" size="main" [count]="5"></span>
+              <button mznTag type="overflow-counter" size="main" [count]="5"></button>
               <span mznTypography variant="body" style="margin-inline: auto;"
                 >Enabled</span
               >
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span
+              <button
                 mznTag
                 type="overflow-counter"
                 size="main"
                 [count]="5"
                 [disabled]="true"
-              ></span>
+              ></button>
               <span mznTypography variant="body" style="margin-inline: auto;"
                 >Disabled</span
               >
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span
+              <button
                 mznTag
                 type="overflow-counter"
                 size="main"
                 [count]="5"
                 [readOnly]="true"
-              ></span>
+              ></button>
               <span mznTypography variant="body" style="margin-inline: auto;"
                 >Read Only</span
               >
@@ -190,43 +190,43 @@ export const Types: Story = {
           <span mznTypography variant="h2">Addable</span>
           <div style="display: flex; gap: 36px; align-items: flex-end;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span mznTag type="addable" label="Tag" size="main"></span>
+              <button mznTag type="addable" label="Tag" size="main"></button>
               <span mznTypography variant="body" style="margin-inline: auto;"
                 >Enabled</span
               >
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span
+              <button
                 mznTag
                 class="is-hover"
                 type="addable"
                 label="Tag"
                 size="main"
-              ></span>
+              ></button>
               <span mznTypography variant="body" style="margin-inline: auto;"
                 >Hover</span
               >
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span
+              <button
                 mznTag
                 type="addable"
                 label="Tag"
                 size="main"
                 [active]="true"
-              ></span>
+              ></button>
               <span mznTypography variant="body" style="margin-inline: auto;"
                 >Active</span
               >
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span
+              <button
                 mznTag
                 type="addable"
                 label="Tag"
                 size="main"
                 [disabled]="true"
-              ></span>
+              ></button>
               <span mznTypography variant="body" style="margin-inline: auto;"
                 >Disabled</span
               >
@@ -284,15 +284,15 @@ export const Sizes: Story = {
             <h2>Overflow Counter</h2>
             <div style="display: flex; gap: 36px; align-items: flex-end;">
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <span mznTag type="overflow-counter" size="main" [count]="5" ></span>
+                <button mznTag type="overflow-counter" size="main" [count]="5" ></button>
                 <span style="font-size: 12px; color: #6b7280;">Main</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <span mznTag type="overflow-counter" size="sub" [count]="5" ></span>
+                <button mznTag type="overflow-counter" size="sub" [count]="5" ></button>
                 <span style="font-size: 12px; color: #6b7280;">Sub</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <span mznTag type="overflow-counter" size="minor" [count]="5" ></span>
+                <button mznTag type="overflow-counter" size="minor" [count]="5" ></button>
                 <span style="font-size: 12px; color: #6b7280;">Minor</span>
               </div>
             </div>
@@ -322,15 +322,15 @@ export const Sizes: Story = {
             <h2>Addable</h2>
             <div style="display: flex; gap: 36px; align-items: flex-end;">
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <span mznTag type="addable" label="Tag" size="main" ></span>
+                <button mznTag type="addable" label="Tag" size="main" ></button>
                 <span style="font-size: 12px; color: #6b7280;">Main</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <span mznTag type="addable" label="Tag" size="sub" ></span>
+                <button mznTag type="addable" label="Tag" size="sub" ></button>
                 <span style="font-size: 12px; color: #6b7280;">Sub</span>
               </div>
               <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                <span mznTag type="addable" label="Tag" size="minor" ></span>
+                <button mznTag type="addable" label="Tag" size="minor" ></button>
                 <span style="font-size: 12px; color: #6b7280;">Minor</span>
               </div>
             </div>
@@ -365,13 +365,13 @@ const autocompleteOptions: ReadonlyArray<DropdownOption> = [
             (close)="removeSelection(id)"
           ></span>
         }
-        <span
+        <button
           mznTag
           type="addable"
           [label]="open() ? '收起選單' : '新增標籤'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        ></span>
+        ></button>
       </div>
       <div
         mznAutocomplete

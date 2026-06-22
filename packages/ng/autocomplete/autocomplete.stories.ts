@@ -1244,13 +1244,13 @@ export const BulkCreate: Story = {
             ></span>
           }
         </div>
-        <span
+        <button
           mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        ></span>
+        ></button>
         <div
           mznAutocomplete
           mode="multiple"
@@ -1361,13 +1361,13 @@ export const InputPositionInside: Story = {
             ></span>
           }
         </div>
-        <span
+        <button
           mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        ></span>
+        ></button>
         <div
           mznAutocomplete
           mode="multiple"
@@ -1457,13 +1457,13 @@ export const InsideBulkCreate: Story = {
     >
       <div>
         <h3>inside 多選模式 - 單選風格 checked icon + empty</h3>
-        <span
+        <button
           mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        ></span>
+        ></button>
         <div
           mznAutocomplete
           mode="multiple"
@@ -1515,13 +1515,13 @@ export const InsideEmpty: Story = {
     >
       <div>
         <h3>inside 多選模式 - 單選風格 checked icon + loading</h3>
-        <span
+        <button
           mznTag
           type="addable"
           [label]="isOpen() ? '收起選單' : '展開選單'"
           (mousedown)="$event.stopPropagation()"
           (click)="$event.stopPropagation(); toggleOpen()"
-        ></span>
+        ></button>
         <div
           mznAutocomplete
           mode="multiple"
