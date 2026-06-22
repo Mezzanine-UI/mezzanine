@@ -261,8 +261,8 @@ export const Exclusive: Story = {
                 [open]="dropdownOpen()"
                 [options]="dropdownOptions"
                 placement="bottom-end"
-                (selected)="onDropdownSelect()"
-                (closed)="dropdownOpen.set(false)"
+                (select)="onDropdownSelect()"
+                (close)="dropdownOpen.set(false)"
               ></div>
             </div>
           </div>

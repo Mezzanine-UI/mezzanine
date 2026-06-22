@@ -7,14 +7,35 @@ import {
 } from '@angular/core';
 import { dropdownClasses as classes } from '@mezzanine-ui/core/dropdown';
 import { CloseIcon } from '@mezzanine-ui/icons';
-import { MznButton } from '@mezzanine-ui/ng/button';
+import {
+  MznButton,
+  type ButtonSize,
+  type ButtonVariant,
+} from '@mezzanine-ui/ng/button';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
+
+/**
+ * 自訂操作按鈕（custom mode）的設定子集，鏡像 React `actionCustomButtonProps`
+ * （`ButtonProps`）。Angular 取常用欄位透傳給內部的 `<button mznButton>`。
+ */
+export interface DropdownActionButtonProps {
+  /** 是否禁用。 */
+  disabled?: boolean;
+  /** 是否載入中。 */
+  loading?: boolean;
+  /** 按鈕尺寸。 */
+  size?: ButtonSize;
+  /** 按鈕樣式變體。 */
+  variant?: ButtonVariant;
+}
 
 /**
  * MznDropdownAction 的輸入屬性介面，也用於 MznDropdownItem 的 actionConfig。
  * 對應 React 的 DropdownActionProps。
  */
 export interface DropdownActionProps {
+  /** 自訂操作按鈕（custom mode）的 ButtonProps 子集，鏡像 React `actionCustomButtonProps`。 */
+  customActionButtonProps?: DropdownActionButtonProps;
   /** 自訂操作按鈕文字（custom mode）。 */
   actionText?: string;
   /** 取消按鈕文字。 */
@@ -130,8 +151,10 @@ export interface DropdownActionProps {
         @if (mode() === 'custom') {
           <button
             mznButton
-            variant="base-ghost"
-            size="minor"
+            [variant]="customActionButtonProps()?.variant ?? 'base-ghost'"
+            [size]="customActionButtonProps()?.size ?? 'minor'"
+            [disabled]="customActionButtonProps()?.disabled ?? false"
+            [loading]="customActionButtonProps()?.loading ?? false"
             (mousedown)="$event.preventDefault()"
             (click)="customClicked.emit()"
           >
@@ -145,6 +168,9 @@ export interface DropdownActionProps {
 export class MznDropdownAction {
   /** 自訂操作按鈕文字（custom mode）。 @default 'Custom Action' */
   readonly actionText = input<string>();
+
+  /** 自訂操作按鈕的 ButtonProps 子集，鏡像 React `actionCustomButtonProps`。 */
+  readonly customActionButtonProps = input<DropdownActionButtonProps>();
 
   /** 取消按鈕文字。 @default 'Cancel' */
   readonly cancelText = input<string>();

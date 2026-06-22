@@ -333,8 +333,8 @@ export const AsLink: Story = {
         [open]="open()"
         [options]="options"
         placement="bottom-start"
-        (closed)="open.set(false)"
-        (selected)="onSelect($event)"
+        (close)="open.set(false)"
+        (select)="onSelect($event)"
       ></div>
     </div>
   `,

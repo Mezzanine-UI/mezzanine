@@ -125,8 +125,6 @@ interface FlatOption {
     '[attr.forceHideSuffixActionIcon]': 'null',
     '[attr.hideSuffixWhenClearable]': 'null',
     '[attr.suffixAction]': 'null',
-    '[attr.computed]': 'null',
-    '[attr.target]': 'null',
   },
   template: `
     <div [class]="dropdownWrapperClass">
@@ -336,19 +334,6 @@ export class MznSelect implements ControlValueAccessor {
 
   /** 自訂後綴動作 callback。鏡像 React `suffixAction`。 */
   readonly suffixAction = input<(() => void) | undefined>(undefined);
-
-  /**
-   * 虛擬捲動 computed 設定。鏡像 React `computed`。
-   * React 專屬的虛擬捲動 API;Angular 以 `menuMaxHeight` + 原生捲動對應,此 input
-   * 僅為 prop 對齊保留。
-   */
-  readonly computed = input<unknown>();
-
-  /**
-   * 捲動容器參考。鏡像 React `target`。
-   * 同 `computed`,Angular 以原生捲動容器處理,此 input 僅為 prop 對齊保留。
-   */
-  readonly target = input<unknown>();
 
   /** 選單滾動事件。鏡像 React `onScroll`（去 `on` 前綴）。 */
   readonly scroll = output<{ scrollTop: number; maxScrollTop: number }>();

@@ -1,5 +1,4 @@
 import { Component, input, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { type Placement } from '@floating-ui/dom';
@@ -17,7 +16,7 @@ const meta: Meta<MznDropdown> = {
   component: MznDropdown,
   decorators: [
     moduleMetadata({
-      imports: [MznButton],
+      imports: [MznButton, MznDropdown],
     }),
   ],
 };
@@ -91,51 +90,10 @@ const usStatesOptions: DropdownOption[] = [
   { id: 'wy', name: 'Wyoming' },
 ];
 
-@Component({
-  selector: '[storyDropdownPlayground]',
-  standalone: true,
-  imports: [MznDropdown, MznButton],
-  host: { style: 'display: block;' },
-  template: `
-    <button #anchor mznButton variant="base-primary" (click)="toggle()">
-      {{ selectedLabel() }}
-    </button>
-    <div
-      mznDropdown
-      [anchor]="anchor"
-      [disabled]="disabled()"
-      [open]="open()"
-      [options]="options"
-      [placement]="placement()"
-      [value]="value()"
-      (selected)="onSelect($event)"
-      (closed)="open.set(false)"
-    ></div>
-  `,
-})
-class DropdownPlaygroundComponent {
-  readonly options = simpleOptions;
-  readonly open = signal(false);
-  readonly value = signal<string | undefined>(undefined);
-
-  disabled = signal(false);
-  placement = signal<Placement>('bottom-start');
-
-  selectedLabel(): string {
-    const matched = this.options.find((o) => o.id === this.value());
-
-    return matched?.name ?? '請選擇';
-  }
-
-  toggle(): void {
-    this.open.set(!this.open());
-  }
-
-  onSelect(option: DropdownOption): void {
-    this.value.set(option.id);
-  }
-}
-
+/**
+ * Playground 對齊 React:`<Dropdown><Button/></Dropdown>` — Dropdown root div
+ * 即 story 根節點,trigger button 投影進 root 內(default ng-content)。
+ */
 export const Playground: Story = {
   argTypes: {
     disabled: {
@@ -179,22 +137,52 @@ export const Playground: Story = {
     disabled: false,
     placement: 'bottom-start',
   },
-  decorators: [moduleMetadata({ imports: [DropdownPlaygroundComponent] })],
   render: (args) => ({
-    props: args,
-    template: `<div storyDropdownPlayground [disabled]="disabled" [placement]="placement"></div>`,
+    props: {
+      ...args,
+      options: simpleOptions,
+      open: false,
+      value: undefined as string | undefined,
+      selectedLabel: '請選擇',
+      onSelect(option: DropdownOption): void {
+        this.value = option.id;
+        this.selectedLabel = option.name;
+      },
+    },
+    template: `
+      <div
+        mznDropdown
+        [anchor]="anchor"
+        [disabled]="disabled"
+        [open]="open"
+        [options]="options"
+        [placement]="placement"
+        [value]="value"
+        (select)="onSelect($event)"
+        (close)="open = false"
+      >
+        <button
+          #anchor
+          mznButton
+          variant="base-primary"
+          (click)="open = !open"
+        >
+          {{ selectedLabel }}
+        </button>
+      </div>
+    `,
   }),
 };
 
 /**
  * 對齊 React `AutoCompleteExample`:React 用 `<AutoComplete>` 元件,Angular
- * 對應的是 `[mznAutocomplete]` — 內建 text input + popper + filter 邏輯,
- * 不需要自己手刻 raw `<input>` + `<div mznDropdown>` 組合。
+ * 對應的是 `[mznAutocomplete]`。Story 根節點為 width:320px 的容器,對齊
+ * React 的最外層 `<div style={{ width: 320 }}>`。
  */
 @Component({
   selector: '[storyDropdownAutocomplete]',
   standalone: true,
-  imports: [FormsModule, MznAutocomplete, MznTag],
+  imports: [MznAutocomplete, MznTag],
   host: { style: 'display: block;' },
   template: `
     <div style="width: 320px;">
@@ -224,49 +212,47 @@ export const AutoCompleteExample: Story = {
 };
 
 /**
- * 對齊 React `<Dropdown inputPosition="inside">` 的 `isInline` 分支
- * (`Dropdown.tsx:986-1014`):**不用 popper,整個 dropdown in-flow 渲染**。
- * MznDropdown 現在支援 `inputPosition="inside"` 的 inline 模式(本地 template
- * 的 @if isInline 分支),消費端用 `[mznDropdownHeader]` 投影 TextField ——
- * TextField 既是 trigger(closed 時唯一可見)也是 list 的 sticky header
- * (open 時位於 option list 之上,與 options 同屬一張 .mzn-dropdown 卡片)。
- * 展開動畫從 'bottom' 滑入,視覺上 list 由下方浮起、與 TextField 合成一張卡片。
+ * 對齊 React `<Dropdown inputPosition="inside">` 的 `isInline` 分支:
+ * 不用 popper,整個 dropdown in-flow 渲染。Story 根節點為 flex column 容器,
+ * 對齊 React 最外層 `<div style={{ display:'flex', flexDirection:'column',
+ * gap:'24px', maxWidth:'400px' }}>`。
  */
 @Component({
   selector: '[storyDropdownInside]',
   standalone: true,
   imports: [MznDropdown, MznTextField],
-  host: { style: 'display: block;' },
+  host: {
+    style:
+      'display: flex; flex-direction: column; gap: 24px; max-width: 400px;',
+  },
   template: `
-    <div
-      style="display: flex; flex-direction: column; gap: 24px; max-width: 400px;"
-    >
-      <div>
-        <div
-          style="display: flex; gap: 8px; align-items: flex-start; flex-direction: column;"
-        >
-          <div style="flex: 1;">
-            <div
-              mznDropdown
-              inputPosition="inside"
-              [followText]="inputValue()"
-              [open]="open()"
-              [options]="filteredOptions()"
-              [maxHeight]="360"
-              [value]="selectedId()"
-              (selected)="onSelect($event)"
-              (closed)="open.set(false)"
-            >
-              <div mznDropdownHeader>
-                <div mznTextField (click)="open.set(!open())">
-                  <input
-                    type="text"
-                    [value]="inputValue()"
-                    (input)="onInput($event)"
-                    (focus)="open.set(true)"
-                    placeholder="請選擇或輸入..."
-                  />
-                </div>
+    <div>
+      <div
+        style="display: flex; gap: 8px; align-items: flex-start; flex-direction: column;"
+      >
+        <div style="flex: 1;">
+          <div
+            mznDropdown
+            inputPosition="inside"
+            [followText]="inputValue()"
+            [isMatchInputValue]="true"
+            [open]="open()"
+            [options]="filteredOptions()"
+            [maxHeight]="360"
+            [value]="selectedId()"
+            (select)="onSelect($event)"
+            (close)="open.set(false)"
+          >
+            <div mznDropdownHeader>
+              <div mznTextField (click)="open.set(!open())">
+                <input
+                  type="text"
+                  [attr.value]="inputValue()"
+                  [value]="inputValue()"
+                  (input)="onInput($event)"
+                  (focus)="open.set(true)"
+                  placeholder="請選擇或輸入..."
+                />
               </div>
             </div>
           </div>
@@ -311,9 +297,8 @@ export const Inside: Story = {
 
 /**
  * 單一 placement cell:對齊 React `PlacementItem`,width 160px,Tag +
- * Button + Dropdown。未選取時 button 顯示 DotVertical icon,選中後顯示
- * 選項 name。`globalPortal=false` 讓 Dropdown popup 保留在原 DOM 位置
- * (否則所有 placement 的 popup 都會飛到全域 container 疊在一起)。
+ * Dropdown(trigger button 投影進 Dropdown root 內)。`globalPortal=false`
+ * 讓 Dropdown popup 保留在原 DOM 位置(對齊 React 同設定)。
  */
 @Component({
   selector: '[storyDropdownPlacementItem]',
@@ -325,19 +310,6 @@ export const Inside: Story = {
   },
   template: `
     <div mznTag [label]="label()"></div>
-    <button
-      #anchor
-      mznButton
-      variant="base-secondary"
-      size="minor"
-      (click)="toggle()"
-    >
-      @if (selectedName()) {
-        {{ selectedName() }}
-      } @else {
-        <i mznIcon [icon]="dotVerticalIcon"></i>
-      }
-    </button>
     <div
       mznDropdown
       [anchor]="anchor"
@@ -346,9 +318,23 @@ export const Inside: Story = {
       [placement]="placement()"
       [globalPortal]="false"
       [value]="value()"
-      (selected)="onSelect($event)"
-      (closed)="open.set(false)"
-    ></div>
+      (select)="onSelect($event)"
+      (close)="open.set(false)"
+    >
+      <button
+        #anchor
+        mznButton
+        variant="base-secondary"
+        size="minor"
+        (click)="toggle()"
+      >
+        @if (selectedName()) {
+          {{ selectedName() }}
+        } @else {
+          <i mznIcon [icon]="dotVerticalIcon"></i>
+        }
+      </button>
+    </div>
   `,
 })
 class DropdownPlacementItemComponent {
@@ -368,8 +354,6 @@ class DropdownPlacementItemComponent {
     this.open.set(!this.open());
   }
 
-  // MznDropdown 的 single mode 會自動 emit closed,透過 (closed) handler
-  // 同步 open signal。此處只更新 value,不需重複 open.set(false)。
   onSelect(option: DropdownOption): void {
     this.value.set(option.id);
   }
@@ -489,31 +473,19 @@ export const PlacementExample: Story = {
         關閉
       </button>
     </div>
-    <!--
-      React 端 trigger 包在 Dropdown 裡,其根 div.mzn-dropdown 為 block,
-      Button 為 inline-flex,寬度只吃自身內容。Angular 的 button 是 flex
-      column 的直接子元素,預設 align-items: stretch 會讓它撐滿 240px
-      (flex column 的 max-width)。加上 align-self: flex-start 關掉 stretch,
-      讓按鈕寬度僅與文字一致,對齊 React 視覺。
-    -->
-    <button
-      #anchor
-      mznButton
-      variant="base-primary"
-      style="align-self: flex-start;"
-      (click)="toggle()"
-    >
-      {{ selectedLabel() }}
-    </button>
     <div
       mznDropdown
       [anchor]="anchor"
       [open]="open()"
       [options]="options"
       [value]="value()"
-      (selected)="onSelect($event)"
-      (closed)="open.set(false)"
-    ></div>
+      (select)="onSelect($event)"
+      (close)="open.set(false)"
+    >
+      <button #anchor mznButton variant="base-primary" (click)="toggle()">
+        {{ selectedLabel() }}
+      </button>
+    </div>
   `,
 })
 class DropdownControlledComponent {
@@ -531,8 +503,6 @@ class DropdownControlledComponent {
     this.open.set(!this.open());
   }
 
-  // 單選模式下 MznDropdown 自動 emit closed → 透過 (closed)="open.set(false)"
-  // 同步,這裡不需再手動設 false。
   onSelect(option: DropdownOption): void {
     this.value.set(option.id);
   }
@@ -559,9 +529,6 @@ export const ControlledVisibility: Story = {
       [label]="'已載入 ' + options().length + ' / ' + total + ' 個選項'"
     ></div>
     <div style="display: flex; gap: 8px; align-items: center;">
-      <button #anchor mznButton variant="base-primary" (click)="toggle()">
-        {{ selectedLabel() }}
-      </button>
       <div
         mznDropdown
         [anchor]="anchor"
@@ -573,10 +540,14 @@ export const ControlledVisibility: Story = {
         loadingPosition="bottom"
         loadingText="載入中..."
         placement="right-start"
-        (selected)="onSelect($event)"
-        (closed)="open.set(false)"
+        (select)="onSelect($event)"
+        (close)="open.set(false)"
         (reachBottom)="loadMore()"
-      ></div>
+      >
+        <button #anchor mznButton variant="base-primary" (click)="toggle()">
+          {{ selectedLabel() }}
+        </button>
+      </div>
     </div>
     <div style="font-size: 12px; color: #666;">
       @if (loading()) {

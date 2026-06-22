@@ -124,8 +124,8 @@ export type BaseCardType = 'default' | 'action' | 'overflow' | 'toggle';
                 [open]="overflowOpen()"
                 [options]="options()"
                 mode="single"
-                (selected)="onOverflowOptionSelect($event)"
-                (closed)="overflowOpen.set(false)"
+                (select)="onOverflowOptionSelect($event)"
+                (close)="overflowOpen.set(false)"
               ></div>
             </div>
           </div>

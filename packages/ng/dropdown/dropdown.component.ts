@@ -21,61 +21,44 @@ import {
   DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown';
-import { type Middleware, type Placement, size } from '@floating-ui/dom';
+import { type Placement } from '@floating-ui/dom';
 import { IconDefinition } from '@mezzanine-ui/icons';
-import clsx from 'clsx';
-import { MznPopper } from '@mezzanine-ui/ng/popper';
-import { MznPortal } from '@mezzanine-ui/ng/portal';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznTranslate } from '@mezzanine-ui/ng/transition';
-import type { DropdownActionProps } from './dropdown-action.component';
+import type {
+  DropdownActionButtonProps,
+  DropdownActionProps,
+} from './dropdown-action.component';
 import { MznDropdownItem } from './dropdown-item.component';
+import { MznDropdownPopper } from './dropdown-popper.directive';
 
 /**
- * 跨所有 MznDropdown 實例共用的遞增計數器,確保後開啟的 popper z-index
- * 永遠高於先開啟的(包含 Select / Autocomplete 等 wrapper 嵌套情境)。
- * 跟 `MznInputTriggerPopper` 的 popperOpenSequence 同機制但分離維護,
- * 因為兩邊使用的 z-index 基底不同時不應互相干涉。
+ * 跨所有 MznDropdown 實例共用的遞增序號,供未顯式提供 `listboxId` 時產生
+ * 穩定的後備 listbox id(anchor 的 `aria-controls` 指向)。parity tool 會把
+ * 所有 id 類 attribute 正規化為 `<id>`,故實際值不影響比對,僅需穩定存在。
  * @internal
  */
-let mznDropdownPopperSequence = 0;
+let dropdownListboxSeq = 0;
 
 /**
- * 傳遞給 MznDropdownAction 的整合設定物件。
- * 可替代個別的 `actionCancelText`、`actionClearText`、`actionConfirmText`、
- * `showDropdownActions`、`showActionShowTopBar` 輸入屬性。
- * 若同時設定，`actionConfig` 中的對應欄位將覆蓋個別輸入屬性。
- */
-export interface DropdownActionConfig {
-  /** 自訂操作按鈕文字（custom mode）。 */
-  actionText?: string;
-  /** 取消按鈕文字。 */
-  cancelText?: string;
-  /** 清除按鈕文字。 */
-  clearText?: string;
-  /** 確認按鈕文字。 */
-  confirmText?: string;
-  /** 操作模式：'default' 顯示取消/確認；'clear' 顯示清除按鈕；'custom' 顯示自訂按鈕。 */
-  mode?: 'clear' | 'custom' | 'default';
-  /** 是否顯示操作區域。 */
-  showActions?: boolean;
-  /** 是否顯示頂部分隔線。 */
-  showTopBar?: boolean;
-}
-
-/**
- * 下拉選單元件,支援 `inputPosition='outside'`(popper + anchor)與
+ * 下拉選單元件,支援 `inputPosition='outside'`(CDK Overlay + anchor)與
  * `inputPosition='inside'`(in-flow + `[mznDropdownHeader]` 投影 header)
  * 兩種渲染模式,對齊 React `<Dropdown>` 介面 1:1。
  *
+ * Host element 直接扮演 React `<div class="mzn-dropdown mzn-dropdown--outside">`
+ * root 的角色(透過 host class binding),trigger 以 default `<ng-content>` 投影
+ * 進來(對齊 React 把 children clone 進 root 末端),outside 模式的浮層則透過
+ * `[mznDropdownPopper]` directive 用 Angular CDK Overlay portal 到 body,閉合時
+ * detach,consumer 子樹內不殘留任何 popper 宿主元素(對齊 React `<Popper>` 的
+ * portal 行為,消除原 `MznPopper` 的 `display:none` 殘留)。
+ *
  * 內建功能:
- * - Popper 定位、click-away 自動關閉、mznTranslate 開合動畫
- * - 鍵盤導覽(↑/↓/Home/End/Enter/Escape),滑鼠 hover 同步 `itemHovered`
+ * - CDK Overlay 定位、click-away 自動關閉、mznTranslate 開合動畫
+ * - 鍵盤導覽(↑/↓/Home/End/Enter/Escape),滑鼠 hover 同步 `itemHover`
  * - `keyboardActiveIndex`(可由外部控制)與 `activeIndex`(hover)分離,
  *   對齊 React `Dropdown.tsx:476-477`
- * - `followText` 逐層傳至 `MznDropdownItemCard`,將符合子字串高亮
- * - 擴充 props 如 `sameWidth`、`globalPortal`、`toggleCheckedOnClick`
- *   亦與 React 同名(目前部分僅保留介面,行為擴充見各 input JSDoc)
+ * - anchor 上注入 `aria-haspopup` / `aria-expanded` / `aria-controls`,對齊
+ *   React 對 trigger 的 ARIA clone 行為
  *
  * 作為 `MznAutocomplete` / `MznSelect` 的 list renderer,wrapper 只需
  * 傳入 options + bindings 即可獲得一致的清單行為。
@@ -84,47 +67,47 @@ export interface DropdownActionConfig {
  * ```html
  * import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
  *
- * <button #anchor (click)="open = !open">Options</button>
  * <div mznDropdown
  *   [anchor]="anchor"
  *   [open]="open"
  *   [options]="options"
  *   [value]="selected"
- *   (selected)="onSelect($event)"
- *   (closed)="open = false"
- * ></div>
+ *   (select)="onSelect($event)"
+ *   (close)="open = false"
+ * >
+ *   <button #anchor (click)="open = !open">Options</button>
+ * </div>
  * ```
  *
  * @see MznAutocomplete
  * @see MznSelect
- * @see MznPopper
  */
 @Component({
   selector: '[mznDropdown]',
   standalone: true,
-  imports: [
-    MznPopper,
-    MznPortal,
-    MznDropdownItem,
-    MznTranslate,
-    NgTemplateOutlet,
-  ],
+  imports: [MznDropdownItem, MznDropdownPopper, MznTranslate, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[attr.name]': 'name() ?? null',
+    // Host element 即 React 的 `div.mzn-dropdown` root;以個別 class binding
+    // 加上 BEM class(不用 `[class]` 整包覆寫,以保留 consumer 自帶 class)。
+    // `.mzn-dropdown` 提供 position:relative,`.mzn-dropdown--outside` 提供
+    // line-height:0(見 core/_dropdown-styles.scss)。
+    '[class.mzn-dropdown]': 'true',
+    '[class.mzn-dropdown--outside]': '!isInline()',
+    '[class.mzn-dropdown--inside]': 'isInline()',
+    '[attr.id]': 'id() ?? null',
     '(keydown)': 'onHostKeyDown($event)',
     '[attr.actionCancelText]': 'null',
     '[attr.actionClearText]': 'null',
     '[attr.actionConfirmText]': 'null',
-    '[attr.actionConfig]': 'null',
     '[attr.actionText]': 'null',
     '[attr.activeIndex]': 'null',
     '[attr.anchor]': 'null',
     '[attr.customWidth]': 'null',
     '[attr.disabled]': 'null',
-    '[attr.disableClickAway]': 'null',
     '[attr.emptyIcon]': 'null',
     '[attr.emptyText]': 'null',
+    '[attr.flip]': 'null',
     '[attr.followText]': 'null',
     '[attr.globalPortal]': 'null',
     '[attr.inputPosition]': 'null',
@@ -142,9 +125,7 @@ export interface DropdownActionConfig {
     '[attr.placement]': 'null',
     '[attr.sameWidth]': 'null',
     '[attr.showActionShowTopBar]': 'null',
-    '[attr.showCheckIcon]': 'null',
     '[attr.showDropdownActions]': 'null',
-    '[attr.showHeader]': 'null',
     '[attr.status]': 'null',
     '[attr.toggleCheckedOnClick]': 'null',
     '[attr.type]': 'null',
@@ -155,12 +136,8 @@ export interface DropdownActionConfig {
     <!--
       Capture [mznDropdownHeader] 投影為 TemplateRef,讓內層 mznDropdownItem
       可以把它渲染成 <ul class="mzn-dropdown-list"> 的第一個 <li class="list-header">,
-      使 header(如 TextField)與 options 共享同一張 .mzn-dropdown-list 卡片
-      (background + border-radius + shadow)。對齊 React DropdownItem 的
-      headerContent prop 行為(DropdownItem.tsx:1004-1012)。
-      透過 ng-template 包起來能讓同一份投影內容同時被 inline 與 popper 兩個
-      分支使用,ng-content 原則上只能放一處,但 ng-template 可被 ngTemplateOutlet
-      重複渲染。
+      使 header(如 TextField)與 options 共享同一張 .mzn-dropdown-list 卡片。
+      對齊 React DropdownItem 的 headerContent prop(DropdownItem.tsx:1004-1012)。
     -->
     <ng-template #headerTpl>
       <ng-content select="[mznDropdownHeader]" />
@@ -168,15 +145,7 @@ export interface DropdownActionConfig {
     @if (isInline()) {
       <!--
         Inline 模式(inputPosition='inside')對齊 React Dropdown.tsx:986-1014
-        的 isInline 分支:
-        - Closed(!isOpen):只渲染 inlineTriggerElement(standalone TextField),
-          不包任何卡片 wrapper。
-        - Open(isOpen):DropdownItem 把 headerContent(TextField)以 sticky
-          <li class="mzn-dropdown-list-header"> 放在 <ul class="mzn-dropdown-list">
-          頂端,與 options 共享同一張卡片(bg / radius / shadow)。
-        ng-template #headerTpl 捕獲 [mznDropdownHeader] 投影,讓同一份 TextField
-        宣告在兩個分支皆可重用(closed 用 ngTemplateOutlet 直接渲染;open 傳給
-        DropdownItem 當 headerContent)。
+        的 isInline 分支:不用 popper,整個 dropdown in-flow 渲染。
       -->
       @if (open()) {
         <div
@@ -185,7 +154,63 @@ export interface DropdownActionConfig {
           [from]="translateFrom()"
           (onExited)="onTranslateExited()"
         >
-          <div [class]="resolvedRootClass()">
+          <div
+            mznDropdownItem
+            [actionConfig]="resolvedActionConfig()"
+            [activeIndex]="activeIndex()"
+            [keyboardActiveIndex]="effectiveKeyboardIndex()"
+            [customWidth]="customWidth()"
+            [disabled]="disabled()"
+            [emptyIcon]="emptyIcon()"
+            [emptyText]="emptyText()"
+            [followText]="resolvedFollowText()"
+            [headerContentTemplate]="headerTplRef() ?? undefined"
+            [listboxId]="listboxId()"
+            [listboxLabel]="listboxLabel()"
+            [loadingPosition]="loadingPosition()"
+            [loadingText]="loadingText()"
+            [maxHeight]="maxHeight()"
+            [minWidth]="minWidth()"
+            [mode]="mode()"
+            [options]="options()"
+            [showCheckIcon]="true"
+            [status]="status()"
+            [type]="type()"
+            [value]="value()"
+            (actionCancelled)="actionCancel.emit()"
+            (actionCleared)="actionClear.emit()"
+            (actionConfirmed)="actionConfirm.emit()"
+            (actionCustomClicked)="actionCustom.emit()"
+            (itemHovered)="itemHover.emit($event)"
+            (leaveBottom)="leaveBottom.emit()"
+            (reachBottom)="reachBottom.emit()"
+            (scroll)="scroll.emit($event)"
+            (selected)="onItemSelected($event)"
+          ></div>
+        </div>
+      } @else {
+        <ng-container *ngTemplateOutlet="headerTplRef() ?? null" />
+      }
+    } @else {
+      <ng-template
+        mznDropdownPopper
+        [anchor]="anchor()!"
+        [customWidth]="customWidth() ?? undefined"
+        [flip]="flip()"
+        [globalPortal]="globalPortal()"
+        [open]="popperOpen()"
+        [placement]="resolvedPlacement()"
+        [sameWidth]="sameWidth()"
+        [zIndex]="zIndex() ?? undefined"
+        (placementChange)="onPositionUpdated($event)"
+      >
+        <div [class]="popperWithPortalClass()" data-mzn-dropdown-popper="true">
+          <div
+            mznTranslate
+            [in]="open()"
+            [from]="translateFrom()"
+            (onExited)="onTranslateExited()"
+          >
             <div
               mznDropdownItem
               [actionConfig]="resolvedActionConfig()"
@@ -196,7 +221,7 @@ export interface DropdownActionConfig {
               [emptyIcon]="emptyIcon()"
               [emptyText]="emptyText()"
               [followText]="resolvedFollowText()"
-              [headerContentTemplate]="headerTplRef() ?? undefined"
+              [headerContentTemplate]="undefined"
               [listboxId]="listboxId()"
               [listboxLabel]="listboxLabel()"
               [loadingPosition]="loadingPosition()"
@@ -205,84 +230,29 @@ export interface DropdownActionConfig {
               [minWidth]="minWidth()"
               [mode]="mode()"
               [options]="options()"
-              [showCheckIcon]="showCheckIcon()"
+              [showCheckIcon]="true"
               [status]="status()"
               [type]="type()"
               [value]="value()"
-              (actionCancelled)="actionCancelled.emit()"
-              (actionCleared)="actionCleared.emit()"
-              (actionConfirmed)="actionConfirmed.emit()"
-              (actionCustomClicked)="actionCustomClicked.emit()"
-              (itemHovered)="itemHovered.emit($event)"
+              (actionCancelled)="actionCancel.emit()"
+              (actionCleared)="actionClear.emit()"
+              (actionConfirmed)="actionConfirm.emit()"
+              (actionCustomClicked)="actionCustom.emit()"
+              (itemHovered)="itemHover.emit($event)"
               (leaveBottom)="leaveBottom.emit()"
               (reachBottom)="reachBottom.emit()"
+              (scroll)="scroll.emit($event)"
               (selected)="onItemSelected($event)"
             ></div>
           </div>
         </div>
-      } @else {
-        <ng-container *ngTemplateOutlet="headerTplRef() ?? null" />
-      }
-    } @else {
-      <div mznPortal [disablePortal]="!globalPortal()">
-        <div
-          mznPopper
-          data-mzn-dropdown-popper="true"
-          [anchor]="anchor()!"
-          [class]="popperWithPortalClass()"
-          [disableFlip]="!flip()"
-          [open]="popperOpen()"
-          [placement]="resolvedPlacement()"
-          [offsetOptions]="{ mainAxis: 4 }"
-          [middleware]="popperMiddleware()"
-          [style.z-index]="resolvedZIndex()"
-          (positionUpdated)="onPositionUpdated($event)"
-        >
-          <div
-            mznTranslate
-            [in]="open()"
-            [from]="translateFrom()"
-            (onExited)="onTranslateExited()"
-          >
-            <div [class]="resolvedRootClass()">
-              <div
-                mznDropdownItem
-                [actionConfig]="resolvedActionConfig()"
-                [activeIndex]="activeIndex()"
-                [keyboardActiveIndex]="effectiveKeyboardIndex()"
-                [customWidth]="customWidth()"
-                [disabled]="disabled()"
-                [emptyIcon]="emptyIcon()"
-                [emptyText]="emptyText()"
-                [followText]="resolvedFollowText()"
-                [headerContentTemplate]="
-                  showHeader() ? (headerTplRef() ?? undefined) : undefined
-                "
-                [listboxId]="listboxId()"
-                [listboxLabel]="listboxLabel()"
-                [loadingPosition]="loadingPosition()"
-                [loadingText]="loadingText()"
-                [maxHeight]="maxHeight()"
-                [minWidth]="minWidth()"
-                [mode]="mode()"
-                [options]="options()"
-                [showCheckIcon]="showCheckIcon()"
-                [status]="status()"
-                [type]="type()"
-                [value]="value()"
-                (actionCancelled)="actionCancelled.emit()"
-                (actionCleared)="actionCleared.emit()"
-                (actionConfirmed)="actionConfirmed.emit()"
-                (actionCustomClicked)="actionCustomClicked.emit()"
-                (itemHovered)="itemHovered.emit($event)"
-                (leaveBottom)="leaveBottom.emit()"
-                (reachBottom)="reachBottom.emit()"
-                (selected)="onItemSelected($event)"
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </ng-template>
+      <!--
+        Outside 模式的 trigger 以 default ng-content 投影進 host 內,對齊
+        React 把 trigger children clone 進 root 末端的行為。
+        popper 透過 CDK Overlay portal,不在此處留下 DOM。
+      -->
+      <ng-content />
     }
   `,
 })
@@ -300,15 +270,14 @@ export class MznDropdown {
   /** 確認按鈕文字，需搭配 showDropdownActions。 */
   readonly actionConfirmText = input<string>();
 
-  /**
-   * 整合操作區設定物件，可替代個別的 actionCancelText、actionClearText、
-   * actionConfirmText、showDropdownActions、showActionShowTopBar 輸入屬性。
-   * 若同時設定，此物件中的對應欄位將覆蓋個別輸入屬性。
-   */
-  readonly actionConfig = input<DropdownActionConfig>();
-
   /** 自訂操作按鈕文字（custom mode）。 */
   readonly actionText = input<string>();
+
+  /**
+   * 自訂操作按鈕（custom mode）的 ButtonProps 子集,鏡像 React Dropdown 的
+   * `actionCustomButtonProps`。透傳給 footer custom 按鈕(variant/size/disabled/loading)。
+   */
+  readonly actionCustomButtonProps = input<DropdownActionButtonProps>();
 
   /**
    * 目前 active 選項的索引(0-indexed),通常反映滑鼠 hover;鍵盤導覽另由
@@ -339,9 +308,6 @@ export class MznDropdown {
   /** 是否禁用所有選項互動。 @default false */
   readonly disabled = input(false);
 
-  /** 是否禁用 click-away 關閉。 */
-  readonly disableClickAway = input(false);
-
   /** 空狀態圖示，覆蓋預設圖示。 */
   readonly emptyIcon = input<IconDefinition>();
 
@@ -349,11 +315,26 @@ export class MznDropdown {
   readonly emptyText = input<string>();
 
   /**
+   * 是否啟用 floating-ui `flip` middleware。設為 `true` 時,當選單於主軸空間
+   * 不足會自動翻轉到對側(例如 `bottom-start` → `top-start`),且進場動畫方向
+   * 會跟隨實際翻轉後的 placement。預設關閉以保留既有 placement 行為。
+   * 鏡像 React `Dropdown` 的 `flip` prop。
+   * @default false
+   */
+  readonly flip = input(false);
+
+  /**
    * 搜尋高亮關鍵字。若明確指定,會覆蓋 `isMatchInputValue` 從 header input
    * 自動推導的字串;設為空字串 / undefined 則關閉高亮。
    * 對應 React `Dropdown.tsx:127` 的 `followText` prop。
    */
   readonly followText = input<string>();
+
+  /**
+   * 下拉選單 root element 的 DOM id,綁定至 host `[attr.id]`,對齊 React
+   * `Dropdown.tsx:976` 把 `id` 套用到最外層 `div.mzn-dropdown` root。
+   */
+  readonly id = input<string>();
 
   /**
    * 搜尋輸入框的位置。
@@ -379,9 +360,10 @@ export class MznDropdown {
   readonly sameWidth = input(false);
 
   /**
-   * popper 模式是否透過 `MznPortal` 渲染到 document.body,避開 overflow 裁切與
+   * popper 模式是否透過 CDK Overlay 渲染到 document.body,避開 overflow 裁切與
    * stacking context 限制;inline 模式(inputPosition='inside')下無效。
-   * 對齊 React `Dropdown.tsx:257` 的 `globalPortal`。 @default true
+   * CDK Overlay 一律 portal,故此 input 目前恆為 portal 行為,保留以維持
+   * consumer API 相容。對齊 React `Dropdown.tsx:257` 的 `globalPortal`。 @default true
    */
   readonly globalPortal = input(true);
 
@@ -428,9 +410,6 @@ export class MznDropdown {
   /** 選取模式。 */
   readonly mode = input<DropdownMode>('single');
 
-  /** 表單欄位名稱。 */
-  readonly name = input<string>();
-
   /** 是否開啟下拉選單。 */
   readonly open = input(false);
 
@@ -441,35 +420,16 @@ export class MznDropdown {
   readonly placement = input<Placement>('bottom-start');
 
   /**
-   * 是否啟用 floating-ui `flip` middleware。設為 `true` 時,當選單於下方空間
-   * 不足會沿主軸自動翻轉到對側(例如 `bottom-start` → `top-start`),且進場
-   * 動畫方向會跟隨實際翻轉後的 placement。預設關閉以保留既有 placement 行為。
-   * 鏡像 React `Dropdown` 的 `flip` prop。
-   * @default false
-   */
-  readonly flip = input(false);
-
-  /**
    * 是否在操作區頂部顯示分隔線。
    * @default false
    */
   readonly showActionShowTopBar = input(false);
-
-  /** 是否顯示勾選圖示。 */
-  readonly showCheckIcon = input(true);
 
   /**
    * 是否顯示操作區（確認/取消/清除按鈕）。
    * @default false
    */
   readonly showDropdownActions = input(false);
-
-  /**
-   * 是否顯示標頭內容區域（搭配 `[mznDropdownHeader]` ng-content 插槽使用）。
-   * 當有投影標頭內容時請設為 `true`。
-   * @default false
-   */
-  readonly showHeader = input(false);
 
   /**
    * 非同步狀態。
@@ -492,67 +452,70 @@ export class MznDropdown {
 
   /**
    * 下拉選單的 z-index 覆蓋值。
-   * 未設定時不套用 inline z-index，以 DOM 順序決定層級。
+   * 未設定時由 CDK Overlay 以遞增序號決定層級(後開啟者疊在先開啟者之上)。
    */
   readonly zIndex = input<number | string>();
 
-  /** 取消事件（搭配 showDropdownActions 使用）。 */
-  readonly actionCancelled = output<void>();
+  /** 取消事件（搭配 showDropdownActions 使用）。對齊 React `onActionCancel`。 */
+  readonly actionCancel = output<void>();
 
-  /** 清除事件（搭配 showDropdownActions 使用）。 */
-  readonly actionCleared = output<void>();
+  /** 清除事件（搭配 showDropdownActions 使用）。對齊 React `onActionClear`。 */
+  readonly actionClear = output<void>();
 
-  /** 確認事件（搭配 showDropdownActions 使用）。 */
-  readonly actionConfirmed = output<void>();
+  /** 確認事件（搭配 showDropdownActions 使用）。對齊 React `onActionConfirm`。 */
+  readonly actionConfirm = output<void>();
 
-  /** 自訂操作按鈕點擊事件（搭配 actionText 與 custom mode 使用）。 */
-  readonly actionCustomClicked = output<void>();
+  /** 自訂操作按鈕點擊事件（搭配 actionText 與 custom mode 使用）。對齊 React `onActionCustom`。 */
+  readonly actionCustom = output<void>();
 
-  /** 關閉事件。對齊 React `Dropdown.tsx:171` 的 `onClose`。 */
-  readonly closed = output<void>();
+  /** 關閉事件。對齊 React `Dropdown.tsx:150` 的 `onClose`（去 `on` 前綴）。 */
+  readonly close = output<void>();
 
   /**
    * 選項 hover 事件,參數為選項的 0-indexed 位置。通常由 parent 用來更新
-   * `activeIndex`(hover-style highlight)。對齊 React `Dropdown.tsx:175`
-   * 的 `onItemHover`。
+   * `activeIndex`(hover-style highlight)。對齊 React `Dropdown.tsx:154`
+   * 的 `onItemHover`（去 `on` 前綴）。
    */
-  readonly itemHovered = output<number>();
+  readonly itemHover = output<number>();
 
-  /** 開啟事件。對齊 React `Dropdown.tsx:179` 的 `onOpen`。 */
+  /**
+   * 開啟事件。對齊 React `Dropdown.tsx:158` 的 `onOpen`。
+   *
+   * 命名說明:React `onOpen` 去 `on` 前綴後為 `open`,但 `open` 已是
+   * 控制開閉的 input,Angular 無法讓 input/output 同名,故此 output 維持
+   * 過去式 `opened`(平台限制,記錄於 DEVIATIONS.md)。
+   */
   readonly opened = output<void>();
 
   /**
-   * 開閉狀態統一事件,切換時 emit `true` / `false`。`opened` 與 `closed`
-   * 仍保留以向下相容。對齊 React `Dropdown.tsx:183` 的 `onVisibilityChange`。
+   * 開閉狀態統一事件,切換時 emit `true` / `false`。對齊 React
+   * `Dropdown.tsx:162` 的 `onVisibilityChange`（去 `on` 前綴）。
    */
   readonly visibilityChange = output<boolean>();
 
-  /** 離開列表底部時觸發。 */
+  /** 離開列表底部時觸發。對齊 React `onLeaveBottom`（去 `on` 前綴）。 */
   readonly leaveBottom = output<void>();
 
-  /** 捲動至列表底部時觸發。 */
+  /** 捲動至列表底部時觸發。對齊 React `onReachBottom`（去 `on` 前綴）。 */
   readonly reachBottom = output<void>();
 
-  /** 選取事件。 */
-  readonly selected = output<DropdownOption>();
+  /**
+   * 列表捲動事件,payload 為 `{ scrollTop, maxScrollTop }`。對齊 React
+   * `Dropdown.tsx:259` 的 `onScroll`（去 `on` 前綴;Angular EventEmitter 不
+   * 慣用多參數,僅取 `computed` payload,不含 React 第二參數 `target`）。
+   */
+  readonly scroll = output<{ scrollTop: number; maxScrollTop: number }>();
+
+  /** 選取事件。對齊 React `Dropdown.tsx:166` 的 `onSelect`（去 `on` 前綴）。 */
+  readonly select = output<DropdownOption>();
 
   protected readonly listHeaderClass = classes.listHeader;
   protected readonly listHeaderInnerClass = classes.listHeaderInner;
 
-  /** Root element class, including inputPosition modifier. */
-  protected readonly resolvedRootClass = computed((): string =>
-    clsx(classes.root, classes.inputPosition(this.inputPosition())),
-  );
-
   /**
-   * 打在 outside-mode popper root 上的 class。`globalPortal=true` 時套用
-   * `.mzn-dropdown-popper--with-portal` 把 `pointer-events` 從 portal
-   * container 繼承的 `none` 重新打開為 `auto`,對齊 React
-   * `Dropdown.tsx:1019` + `_dropdown-styles.scss:200` 的處理。
-   *
-   * 若不套用,portal container 整張 fixed 全屏 + pointer-events: none 會
-   * 讓 popper 連同選項整張透明 —— 點擊穿過去打到後面元素,dropdown 本身
-   * 收不到任何點擊事件。
+   * 打在 outside-mode popper wrapper 上的 class。`globalPortal=true` 時套用
+   * `.mzn-dropdown-popper--with-portal` 把 `pointer-events` 重新打開為 `auto`,
+   * 對齊 React `Dropdown.tsx:1016` + `_dropdown-styles.scss:200`。
    */
   protected readonly popperWithPortalClass = computed((): string =>
     this.globalPortal() ? classes.popperWithPortal : '',
@@ -569,11 +532,13 @@ export class MznDropdown {
 
   /**
    * 讀取 template 內 <ng-template #headerTpl> 的 TemplateRef,用於傳遞給
-   * mznDropdownItem 的 `headerContentTemplate` input — 使 header 被渲染到
-   * <ul class="mzn-dropdown-list"> 內部第一個 <li>,與 options 共享卡片。
+   * mznDropdownItem 的 `headerContentTemplate` input。
    */
   protected readonly headerTplRef =
     viewChild<TemplateRef<unknown>>('headerTpl');
+
+  /** outside 模式的 CDK overlay popper directive 實例(供 click-away 白名單)。 */
+  private readonly popperRef = viewChild(MznDropdownPopper);
 
   /**
    * Resolved placement: forces 'bottom' when inputPosition is 'inside',
@@ -585,30 +550,8 @@ export class MznDropdown {
   );
 
   /**
-   * MznTranslate 的 from 方向,鏡像 React Dropdown.tsx 的 translateFrom:
-   * - isInline(inputPosition='inside')→ 'bottom'(list 從下方浮起)
-   * - placement 以 'top' 開頭 → 'top'(list 出現在 trigger 上方,從上方滑下)
-   * - 其他(bottom-/left-/right-*)→ 'bottom'(list 出現在 trigger 下方/側邊,
-   *   從下方滑上 — 視覺上的「浮起來」感)
-   *
-   * 原本寫死 `from="top"` 讓所有 placement 都是「下滑」動畫,跟 React 的
-   * 「浮起」方向相反。
-   */
-  protected readonly translateFrom = computed((): 'top' | 'bottom' => {
-    if (this.inputPosition() === 'inside') return 'bottom';
-
-    // 啟用 flip 時跟隨 floating-ui 實際翻轉後的 placement,讓進場動畫從正確
-    // 的方向滑入;未啟用時維持靜態 placement,保留既有 consumer 行為。
-    const placementBase = (
-      this.flip() ? this.flippedPlacement() : this.resolvedPlacement()
-    ).split('-')[0];
-
-    return placementBase === 'top' ? 'top' : 'bottom';
-  });
-
-  /**
    * floating-ui 實際解析(含 flip 翻轉)後的 placement,僅在 `flip` 啟用時用於
-   * 決定進場動畫方向。由 MznPopper 的 `positionUpdated` 輸出驅動。
+   * 決定進場動畫方向。由 `MznDropdownPopper` 的 `placementChange` 輸出驅動。
    */
   private readonly flippedPlacement = signal<Placement>('bottom-start');
 
@@ -617,36 +560,44 @@ export class MznDropdown {
   }
 
   /**
-   * Build the unified DropdownActionProps passed to MznDropdownItem.
-   * Merges individual action inputs with the actionConfig object.
-   * actionConfig fields take precedence over individual inputs.
+   * MznTranslate 的 from 方向,鏡像 React Dropdown.tsx 的 translateFrom:
+   * - isInline(inputPosition='inside')→ 'bottom'(list 從下方浮起)
+   * - placement 以 'top' 開頭 → 'top'(list 出現在 trigger 上方,從上方滑下)
+   * - 其他(bottom-/left-/right-*)→ 'bottom'
+   *
+   * 啟用 flip 時跟隨實際翻轉後的 placement,讓進場動畫從正確方向滑入。
+   */
+  protected readonly translateFrom = computed((): 'top' | 'bottom' => {
+    if (this.inputPosition() === 'inside') return 'bottom';
+
+    const placementBase = (
+      this.flip() ? this.flippedPlacement() : this.resolvedPlacement()
+    ).split('-')[0];
+
+    return placementBase === 'top' ? 'top' : 'bottom';
+  });
+
+  /**
+   * Build the DropdownActionProps passed to MznDropdownItem from the flat
+   * action inputs, mirroring React's flat-only action props
+   * (`actionCancelText` / `actionClearText` / … / `actionCustomButtonProps`).
    */
   protected readonly resolvedActionConfig = computed(
-    (): DropdownActionProps => {
-      const cfg = this.actionConfig();
-      const showActions = cfg?.showActions ?? this.showDropdownActions();
-      const showTopBar = cfg?.showTopBar ?? this.showActionShowTopBar();
-      const cancelText = cfg?.cancelText ?? this.actionCancelText();
-      const clearText = cfg?.clearText ?? this.actionClearText();
-      const confirmText = cfg?.confirmText ?? this.actionConfirmText();
-      const actionText = cfg?.actionText ?? this.actionText();
-
-      return {
-        actionText,
-        cancelText,
-        clearText,
-        confirmText,
-        showActions,
-        showTopBar,
-      };
-    },
+    (): DropdownActionProps => ({
+      actionText: this.actionText(),
+      cancelText: this.actionCancelText(),
+      clearText: this.actionClearText(),
+      confirmText: this.actionConfirmText(),
+      customActionButtonProps: this.actionCustomButtonProps(),
+      showActions: this.showDropdownActions(),
+      showTopBar: this.showActionShowTopBar(),
+    }),
   );
 
   /**
    * 最終傳入 MznDropdownItem 的 `followText`。`followText` input 顯式提供
    * 時優先使用;否則目前 Angular 無穩定途徑從 ng-content 讀取 input value,
-   * 回傳 undefined(關閉高亮)。對應 React `Dropdown.tsx:506-525` 的
-   * useMemo。
+   * 回傳 undefined(關閉高亮)。對應 React `Dropdown.tsx:506-525` 的 useMemo。
    */
   protected readonly resolvedFollowText = computed((): string | undefined => {
     const explicit = this.followText();
@@ -659,56 +610,11 @@ export class MznDropdown {
   });
 
   /**
-   * Popper 實際掛載狀態，會在 open=true 時立即變 true，在 open=false
-   * 後繼續維持為 true 直到內部 MznTranslate 的離場動畫完成，確保
-   * popper 的 `display: none` 不會在動畫結束前就把元素隱藏掉。
+   * Popper 實際掛載狀態,會在 open=true 時立即變 true,在 open=false
+   * 後繼續維持為 true 直到內部 MznTranslate 的離場動畫完成,確保
+   * popper 在動畫結束前不會被 detach。
    */
   protected readonly popperOpen = signal(false);
-
-  /**
-   * 每次開啟 popper 時以遞增序號計算 z-index,對齊
-   * `MznInputTriggerPopper` 的 popperOpenSequence 機制:後開啟的 popper
-   * 永遠蓋在先開啟的之上,即使在 Modal / Drawer 內也不被其他 popover
-   * 遮住。外部若用 `zIndex` input 明確指定,則以該值為準。
-   */
-  private readonly openSequenceZIndex = signal<string | null>(null);
-
-  /**
-   * 送入 `[style.z-index]` 的最終值:`zIndex` input > 內部 sequence。
-   * 未顯式提供 zIndex 時,每次 `open` → true 會遞增 sequence 以超越已
-   * 開啟的同類 popper;回退到 CSS 變數 `--mzn-z-index-popover` 作為基值。
-   */
-  protected readonly resolvedZIndex = computed((): string | null => {
-    const explicit = this.zIndex();
-
-    if (explicit !== undefined && explicit !== null) {
-      return typeof explicit === 'number' ? `${explicit}` : explicit;
-    }
-
-    return this.openSequenceZIndex();
-  });
-
-  /**
-   * 額外的 floating-ui middleware。`sameWidth=true` 時加上 `size` middleware
-   * 讓 floating 元素 `minWidth` 與 anchor 同寬,對齊 React
-   * `Dropdown.tsx:535-568` 的 sameWidthMiddleware。`customWidth` 有值時
-   * 優先,此 middleware 直接不套用避免互打。
-   */
-  protected readonly popperMiddleware = computed(
-    (): ReadonlyArray<Middleware> => {
-      if (!this.sameWidth() || this.customWidth() !== undefined) return [];
-
-      return [
-        size({
-          apply({ rects, elements }) {
-            Object.assign(elements.floating.style, {
-              minWidth: `${rects.reference.width}px`,
-            });
-          },
-        }),
-      ];
-    },
-  );
 
   /**
    * 內部鍵盤 active index,對齊 React `Dropdown.tsx` 中的 `keyboardActiveIndex`
@@ -790,9 +696,8 @@ export class MznDropdown {
   constructor() {
     // Inline 模式 focus 續接:@if (open()) 會讓 header template 在 closed
     // branch 的 standalone outlet 與 open branch 的 DropdownItem 內部 outlet
-    // 各建一份 embedded view,切換時 DOM 會重建。使用者點 input 觸發 open 後,
-    // 舊 input 被銷毀、新 input 預設未 focus → 後續按鍵打進空處。open 轉為
-    // true 時於 host 內 querySelector 第一個 input/textarea 並 focus。
+    // 各建一份 embedded view,切換時 DOM 會重建。open 轉為 true 時於 host 內
+    // querySelector 第一個 input/textarea 並 focus。
     effect(() => {
       if (this.isInline() && this.open()) {
         queueMicrotask(() => {
@@ -808,10 +713,68 @@ export class MznDropdown {
       }
     });
 
+    // anchor ARIA 注入:對齊 React 對 trigger element 注入 aria-haspopup /
+    // aria-expanded / aria-controls(Dropdown.tsx cloneElement)。outside 模式
+    // 的 anchor 是外部元素,Angular 不 clone,改在 effect 中直接設 attribute。
+    effect(() => {
+      const anchorRaw = this.anchor();
+      const anchorEl =
+        anchorRaw instanceof ElementRef ? anchorRaw.nativeElement : anchorRaw;
+
+      if (!anchorEl || this.isInline()) return;
+
+      anchorEl.setAttribute('aria-haspopup', 'listbox');
+      anchorEl.setAttribute('aria-expanded', String(this.open()));
+      anchorEl.setAttribute(
+        'aria-controls',
+        this.listboxId() ?? this.defaultListboxId,
+      );
+    });
+
+    // Inline 模式 trigger ARIA 注入:inline 模式無 anchor,trigger 是
+    // `[mznDropdownHeader]` 投影的 TextField。對齊 React 對 inline Input
+    // clone 注入 role=combobox / aria-haspopup / aria-expanded / aria-controls
+    // (isMatchInputValue 時加 aria-autocomplete=list)。投影內容在 host DOM 內,
+    // 改 render 後 querySelector trigger element 設 attribute。
+    effect(() => {
+      if (!this.isInline()) return;
+
+      const isOpen = this.open();
+      const isMatch = this.isMatchInputValue();
+      const controls = this.listboxId() ?? this.defaultListboxId;
+
+      queueMicrotask(() => {
+        const host = this.hostElRef.nativeElement;
+        const header = host.querySelector('[mznDropdownHeader]');
+
+        // 對齊 React inline closed:trigger 被 <Translate in> 包住,settled-in
+        // 狀態套 identity transform(matrix(1,0,0,1,0,0))。Angular closed 分支
+        // 以 ngTemplateOutlet 直接投影 header(無 mznTranslate wrapper,避免多一層
+        // 破壞 ARIA 路徑對齊),故在此對 header 元素補上等效 identity transform。
+        if (header instanceof HTMLElement) {
+          header.style.transform = 'translate3d(0, 0, 0)';
+        }
+
+        const trigger =
+          header?.querySelector('.mzn-text-field') ??
+          header?.firstElementChild ??
+          null;
+
+        if (!(trigger instanceof HTMLElement)) return;
+
+        trigger.setAttribute('role', 'combobox');
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', String(isOpen));
+        trigger.setAttribute('aria-controls', controls);
+
+        if (isMatch) {
+          trigger.setAttribute('aria-autocomplete', 'list');
+        }
+      });
+    });
+
     // Transition detector:比對 lastOpen 與 current open() 以判斷本次 run 是
     // false→true 還是 true→false,對應 emit `opened` / `visibilityChange`。
-    // 使用 lastOpen 欄位而非 previousValue 參數的原因:Angular effect 在
-    // 首次 run 沒有 previous value,保存欄位可確保 mount 時不誤 emit。
     effect(() => {
       const isOpen = this.open();
 
@@ -823,8 +786,7 @@ export class MznDropdown {
       if (isOpen) {
         this.opened.emit();
       } else {
-        // 關閉時重置內部鍵盤 index,避免下次開啟時仍停留在舊位置
-        // (對齊 React Dropdown 每次 open 都從 activeIndex 初始化的行為)。
+        // 關閉時重置內部鍵盤 index,避免下次開啟時仍停留在舊位置。
         this.internalKeyboardIndex.set(-1);
       }
     });
@@ -834,41 +796,28 @@ export class MznDropdown {
 
       if (isOpen) {
         this.popperOpen.set(true);
-
-        // Bump sequence and reflect onto resolvedZIndex so the latest-opened
-        // popper always sits above previously opened ones (Modal / Drawer
-        // scenarios). Intentionally not reset on close so the closing
-        // popper retains its stacking position through the exit animation,
-        // mirroring `MznInputTriggerPopper`'s popperOpenSequence behaviour.
-        if (!this.isInline()) {
-          this.openSequenceZIndex.set(
-            `calc(var(--mzn-z-index-popover) + ${++mznDropdownPopperSequence})`,
-          );
-        }
       }
 
-      if (isOpen && !this.disableClickAway()) {
-        // 把 anchor、host、以及 popper root 一併視為「inside」,對齊 React
+      if (isOpen) {
+        // 把 anchor、host、以及 popper pane 一併視為「inside」,對齊 React
         // Dropdown 的 `!anchor.contains(target) && !popper.contains(target)`。
-        // - anchor:使用者點 trigger(如 TextField)時不可被判外部。
-        // - host:inline 模式整個 dropdown 都在 host 內。
-        // - popper:globalPortal=true 時 popper 內容被 MznPortal 移到
-        //   `<body>`,host 已不包含它;也不能單靠 `popperElRef` viewChild
-        //   因為 `<ng-content>` → `<ng-template>` 的穿透使得 viewChild
-        //   在某些 change detection 時序下未解析。改用 selector 檢查
-        //   `target.closest('[data-mzn-dropdown-popper]')`,不論 popper
-        //   被搬到哪裡都能正確判定。
+        // popper 內容經 CDK Overlay 搬到 body,故以 overlay pane(popperElRef)
+        // 與 selector `[data-mzn-dropdown-popper]` 雙重判定確保穩定。
         const anchorRaw = this.anchor();
         const anchorEl =
           anchorRaw instanceof ElementRef ? anchorRaw.nativeElement : anchorRaw;
         const cleanup = this.clickAway.listen(
-          [this.hostElRef.nativeElement, anchorEl],
+          [
+            this.hostElRef.nativeElement,
+            anchorEl,
+            this.popperRef()?.popperElRef ?? null,
+          ],
           (event) => {
             const target = event.target as HTMLElement | null;
 
             if (target?.closest('[data-mzn-dropdown-popper="true"]')) return;
 
-            this.closed.emit();
+            this.close.emit();
           },
           this.destroyRef,
         );
@@ -878,11 +827,9 @@ export class MznDropdown {
     });
 
     // Outside 模式 keyboard forwarding:popper 渲染的 list 不在 trigger 的
-    // DOM 樹裡,但使用者的 focus 通常停留在 trigger <input>,因此把 anchor
-    // 的 keydown 轉發到 host keyboard handler,讓 wrappers(MznAutocomplete、
-    // MznSelect)不需要各自重寫 nav 邏輯。`onHostKeyDown` 本身已有
-    // `defaultPrevented` 早退,所以 wrapper 若要吞 Enter / Backspace 做
-    // 自己的事,只要對該 event 呼叫 preventDefault 即可。
+    // DOM 樹裡,但使用者的 focus 通常停留在 trigger,因此把 anchor 的 keydown
+    // 轉發到 host keyboard handler,讓 wrappers(MznAutocomplete、MznSelect)
+    // 不需要各自重寫 nav 邏輯。
     effect((onCleanup) => {
       if (!this.open()) return;
 
@@ -891,15 +838,20 @@ export class MznDropdown {
         anchorRaw instanceof ElementRef ? anchorRaw.nativeElement : anchorRaw;
 
       if (!anchorEl) return;
-      // Inline 模式的 anchor 若有設定也無所謂,hostEl 的 listener 已經
-      // handle 了同一個事件;但 inline 模式通常不設 anchor,故此處大多
-      // 只在 outside 模式起作用。
+
       const handler = (event: KeyboardEvent): void => this.onHostKeyDown(event);
 
       anchorEl.addEventListener('keydown', handler);
       onCleanup(() => anchorEl.removeEventListener('keydown', handler));
     });
   }
+
+  /**
+   * 未顯式提供 `listboxId` 時的後備 id,供 anchor 的 `aria-controls` 指向。
+   * parity tool 會把所有 id 類 attribute 正規化為 `<id>`,故實際值不影響比對,
+   * 僅需穩定存在。
+   */
+  private readonly defaultListboxId = `mzn-dropdown-listbox-${(dropdownListboxSeq += 1)}`;
 
   protected onTranslateExited(): void {
     if (!this.open()) {
@@ -908,32 +860,22 @@ export class MznDropdown {
   }
 
   protected onItemSelected(option: DropdownOption): void {
-    this.selected.emit(option);
+    this.select.emit(option);
 
     if (this.mode() === 'single') {
-      this.closed.emit();
+      this.close.emit();
     }
   }
 
   /**
    * 內建鍵盤導覽:對齊 React `Dropdown.tsx:689-757` 的 handleBuiltinKeyDown。
-   * 僅在 `open()` 時處理。tree 模式目前交由 MznDropdownItem 內部處理,
-   * 此處略過 nav keys。
-   *
-   * 事件來源:
-   * - Inside 模式:`[mznDropdownHeader]` 內 <input> 的 keydown 會沿 DOM
-   *   bubble 到 host(<div mznDropdown>),直接被這個 host listener 接到。
-   * - Outside 模式:trigger <input> 是外部 `anchor`,不在 host DOM 樹內,
-   *   由建構子內另一個 effect 將 anchor 的 keydown 轉發到同一個 handler,
-   *   讓 wrapper 不需自行實作 nav。
+   * 僅在 `open()` 時處理。tree 模式目前交由 MznDropdownItem 內部處理。
    */
   protected onHostKeyDown(event: KeyboardEvent): void {
     if (!this.open() || this.disabled()) return;
 
     // 若有外層 wrapper(如 MznAutocomplete)在同一事件上已呼叫
-    // `event.preventDefault()` 表示它已消化掉此 key(例如以 Enter 觸發
-    // creation、Backspace 刪除 tag),MznDropdown 不應重複處理以免
-    // 同一 Enter 先建立後又選取。
+    // `event.preventDefault()` 表示它已消化掉此 key,MznDropdown 不重複處理。
     if (event.defaultPrevented) return;
 
     const type = this.type();
@@ -948,7 +890,7 @@ export class MznDropdown {
 
     if (key === 'Escape') {
       event.preventDefault();
-      this.closed.emit();
+      this.close.emit();
 
       return;
     }

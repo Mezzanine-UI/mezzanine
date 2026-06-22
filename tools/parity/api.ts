@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const REACT_ROOT = resolve(process.cwd(), 'packages/react/src');
+const CORE_ROOT = resolve(process.cwd(), 'packages/core/src');
 const NG_ROOT = resolve(process.cwd(), 'packages/ng');
 
 export type ApiSet = {
@@ -261,6 +262,12 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
   };
 
   walk(REACT_ROOT);
+  // Also index shared type declarations under packages/core/src. React prop
+  // interfaces frequently `extends` core interfaces (e.g. `DropdownProps
+  // extends DropdownItemSharedProps`), so without this the inherited props
+  // (value / mode / …) are silently dropped from the React side. REACT_ROOT is
+  // walked first so a react-side declaration wins on any name collision.
+  walk(CORE_ROOT);
   return index;
 }
 
@@ -331,14 +338,25 @@ function parseExtends(clause: string): ParentRef[] {
 function extractBodyProps(body: string): ApiSet {
   const inputs = new Set<string>();
   const outputs = new Set<string>();
-  let bd = 0;
+  let braceDepth = 0;
+  let parenDepth = 0;
   for (const line of body.split('\n')) {
     const trimmed = line.replace(/\/\/.*$/, '').trim();
+    // A property declaration only counts at the interface top level. Decide
+    // using depths carried from *previous* lines so that:
+    //  - inline object types (`foo: { a: T; b: T }`) don't leak `a` / `b`, and
+    //  - callback parameter lists (`onX?: (computed: T, target: U) => void`)
+    //    don't leak the parameter names `computed` / `target` as props.
+    // The property's own opening line is still at top level (depths are
+    // updated *after* the decision), so the property itself is captured.
+    const atTopLevel = braceDepth === 0 && parenDepth === 0;
     for (const ch of trimmed) {
-      if (ch === '{') bd += 1;
-      else if (ch === '}') bd -= 1;
+      if (ch === '{') braceDepth += 1;
+      else if (ch === '}') braceDepth -= 1;
+      else if (ch === '(') parenDepth += 1;
+      else if (ch === ')') parenDepth -= 1;
     }
-    if (bd !== 0 && !trimmed.endsWith('{')) continue;
+    if (!atTopLevel) continue;
     const m = trimmed.match(/^(\w+)\??\s*:/);
     if (!m) continue;
     const name = m[1];
