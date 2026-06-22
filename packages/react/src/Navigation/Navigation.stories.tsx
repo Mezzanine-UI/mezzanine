@@ -64,6 +64,15 @@ export const Basic: StoryFn<NavigationProps> = (args) => {
           <NavigationOption title={'待處理訂單'} />
           <NavigationOption title={'已完成訂單'} />
         </NavigationOption>
+        {/* Leaf item with only a Badge child: renders an anchor leaf with a
+            right-aligned badge and no chevron (no expandable group). */}
+        <NavigationOption
+          icon={NotificationIcon}
+          title={'通知中心'}
+          href="/notifications"
+        >
+          <Badge count={8} variant="count-alert" />
+        </NavigationOption>
         <NavigationOption icon={UserIcon} title={'會員管理'} />
         <>
           {Array.from(Array(5)).map((_, index) => (
@@ -89,6 +98,51 @@ export const Basic: StoryFn<NavigationProps> = (args) => {
             <NavigationIconButton icon={NotificationIcon} />
           </Badge>
         </NavigationFooter>
+      </Navigation>
+    </div>
+  );
+};
+
+export const LeafWithBadge: StoryFn<NavigationProps> = (args) => {
+  const [activatedPath, setActivatedPath] = useState(['通知中心']);
+
+  return (
+    <div style={{ display: 'grid', height: 'calc(100vh - 32px)' }}>
+      <Navigation
+        activatedPath={activatedPath}
+        onOptionClick={(activePath) => {
+          if (activePath) setActivatedPath(activePath);
+        }}
+        {...args}
+      >
+        <NavigationHeader title="Mezzanine">
+          <span
+            aria-label="logo"
+            style={{
+              backgroundColor: '#5D74E9',
+              borderRadius: '4px',
+              height: '28px',
+              width: '28px',
+            }}
+          />
+        </NavigationHeader>
+        {/* Leaf with a badge → anchor row, right-aligned badge, no chevron. */}
+        <NavigationOption
+          icon={NotificationIcon}
+          title={'通知中心'}
+          href="/notifications"
+        >
+          <Badge count={8} variant="count-alert" />
+        </NavigationOption>
+        <NavigationOption icon={ListIcon} title={'訂單管理'} href="/orders">
+          <Badge count={5} variant="count-brand" />
+        </NavigationOption>
+        {/* Group with a badge → keeps chevron + collapsible sub-options. */}
+        <NavigationOption icon={FileIcon} title={'數據分析'}>
+          <Badge count={2} variant="count-brand" />
+          <NavigationOption title={'流量報表'} />
+          <NavigationOption title={'轉換率分析'} />
+        </NavigationOption>
       </Navigation>
     </div>
   );

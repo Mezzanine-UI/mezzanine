@@ -123,11 +123,6 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
     );
     const currentPathKey = currentPath.join('::');
 
-    const Component =
-      href && !children
-        ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
-        : 'div';
-
     const flattenedChildren = useMemo(
       () => flattenChildren(children) as NavigationOptionChildren,
       [children],
@@ -159,6 +154,15 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
       return { badge: badgeComponent, items };
     }, [flattenedChildren]);
+
+    // Group vs leaf is decided by the presence of real sub-options, not by
+    // raw `children` — a lone `Badge` child is rendered inline on a leaf.
+    const hasSubOptions = items.length > 0;
+
+    const Component =
+      href && !hasSubOptions
+        ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
+        : 'div';
 
     // Default open if current path is activated
     useEffect(() => {
@@ -216,7 +220,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
         className={cx(
           classes.host,
           open && classes.open,
-          !children && classes.basic,
+          !hasSubOptions && classes.basic,
           (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
             classes.active,
           collapsed && classes.collapsed,
@@ -248,7 +252,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
                   handleCollapseChange(false);
                 }
 
-                if (!children) setActivatedPath(currentPath);
+                if (!hasSubOptions) setActivatedPath(currentPath);
               }}
               onKeyDown={(
                 e: React.KeyboardEvent<HTMLAnchorElement | HTMLDivElement>,
@@ -257,7 +261,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
                   e.preventDefault();
                   setOpen(!open);
 
-                  if (!children) setActivatedPath(currentPath);
+                  if (!hasSubOptions) setActivatedPath(currentPath);
                 }
               }}
               onMouseEnter={onMouseEnter}
@@ -271,19 +275,21 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               <span className={classes.titleWrapper}>
                 <Fade ref={titleRef} in={collapsed === false || !icon}>
                   <span className={classes.title}>
-                    {collapsed && !icon ? Array.from(title).slice(0, 2).join('') : title}
+                    {collapsed && !icon
+                      ? Array.from(title).slice(0, 2).join('')
+                      : title}
                   </span>
                 </Fade>
               </span>
 
               {badge}
-              {children && (
+              {hasSubOptions && (
                 <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
               )}
             </Component>
           )}
         </Tooltip>
-        {children && !collapsed && (
+        {hasSubOptions && !collapsed && (
           <Collapse lazyMount className={cx(classes.childrenWrapper)} in={open}>
             <NavigationOptionLevelContext.Provider
               value={{
