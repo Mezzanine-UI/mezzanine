@@ -103,6 +103,12 @@ export const SNAPSHOT_SOURCE = `
       .sort()
       .join(' ');
   }
+  // Id-reference attributes carry framework-generated, non-deterministic values
+  // (React useId \`_r_0_\`/\`:r0:\`, Angular/CDK \`cdk-*\`, etc.). Their exact value
+  // is meaningless across implementations — only their presence/wiring matters.
+  // Collapse the value to a placeholder so a correctly-wired pair is not flagged
+  // as a diff purely because the generated id strings differ.
+  var ID_REF_ATTRS = new Set(['id','for','aria-controls','aria-labelledby','aria-describedby','aria-owns','aria-activedescendant']);
   function normalizeAttrs(el) {
     var out = {};
     var attrs = Array.from(el.attributes);
@@ -113,6 +119,7 @@ export const SNAPSHOT_SOURCE = `
       if (!(name.indexOf('aria-') === 0 || name.indexOf('data-') === 0 || KEEP_GENERIC.has(name))) continue;
       var value = attr.value;
       if (name === 'class') value = normalizeClass(value);
+      else if (ID_REF_ATTRS.has(name) && value) value = '<id>';
       out[name] = value;
     }
     var sorted = {};

@@ -54,7 +54,7 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
       [disabled]="disabled()"
       [options]="selectOptions()"
       [ngModel]="currentValueId()"
-      (selectionChange)="onSelectionChange($event)"
+      (change)="onSelectionChange($event)"
     ></div>
   `,
 })

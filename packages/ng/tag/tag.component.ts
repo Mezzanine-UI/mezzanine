@@ -47,7 +47,8 @@ import { MznBadge } from '@mezzanine-ui/ng/badge';
     // host <span> becomes `display: contents` so it's transparent in
     // layout and doesn't intercept the cascade.
     '[style.display]': "isButtonHost() ? 'contents' : null",
-    '[attr.aria-disabled]': 'isButtonHost() ? null : (disabled() || null)',
+    '[attr.aria-disabled]':
+      "isButtonHost() ? null : (disabled() ? 'true' : 'false')",
     '[attr.type]': 'null',
     '[attr.label]': 'null',
     '[attr.size]': 'null',

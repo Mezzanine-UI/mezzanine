@@ -47,6 +47,11 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
   host: {
     '[class]': 'hostClasses()',
     '(click)': 'onTriggerClick()',
+    // ARIA — 鏡像 React SelectTrigger（TextField host div）的組合框語意。
+    '[attr.role]': '"combobox"',
+    '[attr.aria-expanded]': 'active()',
+    '[attr.aria-haspopup]': '"listbox"',
+    '[attr.aria-controls]': 'listboxId() ?? null',
     '[attr.active]': 'null',
     '[attr.clearable]': 'null',
     '[attr.disabled]': 'null',
@@ -67,17 +72,24 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 
     <input
       readonly
+      role="combobox"
       type="text"
       aria-autocomplete="list"
       aria-haspopup="listbox"
       autocomplete="off"
       [class]="triggerInputClass"
+      [disabled]="disabled()"
       [value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
-      [attr.placeholder]="hasValue() ? null : placeholder()"
+      [attr.value]="
+        mode() === 'multiple' ? null : hasValue() ? displayText() : ''
+      "
+      [attr.placeholder]="
+        hasValue() && mode() !== 'multiple' ? displayText() : placeholder()
+      "
     />
     <ng-content />
 
-    @if (clearable() && hasValue()) {
+    @if (shouldEnableClearable()) {
       <button
         mznClearActions
         type="clearable"
@@ -88,13 +100,16 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
       ></button>
     }
 
-    <div class="mzn-text-field__suffix">
-      <i
-        mznIcon
-        [icon]="resolvedSuffixIcon()"
-        [class]="suffixIconClasses()"
-      ></i>
-    </div>
+    @if (!forceHideSuffixActionIcon()) {
+      <div class="mzn-text-field__suffix">
+        <i
+          mznIcon
+          [clickable]="true"
+          [icon]="resolvedSuffixIcon()"
+          [class]="suffixIconClasses()"
+        ></i>
+      </div>
+    }
   `,
 })
 export class MznSelectTrigger {
@@ -103,6 +118,11 @@ export class MznSelectTrigger {
    * @default false
    */
   readonly active = input(false);
+
+  /**
+   * 關聯的 listbox 元素 id,設於 host 的 `aria-controls`,鏡像 React combobox 語意。
+   */
+  readonly listboxId = input<string>();
 
   /**
    * 是否顯示清除按鈕。清除按鈕僅在有值時才顯示。
@@ -168,6 +188,18 @@ export class MznSelectTrigger {
    */
   readonly suffixActionIcon = input<typeof ChevronDownIcon>(ChevronDownIcon);
 
+  /** 是否為警告狀態。鏡像 React TextField `warning`。 */
+  readonly warning = input(false);
+
+  /** 強制隱藏後綴動作圖示。鏡像 React `forceHideSuffixActionIcon`。 */
+  readonly forceHideSuffixActionIcon = input(false);
+
+  /** 不論是否有值都強制啟用清除。鏡像 React `isForceClearable`。 */
+  readonly isForceClearable = input(false);
+
+  /** 強制顯示清除按鈕。鏡像 React `forceShowClearable`。 */
+  readonly forceShowClearable = input(false);
+
   /** 點擊清除按鈕時發出。 */
   readonly cleared = output<MouseEvent>();
 
@@ -176,6 +208,17 @@ export class MznSelectTrigger {
 
   protected readonly prefixClass = clsx(classes.triggerPrefix);
   protected readonly triggerInputClass = classes.triggerInput;
+
+  /**
+   * 對齊 React SelectTrigger 的 `shouldEnableClearable`:inline clear 僅在多選且
+   * 有值時啟用(單選模式 React 不顯示 inline clear)。
+   */
+  protected readonly shouldEnableClearable = computed(
+    (): boolean =>
+      this.isForceClearable() ||
+      this.forceShowClearable() ||
+      (this.clearable() && this.hasValue() && this.mode() === 'multiple'),
+  );
 
   protected readonly hostClasses = computed((): string =>
     clsx(
@@ -188,10 +231,15 @@ export class MznSelectTrigger {
       {
         [classes.triggerDisabled]: this.disabled(),
         [classes.triggerReadOnly]: this.readOnly(),
-        [textFieldClasses.clearable]: this.clearable() && this.hasValue(),
+        // 鏡像 React TextField:clearable 用 shouldEnableClearable;
+        // slim-gap = (prefix && suffix) || clearable，suffix icon 恆存在。
+        [textFieldClasses.clearable]: this.shouldEnableClearable(),
+        [textFieldClasses.slimGap]:
+          this.shouldEnableClearable() || !!this.prefix(),
         [textFieldClasses.disabled]: this.disabled(),
         [textFieldClasses.readonly]: this.readOnly(),
         [textFieldClasses.error]: this.error(),
+        [textFieldClasses.warning]: this.warning(),
       },
     ),
   );

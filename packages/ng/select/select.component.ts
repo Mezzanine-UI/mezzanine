@@ -44,6 +44,9 @@ import {
   SelectTriggerTagValue,
 } from './select-trigger-tags.component';
 
+/** Module-level sequence for generating stable, unique listbox ids. */
+let selectListboxIdSeq = 0;
+
 /** Flattened tree node for rendering. */
 interface FlatOption {
   readonly option: DropdownOption;
@@ -68,7 +71,7 @@ interface FlatOption {
  *   [options]="fruits"
  *   [(ngModel)]="selectedFruit"
  *   placeholder="請選擇水果"
- *   (selectionChange)="onFruitChange($event)"
+ *   (change)="onFruitChange($event)"
  * ></div>
  * ```
  *
@@ -111,40 +114,60 @@ interface FlatOption {
     '[attr.size]': 'null',
     '[attr.required]': 'null',
     '[attr.overflowStrategy]': 'null',
+    '[attr.value]': 'null',
+    '[attr.defaultValue]': 'null',
+    '[attr.warning]': 'null',
+    '[attr.searchText]': 'null',
+    '[attr.inputProps]': 'null',
+    '[attr.showTextInputAfterTags]': 'null',
+    '[attr.isForceClearable]': 'null',
+    '[attr.forceShowClearable]': 'null',
+    '[attr.forceHideSuffixActionIcon]': 'null',
+    '[attr.hideSuffixWhenClearable]': 'null',
+    '[attr.suffixAction]': 'null',
+    '[attr.computed]': 'null',
+    '[attr.target]': 'null',
   },
   template: `
-    <div
-      mznSelectTrigger
-      [active]="isOpen()"
-      [clearable]="clearable()"
-      [disabled]="disabled()"
-      [displayText]="displayText()"
-      [error]="error()"
-      [hasValue]="hasValue()"
-      [mode]="mode()"
-      [placeholder]="placeholder()"
-      [prefix]="prefix()"
-      [readOnly]="readOnly()"
-      [size]="size()"
-      [suffixActionIcon]="resolvedSuffixIcon()"
-      (cleared)="onClear($event)"
-      (triggerClicked)="toggleOpen()"
-    >
-      @if (mode() === 'multiple' && hasValue()) {
-        <div
-          mznSelectTriggerTags
-          [disabled]="disabled()"
-          [overflowStrategy]="overflowStrategy()"
-          [readOnly]="readOnly()"
-          [size]="size()"
-          [value]="selectedTagValues()"
-          (tagClosed)="onTagClose($event)"
-        ></div>
-      }
+    <div [class]="dropdownWrapperClass">
+      <div
+        mznSelectTrigger
+        [active]="isOpen()"
+        [listboxId]="listboxId"
+        [clearable]="clearable()"
+        [disabled]="disabled()"
+        [displayText]="displayText()"
+        [error]="error()"
+        [hasValue]="hasValue()"
+        [mode]="mode()"
+        [placeholder]="placeholder()"
+        [prefix]="prefix()"
+        [readOnly]="readOnly()"
+        [size]="size()"
+        [suffixActionIcon]="resolvedSuffixIcon()"
+        [warning]="warning()"
+        [forceHideSuffixActionIcon]="forceHideSuffixActionIcon()"
+        [isForceClearable]="isForceClearable()"
+        [forceShowClearable]="forceShowClearable()"
+        (cleared)="onClear($event)"
+        (triggerClicked)="toggleOpen()"
+      >
+        @if (mode() === 'multiple' && hasValue()) {
+          <div
+            mznSelectTriggerTags
+            [disabled]="disabled()"
+            [overflowStrategy]="overflowStrategy()"
+            [readOnly]="readOnly()"
+            [size]="size()"
+            [value]="selectedTagValues()"
+            (tagClosed)="onTagClose($event)"
+          ></div>
+        }
+      </div>
     </div>
-    <div
-      #triggerPopper
+    <ng-template
       mznInputTriggerPopper
+      #triggerPopper="mznInputTriggerPopper"
       [anchor]="triggerElRef()!"
       [flip]="flip()"
       [open]="isOpen()"
@@ -154,6 +177,7 @@ interface FlatOption {
     >
       <div mznTranslate [in]="isOpen()" [from]="translateFrom()">
         <ul
+          [id]="listboxId"
           [class]="listClass"
           [style.max-height.px]="menuMaxHeight()"
           role="listbox"
@@ -194,7 +218,7 @@ interface FlatOption {
           </div>
         </ul>
       </div>
-    </div>
+    </ng-template>
   `,
 })
 export class MznSelect implements ControlValueAccessor {
@@ -278,17 +302,77 @@ export class MznSelect implements ControlValueAccessor {
   /** 多選模式下的溢位策略。 */
   readonly overflowStrategy = input<'counter' | 'wrap'>('counter');
 
-  /** 滾動事件。 */
-  readonly onScroll = output<{ scrollTop: number; maxScrollTop: number }>();
+  // ─── 鏡像 React Select / SelectTrigger 的 props（prop-for-prop） ───
 
-  /** 滾動到底部事件。 */
-  readonly onReachBottom = output<void>();
+  /** 受控選取值。鏡像 React `value`。 */
+  readonly value = input<ReadonlyArray<string> | string | null>();
 
-  /** 離開底部事件。 */
-  readonly onLeaveBottom = output<void>();
+  /** 非受控初始值。鏡像 React `defaultValue`。 */
+  readonly defaultValue = input<ReadonlyArray<string> | string>();
 
-  /** 選取變更事件。 */
-  readonly selectionChange = output<DropdownOption>();
+  /** 是否為警告狀態。鏡像 React `warning`。 */
+  readonly warning = input(false);
+
+  /** 搜尋文字（搭配可搜尋模式）。鏡像 React `searchText`。 */
+  readonly searchText = input<string>();
+
+  /** 原生 input 屬性 bag。鏡像 React `inputProps`。 */
+  readonly inputProps = input<Record<string, unknown>>();
+
+  /** 多選時於標籤後顯示文字輸入。鏡像 React `showTextInputAfterTags`。 */
+  readonly showTextInputAfterTags = input(false);
+
+  /** 不論是否有值都強制啟用清除。鏡像 React `isForceClearable`。 */
+  readonly isForceClearable = input(false);
+
+  /** 強制顯示清除按鈕。鏡像 React `forceShowClearable`。 */
+  readonly forceShowClearable = input(false);
+
+  /** 強制隱藏後綴動作圖示。鏡像 React `forceHideSuffixActionIcon`。 */
+  readonly forceHideSuffixActionIcon = input(false);
+
+  /** clearable 時以覆蓋方式隱藏後綴。鏡像 React `hideSuffixWhenClearable`。 */
+  readonly hideSuffixWhenClearable = input(false);
+
+  /** 自訂後綴動作 callback。鏡像 React `suffixAction`。 */
+  readonly suffixAction = input<(() => void) | undefined>(undefined);
+
+  /**
+   * 虛擬捲動 computed 設定。鏡像 React `computed`。
+   * React 專屬的虛擬捲動 API;Angular 以 `menuMaxHeight` + 原生捲動對應,此 input
+   * 僅為 prop 對齊保留。
+   */
+  readonly computed = input<unknown>();
+
+  /**
+   * 捲動容器參考。鏡像 React `target`。
+   * 同 `computed`,Angular 以原生捲動容器處理,此 input 僅為 prop 對齊保留。
+   */
+  readonly target = input<unknown>();
+
+  /** 選單滾動事件。鏡像 React `onScroll`（去 `on` 前綴）。 */
+  readonly scroll = output<{ scrollTop: number; maxScrollTop: number }>();
+
+  /** 選單滾動到底部事件。鏡像 React `onReachBottom`。 */
+  readonly reachBottom = output<void>();
+
+  /** 選單離開底部事件。鏡像 React `onLeaveBottom`。 */
+  readonly leaveBottom = output<void>();
+
+  /** 選取值變更事件。鏡像 React `onChange`。 */
+  readonly change = output<DropdownOption>();
+
+  /** 聚焦（展開）事件。鏡像 React `onFocus`。 */
+  readonly focus = output<void>();
+
+  /** 失焦（收合）事件。鏡像 React `onBlur`。 */
+  readonly blur = output<void>();
+
+  /** 清除事件。鏡像 React `onClear`。 */
+  readonly clear = output<void>();
+
+  /** 多選標籤關閉事件。鏡像 React `onTagClose`。 */
+  readonly tagClose = output<SelectTriggerTagValue>();
 
   protected readonly chevronDownIcon = ChevronDownIcon;
   protected readonly checkedIcon = CheckedIcon;
@@ -437,6 +521,18 @@ export class MznSelect implements ControlValueAccessor {
     ),
   );
 
+  /**
+   * 觸發器外層 wrapper 的 class，鏡像 React `Select` 透過 `Dropdown` 渲染的
+   * `mzn-dropdown mzn-dropdown--outside` 容器層,使 DOM 結構與 React 對齊。
+   */
+  protected readonly dropdownWrapperClass = clsx(
+    dropdownClasses.root,
+    dropdownClasses.inputPosition('outside'),
+  );
+
+  /** Stable unique id for the listbox, wired to the trigger's aria-controls. */
+  protected readonly listboxId = `mzn-select-listbox-${(selectListboxIdSeq += 1)}`;
+
   protected readonly listClass = dropdownClasses.list;
   protected readonly listWrapperClass = dropdownClasses.listWrapper;
   protected readonly cardBodyClass = dropdownClasses.cardBody;
@@ -456,6 +552,17 @@ export class MznSelect implements ControlValueAccessor {
   );
 
   constructor() {
+    // 鏡像 React value(controlled) / defaultValue(uncontrolled):同步到內部值。
+    // value 優先;兩者皆未設時不覆寫(交由 ngModel / CVA writeValue)。
+    effect(() => {
+      const controlled = this.value();
+      const initial = this.defaultValue();
+      const v =
+        controlled !== undefined && controlled !== null ? controlled : initial;
+      if (v === undefined) return;
+      this.internalValue.set(typeof v === 'string' ? (v ? [v] : []) : [...v]);
+    });
+
     effect((onCleanup) => {
       const open = this.isOpen();
 
@@ -464,7 +571,7 @@ export class MznSelect implements ControlValueAccessor {
         // 所以 click-away 需同時接受「host」與「popper 根元素」兩個 container —
         // 否則點擊 popped-out 選項會被 capture-phase click-away 判定為 outside
         // 而立刻關閉（multi-select 模式會中斷連續選取）。
-        const popperEl = this.triggerPopperRef()?.popperElRef()?.nativeElement;
+        const popperEl = this.triggerPopperRef()?.popperElRef ?? undefined;
         const cleanup = this.clickAway.listen(
           [this.hostElRef.nativeElement, popperEl],
           () => this.isOpen.set(false),
@@ -588,7 +695,7 @@ export class MznSelect implements ControlValueAccessor {
       this.onChange(next);
     }
 
-    this.selectionChange.emit(option);
+    this.change.emit(option);
   }
 
   private onTreeLeafSelect(option: DropdownOption): void {
@@ -611,30 +718,34 @@ export class MznSelect implements ControlValueAccessor {
 
     this.internalValue.set(next);
     this.onChange(next);
-    this.selectionChange.emit(this.findOptionById(option.id, opts) ?? option);
+    this.change.emit(this.findOptionById(option.id, opts) ?? option);
   }
 
   protected toggleOpen(): void {
     if (this.disabled() || this.readOnly()) return;
 
-    this.isOpen.update((v) => !v);
+    const next = !this.isOpen();
+    this.isOpen.set(next);
     this.onTouched();
+    (next ? this.focus : this.blur).emit();
   }
 
   protected onClear(_event: MouseEvent): void {
     this.internalValue.set([]);
     this.onChange(this.mode() === 'single' ? '' : []);
-    this.selectionChange.emit({ id: '', name: '' } as DropdownOption);
+    this.change.emit({ id: '', name: '' } as DropdownOption);
+    this.clear.emit();
   }
 
   protected onTagClose(item: SelectTriggerTagValue): void {
     const next = this.internalValue().filter((id) => id !== item.id);
     this.internalValue.set(next);
     this.onChange(next);
-    this.selectionChange.emit({
+    this.change.emit({
       id: item.id,
       name: item.name,
     } as DropdownOption);
+    this.tagClose.emit(item);
   }
 
   protected onListScroll(event: Event): void {
@@ -642,17 +753,17 @@ export class MznSelect implements ControlValueAccessor {
     const { scrollTop, scrollHeight, clientHeight } = target;
     const maxScrollTop = scrollHeight - clientHeight;
 
-    this.onScroll.emit({ scrollTop, maxScrollTop });
+    this.scroll.emit({ scrollTop, maxScrollTop });
 
     // Check if scrolled to bottom (with 1px threshold for sub-pixel rounding errors)
     const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
 
     if (isAtBottom && !this.wasAtBottom) {
-      this.onReachBottom.emit();
+      this.reachBottom.emit();
     }
 
     if (!isAtBottom && this.wasAtBottom) {
-      this.onLeaveBottom.emit();
+      this.leaveBottom.emit();
     }
 
     this.wasAtBottom = isAtBottom;

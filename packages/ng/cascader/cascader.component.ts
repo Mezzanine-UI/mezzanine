@@ -98,7 +98,11 @@ interface PanelDescriptor {
       (cleared)="clear($event)"
       (triggerClicked)="toggleOpen()"
     ></div>
-    <div mznInputTriggerPopper [anchor]="triggerElRef()!" [open]="isOpen()">
+    <ng-template
+      mznInputTriggerPopper
+      [anchor]="triggerElRef()!"
+      [open]="isOpen()"
+    >
       <div mznTranslate [in]="isOpen()" from="top">
         <div [class]="panelsClass" [style.max-height.px]="menuMaxHeight()">
           @for (panel of visiblePanels(); track $index) {
@@ -112,7 +116,7 @@ interface PanelDescriptor {
           }
         </div>
       </div>
-    </div>
+    </ng-template>
   `,
 })
 export class MznCascader implements AfterViewInit {
