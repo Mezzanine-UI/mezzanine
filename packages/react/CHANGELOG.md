@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.0...@mezzanine-ui/react@1.4.1) (2026-06-22)
+
+### Bug Fixes
+
+- **react/navigation:** classify leaf-with-badge by sub-option count ([e2579e7](https://github.com/Mezzanine-UI/mezzanine/commit/e2579e716f80dd32acf264b6c9019cb355f089ae))
+- **react/select:** apply error state on trigger (was shadowed by type check) ([8fddbce](https://github.com/Mezzanine-UI/mezzanine/commit/8fddbce32779c420e25fb7e8be2fd1a1d2490cea))
+
 # [1.4.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.3.1...@mezzanine-ui/react@1.4.0) (2026-06-18)
 
 ### Features

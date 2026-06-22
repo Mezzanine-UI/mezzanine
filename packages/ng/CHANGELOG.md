@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.8...@mezzanine-ui/ng@1.0.0-rc.9) (2026-06-22)
+
+### Bug Fixes
+
+- **ng/select:** align tag fake-measurement DOM, aria-disabled, placeholder with React ([751535b](https://github.com/Mezzanine-UI/mezzanine/commit/751535b56e4baca5e0f940f04bc9009c416adbcf))
+- **ng/select:** align trigger ARIA, suffix-icon cursor and input value attr with React ([b9b7563](https://github.com/Mezzanine-UI/mezzanine/commit/b9b7563cebe26800c8d61f05332a6066d339a4e7))
+- **ng/select:** align trigger input value/placeholder with React getPlaceholder ([f18c504](https://github.com/Mezzanine-UI/mezzanine/commit/f18c504a95c00305251aedd7057a5930b2fc379d))
+- **ng/select:** forward disabled state to the trigger input ([415cae3](https://github.com/Mezzanine-UI/mezzanine/commit/415cae338668d7d2a959e23e0a1bd59e3aaa58c3))
+- **ng/select:** mirror React clearable/slim-gap (multiple-only inline clear) ([4aa0082](https://github.com/Mezzanine-UI/mezzanine/commit/4aa008220fb5c5e8c090e63939b2d4ed15906aa0))
+- **ng/select:** mirror React TagGroup per-child span wrapper in multiple tags ([e0e5bf1](https://github.com/Mezzanine-UI/mezzanine/commit/e0e5bf174f0848e7ff4a074abfe73b3955bc5fc6))
+- **ng/select:** wire trigger aria-controls to the listbox id ([fc44734](https://github.com/Mezzanine-UI/mezzanine/commit/fc44734e552dfb148fe22708b6a2a9d30b87ce2a))
+- **ng/select:** wrap trigger in mzn-dropdown--outside to mirror React DOM ([9d6346e](https://github.com/Mezzanine-UI/mezzanine/commit/9d6346e275c76847cbf943ab2964e88db6ff01fe))
+
+- feat(ng/dropdown)!: rewrite popover with cdk overlay and align api to react ([d24fbe4](https://github.com/Mezzanine-UI/mezzanine/commit/d24fbe4e685f84ccaf8c93e640c3fe78a7006a48))
+- feat(ng/select)!: align outputs with React (rename on-prefixed, add blur/clear/focus/tagClose) ([ee3573b](https://github.com/Mezzanine-UI/mezzanine/commit/ee3573b5c842c326a3db2685ac057da6228b2be6))
+
+### Features
+
+- **ng/dropdown:** add CDK Overlay popper directive and item/action props ([c690e71](https://github.com/Mezzanine-UI/mezzanine/commit/c690e71edb2c49724f4ddc930a94eb7290360944))
+- **ng/select:** add React-parity inputs (value/defaultValue/warning/forceXxx/…) ([e372806](https://github.com/Mezzanine-UI/mezzanine/commit/e3728061153db0d16876f6d46f0e693123df3feb))
+
+### BREAKING CHANGES
+
+- MznDropdown outputs renamed (closed->close, selected->select,
+  itemHovered->itemHover, actionCancelled->actionCancel, actionCleared->
+  actionClear, actionConfirmed->actionConfirm, actionCustomClicked->actionCustom);
+  inputs actionConfig/name/showCheckIcon/showHeader/disableClickAway removed.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- MznSelect outputs renamed — (onScroll)->(scroll),
+  (onReachBottom)->(reachBottom), (onLeaveBottom)->(leaveBottom),
+  (selectionChange)->(change).
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+(cherry picked from commit 1b7928fd8989db0ac1a62dc680d32ca05043c2ea)
+
 # [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.7...@mezzanine-ui/ng@1.0.0-rc.8) (2026-06-18)
 
 ### Features
