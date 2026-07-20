@@ -34,6 +34,7 @@ import { MznTag } from '@mezzanine-ui/ng/tag';
 import { MznTextField } from '@mezzanine-ui/ng/text-field';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 import { AutocompleteCreationTracker } from './creation-tracker';
+import { isSameOptionName, normalizeOptionName } from './is-same-option-name';
 
 /**
  * 標記 AutoComplete 的 prefix 內容投影插槽。
@@ -138,6 +139,7 @@ export function getFullParsedList(
     '[attr.active]': 'null',
     '[attr.addable]': 'null',
     '[attr.asyncData]': 'null',
+    '[attr.caseSensitive]': 'null',
     '[attr.clearable]': 'null',
     '[attr.clearSearchText]': 'null',
     '[attr.createActionText]': 'null',
@@ -469,6 +471,15 @@ export class MznAutocomplete
   readonly asyncData = input(false);
 
   /**
+   * 選項比對是否區分大小寫。
+   * `false`(預設)時輸入 `colorado` 可比對到選項 `Colorado`;此規則
+   * 同時套用於選項過濾與 `addable` 模式的重複檢查,確保清單中已顯示的
+   * 選項不會被重複提供建立動作。
+   * @default false
+   */
+  readonly caseSensitive = input(false);
+
+  /**
    * 是否可清除已選值。
    * @default false
    */
@@ -761,12 +772,13 @@ export class MznAutocomplete
 
   protected readonly filteredOptions = computed(
     (): ReadonlyArray<DropdownOption> => {
-      const search = this.searchText().toLowerCase();
+      const caseSensitive = this.caseSensitive();
+      const search = normalizeOptionName(this.searchText(), caseSensitive);
 
       if (this.disabledOptionsFilter() || !search) return this.options();
 
       return this.options().filter((o) =>
-        o.name.toLowerCase().includes(search),
+        normalizeOptionName(o.name, caseSensitive).includes(search),
       );
     },
   );
@@ -880,10 +892,10 @@ export class MznAutocomplete
     if (!text) return false;
 
     // 檢查是否已存在同名選項
-    const lowerText = text.toLowerCase();
+    const caseSensitive = this.caseSensitive();
 
-    return !this.filteredOptions().some(
-      (o) => o.name.toLowerCase() === lowerText,
+    return !this.filteredOptions().some((o) =>
+      isSameOptionName(o.name, text, caseSensitive),
     );
   });
 
@@ -1443,6 +1455,7 @@ export class MznAutocomplete
   }
 
   private processBulkCreate(text: string): ReadonlyArray<string> {
+    const caseSensitive = this.caseSensitive();
     const parts = getFullParsedList(
       text,
       this.createSeparators(),
@@ -1452,20 +1465,25 @@ export class MznAutocomplete
       this.internalValue().map((id) => {
         const opt = this.options().find((o) => o.id === id);
 
-        return opt?.name?.toLowerCase() ?? id.toLowerCase();
+        return normalizeOptionName(opt?.name ?? id, caseSensitive);
       }),
     );
 
-    return parts.filter((p) => !currentNames.has(p.toLowerCase()));
+    return parts.filter(
+      (p) => !currentNames.has(normalizeOptionName(p, caseSensitive)),
+    );
   }
 
   private getPendingCreateList(text: string): ReadonlyArray<string> {
+    const caseSensitive = this.caseSensitive();
     const parts = this.processBulkCreate(text);
     const optionNames = new Set(
-      this.options().map((o) => o.name.toLowerCase()),
+      this.options().map((o) => normalizeOptionName(o.name, caseSensitive)),
     );
 
-    return parts.filter((p) => !optionNames.has(p.toLowerCase()));
+    return parts.filter(
+      (p) => !optionNames.has(normalizeOptionName(p, caseSensitive)),
+    );
   }
 
   private handleBulkCreate(texts: ReadonlyArray<string>): void {
@@ -1473,6 +1491,7 @@ export class MznAutocomplete
 
     if (!insertFn) return;
 
+    const caseSensitive = this.caseSensitive();
     let currentOptions = [...this.filterUnselected(this.options())];
 
     this.clearUnselected();
@@ -1480,8 +1499,8 @@ export class MznAutocomplete
     const newIds: string[] = [];
 
     for (const text of texts) {
-      const existing = currentOptions.find(
-        (o) => o.name.toLowerCase() === text.toLowerCase(),
+      const existing = currentOptions.find((o) =>
+        isSameOptionName(o.name, text, caseSensitive),
       );
 
       if (existing) {
