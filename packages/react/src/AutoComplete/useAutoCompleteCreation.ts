@@ -7,9 +7,11 @@ import {
 } from 'react';
 
 import { SelectValue } from '../Select/typings';
+import { isSameOptionName } from './isSameOptionName';
 
 type UseAutoCompleteCreationParams = {
   addable: boolean;
+  caseSensitive?: boolean;
   createSeparators: string[];
   filterUnselected: (options: SelectValue[]) => SelectValue[];
   clearUnselected: () => void;
@@ -83,6 +85,7 @@ function isOptionSelected(
 
 export function useAutoCompleteCreation({
   addable,
+  caseSensitive = false,
   createSeparators,
   filterUnselected,
   clearUnselected,
@@ -168,8 +171,8 @@ export function useAutoCompleteCreation({
       const newlySelectedIds: Set<string> = new Set();
 
       texts.forEach((text) => {
-        const existingOption = currentOptions.find(
-          (option) => option.name === text,
+        const existingOption = currentOptions.find((option) =>
+          isSameOptionName(option.name, text, caseSensitive),
         );
 
         if (existingOption) {
@@ -244,6 +247,7 @@ export function useAutoCompleteCreation({
     },
     [
       addable,
+      caseSensitive,
       clearNewlyCreated,
       clearUnselected,
       filterUnselected,

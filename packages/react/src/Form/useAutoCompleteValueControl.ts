@@ -12,6 +12,11 @@ import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
 
 export interface UseAutoCompleteBaseValueControl {
+  /**
+   * Whether option filtering should respect letter casing.
+   * @default false
+   */
+  caseSensitive?: boolean;
   disabledOptionsFilter: boolean;
   getOptionsFilterQuery?: (searchText: string) => string | undefined;
   onChange?(newOptions: SelectValue[] | SelectValue | null): any;
@@ -75,6 +80,7 @@ function useAutoCompleteBaseValueControl(
 ): AutoCompleteSingleValueControl;
 function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const {
+    caseSensitive = false,
     defaultValue,
     disabledOptionsFilter,
     getOptionsFilterQuery,
@@ -100,9 +106,10 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
 
   const filterQuery = getOptionsFilterQuery?.(searchText) ?? searchText;
 
-  /** escape all special characters */
+  /** escape all special characters; casing is ignored unless `caseSensitive` is set */
   const searchTextReg = new RegExp(
     filterQuery.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d'),
+    caseSensitive ? '' : 'i',
   );
 
   const onFocus = useCallback((focus: boolean) => {
