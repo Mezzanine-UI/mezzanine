@@ -584,6 +584,88 @@ describe('<AutoComplete />', () => {
     });
   });
 
+  describe('prop: caseSensitive', () => {
+    const coloradoOptions: SelectValue[] = [
+      {
+        id: 'colorado',
+        name: 'Colorado',
+      },
+      {
+        id: 'other',
+        name: 'Other',
+      },
+    ];
+
+    it('should not show create action when typing lowercase matches an option by default (case-insensitive)', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn((text: string) => [
+        ...coloradoOptions,
+        { id: text, name: text },
+      ]);
+
+      const { container } = render(
+        <AutoComplete addable onInsert={onInsert} options={coloradoOptions} />,
+      );
+
+      let input: HTMLInputElement | null = null;
+      await waitFor(() => {
+        input = container.querySelector('input');
+        expect(input).not.toBeNull();
+      });
+
+      await act(async () => {
+        await user.click(input!);
+        await user.type(input!, 'colorado');
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      expect(screen.getByText('Colorado')).toBeInTheDocument();
+      expect(screen.queryByText(/建立/i)).not.toBeInTheDocument();
+    });
+
+    it('should show create action when caseSensitive is set and typed text differs only by casing', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn((text: string) => [
+        ...coloradoOptions,
+        { id: text, name: text },
+      ]);
+
+      const { container } = render(
+        <AutoComplete
+          addable
+          caseSensitive
+          onInsert={onInsert}
+          options={coloradoOptions}
+        />,
+      );
+
+      let input: HTMLInputElement | null = null;
+      await waitFor(() => {
+        input = container.querySelector('input');
+        expect(input).not.toBeNull();
+      });
+
+      await act(async () => {
+        await user.click(input!);
+        await user.type(input!, 'colorado');
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      const createButton = screen.queryByText(/建立.*colorado/i);
+      expect(createButton).toBeInTheDocument();
+    });
+  });
+
   describe('prop: stepByStepBulkCreate', () => {
     it('should keep pasted text in input and show create button for first item only', async () => {
       jest.useFakeTimers();
@@ -720,9 +802,9 @@ describe('<AutoComplete />', () => {
           currentListbox!.querySelectorAll('[role="option"]'),
         ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart'));
         expect(currentOption).toBeTruthy();
-        expect((currentOption as HTMLElement).getAttribute('aria-selected')).toBe(
-          'false',
-        );
+        expect(
+          (currentOption as HTMLElement).getAttribute('aria-selected'),
+        ).toBe('false');
       });
 
       await act(async () => {
@@ -741,7 +823,9 @@ describe('<AutoComplete />', () => {
       await waitFor(() => {
         expect(onRemoveCreated).toHaveBeenCalled();
         const lastCallArg =
-          onRemoveCreated.mock.calls[onRemoveCreated.mock.calls.length - 1]?.[0];
+          onRemoveCreated.mock.calls[
+            onRemoveCreated.mock.calls.length - 1
+          ]?.[0];
         expect(lastCallArg).toEqual(expect.any(Array));
         expect(
           (lastCallArg as SelectValue[]).some(
@@ -960,7 +1044,9 @@ describe('<AutoComplete />', () => {
       ) as HTMLElement | null;
       expect(selectedOption).toBeInTheDocument();
       expect(
-        selectedOption?.querySelector('.mzn-dropdown-item-card-append-content .mzn-icon'),
+        selectedOption?.querySelector(
+          '.mzn-dropdown-item-card-append-content .mzn-icon',
+        ),
       ).toBeInTheDocument();
 
       // Keep the input (trigger) and selection checkboxes separate:
@@ -994,9 +1080,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onInsert = jest.fn((text: string) => [
-        { id: text, name: text },
-      ]);
+      const onInsert = jest.fn((text: string) => [{ id: text, name: text }]);
 
       render(
         <AutoComplete
@@ -1027,10 +1111,7 @@ describe('<AutoComplete />', () => {
       expect(createButton).toBeInTheDocument();
 
       fireEvent.click(createButton);
-      expect(onInsert).toHaveBeenCalledWith(
-        'newitem',
-        expect.any(Array),
-      );
+      expect(onInsert).toHaveBeenCalledWith('newitem', expect.any(Array));
     });
 
     it('should keep New tag for created option in inside mode', async () => {
@@ -1049,7 +1130,10 @@ describe('<AutoComplete />', () => {
             mode="multiple"
             onChange={setValue}
             onInsert={(text, currentOptions) => {
-              const updated = [...currentOptions, { id: `new-${text}`, name: text }];
+              const updated = [
+                ...currentOptions,
+                { id: `new-${text}`, name: text },
+              ];
               setOptions(updated);
               return updated;
             }}
@@ -1128,9 +1212,7 @@ describe('<AutoComplete />', () => {
         expect(input.value).toBe('Grid chart, Griddle, Grid');
       });
 
-      const firstCreateButton = screen.queryByText(
-        /建立.*Grid chart/i,
-      );
+      const firstCreateButton = screen.queryByText(/建立.*Grid chart/i);
       expect(firstCreateButton).toBeInTheDocument();
 
       fireEvent.click(firstCreateButton!);
@@ -1244,10 +1326,12 @@ describe('<AutoComplete />', () => {
         const currentListbox = getDropdownListbox() as HTMLElement | null;
         if (!currentListbox) return null;
         return Array.from(
-          currentListbox.querySelectorAll('[role="option"][aria-selected="true"]'),
-        ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart')) as
-          | HTMLElement
-          | null;
+          currentListbox.querySelectorAll(
+            '[role="option"][aria-selected="true"]',
+          ),
+        ).find((el) =>
+          (el as HTMLElement).textContent?.includes('Grid chart'),
+        ) as HTMLElement | null;
       };
 
       const createdSelectedOption = await waitFor(() => {
@@ -1267,9 +1351,9 @@ describe('<AutoComplete />', () => {
           currentListbox!.querySelectorAll('[role="option"]'),
         ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart'));
         expect(currentOption).toBeTruthy();
-        expect((currentOption as HTMLElement).getAttribute('aria-selected')).toBe(
-          'false',
-        );
+        expect(
+          (currentOption as HTMLElement).getAttribute('aria-selected'),
+        ).toBe('false');
       });
 
       await act(async () => {
@@ -1285,7 +1369,9 @@ describe('<AutoComplete />', () => {
       await waitFor(() => {
         expect(onRemoveCreated).toHaveBeenCalled();
         const lastCallArg =
-          onRemoveCreated.mock.calls[onRemoveCreated.mock.calls.length - 1]?.[0];
+          onRemoveCreated.mock.calls[
+            onRemoveCreated.mock.calls.length - 1
+          ]?.[0];
         expect(lastCallArg).toEqual(expect.any(Array));
         expect(
           (lastCallArg as SelectValue[]).some(
