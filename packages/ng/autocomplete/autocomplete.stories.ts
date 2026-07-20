@@ -55,6 +55,16 @@ export default {
         category: 'Inputs',
       },
     },
+    caseSensitive: {
+      control: false,
+      description:
+        '選項比對是否區分大小寫。`false`（預設）時輸入 `colorado` 可比對到選項 `Colorado`；同時套用於選項過濾與 `addable` 模式的重複檢查。',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+        category: 'Inputs',
+      },
+    },
     clearable: {
       control: false,
       description: '是否可清除已選值。',
@@ -1796,5 +1806,60 @@ export const SearchTextControlRef: Story = {
   ],
   render: () => ({
     template: `<story-autocomplete-search-text-control />`,
+  }),
+};
+
+// ──────────────────────────────────────────────
+//  16. CaseSensitivity
+// ──────────────────────────────────────────────
+
+const caseSensitiveOptions: DropdownOption[] = [
+  { id: 'colorado', name: 'Colorado' },
+  { id: 'connecticut', name: 'Connecticut' },
+  { id: 'virginia', name: 'Virginia' },
+  { id: 'west-virginia', name: 'West Virginia' },
+];
+
+@Component({
+  selector: 'story-autocomplete-case-sensitivity',
+  standalone: true,
+  imports: [FormsModule, MznAutocomplete, MznTag],
+  template: `
+    <div
+      style="display: inline-grid; grid-template-columns: repeat(2, 320px); gap: 16px; align-items: start;"
+    >
+      <div style="display: grid; gap: 8px;">
+        <span mznTag type="static" [label]="'預設：不分大小寫'"></span>
+        <div
+          mznAutocomplete
+          [options]="options"
+          placeholder="輸入 vir 也找得到 Virginia"
+          [(ngModel)]="insensitiveSelection"
+        ></div>
+      </div>
+      <div style="display: grid; gap: 8px;">
+        <span mznTag type="static" [label]="'caseSensitive'"></span>
+        <div
+          mznAutocomplete
+          [caseSensitive]="true"
+          [options]="options"
+          placeholder="需輸入 Vir 才找得到"
+          [(ngModel)]="sensitiveSelection"
+        ></div>
+      </div>
+    </div>
+  `,
+})
+class CaseSensitivityStoryComponent {
+  readonly options = caseSensitiveOptions;
+  insensitiveSelection = '';
+  sensitiveSelection = '';
+}
+
+export const CaseSensitivity: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [CaseSensitivityStoryComponent] })],
+  render: () => ({
+    template: `<story-autocomplete-case-sensitivity />`,
   }),
 };
