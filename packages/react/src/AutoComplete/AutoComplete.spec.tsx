@@ -389,6 +389,107 @@ describe('<AutoComplete />', () => {
     });
   });
 
+  describe('regression: filtered option mousedown/blur race', () => {
+    // Regression test for a bug where, in single mode with the default
+    // inputPosition="outside" and clearSearchText=true: typing a filter
+    // narrows the option list, then pressing mousedown on a filtered row
+    // (without preventDefault) blurred the search input. The blur handler
+    // synchronously reset searchText, which restored the full unfiltered
+    // option list *underneath the cursor* before mouseup/click fired. Because
+    // the full list has a different item at that same row position, the
+    // click landed on the wrong option (or a moved/unmounted node).
+    //
+    // The fix adds `onMouseDown` on the listbox `<ul>` that calls
+    // `event.preventDefault()` (see DropdownItem.tsx `handleListMouseDown`),
+    // which keeps focus on the input, so no blur -> no reset -> the filtered
+    // list stays stable until the click lands.
+    it('should select the option actually clicked after filtering, even though mousedown could blur the input', async () => {
+      jest.useFakeTimers();
+
+      const onChange = jest.fn();
+      const inputRef = createRef<HTMLInputElement>();
+
+      // Filtering on "ap" matches 'apple' (unfiltered index 0) and 'apricot'
+      // (unfiltered index 2). In the filtered list, 'apricot' sits at index 1,
+      // which is a *different* option ('banana') in the unfiltered list. This
+      // index mismatch is essential: if the filtered click target occupied
+      // the same index in both lists, the test would pass even without the
+      // fix.
+      const options: SelectValue[] = [
+        { id: 'apple', name: 'apple' },
+        { id: 'banana', name: 'banana' },
+        { id: 'apricot', name: 'apricot' },
+        { id: 'cherry', name: 'cherry' },
+      ];
+
+      render(
+        <AutoComplete
+          inputRef={inputRef}
+          mode="single"
+          onChange={onChange}
+          options={options}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(inputRef.current).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.focus(inputRef.current!);
+        fireEvent.change(inputRef.current!, { target: { value: 'ap' } });
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      const filteredOptions = Array.from(getDropdownOptions());
+      expect(filteredOptions.map((el) => el.textContent)).toEqual([
+        'apple',
+        'apricot',
+      ]);
+
+      const targetIndex = 1; // 'apricot' - unfiltered index 2, NOT 1
+      const mouseDownTarget = filteredOptions[targetIndex];
+      expect(mouseDownTarget.textContent).toBe('apricot');
+
+      // Fire a real, cancelable mousedown on the row under the (simulated)
+      // cursor. `fireEvent` returns false when the event's default was
+      // prevented, mirroring the browser's own dispatchEvent semantics. This
+      // lets the test faithfully key off whichever behavior the component
+      // actually implements, rather than hard-coding jsdom's own (unreliable)
+      // native focus-follows-mousedown emulation.
+      let defaultNotPrevented = false;
+      act(() => {
+        defaultNotPrevented = fireEvent.mouseDown(mouseDownTarget);
+      });
+
+      if (defaultNotPrevented) {
+        // Mirrors the browser blurring the previously-focused input because
+        // the mousedown's default action was not prevented.
+        await act(async () => {
+          fireEvent.blur(inputRef.current!);
+        });
+      }
+
+      // A real click lands on whatever is now at that same on-screen row —
+      // which is a different option if the list was reset in between.
+      const optionsAfterMouseDown = Array.from(getDropdownOptions());
+      const clickTarget = optionsAfterMouseDown[targetIndex];
+
+      await act(async () => {
+        fireEvent.mouseUp(clickTarget);
+        fireEvent.click(clickTarget);
+      });
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'apricot', name: 'apricot' }),
+      );
+    });
+  });
+
   describe('prop: inputProps', () => {
     it('should trigger inputProps.onBlur when input blur', async () => {
       jest.useFakeTimers();
@@ -720,9 +821,9 @@ describe('<AutoComplete />', () => {
           currentListbox!.querySelectorAll('[role="option"]'),
         ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart'));
         expect(currentOption).toBeTruthy();
-        expect((currentOption as HTMLElement).getAttribute('aria-selected')).toBe(
-          'false',
-        );
+        expect(
+          (currentOption as HTMLElement).getAttribute('aria-selected'),
+        ).toBe('false');
       });
 
       await act(async () => {
@@ -741,7 +842,9 @@ describe('<AutoComplete />', () => {
       await waitFor(() => {
         expect(onRemoveCreated).toHaveBeenCalled();
         const lastCallArg =
-          onRemoveCreated.mock.calls[onRemoveCreated.mock.calls.length - 1]?.[0];
+          onRemoveCreated.mock.calls[
+            onRemoveCreated.mock.calls.length - 1
+          ]?.[0];
         expect(lastCallArg).toEqual(expect.any(Array));
         expect(
           (lastCallArg as SelectValue[]).some(
@@ -960,7 +1063,9 @@ describe('<AutoComplete />', () => {
       ) as HTMLElement | null;
       expect(selectedOption).toBeInTheDocument();
       expect(
-        selectedOption?.querySelector('.mzn-dropdown-item-card-append-content .mzn-icon'),
+        selectedOption?.querySelector(
+          '.mzn-dropdown-item-card-append-content .mzn-icon',
+        ),
       ).toBeInTheDocument();
 
       // Keep the input (trigger) and selection checkboxes separate:
@@ -994,9 +1099,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onInsert = jest.fn((text: string) => [
-        { id: text, name: text },
-      ]);
+      const onInsert = jest.fn((text: string) => [{ id: text, name: text }]);
 
       render(
         <AutoComplete
@@ -1027,10 +1130,7 @@ describe('<AutoComplete />', () => {
       expect(createButton).toBeInTheDocument();
 
       fireEvent.click(createButton);
-      expect(onInsert).toHaveBeenCalledWith(
-        'newitem',
-        expect.any(Array),
-      );
+      expect(onInsert).toHaveBeenCalledWith('newitem', expect.any(Array));
     });
 
     it('should keep New tag for created option in inside mode', async () => {
@@ -1049,7 +1149,10 @@ describe('<AutoComplete />', () => {
             mode="multiple"
             onChange={setValue}
             onInsert={(text, currentOptions) => {
-              const updated = [...currentOptions, { id: `new-${text}`, name: text }];
+              const updated = [
+                ...currentOptions,
+                { id: `new-${text}`, name: text },
+              ];
               setOptions(updated);
               return updated;
             }}
@@ -1128,9 +1231,7 @@ describe('<AutoComplete />', () => {
         expect(input.value).toBe('Grid chart, Griddle, Grid');
       });
 
-      const firstCreateButton = screen.queryByText(
-        /建立.*Grid chart/i,
-      );
+      const firstCreateButton = screen.queryByText(/建立.*Grid chart/i);
       expect(firstCreateButton).toBeInTheDocument();
 
       fireEvent.click(firstCreateButton!);
@@ -1244,10 +1345,12 @@ describe('<AutoComplete />', () => {
         const currentListbox = getDropdownListbox() as HTMLElement | null;
         if (!currentListbox) return null;
         return Array.from(
-          currentListbox.querySelectorAll('[role="option"][aria-selected="true"]'),
-        ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart')) as
-          | HTMLElement
-          | null;
+          currentListbox.querySelectorAll(
+            '[role="option"][aria-selected="true"]',
+          ),
+        ).find((el) =>
+          (el as HTMLElement).textContent?.includes('Grid chart'),
+        ) as HTMLElement | null;
       };
 
       const createdSelectedOption = await waitFor(() => {
@@ -1267,9 +1370,9 @@ describe('<AutoComplete />', () => {
           currentListbox!.querySelectorAll('[role="option"]'),
         ).find((el) => (el as HTMLElement).textContent?.includes('Grid chart'));
         expect(currentOption).toBeTruthy();
-        expect((currentOption as HTMLElement).getAttribute('aria-selected')).toBe(
-          'false',
-        );
+        expect(
+          (currentOption as HTMLElement).getAttribute('aria-selected'),
+        ).toBe('false');
       });
 
       await act(async () => {
@@ -1285,7 +1388,9 @@ describe('<AutoComplete />', () => {
       await waitFor(() => {
         expect(onRemoveCreated).toHaveBeenCalled();
         const lastCallArg =
-          onRemoveCreated.mock.calls[onRemoveCreated.mock.calls.length - 1]?.[0];
+          onRemoveCreated.mock.calls[
+            onRemoveCreated.mock.calls.length - 1
+          ]?.[0];
         expect(lastCallArg).toEqual(expect.any(Array));
         expect(
           (lastCallArg as SelectValue[]).some(
