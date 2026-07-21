@@ -7,9 +7,11 @@ import {
 } from 'react';
 
 import { SelectValue } from '../Select/typings';
+import { isSameOptionName, normalizeOptionName } from './isSameOptionName';
 
 type UseAutoCompleteCreationParams = {
   addable: boolean;
+  caseSensitive?: boolean;
   createSeparators: string[];
   filterUnselected: (options: SelectValue[]) => SelectValue[];
   clearUnselected: () => void;
@@ -83,6 +85,7 @@ function isOptionSelected(
 
 export function useAutoCompleteCreation({
   addable,
+  caseSensitive = false,
   createSeparators,
   filterUnselected,
   clearUnselected,
@@ -136,24 +139,40 @@ export function useAutoCompleteCreation({
       const selectedNames = new Set<string>();
       if (isMultiple && isMultipleValue(valueRef.current)) {
         valueRef.current.forEach((v) =>
-          selectedNames.add(v.name.toLowerCase()),
+          selectedNames.add(normalizeOptionName(v.name, caseSensitive)),
         );
       } else if (isSingle && isSingleValue(valueRef.current)) {
-        selectedNames.add(valueRef.current.name.toLowerCase());
+        selectedNames.add(
+          normalizeOptionName(valueRef.current.name, caseSensitive),
+        );
       }
 
-      return processed.filter((part) => !selectedNames.has(part.toLowerCase()));
+      return processed.filter(
+        (part) => !selectedNames.has(normalizeOptionName(part, caseSensitive)),
+      );
     },
-    [addable, createSeparators, isMultiple, isSingle, onInsert, trimOnCreate],
+    [
+      addable,
+      caseSensitive,
+      createSeparators,
+      isMultiple,
+      isSingle,
+      onInsert,
+      trimOnCreate,
+    ],
   );
 
   const getPendingCreateList = useCallback(
     (text: string): string[] => {
       const processed = processBulkCreate(text);
-      const optionNames = new Set(options.map((o) => o.name.toLowerCase()));
-      return processed.filter((part) => !optionNames.has(part.toLowerCase()));
+      const optionNames = new Set(
+        options.map((o) => normalizeOptionName(o.name, caseSensitive)),
+      );
+      return processed.filter(
+        (part) => !optionNames.has(normalizeOptionName(part, caseSensitive)),
+      );
     },
-    [options, processBulkCreate],
+    [caseSensitive, options, processBulkCreate],
   );
 
   const handleBulkCreate = useCallback(
@@ -168,8 +187,8 @@ export function useAutoCompleteCreation({
       const newlySelectedIds: Set<string> = new Set();
 
       texts.forEach((text) => {
-        const existingOption = currentOptions.find(
-          (option) => option.name === text,
+        const existingOption = currentOptions.find((option) =>
+          isSameOptionName(option.name, text, caseSensitive),
         );
 
         if (existingOption) {
@@ -244,6 +263,7 @@ export function useAutoCompleteCreation({
     },
     [
       addable,
+      caseSensitive,
       clearNewlyCreated,
       clearUnselected,
       filterUnselected,

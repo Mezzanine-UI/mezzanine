@@ -685,6 +685,122 @@ describe('<AutoComplete />', () => {
     });
   });
 
+  describe('prop: caseSensitive', () => {
+    const coloradoOptions: SelectValue[] = [
+      {
+        id: 'colorado',
+        name: 'Colorado',
+      },
+      {
+        id: 'other',
+        name: 'Other',
+      },
+    ];
+
+    it('should not show create action when typing lowercase matches an option by default (case-insensitive)', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn((text: string) => [
+        ...coloradoOptions,
+        { id: text, name: text },
+      ]);
+
+      const { container } = render(
+        <AutoComplete addable onInsert={onInsert} options={coloradoOptions} />,
+      );
+
+      let input: HTMLInputElement | null = null;
+      await waitFor(() => {
+        input = container.querySelector('input');
+        expect(input).not.toBeNull();
+      });
+
+      await act(async () => {
+        await user.click(input!);
+        await user.type(input!, 'colorado');
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      expect(screen.getByText('Colorado')).toBeInTheDocument();
+      expect(screen.queryByText(/建立/i)).not.toBeInTheDocument();
+    });
+
+    it('should show create action when caseSensitive is set and typed text differs only by casing', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn((text: string) => [
+        ...coloradoOptions,
+        { id: text, name: text },
+      ]);
+
+      const { container } = render(
+        <AutoComplete
+          addable
+          caseSensitive
+          onInsert={onInsert}
+          options={coloradoOptions}
+        />,
+      );
+
+      let input: HTMLInputElement | null = null;
+      await waitFor(() => {
+        input = container.querySelector('input');
+        expect(input).not.toBeNull();
+      });
+
+      await act(async () => {
+        await user.click(input!);
+        await user.type(input!, 'colorado');
+      });
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      const createButton = screen.queryByText(/建立.*colorado/i);
+      expect(createButton).toBeInTheDocument();
+    });
+
+    it('should keep a differently-cased duplicate pending in bulk create when caseSensitive is set', async () => {
+      // Regression: `getPendingCreateList`/`processBulkCreate` used to hardcode
+      // `.toLowerCase()`, so pasting an uppercase "Foo" (with caseSensitive on)
+      // was silently deduped against the existing lowercase "foo" option and
+      // dropped. `defaultOptions` contains lowercase "foo" but no "zebra"; with
+      // caseSensitive, "Foo" is a distinct item and must stay pending, whereas
+      // before the fix only "Zebra" survived.
+      const { container } = render(
+        <AutoComplete
+          addable
+          caseSensitive
+          createSeparators={[',']}
+          mode="multiple"
+          onInsert={(text, opts) => [
+            ...opts,
+            { id: `new-${text}`, name: text },
+          ]}
+          options={defaultOptions}
+          stepByStepBulkCreate
+          trimOnCreate
+        />,
+      );
+
+      const input = container.querySelector('input');
+      fireEvent.focus(input!);
+      fireEvent.paste(input!, {
+        clipboardData: { getData: () => 'Foo, Zebra' },
+      });
+
+      await waitFor(() => {
+        expect(input!.value).toBe('Foo, Zebra');
+      });
+    });
+  });
+
   describe('prop: stepByStepBulkCreate', () => {
     it('should keep pasted text in input and show create button for first item only', async () => {
       jest.useFakeTimers();

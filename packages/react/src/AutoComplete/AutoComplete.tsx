@@ -47,6 +47,7 @@ import type {
 import { SelectValue } from '../Select/typings';
 import { PickRenameMulti } from '../utils/general';
 import AutoCompleteInsideTrigger from './AutoCompleteInside';
+import { isSameOptionName } from './isSameOptionName';
 import {
   getFullParsedList,
   useAutoCompleteCreation,
@@ -57,24 +58,24 @@ import { useCreationTracker } from './useCreationTracker';
 
 export interface AutoCompleteBaseProps
   extends Omit<
-    SelectTriggerProps,
-    | 'active'
-    | 'clearable'
-    | 'forceHideSuffixActionIcon'
-    | 'fullWidth'
-    | 'mode'
-    | 'onClick'
-    | 'onKeyDown'
-    | 'onChange'
-    | 'renderValue'
-    | 'inputProps'
-    | 'suffixActionIcon'
-    | 'value'
-  >,
-  PickRenameMulti<
-    Pick<PopperProps, 'options'>,
-    { options: 'popperOptions' }
-  > {
+      SelectTriggerProps,
+      | 'active'
+      | 'clearable'
+      | 'forceHideSuffixActionIcon'
+      | 'fullWidth'
+      | 'mode'
+      | 'onClick'
+      | 'onKeyDown'
+      | 'onChange'
+      | 'renderValue'
+      | 'inputProps'
+      | 'suffixActionIcon'
+      | 'value'
+    >,
+    PickRenameMulti<
+      Pick<PopperProps, 'options'>,
+      { options: 'popperOptions' }
+    > {
   /**
    * Set to true when options can be added dynamically
    * @default false
@@ -86,6 +87,14 @@ export interface AutoCompleteBaseProps
    * @default false
    */
   asyncData?: boolean;
+  /**
+   * Whether option matching respects letter casing.
+   * When `false` (default), typing `colorado` matches an option named `Colorado`.
+   * Applies to both option filtering and the duplicate check used by `addable` mode,
+   * so the create action is not offered for an option already visible in the list.
+   * @default false
+   */
+  caseSensitive?: boolean;
   /**
    * Whether to clear search text when leaving the textfield/dropdown scope.
    * When `false`, typed text persists after blur. In `single` mode, a clearable
@@ -211,9 +220,9 @@ export interface AutoCompleteBaseProps
    */
   searchTextControlRef?: RefObject<
     | {
-      reset: () => void;
-      setSearchText: Dispatch<SetStateAction<string>>;
-    }
+        reset: () => void;
+        setSearchText: Dispatch<SetStateAction<string>>;
+      }
     | undefined
   >;
   /**
@@ -425,6 +434,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const {
       addable = false,
       asyncData = false,
+      caseSensitive = false,
       className,
       clearSearchText = true,
       createSeparators = [',', '+', '\n'],
@@ -502,49 +512,51 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     } = useAutoCompleteValueControl(
       isMultiple
         ? {
-          defaultValue: isMultipleValue(defaultValue)
-            ? defaultValue
-            : undefined,
-          disabledOptionsFilter,
-          getOptionsFilterQuery:
-            stepByStepBulkCreate && addable && onInsert
-              ? (st) => {
-                const full = getFullParsedList(
-                  st,
-                  createSeparators,
-                  trimOnCreate,
-                );
-                return full.length > 1 ? (full[0] ?? undefined) : undefined;
-              }
+            caseSensitive,
+            defaultValue: isMultipleValue(defaultValue)
+              ? defaultValue
               : undefined,
-          mode: 'multiple',
-          onChange: onChangeProp as
-            | ((newOptions: SelectValue[]) => void)
-            | undefined,
-          onClear: onClearProp,
-          onClose: () => toggleOpen(false),
-          onSearch,
-          options: optionsProp,
-          value: isMultipleValue(valueProp) ? valueProp : undefined,
-        }
+            disabledOptionsFilter,
+            getOptionsFilterQuery:
+              stepByStepBulkCreate && addable && onInsert
+                ? (st) => {
+                    const full = getFullParsedList(
+                      st,
+                      createSeparators,
+                      trimOnCreate,
+                    );
+                    return full.length > 1 ? (full[0] ?? undefined) : undefined;
+                  }
+                : undefined,
+            mode: 'multiple',
+            onChange: onChangeProp as
+              | ((newOptions: SelectValue[]) => void)
+              | undefined,
+            onClear: onClearProp,
+            onClose: () => toggleOpen(false),
+            onSearch,
+            options: optionsProp,
+            value: isMultipleValue(valueProp) ? valueProp : undefined,
+          }
         : {
-          defaultValue: isSingleValue(defaultValue)
-            ? defaultValue
-            : undefined,
-          disabledOptionsFilter,
-          mode: 'single',
-          onChange: onChangeProp as
-            | ((newOption: SelectValue | null) => void)
-            | undefined,
-          onClear: onClearProp,
-          onClose: () => toggleOpen(false),
-          onSearch,
-          options: optionsProp,
-          value:
-            isSingleValue(valueProp) || valueProp === null
-              ? valueProp
+            caseSensitive,
+            defaultValue: isSingleValue(defaultValue)
+              ? defaultValue
               : undefined,
-        },
+            disabledOptionsFilter,
+            mode: 'single',
+            onChange: onChangeProp as
+              | ((newOption: SelectValue | null) => void)
+              | undefined,
+            onClear: onClearProp,
+            onClose: () => toggleOpen(false),
+            onSearch,
+            options: optionsProp,
+            value:
+              isSingleValue(valueProp) || valueProp === null
+                ? valueProp
+                : undefined,
+          },
     );
 
     /** export set search text action to props (allow user to customize search text) */
@@ -593,6 +605,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       setInsertText,
     } = useAutoCompleteCreation({
       addable: creationEnabled,
+      caseSensitive,
       clearUnselected,
       createSeparators,
       filterUnselected,
@@ -899,9 +912,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
     const searchTextExistWithoutOption: boolean = !!(firstPendingText
       ? firstPendingText &&
-      options.find((option) => option.name === firstPendingText) === undefined
+        options.find((option) =>
+          isSameOptionName(option.name, firstPendingText, caseSensitive),
+        ) === undefined
       : searchText &&
-      options.find((option) => option.name === searchText) === undefined);
+        options.find((option) =>
+          isSameOptionName(option.name, searchText, caseSensitive),
+        ) === undefined);
 
     const shouldShowCreateAction = !!(
       searchTextExistWithoutOption &&
@@ -969,9 +986,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         : undefined;
     const shouldForceClearable = isMultiple
       ? (isMultipleValue(value) && value.length > 0) ||
-      searchText.trim().length > 0
+        searchText.trim().length > 0
       : isSingleValue(value) ||
-      (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
+        (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
 
     // Handle dropdown option selection
     const handleDropdownSelect = useCallback(
@@ -1013,7 +1030,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const [keyboardActiveIndex, setKeyboardActiveIndex] = useState<
       number | null
     >(null);
-    const setListboxHasVisualFocus = useCallback((_focus: boolean) => { }, []);
+    const setListboxHasVisualFocus = useCallback((_focus: boolean) => {}, []);
 
     // Reset activeIndex and keyboardActiveIndex when options change
     useEffect(() => {
@@ -1211,9 +1228,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
                 ? createActionText
                   ? createActionText(createActionDisplayText)
                   : createActionTextTemplate.replace(
-                    '{text}',
-                    createActionDisplayText,
-                  )
+                      '{text}',
+                      createActionDisplayText,
+                    )
                 : undefined
             }
             activeIndex={activeIndex}
@@ -1242,7 +1259,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             showActionShowTopBar={shouldShowCreateAction}
             status={dropdownStatus}
             toggleCheckedOnClick={
-              inputPosition === 'inside' && mode === 'multiple' ? false : undefined
+              inputPosition === 'inside' && mode === 'multiple'
+                ? false
+                : undefined
             }
             type="default"
             value={dropdownValue}
@@ -1307,8 +1326,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
                 suffixAction={onClickSuffixActionIcon}
                 value={
                   mode === 'multiple' &&
-                    isMultipleValue(value) &&
-                    value.length === 0
+                  isMultipleValue(value) &&
+                  value.length === 0
                     ? undefined
                     : (value ?? undefined)
                 }

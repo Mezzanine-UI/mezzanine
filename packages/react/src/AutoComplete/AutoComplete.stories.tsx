@@ -474,6 +474,53 @@ export const Multiple: StoryObj<typeof AutoComplete> = {
   render: () => <MultipleComponent />,
 };
 
+const caseSensitiveOptions: SelectValue[] = [
+  { id: 'colorado', name: 'Colorado' },
+  { id: 'connecticut', name: 'Connecticut' },
+  { id: 'virginia', name: 'Virginia' },
+  { id: 'west-virginia', name: 'West Virginia' },
+];
+
+const CaseSensitivityComponent = () => {
+  const [insensitive, setInsensitive] = useState<SelectValue | null>(null);
+  const [sensitive, setSensitive] = useState<SelectValue | null>(null);
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 320px)',
+        gap: '16px',
+        alignItems: 'start',
+      }}
+    >
+      <div style={{ display: 'grid', gap: 8 }}>
+        <Tag label="預設：不分大小寫" />
+        <AutoComplete
+          onChange={setInsensitive}
+          options={caseSensitiveOptions}
+          placeholder="輸入 vir 也找得到 Virginia"
+          value={insensitive}
+        />
+      </div>
+      <div style={{ display: 'grid', gap: 8 }}>
+        <Tag label="caseSensitive" />
+        <AutoComplete
+          caseSensitive
+          onChange={setSensitive}
+          options={caseSensitiveOptions}
+          placeholder="需輸入 Vir 才找得到"
+          value={sensitive}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const CaseSensitivity: StoryObj<typeof AutoComplete> = {
+  render: () => <CaseSensitivityComponent />,
+};
+
 const OverflowStrategyComponent = () => {
   const [counterSelections, setCounterSelections] = useState<SelectValue[]>([]);
   const [wrapSelections, setWrapSelections] = useState<SelectValue[]>([]);
@@ -638,7 +685,8 @@ const CreatableMultipleComponent = () => {
       <div>
         <h3>inside 多選模式 - 單選風格 checked icon</h3>
         <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
-          下拉視覺採單選風格 checked icon，但行為仍可多選；建立項目維持 New 標記。
+          下拉視覺採單選風格 checked icon，但行為仍可多選；建立項目維持 New
+          標記。
         </p>
         <AutoComplete
           addable
@@ -779,7 +827,9 @@ export const BulkCreate: StoryObj<typeof AutoComplete> = {
 const InputPositionInsideComponent = () => {
   const [open, setOpen] = useState(true);
   const [options, setOptions] = useState<SelectValue[]>(originOptions);
-  const [selections, setSelections] = useState<SelectValue[]>([originOptions[0]]);
+  const [selections, setSelections] = useState<SelectValue[]>([
+    originOptions[0],
+  ]);
   const nextIdRef = useRef(originOptions.length + 1);
 
   const handleInsert = useCallback(
@@ -912,7 +962,9 @@ const InsideBulkCreateComponent = () => {
       }}
     >
       <div>
-        <h3>inside 多選模式 - 單選風格 checked icon + step-by-step bulk create</h3>
+        <h3>
+          inside 多選模式 - 單選風格 checked icon + step-by-step bulk create
+        </h3>
         <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
           貼上多個項目後，dropdown 只顯示第一個「建立」，點擊後再顯示下一個。
         </p>

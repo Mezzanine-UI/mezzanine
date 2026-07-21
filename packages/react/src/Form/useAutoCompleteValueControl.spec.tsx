@@ -299,4 +299,95 @@ describe('useAutoCompleteValueControl()', () => {
 
     expect(myValue.length).toBe(0);
   });
+
+  describe('prop: caseSensitive', () => {
+    const virginiaOptions: SelectValue[] = [
+      { id: 'virginia', name: 'Virginia' },
+      { id: 'other', name: 'Other' },
+    ];
+
+    it('should match options case-insensitively by default when search text is lowercase', () => {
+      const { result } = renderHook(() =>
+        useAutoCompleteValueControl({
+          disabledOptionsFilter: false,
+          mode: 'single',
+          options: virginiaOptions,
+        }),
+      );
+
+      act(() => {
+        result.current.setSearchText('vir');
+      });
+
+      expect(result.current.options).toEqual([
+        { id: 'virginia', name: 'Virginia' },
+      ]);
+    });
+
+    it('should match options case-insensitively by default when search text is uppercase', () => {
+      const { result } = renderHook(() =>
+        useAutoCompleteValueControl({
+          disabledOptionsFilter: false,
+          mode: 'single',
+          options: virginiaOptions,
+        }),
+      );
+
+      act(() => {
+        result.current.setSearchText('VIR');
+      });
+
+      expect(result.current.options).toEqual([
+        { id: 'virginia', name: 'Virginia' },
+      ]);
+    });
+
+    it('should respect letter casing when caseSensitive is true', () => {
+      const { result } = renderHook(() =>
+        useAutoCompleteValueControl({
+          caseSensitive: true,
+          disabledOptionsFilter: false,
+          mode: 'single',
+          options: virginiaOptions,
+        }),
+      );
+
+      act(() => {
+        result.current.setSearchText('vir');
+      });
+
+      expect(result.current.options).toEqual([]);
+
+      act(() => {
+        result.current.setSearchText('Vir');
+      });
+
+      expect(result.current.options).toEqual([
+        { id: 'virginia', name: 'Virginia' },
+      ]);
+    });
+
+    it('should still escape regex special characters when case-insensitive matching is enabled', () => {
+      const specialOption: SelectValue = {
+        id: 'special',
+        name: '?><!@#$^$&^&',
+      };
+
+      const { result } = renderHook(() =>
+        useAutoCompleteValueControl({
+          disabledOptionsFilter: false,
+          mode: 'single',
+          options: [specialOption, { id: 'other', name: 'Other' }],
+        }),
+      );
+
+      expect(() => {
+        act(() => {
+          result.current.setSearchText('?><!@#$^$&^&');
+        });
+      }).not.toThrow();
+
+      expect(result.current.options).toEqual([specialOption]);
+    });
+  });
 });
