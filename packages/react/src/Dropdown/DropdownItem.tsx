@@ -2,6 +2,7 @@
 
 import keycode from 'keycode';
 import {
+  MouseEvent as ReactMouseEvent,
   ReactNode,
   useCallback,
   useEffect,
@@ -988,6 +989,20 @@ export default function DropdownItem<
     onScroll,
   ]);
 
+  // Keep focus on the trigger (e.g. AutoComplete's search input) while pressing an option.
+  // Without this, mousedown blurs the input before the click lands; consumers that reset
+  // their search text on blur re-render the list underneath the cursor, so the subsequent
+  // click either selects the wrong option or hits a node that has already unmounted.
+  // The header region is excluded because `inputPosition="inside"` renders a real input there.
+  const handleListMouseDown = useCallback(
+    (event: ReactMouseEvent<HTMLUListElement>) => {
+      if (headerRef.current?.contains(event.target as Node)) return;
+
+      event.preventDefault();
+    },
+    [],
+  );
+
   return (
     <ul
       aria-label={
@@ -996,6 +1011,7 @@ export default function DropdownItem<
       }
       className={dropdownClasses.list}
       id={listboxId}
+      onMouseDown={handleListMouseDown}
       ref={listRef}
       role="listbox"
       style={listStyle}
