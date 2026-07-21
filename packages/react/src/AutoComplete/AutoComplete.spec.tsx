@@ -664,6 +664,40 @@ describe('<AutoComplete />', () => {
       const createButton = screen.queryByText(/建立.*colorado/i);
       expect(createButton).toBeInTheDocument();
     });
+
+    it('should keep a differently-cased duplicate pending in bulk create when caseSensitive is set', async () => {
+      // Regression: `getPendingCreateList`/`processBulkCreate` used to hardcode
+      // `.toLowerCase()`, so pasting an uppercase "Foo" (with caseSensitive on)
+      // was silently deduped against the existing lowercase "foo" option and
+      // dropped. `defaultOptions` contains lowercase "foo" but no "zebra"; with
+      // caseSensitive, "Foo" is a distinct item and must stay pending, whereas
+      // before the fix only "Zebra" survived.
+      const { container } = render(
+        <AutoComplete
+          addable
+          caseSensitive
+          createSeparators={[',']}
+          mode="multiple"
+          onInsert={(text, opts) => [
+            ...opts,
+            { id: `new-${text}`, name: text },
+          ]}
+          options={defaultOptions}
+          stepByStepBulkCreate
+          trimOnCreate
+        />,
+      );
+
+      const input = container.querySelector('input');
+      fireEvent.focus(input!);
+      fireEvent.paste(input!, {
+        clipboardData: { getData: () => 'Foo, Zebra' },
+      });
+
+      await waitFor(() => {
+        expect(input!.value).toBe('Foo, Zebra');
+      });
+    });
   });
 
   describe('prop: stepByStepBulkCreate', () => {
