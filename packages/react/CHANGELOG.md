@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.1...@mezzanine-ui/react@1.4.2) (2026-07-21)
+
+### Bug Fixes
+
+- **react/autocomplete:** match options case-insensitively by default ([c1ed822](https://github.com/Mezzanine-UI/mezzanine/commit/c1ed822f0bf7fe269bb6d095b72ed4b77692006c))
+- **react/autocomplete:** thread caseSensitive through bulk-create dedup ([79beb40](https://github.com/Mezzanine-UI/mezzanine/commit/79beb402d622d7c919e636ef17e6d53f4dc21d5f))
+- **react/dropdown:** keep trigger focus on option mousedown ([5d155f2](https://github.com/Mezzanine-UI/mezzanine/commit/5d155f23607d8dc4ce8a98be954e09e4379b598c))
+
 ## [1.4.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.0...@mezzanine-ui/react@1.4.1) (2026-06-22)
 
 ### Bug Fixes

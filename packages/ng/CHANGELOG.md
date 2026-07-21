@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.9...@mezzanine-ui/ng@1.0.0-rc.10) (2026-07-21)
+
+### Features
+
+- **ng/autocomplete:** add caseSensitive input to mirror React ([f1be96d](https://github.com/Mezzanine-UI/mezzanine/commit/f1be96dc6d1a062620a60f4f75a90e252c5ce55e))
+
 # [1.0.0-rc.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.8...@mezzanine-ui/ng@1.0.0-rc.9) (2026-06-22)
 
 ### Bug Fixes
