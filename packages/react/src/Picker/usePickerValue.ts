@@ -1,4 +1,5 @@
 import { DateType } from '@mezzanine-ui/core/calendar';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import {
   FocusEventHandler,
   KeyboardEventHandler,
@@ -68,6 +69,8 @@ export function usePickerValue({
   const guardValidDateTypeOnKeyDown: KeyboardEventHandler<HTMLInputElement> = (
     event,
   ) => {
+    if (isImeComposing(event)) return;
+
     if (event.key === 'Enter' || event.key === 'Escape') {
       inputRef.current?.blur();
 

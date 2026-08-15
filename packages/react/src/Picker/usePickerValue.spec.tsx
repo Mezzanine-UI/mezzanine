@@ -259,5 +259,36 @@ describe('usePickerValue', () => {
 
       expect(document.activeElement).not.toBe(inputElement);
     });
+
+    it('case: enter during IME composition should not blur', () => {
+      const inputElement = document.createElement('input');
+
+      document.body.appendChild(inputElement);
+
+      const inputRef = {
+        current: inputElement,
+      };
+      const { result } = renderHook(
+        () =>
+          usePickerValue({
+            inputRef,
+            format: 'YYYY-MM-DD',
+          }),
+        { wrapper },
+      );
+
+      inputElement.focus();
+
+      expect(document.activeElement).toBe(inputElement);
+
+      act(() => {
+        result.current.onKeyDown({
+          key: 'Enter',
+          nativeEvent: { isComposing: true, keyCode: 229 },
+        } as KeyboardEvent<HTMLInputElement>);
+      });
+
+      expect(document.activeElement).toBe(inputElement);
+    });
   });
 });
