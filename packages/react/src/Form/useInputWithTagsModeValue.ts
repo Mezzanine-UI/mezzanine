@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import {
   useInputControlValue,
   UseInputControlValueProps,
@@ -139,7 +140,7 @@ export function useInputWithTagsModeValue<
         element &&
         element?.value &&
         (e.key === 'Enter' || e.code === 'Enter') &&
-        !e.nativeEvent.isComposing &&
+        !isImeComposing(e) &&
         !tagsWillOverflow()
       ) {
         e.preventDefault();
