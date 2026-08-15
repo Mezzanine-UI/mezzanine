@@ -8,6 +8,7 @@ import {
 } from 'react';
 
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 
 import { createDropdownKeydownHandler } from '../Dropdown/dropdownKeydownHandler';
 import { SelectValue } from '../Select/typings';
@@ -201,6 +202,8 @@ export function useAutoCompleteKeyboard({
 
   const handleInputKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
+      if (isImeComposing(e)) return;
+
       if (handleEnterKey(e)) return;
 
       if (
