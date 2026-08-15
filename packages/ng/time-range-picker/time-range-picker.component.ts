@@ -14,6 +14,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { DateType } from '@mezzanine-ui/core/calendar';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { ClockIcon } from '@mezzanine-ui/icons';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
@@ -336,6 +337,8 @@ export class MznTimeRangePicker implements ControlValueAccessor {
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    if (isImeComposing(event)) return;
+
     if (event.key === 'Escape') this.onCancel();
   }
 }

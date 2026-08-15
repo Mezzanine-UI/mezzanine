@@ -20,6 +20,7 @@ import {
 } from '@mezzanine-ui/core/calendar';
 import { pickerClasses, RangePickerValue } from '@mezzanine-ui/core/picker';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import {
   MZN_CALENDAR_CONFIG,
   type CalendarDayAnnotation,
@@ -582,6 +583,8 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    if (isImeComposing(event)) return;
+
     if (event.key === 'Escape') {
       this.onCancel();
     }

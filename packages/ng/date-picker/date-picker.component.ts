@@ -19,6 +19,7 @@ import {
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
 import { pickerClasses } from '@mezzanine-ui/core/picker';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import {
@@ -423,6 +424,8 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    if (isImeComposing(event)) return;
+
     if (event.key === 'Escape') {
       this.isOpen.set(false);
       this.calendarToggled.emit(false);

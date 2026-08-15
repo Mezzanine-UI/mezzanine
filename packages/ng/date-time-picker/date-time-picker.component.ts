@@ -16,6 +16,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import { pickerClasses } from '@mezzanine-ui/core/picker';
 import { TextFieldSize, textFieldClasses } from '@mezzanine-ui/core/text-field';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { CalendarTimeIcon } from '@mezzanine-ui/icons';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
@@ -1026,6 +1027,8 @@ export class MznDateTimePicker implements ControlValueAccessor, AfterViewInit {
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    if (isImeComposing(event)) return;
+
     if (event.key === 'Escape') {
       this.onTimeCancel();
     }
