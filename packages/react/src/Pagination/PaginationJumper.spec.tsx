@@ -112,5 +112,28 @@ describe('<PaginationJumper />', () => {
 
       expect(onChange).toHaveBeenCalled();
     });
+
+    it('should not trigger onChange when Enter is pressed during IME composition', () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <PaginationJumper onChange={onChange} total={100} />,
+      );
+      const element = getHostHTMLElement();
+      const input = element.querySelector('input');
+
+      fireEvent.change(input!, {
+        target: {
+          value: '2',
+        },
+      });
+
+      fireEvent.keyDown(input!, {
+        key: 'Enter',
+        isComposing: true,
+        keyCode: 229,
+      });
+
+      expect(onChange).not.toHaveBeenCalled();
+    });
   });
 });
