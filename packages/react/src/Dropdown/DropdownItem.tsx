@@ -21,6 +21,7 @@ import {
   DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { type IconDefinition } from '@mezzanine-ui/icons';
 
 import { CaretDownIcon, CaretRightIcon } from '@mezzanine-ui/icons';
@@ -794,7 +795,7 @@ export default function DropdownItem<
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.repeat) return;
+      if (event.repeat || isImeComposing(event)) return;
 
       const targetOption = visibleShortcutOptions.find((option) => {
         if (
