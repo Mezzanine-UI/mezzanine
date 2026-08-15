@@ -21,6 +21,7 @@ import {
   DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { type Placement } from '@floating-ui/dom';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
@@ -872,7 +873,7 @@ export class MznDropdown {
    * 僅在 `open()` 時處理。tree 模式目前交由 MznDropdownItem 內部處理。
    */
   protected onHostKeyDown(event: KeyboardEvent): void {
-    if (!this.open() || this.disabled()) return;
+    if (isImeComposing(event) || !this.open() || this.disabled()) return;
 
     // 若有外層 wrapper(如 MznAutocomplete)在同一事件上已呼叫
     // `event.preventDefault()` 表示它已消化掉此 key,MznDropdown 不重複處理。
