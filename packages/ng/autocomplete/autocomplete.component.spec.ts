@@ -280,4 +280,28 @@ describe('MznAutocomplete', () => {
       expect(createButton).toBeTruthy();
     });
   });
+
+  it('should not select when Enter is pressed during IME composition', () => {
+    const { fixture, host } = createFixture(TestHostComponent);
+    const input = fixture.nativeElement.querySelector(
+      'input',
+    ) as HTMLInputElement;
+
+    input.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+    fixture.detectChanges();
+
+    const enterEvent = new KeyboardEvent('keydown', {
+      key: 'Enter',
+      bubbles: true,
+    });
+
+    Object.defineProperty(enterEvent, 'isComposing', { value: true });
+    Object.defineProperty(enterEvent, 'keyCode', { value: 229 });
+
+    input.dispatchEvent(enterEvent);
+    fixture.detectChanges();
+
+    expect(host.selected).toBe('');
+  });
 });
