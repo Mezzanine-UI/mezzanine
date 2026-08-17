@@ -1,4 +1,5 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { Dispatch, SetStateAction } from 'react';
 
 /**
@@ -34,7 +35,7 @@ export function createDropdownKeydownHandler(params: {
   } = params;
 
   return (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (options.length === 0) return;
+    if (isImeComposing(e) || options.length === 0) return;
 
     switch (e.key) {
       case 'ArrowDown': {

@@ -16,6 +16,7 @@ import {
   DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import {
   CaretDownIcon,
   CaretRightIcon,
@@ -731,7 +732,7 @@ export class MznDropdownItem {
    * 所有 leaf 節點。 `event.repeat` 忽略長按重覆觸發。
    */
   protected onHostKeyDown(event: KeyboardEvent): void {
-    if (event.repeat || this.disabled()) return;
+    if (event.repeat || this.disabled() || isImeComposing(event)) return;
 
     const match = this.findShortcutMatch(event);
 

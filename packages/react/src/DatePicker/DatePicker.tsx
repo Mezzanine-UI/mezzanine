@@ -13,6 +13,7 @@ import {
 } from 'react';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import { pickerClasses } from '@mezzanine-ui/core/picker';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
 import { cx } from '../utils/cx';
@@ -272,7 +273,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           onKeyDownProp(event);
         }
 
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !isImeComposing(event)) {
           onChangeProp?.(internalValue);
           onCalendarToggle(false);
         }

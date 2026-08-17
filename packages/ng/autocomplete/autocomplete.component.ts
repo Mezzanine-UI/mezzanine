@@ -24,6 +24,7 @@ import {
   AutoCompleteInputSize,
 } from '@mezzanine-ui/core/autocomplete';
 import { textFieldClasses } from '@mezzanine-ui/core/text-field';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
@@ -1188,6 +1189,8 @@ export class MznAutocomplete
   }
 
   protected onInputKeydown(event: KeyboardEvent): void {
+    if (isImeComposing(event)) return;
+
     // Enter key: handle creation
     if (event.key === 'Enter' && this.handleEnterKey()) {
       event.preventDefault();

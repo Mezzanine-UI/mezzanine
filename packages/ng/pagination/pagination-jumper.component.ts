@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { paginationJumperClasses as classes } from '@mezzanine-ui/core/pagination/paginationJumper';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznInput } from '@mezzanine-ui/ng/input';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
@@ -59,7 +60,7 @@ import { MznTypography } from '@mezzanine-ui/ng/typography';
       [placeholder]="inputPlaceholder() ?? ''"
       [value]="value()"
       (valueChange)="value.set($event)"
-      (keydown.enter)="onSubmit()"
+      (keydown)="onInputKeydown($event)"
     ></div>
     <button
       mznButton
@@ -111,6 +112,12 @@ export class MznPaginationJumper {
 
     return t ? Math.ceil(t / this.pageSize()) : 1;
   });
+
+  protected onInputKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Enter' || isImeComposing(event)) return;
+
+    this.onSubmit();
+  }
 
   protected onSubmit(): void {
     const raw = Number(this.value());

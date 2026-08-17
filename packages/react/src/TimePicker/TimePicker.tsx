@@ -11,6 +11,7 @@ import {
   useState,
 } from 'react';
 import { DateType } from '@mezzanine-ui/core/calendar';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { ClockIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
 import { useComposeRefs } from '../hooks/useComposeRefs';
@@ -300,7 +301,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
           onKeyDownProp(event);
         }
 
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !isImeComposing(event)) {
           onConfirm();
         }
       },

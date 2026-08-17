@@ -23,6 +23,7 @@ import {
   DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 
 import { flip as flipMiddlewareFn, offset, size } from '@floating-ui/react-dom';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
@@ -702,7 +703,7 @@ export default function Dropdown(props: DropdownProps) {
   // Built-in keyboard navigation (only when activeIndex is not controlled externally)
   const handleBuiltinKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLElement>) => {
-      if (isActiveIndexControlled) return;
+      if (isImeComposing(event) || isActiveIndexControlled) return;
 
       const count = flatNavigableOptions.length;
 

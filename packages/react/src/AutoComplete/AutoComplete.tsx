@@ -32,6 +32,7 @@ import {
   DropdownStatus as DropdownStatusType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 import { selectClasses as selectTriggerClasses } from '@mezzanine-ui/core/select';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 
 import Dropdown from '../Dropdown';
 import { FormControlContext } from '../Form';
@@ -1102,6 +1103,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const onSearchInputKeyDown: KeyboardEventHandler<HTMLInputElement> =
       useCallback(
         (e) => {
+          if (isImeComposing(e)) return;
+
           if (e.key === 'Escape') {
             e.preventDefault();
             e.stopPropagation();

@@ -6,6 +6,7 @@ import {
   KeyboardEvent,
 } from 'react';
 import { paginationJumperClasses as classes } from '@mezzanine-ui/core/pagination';
+import { isImeComposing } from '@mezzanine-ui/core/utils';
 import Typography from '../Typography';
 import Button from '../Button';
 import Input from '../Input';
@@ -96,7 +97,7 @@ const PaginationJumper = forwardRef<HTMLDivElement, PaginationJumperProps>(
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && !isImeComposing(e)) {
         handleClick();
       }
     };

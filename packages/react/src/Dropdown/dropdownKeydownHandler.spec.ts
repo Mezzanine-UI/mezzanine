@@ -8,7 +8,9 @@ describe('createDropdownKeydownHandler', () => {
     { id: '3', name: 'Option 3' },
   ];
 
-  const createMockEvent = (key: string): React.KeyboardEvent<HTMLInputElement> => {
+  const createMockEvent = (
+    key: string,
+  ): React.KeyboardEvent<HTMLInputElement> => {
     return {
       key,
       preventDefault: jest.fn(),
@@ -220,6 +222,51 @@ describe('createDropdownKeydownHandler', () => {
 
       expect(onEnterSelect).not.toHaveBeenCalled();
     });
+
+    it('should not select when IME is composing', () => {
+      const onEnterSelect = jest.fn();
+      const handler = createDropdownKeydownHandler({
+        activeIndex: 1,
+        open: true,
+        options: mockOptions,
+        onEnterSelect,
+        setActiveIndex: jest.fn(),
+        setListboxHasVisualFocus: jest.fn(),
+        setOpen: jest.fn(),
+      });
+
+      const event = {
+        ...createMockEvent('Enter'),
+        nativeEvent: { isComposing: true, keyCode: 13 },
+      } as unknown as React.KeyboardEvent<HTMLInputElement>;
+
+      handler(event);
+
+      expect(onEnterSelect).not.toHaveBeenCalled();
+      expect(event.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('should not select when keyCode is 229', () => {
+      const onEnterSelect = jest.fn();
+      const handler = createDropdownKeydownHandler({
+        activeIndex: 1,
+        open: true,
+        options: mockOptions,
+        onEnterSelect,
+        setActiveIndex: jest.fn(),
+        setListboxHasVisualFocus: jest.fn(),
+        setOpen: jest.fn(),
+      });
+
+      const event = {
+        ...createMockEvent('Enter'),
+        nativeEvent: { isComposing: false, keyCode: 229 },
+      } as unknown as React.KeyboardEvent<HTMLInputElement>;
+
+      handler(event);
+
+      expect(onEnterSelect).not.toHaveBeenCalled();
+    });
   });
 
   describe('Escape', () => {
@@ -341,4 +388,3 @@ describe('createDropdownKeydownHandler', () => {
     });
   });
 });
-

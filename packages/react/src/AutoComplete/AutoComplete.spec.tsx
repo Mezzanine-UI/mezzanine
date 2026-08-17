@@ -1552,6 +1552,38 @@ describe('<AutoComplete />', () => {
       expect(onChange).toHaveBeenCalled();
     });
 
+    it('should not select when Enter is pressed during IME composition', async () => {
+      const inputRef = createRef<HTMLInputElement>();
+      const onChange = jest.fn();
+
+      render(
+        <AutoComplete
+          inputRef={inputRef}
+          onChange={onChange}
+          options={defaultOptions}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(inputRef.current).toBeInTheDocument();
+      });
+
+      fireEvent.focus(inputRef.current!);
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+
+      fireEvent.keyDown(inputRef.current!, {
+        key: 'Enter',
+        isComposing: true,
+        keyCode: 229,
+      });
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(getDropdownListbox()).toBeInTheDocument();
+    });
+
     it('should close dropdown when Escape is pressed', async () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
