@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.1.0...@mezzanine-ui/core@1.2.0) (2026-08-17)
+
+### Features
+
+- **core:** add isImeComposing helper for IME composition detection ([5dc5cc1](https://github.com/Mezzanine-UI/mezzanine/commit/5dc5cc14c4b5379949c9fa71f4fe5d6f16882c02))
+
 # [1.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.4...@mezzanine-ui/core@1.1.0) (2026-05-07)
 
 ### Bug Fixes

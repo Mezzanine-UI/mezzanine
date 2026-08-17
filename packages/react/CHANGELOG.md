@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.2...@mezzanine-ui/react@1.4.3) (2026-08-17)
+
+### Bug Fixes
+
+- **react/autocomplete:** skip select and create while IME is composing ([ea2fda1](https://github.com/Mezzanine-UI/mezzanine/commit/ea2fda148a132b917c96d0f038a797e7e5898c6e))
+- **react/dropdown:** skip keyboard select while IME is composing ([04ecdc7](https://github.com/Mezzanine-UI/mezzanine/commit/04ecdc79ccf85b5a793f95963645a25cde8c3920))
+- **react/form:** detect IME composition via isImeComposing ([b2e142e](https://github.com/Mezzanine-UI/mezzanine/commit/b2e142ea9e933baa17a98507c52393e4b993d239))
+- **react/pagination:** skip jumper submit while IME is composing ([20b5be6](https://github.com/Mezzanine-UI/mezzanine/commit/20b5be6fb623cce3b885c306604df598bfdd7d25))
+- **react/picker:** skip confirm and blur while IME is composing ([4e8e786](https://github.com/Mezzanine-UI/mezzanine/commit/4e8e7863050e5ddc6d8008fa2a569192a26eee0f))
+
 ## [1.4.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.1...@mezzanine-ui/react@1.4.2) (2026-07-21)
 
 ### Bug Fixes

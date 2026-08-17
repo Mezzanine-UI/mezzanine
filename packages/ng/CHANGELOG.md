@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.10...@mezzanine-ui/ng@1.0.0-rc.11) (2026-08-17)
+
+### Bug Fixes
+
+- **ng/autocomplete:** skip select and create while IME is composing ([21d22ad](https://github.com/Mezzanine-UI/mezzanine/commit/21d22ad55e77f36b681da750db7718ebda9940a9))
+- **ng/dropdown:** skip keyboard select while IME is composing ([af90926](https://github.com/Mezzanine-UI/mezzanine/commit/af90926beb96bedbbd8a2549737f1811270f631f))
+- **ng/pagination:** skip jumper submit while IME is composing ([250869e](https://github.com/Mezzanine-UI/mezzanine/commit/250869ea70091a75f49f2890364c363c7261b9a8))
+- **ng/picker:** skip confirm and close while IME is composing ([d4a7dba](https://github.com/Mezzanine-UI/mezzanine/commit/d4a7dba4f09bc995d4f3b6281e664b136b0c7296))
+
 # [1.0.0-rc.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.9...@mezzanine-ui/ng@1.0.0-rc.10) (2026-07-21)
 
 ### Features
