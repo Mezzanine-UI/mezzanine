@@ -51,6 +51,10 @@ const originOptions: SelectValue[] = [
     id: '?><!@#$^$&^&',
     name: '?><!@#$^$&^&',
   },
+  {
+    id: '中文選項',
+    name: '中文選項',
+  },
 ];
 
 const BasicComponent = () => {
