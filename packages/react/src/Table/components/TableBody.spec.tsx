@@ -132,25 +132,41 @@ describe('<TableBody />', () => {
   });
 
   describe('Loading state', () => {
-    it('should render skeleton rows when loading', () => {
-      const loadingContextValue = {
+    it('should render `loadingRowsCount` skeleton rows when loading', () => {
+      const { getHostHTMLElement } = renderWithContext({
         ...defaultContextValue,
         loading: true,
-        dataSource: Array.from({ length: 5 }, (_, i) => ({ key: `${i}` })),
-      };
-      const loadingDataContextValue = {
-        ...defaultDataContextValue,
-        dataSource: Array.from({ length: 5 }, (_, i) => ({ key: `${i}` })),
-      };
-
-      const { getHostHTMLElement } = renderWithContext(
-        loadingContextValue,
-        loadingDataContextValue,
-      );
+        loadingRowsCount: 5,
+      });
 
       const rows = getHostHTMLElement().querySelectorAll('tbody tr');
 
       expect(rows.length).toBe(5);
+    });
+
+    it('should render 10 skeleton rows by default when loading', () => {
+      const { getHostHTMLElement } = renderWithContext({
+        ...defaultContextValue,
+        loading: true,
+      });
+
+      const rows = getHostHTMLElement().querySelectorAll('tbody tr');
+
+      expect(rows.length).toBe(10);
+    });
+
+    it('should render skeleton rows independently of dataSource length', () => {
+      const { getHostHTMLElement } = renderWithContext(
+        { ...defaultContextValue, dataSource: [], loading: true },
+        { ...defaultDataContextValue, dataSource: [] },
+      );
+
+      const rows = getHostHTMLElement().querySelectorAll('tbody tr');
+
+      expect(rows.length).toBe(10);
+      expect(
+        getHostHTMLElement().querySelector('.mzn-table__empty'),
+      ).not.toBeInTheDocument();
     });
   });
 });
