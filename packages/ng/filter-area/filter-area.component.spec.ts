@@ -194,7 +194,7 @@ describe('MznFilterArea', () => {
 
     it('should toggle expanded state', () => {
       const secondLine = getHost().querySelectorAll(
-        'mzn-filter-line',
+        '[mznFilterLine]',
       )[1] as HTMLElement;
 
       expect(secondLine.style.display).toBe('none');

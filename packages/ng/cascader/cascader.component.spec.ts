@@ -73,7 +73,7 @@ function createFixture(): {
     getHost: (): HTMLElement =>
       fixture.nativeElement.querySelector(`.${classes.host}`)!,
     getTrigger: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-select-trigger')!,
+      fixture.nativeElement.querySelector('[mznSelectTrigger]')!,
     getPanels: (): HTMLElement | null =>
       fixture.nativeElement.querySelector(`.${classes.dropdownPanels}`),
     getPanelItems: (panelIndex: number): NodeListOf<HTMLElement> => {

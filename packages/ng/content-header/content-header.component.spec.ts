@@ -247,7 +247,7 @@ describe('MznContentHeaderResponsive', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement.querySelector(
-      'mzn-content-header-responsive',
+      '[mznContentHeaderResponsive]',
     ) as HTMLElement;
 
     expect(el.classList.contains('mzn-content-header--above1080px')).toBe(true);
@@ -259,7 +259,7 @@ describe('MznContentHeaderResponsive', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement.querySelector(
-      'mzn-content-header-responsive',
+      '[mznContentHeaderResponsive]',
     ) as HTMLElement;
 
     expect(el.textContent?.trim()).toBe('responsive content');

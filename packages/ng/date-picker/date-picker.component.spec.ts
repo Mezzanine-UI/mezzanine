@@ -201,7 +201,7 @@ describe('MznDatePicker', () => {
   });
 
   it('should render picker trigger', () => {
-    const trigger = fixture.nativeElement.querySelector('mzn-picker-trigger');
+    const trigger = fixture.nativeElement.querySelector('[mznPickerTrigger]');
     expect(trigger).toBeTruthy();
   });
 

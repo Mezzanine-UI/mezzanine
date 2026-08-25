@@ -69,7 +69,7 @@ describe('MznTimePicker', () => {
 
   it('should render picker trigger', () => {
     expect(
-      fixture.nativeElement.querySelector('mzn-picker-trigger'),
+      fixture.nativeElement.querySelector('[mznPickerTrigger]'),
     ).toBeTruthy();
   });
 

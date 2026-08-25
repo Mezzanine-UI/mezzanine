@@ -89,7 +89,7 @@ describe('MznAccordion', () => {
   it('should hide content by default', () => {
     const { getEl } = createFixture();
     const content = getEl().querySelector(
-      'mzn-accordion-content',
+      '[mznAccordionContent]',
     ) as HTMLElement;
 
     expect(content.style.display).toBe('none');
@@ -98,7 +98,7 @@ describe('MznAccordion', () => {
   it('should show content when expanded is true', () => {
     const { getEl } = createFixture({ expanded: true });
     const content = getEl().querySelector(
-      'mzn-accordion-content',
+      '[mznAccordionContent]',
     ) as HTMLElement;
 
     expect(content.style.display).not.toBe('none');
@@ -114,7 +114,7 @@ describe('MznAccordion', () => {
     expect(host.onExpandedChange).toHaveBeenCalledWith(true);
 
     const content = getEl().querySelector(
-      'mzn-accordion-content',
+      '[mznAccordionContent]',
     ) as HTMLElement;
 
     expect(content.style.display).not.toBe('none');
@@ -130,7 +130,7 @@ describe('MznAccordion', () => {
     expect(host.onExpandedChange).toHaveBeenCalledWith(true);
 
     const content = getEl().querySelector(
-      'mzn-accordion-content',
+      '[mznAccordionContent]',
     ) as HTMLElement;
 
     // Still hidden because expanded is controlled to false

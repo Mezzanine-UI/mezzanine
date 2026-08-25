@@ -227,17 +227,17 @@ describe('MznCalendar', () => {
   it('should render in day mode by default', () => {
     const el: HTMLElement = fixture.nativeElement;
     expect(el.querySelector('[mznCalendar]')).toBeTruthy();
-    expect(el.querySelector('mzn-calendar-days')).toBeTruthy();
+    expect(el.querySelector('[mznCalendarDays]')).toBeTruthy();
   });
 
   it('should display calendar controls', () => {
     const el: HTMLElement = fixture.nativeElement;
-    expect(el.querySelector('mzn-calendar-controls')).toBeTruthy();
+    expect(el.querySelector('[mznCalendarControls]')).toBeTruthy();
   });
 
   it('should display weekday names', () => {
     const el: HTMLElement = fixture.nativeElement;
-    const dayOfWeek = el.querySelector('mzn-calendar-day-of-week');
+    const dayOfWeek = el.querySelector('[mznCalendarDayOfWeek]');
     expect(dayOfWeek).toBeTruthy();
     expect(dayOfWeek?.textContent).toContain('Sun');
     expect(dayOfWeek?.textContent).toContain('Sat');
@@ -245,13 +245,13 @@ describe('MznCalendar', () => {
 
   it('should render day buttons', () => {
     const el: HTMLElement = fixture.nativeElement;
-    const buttons = el.querySelectorAll('mzn-calendar-days button');
+    const buttons = el.querySelectorAll('[mznCalendarDays] button');
     expect(buttons.length).toBeGreaterThan(28);
   });
 
   it('should emit dateChanged on day click', () => {
     const el: HTMLElement = fixture.nativeElement;
-    const buttons = el.querySelectorAll('mzn-calendar-days button');
+    const buttons = el.querySelectorAll('[mznCalendarDays] button');
     // Find button with text "15"
     const btn15 = Array.from(buttons).find(
       (b) => b.textContent?.trim() === '15',
@@ -266,7 +266,7 @@ describe('MznCalendar', () => {
     const el: HTMLElement = fixture.nativeElement;
     // The month button is projected content inside controls-main, not an arrow button.
     // Find all buttons inside controls, then pick the one with month text (e.g. "Jun").
-    const allBtns = el.querySelectorAll('mzn-calendar-controls button');
+    const allBtns = el.querySelectorAll('[mznCalendarControls] button');
     const monthBtn = Array.from(allBtns).find(
       (b) => b.textContent?.trim() === 'Jun',
     ) as HTMLButtonElement | undefined;
@@ -274,12 +274,12 @@ describe('MznCalendar', () => {
     monthBtn?.click();
     fixture.detectChanges();
     // Should now show months grid
-    expect(el.querySelector('mzn-calendar-months')).toBeTruthy();
+    expect(el.querySelector('[mznCalendarMonths]')).toBeTruthy();
   });
 
   it('should show footer control in day mode', () => {
     const el: HTMLElement = fixture.nativeElement;
-    const footer = el.querySelector('mzn-calendar-footer-control');
+    const footer = el.querySelector('[mznCalendarFooterControl]');
     expect(footer).toBeTruthy();
     expect(footer?.textContent).toContain('Today');
   });
@@ -288,13 +288,13 @@ describe('MznCalendar', () => {
     host.mode.set('month');
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
-    expect(el.querySelector('mzn-calendar-months')).toBeTruthy();
+    expect(el.querySelector('[mznCalendarMonths]')).toBeTruthy();
   });
 
   it('should render in year mode', () => {
     host.mode.set('year');
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
-    expect(el.querySelector('mzn-calendar-years')).toBeTruthy();
+    expect(el.querySelector('[mznCalendarYears]')).toBeTruthy();
   });
 });

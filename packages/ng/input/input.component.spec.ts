@@ -575,9 +575,7 @@ describe('MznInput', () => {
 
     it('should not render strength indicator by default', () => {
       const { getEl } = createFixture(TestPasswordHostComponent);
-      const indicator = getEl().querySelector(
-        'mzn-password-strength-indicator',
-      );
+      const indicator = getEl().querySelector('[mznPasswordStrengthIndicator]');
 
       expect(indicator).toBeFalsy();
     });
@@ -592,9 +590,7 @@ describe('MznInput', () => {
           ],
         },
       });
-      const indicator = getEl().querySelector(
-        'mzn-password-strength-indicator',
-      );
+      const indicator = getEl().querySelector('[mznPasswordStrengthIndicator]');
 
       expect(indicator).toBeTruthy();
     });
@@ -751,7 +747,7 @@ describe('MznInput', () => {
           showSpinner: true,
         });
         const spinnerButtons = getEl().querySelectorAll(
-          'mzn-input-spinner-button',
+          '[mznInputSpinnerButton]',
         );
 
         expect(spinnerButtons.length).toBe(2);
@@ -782,7 +778,7 @@ describe('MznInput', () => {
           showSpinner: false,
         });
         const spinnerButtons = getEl().querySelectorAll(
-          'mzn-input-spinner-button',
+          '[mznInputSpinnerButton]',
         );
 
         expect(spinnerButtons.length).toBe(0);
@@ -934,7 +930,7 @@ describe('MznInput', () => {
   describe('variant: action', () => {
     it('should render action button as suffix', () => {
       const { getEl } = createFixture(TestActionHostComponent);
-      const actionButton = getEl().querySelector('mzn-input-action-button');
+      const actionButton = getEl().querySelector('[mznInputActionButton]');
 
       expect(actionButton).toBeTruthy();
     });
@@ -948,7 +944,7 @@ describe('MznInput', () => {
           onClick: jest.fn(),
         },
       });
-      const actionButton = getEl().querySelector('mzn-input-action-button');
+      const actionButton = getEl().querySelector('[mznInputActionButton]');
 
       expect(actionButton).toBeTruthy();
     });
@@ -990,7 +986,7 @@ describe('MznInput', () => {
       });
 
       const button = getEl().querySelector(
-        'mzn-input-action-button button',
+        '[mznInputActionButton] button',
       ) as HTMLButtonElement;
 
       button.click();
@@ -1004,7 +1000,7 @@ describe('MznInput', () => {
         disabled: true,
       });
       const button = getEl().querySelector(
-        'mzn-input-action-button button',
+        '[mznInputActionButton] button',
       ) as HTMLButtonElement;
 
       expect(button.disabled).toBe(true);
@@ -1015,7 +1011,7 @@ describe('MznInput', () => {
         readonlyVal: true,
       });
       const button = getEl().querySelector(
-        'mzn-input-action-button button',
+        '[mznInputActionButton] button',
       ) as HTMLButtonElement;
 
       expect(button.disabled).toBe(true);
@@ -1033,7 +1029,7 @@ describe('MznInput', () => {
         },
       });
       const button = getEl().querySelector(
-        'mzn-input-action-button button',
+        '[mznInputActionButton] button',
       ) as HTMLButtonElement;
 
       expect(button.disabled).toBe(false);

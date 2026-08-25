@@ -89,7 +89,7 @@ describe('MznTimePanel', () => {
 
   it('should render three columns by default', () => {
     const columns = fixture.nativeElement.querySelectorAll(
-      'mzn-time-panel-column',
+      '[mznTimePanelColumn]',
     );
     expect(columns.length).toBe(3);
   });
@@ -98,14 +98,14 @@ describe('MznTimePanel', () => {
     host.hideSecond.set(true);
     fixture.detectChanges();
     const columns = fixture.nativeElement.querySelectorAll(
-      'mzn-time-panel-column',
+      '[mznTimePanelColumn]',
     );
     expect(columns.length).toBe(2);
   });
 
   it('should render hour units (0-23)', () => {
     const firstColumn = fixture.nativeElement.querySelector(
-      'mzn-time-panel-column',
+      '[mznTimePanelColumn]',
     );
     const buttons = firstColumn?.querySelectorAll('button');
     expect(buttons?.length).toBe(24);
@@ -140,7 +140,7 @@ describe('MznTimePanel', () => {
 
   it('should emit timeChanged on column unit click', () => {
     const firstColumn = fixture.nativeElement.querySelector(
-      'mzn-time-panel-column',
+      '[mznTimePanelColumn]',
     );
     const buttons = firstColumn?.querySelectorAll('button');
     // Click hour 5

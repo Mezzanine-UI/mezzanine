@@ -53,11 +53,11 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
       fixture.nativeElement.querySelector('[mznDescription]') as HTMLElement,
     getTitle: () =>
       fixture.nativeElement.querySelector(
-        'mzn-description-title',
+        '[mznDescriptionTitle]',
       ) as HTMLElement,
     getContent: () =>
       fixture.nativeElement.querySelector(
-        'mzn-description-content',
+        '[mznDescriptionContent]',
       ) as HTMLElement,
   };
 }
@@ -187,7 +187,7 @@ describe('MznDescriptionGroup', () => {
     fixture.detectChanges();
 
     const group = fixture.nativeElement.querySelector(
-      'mzn-description-group',
+      '[mznDescriptionGroup]',
     ) as HTMLElement;
 
     expect(group.classList.contains('mzn-description-group')).toBe(true);

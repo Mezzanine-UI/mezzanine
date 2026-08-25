@@ -120,7 +120,7 @@ describe('MznLayout', () => {
 
     const leftPanel = getLayoutElement().querySelector('[mznLayoutLeftPanel]');
     const rightPanel = getLayoutElement().querySelector(
-      'mzn-layout-right-panel',
+      '[mznLayoutRightPanel]',
     );
 
     expect(leftPanel?.classList.contains('mzn-layout__side-panel')).toBe(true);
@@ -219,7 +219,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
       const initialWidth = parseFloat(panel.style.inlineSize);
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
@@ -241,7 +241,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
       const initialWidth = parseFloat(panel.style.inlineSize);
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
@@ -263,7 +263,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-right-panel',
+        '[mznLayoutRightPanel]',
       ) as HTMLElement;
       const initialWidth = parseFloat(panel.style.inlineSize);
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
@@ -285,7 +285,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
 
@@ -355,7 +355,7 @@ describe('MznLayout', () => {
       fix.detectChanges();
 
       const panel = fix.nativeElement.querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
 
       expect(parseFloat(panel.style.inlineSize)).toBe(240);

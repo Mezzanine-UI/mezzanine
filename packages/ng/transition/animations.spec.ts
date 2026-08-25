@@ -355,7 +355,7 @@ describe('MznCollapse', () => {
 
     fixture.detectChanges();
     const root = fixture.nativeElement.querySelector(
-      'mzn-collapse > div',
+      '[mznCollapse] > div',
     ) as HTMLElement;
 
     expect(root.style.visibility).toBe('hidden');
@@ -398,7 +398,7 @@ describe('MznFade', () => {
 
     fixture.detectChanges();
     const root = fixture.nativeElement.querySelector(
-      'mzn-fade > div',
+      '[mznFade] > div',
     ) as HTMLElement;
 
     expect(root.style.opacity).toBe('0');
@@ -499,7 +499,7 @@ describe('MznScale', () => {
 
     fixture.detectChanges();
     const root = fixture.nativeElement.querySelector(
-      'mzn-scale > div',
+      '[mznScale] > div',
     ) as HTMLElement;
 
     expect(root.style.opacity).toBe('0');
@@ -530,7 +530,7 @@ describe('MznSlide', () => {
 
     fixture.detectChanges();
     const root = fixture.nativeElement.querySelector(
-      'mzn-slide > div',
+      '[mznSlide] > div',
     ) as HTMLElement;
 
     expect(root.style.transform).toContain('100%');
@@ -560,7 +560,7 @@ describe('MznTranslate', () => {
 
     fixture.detectChanges();
     const root = fixture.nativeElement.querySelector(
-      'mzn-translate > div',
+      '[mznTranslate] > div',
     ) as HTMLElement;
 
     expect(root.style.opacity).toBe('0');

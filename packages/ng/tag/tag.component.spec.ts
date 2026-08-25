@@ -123,6 +123,6 @@ describe('MznTag', () => {
   it('should render badge for counter type', () => {
     const { getEl } = createFixture({ type: 'counter', count: 5 });
 
-    expect(getEl().querySelector('mzn-badge')).toBeTruthy();
+    expect(getEl().querySelector('[mznBadge]')).toBeTruthy();
   });
 });
