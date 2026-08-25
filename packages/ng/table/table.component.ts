@@ -1617,7 +1617,15 @@ export class MznTable {
   readonly highlight = input<HighlightMode>('row');
 
   /**
-   * 是否顯示載入狀態。
+   * 是否顯示載入狀態。載入時表身改渲染骨架列。
+   *
+   * 骨架列只帶 key，因此**載入期間不會有任何 callback 拿到骨架列**。
+   * 逐列的 callback —— `cellRender` template、`actions`、`rowState`、
+   * `rowExpandable`、`expandedRowRender`、`toggleable.isRowDisabled`、
+   * `collectable.isRowDisabled` —— 載入期間完全不會被呼叫；
+   * `isSelectionDisabled` 仍會執行（表頭全選狀態需要），但只走真實
+   * `dataSource`。這些 callback 都可以直接存取 record 的欄位，
+   * 不需要另外防護載入狀態。
    * @default false
    */
   readonly loading = input(false);
@@ -2650,6 +2658,7 @@ export class MznTable {
   protected readonly rowClassesMap = computed(
     (): ReadonlyMap<number, string> => {
       const data = this.dataSourceForRender();
+      const isLoading = this.loading();
       const ts = this.transitionState();
       const sep = this.separatorAtRowIndexes();
       const selected = this.resolvedSelectedKeys();
@@ -2663,7 +2672,14 @@ export class MznTable {
 
       data.forEach((record, idx) => {
         const key = getRowKey(record);
-        const state = this.getRowState(record);
+        /**
+         * While loading, `data` holds placeholder rows that only carry a key —
+         * they are not of the consumer's record shape, so `rowState` must not
+         * be handed one. Every other record callback in the template already
+         * sits behind an `@if (loading())` branch; this computed is the one
+         * place that runs eagerly.
+         */
+        const state = isLoading ? undefined : this.getRowState(record);
 
         map.set(
           idx,
