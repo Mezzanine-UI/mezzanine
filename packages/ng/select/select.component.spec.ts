@@ -30,12 +30,18 @@ class TestHostComponent {
   flip = false;
 }
 
-function createFixture<T>(component: new () => T): {
+function createFixture<T>(
+  component: new () => T,
+  overrides: Partial<T> = {},
+): {
   fixture: ReturnType<typeof TestBed.createComponent<T>>;
   host: T;
 } {
   const fixture = TestBed.createComponent(component);
 
+  // Applied before the first pass: mutating a host input afterwards trips
+  // NG0100 because the change lands between the check and verify passes.
+  Object.assign(fixture.componentInstance as object, overrides);
   fixture.detectChanges();
 
   return { fixture, host: fixture.componentInstance };
@@ -59,9 +65,9 @@ describe('MznSelect', () => {
     const { fixture } = createFixture(TestHostComponent);
     const input = fixture.nativeElement.querySelector(
       '.mzn-select-trigger__input',
-    );
+    ) as HTMLInputElement;
 
-    expect(input.textContent.trim()).toBe('Choose');
+    expect(input.getAttribute('placeholder')).toBe('Choose');
   });
 
   it('should open dropdown on click', () => {
@@ -72,7 +78,7 @@ describe('MznSelect', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const listbox = fixture.nativeElement.querySelector('[role="listbox"]');
+    const listbox = document.querySelector<HTMLElement>('[role="listbox"]');
 
     expect(listbox).toBeTruthy();
   });
@@ -85,15 +91,13 @@ describe('MznSelect', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll<HTMLElement>('[role="option"]');
 
     expect(items.length).toBe(3);
   });
 
   it('should open dropdown when flip is enabled', () => {
-    const { fixture, host } = createFixture(TestHostComponent);
-    host.flip = true;
-    fixture.detectChanges();
+    const { fixture } = createFixture(TestHostComponent, { flip: true });
 
     const trigger = fixture.nativeElement.querySelector('.mzn-select-trigger');
 
@@ -101,7 +105,7 @@ describe('MznSelect', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const listbox = fixture.nativeElement.querySelector('[role="listbox"]');
+    const listbox = document.querySelector<HTMLElement>('[role="listbox"]');
 
     expect(listbox).toBeTruthy();
   });
@@ -117,7 +121,7 @@ describe('MznSelect', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll<HTMLElement>('[role="option"]');
 
     items[1].click();
     fixture.detectChanges();
@@ -139,8 +143,8 @@ describe('MznSelect', () => {
 
     const input = fixture.nativeElement.querySelector(
       '.mzn-select-trigger__input',
-    );
+    ) as HTMLInputElement;
 
-    expect(input.textContent.trim()).toBe('Apple');
+    expect(input.value).toBe('Apple');
   });
 });

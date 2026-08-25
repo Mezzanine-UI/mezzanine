@@ -140,7 +140,7 @@ describe('MznLayout', () => {
     fixture.detectChanges();
 
     const divider = getLayoutElement().querySelector(
-      'mzn-layout-left-panel [role="separator"]',
+      '[mznLayoutLeftPanel] [role="separator"]',
     );
 
     expect(divider).toBeTruthy();
@@ -154,7 +154,7 @@ describe('MznLayout', () => {
     fixture.detectChanges();
 
     const divider = getLayoutElement().querySelector(
-      'mzn-layout-right-panel [role="separator"]',
+      '[mznLayoutRightPanel] [role="separator"]',
     );
 
     expect(divider).toBeTruthy();
@@ -169,7 +169,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const divider = getLayoutElement().querySelector(
-        'mzn-layout-left-panel [role="separator"]',
+        '[mznLayoutLeftPanel] [role="separator"]',
       );
 
       expect(divider?.getAttribute('aria-orientation')).toBe('vertical');
@@ -186,7 +186,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const divider = getLayoutElement().querySelector(
-        'mzn-layout-right-panel [role="separator"]',
+        '[mznLayoutRightPanel] [role="separator"]',
       );
 
       expect(divider?.getAttribute('aria-orientation')).toBe('vertical');
@@ -312,7 +312,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const divider = getLayoutElement().querySelector(
-        'mzn-layout-left-panel [role="separator"]',
+        '[mznLayoutLeftPanel] [role="separator"]',
       ) as HTMLElement;
 
       divider.dispatchEvent(

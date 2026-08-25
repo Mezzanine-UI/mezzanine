@@ -23,8 +23,8 @@ const MOCK_OPTIONS: DropdownOption[] = [
       [value]="value"
       [disableClickAway]="true"
       [flip]="flip"
-      (selected)="onSelect($event)"
-      (closed)="open = false"
+      (select)="onSelect($event)"
+      (close)="open = false"
     ></div>
   `,
 })
@@ -61,8 +61,9 @@ describe('MznDropdown', () => {
   });
 
   it('should not render when closed', () => {
-    const { fixture } = createFixture(TestHostComponent);
-    const list = fixture.nativeElement.querySelector('[role="listbox"]');
+    createFixture(TestHostComponent);
+
+    const list = document.querySelector<HTMLElement>('[role="listbox"]');
 
     expect(list).toBeFalsy();
   });
@@ -75,7 +76,7 @@ describe('MznDropdown', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll<HTMLElement>('[role="option"]');
 
     expect(items.length).toBe(3);
   });
@@ -89,7 +90,7 @@ describe('MznDropdown', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll<HTMLElement>('[role="option"]');
 
     expect(items.length).toBe(3);
   });
@@ -102,7 +103,7 @@ describe('MznDropdown', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll<HTMLElement>('[role="option"]');
 
     expect(items[0].textContent).toContain('Option 1');
     expect(items[1].textContent).toContain('Option 2');
@@ -116,7 +117,7 @@ describe('MznDropdown', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll<HTMLElement>('[role="option"]');
 
     items[1].click();
     fixture.detectChanges();
@@ -133,7 +134,7 @@ describe('MznDropdown', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const activeItems = fixture.nativeElement.querySelectorAll(
+    const activeItems = document.querySelectorAll(
       '.mzn-dropdown-item-card--active',
     );
 
