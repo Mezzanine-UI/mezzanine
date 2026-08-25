@@ -58,6 +58,7 @@ function createFixture(): {
   host: TestHostComponent;
   getHost: () => HTMLElement;
   getTrigger: () => HTMLElement;
+  getTriggerInput: () => HTMLInputElement;
   getPanels: () => HTMLElement | null;
   getPanelItems: (panelIndex: number) => NodeListOf<HTMLElement>;
 } {
@@ -74,12 +75,16 @@ function createFixture(): {
       fixture.nativeElement.querySelector(`.${classes.host}`)!,
     getTrigger: (): HTMLElement =>
       fixture.nativeElement.querySelector('[mznSelectTrigger]')!,
+    // The trigger renders an <input>: the placeholder lives on the attribute
+    // and the selected label on `value`, never on textContent.
+    getTriggerInput: (): HTMLInputElement =>
+      fixture.nativeElement.querySelector('[mznSelectTrigger] input')!,
+    // Panels are portalled into the CDK overlay container on document.body,
+    // not under the fixture.
     getPanels: (): HTMLElement | null =>
-      fixture.nativeElement.querySelector(`.${classes.dropdownPanels}`),
+      document.querySelector(`.${classes.dropdownPanels}`),
     getPanelItems: (panelIndex: number): NodeListOf<HTMLElement> => {
-      const panels = fixture.nativeElement.querySelectorAll(
-        `.${classes.panel}`,
-      );
+      const panels = document.querySelectorAll(`.${classes.panel}`);
 
       return (
         panels[panelIndex]?.querySelectorAll(`.${classes.item}`) ??
@@ -103,16 +108,16 @@ describe('MznCascader', () => {
   });
 
   it('should render placeholder when no value', () => {
-    const { host, fixture, getTrigger } = createFixture();
+    const { host, fixture, getTriggerInput } = createFixture();
 
     host.placeholder.set('請選擇');
     fixture.detectChanges();
 
-    expect(getTrigger().textContent).toContain('請選擇');
+    expect(getTriggerInput().getAttribute('placeholder')).toBe('請選擇');
   });
 
   it('should display selected value path', () => {
-    const { host, fixture, getTrigger } = createFixture();
+    const { host, fixture, getTriggerInput } = createFixture();
 
     host.value.set([
       MOCK_OPTIONS[0],
@@ -121,7 +126,7 @@ describe('MznCascader', () => {
     ]);
     fixture.detectChanges();
 
-    expect(getTrigger().textContent).toContain(
+    expect(getTriggerInput().value).toBe(
       'Option 1 / Option 1-1 / Option 1-1-1',
     );
   });

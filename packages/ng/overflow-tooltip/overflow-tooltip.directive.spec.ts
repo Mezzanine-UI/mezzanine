@@ -51,13 +51,17 @@ describe('MznOverflowTooltip', () => {
     expect(tags.length).toBe(3);
   });
 
-  it('should not render tags when open is false', () => {
+  it('should keep the popper hidden when open is false', () => {
     const fixture = TestBed.createComponent(OverflowTooltipHostComponent);
     fixture.componentInstance.open.set(false);
     fixture.detectChanges();
 
-    const tags = fixture.nativeElement.querySelectorAll('[mznTag]');
-    expect(tags.length).toBe(0);
+    const popper = fixture.nativeElement.querySelector(
+      '[mznPopper]',
+    ) as HTMLElement;
+
+    // MznPopper keeps its content mounted and hides it with display:none.
+    expect(popper.style.display).toBe('none');
   });
 });
 
