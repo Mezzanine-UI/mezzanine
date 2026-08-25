@@ -20,6 +20,7 @@ import {
   InputCheckSize,
 } from '@mezzanine-ui/core/_internal/input-check';
 import clsx from 'clsx';
+import { NgTemplateOutlet } from '@angular/common';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznInput } from '@mezzanine-ui/ng/input';
 import { IconDefinition } from '@mezzanine-ui/icons';
@@ -57,7 +58,7 @@ export interface RadioWithInputConfig {
 @Component({
   selector: '[mznRadio]',
   standalone: true,
-  imports: [MznIcon, MznInput],
+  imports: [MznIcon, MznInput, NgTemplateOutlet],
   providers: [provideValueAccessor(MznRadio)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -74,6 +75,14 @@ export interface RadioWithInputConfig {
     '[attr.value]': 'null',
   },
   template: `
+    <!--
+      The projected label is declared once and stamped into whichever branch
+      renders. A bare <ng-content /> in each branch would share a single
+      projection slot, and only one of them would ever receive the content —
+      which left the default radio type with no label at all.
+    -->
+    <ng-template #label><ng-content /></ng-template>
+
     @if (resolvedType() === 'radio') {
       <label [class]="labelHostClasses()">
         <span [class]="radioControlClass">
@@ -91,7 +100,7 @@ export interface RadioWithInputConfig {
           </span>
         </span>
         <span [class]="labelClass">
-          <ng-content />
+          <ng-container *ngTemplateOutlet="label" />
           @if (hint()) {
             <span [class]="hintClass">{{ hint() }}</span>
           }
@@ -118,7 +127,7 @@ export interface RadioWithInputConfig {
               @if (icon()) {
                 <i mznIcon [icon]="icon()!" [size]="16"></i>
               }
-              <ng-content />
+              <ng-container *ngTemplateOutlet="label" />
             </span>
             <input
               type="radio"
