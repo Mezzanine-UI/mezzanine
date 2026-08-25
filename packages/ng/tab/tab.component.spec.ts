@@ -8,9 +8,9 @@ import { MznTabItem } from './tab-item.component';
   imports: [MznTabs, MznTabItem],
   template: `
     <div mznTabs [activeKey]="activeKey" (activeKeyChange)="activeKey = $event">
-      <div mznTabItem [key]="0">Tab 1</div>
-      <div mznTabItem [key]="1">Tab 2</div>
-      <div mznTabItem [key]="2" [disabled]="true">Tab 3</div>
+      <button mznTabItem [key]="0">Tab 1</button>
+      <button mznTabItem [key]="1">Tab 2</button>
+      <button mznTabItem [key]="2" [disabled]="true">Tab 3</button>
     </div>
   `,
 })
@@ -23,9 +23,9 @@ class TestHostComponent {
   imports: [MznTabs, MznTabItem],
   template: `
     <div mznTabs [defaultActiveKey]="1">
-      <div mznTabItem [key]="0">Tab 1</div>
-      <div mznTabItem [key]="1">Tab 2</div>
-      <div mznTabItem [key]="2">Tab 3</div>
+      <button mznTabItem [key]="0">Tab 1</button>
+      <button mznTabItem [key]="1">Tab 2</button>
+      <button mznTabItem [key]="2">Tab 3</button>
     </div>
   `,
 })

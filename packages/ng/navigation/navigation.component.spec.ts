@@ -113,9 +113,7 @@ describe('MznNavigation', () => {
 
   it('should apply basic class for leaf options', () => {
     const { getEl } = createFixture();
-    const homeOption = getEl().querySelector(
-      'mzn-navigation-option[data-id="首頁"]',
-    );
+    const homeOption = getEl().querySelector('li[data-id="首頁"]');
 
     expect(homeOption?.classList.contains('mzn-navigation-option--basic')).toBe(
       true,
@@ -124,9 +122,7 @@ describe('MznNavigation', () => {
 
   it('should not show children of collapsed group option', () => {
     const { getEl } = createFixture();
-    const settingsOption = getEl().querySelector(
-      'mzn-navigation-option[data-id="設定"]',
-    );
+    const settingsOption = getEl().querySelector('li[data-id="設定"]');
 
     // Children should not be visible when not open
     expect(settingsOption?.querySelector('ul')).toBeNull();
@@ -134,9 +130,7 @@ describe('MznNavigation', () => {
 
   it('should toggle group option on click', () => {
     const { fixture, getEl } = createFixture();
-    const settingsOption = getEl().querySelector(
-      'mzn-navigation-option[data-id="設定"]',
-    );
+    const settingsOption = getEl().querySelector('li[data-id="設定"]');
     const trigger = settingsOption?.querySelector(
       '[role="menuitem"]',
     ) as HTMLElement;
@@ -149,9 +143,7 @@ describe('MznNavigation', () => {
 
   it('should activate option on click', () => {
     const { fixture, getEl } = createFixture();
-    const homeOption = getEl().querySelector(
-      'mzn-navigation-option[data-id="首頁"]',
-    );
+    const homeOption = getEl().querySelector('li[data-id="首頁"]');
     const trigger = homeOption?.querySelector(
       '[role="menuitem"]',
     ) as HTMLElement;
