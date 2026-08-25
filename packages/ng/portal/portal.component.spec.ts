@@ -7,13 +7,14 @@ import { MznPortalRegistry } from './portal-registry.service';
   standalone: true,
   imports: [MznPortal],
   template: `
-    <mzn-portal
+    <div
+      mznPortal
       [disablePortal]="disablePortal"
       [layer]="layer"
       [container]="container"
     >
       <div class="portal-content">Portal Content</div>
-    </mzn-portal>
+    </div>
   `,
 })
 class TestHostComponent {

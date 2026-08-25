@@ -7,14 +7,15 @@ import { MznPopper } from './popper.component';
   imports: [MznPopper],
   template: `
     <button #anchor>Anchor</button>
-    <mzn-popper
+    <div
+      mznPopper
       [anchor]="anchorEl()"
       [open]="open"
       [placement]="placement"
       [offsetOptions]="offsetOptions"
     >
       <div class="popper-content">Popper Content</div>
-    </mzn-popper>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -43,7 +44,7 @@ function createFixture(
     fixture,
     host,
     getPopperElement: () =>
-      fixture.nativeElement.querySelector('mzn-popper') as HTMLElement,
+      fixture.nativeElement.querySelector('[mznPopper]') as HTMLElement,
   };
 }
 

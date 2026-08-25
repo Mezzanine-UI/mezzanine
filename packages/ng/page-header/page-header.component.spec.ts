@@ -6,10 +6,10 @@ import { MznPageHeader } from './page-header.component';
   standalone: true,
   imports: [MznPageHeader],
   template: `
-    <mzn-page-header>
+    <div mznPageHeader>
       <nav>Breadcrumb here</nav>
       <div>Content header here</div>
-    </mzn-page-header>
+    </div>
   `,
 })
 class TestHost {}
@@ -27,18 +27,18 @@ describe('MznPageHeader', () => {
   });
 
   it('should render with host class', () => {
-    const el = fixture.nativeElement.querySelector('mzn-page-header');
+    const el = fixture.nativeElement.querySelector('[mznPageHeader]');
     expect(el).toBeTruthy();
     expect(el.classList.contains('mzn-page-header')).toBe(true);
   });
 
   it('should have banner role', () => {
-    const el = fixture.nativeElement.querySelector('mzn-page-header');
+    const el = fixture.nativeElement.querySelector('[mznPageHeader]');
     expect(el.getAttribute('role')).toBe('banner');
   });
 
   it('should project children', () => {
-    const el = fixture.nativeElement.querySelector('mzn-page-header');
+    const el = fixture.nativeElement.querySelector('[mznPageHeader]');
     expect(el.textContent).toContain('Breadcrumb here');
     expect(el.textContent).toContain('Content header here');
   });

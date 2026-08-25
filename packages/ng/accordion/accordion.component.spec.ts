@@ -9,15 +9,16 @@ import { MznAccordionGroup } from './accordion-group.component';
   standalone: true,
   imports: [MznAccordion, MznAccordionTitle, MznAccordionContent],
   template: `
-    <mzn-accordion
+    <div
+      mznAccordion
       [disabled]="disabled"
       [expanded]="expanded"
       [size]="size"
       (expandedChange)="onExpandedChange($event)"
     >
-      <mzn-accordion-title>測試標題</mzn-accordion-title>
-      <mzn-accordion-content>測試內容</mzn-accordion-content>
-    </mzn-accordion>
+      <div mznAccordionTitle>測試標題</div>
+      <div mznAccordionContent>測試內容</div>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -42,7 +43,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-accordion')!,
+      fixture.nativeElement.querySelector('[mznAccordion]')!,
   };
 }
 

@@ -11,10 +11,10 @@ import {
   standalone: true,
   imports: [MznSection, MznContentHeader],
   template: `
-    <mzn-section>
-      <mzn-content-header [title]="contentTitle" size="sub" />
+    <div mznSection>
+      <div mznContentHeader [title]="contentTitle" size="sub"></div>
       <p class="test-content">主要內容</p>
-    </mzn-section>
+    </div>
   `,
 })
 class TestSectionHost {
@@ -25,10 +25,10 @@ class TestSectionHost {
   standalone: true,
   imports: [MznSectionGroup, MznSection],
   template: `
-    <mzn-section-group [direction]="direction">
-      <mzn-section><p>區段一</p></mzn-section>
-      <mzn-section><p>區段二</p></mzn-section>
-    </mzn-section-group>
+    <div mznSectionGroup [direction]="direction">
+      <div mznSection><p>區段一</p></div>
+      <div mznSection><p>區段二</p></div>
+    </div>
   `,
 })
 class TestSectionGroupHost {
@@ -54,7 +54,7 @@ describe('MznSection', () => {
     return {
       fixture,
       getEl: (): HTMLElement =>
-        fixture.nativeElement.querySelector('mzn-section')!,
+        fixture.nativeElement.querySelector('[mznSection]')!,
     };
   }
 
@@ -73,7 +73,7 @@ describe('MznSection', () => {
   it('should render content-header slot', () => {
     const { getEl } = createFixture();
 
-    expect(getEl().querySelector('mzn-content-header')).toBeTruthy();
+    expect(getEl().querySelector('[mznContentHeader]')).toBeTruthy();
   });
 
   it('should render main content inside content wrapper', () => {
@@ -104,7 +104,7 @@ describe('MznSectionGroup', () => {
     return {
       fixture,
       getEl: (): HTMLElement =>
-        fixture.nativeElement.querySelector('mzn-section-group')!,
+        fixture.nativeElement.querySelector('[mznSectionGroup]')!,
     };
   }
 
@@ -139,6 +139,6 @@ describe('MznSectionGroup', () => {
   it('should render children sections', () => {
     const { getEl } = createFixture();
 
-    expect(getEl().querySelectorAll('mzn-section')).toHaveLength(2);
+    expect(getEl().querySelectorAll('[mznSection]')).toHaveLength(2);
   });
 });

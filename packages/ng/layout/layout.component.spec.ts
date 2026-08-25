@@ -9,15 +9,15 @@ import { MznLayoutRightPanel } from './layout-right-panel.component';
   standalone: true,
   imports: [MznLayout, MznLayoutMain, MznLayoutLeftPanel, MznLayoutRightPanel],
   template: `
-    <mzn-layout>
-      <mzn-layout-left-panel [open]="leftOpen()"
+    <div mznLayout>
+      <div mznLayoutLeftPanel [open]="leftOpen()"
         >Left Panel</mzn-layout-left-panel
       >
-      <mzn-layout-main>Main Content</mzn-layout-main>
-      <mzn-layout-right-panel [open]="rightOpen()"
+      <div mznLayoutMain>Main Content</div>
+      <div mznLayoutRightPanel [open]="rightOpen()"
         >Right Panel</mzn-layout-right-panel
       >
-    </mzn-layout>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -38,7 +38,7 @@ function createFixture(): {
     fixture,
     host: fixture.componentInstance,
     getLayoutElement: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-layout')!,
+      fixture.nativeElement.querySelector('[mznLayout]')!,
   };
 }
 
@@ -66,7 +66,7 @@ describe('MznLayout', () => {
 
   it('should render main content', () => {
     const { getLayoutElement } = createFixture();
-    const main = getLayoutElement().querySelector('mzn-layout-main');
+    const main = getLayoutElement().querySelector('[mznLayoutMain]');
 
     expect(main).toBeTruthy();
     expect(main?.classList.contains('mzn-layout__main')).toBe(true);
@@ -82,7 +82,7 @@ describe('MznLayout', () => {
     host.leftOpen.set(true);
     fixture.detectChanges();
 
-    const panel = getLayoutElement().querySelector('mzn-layout-left-panel');
+    const panel = getLayoutElement().querySelector('[mznLayoutLeftPanel]');
 
     expect(panel).toBeTruthy();
 
@@ -94,7 +94,7 @@ describe('MznLayout', () => {
 
   it('should hide left panel when closed', () => {
     const { getLayoutElement } = createFixture();
-    const panel = getLayoutElement().querySelector('mzn-layout-left-panel');
+    const panel = getLayoutElement().querySelector('[mznLayoutLeftPanel]');
 
     expect(panel?.querySelector('.mzn-layout__side-panel-content')).toBeNull();
   });
@@ -105,7 +105,7 @@ describe('MznLayout', () => {
     host.rightOpen.set(true);
     fixture.detectChanges();
 
-    const panel = getLayoutElement().querySelector('mzn-layout-right-panel');
+    const panel = getLayoutElement().querySelector('[mznLayoutRightPanel]');
 
     expect(panel).toBeTruthy();
 
@@ -122,7 +122,7 @@ describe('MznLayout', () => {
     host.rightOpen.set(true);
     fixture.detectChanges();
 
-    const leftPanel = getLayoutElement().querySelector('mzn-layout-left-panel');
+    const leftPanel = getLayoutElement().querySelector('[mznLayoutLeftPanel]');
     const rightPanel = getLayoutElement().querySelector(
       'mzn-layout-right-panel',
     );
@@ -343,12 +343,12 @@ describe('MznLayout', () => {
         standalone: true,
         imports: [MznLayout, MznLayoutMain, MznLayoutLeftPanel],
         template: `
-          <mzn-layout>
-            <mzn-layout-left-panel [open]="true" [defaultWidth]="100"
+          <div mznLayout>
+            <div mznLayoutLeftPanel [open]="true" [defaultWidth]="100"
               >Content</mzn-layout-left-panel
             >
-            <mzn-layout-main>Main</mzn-layout-main>
-          </mzn-layout>
+            <div mznLayoutMain>Main</div>
+          </div>
         `,
       })
       class SmallWidthHost {}

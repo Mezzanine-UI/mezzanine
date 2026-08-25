@@ -7,15 +7,16 @@ import { MznStep, StepOrientation, StepType } from './step.component';
   standalone: true,
   imports: [MznStepper, MznStep],
   template: `
-    <mzn-stepper
+    <div
+      mznStepper
       [currentStep]="currentStep"
       [orientation]="orientation"
       [type]="type"
     >
-      <mzn-step title="步驟一" description="描述一" />
-      <mzn-step title="步驟二" />
-      <mzn-step title="步驟三" [error]="hasError" />
-    </mzn-stepper>
+      <div mznStep title="步驟一" description="描述一"></div>
+      <div mznStep title="步驟二"></div>
+      <div mznStep title="步驟三" [error]="hasError"></div>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -41,9 +42,9 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-stepper')!,
+      fixture.nativeElement.querySelector('[mznStepper]')!,
     getSteps: (): HTMLElement[] =>
-      Array.from(fixture.nativeElement.querySelectorAll('mzn-step')),
+      Array.from(fixture.nativeElement.querySelectorAll('[mznStep]')),
   };
 }
 

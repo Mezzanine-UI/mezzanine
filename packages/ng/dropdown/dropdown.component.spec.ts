@@ -15,7 +15,8 @@ const MOCK_OPTIONS: DropdownOption[] = [
   imports: [MznDropdown],
   template: `
     <button #anchor>Toggle</button>
-    <mzn-dropdown
+    <div
+      mznDropdown
       [anchor]="anchorRef()"
       [open]="open"
       [options]="options"
@@ -24,7 +25,7 @@ const MOCK_OPTIONS: DropdownOption[] = [
       [flip]="flip"
       (selected)="onSelect($event)"
       (closed)="open = false"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {

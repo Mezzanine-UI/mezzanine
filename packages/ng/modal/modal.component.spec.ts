@@ -9,7 +9,8 @@ import { MznModalFooter } from './modal-footer.component';
   standalone: true,
   imports: [MznModal, MznModalHeader, MznModalFooter],
   template: `
-    <mzn-modal
+    <div
+      mznModal
       [open]="open"
       [size]="size"
       [modalStatusType]="'info'"
@@ -18,15 +19,15 @@ import { MznModalFooter } from './modal-footer.component';
       [showModalFooter]="true"
       (closed)="onClose()"
     >
-      <mzn-modal-header title="Test Title" supportingText="Supporting" />
+      <div mznModalHeader title="Test Title" supportingText="Supporting"></div>
       <div class="mzn-modal__body-container">
         <p>Body content</p>
       </div>
-      <mzn-modal-footer>
+      <div mznModalFooter>
         <button class="cancel" (click)="onClose()">Cancel</button>
         <button class="confirm">Confirm</button>
-      </mzn-modal-footer>
-    </mzn-modal>
+      </div>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -41,9 +42,14 @@ class TestHostComponent {
   standalone: true,
   imports: [MznModal],
   template: `
-    <mzn-modal [open]="true" [showDismissButton]="false" [disablePortal]="true">
+    <div
+      mznModal
+      [open]="true"
+      [showDismissButton]="false"
+      [disablePortal]="true"
+    >
       <p>Minimal</p>
-    </mzn-modal>
+    </div>
   `,
 })
 class TestMinimalComponent {}
@@ -125,7 +131,7 @@ describe('MznModal', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const closeBtn = fixture.nativeElement.querySelector('mzn-clear-actions');
+    const closeBtn = fixture.nativeElement.querySelector('[mznClearActions]');
 
     expect(closeBtn).toBeTruthy();
   });
@@ -135,7 +141,7 @@ describe('MznModal', () => {
 
     fixture.detectChanges();
 
-    const closeBtn = fixture.nativeElement.querySelector('mzn-clear-actions');
+    const closeBtn = fixture.nativeElement.querySelector('[mznClearActions]');
 
     expect(closeBtn).toBeFalsy();
   });

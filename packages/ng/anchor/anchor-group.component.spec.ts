@@ -7,7 +7,7 @@ import { AnchorItemData } from './typings';
   standalone: true,
   imports: [MznAnchorGroup],
   template: `
-    <mzn-anchor-group [anchors]="anchors" [className]="className" />
+    <div mznAnchorGroup [anchors]="anchors" [className]="className"></div>
   `,
 })
 class TestHostComponent {
@@ -34,7 +34,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-anchor-group')!,
+      fixture.nativeElement.querySelector('[mznAnchorGroup]')!,
   };
 }
 

@@ -10,14 +10,15 @@ import { MznResultState } from './result-state.component';
   standalone: true,
   imports: [MznResultState],
   template: `
-    <mzn-result-state
+    <div
+      mznResultState
       [description]="description"
       [size]="size"
       [title]="title"
       [type]="type"
     >
       <button actions>Action</button>
-    </mzn-result-state>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -42,7 +43,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-result-state')!,
+      fixture.nativeElement.querySelector('[mznResultState]')!,
   };
 }
 

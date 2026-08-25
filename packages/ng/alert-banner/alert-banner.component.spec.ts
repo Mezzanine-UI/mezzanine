@@ -7,13 +7,14 @@ import { MznAlertBanner, AlertBannerAction } from './alert-banner.component';
   standalone: true,
   imports: [MznAlertBanner],
   template: `
-    <mzn-alert-banner
+    <div
+      mznAlertBanner
       [severity]="severity"
       [message]="message"
       [closable]="closable"
       [actions]="actions"
       (closed)="onClosed()"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {

@@ -8,7 +8,7 @@ import { MznRadioGroup } from './radio-group.component';
   standalone: true,
   imports: [MznRadio, FormsModule],
   template: `
-    <mzn-radio [checked]="checked" [disabled]="disabled" value="test"
+    <div mznRadio [checked]="checked" [disabled]="disabled" value="test"
       >Label</mzn-radio
     >
   `,
@@ -22,11 +22,11 @@ class TestHostComponent {
   standalone: true,
   imports: [MznRadio, MznRadioGroup, FormsModule],
   template: `
-    <mzn-radio-group [(ngModel)]="selected" name="color">
-      <mzn-radio value="red">Red</mzn-radio>
-      <mzn-radio value="blue">Blue</mzn-radio>
-      <mzn-radio value="green">Green</mzn-radio>
-    </mzn-radio-group>
+    <div mznRadioGroup [(ngModel)]="selected" name="color">
+      <div mznRadio value="red">Red</div>
+      <div mznRadio value="blue">Blue</div>
+      <div mznRadio value="green">Green</div>
+    </div>
   `,
 })
 class TestGroupComponent {

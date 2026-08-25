@@ -6,7 +6,7 @@ import { MznBreadcrumbItem } from './breadcrumb-item.component';
 @Component({
   standalone: true,
   imports: [MznBreadcrumb],
-  template: `<mzn-breadcrumb [items]="items" />`,
+  template: `<div mznBreadcrumb [items]="items"></div>`,
 })
 class TestHostComponent {
   items: readonly BreadcrumbItemData[] = [
@@ -31,7 +31,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-breadcrumb')!,
+      fixture.nativeElement.querySelector('[mznBreadcrumb]')!,
   };
 }
 

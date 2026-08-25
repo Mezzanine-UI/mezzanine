@@ -7,7 +7,8 @@ import { MznTag } from './tag.component';
   standalone: true,
   imports: [MznTag],
   template: `
-    <mzn-tag
+    <div
+      mznTag
       [type]="type"
       [label]="label"
       [size]="size"
@@ -16,7 +17,7 @@ import { MznTag } from './tag.component';
       [active]="active"
       (close)="onClose($event)"
       (tagClick)="onClick($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -45,7 +46,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
   return {
     fixture,
     host,
-    getEl: (): HTMLElement => fixture.nativeElement.querySelector('mzn-tag')!,
+    getEl: (): HTMLElement => fixture.nativeElement.querySelector('[mznTag]')!,
   };
 }
 

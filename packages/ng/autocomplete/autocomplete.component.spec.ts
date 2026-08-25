@@ -20,11 +20,12 @@ const CASE_SENSITIVE_OPTIONS: DropdownOption[] = [
   standalone: true,
   imports: [MznAutocomplete, FormsModule],
   template: `
-    <mzn-autocomplete
+    <div
+      mznAutocomplete
       [options]="options"
       [(ngModel)]="selected"
       placeholder="Search fruits"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {

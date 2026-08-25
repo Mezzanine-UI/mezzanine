@@ -7,7 +7,8 @@ import type { TableColumn, TableDataSource, TableSize } from './table-types';
   standalone: true,
   imports: [MznTable],
   template: `
-    <mzn-table
+    <div
+      mznTable
       [columns]="columns()"
       [dataSource]="dataSource()"
       [emptyText]="emptyText()"
@@ -20,7 +21,7 @@ import type { TableColumn, TableDataSource, TableSize } from './table-types';
       (expandedRowKeysChange)="onExpandedRowKeysChange($event)"
       (selectedRowKeysChange)="onSelectedRowKeysChange($event)"
       (sortChange)="onSortChange($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -73,7 +74,7 @@ describe('MznTable', () => {
 
   it('should create with host class', () => {
     const { el } = createFixture();
-    const table = el.querySelector('mzn-table')!;
+    const table = el.querySelector('[mznTable]')!;
 
     expect(table.classList.contains('mzn-table-host')).toBe(true);
   });

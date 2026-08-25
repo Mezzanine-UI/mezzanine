@@ -9,10 +9,11 @@ import {
   standalone: true,
   imports: [MznInlineMessageGroup],
   template: `
-    <mzn-inline-message-group
+    <div
+      mznInlineMessageGroup
       [items]="items"
       (itemClose)="onItemClose($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -53,7 +54,7 @@ describe('MznInlineMessageGroup', () => {
 
   it('should have role="region" and aria-live="polite"', () => {
     const { fixture } = createFixture();
-    const el = fixture.nativeElement.querySelector('mzn-inline-message-group');
+    const el = fixture.nativeElement.querySelector('[mznInlineMessageGroup]');
 
     expect(el.getAttribute('role')).toBe('region');
     expect(el.getAttribute('aria-live')).toBe('polite');
@@ -66,7 +67,7 @@ describe('MznInlineMessageGroup', () => {
     ];
     const { fixture } = createFixture({ items });
     const messages =
-      fixture.nativeElement.querySelectorAll('mzn-inline-message');
+      fixture.nativeElement.querySelectorAll('[mznInlineMessage]');
 
     expect(messages.length).toBe(2);
     expect(fixture.nativeElement.textContent).toContain('Info message');

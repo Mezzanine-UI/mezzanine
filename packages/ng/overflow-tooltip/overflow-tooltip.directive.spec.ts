@@ -11,12 +11,13 @@ import { MznOverflowCounterTag } from './overflow-counter-tag.component';
   imports: [MznOverflowTooltip],
   template: `
     <div #anchorEl class="anchor" style="width: 32px; height: 32px;"></div>
-    <mzn-overflow-tooltip
+    <div
+      mznOverflowTooltip
       [anchor]="anchorElRef()!"
       [open]="open()"
       [tags]="tags()"
       (tagDismiss)="lastDismissedIndex.set($event)"
-    />
+    ></div>
   `,
 })
 class OverflowTooltipHostComponent {
@@ -46,7 +47,7 @@ describe('MznOverflowTooltip', () => {
     fixture.componentInstance.open.set(true);
     fixture.detectChanges();
 
-    const tags = fixture.nativeElement.querySelectorAll('mzn-tag');
+    const tags = fixture.nativeElement.querySelectorAll('[mznTag]');
     expect(tags.length).toBe(3);
   });
 
@@ -55,7 +56,7 @@ describe('MznOverflowTooltip', () => {
     fixture.componentInstance.open.set(false);
     fixture.detectChanges();
 
-    const tags = fixture.nativeElement.querySelectorAll('mzn-tag');
+    const tags = fixture.nativeElement.querySelectorAll('[mznTag]');
     expect(tags.length).toBe(0);
   });
 });
@@ -66,12 +67,13 @@ describe('MznOverflowTooltip', () => {
   standalone: true,
   imports: [MznOverflowCounterTag],
   template: `
-    <mzn-overflow-counter-tag
+    <div
+      mznOverflowCounterTag
       [tags]="tags()"
       [disabled]="disabled()"
       [readOnly]="readOnly()"
       (tagDismiss)="lastDismissedIndex.set($event)"
-    />
+    ></div>
   `,
 })
 class OverflowCounterTagHostComponent {
@@ -99,7 +101,7 @@ describe('MznOverflowCounterTag', () => {
     const fixture = TestBed.createComponent(OverflowCounterTagHostComponent);
     fixture.detectChanges();
 
-    const tag = fixture.nativeElement.querySelector('mzn-tag');
+    const tag = fixture.nativeElement.querySelector('[mznTag]');
     expect(tag).toBeTruthy();
   });
 });

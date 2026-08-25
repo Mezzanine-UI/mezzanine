@@ -9,7 +9,8 @@ import { MznFormField } from './form-field.component';
   standalone: true,
   imports: [MznFormField],
   template: `
-    <mzn-form-field
+    <div
+      mznFormField
       [name]="name"
       [label]="label"
       [layout]="layout"
@@ -21,7 +22,7 @@ import { MznFormField } from './form-field.component';
       [counter]="counter"
     >
       <input placeholder="test" />
-    </mzn-form-field>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -55,14 +56,15 @@ class TestFormChildComponent {
   standalone: true,
   imports: [MznFormField, TestFormChildComponent],
   template: `
-    <mzn-form-field
+    <div
+      mznFormField
       name="parent"
       [disabled]="true"
       [required]="true"
       severity="error"
     >
       <test-form-child />
-    </mzn-form-field>
+    </div>
   `,
 })
 class TestParentComponent {}
@@ -82,7 +84,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-form-field')!,
+      fixture.nativeElement.querySelector('[mznFormField]')!,
   };
 }
 

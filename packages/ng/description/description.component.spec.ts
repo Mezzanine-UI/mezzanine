@@ -14,16 +14,16 @@ import { MznDescriptionGroup } from './description-group.component';
     MznDescriptionGroup,
   ],
   template: `
-    <mzn-description
+    <div mznDescription
       [orientation]="orientation"
       [size]="size"
       [title]="titleText"
       [widthType]="widthType"
     >
-      <mzn-description-content [variant]="variant"
+      <div mznDescriptionContent [variant]="variant"
         >Content</mzn-description-content
       >
-    </mzn-description>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -51,7 +51,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getDescription: () =>
-      fixture.nativeElement.querySelector('mzn-description') as HTMLElement,
+      fixture.nativeElement.querySelector('[mznDescription]') as HTMLElement,
     getTitle: () =>
       fixture.nativeElement.querySelector(
         'mzn-description-title',
@@ -168,14 +168,14 @@ describe('MznDescriptionGroup', () => {
     standalone: true,
     imports: [MznDescription, MznDescriptionGroup],
     template: `
-      <mzn-description-group>
-        <mzn-description title="Child 1"
+      <div mznDescriptionGroup>
+        <div mznDescription title="Child 1"
           ><span>Content 1</span></mzn-description
         >
-        <mzn-description title="Child 2"
+        <div mznDescription title="Child 2"
           ><span>Content 2</span></mzn-description
         >
-      </mzn-description-group>
+      </div>
     `,
   })
   class GroupHost {}

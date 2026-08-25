@@ -6,9 +6,9 @@ import { MznFloatingButton } from './floating-button.component';
   standalone: true,
   imports: [MznFloatingButton],
   template: `
-    <mzn-floating-button [autoHideWhenOpen]="autoHideWhenOpen" [open]="open">
+    <div mznFloatingButton [autoHideWhenOpen]="autoHideWhenOpen" [open]="open">
       <button>FAB</button>
-    </mzn-floating-button>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -31,7 +31,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-floating-button')!,
+      fixture.nativeElement.querySelector('[mznFloatingButton]')!,
   };
 }
 

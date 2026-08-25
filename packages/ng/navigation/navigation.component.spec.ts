@@ -16,10 +16,10 @@ import { MznNavigationOptionCategory } from './navigation-option-category.compon
     MznNavigationOptionCategory,
   ],
   template: `
-    <mzn-navigation [collapsed]="collapsed">
-      <mzn-navigation-header>
+    <div mznNavigation [collapsed]="collapsed">
+      <div mznNavigationHeader>
         <span title>App</span>
-      </mzn-navigation-header>
+      </div>
       <mzn-navigation-option title="首頁" href="/" />
       <mzn-navigation-option title="設定" [hasChildren]="true">
         <mzn-navigation-option title="一般" href="/settings/general" />
@@ -27,10 +27,10 @@ import { MznNavigationOptionCategory } from './navigation-option-category.compon
       <mzn-navigation-option-category title="管理">
         <mzn-navigation-option title="使用者" href="/users" />
       </mzn-navigation-option-category>
-      <mzn-navigation-footer>
+      <div mznNavigationFooter>
         <span>Footer</span>
-      </mzn-navigation-footer>
-    </mzn-navigation>
+      </div>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -52,7 +52,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-navigation')!,
+      fixture.nativeElement.querySelector('[mznNavigation]')!,
   };
 }
 
@@ -85,13 +85,13 @@ describe('MznNavigation', () => {
   it('should render header', () => {
     const { getEl } = createFixture();
 
-    expect(getEl().querySelector('mzn-navigation-header')).toBeTruthy();
+    expect(getEl().querySelector('[mznNavigationHeader]')).toBeTruthy();
   });
 
   it('should render footer', () => {
     const { getEl } = createFixture();
 
-    expect(getEl().querySelector('mzn-navigation-footer')).toBeTruthy();
+    expect(getEl().querySelector('[mznNavigationFooter]')).toBeTruthy();
     expect(getEl().textContent).toContain('Footer');
   });
 

@@ -15,12 +15,13 @@ const MOCK_OPTIONS: DropdownOption[] = [
   standalone: true,
   imports: [MznSelect, FormsModule],
   template: `
-    <mzn-select
+    <div
+      mznSelect
       [options]="options"
       [(ngModel)]="selected"
       [flip]="flip"
       placeholder="Choose"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {

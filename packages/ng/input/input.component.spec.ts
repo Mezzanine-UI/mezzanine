@@ -11,7 +11,8 @@ import { InputVariant, MznInput } from './input.component';
   standalone: true,
   imports: [MznInput],
   template: `
-    <mzn-input
+    <div
+      mznInput
       [active]="active"
       [clearable]="clearable"
       [disabled]="disabled"
@@ -28,7 +29,7 @@ import { InputVariant, MznInput } from './input.component';
       [value]="value"
       [variant]="variant"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -54,7 +55,8 @@ class TestHostComponent {
   standalone: true,
   imports: [MznInput],
   template: `
-    <mzn-input
+    <div
+      mznInput
       variant="number"
       [min]="min"
       [max]="max"
@@ -63,7 +65,7 @@ class TestHostComponent {
       [size]="size"
       placeholder="0"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestNumberHostComponent {
@@ -79,7 +81,8 @@ class TestNumberHostComponent {
   standalone: true,
   imports: [MznInput],
   template: `
-    <mzn-input
+    <div
+      mznInput
       variant="measure"
       [formatter]="formatter"
       [max]="max"
@@ -93,7 +96,7 @@ class TestNumberHostComponent {
       (spinDown)="onSpinDown()"
       (spinUp)="onSpinUp()"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestMeasureHostComponent {
@@ -115,13 +118,14 @@ class TestMeasureHostComponent {
   standalone: true,
   imports: [MznInput],
   template: `
-    <mzn-input
+    <div
+      mznInput
       variant="action"
       [actionButton]="actionButton"
       [disabled]="disabled"
       [readonly]="readonlyVal"
       [value]="value"
-    />
+    ></div>
   `,
 })
 class TestActionHostComponent {
@@ -147,7 +151,8 @@ class TestActionHostComponent {
   standalone: true,
   imports: [MznInput],
   template: `
-    <mzn-input
+    <div
+      mznInput
       variant="password"
       [clearable]="clearable"
       [passwordStrengthIndicator]="passwordStrengthIndicator"
@@ -155,7 +160,7 @@ class TestActionHostComponent {
       [showPasswordStrengthIndicator]="showPasswordStrengthIndicator"
       [value]="value"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestPasswordHostComponent {
@@ -177,7 +182,9 @@ class TestPasswordHostComponent {
 @Component({
   standalone: true,
   imports: [MznInput, ReactiveFormsModule],
-  template: ` <mzn-input [formControl]="control" placeholder="reactive" /> `,
+  template: `
+    <div mznInput [formControl]="control" placeholder="reactive"></div>
+  `,
 })
 class TestReactiveFormComponent {
   control = new FormControl('initial');
@@ -187,12 +194,13 @@ class TestReactiveFormComponent {
   standalone: true,
   imports: [MznInput],
   template: `
-    <mzn-input
+    <div
+      mznInput
       [formatter]="formatter"
       [parser]="parser"
       [value]="value"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestFormatterParserHostComponent {
@@ -206,10 +214,11 @@ class TestFormatterParserHostComponent {
   standalone: true,
   imports: [MznInput],
   template: `
-    <mzn-input
+    <div
+      mznInput
       [defaultValue]="defaultValue"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestDefaultValueHostComponent {
@@ -240,7 +249,8 @@ function createFixture<T extends object>(
   return {
     fixture,
     host,
-    getEl: (): HTMLElement => fixture.nativeElement.querySelector('mzn-input')!,
+    getEl: (): HTMLElement =>
+      fixture.nativeElement.querySelector('[mznInput]')!,
     getInput: (): HTMLInputElement =>
       fixture.nativeElement.querySelector('input')!,
   };
@@ -461,7 +471,7 @@ describe('MznInput', () => {
 
     it('should be clearable by default (clearable not set)', () => {
       const { getEl } = createFixture(TestHostComponent, { variant: 'search' });
-      const textField = getEl().querySelector('mzn-text-field');
+      const textField = getEl().querySelector('[mznTextField]');
 
       // The clearable class is added to the text field when clearable is true
       expect(textField?.classList.contains('mzn-text-field--clearable')).toBe(
@@ -474,7 +484,7 @@ describe('MznInput', () => {
         variant: 'search',
         clearable: false,
       });
-      const textField = getEl().querySelector('mzn-text-field');
+      const textField = getEl().querySelector('[mznTextField]');
 
       expect(textField?.classList.contains('mzn-text-field--clearable')).toBe(
         false,
@@ -1063,7 +1073,7 @@ describe('MznInput', () => {
   describe('clearable', () => {
     it('should show clear button when clearable is true', () => {
       const { getEl } = createFixture(TestHostComponent, { clearable: true });
-      const textField = getEl().querySelector('mzn-text-field');
+      const textField = getEl().querySelector('[mznTextField]');
 
       expect(textField?.classList.contains('mzn-text-field--clearable')).toBe(
         true,
@@ -1072,7 +1082,7 @@ describe('MznInput', () => {
 
     it('should not show clear button by default', () => {
       const { getEl } = createFixture(TestHostComponent);
-      const textField = getEl().querySelector('mzn-text-field');
+      const textField = getEl().querySelector('[mznTextField]');
 
       expect(textField?.classList.contains('mzn-text-field--clearable')).toBe(
         false,
@@ -1184,7 +1194,7 @@ describe('MznInput', () => {
       });
 
       // Simulate the clear action by triggering the cleared event on mzn-text-field
-      const textField = getEl().querySelector('mzn-text-field');
+      const textField = getEl().querySelector('[mznTextField]');
       const clearButton = textField?.querySelector(
         '.mzn-clear-actions--clearable',
       ) as HTMLElement;

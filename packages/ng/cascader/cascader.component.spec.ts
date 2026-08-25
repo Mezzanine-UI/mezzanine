@@ -29,7 +29,8 @@ const MOCK_OPTIONS: CascaderOption[] = [
   standalone: true,
   imports: [MznCascader],
   template: `
-    <mzn-cascader
+    <div
+      mznCascader
       [clearable]="clearable()"
       [disabled]="disabled()"
       [fullWidth]="fullWidth()"
@@ -38,7 +39,7 @@ const MOCK_OPTIONS: CascaderOption[] = [
       [placeholder]="placeholder()"
       [value]="value()"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {

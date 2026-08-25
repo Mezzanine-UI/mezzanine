@@ -252,9 +252,9 @@ describe('Animation Triggers', () => {
   standalone: true,
   imports: [MznCollapse],
   template: `
-    <mzn-collapse [in]="expanded" [collapsedHeight]="collapsedHeight">
+    <div mznCollapse [in]="expanded" [collapsedHeight]="collapsedHeight">
       <div class="collapse-content" style="height: 100px;">Content</div>
-    </mzn-collapse>
+    </div>
   `,
 })
 class CollapseTestComponent {
@@ -266,9 +266,9 @@ class CollapseTestComponent {
   standalone: true,
   imports: [MznFade],
   template: `
-    <mzn-fade [in]="visible">
+    <div mznFade [in]="visible">
       <div class="fade-content">Fade content</div>
-    </mzn-fade>
+    </div>
   `,
 })
 class FadeTestComponent {
@@ -293,9 +293,9 @@ class RotateTestComponent {
   standalone: true,
   imports: [MznScale],
   template: `
-    <mzn-scale [in]="visible" [transformOrigin]="origin">
+    <div mznScale [in]="visible" [transformOrigin]="origin">
       <div class="scale-content">Scale content</div>
-    </mzn-scale>
+    </div>
   `,
 })
 class ScaleTestComponent {
@@ -307,9 +307,9 @@ class ScaleTestComponent {
   standalone: true,
   imports: [MznSlide],
   template: `
-    <mzn-slide [in]="visible" [from]="from">
+    <div mznSlide [in]="visible" [from]="from">
       <div class="slide-content">Slide content</div>
-    </mzn-slide>
+    </div>
   `,
 })
 class SlideTestComponent {
@@ -321,9 +321,9 @@ class SlideTestComponent {
   standalone: true,
   imports: [MznTranslate],
   template: `
-    <mzn-translate [in]="visible" [from]="from">
+    <div mznTranslate [in]="visible" [from]="from">
       <div class="translate-content">Translate content</div>
-    </mzn-translate>
+    </div>
   `,
 })
 class TranslateTestComponent {

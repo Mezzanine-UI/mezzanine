@@ -8,14 +8,15 @@ import { EmptyType } from './typings';
   standalone: true,
   imports: [MznEmpty],
   template: `
-    <mzn-empty
+    <div
+      mznEmpty
       [title]="title"
       [type]="type"
       [size]="size"
       [description]="description"
     >
       <button actions>Action</button>
-    </mzn-empty>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -39,7 +40,8 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
   return {
     fixture,
     host,
-    getEl: (): HTMLElement => fixture.nativeElement.querySelector('mzn-empty')!,
+    getEl: (): HTMLElement =>
+      fixture.nativeElement.querySelector('[mznEmpty]')!,
   };
 }
 

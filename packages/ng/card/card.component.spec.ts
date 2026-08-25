@@ -8,7 +8,8 @@ import { MznCardGroup, CardGroupType } from './card-group.component';
   standalone: true,
   imports: [MznBaseCard],
   template: `
-    <mzn-base-card
+    <div
+      mznBaseCard
       [title]="title"
       [description]="description"
       [disabled]="disabled"
@@ -16,7 +17,7 @@ import { MznCardGroup, CardGroupType } from './card-group.component';
     >
       <button header-action>操作</button>
       <p>卡片內容</p>
-    </mzn-base-card>
+    </div>
   `,
 })
 class TestBaseCardHost {
@@ -30,12 +31,13 @@ class TestBaseCardHost {
   standalone: true,
   imports: [MznQuickActionCard],
   template: `
-    <mzn-quick-action-card
+    <div
+      mznQuickActionCard
       [title]="title"
       [subtitle]="subtitle"
       [disabled]="disabled"
       [mode]="mode"
-    />
+    ></div>
   `,
 })
 class TestQuickActionHost {
@@ -49,10 +51,10 @@ class TestQuickActionHost {
   standalone: true,
   imports: [MznCardGroup, MznBaseCard],
   template: `
-    <mzn-card-group [cardType]="cardType">
-      <mzn-base-card title="A">內容</mzn-base-card>
-      <mzn-base-card title="B">內容</mzn-base-card>
-    </mzn-card-group>
+    <div mznCardGroup [cardType]="cardType">
+      <div mznBaseCard title="A">內容</div>
+      <div mznBaseCard title="B">內容</div>
+    </div>
   `,
 })
 class TestCardGroupHost {
@@ -78,7 +80,7 @@ describe('MznBaseCard', () => {
     return {
       fixture,
       getEl: (): HTMLElement =>
-        fixture.nativeElement.querySelector('mzn-base-card')!,
+        fixture.nativeElement.querySelector('[mznBaseCard]')!,
     };
   }
 
@@ -151,7 +153,7 @@ describe('MznQuickActionCard', () => {
     return {
       fixture,
       getEl: (): HTMLElement =>
-        fixture.nativeElement.querySelector('mzn-quick-action-card')!,
+        fixture.nativeElement.querySelector('[mznQuickActionCard]')!,
     };
   }
 
@@ -210,7 +212,7 @@ describe('MznCardGroup', () => {
     return {
       fixture,
       getEl: (): HTMLElement =>
-        fixture.nativeElement.querySelector('mzn-card-group')!,
+        fixture.nativeElement.querySelector('[mznCardGroup]')!,
     };
   }
 
@@ -231,6 +233,6 @@ describe('MznCardGroup', () => {
   it('should render children', () => {
     const { getEl } = createFixture();
 
-    expect(getEl().querySelectorAll('mzn-base-card')).toHaveLength(2);
+    expect(getEl().querySelectorAll('[mznBaseCard]')).toHaveLength(2);
   });
 });

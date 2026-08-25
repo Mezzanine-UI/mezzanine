@@ -45,13 +45,14 @@ const testConfig = {
   standalone: true,
   imports: [MznTimePanel],
   template: `
-    <mzn-time-panel
+    <div
+      mznTimePanel
       [value]="time()"
       [hideSecond]="hideSecond()"
       (timeChanged)="onTimeChange($event)"
       (confirmed)="onConfirm()"
       (cancelled)="onCancel()"
-    />
+    ></div>
   `,
 })
 class TestHost {

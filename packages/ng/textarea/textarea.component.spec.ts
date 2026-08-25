@@ -11,7 +11,8 @@ import {
   standalone: true,
   imports: [MznTextarea],
   template: `
-    <mzn-textarea
+    <div
+      mznTextarea
       [disabled]="disabled"
       [placeholder]="placeholder"
       [readonly]="readonly"
@@ -19,7 +20,7 @@ import {
       [rows]="rows"
       [type]="type"
       (valueChange)="onValueChange($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -35,7 +36,7 @@ class TestHostComponent {
 @Component({
   standalone: true,
   imports: [MznTextarea, ReactiveFormsModule],
-  template: ` <mzn-textarea [formControl]="control" /> `,
+  template: ` <div mznTextarea [formControl]="control"></div> `,
 })
 class TestReactiveFormComponent {
   control = new FormControl('initial text');
@@ -57,7 +58,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-textarea')!,
+      fixture.nativeElement.querySelector('[mznTextarea]')!,
     getTextarea: (): HTMLTextAreaElement =>
       fixture.nativeElement.querySelector('textarea')!,
   };

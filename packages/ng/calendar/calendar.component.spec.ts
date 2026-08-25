@@ -190,12 +190,13 @@ const testConfig = createCalendarConfig(mockMethods);
   standalone: true,
   imports: [MznCalendar],
   template: `
-    <mzn-calendar
+    <div
+      mznCalendar
       [referenceDate]="refDate()"
       [value]="selected()"
       [mode]="mode()"
       (dateChanged)="onDateChanged($event)"
-    />
+    ></div>
   `,
 })
 class TestHost {
@@ -225,7 +226,7 @@ describe('MznCalendar', () => {
 
   it('should render in day mode by default', () => {
     const el: HTMLElement = fixture.nativeElement;
-    expect(el.querySelector('mzn-calendar')).toBeTruthy();
+    expect(el.querySelector('[mznCalendar]')).toBeTruthy();
     expect(el.querySelector('mzn-calendar-days')).toBeTruthy();
   });
 
