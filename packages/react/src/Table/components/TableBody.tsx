@@ -23,6 +23,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       expansion,
       isContainerReady,
       loading,
+      loadingRowsCount = 10,
       scrollContainerRef,
       selection,
       size,
@@ -109,8 +110,31 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       );
     };
 
+    /**
+     * Feature: Loading
+     *
+     * Skeleton rows are rendered without a record on purpose — a fabricated
+     * row would not satisfy the consumer's `T` and every record callback
+     * (`column.render`, `rowExpandable`, `rowState`, …) would be handed a
+     * shape it never agreed to. `TableRow` and its cells therefore take
+     * `record?: T` and skip every consumer callback when it is absent, which
+     * makes the "no record callback runs while loading" contract enforced by
+     * the type system rather than by remembering to guard each call site.
+     *
+     * Expanded rows and drag wrappers are skipped as well: both key off the
+     * row's record and are meaningless for a placeholder.
+     */
+    const renderSkeletonRows = () =>
+      Array.from({ length: Math.max(loadingRowsCount, 1) }, (_, index) => (
+        <TableRow key={`skeleton-${index}`} rowIndex={index} />
+      ));
+
     const renderRows = () => {
-      if (isEmpty && !loading) {
+      if (loading) {
+        return renderSkeletonRows();
+      }
+
+      if (isEmpty) {
         const {
           size: emptySize = size,
           height,

@@ -99,13 +99,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const hostRef = useRef<HTMLDivElement | null>(null);
   const composedHostRef = useComposeRefs([ref, hostRef]);
 
-  /** Feature: Loading */
-  const dataSourceForRender = loading
-    ? Array.from({ length: Math.max(loadingRowsCount, 1) }).map((_, idx) => ({
-        key: `${idx}`,
-      }))
-    : dataSource;
-
   /** Feature: Row Height Preset */
   const rowHeightVariableName = useMemo(() => {
     switch (rowHeightPreset) {
@@ -376,7 +369,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       actions: actions as TableContextValue['actions'],
       collectable: collectableState,
       columnState,
-      dataSource: dataSourceForRender,
+      dataSource,
       draggable: draggableState,
       emptyProps,
       expansion: expansionState as TableContextValue['expansion'],
@@ -386,6 +379,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       isInsideExpandedContentArea: nested,
       isScrollingHorizontally: isScrollingHorizontally,
       loading,
+      loadingRowsCount,
       pagination: pagination || undefined,
       pinnable: pinnableState,
       resizable,
@@ -406,7 +400,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       actions,
       collectableState,
       columnState,
-      dataSourceForRender,
+      dataSource,
       draggableState,
       emptyProps,
       expansionState,
@@ -415,6 +409,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       isContainerReady,
       isScrollingHorizontally,
       loading,
+      loadingRowsCount,
       nested,
       pagination,
       pinnableState,

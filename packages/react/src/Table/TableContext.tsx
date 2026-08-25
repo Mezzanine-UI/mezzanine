@@ -84,6 +84,11 @@ export interface TableContextValue<
   isInsideExpandedContentArea?: boolean;
   isScrollingHorizontally?: boolean;
   loading?: boolean;
+  /**
+   * How many skeleton rows the body renders while `loading` is true.
+   * Skeleton rows carry no record, so no consumer callback is invoked for them.
+   */
+  loadingRowsCount?: number;
   pagination?: PaginationProps;
   pinnable?: TablePinnable;
   resizable?: boolean;
