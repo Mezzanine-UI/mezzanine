@@ -86,13 +86,12 @@ describe('MznAccordion', () => {
     expect(getEl().textContent).toContain('測試標題');
   });
 
-  it('should hide content by default', () => {
+  it('should not render content by default', () => {
     const { getEl } = createFixture();
-    const content = getEl().querySelector(
-      '[mznAccordionContent]',
-    ) as HTMLElement;
 
-    expect(content.style.display).toBe('none');
+    // Collapsed content is unmounted once the collapse animation settles,
+    // rather than kept in the DOM with display:none.
+    expect(getEl().querySelector('[mznAccordionContent]')).toBeNull();
   });
 
   it('should show content when expanded is true', () => {
@@ -129,12 +128,9 @@ describe('MznAccordion', () => {
 
     expect(host.onExpandedChange).toHaveBeenCalledWith(true);
 
-    const content = getEl().querySelector(
-      '[mznAccordionContent]',
-    ) as HTMLElement;
-
-    // Still hidden because expanded is controlled to false
-    expect(content.style.display).toBe('none');
+    // Still collapsed — and therefore unmounted — because `expanded` is
+    // controlled to false.
+    expect(getEl().querySelector('[mznAccordionContent]')).toBeNull();
   });
 
   it('should not toggle when disabled', () => {

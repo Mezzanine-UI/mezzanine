@@ -80,10 +80,10 @@ describe('MznInlineMessageGroup', () => {
     ];
     const { fixture, host } = createFixture({ items });
     const clearBtn = fixture.nativeElement.querySelector(
-      '[mznClearActions] button',
-    );
+      'button[mznClearActions]',
+    ) as HTMLButtonElement;
 
-    clearBtn?.click();
+    clearBtn.click();
     fixture.detectChanges();
 
     expect(host.closedKeys).toContain('info-1');

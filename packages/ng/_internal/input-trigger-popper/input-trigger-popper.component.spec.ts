@@ -98,6 +98,9 @@ describe('MznInputTriggerPopper', () => {
     ).toBeTruthy();
 
     host.open = false;
+    // Mark the host dirty so the new value is picked up by the check pass;
+    // otherwise it only lands in dev mode's verify pass and trips NG0100.
+    fixture.changeDetectorRef.markForCheck();
     fixture.detectChanges();
 
     expect(

@@ -186,7 +186,7 @@ describe('MznFilterArea', () => {
     });
 
     it('should hide non-first lines when collapsed', () => {
-      const lines = getHost().querySelectorAll<HTMLElement>('mzn-filter-line');
+      const lines = getHost().querySelectorAll<HTMLElement>('[mznFilterLine]');
 
       expect(lines[0].style.display).not.toBe('none');
       expect(lines[1].style.display).toBe('none');
