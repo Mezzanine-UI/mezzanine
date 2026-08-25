@@ -40,7 +40,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getHostElement: () =>
-      fixture.nativeElement.querySelector('.mzn-alert-banner') as HTMLElement,
+      document.querySelector('.mzn-alert-banner') as HTMLElement,
   };
 }
 

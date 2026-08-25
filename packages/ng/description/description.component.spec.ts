@@ -14,15 +14,14 @@ import { MznDescriptionGroup } from './description-group.component';
     MznDescriptionGroup,
   ],
   template: `
-    <div mznDescription
+    <div
+      mznDescription
       [orientation]="orientation"
       [size]="size"
       [title]="titleText"
       [widthType]="widthType"
     >
-      <div mznDescriptionContent [variant]="variant"
-        >Content</mzn-description-content
-      >
+      <div mznDescriptionContent [variant]="variant">Content</div>
     </div>
   `,
 })
@@ -169,12 +168,8 @@ describe('MznDescriptionGroup', () => {
     imports: [MznDescription, MznDescriptionGroup],
     template: `
       <div mznDescriptionGroup>
-        <div mznDescription title="Child 1"
-          ><span>Content 1</span></mzn-description
-        >
-        <div mznDescription title="Child 2"
-          ><span>Content 2</span></mzn-description
-        >
+        <div mznDescription title="Child 1"><span>Content 1</span></div>
+        <div mznDescription title="Child 2"><span>Content 2</span></div>
       </div>
     `,
   })

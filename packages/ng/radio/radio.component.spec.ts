@@ -9,7 +9,7 @@ import { MznRadioGroup } from './radio-group.component';
   imports: [MznRadio, FormsModule],
   template: `
     <div mznRadio [checked]="checked" [disabled]="disabled" value="test"
-      >Label</mzn-radio
+      >Label</div
     >
   `,
 })

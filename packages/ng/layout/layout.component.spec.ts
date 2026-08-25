@@ -10,13 +10,9 @@ import { MznLayoutRightPanel } from './layout-right-panel.component';
   imports: [MznLayout, MznLayoutMain, MznLayoutLeftPanel, MznLayoutRightPanel],
   template: `
     <div mznLayout>
-      <div mznLayoutLeftPanel [open]="leftOpen()"
-        >Left Panel</mzn-layout-left-panel
-      >
+      <div mznLayoutLeftPanel [open]="leftOpen()">Left Panel</div>
       <div mznLayoutMain>Main Content</div>
-      <div mznLayoutRightPanel [open]="rightOpen()"
-        >Right Panel</mzn-layout-right-panel
-      >
+      <div mznLayoutRightPanel [open]="rightOpen()">Right Panel</div>
     </div>
   `,
 })
@@ -345,7 +341,7 @@ describe('MznLayout', () => {
         template: `
           <div mznLayout>
             <div mznLayoutLeftPanel [open]="true" [defaultWidth]="100"
-              >Content</mzn-layout-left-panel
+              >Content</div
             >
             <div mznLayoutMain>Main</div>
           </div>

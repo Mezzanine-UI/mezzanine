@@ -9,7 +9,7 @@ import { MznCheckboxGroup } from './checkbox-group.component';
   imports: [MznCheckbox, FormsModule],
   template: `
     <div mznCheckbox [checked]="checked" [disabled]="disabled" [value]="'test'"
-      >Label</mzn-checkbox
+      >Label</div
     >
   `,
 })
@@ -38,7 +38,7 @@ class TestGroupComponent {
   imports: [MznCheckbox, FormsModule],
   template: `
     <div mznCheckbox mode="chip" size="minor" [checked]="checked"
-      >Chip Label</mzn-checkbox
+      >Chip Label</div
     >
   `,
 })
