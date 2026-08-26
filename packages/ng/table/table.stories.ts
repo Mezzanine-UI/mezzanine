@@ -2224,6 +2224,67 @@ export const RowState: Story = {
 };
 
 @Component({
+  selector: 'story-table-loading-row-state',
+  standalone: true,
+  imports: [MznTable, MznButton],
+  template: `
+    <div>
+      <p style="margin: 0 0 8px;">
+        rowState below dereferences <code>record.nested.value</code> without any
+        loading guard. Toggling loading must never throw.
+      </p>
+      <button
+        mznButton
+        variant="base-primary"
+        style="margin-bottom: 16px;"
+        (click)="toggleLoading()"
+      >
+        {{ loading() ? 'Finish loading' : 'Start loading' }}
+      </button>
+      <div
+        mznTable
+        [columns]="columns"
+        [dataSource]="dataSource"
+        [loading]="loading()"
+        [rowState]="rowState"
+      ></div>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class LoadingRowStateStoryComponent {
+  readonly columns = basicColumns;
+
+  readonly dataSource: TableDataSource[] = basicData
+    .slice(0, 3)
+    .map((record) => ({ ...record, nested: { value: 'added' } }));
+
+  readonly loading = signal(true);
+
+  /**
+   * Placeholder rows only carry a key, so reaching into `nested` would throw
+   * if `rowState` were called for them while loading.
+   */
+  readonly rowState = (
+    record: TableDataSource,
+  ): 'added' | 'deleted' | 'disabled' | undefined =>
+    (record['nested'] as { value: string }).value as 'added';
+
+  toggleLoading(): void {
+    this.loading.set(!this.loading());
+  }
+}
+
+export const LoadingWithRowState: Story = {
+  name: 'Loading With Row State',
+  parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [LoadingRowStateStoryComponent] })],
+  render: () => ({
+    template: `<story-table-loading-row-state />`,
+  }),
+};
+
+@Component({
   selector: 'story-table-highlight',
   standalone: true,
   imports: [MznTable],

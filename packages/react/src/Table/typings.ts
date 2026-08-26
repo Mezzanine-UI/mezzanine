@@ -48,9 +48,27 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
    * @default 'row'
    */
   highlight?: HighlightMode;
-  /** Loading state */
+  /**
+   * Loading state. While true the body renders placeholder skeleton rows
+   * instead of data rows.
+   *
+   * Skeleton rows carry no record, so **no callback is ever handed a
+   * placeholder row**. Every row-level callback — `column.render`,
+   * `actions.render`, `rowState`, `rowSelection.getCheckboxProps`,
+   * `expandable.rowExpandable`, `expandable.expandedRowRender`,
+   * `toggleable.isRowDisabled`, `collectable.isRowDisabled` — is not called at
+   * all while loading. `rowSelection.isSelectionDisabled` still runs, because
+   * it also derives the header's select-all state, but only over the real
+   * `dataSource`.
+   *
+   * All of them may therefore dereference the record freely without guarding
+   * for the loading state.
+   */
   loading?: boolean;
-  /** Number of rows to display when loading */
+  /**
+   * Number of skeleton rows to display when `loading` is true.
+   * @default 10
+   */
   loadingRowsCount?: number;
   /** Minimum height of the table */
   minHeight?: number | string;

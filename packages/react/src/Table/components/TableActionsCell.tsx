@@ -28,8 +28,11 @@ export interface TableActionsCellProps<
   fixed?: 'end' | 'start';
   /** Fixed offset */
   fixedOffset?: number;
-  /** Row record */
-  record: T;
+  /**
+   * Row record. Omitted for loading skeleton rows, in which case
+   * `actions.render` is never called.
+   */
+  record?: T;
   /** Row index */
   rowIndex: number;
   /** Whether to show shadow */
@@ -59,8 +62,10 @@ const TableActionsCellInner = forwardRef<
 
   const { highlight, loading } = useTableContext();
 
+  // Skeleton row: the loading branch below renders an empty cell, so there is
+  // nothing to build and no record to hand to the consumer's render().
   const actionItems = useMemo(
-    () => actions.render(record, rowIndex),
+    () => (record ? actions.render(record, rowIndex) : []),
     [actions, record, rowIndex],
   );
 
@@ -115,7 +120,7 @@ const TableActionsCellInner = forwardRef<
     highlight?.setHoveredCell(rowIndex, columnIndex);
   };
 
-  if (loading) {
+  if (loading || !record) {
     return (
       <td
         className={cx(

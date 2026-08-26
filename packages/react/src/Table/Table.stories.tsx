@@ -1414,6 +1414,102 @@ export const Loading: Story = {
   },
 };
 
+export const LoadingWithRecordCallbacks: Story = {
+  render: function LoadingWithRecordCallbacksStory() {
+    const [loading, setLoading] = useState(true);
+
+    /**
+     * Every callback below dereferences a nested field without guarding for
+     * the loading state. Skeleton rows carry no record, so none of them are
+     * called while loading — flipping the switch must never throw.
+     */
+    const columns = useMemo<TableColumn<DataType>[]>(
+      () => [
+        {
+          key: 'name',
+          title: 'Name',
+          width: 150,
+          render: (record) => record.subData![0].name,
+        },
+        { dataIndex: 'address', key: 'address', title: 'Address' },
+      ],
+      [],
+    );
+
+    const actions = useMemo<TableActions<DataType>>(
+      () => ({
+        render: (record) => [
+          {
+            name: record.subData![0].name,
+            onClick: () => {},
+            type: 'button' as const,
+          },
+        ],
+      }),
+      [],
+    );
+
+    const expandable = useMemo<TableExpandable<DataType>>(
+      () => ({
+        // Collides with the placeholder keys the table used to fabricate.
+        expandedRowKeys: ['0', '1', '2'],
+        expandedRowRender: (record) => <div>{record.subData![0].name}</div>,
+        rowExpandable: (record) => !!record.subData![0],
+      }),
+      [],
+    );
+
+    const rowSelection = useMemo<TableRowSelectionCheckbox<DataType>>(
+      () => ({
+        getCheckboxProps: (record) => ({
+          selected: !!record.subData![0],
+        }),
+        isSelectionDisabled: (record) => !!record.subData?.length,
+        mode: 'checkbox',
+        onChange: () => {},
+        selectedRowKeys: [],
+      }),
+      [],
+    );
+
+    const rowState = useCallback(
+      (record: DataType) => (record.subData![0] ? 'added' : undefined),
+      [],
+    );
+
+    const dataWithSubData = useMemo(
+      () => baseData.filter((record) => record.subData?.length),
+      [],
+    );
+
+    return (
+      <div>
+        <p style={{ margin: '0 0 8px' }}>
+          Every column render, action, rowState, rowExpandable and
+          getCheckboxProps below dereferences <code>record.subData[0]</code>{' '}
+          without any loading guard. Toggling loading must never throw.
+        </p>
+        <Button
+          style={{ marginBottom: '16px' }}
+          onClick={() => setLoading((prev) => !prev)}
+          variant="base-primary"
+        >
+          {loading ? 'Finish loading' : 'Start loading'}
+        </Button>
+        <Table<DataType>
+          actions={actions}
+          columns={columns}
+          dataSource={dataWithSubData}
+          expandable={expandable}
+          loading={loading}
+          rowSelection={rowSelection}
+          rowState={rowState}
+        />
+      </div>
+    );
+  },
+};
+
 export const EmptyState: Story = {
   render: function EmptyStateStory() {
     const emptyProps = useMemo(

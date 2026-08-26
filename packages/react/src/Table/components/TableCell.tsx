@@ -19,7 +19,11 @@ export interface TableCellProps<T extends TableDataSource = TableDataSource> {
   columnIndex: number;
   fixed?: 'end' | 'start';
   fixedOffset?: number;
-  record: T;
+  /**
+   * Row record. Omitted for loading skeleton rows, in which case
+   * `column.render` is never called and the cell renders a skeleton.
+   */
+  record?: T;
   rowIndex: number;
   /** Whether to show shadow on this cell (only for edge fixed columns) */
   showShadow?: boolean;
@@ -48,6 +52,10 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
     const { highlight } = useTableContext();
 
     const cellValue = useMemo(() => {
+      // Skeleton row: renderChild() discards the value anyway, and there is no
+      // record to hand to the consumer's render().
+      if (!record) return null;
+
       const dataIndex = column.dataIndex ?? column.key;
 
       if (column.render) {

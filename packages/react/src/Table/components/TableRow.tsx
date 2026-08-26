@@ -39,7 +39,11 @@ import { composeRefs } from '../../utils/composeRefs';
 export interface TableRowProps<T extends TableDataSource = TableDataSource> {
   className?: string;
   draggableProvided?: DraggableProvided;
-  record: T;
+  /**
+   * Row record. Omitted for loading skeleton rows — a placeholder row has no
+   * record, so every consumer callback that would receive one is skipped.
+   */
+  record?: T;
   rowIndex: number;
   style?: React.CSSProperties;
 }
@@ -107,14 +111,25 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const { containerWidth, getResizedColumnWidth, scrollLeft } =
       useTableSuperContext();
 
-    const rowKey = useMemo(() => getRowKey(record), [record]);
-    const isSelected =
-      selection?.config?.getCheckboxProps?.(record)?.selected ??
-      selection?.isRowSelected(rowKey) ??
-      false;
-    const isIndeterminate =
-      selection?.config?.getCheckboxProps?.(record)?.indeterminate ?? false;
-    const isExpanded = expansion?.isRowExpanded(rowKey) ?? false;
+    /**
+     * Skeleton rows get a key that cannot collide with a real row key, so
+     * selection / expansion / transition lookups never match them.
+     */
+    const rowKey = useMemo(
+      () => (record ? getRowKey(record) : `skeleton-${rowIndex}`),
+      [record, rowIndex],
+    );
+    const isSelected = record
+      ? (selection?.config?.getCheckboxProps?.(record)?.selected ??
+        selection?.isRowSelected(rowKey) ??
+        false)
+      : false;
+    const isIndeterminate = record
+      ? (selection?.config?.getCheckboxProps?.(record)?.indeterminate ?? false)
+      : false;
+    const isExpanded = record
+      ? (expansion?.isRowExpanded(rowKey) ?? false)
+      : false;
 
     // Check transition states
     const isAdding = transitionState?.addingKeys.has(rowKey) ?? false;
@@ -215,7 +230,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const renderSelectionCell = () => {
       if (!selection) return null;
 
-      const isDisabled = selection.isRowDisabled(record);
+      const isDisabled = record ? selection.isRowDisabled(record) : false;
       const offsetInfo = fixedOffsets?.getSelectionOffset();
       const isFixed = !!selection.config?.fixed;
       const showShadow =
@@ -233,7 +248,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           fixedOffset={offsetInfo?.offset ?? 0}
           indeterminate={isIndeterminate}
           mode={selection.mode}
-          onChange={() => selection.toggleRow(rowKey, record)}
+          onChange={() => record && selection.toggleRow(rowKey, record)}
           selected={isSelected}
           showShadow={showShadow ?? false}
           width={isDragging ? SELECTION_COLUMN_WIDTH : undefined}
@@ -245,9 +260,10 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       if (!expansion) return null;
 
       const { config } = expansion;
-      const canExpand = config.rowExpandable
-        ? config.rowExpandable(record)
-        : true;
+      const canExpand =
+        record && config.rowExpandable
+          ? config.rowExpandable(record)
+          : !!record;
       const offsetInfo = fixedOffsets?.getExpansionOffset();
       const isFixed = !!config.fixed;
       const showShadow =
@@ -264,7 +280,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           expanded={isExpanded}
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
-          onClick={() => expansion.toggleExpand(rowKey, record)}
+          onClick={() => record && expansion.toggleExpand(rowKey, record)}
           showShadow={showShadow ?? false}
           width={isDragging ? EXPANSION_COLUMN_WIDTH : undefined}
         />
@@ -377,7 +393,9 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             [classes.bodyRowZebra]: isZebraRow,
           },
           resolveRowStateClass(
-            typeof rowState === 'function' ? rowState(record) : rowState,
+            typeof rowState === 'function'
+              ? record && rowState(record)
+              : rowState,
           ),
           className,
         )}
