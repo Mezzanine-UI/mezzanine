@@ -8,13 +8,14 @@ import { MznProgress } from './progress.component';
   standalone: true,
   imports: [MznProgress],
   template: `
-    <mzn-progress
+    <div
+      mznProgress
       [icons]="icons"
       [percent]="percent"
       [status]="status"
       [tick]="tick"
       [type]="type"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -40,7 +41,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-progress')!,
+      fixture.nativeElement.querySelector('[mznProgress]')!,
   };
 }
 

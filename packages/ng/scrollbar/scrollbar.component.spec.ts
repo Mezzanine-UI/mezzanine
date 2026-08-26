@@ -6,7 +6,8 @@ import { MznScrollbar } from './scrollbar.component';
   standalone: true,
   imports: [MznScrollbar],
   template: `
-    <mzn-scrollbar
+    <div
+      mznScrollbar
       [defer]="defer"
       [disabled]="disabled"
       [maxHeight]="maxHeight"
@@ -14,7 +15,7 @@ import { MznScrollbar } from './scrollbar.component';
       (viewportReady)="onViewportReady($event)"
     >
       <p>Content</p>
-    </mzn-scrollbar>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -55,7 +56,7 @@ describe('MznScrollbar', () => {
 
   it('should render with host class when enabled', () => {
     const { fixture } = createFixture(TestHostComponent);
-    const el = fixture.nativeElement.querySelector('mzn-scrollbar');
+    const el = fixture.nativeElement.querySelector('[mznScrollbar]');
 
     expect(el.classList.contains('mzn-scrollbar')).toBe(true);
   });
@@ -67,14 +68,14 @@ describe('MznScrollbar', () => {
     fixture.changeDetectorRef.markForCheck();
     fixture.detectChanges();
 
-    const el = fixture.nativeElement.querySelector('mzn-scrollbar');
+    const el = fixture.nativeElement.querySelector('[mznScrollbar]');
 
     expect(el.classList.contains('mzn-scrollbar')).toBe(false);
   });
 
   it('should apply maxHeight style', () => {
     const { fixture } = createFixture(TestHostComponent);
-    const el = fixture.nativeElement.querySelector('mzn-scrollbar');
+    const el = fixture.nativeElement.querySelector('[mznScrollbar]');
 
     expect(el.style.maxHeight).toBe('200px');
   });
@@ -86,7 +87,7 @@ describe('MznScrollbar', () => {
     fixture.changeDetectorRef.markForCheck();
     fixture.detectChanges();
 
-    const el = fixture.nativeElement.querySelector('mzn-scrollbar');
+    const el = fixture.nativeElement.querySelector('[mznScrollbar]');
 
     expect(el.style.maxWidth).toBe('400px');
   });

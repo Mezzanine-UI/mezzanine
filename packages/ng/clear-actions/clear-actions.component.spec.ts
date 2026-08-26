@@ -11,11 +11,12 @@ import { MznClearActions } from './clear-actions.component';
   standalone: true,
   imports: [MznClearActions],
   template: `
-    <mzn-clear-actions
+    <button
+      mznClearActions
       [type]="type"
       [variant]="variant"
       (clicked)="onClicked($event)"
-    />
+    ></button>
   `,
 })
 class TestHostComponent {

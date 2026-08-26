@@ -8,8 +8,8 @@ import { MznCheckboxGroup } from './checkbox-group.component';
   standalone: true,
   imports: [MznCheckbox, FormsModule],
   template: `
-    <mzn-checkbox [checked]="checked" [disabled]="disabled" [value]="'test'"
-      >Label</mzn-checkbox
+    <div mznCheckbox [checked]="checked" [disabled]="disabled" [value]="'test'"
+      >Label</div
     >
   `,
 })
@@ -22,11 +22,11 @@ class TestHostComponent {
   standalone: true,
   imports: [MznCheckbox, MznCheckboxGroup, FormsModule],
   template: `
-    <mzn-checkbox-group [(ngModel)]="values" name="fruits">
-      <mzn-checkbox value="apple">Apple</mzn-checkbox>
-      <mzn-checkbox value="banana">Banana</mzn-checkbox>
-      <mzn-checkbox value="cherry">Cherry</mzn-checkbox>
-    </mzn-checkbox-group>
+    <div mznCheckboxGroup [(ngModel)]="values" name="fruits">
+      <div mznCheckbox value="apple">Apple</div>
+      <div mznCheckbox value="banana">Banana</div>
+      <div mznCheckbox value="cherry">Cherry</div>
+    </div>
   `,
 })
 class TestGroupComponent {
@@ -37,8 +37,8 @@ class TestGroupComponent {
   standalone: true,
   imports: [MznCheckbox, FormsModule],
   template: `
-    <mzn-checkbox mode="chip" size="minor" [checked]="checked"
-      >Chip Label</mzn-checkbox
+    <div mznCheckbox mode="chip" size="minor" [checked]="checked"
+      >Chip Label</div
     >
   `,
 })

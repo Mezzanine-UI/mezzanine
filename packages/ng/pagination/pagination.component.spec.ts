@@ -6,13 +6,14 @@ import { MznPagination } from './pagination.component';
   standalone: true,
   imports: [MznPagination],
   template: `
-    <mzn-pagination
+    <div
+      mznPagination
       [total]="total"
       [current]="current"
       [pageSize]="pageSize"
       [disabled]="disabled"
       (pageChanged)="onPageChange($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {

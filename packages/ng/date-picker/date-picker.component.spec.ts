@@ -171,11 +171,12 @@ const mockConfig = {
   standalone: true,
   imports: [MznDatePicker, FormsModule],
   template: `
-    <mzn-date-picker
+    <div
+      mznDatePicker
       [(ngModel)]="date"
       [placeholder]="'Select date'"
       [disabled]="disabled()"
-    />
+    ></div>
   `,
 })
 class TestHost {
@@ -200,7 +201,7 @@ describe('MznDatePicker', () => {
   });
 
   it('should render picker trigger', () => {
-    const trigger = fixture.nativeElement.querySelector('mzn-picker-trigger');
+    const trigger = fixture.nativeElement.querySelector('[mznPickerTrigger]');
     expect(trigger).toBeTruthy();
   });
 
@@ -211,7 +212,7 @@ describe('MznDatePicker', () => {
 
   it('should not show calendar initially', () => {
     // Calendar should be in a closed popper
-    const popper = fixture.nativeElement.querySelector('mzn-popper');
+    const popper = fixture.nativeElement.querySelector('[mznPopper]');
     expect(popper).toBeTruthy();
   });
 

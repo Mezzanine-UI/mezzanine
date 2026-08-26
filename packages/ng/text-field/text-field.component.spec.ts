@@ -7,7 +7,8 @@ import { MznTextField } from './text-field.component';
   standalone: true,
   imports: [MznTextField],
   template: `
-    <mzn-text-field
+    <div
+      mznTextField
       [active]="active"
       [clearable]="clearable"
       [disabled]="disabled"
@@ -21,7 +22,7 @@ import { MznTextField } from './text-field.component';
       (cleared)="onCleared()"
     >
       <input [value]="inputValue" placeholder="test" />
-    </mzn-text-field>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -54,7 +55,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-text-field')!,
+      fixture.nativeElement.querySelector('[mznTextField]')!,
   };
 }
 

@@ -53,11 +53,16 @@ describe('MznDrawer', () => {
     });
   });
 
-  it('should not render when closed', () => {
+  it('should keep the drawer mounted but hidden when closed', () => {
     const { fixture } = createFixture(TestHostComponent);
-    const drawer = fixture.nativeElement.querySelector('.mzn-drawer');
+    const drawer = fixture.nativeElement.querySelector(
+      '.mzn-drawer',
+    ) as HTMLElement;
 
-    expect(drawer).toBeFalsy();
+    // The drawer stays mounted and slides out of view, so it reports
+    // visibility: hidden rather than disappearing from the DOM.
+    expect(drawer).toBeTruthy();
+    expect(drawer.style.visibility).toBe('hidden');
   });
 
   it('should render when open', () => {

@@ -9,7 +9,8 @@ import { MznFilter } from './filter.component';
   standalone: true,
   imports: [MznFilterArea, MznFilterLine, MznFilter],
   template: `
-    <mzn-filter-area
+    <div
+      mznFilterArea
       [actionsAlign]="actionsAlign"
       [isDirty]="isDirty()"
       [resetText]="resetText"
@@ -18,11 +19,11 @@ import { MznFilter } from './filter.component';
       (filterReset)="onReset()"
       (filterSubmit)="onSubmit()"
     >
-      <mzn-filter-line>
-        <mzn-filter [span]="2">Field A</mzn-filter>
-        <mzn-filter [span]="2">Field B</mzn-filter>
-      </mzn-filter-line>
-    </mzn-filter-area>
+      <div mznFilterLine>
+        <div mznFilter [span]="2">Field A</div>
+        <div mznFilter [span]="2">Field B</div>
+      </div>
+    </div>
   `,
 })
 class SingleLineHost {
@@ -39,20 +40,21 @@ class SingleLineHost {
   standalone: true,
   imports: [MznFilterArea, MznFilterLine, MznFilter],
   template: `
-    <mzn-filter-area
+    <div
+      mznFilterArea
       [isDirty]="isDirty()"
       (filterReset)="onReset()"
       (filterSubmit)="onSubmit()"
     >
-      <mzn-filter-line>
-        <mzn-filter [span]="2">Field A</mzn-filter>
-        <mzn-filter [span]="2">Field B</mzn-filter>
-      </mzn-filter-line>
-      <mzn-filter-line>
-        <mzn-filter [span]="3">Field C</mzn-filter>
-        <mzn-filter [span]="3">Field D</mzn-filter>
-      </mzn-filter-line>
-    </mzn-filter-area>
+      <div mznFilterLine>
+        <div mznFilter [span]="2">Field A</div>
+        <div mznFilter [span]="2">Field B</div>
+      </div>
+      <div mznFilterLine>
+        <div mznFilter [span]="3">Field C</div>
+        <div mznFilter [span]="3">Field D</div>
+      </div>
+    </div>
   `,
 })
 class MultiLineHost {
@@ -65,11 +67,11 @@ class MultiLineHost {
   standalone: true,
   imports: [MznFilterArea, MznFilterLine, MznFilter],
   template: `
-    <mzn-filter-area size="sub">
-      <mzn-filter-line>
-        <mzn-filter [span]="2">Field</mzn-filter>
-      </mzn-filter-line>
-    </mzn-filter-area>
+    <div mznFilterArea size="sub">
+      <div mznFilterLine>
+        <div mznFilter [span]="2">Field</div>
+      </div>
+    </div>
   `,
 })
 class SubSizeHost {}
@@ -80,7 +82,7 @@ describe('MznFilterArea', () => {
     let host: SingleLineHost;
 
     const getHost = (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-filter-area')!;
+      fixture.nativeElement.querySelector('[mznFilterArea]')!;
 
     beforeEach(async () => {
       await TestBed.configureTestingModule({
@@ -100,7 +102,7 @@ describe('MznFilterArea', () => {
     });
 
     it('should render filter lines', () => {
-      const lines = getHost().querySelectorAll('mzn-filter-line');
+      const lines = getHost().querySelectorAll('[mznFilterLine]');
 
       expect(lines.length).toBe(1);
       expect(lines[0].classList.contains('mzn-filter-area__line')).toBe(true);
@@ -162,7 +164,7 @@ describe('MznFilterArea', () => {
     let fixture: ComponentFixture<MultiLineHost>;
 
     const getHost = (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-filter-area')!;
+      fixture.nativeElement.querySelector('[mznFilterArea]')!;
 
     beforeEach(async () => {
       await TestBed.configureTestingModule({
@@ -184,7 +186,7 @@ describe('MznFilterArea', () => {
     });
 
     it('should hide non-first lines when collapsed', () => {
-      const lines = getHost().querySelectorAll<HTMLElement>('mzn-filter-line');
+      const lines = getHost().querySelectorAll<HTMLElement>('[mznFilterLine]');
 
       expect(lines[0].style.display).not.toBe('none');
       expect(lines[1].style.display).toBe('none');
@@ -192,7 +194,7 @@ describe('MznFilterArea', () => {
 
     it('should toggle expanded state', () => {
       const secondLine = getHost().querySelectorAll(
-        'mzn-filter-line',
+        '[mznFilterLine]',
       )[1] as HTMLElement;
 
       expect(secondLine.style.display).toBe('none');
@@ -223,7 +225,7 @@ describe('MznFilterArea', () => {
       expandBtn.click();
       fixture.detectChanges();
 
-      const lines = getHost().querySelectorAll('mzn-filter-line');
+      const lines = getHost().querySelectorAll('[mznFilterLine]');
 
       lines.forEach((line) => {
         expect((line as HTMLElement).style.display).not.toBe('none');
@@ -242,7 +244,7 @@ describe('MznFilterArea', () => {
       subFixture.detectChanges();
 
       const el: HTMLElement =
-        subFixture.nativeElement.querySelector('mzn-filter-area');
+        subFixture.nativeElement.querySelector('[mznFilterArea]');
 
       expect(el.classList.contains('mzn-filter-area--sub')).toBe(true);
     });

@@ -14,16 +14,15 @@ import { MznDescriptionGroup } from './description-group.component';
     MznDescriptionGroup,
   ],
   template: `
-    <mzn-description
+    <div
+      mznDescription
       [orientation]="orientation"
       [size]="size"
       [title]="titleText"
       [widthType]="widthType"
     >
-      <mzn-description-content [variant]="variant"
-        >Content</mzn-description-content
-      >
-    </mzn-description>
+      <div mznDescriptionContent [variant]="variant">Content</div>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -51,14 +50,14 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getDescription: () =>
-      fixture.nativeElement.querySelector('mzn-description') as HTMLElement,
+      fixture.nativeElement.querySelector('[mznDescription]') as HTMLElement,
     getTitle: () =>
       fixture.nativeElement.querySelector(
-        'mzn-description-title',
+        '[mznDescriptionTitle]',
       ) as HTMLElement,
     getContent: () =>
       fixture.nativeElement.querySelector(
-        'mzn-description-content',
+        '[mznDescriptionContent]',
       ) as HTMLElement,
   };
 }
@@ -168,14 +167,10 @@ describe('MznDescriptionGroup', () => {
     standalone: true,
     imports: [MznDescription, MznDescriptionGroup],
     template: `
-      <mzn-description-group>
-        <mzn-description title="Child 1"
-          ><span>Content 1</span></mzn-description
-        >
-        <mzn-description title="Child 2"
-          ><span>Content 2</span></mzn-description
-        >
-      </mzn-description-group>
+      <div mznDescriptionGroup>
+        <div mznDescription title="Child 1"><span>Content 1</span></div>
+        <div mznDescription title="Child 2"><span>Content 2</span></div>
+      </div>
     `,
   })
   class GroupHost {}
@@ -192,7 +187,7 @@ describe('MznDescriptionGroup', () => {
     fixture.detectChanges();
 
     const group = fixture.nativeElement.querySelector(
-      'mzn-description-group',
+      '[mznDescriptionGroup]',
     ) as HTMLElement;
 
     expect(group.classList.contains('mzn-description-group')).toBe(true);

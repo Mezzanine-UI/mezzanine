@@ -1,6 +1,16 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MznSpin } from './spin.component';
+
+@Component({
+  standalone: true,
+  imports: [MznSpin],
+  template: `<div mznSpin [loading]="loading"><p>Wrapped</p></div>`,
+})
+class NestedHostComponent {
+  loading = false;
+}
 
 describe('MznSpin', () => {
   let fixture: ComponentFixture<MznSpin>;
@@ -91,12 +101,21 @@ describe('MznSpin', () => {
   });
 
   it('should render ng-content (nested mode)', () => {
-    // Nested mode: projected content should be rendered via ng-content.
-    // This is validated by testing the backdrop overlay structure.
-    fixture.componentRef.setInput('loading', true);
-    fixture.detectChanges();
+    // Nested mode only engages when content is actually projected, so this
+    // needs a host that wraps children rather than a bare MznSpin fixture.
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [NestedHostComponent, NoopAnimationsModule],
+    });
 
-    // In nested mode, the backdrop element wraps the spin indicator.
-    expect(el.querySelector('.mzn-backdrop')).toBeTruthy();
+    const nested = TestBed.createComponent(NestedHostComponent);
+
+    nested.componentInstance.loading = true;
+    nested.detectChanges();
+
+    const nestedEl: HTMLElement = nested.nativeElement;
+
+    expect(nestedEl.querySelector('p')?.textContent).toBe('Wrapped');
+    expect(nestedEl.querySelector('.mzn-backdrop')).toBeTruthy();
   });
 });

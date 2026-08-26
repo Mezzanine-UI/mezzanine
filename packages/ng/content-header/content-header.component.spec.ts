@@ -13,7 +13,8 @@ import { MznContentHeaderResponsive } from './content-header-responsive.componen
   standalone: true,
   imports: [MznContentHeader],
   template: `
-    <mzn-content-header
+    <div
+      mznContentHeader
       [title]="title()"
       [description]="description()"
       [size]="size()"
@@ -24,7 +25,7 @@ import { MznContentHeaderResponsive } from './content-header-responsive.componen
       <div contentHeaderFilter>Filter</div>
       <div contentHeaderActions>Actions</div>
       <div contentHeaderUtilities>Utilities</div>
-    </mzn-content-header>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -71,7 +72,7 @@ function createFixture(
   return {
     fixture,
     getHeaderElement: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-content-header')!,
+      fixture.nativeElement.querySelector('[mznContentHeader]')!,
   };
 }
 
@@ -81,9 +82,9 @@ function createFixture(
   standalone: true,
   imports: [MznContentHeaderResponsive],
   template: `
-    <mzn-content-header-responsive breakpoint="above1080px">
+    <div mznContentHeaderResponsive breakpoint="above1080px">
       <span>responsive content</span>
-    </mzn-content-header-responsive>
+    </div>
   `,
 })
 class TestResponsiveHostComponent {}
@@ -246,7 +247,7 @@ describe('MznContentHeaderResponsive', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement.querySelector(
-      'mzn-content-header-responsive',
+      '[mznContentHeaderResponsive]',
     ) as HTMLElement;
 
     expect(el.classList.contains('mzn-content-header--above1080px')).toBe(true);
@@ -258,7 +259,7 @@ describe('MznContentHeaderResponsive', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement.querySelector(
-      'mzn-content-header-responsive',
+      '[mznContentHeaderResponsive]',
     ) as HTMLElement;
 
     expect(el.textContent?.trim()).toBe('responsive content');

@@ -6,7 +6,7 @@ import { MznBreadcrumbItem } from './breadcrumb-item.component';
 @Component({
   standalone: true,
   imports: [MznBreadcrumb],
-  template: `<mzn-breadcrumb [items]="items" />`,
+  template: `<div mznBreadcrumb [items]="items"></div>`,
 })
 class TestHostComponent {
   items: readonly BreadcrumbItemData[] = [
@@ -31,7 +31,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-breadcrumb')!,
+      fixture.nativeElement.querySelector('[mznBreadcrumb]')!,
   };
 }
 
@@ -57,7 +57,7 @@ describe('MznBreadcrumb', () => {
 
   it('should render all items', () => {
     const { getEl } = createFixture();
-    const items = getEl().querySelectorAll('mzn-breadcrumb-item');
+    const items = getEl().querySelectorAll('[mznBreadcrumbItem]');
 
     expect(items).toHaveLength(3);
   });
@@ -71,7 +71,7 @@ describe('MznBreadcrumb', () => {
 
   it('should mark last item as current', () => {
     const { getEl } = createFixture();
-    const items = getEl().querySelectorAll('mzn-breadcrumb-item');
+    const items = getEl().querySelectorAll('[mznBreadcrumbItem]');
     const last = items[items.length - 1];
 
     expect(last.classList.contains('mzn-breadcrumb__item--current')).toBe(true);
@@ -87,7 +87,7 @@ describe('MznBreadcrumb', () => {
 
   it('should render span for current item', () => {
     const { getEl } = createFixture();
-    const items = getEl().querySelectorAll('mzn-breadcrumb-item');
+    const items = getEl().querySelectorAll('[mznBreadcrumbItem]');
     const last = items[items.length - 1];
 
     expect(last.querySelector('a')).toBeNull();

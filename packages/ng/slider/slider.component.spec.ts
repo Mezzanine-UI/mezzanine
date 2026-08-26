@@ -8,7 +8,8 @@ import { MznSlider } from './slider.component';
   standalone: true,
   imports: [MznSlider, FormsModule],
   template: `
-    <mzn-slider
+    <div
+      mznSlider
       [(ngModel)]="value"
       [disabled]="disabled"
       [min]="min"
@@ -16,7 +17,7 @@ import { MznSlider } from './slider.component';
       [step]="step"
       [prefixIcon]="prefixIcon"
       [suffixIcon]="suffixIcon"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -48,7 +49,7 @@ async function createFixture(
     fixture,
     host,
     getSlider: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-slider')!,
+      fixture.nativeElement.querySelector('[mznSlider]')!,
   };
 }
 

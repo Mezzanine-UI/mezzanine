@@ -7,7 +7,8 @@ import type { TableColumn, TableDataSource, TableSize } from './table-types';
   standalone: true,
   imports: [MznTable],
   template: `
-    <mzn-table
+    <div
+      mznTable
       [columns]="columns()"
       [dataSource]="dataSource()"
       [emptyText]="emptyText()"
@@ -20,7 +21,7 @@ import type { TableColumn, TableDataSource, TableSize } from './table-types';
       (expandedRowKeysChange)="onExpandedRowKeysChange($event)"
       (selectedRowKeysChange)="onSelectedRowKeysChange($event)"
       (sortChange)="onSortChange($event)"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -73,7 +74,7 @@ describe('MznTable', () => {
 
   it('should create with host class', () => {
     const { el } = createFixture();
-    const table = el.querySelector('mzn-table')!;
+    const table = el.querySelector('[mznTable]')!;
 
     expect(table.classList.contains('mzn-table-host')).toBe(true);
   });
@@ -125,7 +126,7 @@ describe('MznTable', () => {
     fixture.detectChanges();
 
     const rowCheckboxes = el.querySelectorAll(
-      'tbody .mzn-table__selection-checkbox',
+      'tbody .mzn-table__selection-checkbox input',
     );
 
     (rowCheckboxes[0] as HTMLInputElement).click();
@@ -145,7 +146,7 @@ describe('MznTable', () => {
     fixture.detectChanges();
 
     const headerCheckbox = el.querySelector(
-      'thead .mzn-table__selection-checkbox',
+      'thead .mzn-table__selection-checkbox input',
     ) as HTMLInputElement;
 
     // Select all
@@ -167,7 +168,13 @@ describe('MznTable', () => {
     const { fixture, host, el } = createFixture();
 
     host.columns.set([
-      { key: 'name', title: 'Name', dataIndex: 'name', sortOrder: null },
+      {
+        key: 'name',
+        title: 'Name',
+        dataIndex: 'name',
+        sortOrder: null,
+        onSort: (): void => {},
+      },
       { key: 'age', title: 'Age', dataIndex: 'age' },
     ]);
     fixture.detectChanges();
@@ -181,7 +188,13 @@ describe('MznTable', () => {
     const { fixture, host, el } = createFixture();
 
     host.columns.set([
-      { key: 'name', title: 'Name', dataIndex: 'name', sortOrder: null },
+      {
+        key: 'name',
+        title: 'Name',
+        dataIndex: 'name',
+        sortOrder: null,
+        onSort: (): void => {},
+      },
     ]);
     fixture.detectChanges();
 
@@ -216,7 +229,7 @@ describe('MznTable', () => {
 
     const expandIcons = el.querySelectorAll('tbody .mzn-table__expand-icon');
 
-    (expandIcons[0] as HTMLElement).parentElement!.click();
+    (expandIcons[0] as HTMLElement).click();
     fixture.detectChanges();
 
     expect(host.onExpandedRowKeysChange).toHaveBeenCalledWith(['1']);

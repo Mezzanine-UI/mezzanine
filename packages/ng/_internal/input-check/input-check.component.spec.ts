@@ -7,7 +7,8 @@ import { MznInputCheck } from './input-check.component';
   standalone: true,
   imports: [MznInputCheck],
   template: `
-    <mzn-input-check
+    <div
+      mznInputCheck
       [size]="size"
       [disabled]="disabled"
       [error]="error"
@@ -18,7 +19,7 @@ import { MznInputCheck } from './input-check.component';
     >
       <input control type="checkbox" />
       {{ labelText }}
-    </mzn-input-check>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -47,7 +48,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getHostElement: () =>
-      fixture.nativeElement.querySelector('mzn-input-check') as HTMLElement,
+      fixture.nativeElement.querySelector('[mznInputCheck]') as HTMLElement,
   };
 }
 

@@ -20,11 +20,12 @@ const CASE_SENSITIVE_OPTIONS: DropdownOption[] = [
   standalone: true,
   imports: [MznAutocomplete, FormsModule],
   template: `
-    <mzn-autocomplete
+    <div
+      mznAutocomplete
       [options]="options"
       [(ngModel)]="selected"
       placeholder="Search fruits"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -80,12 +81,18 @@ class CaseSensitiveCreateHostComponent {
   ];
 }
 
-function createFixture<T>(component: new () => T): {
+function createFixture<T>(
+  component: new () => T,
+  overrides: Partial<T> = {},
+): {
   fixture: ReturnType<typeof TestBed.createComponent<T>>;
   host: T;
 } {
   const fixture = TestBed.createComponent(component);
 
+  // Applied before the first pass: mutating a host input afterwards trips
+  // NG0100 because the change lands between the check and verify passes.
+  Object.assign(fixture.componentInstance as object, overrides);
   fixture.detectChanges();
 
   return { fixture, host: fixture.componentInstance };
@@ -114,7 +121,7 @@ describe('MznAutocomplete', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const listbox = fixture.nativeElement.querySelector('[role="listbox"]');
+    const listbox = document.querySelector('[role="listbox"]');
 
     expect(listbox).toBeTruthy();
   });
@@ -134,7 +141,7 @@ describe('MznAutocomplete', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll('[role="option"]');
 
     expect(items.length).toBe(1);
     expect(items[0].textContent).toContain('Banana');
@@ -151,7 +158,7 @@ describe('MznAutocomplete', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+    const items = document.querySelectorAll<HTMLElement>('[role="option"]');
 
     items[0].click();
     fixture.detectChanges();
@@ -175,17 +182,16 @@ describe('MznAutocomplete', () => {
       fixture.detectChanges();
       fixture.detectChanges();
 
-      const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+      const items = document.querySelectorAll('[role="option"]');
 
       expect(items.length).toBe(1);
       expect(items[0].textContent).toContain('Virginia');
     });
 
     it('should not match "vir" when caseSensitive is true', () => {
-      const { fixture, host } = createFixture(CaseSensitiveFilterHostComponent);
-
-      host.caseSensitive = true;
-      fixture.detectChanges();
+      const { fixture } = createFixture(CaseSensitiveFilterHostComponent, {
+        caseSensitive: true,
+      });
 
       const input = fixture.nativeElement.querySelector(
         'input',
@@ -199,16 +205,15 @@ describe('MznAutocomplete', () => {
       fixture.detectChanges();
       fixture.detectChanges();
 
-      const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+      const items = document.querySelectorAll('[role="option"]');
 
       expect(items.length).toBe(0);
     });
 
     it('should match "Vir" when caseSensitive is true', () => {
-      const { fixture, host } = createFixture(CaseSensitiveFilterHostComponent);
-
-      host.caseSensitive = true;
-      fixture.detectChanges();
+      const { fixture } = createFixture(CaseSensitiveFilterHostComponent, {
+        caseSensitive: true,
+      });
 
       const input = fixture.nativeElement.querySelector(
         'input',
@@ -222,7 +227,7 @@ describe('MznAutocomplete', () => {
       fixture.detectChanges();
       fixture.detectChanges();
 
-      const items = fixture.nativeElement.querySelectorAll('[role="option"]');
+      const items = document.querySelectorAll('[role="option"]');
 
       expect(items.length).toBe(1);
       expect(items[0].textContent).toContain('Virginia');
@@ -243,8 +248,8 @@ describe('MznAutocomplete', () => {
       fixture.detectChanges();
 
       const buttons = Array.from(
-        fixture.nativeElement.querySelectorAll('button'),
-      ) as HTMLButtonElement[];
+        document.querySelectorAll<HTMLButtonElement>('button'),
+      );
       const createButton = buttons.find(
         (button) => button.textContent?.trim() === '建立 "virginia"',
       );
@@ -253,10 +258,9 @@ describe('MznAutocomplete', () => {
     });
 
     it('should offer to create a differently-cased duplicate when caseSensitive is true', () => {
-      const { fixture, host } = createFixture(CaseSensitiveCreateHostComponent);
-
-      host.caseSensitive = true;
-      fixture.detectChanges();
+      const { fixture } = createFixture(CaseSensitiveCreateHostComponent, {
+        caseSensitive: true,
+      });
 
       const input = fixture.nativeElement.querySelector(
         'input',
@@ -271,8 +275,8 @@ describe('MznAutocomplete', () => {
       fixture.detectChanges();
 
       const buttons = Array.from(
-        fixture.nativeElement.querySelectorAll('button'),
-      ) as HTMLButtonElement[];
+        document.querySelectorAll<HTMLButtonElement>('button'),
+      );
       const createButton = buttons.find(
         (button) => button.textContent?.trim() === '建立 "virginia"',
       );

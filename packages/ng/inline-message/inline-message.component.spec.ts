@@ -6,11 +6,12 @@ import { MznInlineMessage } from './inline-message.component';
   standalone: true,
   imports: [MznInlineMessage],
   template: `
-    <mzn-inline-message
+    <div
+      mznInlineMessage
       [severity]="severity"
       [content]="content"
       (closed)="onClosed()"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -65,13 +66,13 @@ describe('MznInlineMessage', () => {
   it('should show close button only for info severity', () => {
     const { fixture: infoFixture } = createFixture({ severity: 'info' });
     const closeInfo =
-      infoFixture.nativeElement.querySelector('mzn-clear-actions');
+      infoFixture.nativeElement.querySelector('[mznClearActions]');
 
     expect(closeInfo).toBeTruthy();
 
     const { fixture: errorFixture } = createFixture({ severity: 'error' });
     const closeError =
-      errorFixture.nativeElement.querySelector('mzn-clear-actions');
+      errorFixture.nativeElement.querySelector('[mznClearActions]');
 
     expect(closeError).toBeNull();
   });

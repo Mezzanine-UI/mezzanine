@@ -7,7 +7,8 @@ import { MznPageFooter } from './page-footer.component';
   standalone: true,
   imports: [MznPageFooter, MznButton],
   template: `
-    <mzn-page-footer
+    <div
+      mznPageFooter
       type="standard"
       supportingActionName="查看紀錄"
       warningMessage="部分內容未通過驗證"
@@ -16,7 +17,7 @@ import { MznPageFooter } from './page-footer.component';
         <button mznButton variant="base-secondary">取消</button>
         <button mznButton variant="base-primary">儲存</button>
       </div>
-    </mzn-page-footer>
+    </div>
   `,
 })
 class StandardTypeHost {}
@@ -25,14 +26,15 @@ class StandardTypeHost {}
   standalone: true,
   imports: [MznPageFooter, MznButton],
   template: `
-    <mzn-page-footer
+    <div
+      mznPageFooter
       type="information"
       annotation="發佈後將無法編輯，請確認內容無誤"
     >
       <div actions>
         <button mznButton variant="base-primary">發佈</button>
       </div>
-    </mzn-page-footer>
+    </div>
   `,
 })
 class InformationTypeHost {}
@@ -41,11 +43,11 @@ class InformationTypeHost {}
   standalone: true,
   imports: [MznPageFooter, MznButton],
   template: `
-    <mzn-page-footer type="overflow">
+    <div mznPageFooter type="overflow">
       <div actions>
         <button mznButton variant="base-primary">儲存</button>
       </div>
-    </mzn-page-footer>
+    </div>
   `,
 })
 class OverflowTypeHost {}
@@ -64,7 +66,7 @@ describe('MznPageFooter', () => {
     });
 
     it('should render with host class', () => {
-      const el = fixture.nativeElement.querySelector('mzn-page-footer');
+      const el = fixture.nativeElement.querySelector('[mznPageFooter]');
 
       expect(el).toBeTruthy();
       expect(el.classList.contains('mzn-page-footer')).toBe(true);
@@ -77,7 +79,7 @@ describe('MznPageFooter', () => {
     });
 
     it('should render warning message', () => {
-      const el = fixture.nativeElement.querySelector('mzn-page-footer');
+      const el = fixture.nativeElement.querySelector('[mznPageFooter]');
       const messageDiv = el.querySelector('.mzn-page-footer__message');
 
       expect(messageDiv?.textContent?.trim()).toContain('部分內容未通過驗證');

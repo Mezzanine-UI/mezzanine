@@ -33,8 +33,8 @@
   "scripts": {
     "build": "ng-packagr -p ng-package.json",
     "build:clean": "rimraf dist && ng-packagr -p ng-package.json",
-    "test": "jest --config jest.config.js",
-    "test:coverage": "jest --config jest.config.js --coverage"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@js-temporal/polyfill": "^0.5.1"

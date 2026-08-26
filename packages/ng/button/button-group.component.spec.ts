@@ -12,7 +12,8 @@ import { MznButtonGroup } from './button-group.component';
   standalone: true,
   imports: [MznButton, MznButtonGroup],
   template: `
-    <mzn-button-group
+    <div
+      mznButtonGroup
       [variant]="variant"
       [size]="size"
       [disabled]="disabled"
@@ -22,7 +23,7 @@ import { MznButtonGroup } from './button-group.component';
       <button mznButton>Button 1</button>
       <button mznButton>Button 2</button>
       <button mznButton>Button 3</button>
-    </mzn-button-group>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -49,7 +50,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getGroup: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-button-group')!,
+      fixture.nativeElement.querySelector('[mznButtonGroup]')!,
     getButtons: (): NodeListOf<HTMLButtonElement> =>
       fixture.nativeElement.querySelectorAll('[mznButton]'),
   };
@@ -96,9 +97,9 @@ describe('MznButtonGroup', () => {
         standalone: true,
         imports: [MznButton, MznButtonGroup],
         template: `
-          <mzn-button-group variant="base-primary">
+          <div mznButtonGroup variant="base-primary">
             <button mznButton variant="destructive-primary">Override</button>
-          </mzn-button-group>
+          </div>
         `,
       })
       class OverrideHost {}
@@ -144,9 +145,9 @@ describe('MznButtonGroup', () => {
         standalone: true,
         imports: [MznButton, MznButtonGroup],
         template: `
-          <mzn-button-group [disabled]="true">
+          <div mznButtonGroup [disabled]="true">
             <button mznButton [disabled]="false">Not Disabled</button>
-          </mzn-button-group>
+          </div>
         `,
       })
       class DisabledOverrideHost {}

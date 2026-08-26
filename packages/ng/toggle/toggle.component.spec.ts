@@ -6,7 +6,7 @@ import { MznToggle } from './toggle.component';
 @Component({
   standalone: true,
   imports: [MznToggle, FormsModule],
-  template: ` <mzn-toggle [(ngModel)]="enabled" label="Enable" /> `,
+  template: ` <div mznToggle [(ngModel)]="enabled" label="Enable"></div> `,
 })
 class TestHostComponent {
   enabled = false;
@@ -16,7 +16,7 @@ class TestHostComponent {
   standalone: true,
   imports: [MznToggle],
   template: `
-    <mzn-toggle [disabled]="true" [checked]="true" label="Disabled" />
+    <div mznToggle [disabled]="true" [checked]="true" label="Disabled"></div>
   `,
 })
 class TestDisabledComponent {}

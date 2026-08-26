@@ -7,12 +7,13 @@ import { MznSkeleton } from './skeleton.component';
   standalone: true,
   imports: [MznSkeleton],
   template: `
-    <mzn-skeleton
+    <div
+      mznSkeleton
       [circle]="circle"
       [height]="height"
       [variant]="variant"
       [width]="width"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -37,7 +38,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getEl: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-skeleton')!,
+      fixture.nativeElement.querySelector('[mznSkeleton]')!,
   };
 }
 

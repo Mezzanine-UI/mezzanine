@@ -43,7 +43,11 @@ const mockConfig = {
 @Component({
   standalone: true,
   imports: [MznTimePicker, FormsModule],
-  template: `<mzn-time-picker [(ngModel)]="time" placeholder="Select time" />`,
+  template: `<div
+    mznTimePicker
+    [(ngModel)]="time"
+    placeholder="Select time"
+  ></div>`,
 })
 class TestHost {
   time: DateType | undefined;
@@ -65,7 +69,7 @@ describe('MznTimePicker', () => {
 
   it('should render picker trigger', () => {
     expect(
-      fixture.nativeElement.querySelector('mzn-picker-trigger'),
+      fixture.nativeElement.querySelector('[mznPickerTrigger]'),
     ).toBeTruthy();
   });
 

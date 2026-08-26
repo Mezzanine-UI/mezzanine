@@ -8,14 +8,15 @@ import { EmptyType } from './typings';
   standalone: true,
   imports: [MznEmpty],
   template: `
-    <mzn-empty
+    <div
+      mznEmpty
       [title]="title"
       [type]="type"
       [size]="size"
       [description]="description"
     >
       <button actions>Action</button>
-    </mzn-empty>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -39,7 +40,8 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
   return {
     fixture,
     host,
-    getEl: (): HTMLElement => fixture.nativeElement.querySelector('mzn-empty')!,
+    getEl: (): HTMLElement =>
+      fixture.nativeElement.querySelector('[mznEmpty]')!,
   };
 }
 
@@ -75,9 +77,7 @@ describe('MznEmpty', () => {
   it('should render main SVG icon for non-custom type at main size', () => {
     const { getEl } = createFixture({ type: 'initial-data', size: 'main' });
 
-    expect(
-      getEl().querySelector('mzn-empty-main-initial-data-icon'),
-    ).toBeTruthy();
+    expect(getEl().querySelector('[mznEmptyMainInitialDataIcon]')).toBeTruthy();
     expect(getEl().querySelector('i[mznIcon]')).toBeNull();
   });
 
@@ -85,28 +85,26 @@ describe('MznEmpty', () => {
     const { getEl } = createFixture({ type: 'initial-data', size: 'sub' });
 
     expect(getEl().querySelector('i[mznIcon]')).toBeTruthy();
-    expect(
-      getEl().querySelector('mzn-empty-main-initial-data-icon'),
-    ).toBeNull();
+    expect(getEl().querySelector('[mznEmptyMainInitialDataIcon]')).toBeNull();
   });
 
   it('should render main result SVG icon at main size', () => {
     const { getEl } = createFixture({ type: 'result', size: 'main' });
 
-    expect(getEl().querySelector('mzn-empty-main-result-icon')).toBeTruthy();
+    expect(getEl().querySelector('[mznEmptyMainResultIcon]')).toBeTruthy();
   });
 
   it('should render main system SVG icon at main size', () => {
     const { getEl } = createFixture({ type: 'system', size: 'main' });
 
-    expect(getEl().querySelector('mzn-empty-main-system-icon')).toBeTruthy();
+    expect(getEl().querySelector('[mznEmptyMainSystemIcon]')).toBeTruthy();
   });
 
   it('should render main notification SVG icon at main size', () => {
     const { getEl } = createFixture({ type: 'notification', size: 'main' });
 
     expect(
-      getEl().querySelector('mzn-empty-main-notification-icon'),
+      getEl().querySelector('[mznEmptyMainNotificationIcon]'),
     ).toBeTruthy();
   });
 
@@ -149,8 +147,6 @@ describe('MznEmpty', () => {
     const { getEl } = createFixture({ type: 'custom' });
 
     expect(getEl().querySelector('i[mznIcon]')).toBeNull();
-    expect(
-      getEl().querySelector('mzn-empty-main-initial-data-icon'),
-    ).toBeNull();
+    expect(getEl().querySelector('[mznEmptyMainInitialDataIcon]')).toBeNull();
   });
 });

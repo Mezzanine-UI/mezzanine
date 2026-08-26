@@ -7,7 +7,8 @@ import { MznBackdrop } from './backdrop.component';
   standalone: true,
   imports: [MznBackdrop],
   template: `
-    <mzn-backdrop
+    <div
+      mznBackdrop
       [open]="open"
       [variant]="variant"
       [disableCloseOnBackdropClick]="disableCloseOnBackdropClick"
@@ -17,7 +18,7 @@ import { MznBackdrop } from './backdrop.component';
       (closed)="onClosed()"
     >
       <div class="backdrop-content">Content</div>
-    </mzn-backdrop>
+    </div>
   `,
 })
 class TestHostComponent {

@@ -7,13 +7,14 @@ import { MznAlertBanner, AlertBannerAction } from './alert-banner.component';
   standalone: true,
   imports: [MznAlertBanner],
   template: `
-    <mzn-alert-banner
+    <div
+      mznAlertBanner
       [severity]="severity"
       [message]="message"
       [closable]="closable"
       [actions]="actions"
       (closed)="onClosed()"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -39,7 +40,7 @@ function createFixture(overrides: Partial<TestHostComponent> = {}): {
     fixture,
     host,
     getHostElement: () =>
-      fixture.nativeElement.querySelector('.mzn-alert-banner') as HTMLElement,
+      document.querySelector('.mzn-alert-banner') as HTMLElement,
   };
 }
 

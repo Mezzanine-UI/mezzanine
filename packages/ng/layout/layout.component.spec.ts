@@ -9,15 +9,11 @@ import { MznLayoutRightPanel } from './layout-right-panel.component';
   standalone: true,
   imports: [MznLayout, MznLayoutMain, MznLayoutLeftPanel, MznLayoutRightPanel],
   template: `
-    <mzn-layout>
-      <mzn-layout-left-panel [open]="leftOpen()"
-        >Left Panel</mzn-layout-left-panel
-      >
-      <mzn-layout-main>Main Content</mzn-layout-main>
-      <mzn-layout-right-panel [open]="rightOpen()"
-        >Right Panel</mzn-layout-right-panel
-      >
-    </mzn-layout>
+    <div mznLayout>
+      <div mznLayoutLeftPanel [open]="leftOpen()">Left Panel</div>
+      <div mznLayoutMain>Main Content</div>
+      <div mznLayoutRightPanel [open]="rightOpen()">Right Panel</div>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -38,7 +34,7 @@ function createFixture(): {
     fixture,
     host: fixture.componentInstance,
     getLayoutElement: (): HTMLElement =>
-      fixture.nativeElement.querySelector('mzn-layout')!,
+      fixture.nativeElement.querySelector('[mznLayout]')!,
   };
 }
 
@@ -66,7 +62,7 @@ describe('MznLayout', () => {
 
   it('should render main content', () => {
     const { getLayoutElement } = createFixture();
-    const main = getLayoutElement().querySelector('mzn-layout-main');
+    const main = getLayoutElement().querySelector('[mznLayoutMain]');
 
     expect(main).toBeTruthy();
     expect(main?.classList.contains('mzn-layout__main')).toBe(true);
@@ -82,7 +78,7 @@ describe('MznLayout', () => {
     host.leftOpen.set(true);
     fixture.detectChanges();
 
-    const panel = getLayoutElement().querySelector('mzn-layout-left-panel');
+    const panel = getLayoutElement().querySelector('[mznLayoutLeftPanel]');
 
     expect(panel).toBeTruthy();
 
@@ -94,7 +90,7 @@ describe('MznLayout', () => {
 
   it('should hide left panel when closed', () => {
     const { getLayoutElement } = createFixture();
-    const panel = getLayoutElement().querySelector('mzn-layout-left-panel');
+    const panel = getLayoutElement().querySelector('[mznLayoutLeftPanel]');
 
     expect(panel?.querySelector('.mzn-layout__side-panel-content')).toBeNull();
   });
@@ -105,7 +101,7 @@ describe('MznLayout', () => {
     host.rightOpen.set(true);
     fixture.detectChanges();
 
-    const panel = getLayoutElement().querySelector('mzn-layout-right-panel');
+    const panel = getLayoutElement().querySelector('[mznLayoutRightPanel]');
 
     expect(panel).toBeTruthy();
 
@@ -122,9 +118,9 @@ describe('MznLayout', () => {
     host.rightOpen.set(true);
     fixture.detectChanges();
 
-    const leftPanel = getLayoutElement().querySelector('mzn-layout-left-panel');
+    const leftPanel = getLayoutElement().querySelector('[mznLayoutLeftPanel]');
     const rightPanel = getLayoutElement().querySelector(
-      'mzn-layout-right-panel',
+      '[mznLayoutRightPanel]',
     );
 
     expect(leftPanel?.classList.contains('mzn-layout__side-panel')).toBe(true);
@@ -144,7 +140,7 @@ describe('MznLayout', () => {
     fixture.detectChanges();
 
     const divider = getLayoutElement().querySelector(
-      'mzn-layout-left-panel [role="separator"]',
+      '[mznLayoutLeftPanel] [role="separator"]',
     );
 
     expect(divider).toBeTruthy();
@@ -158,7 +154,7 @@ describe('MznLayout', () => {
     fixture.detectChanges();
 
     const divider = getLayoutElement().querySelector(
-      'mzn-layout-right-panel [role="separator"]',
+      '[mznLayoutRightPanel] [role="separator"]',
     );
 
     expect(divider).toBeTruthy();
@@ -173,7 +169,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const divider = getLayoutElement().querySelector(
-        'mzn-layout-left-panel [role="separator"]',
+        '[mznLayoutLeftPanel] [role="separator"]',
       );
 
       expect(divider?.getAttribute('aria-orientation')).toBe('vertical');
@@ -190,7 +186,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const divider = getLayoutElement().querySelector(
-        'mzn-layout-right-panel [role="separator"]',
+        '[mznLayoutRightPanel] [role="separator"]',
       );
 
       expect(divider?.getAttribute('aria-orientation')).toBe('vertical');
@@ -223,7 +219,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
       const initialWidth = parseFloat(panel.style.inlineSize);
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
@@ -245,7 +241,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
       const initialWidth = parseFloat(panel.style.inlineSize);
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
@@ -267,7 +263,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-right-panel',
+        '[mznLayoutRightPanel]',
       ) as HTMLElement;
       const initialWidth = parseFloat(panel.style.inlineSize);
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
@@ -289,7 +285,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const panel = getLayoutElement().querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
       const divider = panel.querySelector('[role="separator"]') as HTMLElement;
 
@@ -316,7 +312,7 @@ describe('MznLayout', () => {
       fixture.detectChanges();
 
       const divider = getLayoutElement().querySelector(
-        'mzn-layout-left-panel [role="separator"]',
+        '[mznLayoutLeftPanel] [role="separator"]',
       ) as HTMLElement;
 
       divider.dispatchEvent(
@@ -343,12 +339,12 @@ describe('MznLayout', () => {
         standalone: true,
         imports: [MznLayout, MznLayoutMain, MznLayoutLeftPanel],
         template: `
-          <mzn-layout>
-            <mzn-layout-left-panel [open]="true" [defaultWidth]="100"
-              >Content</mzn-layout-left-panel
+          <div mznLayout>
+            <div mznLayoutLeftPanel [open]="true" [defaultWidth]="100"
+              >Content</div
             >
-            <mzn-layout-main>Main</mzn-layout-main>
-          </mzn-layout>
+            <div mznLayoutMain>Main</div>
+          </div>
         `,
       })
       class SmallWidthHost {}
@@ -359,7 +355,7 @@ describe('MznLayout', () => {
       fix.detectChanges();
 
       const panel = fix.nativeElement.querySelector(
-        'mzn-layout-left-panel',
+        '[mznLayoutLeftPanel]',
       ) as HTMLElement;
 
       expect(parseFloat(panel.style.inlineSize)).toBe(240);

@@ -7,11 +7,11 @@ import { MznTabItem } from './tab-item.component';
   standalone: true,
   imports: [MznTabs, MznTabItem],
   template: `
-    <mzn-tabs [activeKey]="activeKey" (activeKeyChange)="activeKey = $event">
-      <mzn-tab-item [key]="0">Tab 1</mzn-tab-item>
-      <mzn-tab-item [key]="1">Tab 2</mzn-tab-item>
-      <mzn-tab-item [key]="2" [disabled]="true">Tab 3</mzn-tab-item>
-    </mzn-tabs>
+    <div mznTabs [activeKey]="activeKey" (activeKeyChange)="activeKey = $event">
+      <button mznTabItem [key]="0">Tab 1</button>
+      <button mznTabItem [key]="1">Tab 2</button>
+      <button mznTabItem [key]="2" [disabled]="true">Tab 3</button>
+    </div>
   `,
 })
 class TestHostComponent {
@@ -22,11 +22,11 @@ class TestHostComponent {
   standalone: true,
   imports: [MznTabs, MznTabItem],
   template: `
-    <mzn-tabs [defaultActiveKey]="1">
-      <mzn-tab-item [key]="0">Tab 1</mzn-tab-item>
-      <mzn-tab-item [key]="1">Tab 2</mzn-tab-item>
-      <mzn-tab-item [key]="2">Tab 3</mzn-tab-item>
-    </mzn-tabs>
+    <div mznTabs [defaultActiveKey]="1">
+      <button mznTabItem [key]="0">Tab 1</button>
+      <button mznTabItem [key]="1">Tab 2</button>
+      <button mznTabItem [key]="2">Tab 3</button>
+    </div>
   `,
 })
 class UncontrolledTestHostComponent {}

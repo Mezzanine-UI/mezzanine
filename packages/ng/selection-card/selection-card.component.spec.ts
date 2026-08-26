@@ -6,14 +6,15 @@ import { MznSelectionCard } from './selection-card.component';
   standalone: true,
   imports: [MznSelectionCard],
   template: `
-    <mzn-selection-card
+    <div
+      mznSelectionCard
       selector="radio"
       text="Option A"
       supportingText="Description"
       [checked]="checked"
       [disabled]="disabled"
       value="a"
-    />
+    ></div>
   `,
 })
 class TestHostComponent {
@@ -25,12 +26,13 @@ class TestHostComponent {
   standalone: true,
   imports: [MznSelectionCard],
   template: `
-    <mzn-selection-card
+    <div
+      mznSelectionCard
       selector="checkbox"
       text="Readonly"
       [readonly]="true"
       [checked]="true"
-    />
+    ></div>
   `,
 })
 class TestReadonlyComponent {}
