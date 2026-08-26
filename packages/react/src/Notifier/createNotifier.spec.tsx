@@ -230,6 +230,31 @@ describe('createNotifier()', () => {
     document.body.innerHTML = '';
   });
 
+  it('should give every auto-keyed notifier a distinct key within one millisecond', () => {
+    const notifier = createNotifier<MockRendererProps>({
+      render: mockRender,
+    });
+    // Freeze the clock so every add lands in the same millisecond, which is
+    // what a caller firing several notifiers in a tight loop effectively does.
+    const now = jest.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
+    const keys: Key[] = [];
+
+    for (let i = 0; i < 5; i += 1) {
+      act(() => {
+        keys.push(notifier.add({ children: `notifier ${i + 1}` }));
+      });
+    }
+
+    now.mockRestore();
+
+    expect(new Set(keys).size).toBe(5);
+    expect(document.body.lastElementChild?.childElementCount).toBe(5);
+
+    act(() => {
+      notifier.destroy();
+    });
+  });
+
   it('should be safe to invoke remove before add is called', () => {
     const notifier = createNotifier<MockRendererProps>({
       render: mockRender,

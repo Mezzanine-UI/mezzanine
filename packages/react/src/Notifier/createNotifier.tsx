@@ -66,6 +66,23 @@ export function createNotifier<
     maxCount,
     ...configProp,
   };
+  let lastGeneratedKey = 0;
+
+  /**
+   * Auto-generated keys have to be unique: a notifier keyed the same as a live
+   * one is treated as an update to it, so a caller firing several notifiers in
+   * a tight loop would silently see all but the last collapse into one.
+   * `Date.now()` alone only has millisecond resolution, which is coarse enough
+   * for that to happen in ordinary code, so step past the last key whenever the
+   * clock has not moved on.
+   */
+  function generateKey(): number {
+    const now = Date.now();
+
+    lastGeneratedKey = now > lastGeneratedKey ? now : lastGeneratedKey + 1;
+
+    return lastGeneratedKey;
+  }
 
   function ensureInitialized() {
     if (container || typeof document === 'undefined') return;
@@ -81,7 +98,7 @@ export function createNotifier<
 
       document.body.appendChild(container as HTMLDivElement);
 
-      const key = notifier.key ?? Date.now();
+      const key = notifier.key ?? generateKey();
 
       const resolvedNotifier = {
         ...restNotifierProps,
