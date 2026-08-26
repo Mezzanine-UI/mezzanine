@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.3...@mezzanine-ui/react@1.4.4) (2026-08-26)
+
+### Bug Fixes
+
+- **react/notifier:** give auto-keyed notifiers a unique key ([acafad9](https://github.com/Mezzanine-UI/mezzanine/commit/acafad9b4b067da9f5f60da35bf69b84f6ff0407))
+- **react/table:** stop passing placeholder rows to record callbacks while loading ([0bff9f8](https://github.com/Mezzanine-UI/mezzanine/commit/0bff9f8fe1e3b8cd4d82e6f1b521b1138e07cbaf))
+
 ## [1.4.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.2...@mezzanine-ui/react@1.4.3) (2026-08-17)
 
 ### Bug Fixes

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.12](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.11...@mezzanine-ui/ng@1.0.0-rc.12) (2026-08-26)
+
+### Bug Fixes
+
+- **ng/radio:** render the projected label for the default radio type ([85d514a](https://github.com/Mezzanine-UI/mezzanine/commit/85d514a070f074f385f5dc632e57cf8a0e9a6a7f))
+- **ng/table:** skip rowState for loading placeholder rows ([d6c9e74](https://github.com/Mezzanine-UI/mezzanine/commit/d6c9e74af9cf0d3de9537fd99c960c8027fed016))
+
 # [1.0.0-rc.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.10...@mezzanine-ui/ng@1.0.0-rc.11) (2026-08-17)
 
 ### Bug Fixes
