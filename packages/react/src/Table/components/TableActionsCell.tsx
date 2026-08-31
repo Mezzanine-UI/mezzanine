@@ -177,6 +177,11 @@ const TableActionsCellInner = forwardRef<
                   }
                   options={dropdownItem.options}
                   placement={dropdownItem.placement ?? 'bottom-end'}
+                  // Row actions sit in the last column, so the menu is routinely
+                  // opened against the right edge of the viewport. `flip` only
+                  // swaps sides on the main axis, so without `shift` the menu is
+                  // clipped there.
+                  shift
                 >
                   <Button
                     aria-label={dropdownItem.name}
