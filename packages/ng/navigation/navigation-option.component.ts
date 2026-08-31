@@ -59,9 +59,15 @@ import {
   },
   template: `
     <li [class]="hostClasses()" [attr.data-id]="currentKey()">
+      <!--
+        A side navigation is a set of links, not a menu widget, so this must not
+        claim the menuitem role (which also requires a menu/menubar/group
+        ancestor that Navigation does not render). This element is activated by
+        click and by Enter/Space below, which is exactly the button contract.
+      -->
       <div
         [class]="contentClasses()"
-        role="menuitem"
+        role="button"
         tabindex="0"
         (click)="onTriggerClick()"
         (keydown.enter)="onTriggerClick()"

@@ -132,7 +132,7 @@ describe('MznNavigation', () => {
     const { fixture, getEl } = createFixture();
     const settingsOption = getEl().querySelector('li[data-id="設定"]');
     const trigger = settingsOption?.querySelector(
-      '[role="menuitem"]',
+      '.mzn-navigation-option__content',
     ) as HTMLElement;
 
     trigger?.click();
@@ -145,7 +145,7 @@ describe('MznNavigation', () => {
     const { fixture, getEl } = createFixture();
     const homeOption = getEl().querySelector('li[data-id="首頁"]');
     const trigger = homeOption?.querySelector(
-      '[role="menuitem"]',
+      '.mzn-navigation-option__content',
     ) as HTMLElement;
 
     trigger?.click();
@@ -154,5 +154,41 @@ describe('MznNavigation', () => {
     expect(
       homeOption?.classList.contains('mzn-navigation-option--active'),
     ).toBe(true);
+  });
+  it('should not claim menuitem anywhere in the navigation', () => {
+    const { getEl } = createFixture();
+
+    // `menuitem` requires a menu/menubar/group ancestor Navigation never
+    // renders, and promises a keyboard model this component does not have.
+    expect(getEl().querySelectorAll('[role="menuitem"]').length).toBe(0);
+  });
+
+  it('should expose option triggers as buttons', () => {
+    const { getEl } = createFixture();
+    const content = getEl().querySelector('.mzn-navigation-option__content');
+
+    expect(content?.getAttribute('role')).toBe('button');
+  });
+
+  it('should keep native list semantics on the option category', () => {
+    const { getEl } = createFixture();
+    const category = getEl().querySelector(
+      '.mzn-navigation-option-category',
+    ) as HTMLElement;
+
+    expect(category.getAttribute('role')).toBeNull();
+    expect(category.tagName).toBe('LI');
+  });
+
+  it('should label the nested option list with the category title', () => {
+    const { getEl } = createFixture();
+    const category = getEl().querySelector(
+      '.mzn-navigation-option-category',
+    ) as HTMLElement;
+    const nestedList = category.querySelector('ul') as HTMLElement;
+    const labelledBy = nestedList.getAttribute('aria-labelledby');
+
+    expect(labelledBy).toBeTruthy();
+    expect(category.querySelector(`#${labelledBy}`)?.textContent).toBe('管理');
   });
 });
