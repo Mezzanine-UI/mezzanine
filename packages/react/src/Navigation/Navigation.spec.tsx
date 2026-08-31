@@ -165,6 +165,56 @@ describe('<Navigation />', () => {
       );
     });
 
+    it('should not claim menuitem on navigation options', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+
+      // `menuitem` requires a menu/menubar/group ancestor Navigation never
+      // renders, and promises a keyboard model this component does not have.
+      expect(
+        getHostHTMLElement().querySelectorAll('[role="menuitem"]').length,
+      ).toBe(0);
+    });
+
+    it('should expose a leaf option with href as a link', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption
+            href="/dashboard"
+            title="Dashboard"
+            icon={PlusIcon}
+          />
+        </Navigation>,
+      );
+      const anchor = getHostHTMLElement().querySelector(
+        'a[href="/dashboard"]',
+      )!;
+
+      expect(anchor.getAttribute('role')).toBeNull();
+      expect(anchor.tagName).toBe('A');
+    });
+
+    it('should expose a group option as a button', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Settings" icon={PlusIcon}>
+            <NavigationOption title="Profile" icon={PlusIcon} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const content = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option__content',
+      )!;
+
+      // Enter/Space already toggle the group — that is the button contract.
+      expect(content.getAttribute('role')).toBe('button');
+    });
+
     it('should allow null and Fragment children', () => {
       const { getHostHTMLElement } = render(
         <Navigation>

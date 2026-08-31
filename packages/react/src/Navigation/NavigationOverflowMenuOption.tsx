@@ -153,7 +153,13 @@ const NavigationOverflowMenuOption = forwardRef<
             if (!children) setActivatedPath(currentPath);
           }
         }}
-        role="menuitem"
+        /**
+         * Same reasoning as NavigationOption: the overflow list is a set of
+         * links inside a plain `<ul>`, so `menuitem` is both unsupported by its
+         * ancestors and a promise of a keyboard model this component does not
+         * implement.
+         */
+        role={Component === 'div' ? 'button' : undefined}
         tabIndex={0}
       >
         {icon && <Icon className={classes.icon} icon={icon} />}

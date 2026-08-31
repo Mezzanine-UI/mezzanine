@@ -267,7 +267,15 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               onMouseEnter={onMouseEnter}
               onMouseLeave={onMouseLeave}
               ref={tooltipChildRef}
-              role="menuitem"
+              /**
+               * A side navigation is a set of links, not a menu widget: per the
+               * ARIA APG it must not claim `menuitem`, which additionally
+               * requires a menu/menubar/group ancestor that Navigation does not
+               * render. The anchor form already exposes the native `link` role;
+               * the `div` form is an activatable control driven by Enter/Space,
+               * which is exactly the `button` contract.
+               */
+              role={Component === 'div' ? 'button' : undefined}
               tabIndex={0}
             >
               {icon && <Icon className={classes.icon} icon={icon} />}
