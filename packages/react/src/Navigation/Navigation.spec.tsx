@@ -110,6 +110,61 @@ describe('<Navigation />', () => {
       expect(category).toBeTruthy();
     });
 
+    it('should keep native list semantics on NavigationOptionCategory', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const category = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option-category',
+      )!;
+
+      // `role="menuitem"` requires a menu/menubar/group ancestor that Navigation
+      // never renders, and it also overrides the implicit `listitem`, leaving the
+      // parent <ul> with a non-listitem child.
+      expect(category.getAttribute('role')).toBeNull();
+      expect(category.tagName).toBe('LI');
+      expect(category.parentElement?.tagName).toBe('UL');
+    });
+
+    it('should let the caller override the role on NavigationOptionCategory', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory role="presentation" title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const category = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option-category',
+      )!;
+
+      expect(category.getAttribute('role')).toBe('presentation');
+    });
+
+    it('should label the nested option list with the category title', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const category = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option-category',
+      )!;
+      const nestedList = category.querySelector('ul')!;
+      const labelledBy = nestedList.getAttribute('aria-labelledby');
+
+      expect(labelledBy).toBeTruthy();
+      expect(document.getElementById(labelledBy!)?.textContent).toBe(
+        'Category',
+      );
+    });
+
     it('should allow null and Fragment children', () => {
       const { getHostHTMLElement } = render(
         <Navigation>
