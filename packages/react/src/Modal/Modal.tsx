@@ -403,6 +403,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           ref={ref}
         >
           <div
+            aria-modal={open ? true : undefined}
             {...rest}
             className={cx(
               classes.host,

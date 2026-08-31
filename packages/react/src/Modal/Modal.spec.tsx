@@ -676,4 +676,30 @@ describe('<Modal />', () => {
       ).toBe(true);
     });
   });
+  describe('dialog semantics', () => {
+    it('should mark the open dialog as modal', () => {
+      render(
+        <Modal modalType="standard" onClose={jest.fn()} open>
+          content
+        </Modal>,
+      );
+      const modalElement = getModalElement()!;
+
+      // role="dialog" alone does not tell assistive technology that the content
+      // behind the dialog is inert.
+      expect(modalElement.getAttribute('role')).toBe('dialog');
+      expect(modalElement.getAttribute('aria-modal')).toBe('true');
+    });
+
+    it('should let the caller override aria-modal', () => {
+      render(
+        <Modal aria-modal={false} modalType="standard" onClose={jest.fn()} open>
+          content
+        </Modal>,
+      );
+      const modalElement = getModalElement()!;
+
+      expect(modalElement.getAttribute('aria-modal')).toBe('false');
+    });
+  });
 });
