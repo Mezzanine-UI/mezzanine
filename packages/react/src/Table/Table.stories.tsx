@@ -1989,6 +1989,7 @@ export const Combined: Story = {
           },
           {
             type: 'dropdown' as const,
+            name: 'More actions',
             options: [
               { id: 'copy', name: 'Copy', icon: CopyIcon },
               {
