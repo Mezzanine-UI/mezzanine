@@ -39,8 +39,8 @@ import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
-    role: 'status',
-    'aria-live': 'polite',
+    '[attr.role]': 'role()',
+    '[attr.aria-live]': 'ariaLive()',
     '[attr.severity]': 'null',
     '[attr.content]': 'null',
     '[attr.icon]': 'null',
@@ -71,6 +71,23 @@ export class MznInlineMessage {
 
   /** 自訂圖示（預設依 severity 自動選擇）。 */
   readonly icon = input<IconDefinition>();
+
+  /**
+   * 根元素的 ARIA role。
+   * 對齊 React `InlineMessage`：`role` 是可覆寫的預設值，而非寫死。
+   * @default 'status'
+   */
+  readonly role = input('status');
+
+  /**
+   * live region 的播報方式。`role="status"` 搭 `polite` 會排隊等待播報，
+   * 破壞性操作的失敗訊息需要插播時傳 `assertive`。
+   * 對齊 React `InlineMessage` 可覆寫的 `aria-live`。
+   * @default 'polite'
+   */
+  readonly ariaLive = input<'polite' | 'assertive' | 'off'>('polite', {
+    alias: 'aria-live',
+  });
 
   /** 關閉事件。 */
   readonly closed = output<void>();

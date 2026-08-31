@@ -23,6 +23,22 @@ class TestHostComponent {
   }
 }
 
+/** Consumer overriding the live-region defaults. */
+@Component({
+  standalone: true,
+  imports: [MznInlineMessage],
+  template: `
+    <div
+      mznInlineMessage
+      severity="error"
+      content="送出失敗"
+      role="alert"
+      aria-live="assertive"
+    ></div>
+  `,
+})
+class OverriddenLiveRegionHost {}
+
 function createFixture(overrides: Partial<TestHostComponent> = {}): {
   fixture: ReturnType<typeof TestBed.createComponent<TestHostComponent>>;
   host: TestHostComponent;
@@ -83,5 +99,31 @@ describe('MznInlineMessage', () => {
 
     expect(el.getAttribute('role')).toBe('status');
     expect(el.getAttribute('aria-live')).toBe('polite');
+  });
+  describe('live region', () => {
+    it('should default to a polite status region', () => {
+      const { fixture } = createFixture();
+      const el = fixture.nativeElement.querySelector(
+        '[mznInlineMessage]',
+      ) as HTMLElement;
+
+      expect(el.getAttribute('role')).toBe('status');
+      expect(el.getAttribute('aria-live')).toBe('polite');
+    });
+
+    it('should let the caller override role and aria-live', () => {
+      const fixture = TestBed.createComponent(OverriddenLiveRegionHost);
+
+      fixture.detectChanges();
+
+      // role="status" + aria-live="polite" queues behind whatever is being
+      // announced; a failed destructive action needs to interrupt.
+      const el = fixture.nativeElement.querySelector(
+        '[mznInlineMessage]',
+      ) as HTMLElement;
+
+      expect(el.getAttribute('role')).toBe('alert');
+      expect(el.getAttribute('aria-live')).toBe('assertive');
+    });
   });
 });
