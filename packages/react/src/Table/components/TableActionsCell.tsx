@@ -197,6 +197,15 @@ const TableActionsCellInner = forwardRef<
 
             return (
               <Button
+                // `icon-only` turns children into the tooltip title rather than
+                // button content, so `name` alone would leave the button
+                // unnamed. Harmless on the other iconTypes, where the visible
+                // text already names it.
+                aria-label={
+                  buttonItem.iconType === 'icon-only'
+                    ? buttonItem.name
+                    : undefined
+                }
                 disabled={isDisabled}
                 icon={buttonItem.icon}
                 iconType={buttonItem.iconType}

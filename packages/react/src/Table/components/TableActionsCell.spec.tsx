@@ -1,5 +1,12 @@
 import '@testing-library/jest-dom';
-import { cleanup, render, screen } from '../../../__test-utils__';
+import { TrashIcon } from '@mezzanine-ui/icons';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '../../../__test-utils__';
 import { TableActionsCell } from './TableActionsCell';
 import { TableContext } from '../TableContext';
 
@@ -191,6 +198,40 @@ describe('<TableActionsCell />', () => {
       expect(
         screen.getByRole('button', { name: 'More actions' }),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('Button action accessibility', () => {
+    const iconOnlyButtonActions: any = {
+      render: () => [
+        {
+          icon: TrashIcon,
+          iconType: 'icon-only',
+          name: 'Delete row',
+          onClick: jest.fn(),
+        },
+      ],
+      variant: 'base-text-link',
+      width: 100,
+    };
+
+    it('should give an icon-only button action an accessible name', () => {
+      renderWithContext(iconOnlyButtonActions);
+
+      // `icon-only` renders children as the tooltip title, not button content,
+      // so `name` alone leaves the button with no accessible name.
+      expect(
+        screen.getByRole('button', { name: 'Delete row' }),
+      ).toBeInTheDocument();
+    });
+
+    it('should not add aria-label when the action text is already visible', () => {
+      renderWithContext();
+
+      const button = screen.getByRole('button', { name: 'Edit' });
+
+      expect(button.getAttribute('aria-label')).toBeNull();
+      expect(button.textContent).toBe('Edit');
     });
   });
 });
