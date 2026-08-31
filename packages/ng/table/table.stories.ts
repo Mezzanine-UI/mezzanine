@@ -2645,6 +2645,7 @@ class CombinedStoryComponent {
       {
         key: 'more',
         type: 'dropdown',
+        label: 'More actions',
         options: [
           { id: 'copy', name: 'Copy', icon: CopyIcon },
           {
