@@ -68,6 +68,7 @@ import {
       <div
         [class]="contentClasses()"
         role="button"
+        [attr.aria-expanded]="hasChildren() ? open() : null"
         tabindex="0"
         (click)="onTriggerClick()"
         (keydown.enter)="onTriggerClick()"

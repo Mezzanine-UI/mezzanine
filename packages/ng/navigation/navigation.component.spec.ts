@@ -191,4 +191,38 @@ describe('MznNavigation', () => {
     expect(labelledBy).toBeTruthy();
     expect(category.querySelector(`#${labelledBy}`)?.textContent).toBe('管理');
   });
+  it('should name the collapse toggle and report its state', () => {
+    const { getEl } = createFixture();
+    const toggle = getEl().querySelector(
+      '.mzn-navigation-icon-button',
+    ) as HTMLElement;
+
+    expect(toggle.getAttribute('aria-label')).toBe('Toggle navigation');
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('should report aria-expanded on a group option', () => {
+    const { fixture, getEl } = createFixture();
+    const settings = getEl().querySelector('li[data-id="設定"]')!;
+    const content = settings.querySelector(
+      '.mzn-navigation-option__content',
+    ) as HTMLElement;
+
+    expect(content.getAttribute('aria-expanded')).toBe('false');
+
+    content.click();
+    fixture.detectChanges();
+
+    expect(content.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('should not put aria-expanded on a leaf option', () => {
+    const { getEl } = createFixture();
+    const home = getEl().querySelector('li[data-id="首頁"]')!;
+    const content = home.querySelector(
+      '.mzn-navigation-option__content',
+    ) as HTMLElement;
+
+    expect(content.getAttribute('aria-expanded')).toBeNull();
+  });
 });

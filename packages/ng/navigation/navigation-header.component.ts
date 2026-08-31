@@ -44,6 +44,8 @@ import {
     <button
       type="button"
       [class]="iconButtonClass"
+      [attr.aria-label]="collapseToggleLabel()"
+      [attr.aria-expanded]="!isCollapsed()"
       (click)="onToggleCollapse()"
     >
       <i mznIcon [icon]="siderIcon" [size]="16"></i>
@@ -72,6 +74,14 @@ export class MznNavigationHeader {
    * 導覽列標題文字。收合時僅顯示第一個字元。
    */
   readonly title = input<string>();
+
+  /**
+   * 收合／展開切換鍵的可及名稱。該鍵只畫一個圖示，這是螢幕閱讀器唯一唸得到的
+   * 內容，請與介面其餘文案一起翻譯。
+   * 對齊 React `NavigationHeader` 的 `collapseToggleLabel` prop。
+   * @default 'Toggle navigation'
+   */
+  readonly collapseToggleLabel = input('Toggle navigation');
 
   /** 品牌區點擊事件。 */
   readonly brandClick = output<void>();
