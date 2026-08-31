@@ -239,6 +239,7 @@ export const renderActionsProp = (
 export const resolveContentHeaderChild = (
   children: ContentHeaderProps['children'],
   size: 'main' | 'sub',
+  backButtonLabel: string,
 ) => {
   let filter: ReactElement<
     | SearchInputProps
@@ -307,7 +308,7 @@ export const resolveContentHeaderChild = (
                 component={'span' as ButtonComponent}
                 iconType="icon-only"
                 icon={ChevronLeftIcon}
-                aria-label="Back"
+                aria-label={backButtonLabel}
                 type="button"
                 size="sub"
                 variant="base-tertiary"

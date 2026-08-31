@@ -1,4 +1,4 @@
-import { cleanup, render } from '../../__test-utils__';
+import { cleanup, render, screen } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -231,5 +231,39 @@ describe('<ContentHeader />', () => {
 
     expect(element.getAttribute('aria-label')).toBe('content-header');
     expect(element.dataset.testid).toBe('content-header');
+  });
+  describe('prop: backButtonLabel', () => {
+    it('should default the back button accessible name to "Back"', () => {
+      render(<ContentHeader onBackClick={jest.fn()} title="Change detail" />);
+
+      expect(screen.getByRole('button', { name: 'Back' })).toBeTruthy();
+    });
+
+    it('should use backButtonLabel for the onBackClick back button', () => {
+      render(
+        <ContentHeader
+          backButtonLabel="返回"
+          onBackClick={jest.fn()}
+          title="Change detail"
+        />,
+      );
+
+      expect(screen.getByRole('button', { name: '返回' })).toBeTruthy();
+      expect(screen.queryByRole('button', { name: 'Back' })).toBeNull();
+    });
+
+    it('should use backButtonLabel for the href child back button', () => {
+      render(
+        <ContentHeader backButtonLabel="返回" title="Change detail">
+          <a href="/previous" title="back" />
+        </ContentHeader>,
+      );
+
+      const backButton = document.querySelector(
+        'a[href="/previous"] .mzn-button',
+      )!;
+
+      expect(backButton.getAttribute('aria-label')).toBe('返回');
+    });
   });
 });
