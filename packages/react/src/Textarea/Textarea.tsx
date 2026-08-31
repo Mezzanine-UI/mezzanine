@@ -93,6 +93,7 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
       <TextField
         {...interactiveProps}
         ref={ref}
+        role="presentation"
         className={cx(classes.host, className)}
         error={type === 'error'}
         warning={type === 'warning'}

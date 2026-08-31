@@ -224,6 +224,7 @@ const MultipleDatePickerTrigger = forwardRef<
 
   return (
     <TextField
+      role="presentation"
       {...restTextFieldProps}
       {...interactiveProps}
       active={active}

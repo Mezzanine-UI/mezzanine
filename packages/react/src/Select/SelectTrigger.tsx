@@ -111,6 +111,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   return (
     <TextField
       ref={innerRef}
+      role="presentation"
       {...interactiveProps}
       {...sanitizedTextFieldProps}
       onClick={onClick}

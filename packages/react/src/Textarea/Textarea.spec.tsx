@@ -1,5 +1,5 @@
 import { createRef, useState } from 'react';
-import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { cleanup, fireEvent, render, screen } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -181,6 +181,23 @@ describe('<Textarea />', () => {
 
       fireEvent.change(textarea, { target: { value: '' } });
       expect(textarea.value).toBe('');
+    });
+  });
+  describe('accessibility', () => {
+    it('should leave the ARIA input semantics on the native textarea', () => {
+      const { getHostHTMLElement } = render(
+        <Textarea aria-label="Change summary" />,
+      );
+      const host = getHostHTMLElement();
+      const textarea = getTextareaElement(host);
+
+      // The TextField wrapper used to take an ARIA input role (`textbox`) while
+      // naming props were forwarded to the inner control, leaving the wrapper
+      // permanently unnamed (axe `aria-input-field-name`).
+      expect(host.getAttribute('role')).toBe('presentation');
+      expect(screen.getByRole('textbox', { name: 'Change summary' })).toBe(
+        textarea,
+      );
     });
   });
 });
