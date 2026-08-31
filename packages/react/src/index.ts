@@ -12,6 +12,7 @@ export * from './utils/parse-number-with-commas';
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
 export * from './hooks/useDocumentEscapeKeyDown';
+export * from './hooks/useFocusTrap';
 export * from './hooks/useDocumentEvents';
 export * from './hooks/useDocumentTabKeyDown';
 export * from './hooks/useIsomorphicLayoutEffect';
