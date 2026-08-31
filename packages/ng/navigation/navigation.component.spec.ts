@@ -163,11 +163,36 @@ describe('MznNavigation', () => {
     expect(getEl().querySelectorAll('[role="menuitem"]').length).toBe(0);
   });
 
-  it('should expose option triggers as buttons', () => {
+  it('should render a leaf option with href as a real anchor', () => {
     const { getEl } = createFixture();
-    const content = getEl().querySelector('.mzn-navigation-option__content');
+    const home = getEl().querySelector('li[data-id="首頁"]')!;
+    const content = home.querySelector('.mzn-navigation-option__content')!;
 
-    expect(content?.getAttribute('role')).toBe('button');
+    // Mirrors React NavigationOption: a leaf with an href is a link and carries
+    // the native link role rather than role="button".
+    expect(content.tagName).toBe('A');
+    expect(content.getAttribute('href')).toBe('/');
+    expect(content.getAttribute('role')).toBeNull();
+  });
+
+  it('should expose a group option trigger as a button', () => {
+    const { getEl } = createFixture();
+    const settings = getEl().querySelector('li[data-id="設定"]')!;
+    const content = settings.querySelector('.mzn-navigation-option__content')!;
+
+    expect(content.tagName).toBe('DIV');
+    expect(content.getAttribute('role')).toBe('button');
+  });
+
+  it('should still project the badge slot in the anchor form', () => {
+    const { getEl } = createFixture();
+    const home = getEl().querySelector('li[data-id="首頁"]')!;
+
+    // The badge slot is a selected <ng-content>; stamping the shared template
+    // into two branches must not drop it.
+    expect(
+      home.querySelector('.mzn-navigation-option__title')?.textContent,
+    ).toBe('首頁');
   });
 
   it('should keep native list semantics on the option category', () => {

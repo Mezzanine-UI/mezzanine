@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -47,7 +48,7 @@ import {
   selector: 'mzn-navigation-option',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MznIcon],
+  imports: [MznIcon, NgTemplateOutlet],
   providers: [
     {
       provide: MZN_NAVIGATION_OPTION_LEVEL,
@@ -60,20 +61,11 @@ import {
   template: `
     <li [class]="hostClasses()" [attr.data-id]="currentKey()">
       <!--
-        A side navigation is a set of links, not a menu widget, so this must not
-        claim the menuitem role (which also requires a menu/menubar/group
-        ancestor that Navigation does not render). This element is activated by
-        click and by Enter/Space below, which is exactly the button contract.
+        Declared once and stamped into whichever branch renders: the badge slot
+        is a selected <ng-content>, and Angular would only bind it to one of two
+        duplicated declarations.
       -->
-      <div
-        [class]="contentClasses()"
-        role="button"
-        [attr.aria-expanded]="hasChildren() ? open() : null"
-        tabindex="0"
-        (click)="onTriggerClick()"
-        (keydown.enter)="onTriggerClick()"
-        (keydown.space)="onTriggerClick(); $event.preventDefault()"
-      >
+      <ng-template #optionContent>
         @if (icon()) {
           <i mznIcon [class]="iconClass" [icon]="icon()!"></i>
         }
@@ -84,7 +76,41 @@ import {
         @if (hasChildren()) {
           <i mznIcon [class]="toggleIconClass" [icon]="toggleIcon()"></i>
         }
-      </div>
+      </ng-template>
+      @if (isAnchor()) {
+        <!--
+          A leaf option with an href is a link, so render a real anchor and let
+          it carry the native link role. Mirrors React NavigationOption, which
+          renders its Component as 'a' when href is set and there are no sub-options.
+        -->
+        <a
+          [class]="contentClasses()"
+          [href]="href()"
+          tabindex="0"
+          (click)="onTriggerClick()"
+        >
+          <ng-container [ngTemplateOutlet]="optionContent" />
+        </a>
+      } @else {
+        <!--
+          A side navigation is a set of links, not a menu widget, so this must
+          not claim the menuitem role (which also requires a menu/menubar/group
+          ancestor that Navigation does not render). This element is activated
+          by click and by Enter/Space below, which is exactly the button
+          contract.
+        -->
+        <div
+          [class]="contentClasses()"
+          role="button"
+          [attr.aria-expanded]="hasChildren() ? open() : null"
+          tabindex="0"
+          (click)="onTriggerClick()"
+          (keydown.enter)="onTriggerClick()"
+          (keydown.space)="onTriggerClick(); $event.preventDefault()"
+        >
+          <ng-container [ngTemplateOutlet]="optionContent" />
+        </div>
+      }
       @if (hasChildren() && open()) {
         <div [class]="childrenWrapperClass">
           <ul [class]="groupClass">
@@ -124,6 +150,14 @@ export class MznNavigationOption implements NavigationOptionLevel {
    * @default false
    */
   readonly hasChildren = input(false);
+
+  /**
+   * 葉節點且有 href 時渲染真正的 `<a>`，讓它帶原生 link 角色。
+   * 對齊 React `NavigationOption` 的 `href && !hasSubOptions ? 'a' : 'div'`。
+   */
+  protected readonly isAnchor = computed(
+    (): boolean => Boolean(this.href()) && !this.hasChildren(),
+  );
 
   /** 連結目標。 */
   readonly href = input<string>();
