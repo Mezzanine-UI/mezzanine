@@ -165,4 +165,27 @@ describe('MznModal', () => {
     expect(confirmBtn).toBeTruthy();
     expect(confirmBtn?.textContent).toContain('Confirm');
   });
+  describe('dialog semantics', () => {
+    it('should mark the open dialog as modal', () => {
+      const { fixture, host } = createFixture(TestHostComponent);
+
+      host.open = true;
+      fixture.changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+
+      const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+
+      // role="dialog" alone does not tell assistive technology that the content
+      // behind the dialog is inert.
+      expect(dialog.getAttribute('aria-modal')).toBe('true');
+    });
+
+    it('should not claim aria-modal while closed', () => {
+      createFixture(TestHostComponent);
+
+      const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+
+      expect(dialog.getAttribute('aria-modal')).toBeNull();
+    });
+  });
 });

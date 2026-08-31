@@ -109,6 +109,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
           [class]="hostClasses()"
           [style]="dialogStyle() ?? null"
           role="dialog"
+          [attr.aria-modal]="open() ? 'true' : null"
         >
           @if (showModalHeader()) {
             <ng-content select="[mznModalHeader]" />
