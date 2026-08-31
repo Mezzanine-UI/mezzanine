@@ -25,7 +25,12 @@ import {
 } from '@mezzanine-ui/core/dropdown/dropdown';
 import { isImeComposing } from '@mezzanine-ui/core/utils';
 
-import { flip as flipMiddlewareFn, offset, size } from '@floating-ui/react-dom';
+import {
+  flip as flipMiddlewareFn,
+  offset,
+  shift as shiftMiddlewareFn,
+  size,
+} from '@floating-ui/react-dom';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { TransitionGroup } from 'react-transition-group';
 
@@ -197,6 +202,18 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   flip?: boolean;
   /**
+   * Whether to enable floating-ui `shift` middleware.
+   * When `true`, the dropdown slides along the cross axis to stay inside the
+   * viewport instead of being clipped — `flip` only swaps sides on the main
+   * axis, so an anchor near the viewport edge (a row action in the last table
+   * column, for instance) otherwise loses part of its menu. When both `flip`
+   * and `shift` are on, the two are ordered per the floating-ui guidance the
+   * Tooltip already follows.
+   * Off by default to preserve existing placement behavior across consumers.
+   * @default false
+   */
+  shift?: boolean;
+  /**
    * If true, display a bar at the top of the dropdown action area.
    * @default false
    */
@@ -362,6 +379,7 @@ export default function Dropdown(props: DropdownProps) {
     customWidth,
     sameWidth = false,
     flip = false,
+    shift = false,
     listboxId: listboxIdProp,
     listboxLabel,
     onClose,
@@ -579,6 +597,23 @@ export default function Dropdown(props: DropdownProps) {
       padding: 8,
     });
   }, [flip]);
+
+  const shiftMiddleware = useMemo(() => {
+    if (!shift) return null;
+
+    return shiftMiddlewareFn({ padding: 8 });
+  }, [shift]);
+
+  // flip and shift interfere with each other, so order them the way floating-ui
+  // recommends: https://floating-ui.com/docs/flip#combining-with-shift
+  const overflowMiddleware = useMemo(() => {
+    if (!flipMiddleware) return shiftMiddleware ? [shiftMiddleware] : [];
+    if (!shiftMiddleware) return [flipMiddleware];
+
+    return popoverPlacement.includes('-')
+      ? [flipMiddleware, shiftMiddleware]
+      : [shiftMiddleware, flipMiddleware];
+  }, [flipMiddleware, shiftMiddleware, popoverPlacement]);
 
   // Set z-index for popper only when explicitly provided via the `zIndex` prop.
   // When not provided, do NOT apply any inline z-index so that elements inside
@@ -1040,7 +1075,7 @@ export default function Dropdown(props: DropdownProps) {
             placement: popoverPlacement,
             middleware: [
               offsetMiddleware,
-              ...(flipMiddleware ? [flipMiddleware] : []),
+              ...overflowMiddleware,
               ...(zIndexMiddleware ? [zIndexMiddleware] : []),
               ...(customWidthMiddleware ? [customWidthMiddleware] : []),
               ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
