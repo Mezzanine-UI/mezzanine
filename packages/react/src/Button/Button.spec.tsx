@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
 import { act, cleanup, fireEvent, render } from '../../__test-utils__';
@@ -248,6 +249,38 @@ describe('<Button />', () => {
   });
 
   describe('prop: tooltip (icon-only mode)', () => {
+    it('should still forward the caller ref to the host element while the tooltip branch is active', () => {
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button icon={PlusIcon} iconType="icon-only" ref={ref}>
+          More actions
+        </Button>,
+      );
+
+      expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+      expect(ref.current?.classList.contains('mzn-button')).toBeTruthy();
+    });
+
+    it('should forward the caller ref and still open the tooltip on hover', async () => {
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button icon={PlusIcon} iconType="icon-only" ref={ref}>
+          More actions
+        </Button>,
+      );
+
+      await act(async () => {
+        fireEvent.mouseEnter(ref.current!);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.textContent).toBe('More actions');
+    });
+
     it('should show tooltip on hover when iconType is icon-only and children provided', async () => {
       const { getHostHTMLElement } = render(
         <Button icon={PlusIcon} iconType="icon-only">
