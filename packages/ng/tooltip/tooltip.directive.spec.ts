@@ -130,4 +130,89 @@ describe('MznTooltip', () => {
 
     expect(tooltip === null || tooltip.style.display === 'none').toBe(true);
   }));
+  describe('accessibility', () => {
+    function getTooltip(): HTMLElement | null {
+      return document.querySelector<HTMLElement>('.mzn-tooltip');
+    }
+
+    function isShown(): boolean {
+      const el = getTooltip();
+
+      return el !== null && el.style.display !== 'none';
+    }
+
+    it('should open on keyboard focus and close on blur', () => {
+      const { getTrigger } = createFixture();
+      const trigger = getTrigger();
+
+      expect(isShown()).toBe(false);
+
+      trigger.dispatchEvent(new FocusEvent('focus'));
+
+      expect(isShown()).toBe(true);
+      expect(getTooltip()!.textContent).toContain('Tooltip text');
+
+      trigger.dispatchEvent(new FocusEvent('blur'));
+
+      expect(isShown()).toBe(false);
+    });
+
+    it('should expose the tooltip through role and aria-describedby', () => {
+      const { fixture, getTrigger } = createFixture();
+      const trigger = getTrigger();
+
+      expect(trigger.getAttribute('aria-describedby')).toBeNull();
+
+      trigger.dispatchEvent(new FocusEvent('focus'));
+      fixture.detectChanges();
+
+      const describedBy = trigger.getAttribute('aria-describedby');
+
+      expect(describedBy).toBeTruthy();
+
+      const tooltip = document.getElementById(describedBy!);
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip!.getAttribute('role')).toBe('tooltip');
+      expect(tooltip!.textContent).toContain('Tooltip text');
+    });
+
+    it('should dismiss on Escape while the pointer stays on the trigger', () => {
+      const { getTrigger } = createFixture();
+      const trigger = getTrigger();
+
+      trigger.dispatchEvent(new MouseEvent('mouseenter'));
+
+      expect(isShown()).toBe(true);
+
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+      expect(isShown()).toBe(false);
+    });
+
+    it('should reopen after an Escape dismissal once entered again', () => {
+      const { getTrigger } = createFixture();
+      const trigger = getTrigger();
+
+      trigger.dispatchEvent(new MouseEvent('mouseenter'));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+      expect(isShown()).toBe(false);
+
+      trigger.dispatchEvent(new MouseEvent('mouseenter'));
+
+      expect(isShown()).toBe(true);
+    });
+
+    it('should stay open on blur while the pointer is still over the trigger', () => {
+      const { getTrigger } = createFixture();
+      const trigger = getTrigger();
+
+      trigger.dispatchEvent(new MouseEvent('mouseenter'));
+      trigger.dispatchEvent(new FocusEvent('focus'));
+      trigger.dispatchEvent(new FocusEvent('blur'));
+
+      expect(isShown()).toBe(true);
+    });
+  });
 });
