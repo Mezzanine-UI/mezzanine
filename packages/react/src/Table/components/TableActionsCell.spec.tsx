@@ -171,4 +171,26 @@ describe('<TableActionsCell />', () => {
       expect(cell?.querySelector('.mzn-table__actions-cell')).toBeNull();
     });
   });
+  describe('Dropdown action accessibility', () => {
+    const dropdownActions: any = {
+      render: () => [
+        {
+          name: 'More actions',
+          onSelect: jest.fn(),
+          options: [{ id: '1', name: 'Option 1' }],
+          type: 'dropdown',
+        },
+      ],
+      variant: 'base-text-link',
+      width: 100,
+    };
+
+    it('should give the icon-only dropdown trigger an accessible name', () => {
+      renderWithContext(dropdownActions);
+
+      expect(
+        screen.getByRole('button', { name: 'More actions' }),
+      ).toBeInTheDocument();
+    });
+  });
 });

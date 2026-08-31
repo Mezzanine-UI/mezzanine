@@ -179,6 +179,7 @@ const TableActionsCellInner = forwardRef<
                   placement={dropdownItem.placement ?? 'bottom-end'}
                 >
                   <Button
+                    aria-label={dropdownItem.name}
                     iconType="icon-only"
                     icon={dropdownItem?.icon ?? DotHorizontalIcon}
                     size="sub"
