@@ -8,6 +8,7 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import {
   backdropClasses as classes,
@@ -54,28 +55,44 @@ import { ScrollLockService } from '@mezzanine-ui/ng/services';
       [container]="resolvedContainer()"
       [disablePortal]="disablePortal()"
     >
-      <div
-        [class]="hostClasses()"
-        role="presentation"
-        [attr.aria-hidden]="!open()"
-      >
-        <div [class]="mainClass">
-          <div
-            mznFade
-            [in]="open()"
-            [class]="backdropClasses()"
-            aria-hidden="true"
-            (click)="onBackdropClick()"
-          ></div>
-          <div [class]="contentClass">
-            <ng-content />
+      <!--
+        Unmount once closed and the exit transition has finished, rather than
+        leaving the whole overlay in the DOM behind aria-hidden. Mirrors React
+        useModalContainer's early return of null when closed and exited, so a closed
+        Modal/Drawer leaves nothing behind for assistive tech or hit-testing.
+      -->
+      @if (open() || !exited()) {
+        <div
+          [class]="hostClasses()"
+          role="presentation"
+          [attr.aria-hidden]="!open()"
+        >
+          <div [class]="mainClass">
+            <div
+              mznFade
+              [in]="open()"
+              [class]="backdropClasses()"
+              aria-hidden="true"
+              (onEntered)="exited.set(false)"
+              (onExited)="exited.set(true)"
+              (click)="onBackdropClick()"
+            ></div>
+            <div [class]="contentClass">
+              <ng-content />
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   `,
 })
 export class MznBackdrop {
+  /**
+   * `true` 直到首次開啟，以及每次退場動畫結束後。與 `open()` 一起決定要不要
+   * 掛載內容，對齊 React `useModalContainer` 的 `exited` state。
+   */
+  protected readonly exited = signal(true);
+
   private readonly scrollLock = inject(ScrollLockService);
   private readonly destroyRef = inject(DestroyRef);
 

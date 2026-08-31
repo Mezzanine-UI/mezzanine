@@ -72,17 +72,10 @@ describe('MznModal', () => {
     });
   });
 
-  it('should keep the dialog mounted but hidden when closed', () => {
-    const { fixture } = createFixture(TestHostComponent);
-    const dialog = fixture.nativeElement.querySelector('[role="dialog"]');
-    const presentation = fixture.nativeElement.querySelector(
-      '[role="presentation"]',
-    );
+  it('should not render dialog when closed', () => {
+    createFixture(TestHostComponent);
 
-    // The modal keeps its content mounted and expresses open/closed through
-    // the backdrop's fade and the dialog's scale, mirroring React's <Modal>.
-    expect(dialog).toBeTruthy();
-    expect(presentation?.getAttribute('aria-hidden')).toBe('true');
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
   });
 
   it('should render dialog when open', () => {
@@ -180,12 +173,10 @@ describe('MznModal', () => {
       expect(dialog.getAttribute('aria-modal')).toBe('true');
     });
 
-    it('should not claim aria-modal while closed', () => {
+    it('should not render a dialog at all while closed', () => {
       createFixture(TestHostComponent);
 
-      const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
-
-      expect(dialog.getAttribute('aria-modal')).toBeNull();
+      expect(document.querySelector('[role="dialog"]')).toBeNull();
     });
   });
 });

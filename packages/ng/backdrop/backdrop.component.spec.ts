@@ -56,8 +56,8 @@ describe('MznBackdrop', () => {
     });
   });
 
-  it('should render with host class', () => {
-    const { getHostElement } = createFixture();
+  it('should render with host class when open', () => {
+    const { getHostElement } = createFixture({ open: true });
 
     expect(getHostElement()).toBeTruthy();
     expect(getHostElement().classList.contains('mzn-backdrop')).toBe(true);
@@ -71,12 +71,12 @@ describe('MznBackdrop', () => {
     );
   });
 
-  it('should not apply open class when closed', () => {
+  it('should not render anything while closed', () => {
     const { getHostElement } = createFixture({ open: false });
 
-    expect(getHostElement().classList.contains('mzn-backdrop--open')).toBe(
-      false,
-    );
+    // Matches React's useModalContainer, which returns null while closed and
+    // exited rather than leaving the overlay mounted behind aria-hidden.
+    expect(getHostElement()).toBeNull();
   });
 
   it('should render backdrop overlay when open', () => {
