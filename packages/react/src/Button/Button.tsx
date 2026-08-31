@@ -48,6 +48,7 @@ export type ButtonProps<C extends ButtonComponent = 'button'> =
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(props, ref) {
     const {
+      'aria-describedby': ariaDescribedBy,
       children,
       className,
       component: Component = 'button',
@@ -56,7 +57,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       icon,
       iconType,
       loading = false,
+      onBlur,
       onClick,
+      onFocus,
       size = 'main',
       tooltipPosition = 'bottom',
       variant = 'base-primary',
@@ -101,6 +104,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const buttonElement = (tooltipProps?: {
+      'aria-describedby': string | undefined;
+      onBlur: React.FocusEventHandler;
+      onFocus: React.FocusEventHandler;
       onMouseEnter: React.MouseEventHandler;
       onMouseLeave: React.MouseEventHandler;
       ref: React.RefCallback<HTMLElement>;
@@ -111,6 +117,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <Component
           {...rest}
           ref={composedRef}
+          aria-describedby={
+            [ariaDescribedBy, tooltipProps?.['aria-describedby']]
+              .filter(Boolean)
+              .join(' ') || undefined
+          }
           aria-disabled={disabled}
           className={cx(
             classes.host,
@@ -130,6 +141,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             if (!disabled && !loading && onClick) {
               onClick(event);
             }
+          }}
+          onBlur={(event: React.FocusEvent<HTMLButtonElement>) => {
+            onBlur?.(event);
+            tooltipProps?.onBlur(event);
+          }}
+          onFocus={(event: React.FocusEvent<HTMLButtonElement>) => {
+            onFocus?.(event);
+            tooltipProps?.onFocus(event);
           }}
           {...(tooltipProps && {
             onMouseEnter: tooltipProps.onMouseEnter,

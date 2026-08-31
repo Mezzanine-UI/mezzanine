@@ -281,6 +281,63 @@ describe('<Button />', () => {
       expect(tooltip?.textContent).toBe('More actions');
     });
 
+    it('should open the tooltip on keyboard focus and describe the button while open', async () => {
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button icon={PlusIcon} iconType="icon-only" ref={ref}>
+          Add new item
+        </Button>,
+      );
+
+      expect(ref.current?.getAttribute('aria-describedby')).toBeNull();
+
+      await act(async () => {
+        fireEvent.focus(ref.current!);
+      });
+
+      const describedBy = ref.current?.getAttribute('aria-describedby');
+
+      expect(describedBy).toBeTruthy();
+
+      const tooltip = document.getElementById(describedBy!);
+
+      expect(tooltip?.getAttribute('role')).toBe('tooltip');
+      expect(tooltip?.textContent).toBe('Add new item');
+
+      await act(async () => {
+        fireEvent.blur(ref.current!);
+      });
+
+      expect(document.querySelector('[data-popper-placement]')).toBeNull();
+    });
+
+    it('should still call the caller onFocus/onBlur handlers in icon-only mode', async () => {
+      const onBlur = jest.fn();
+      const onFocus = jest.fn();
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button
+          icon={PlusIcon}
+          iconType="icon-only"
+          onBlur={onBlur}
+          onFocus={onFocus}
+          ref={ref}
+        >
+          Add new item
+        </Button>,
+      );
+
+      await act(async () => {
+        fireEvent.focus(ref.current!);
+        fireEvent.blur(ref.current!);
+      });
+
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
+    });
+
     it('should show tooltip on hover when iconType is icon-only and children provided', async () => {
       const { getHostHTMLElement } = render(
         <Button icon={PlusIcon} iconType="icon-only">

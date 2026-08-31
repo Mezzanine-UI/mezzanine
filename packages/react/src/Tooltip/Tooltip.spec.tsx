@@ -450,4 +450,144 @@ describe('<Tooltip />', () => {
       expect(tooltipInBody).not.toBeNull();
     });
   });
+  describe('accessibility', () => {
+    const TriggerButton = ({ title }: { title: string }) => (
+      <Tooltip title={title}>
+        {({
+          'aria-describedby': ariaDescribedBy,
+          ref,
+          onBlur,
+          onFocus,
+          onMouseEnter,
+          onMouseLeave,
+        }) => (
+          <button
+            aria-describedby={ariaDescribedBy}
+            data-testid="a11y-trigger"
+            onBlur={onBlur}
+            onFocus={onFocus}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            ref={ref}
+            type="button"
+          />
+        )}
+      </Tooltip>
+    );
+
+    function getTrigger() {
+      return document.querySelector<HTMLButtonElement>(
+        '[data-testid="a11y-trigger"]',
+      )!;
+    }
+
+    it('should open on keyboard focus and close on blur', async () => {
+      await act(async () => {
+        render(<TriggerButton title="Delete this item" />);
+      });
+
+      expect(getPopperContainer()).toBeNull();
+
+      await act(async () => {
+        fireEvent.focus(getTrigger());
+      });
+
+      expect(getPopperContainer()).not.toBeNull();
+      expect(getPopperContainer()?.textContent).toBe('Delete this item');
+
+      await act(async () => {
+        fireEvent.blur(getTrigger());
+      });
+
+      expect(getPopperContainer()).toBeNull();
+    });
+
+    it('should expose the tooltip content through role and aria-describedby', async () => {
+      await act(async () => {
+        render(<TriggerButton title="Delete this item" />);
+      });
+
+      expect(getTrigger().getAttribute('aria-describedby')).toBeNull();
+
+      await act(async () => {
+        fireEvent.focus(getTrigger());
+      });
+
+      const describedBy = getTrigger().getAttribute('aria-describedby');
+
+      expect(describedBy).toBeTruthy();
+
+      const tooltip = document.getElementById(describedBy!);
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.getAttribute('role')).toBe('tooltip');
+      expect(tooltip?.textContent).toBe('Delete this item');
+    });
+
+    it('should dismiss on Escape while the pointer stays on the trigger', async () => {
+      await act(async () => {
+        render(<TriggerButton title="Delete this item" />);
+      });
+
+      await act(async () => {
+        fireEvent.mouseEnter(getTrigger());
+      });
+
+      expect(getPopperContainer()).not.toBeNull();
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'Escape' });
+      });
+
+      expect(getPopperContainer()).toBeNull();
+    });
+
+    it('should reopen after an Escape dismissal once the trigger is entered again', async () => {
+      await act(async () => {
+        render(<TriggerButton title="Delete this item" />);
+      });
+
+      await act(async () => {
+        fireEvent.mouseEnter(getTrigger());
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'Escape' });
+      });
+
+      expect(getPopperContainer()).toBeNull();
+
+      await act(async () => {
+        fireEvent.mouseEnter(getTrigger());
+      });
+
+      expect(getPopperContainer()).not.toBeNull();
+    });
+
+    it('should keep a controlled open tooltip visible on Escape', async () => {
+      await act(async () => {
+        render(
+          <Tooltip open title="Always on">
+            {({ ref, onMouseEnter, onMouseLeave }) => (
+              <button
+                data-testid="a11y-trigger"
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                ref={ref}
+                type="button"
+              />
+            )}
+          </Tooltip>,
+        );
+      });
+
+      expect(getPopperContainer()).not.toBeNull();
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'Escape' });
+      });
+
+      expect(getPopperContainer()).not.toBeNull();
+    });
+  });
 });
