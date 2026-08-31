@@ -242,4 +242,47 @@ describe('<InlineMessage />', () => {
       });
     });
   });
+  describe('DOM props', () => {
+    it('should spread caller DOM props onto the root element', () => {
+      const { getHostHTMLElement } = render(
+        <InlineMessage
+          content="Submit failed"
+          data-testid="submit-error"
+          id="submit-error"
+          severity="error"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      // The root used to render without any `...rest` spread, silently dropping
+      // every DOM prop the caller passed.
+      expect(element.getAttribute('id')).toBe('submit-error');
+      expect(element.getAttribute('data-testid')).toBe('submit-error');
+    });
+
+    it('should let the caller override aria-live and role', () => {
+      const { getHostHTMLElement } = render(
+        <InlineMessage
+          aria-live="assertive"
+          content="Submit failed"
+          role="alert"
+          severity="error"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('aria-live')).toBe('assertive');
+      expect(element.getAttribute('role')).toBe('alert');
+    });
+
+    it('should keep polite status defaults when nothing is overridden', () => {
+      const { getHostHTMLElement } = render(
+        <InlineMessage content="Draft saved" severity="info" />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('aria-live')).toBe('polite');
+      expect(element.getAttribute('role')).toBe('status');
+    });
+  });
 });
