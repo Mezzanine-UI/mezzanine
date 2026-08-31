@@ -276,6 +276,11 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
                * which is exactly the `button` contract.
                */
               role={Component === 'div' ? 'button' : undefined}
+              /**
+               * The div form is a disclosure for its sub-options, so tell
+               * assistive technology whether that group is currently open.
+               */
+              aria-expanded={hasSubOptions ? open : undefined}
               tabIndex={0}
             >
               {icon && <Icon className={classes.icon} icon={icon} />}

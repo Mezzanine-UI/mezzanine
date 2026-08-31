@@ -160,6 +160,7 @@ const NavigationOverflowMenuOption = forwardRef<
          * implement.
          */
         role={Component === 'div' ? 'button' : undefined}
+        aria-expanded={children ? open : undefined}
         tabIndex={0}
       >
         {icon && <Icon className={classes.icon} icon={icon} />}

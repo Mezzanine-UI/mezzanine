@@ -1,5 +1,12 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
-import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -10,6 +17,7 @@ import NavigationOption from './NavigationOption';
 import NavigationHeader from './NavigationHeader';
 import NavigationFooter from './NavigationFooter';
 import NavigationOptionCategory from './NavigationOptionCategory';
+import NavigationIconButton from './NavigationIconButton';
 import NavigationUserMenu from './NavigationUserMenu';
 import * as useCurrentPathnameModule from './useCurrentPathname';
 
@@ -613,6 +621,116 @@ describe('<NavigationFooter />', () => {
       expect(
         footer?.classList.contains('mzn-navigation-footer--collapsed'),
       ).toBeTruthy();
+    });
+  });
+  describe('accessible names in the footer', () => {
+    const renderFooter = (children: React.ReactNode) =>
+      render(
+        <Navigation>
+          <NavigationFooter>{children}</NavigationFooter>
+        </Navigation>,
+      );
+
+    it('should name the user menu trigger from its children', () => {
+      const { getHostHTMLElement } = renderFooter(
+        <NavigationUserMenu options={[{ id: '1', name: '登出' }]}>
+          王小明
+        </NavigationUserMenu>,
+      );
+      const trigger = getHostHTMLElement().querySelector(
+        '.mzn-navigation-user-menu',
+      );
+
+      // The user name is hidden while collapsed, so the trigger would otherwise
+      // be an avatar with no accessible name at all.
+      expect(trigger?.getAttribute('aria-label')).toBe('王小明');
+    });
+
+    it('should let the caller override the user menu name', () => {
+      const { getHostHTMLElement } = renderFooter(
+        <NavigationUserMenu
+          aria-label="帳號設定"
+          options={[{ id: '1', name: '登出' }]}
+        >
+          王小明
+        </NavigationUserMenu>,
+      );
+      const trigger = getHostHTMLElement().querySelector(
+        '.mzn-navigation-user-menu',
+      );
+
+      expect(trigger?.getAttribute('aria-label')).toBe('帳號設定');
+    });
+
+    it('should name an icon button from aria-label', () => {
+      const { getHostHTMLElement } = renderFooter(
+        <NavigationIconButton aria-label="通知" icon={PlusIcon} />,
+      );
+      const button = getHostHTMLElement().querySelector(
+        '.mzn-navigation-icon-button',
+      );
+
+      expect(button?.getAttribute('aria-label')).toBe('通知');
+    });
+  });
+  describe('disclosure and toggle semantics', () => {
+    it('should name the collapse toggle and report its state', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationHeader title="App" />
+        </Navigation>,
+      );
+      const toggle = getHostHTMLElement().querySelector(
+        '.mzn-navigation-icon-button',
+      )!;
+
+      expect(toggle.getAttribute('aria-label')).toBe('Toggle navigation');
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('should use a custom collapseToggleLabel', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationHeader collapseToggleLabel="切換導覽" title="App" />
+        </Navigation>,
+      );
+      const toggle = getHostHTMLElement().querySelector(
+        '.mzn-navigation-icon-button',
+      )!;
+
+      expect(toggle.getAttribute('aria-label')).toBe('切換導覽');
+    });
+
+    it('should report aria-expanded on a group option', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Settings" icon={PlusIcon}>
+            <NavigationOption title="Profile" icon={PlusIcon} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const content = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option__content',
+      )!;
+
+      expect(content.getAttribute('aria-expanded')).toBe('false');
+
+      fireEvent.click(content);
+
+      expect(content.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('should not put aria-expanded on a leaf option', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Dashboard" icon={PlusIcon} />
+        </Navigation>,
+      );
+      const content = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option__content',
+      )!;
+
+      expect(content.getAttribute('aria-expanded')).toBeNull();
     });
   });
 });

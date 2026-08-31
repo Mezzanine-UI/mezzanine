@@ -21,11 +21,25 @@ export interface NavigationHeaderProps
    * Callback function invoked when the brand area (logo and title) is clicked.
    */
   onBrandClick?: () => void;
+  /**
+   * Accessible name for the collapse/expand toggle.
+   * The toggle renders only an icon, so this is the only thing a screen reader
+   * can announce for it — translate it along with the rest of your interface.
+   * @default 'Toggle navigation'
+   */
+  collapseToggleLabel?: string;
 }
 
 const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
   (props, ref) => {
-    const { children, className, title, onBrandClick, ...rest } = props;
+    const {
+      children,
+      className,
+      collapseToggleLabel = 'Toggle navigation',
+      title,
+      onBrandClick,
+      ...rest
+    } = props;
 
     const { collapsed, handleCollapseChange } = use(NavigationActivatedContext);
 
@@ -43,6 +57,8 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
         )}
       >
         <NavigationIconButton
+          aria-expanded={!collapsed}
+          aria-label={collapseToggleLabel}
           onClick={() => handleCollapseChange(!collapsed)}
           icon={SiderIcon}
         />

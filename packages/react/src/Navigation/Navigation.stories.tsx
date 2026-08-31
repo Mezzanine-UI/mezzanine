@@ -93,9 +93,9 @@ export const Basic: StoryFn<NavigationProps> = (args) => {
           >
             王小明
           </NavigationUserMenu>
-          <NavigationIconButton icon={QuestionOutlineIcon} />
+          <NavigationIconButton aria-label="說明" icon={QuestionOutlineIcon} />
           <Badge variant="dot-error">
-            <NavigationIconButton icon={NotificationIcon} />
+            <NavigationIconButton aria-label="通知" icon={NotificationIcon} />
           </Badge>
         </NavigationFooter>
       </Navigation>
@@ -228,9 +228,9 @@ export const CustomAnchorComponent: StoryFn<NavigationProps> = (args) => {
           >
             王小明
           </NavigationUserMenu>
-          <NavigationIconButton icon={QuestionOutlineIcon} />
+          <NavigationIconButton aria-label="說明" icon={QuestionOutlineIcon} />
           <Badge variant="dot-error">
-            <NavigationIconButton icon={NotificationIcon} />
+            <NavigationIconButton aria-label="通知" icon={NotificationIcon} />
           </Badge>
         </NavigationFooter>
       </Navigation>
@@ -289,9 +289,9 @@ export const Overflow: StoryFn<NavigationProps> = (args) => (
         >
           Very long username Very long username Very long username
         </NavigationUserMenu>
-        <NavigationIconButton icon={QuestionOutlineIcon} />
+        <NavigationIconButton aria-label="說明" icon={QuestionOutlineIcon} />
         <Badge variant="dot-error">
-          <NavigationIconButton icon={NotificationIcon} />
+          <NavigationIconButton aria-label="通知" icon={NotificationIcon} />
         </Badge>
       </NavigationFooter>
     </Navigation>
@@ -416,9 +416,9 @@ export const All: StoryFn<NavigationProps> = () => {
         >
           李經理
         </NavigationUserMenu>
-        <NavigationIconButton icon={QuestionOutlineIcon} />
+        <NavigationIconButton aria-label="說明" icon={QuestionOutlineIcon} />
         <Badge variant="dot-error">
-          <NavigationIconButton icon={NotificationIcon} />
+          <NavigationIconButton aria-label="通知" icon={NotificationIcon} />
         </Badge>
       </NavigationFooter>
     </>
