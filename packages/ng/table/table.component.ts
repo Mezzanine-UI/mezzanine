@@ -779,6 +779,7 @@ function throttleRaf(
                                 [placement]="
                                   dropAction.placement ?? 'bottom-end'
                                 "
+                                [shift]="true"
                                 (select)="
                                   onRowActionDropdownSelect(
                                     dropAction,
