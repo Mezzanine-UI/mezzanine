@@ -135,6 +135,11 @@ const NavigationOverflowMenuOption = forwardRef<
       data-id={currentKey}
     >
       <Component
+        /**
+         * The div form is a disclosure for its sub-options, so tell assistive
+         * technology whether that group is currently open.
+         */
+        aria-expanded={children ? open : undefined}
         className={cx(classes.content)}
         href={href}
         onClick={() => {
@@ -160,7 +165,6 @@ const NavigationOverflowMenuOption = forwardRef<
          * implement.
          */
         role={Component === 'div' ? 'button' : undefined}
-        aria-expanded={children ? open : undefined}
         tabIndex={0}
       >
         {icon && <Icon className={classes.icon} icon={icon} />}

@@ -14,20 +14,20 @@ export interface NavigationHeaderProps
    */
   children?: ReactNode;
   /**
-   * The title text displayed in the header.
-   */
-  title: string;
-  /**
-   * Callback function invoked when the brand area (logo and title) is clicked.
-   */
-  onBrandClick?: () => void;
-  /**
    * Accessible name for the collapse/expand toggle.
    * The toggle renders only an icon, so this is the only thing a screen reader
    * can announce for it — translate it along with the rest of your interface.
    * @default 'Toggle navigation'
    */
   collapseToggleLabel?: string;
+  /**
+   * Callback function invoked when the brand area (logo and title) is clicked.
+   */
+  onBrandClick?: () => void;
+  /**
+   * The title text displayed in the header.
+   */
+  title: string;
 }
 
 const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
@@ -36,8 +36,8 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
       children,
       className,
       collapseToggleLabel = 'Toggle navigation',
-      title,
       onBrandClick,
+      title,
       ...rest
     } = props;
 
