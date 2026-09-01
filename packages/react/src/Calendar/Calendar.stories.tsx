@@ -460,3 +460,66 @@ export const RangeCalendarPlayground: StoryObj<typeof RangeCalendar> = {
     );
   },
 };
+
+/* -------------------------------------------------------------------------- *
+ * Issue #460 — https://github.com/Mezzanine-UI/mezzanine/issues/460
+ *
+ * The fix moves the "suppress the range highlight when the range crosses a
+ * disabled date" rule down into `RangeCalendar`, because that is the only
+ * place that knows which two grids are actually on screen. That makes this a
+ * behavior change for anyone using `RangeCalendar` directly with their own
+ * `isDateInRange`: it now gets wrapped by the suppression rule.
+ * -------------------------------------------------------------------------- */
+
+const issue460RangeCalendarPanelStyle = {
+  border: '1px solid #e0e0e0',
+  borderRadius: '8px',
+  margin: '0 0 24px 0',
+  padding: '16px',
+};
+
+const isSameIssue460CalendarDay = (target: DateType, isoDay: string) =>
+  moment(target).format('YYYY-MM-DD') === isoDay;
+
+export const RangeCalendarDisabledInRange: StoryObj<typeof RangeCalendar> = {
+  render: function RangeCalendarDisabledInRange() {
+    const value: DateType[] = ['2026-08-05', '2026-09-25'];
+
+    /** A caller-supplied highlight that the component used to pass straight through. */
+    const isDateInRange = (target: DateType) =>
+      moment(target).isBetween(value[0], value[1], 'day', '[]');
+
+    return (
+      <CalendarConfigProvider
+        methods={CalendarMethodsMoment}
+        locale={CalendarLocale.EN_US}
+      >
+        <Typography variant="h3" style={{ margin: '0 0 12px 0' }}>
+          Issue #460 — RangeCalendar 直接使用者的行為變更
+        </Typography>
+        <Typography variant="body" style={{ margin: '0 0 12px 0' }}>
+          這裡直接使用 <code>RangeCalendar</code> 並自帶{' '}
+          <code>isDateInRange</code>，同時傳入會讓 <code>2026-08-20</code>{' '}
+          失效的 <code>isDateDisabled</code>。
+        </Typography>
+        <Typography variant="body" style={{ margin: '0 0 12px 0' }}>
+          修正前：自訂的反白照常整段顯示，<code>RangeCalendar</code>{' '}
+          完全不干涉。
+          <br />
+          修正後：區間跨越了可視範圍內的 disabled 日期，反白被抑制。
+        </Typography>
+        <div style={issue460RangeCalendarPanelStyle}>
+          <RangeCalendar
+            isDateDisabled={(target: DateType) =>
+              isSameIssue460CalendarDay(target, '2026-08-20')
+            }
+            isDateInRange={isDateInRange}
+            mode="day"
+            referenceDate="2026-08-01"
+            value={value}
+          />
+        </div>
+      </CalendarConfigProvider>
+    );
+  },
+};
