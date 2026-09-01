@@ -1,12 +1,5 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '../../__test-utils__';
+import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
