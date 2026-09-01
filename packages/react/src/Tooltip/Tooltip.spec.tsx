@@ -488,17 +488,40 @@ describe('<Tooltip />', () => {
 
       expect(getPopperContainer()).toBeNull();
 
+      // 真的把焦點移過去，`:focus-visible` 才會成立。
+      // 只 dispatch focus 事件不會移動焦點，會被 gate 擋下 —— 見下方的 gate 測試。
       await act(async () => {
-        fireEvent.focus(getTrigger());
+        getTrigger().focus();
       });
 
       expect(getPopperContainer()).not.toBeNull();
       expect(getPopperContainer()?.textContent).toBe('Delete this item');
 
       await act(async () => {
-        fireEvent.blur(getTrigger());
+        getTrigger().blur();
       });
 
+      expect(getPopperContainer()).toBeNull();
+    });
+
+    /**
+     * 滑鼠點擊在 Chrome / Firefox 也會 focus <button>，Tooltip 因此用
+     * `:focus-visible` 收斂，只有鍵盤觸發的 focus 才開啟。
+     *
+     * 注意 jsdom 的 `:focus-visible` 等同 `:focus`，無法區分滑鼠與鍵盤來源，
+     * 所以「滑鼠點擊不該開 tooltip」這條規則沒辦法在此證明，只能在 Storybook 驗證。
+     * 這裡改以「有 focus 事件但焦點不在該元素上」來釘住 gate 確實有生效。
+     */
+    it('should not open when a focus event fires without the element being focused', async () => {
+      await act(async () => {
+        render(<TriggerButton title="Delete this item" />);
+      });
+
+      await act(async () => {
+        fireEvent.focus(getTrigger());
+      });
+
+      expect(document.activeElement).not.toBe(getTrigger());
       expect(getPopperContainer()).toBeNull();
     });
 
@@ -510,7 +533,7 @@ describe('<Tooltip />', () => {
       expect(getTrigger().getAttribute('aria-describedby')).toBeNull();
 
       await act(async () => {
-        fireEvent.focus(getTrigger());
+        getTrigger().focus();
       });
 
       const describedBy = getTrigger().getAttribute('aria-describedby');

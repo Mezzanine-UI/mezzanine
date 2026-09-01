@@ -292,8 +292,10 @@ describe('<Button />', () => {
 
       expect(ref.current?.getAttribute('aria-describedby')).toBeNull();
 
+      // Tooltip 以 `:focus-visible` 收斂 focus 觸發，所以要真的移動焦點，
+      // 單純 dispatch focus 事件不會開啟提示。
       await act(async () => {
-        fireEvent.focus(ref.current!);
+        ref.current!.focus();
       });
 
       const describedBy = ref.current?.getAttribute('aria-describedby');
@@ -306,7 +308,7 @@ describe('<Button />', () => {
       expect(tooltip?.textContent).toBe('Add new item');
 
       await act(async () => {
-        fireEvent.blur(ref.current!);
+        ref.current!.blur();
       });
 
       expect(document.querySelector('[data-popper-placement]')).toBeNull();

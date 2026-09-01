@@ -71,6 +71,25 @@ export interface TooltipProps
 }
 
 /**
+ * 滑鼠點擊在 Chrome / Firefox 也會 focus `<button>`，若不收斂，
+ * 點一下就會跳出 tooltip，且滑鼠移開後仍不收（要等失焦）。
+ * `:focus-visible` 是瀏覽器維護的「這次 focus 該不該給視覺提示」判準，
+ * 用它把 tooltip 的 focus 觸發限縮在鍵盤情境。
+ *
+ * WCAG 2.1 SC 1.4.13 只規範 focus 觸發的內容要可 dismiss / hover / persist，
+ * 不要求滑鼠 focus 也必須觸發，因此仍然合規。
+ */
+function isFocusVisible(element: Element): boolean {
+  try {
+    return element.matches(':focus-visible');
+  } catch {
+    // 不支援該 pseudo-class 的環境退回原本行為：
+    // 寧可多顯示，也不要讓鍵盤使用者拿不到提示。
+    return true;
+  }
+}
+
+/**
  * 滑鼠懸停時顯示的提示框元件。
  *
  * 採用 render prop 模式，`children` 為接收 `ref`、滑鼠與焦點事件、以及 `aria-describedby` 的函式；
@@ -158,10 +177,17 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
       !dismissed && (visible || focused) && Boolean(title);
     const isTooltipVisible = open || isTriggerVisible;
 
-    const onTargetFocus = useCallback(() => {
-      setDismissed(false);
-      setFocused(true);
-    }, []);
+    const onTargetFocus = useCallback(
+      (event: React.FocusEvent<HTMLElement>) => {
+        // 只有鍵盤（focus-visible）觸發的 focus 才開啟提示，
+        // 否則滑鼠點一下按鈕就會跳出 tooltip 並黏著不放。
+        if (!isFocusVisible(event.currentTarget)) return;
+
+        setDismissed(false);
+        setFocused(true);
+      },
+      [],
+    );
 
     const onTargetBlur = useCallback(() => {
       setFocused(false);
