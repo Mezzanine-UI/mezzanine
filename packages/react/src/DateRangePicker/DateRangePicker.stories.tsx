@@ -1004,7 +1004,6 @@ export const RangeScanPerformance: Story = {
     const [baseline, setBaseline] = useState<Issue460Baseline>(() =>
       readIssue460Baseline(),
     );
-    const [interaction, setInteraction] = useState(0);
     const [mode, setMode] = useState<CalendarMode>('day');
     const [rangeLabel, setRangeLabel] = useState<string>(
       issue460Ranges[0].label,
@@ -1029,7 +1028,6 @@ export const RangeScanPerformance: Story = {
       rendersRef.current = 0;
       worstCommitRef.current = 0;
       setSnapshot(issue460EmptyMeasurement);
-      setInteraction((current) => current + 1);
     }, []);
 
     const onProfilerRender = useCallback<ProfilerOnRenderCallback>(
@@ -1044,20 +1042,29 @@ export const RangeScanPerformance: Story = {
     );
 
     /**
-     * Snapshot the meters once per interaction. Reading refs into state inside
-     * the Profiler callback would feed straight back into the render loop.
+     * Poll the meters instead of pushing them from the Profiler callback,
+     * which would feed straight back into the render loop. Returning the
+     * previous object unchanged lets React bail out, so this settles as soon
+     * as the numbers stop moving — and it keeps picking up work driven from
+     * inside the calendar, not just from the controls above.
      */
     useEffect(() => {
-      const timer = window.setTimeout(() => {
-        setSnapshot({
-          predicateCalls: predicateCallsRef.current,
-          renders: rendersRef.current,
-          worstCommit: worstCommitRef.current,
-        });
+      const timer = window.setInterval(() => {
+        setSnapshot((previous) =>
+          previous.predicateCalls === predicateCallsRef.current &&
+          previous.renders === rendersRef.current &&
+          previous.worstCommit === worstCommitRef.current
+            ? previous
+            : {
+                predicateCalls: predicateCallsRef.current,
+                renders: rendersRef.current,
+                worstCommit: worstCommitRef.current,
+              },
+        );
       }, 500);
 
-      return () => window.clearTimeout(timer);
-    }, [interaction]);
+      return () => window.clearInterval(timer);
+    }, []);
 
     /** Always returns false, so the scan runs to completion — the worst case. */
     const countingPredicate = useCallback((_target: DateType) => {
