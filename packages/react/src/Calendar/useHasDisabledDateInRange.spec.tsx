@@ -6,6 +6,7 @@ import { cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { CalendarConfigProvider } from '.';
 import {
   UseHasDisabledDateInRangeProps,
+  maxRangeScanSteps,
   useHasDisabledDateInRange,
 } from './useHasDisabledDateInRange';
 
@@ -164,70 +165,55 @@ describe('useHasDisabledDateInRange', () => {
     });
   });
 
-  describe('argument: bounds', () => {
-    it('should not consult the predicate outside the bounds', () => {
-      const isDateDisabled = jest.fn((_target: DateType) => false);
+  describe('scan cap', () => {
+    it('should stop walking once the cap is reached', () => {
+      const isDateDisabled = jest.fn(() => false);
       const { current: hasDisabledDateInRange } = renderScan({
         isDateDisabled,
         mode: 'day',
       });
 
-      hasDisabledDateInRange('2006-09-01', '2026-08-31', [
-        '2026-08-01',
-        '2026-08-31',
-      ]);
-
-      expect(isDateDisabled).toHaveBeenCalledTimes(31);
-      isDateDisabled.mock.calls.forEach(([target]) => {
-        expect(moment(target).format('YYYY-MM')).toBe('2026-08');
-      });
+      // 2026-08-31 .. 4026-08-01 is 730,455 days — a mistyped year.
+      expect(hasDisabledDateInRange('2026-08-31', '4026-08-01')).toBe(false);
+      expect(isDateDisabled).toHaveBeenCalledTimes(maxRangeScanSteps);
     });
 
-    it('should ignore a disabled date that falls outside the bounds', () => {
+    it('should report nothing disabled rather than block an over-long range', () => {
+      // Returning true past the cap would leave such a range permanently
+      // unselectable; returning false keeps it usable.
       const { current: hasDisabledDateInRange } = renderScan({
         isDateDisabled: (target: DateType) =>
-          moment(target).format('YYYY-MM-DD') === '2027-03-15',
+          moment(target).format('YYYY-MM-DD') === '3000-01-01',
         mode: 'day',
       });
 
-      expect(hasDisabledDateInRange('2026-08-01', '2027-06-30')).toBe(true);
-      expect(
-        hasDisabledDateInRange('2026-08-01', '2027-06-30', [
-          '2026-08-01',
-          '2026-09-30',
-        ]),
-      ).toBe(false);
+      expect(hasDisabledDateInRange('2026-08-31', '4026-08-01')).toBe(false);
     });
 
-    it('should return false when the range and the bounds do not overlap', () => {
-      const isDateDisabled = jest.fn(() => true);
+    it('should still walk a range that fits inside the cap', () => {
+      const isDateDisabled = jest.fn(() => false);
       const { current: hasDisabledDateInRange } = renderScan({
         isDateDisabled,
         mode: 'day',
       });
 
-      expect(
-        hasDisabledDateInRange('2026-08-01', '2026-08-31', [
-          '2027-01-01',
-          '2027-01-31',
-        ]),
-      ).toBe(false);
-      expect(isDateDisabled).not.toHaveBeenCalled();
+      // 2006-09-01 .. 2026-08-31 is 7,304 days, so the cap bites here too,
+      // but a decade-scale range in year mode does not.
+      hasDisabledDateInRange('2006-09-01', '2026-08-31');
+      expect(isDateDisabled).toHaveBeenCalledTimes(maxRangeScanSteps);
     });
 
-    it('should accept the bounds in either order', () => {
+    it('should not reach the cap for a mode whose units are coarse', () => {
+      const isYearDisabled = jest.fn(() => false);
       const { current: hasDisabledDateInRange } = renderScan({
-        isDateDisabled: (target: DateType) =>
-          moment(target).format('YYYY-MM-DD') === '2026-08-20',
-        mode: 'day',
+        isYearDisabled,
+        mode: 'year',
       });
 
-      expect(
-        hasDisabledDateInRange('2026-08-01', '2026-08-31', [
-          '2026-09-30',
-          '2026-08-01',
-        ]),
-      ).toBe(true);
+      // The same 730,455-day span is only 2,001 years.
+      expect(hasDisabledDateInRange('2026-08-31', '4026-08-01')).toBe(false);
+      expect(isYearDisabled).toHaveBeenCalledTimes(2001);
+      expect(isYearDisabled.mock.calls.length).toBeLessThan(maxRangeScanSteps);
     });
   });
 });

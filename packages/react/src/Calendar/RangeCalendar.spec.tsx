@@ -292,12 +292,27 @@ describe('<RangeCalendar /> range highlight suppression', () => {
     );
   });
 
-  it('should keep painting the range when the disabled date is outside the visible window', () => {
-    // The calendars show Aug/Sep 2026, so 2027-03-15 is never rendered and
-    // cannot change how any visible cell looks.
+  it('should suppress the range when the disabled date is outside the visible window', () => {
+    // The calendars show Aug/Sep 2026, so 2027-03-15 is never rendered — but
+    // the rule still applies, because handleRangeSelection would reject this
+    // same range on click. Painting it would invite a click that fails.
     const { getHostHTMLElement } = renderRangeCalendar({
       disabledDay: '2027-03-15',
       value: ['2026-08-05', '2027-06-30'],
+    });
+
+    expect(getHostHTMLElement().querySelectorAll(inRangeSelector).length).toBe(
+      0,
+    );
+  });
+
+  it('should paint a range too wide to scan rather than block it', () => {
+    // 2026-08-05 .. 4026-08-01 blows past the scan cap after roughly eleven
+    // years, so a disabled date sitting in 2040 is never reached and the
+    // range stays usable instead of being silently blocked.
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2040-01-01',
+      value: ['2026-08-05', '4026-08-01'],
     });
 
     expect(

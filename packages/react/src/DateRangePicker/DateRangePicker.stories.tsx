@@ -1208,8 +1208,8 @@ export const RangeScanPerformance: Story = {
           </div>
           <Typography style={{ margin: '8px 0 0 0' }} variant="caption">
             不勾 predicate = 大多數消費端的情況；修正後這條路徑應完全不掃描。
-            勾起來則展示逐單位步進 + 夾到可視範圍的效果（例如 20 years 在 year
-            mode 下，呼叫次數應從 7,304 掉到數十次）。
+            勾起來則展示逐單位步進 + 掃描上限的效果（例如 20 years 在 year mode
+            下，呼叫次數應從 7,304 掉到數十次）。
           </Typography>
         </div>
 
@@ -1278,20 +1278,19 @@ const issue460BehaviorCases = [
     after: '相同——完全不反白（不變）',
     before: '完全不反白',
     disabledDay: '2026-08-20',
-    hint: 'disabled 日期就落在顯示中的兩個月曆格內，修正前後一致。',
+    hint: '一般長度的區間，掃描走得完，判斷與修正前完全一致。',
     id: 'A',
-    title: 'A. disabled 在可視範圍「內」',
+    title: 'A. disabled 在區間內，區間長度在掃描上限內',
     value: ['2026-08-01', '2026-09-30'] as RangePickerValue,
   },
   {
-    after:
-      'Aug/Sep 反白；把右曆往後翻到 2027-03 反白消失，翻回來又出現 ← 唯一的語意變更',
-    before: '完全不反白（全域掃描掃到了 2027-03-15）',
-    disabledDay: '2027-03-15',
-    hint: '這格是要謹慎評估的重點：反白會隨著月份切換忽隱忽現。',
+    after: '正常反白，且瞬間完成 ← 唯一的語意變更',
+    before: '完全不反白，但要先凍結分頁約 50 秒才畫得出來',
+    disabledDay: '2040-01-01',
+    hint: '這格是要謹慎評估的重點：區間超過掃描上限後，掃描會放棄並回報「找不到 disabled」，讓區間維持可用而不是被靜默封鎖。',
     id: 'B',
-    title: 'B. disabled 在可視範圍「外」',
-    value: ['2026-08-01', '2027-06-30'] as RangePickerValue,
+    title: 'B. 區間超過掃描上限（誤植成 4026）',
+    value: ['2026-08-01', '4026-08-01'] as RangePickerValue,
   },
   {
     after: '相同——正常反白（不變）',
@@ -1313,8 +1312,9 @@ export const DisabledInRangeBehavior: Story = {
         </Typography>
         <Typography style={typoStyle} variant="body">
           點每一格的輸入框把月曆打開，對照下方標註的「修正前 / 修正後」預期。
-          修正把「區間跨越 disabled 日期就整段不反白」的判斷從全區間改為
-          <b>夾在可視範圍內</b>，情境 B 就是唯一會改變的地方。
+          「區間跨越 disabled 日期就整段不反白」這條規則<b>仍然是全域判斷</b>，
+          與點選時的守門一致，所以預覽不會亮著卻點不成。唯一的變化是加了
+          <b>掃描步數上限</b>，情境 B 就是唯一會改變的地方。
         </Typography>
 
         {issue460BehaviorCases.map((item) => (

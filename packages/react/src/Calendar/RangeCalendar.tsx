@@ -198,7 +198,6 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       referenceDates,
       updateFirstReferenceDate,
       updateSecondReferenceDate,
-      visibleRange,
     } = useRangeCalendarControls(referenceDateProp, mode);
 
     const normalizeRangeStart = useCallback(
@@ -332,24 +331,23 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
 
     /**
      * A range that covers a disabled unit is not a valid range, so it is not
-     * painted as one. The scan is clamped to `visibleRange` because the only
-     * thing this decides is how the rendered cells look — that keeps the cost
-     * tied to the two grids on screen rather than to the width of the range,
-     * which can be decades once a value is typed into the inputs.
+     * painted as one. This asks the same question `handleRangeSelection` asks
+     * before committing a selection, so the preview never invites a click that
+     * would then be rejected. Memoised because the six granularity handlers
+     * below all need the answer and the scan must run once, not once each.
      */
-    const shouldSuppressInRange = useMemo(() => {
-      const [rangeAnchorStart, rangeAnchorEnd] = value ?? [];
-
-      return Boolean(
-        rangeAnchorStart &&
-          rangeAnchorEnd &&
-          hasDisabledDateInRange(
-            rangeAnchorStart,
-            rangeAnchorEnd,
-            visibleRange,
-          ),
-      );
-    }, [hasDisabledDateInRange, value, visibleRange]);
+    const [rangeAnchorStart, rangeAnchorEnd] = value ?? [];
+    const shouldSuppressInRange = useMemo(
+      () =>
+        Boolean(
+          rangeAnchorStart &&
+            rangeAnchorEnd &&
+            hasDisabledDateInRange(rangeAnchorStart, rangeAnchorEnd),
+        ),
+      // Keyed on the anchors themselves: `value` is rebuilt by castArray on
+      // every render, so depending on it would defeat the memo entirely.
+      [hasDisabledDateInRange, rangeAnchorEnd, rangeAnchorStart],
+    );
 
     const resolvedIsDateInRange = shouldSuppressInRange
       ? undefined

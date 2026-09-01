@@ -12,6 +12,7 @@ import {
   getByText,
 } from '../../__test-utils__';
 import { CalendarConfigProvider } from '../Calendar';
+import { maxRangeScanSteps } from '../Calendar/useHasDisabledDateInRange';
 import DateRangePicker from '.';
 
 describe('<DateRangePicker />', () => {
@@ -863,7 +864,7 @@ describe('<DateRangePicker /> wide range rendering', () => {
     ).toBeGreaterThan(0);
   });
 
-  it('should consult isDateDisabled only for the cells it renders', async () => {
+  it('should keep the disabled-date scan bounded on a two-decade range', async () => {
     const isDateDisabled = jest.fn((_target: DateType) => false);
 
     const { getHostHTMLElement } = render(
@@ -884,44 +885,43 @@ describe('<DateRangePicker /> wide range rendering', () => {
     });
 
     /**
-     * Two 6x7 grids plus the clamped scan over the visible window. The number
-     * that matters is that it is a small constant: the old code reached
-     * 7,304 x 6 = 43,824 calls for this same range, and grew from there.
+     * The capped scan plus the cells of two 6x7 grids. The slack covers the
+     * popper mounting the calendar twice as it opens, which runs the scan
+     * once per mount. What matters is that the total is a constant: the old
+     * code ran the full 7,304-day walk six times per render — 43,824 calls
+     * each — and grew with the range from there.
      */
-    expect(isDateDisabled.mock.calls.length).toBeLessThan(2000);
+    expect(isDateDisabled.mock.calls.length).toBeLessThan(
+      maxRangeScanSteps * 3,
+    );
   });
 
-  it('should not scale its work with the width of the range', async () => {
-    const callsFor = async (value: [DateType, DateType]) => {
-      const isDateDisabled = jest.fn((_target: DateType) => false);
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker isDateDisabled={isDateDisabled} value={value} />
-        </CalendarConfigProvider>,
-      );
+  it('should stay bounded even when the year is mistyped', async () => {
+    const isDateDisabled = jest.fn((_target: DateType) => false);
 
-      const [inputFromElement] =
-        getHostHTMLElement().getElementsByTagName('input');
+    // 2026-08-31 .. 4026-08-01 is 730,455 days, reachable by typing.
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <DateRangePicker
+          isDateDisabled={isDateDisabled}
+          value={['2026-08-31', '4026-08-01']}
+        />
+      </CalendarConfigProvider>,
+    );
 
-      await act(async () => {
-        fireEvent.focus(inputFromElement);
-      });
+    const [inputFromElement] =
+      getHostHTMLElement().getElementsByTagName('input');
 
-      await waitFor(() => {
-        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
-      });
+    await act(async () => {
+      fireEvent.focus(inputFromElement);
+    });
 
-      const { length } = isDateDisabled.mock.calls;
+    await waitFor(() => {
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+    });
 
-      cleanup();
-
-      return length;
-    };
-
-    // 31 days versus 7,304 days — a 236x difference in range width.
-    const narrowCalls = await callsFor(['2026-08-01', '2026-08-31']);
-    const wideCalls = await callsFor(wideRange);
-
-    expect(wideCalls).toBeLessThanOrEqual(narrowCalls * 2);
+    expect(isDateDisabled.mock.calls.length).toBeLessThan(
+      maxRangeScanSteps * 3,
+    );
   });
 });

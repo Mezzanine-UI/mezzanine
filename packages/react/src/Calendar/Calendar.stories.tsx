@@ -465,9 +465,9 @@ export const RangeCalendarPlayground: StoryObj<typeof RangeCalendar> = {
  * Issue #460 — https://github.com/Mezzanine-UI/mezzanine/issues/460
  *
  * The fix moves the "suppress the range highlight when the range crosses a
- * disabled date" rule down into `RangeCalendar`, because that is the only
- * place that knows which two grids are actually on screen. That makes this a
- * behavior change for anyone using `RangeCalendar` directly with their own
+ * disabled date" rule down into `RangeCalendar`, next to the selection guard
+ * that already rejects such a range on click. That makes this a behavior
+ * change for anyone using `RangeCalendar` directly with their own
  * `isDateInRange`: it now gets wrapped by the suppression rule.
  * -------------------------------------------------------------------------- */
 
@@ -506,7 +506,7 @@ export const RangeCalendarDisabledInRange: StoryObj<typeof RangeCalendar> = {
           修正前：自訂的反白照常整段顯示，<code>RangeCalendar</code>{' '}
           完全不干涉。
           <br />
-          修正後：區間跨越了可視範圍內的 disabled 日期，反白被抑制。
+          修正後：區間跨越了 disabled 日期，反白被抑制。
         </Typography>
         <div style={issue460RangeCalendarPanelStyle}>
           <RangeCalendar
