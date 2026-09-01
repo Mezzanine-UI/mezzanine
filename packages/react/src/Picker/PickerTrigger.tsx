@@ -105,6 +105,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
 
     return (
       <TextField
+        role="presentation"
         {...restTextFieldProps}
         {...defaultTextFieldProps}
         ref={ref}

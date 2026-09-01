@@ -735,13 +735,19 @@ function throttleRaf(
                           track action.key
                         ) {
                           @if (asDropdownAction(action); as dropAction) {
-                            <!-- Dropdown action trigger mirrors React TableActionsCell (iconType icon-only; default variant base-text-link, NOT inheriting actions.variant; icon fallback to DotHorizontalIcon). -->
+                            <!--
+                              Dropdown action trigger mirrors React TableActionsCell (iconType
+                              icon-only; default variant base-text-link, NOT inheriting
+                              actions.variant; icon fallback to DotHorizontalIcon). The trigger
+                              renders no text, so label doubles as its accessible name.
+                            -->
                             <button
                               #rowActionDropdownAnchor
                               mznButton
                               type="button"
                               size="sub"
                               iconType="icon-only"
+                              [attr.aria-label]="dropAction.label ?? null"
                               [variant]="dropAction.variant ?? 'base-text-link'"
                               [disabled]="dropAction.disabled ?? false"
                               (click)="
@@ -773,6 +779,7 @@ function throttleRaf(
                                 [placement]="
                                   dropAction.placement ?? 'bottom-end'
                                 "
+                                [shift]="true"
                                 (select)="
                                   onRowActionDropdownSelect(
                                     dropAction,

@@ -16,7 +16,8 @@ import Fade from '../Transition/Fade';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface InlineMessageProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface InlineMessageProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * The content of the inline message value(only string is supported).
    */
@@ -44,10 +45,30 @@ export interface InlineMessageProps extends NativeElementPropsWithoutKeyAndRef<'
  *
  * Use `InlineMessage` directly in your layout to display contextual feedback,
  * and provide `onClose` callback when you need to react to dismiss events.
+ *
+ * The root element defaults to `role="status"` with `aria-live="polite"` and
+ * spreads any other DOM prop you pass. Both defaults are overridable — pass
+ * `aria-live="assertive"` when a failure needs to interrupt rather than queue.
+ *
+ * @example
+ * ```tsx
+ * import InlineMessage from '@mezzanine-ui/react/InlineMessage';
+ *
+ * // 一般提示（排隊播報）
+ * <InlineMessage content="已儲存草稿" severity="info" />
+ *
+ * // 破壞性操作失敗，需要插播
+ * <InlineMessage
+ *   aria-live="assertive"
+ *   content="送出失敗"
+ *   id="submit-error"
+ *   severity="error"
+ * />
+ * ```
  */
 const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
   function InlineMessage(props, ref) {
-    const { content, className, icon, onClose, severity } = props;
+    const { content, className, icon, onClose, severity, ...rest } = props;
     const [visible, setVisible] = useState(true);
 
     const handleClose = useCallback(() => {
@@ -83,12 +104,9 @@ const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
       >
         <div
           aria-live="polite"
-          className={cx(
-            classes.host,
-            classes.severity(severity),
-            className,
-          )}
           role="status"
+          {...rest}
+          className={cx(classes.host, classes.severity(severity), className)}
         >
           <div className={classes.contentContainer}>
             {iconNode}

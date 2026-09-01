@@ -38,6 +38,32 @@ class TestHostComponent {
   readonly onBackClick = output<void>();
 }
 
+/** Built-in back button with the default label. */
+@Component({
+  standalone: true,
+  imports: [MznContentHeader],
+  template: `
+    <header mznContentHeader title="Change detail" [showBackButton]="true">
+    </header>
+  `,
+})
+class DefaultBackLabelHost {}
+
+/** Built-in back button with a translated label. */
+@Component({
+  standalone: true,
+  imports: [MznContentHeader],
+  template: `
+    <header
+      mznContentHeader
+      title="Change detail"
+      [showBackButton]="true"
+      backButtonLabel="返回"
+    ></header>
+  `,
+})
+class TranslatedBackLabelHost {}
+
 function createFixture(
   overrides: {
     title?: string;
@@ -263,5 +289,32 @@ describe('MznContentHeaderResponsive', () => {
     ) as HTMLElement;
 
     expect(el.textContent?.trim()).toBe('responsive content');
+  });
+  describe('backButtonLabel', () => {
+    it('should default the back button accessible name to "Back"', () => {
+      const fixture = TestBed.createComponent(DefaultBackLabelHost);
+
+      fixture.detectChanges();
+
+      const button = fixture.nativeElement.querySelector(
+        '.mzn-content-header__back-button button',
+      ) as HTMLElement;
+
+      expect(button.getAttribute('aria-label')).toBe('Back');
+    });
+
+    it('should use backButtonLabel when provided', () => {
+      const fixture = TestBed.createComponent(TranslatedBackLabelHost);
+
+      fixture.detectChanges();
+
+      // The button draws only a chevron, so this label is the only thing a
+      // screen reader can announce for it.
+      const button = fixture.nativeElement.querySelector(
+        '.mzn-content-header__back-button button',
+      ) as HTMLElement;
+
+      expect(button.getAttribute('aria-label')).toBe('返回');
+    });
   });
 });

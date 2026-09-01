@@ -9,6 +9,13 @@ import { NavigationActivatedContext } from './context';
 
 export interface NavigationUserMenuProps
   extends Omit<DropdownProps, 'children' | 'type'> {
+  /**
+   * Accessible name for the trigger button.
+   * Defaults to `children` when that is plain text — the user name is hidden
+   * while the navigation is collapsed, which would otherwise leave the button
+   * with only an avatar and no accessible name.
+   */
+  'aria-label'?: string;
   children?: ReactNode;
   className?: string;
   collapsedPlacement?: DropdownProps['placement'];
@@ -20,7 +27,14 @@ const NavigationUserMenu = forwardRef<
   HTMLButtonElement,
   NavigationUserMenuProps
 >((props, ref) => {
-  const { children, className, imgSrc, onClick, ...rest } = props;
+  const {
+    'aria-label': ariaLabel,
+    children,
+    className,
+    imgSrc,
+    onClick,
+    ...rest
+  } = props;
   const {
     open: openProp,
     onClose,
@@ -73,6 +87,15 @@ const NavigationUserMenu = forwardRef<
       }}
     >
       <button
+        /**
+         * When the navigation is collapsed the user name is hidden, leaving the
+         * button with only an avatar and a chevron — and so no accessible name.
+         * Derive one from `children` when it is plain text; an explicit
+         * `aria-label` from the caller still wins.
+         */
+        aria-label={
+          ariaLabel ?? (typeof children === 'string' ? children : undefined)
+        }
         className={cx(classes.host, open && classes.open, className)}
         ref={ref}
         type="button"

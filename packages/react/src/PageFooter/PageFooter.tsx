@@ -142,6 +142,8 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
     const renderAnnotation = () => {
       switch (type) {
         case 'standard':
+          if (!supportingActionName) return null;
+
           return (
             <Button
               size="main"
@@ -206,13 +208,15 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
               {...actions.secondaryButton}
             />
           )}
-          <Button
-            size="main"
-            variant="base-primary"
-            {...restPrimaryButtonProps}
-          >
-            {primaryButtonText || 'Button'}
-          </Button>
+          {actions?.primaryButton && (
+            <Button
+              size="main"
+              variant="base-primary"
+              {...restPrimaryButtonProps}
+            >
+              {primaryButtonText}
+            </Button>
+          )}
         </ButtonGroup>
       </footer>
     );

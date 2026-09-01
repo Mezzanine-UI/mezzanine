@@ -1,4 +1,5 @@
 import {
+  computed,
   Directive,
   DestroyRef,
   effect,
@@ -10,6 +11,9 @@ import {
   Renderer2,
 } from '@angular/core';
 import { tooltipClasses as classes } from '@mezzanine-ui/core/tooltip';
+
+/** 對齊 React Tooltip 的 `useId()`，給提示節點一個穩定且唯一的 id。 */
+let tooltipIdSequence = 0;
 import {
   computePosition,
   autoUpdate,
@@ -58,6 +62,9 @@ const SIDE_TO_ROTATION: Record<string, number> = {
   host: {
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
+    '(focus)': 'onFocus()',
+    '(blur)': 'onBlur()',
+    '[attr.aria-describedby]': 'describedBy()',
   },
 })
 export class MznTooltip implements OnInit {
@@ -113,6 +120,31 @@ export class MznTooltip implements OnInit {
   readonly tooltipPlacement = input<Placement>('top');
 
   private readonly isHovered = signal(false);
+  /** 鍵盤 focus 與 hover 並列為開啟來源。 */
+  private readonly isFocused = signal(false);
+  /**
+   * Escape 需要能在不移動指標與焦點的情況下關閉提示（WCAG 1.4.13）；
+   * 重新 hover／focus 時解除。
+   */
+  private readonly isDismissed = signal(false);
+  private readonly tooltipId = `mzn-tooltip-${(tooltipIdSequence += 1)}`;
+
+  /** 提示開啟時指向提示節點，讓輔助科技唸得到內容。 */
+  protected readonly describedBy = computed((): string | null =>
+    this.isVisible() ? this.tooltipId : null,
+  );
+
+  private readonly isVisible = computed((): boolean => {
+    if (this.tooltipOpen() !== undefined) {
+      return this.tooltipOpen()!;
+    }
+
+    if (this.isDismissed()) {
+      return false;
+    }
+
+    return Boolean(this.mznTooltip()) && (this.isHovered() || this.isFocused());
+  });
 
   constructor() {
     // Reactively update tooltip text when mznTooltip input changes (e.g. during drag)
@@ -126,7 +158,21 @@ export class MznTooltip implements OnInit {
   }
 
   ngOnInit(): void {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') return;
+      // 只關掉 hover/focus 驅動的提示；受控的 `tooltipOpen` 交給消費端。
+      if (this.tooltipOpen() !== undefined) return;
+      if (!this.isHovered() && !this.isFocused()) return;
+
+      event.preventDefault();
+      this.isDismissed.set(true);
+      this.hideTooltip();
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+
     this.destroyRef.onDestroy(() => {
+      document.removeEventListener('keydown', onKeyDown);
       this.hideTooltip();
       this.removeTooltipElement();
     });
@@ -138,6 +184,7 @@ export class MznTooltip implements OnInit {
       this.leaveTimer = null;
     }
 
+    this.isDismissed.set(false);
     this.isHovered.set(true);
     this.showTooltip();
   }
@@ -151,6 +198,22 @@ export class MznTooltip implements OnInit {
       this.isHovered.set(false);
       this.hideTooltip();
     }, this.tooltipMouseLeaveDelay());
+  }
+
+  protected onFocus(): void {
+    if (this.leaveTimer) {
+      clearTimeout(this.leaveTimer);
+      this.leaveTimer = null;
+    }
+
+    this.isDismissed.set(false);
+    this.isFocused.set(true);
+    this.showTooltip();
+  }
+
+  protected onBlur(): void {
+    this.isFocused.set(false);
+    this.hideTooltip();
   }
 
   private updateTooltipText(text: string): void {
@@ -197,7 +260,9 @@ export class MznTooltip implements OnInit {
   }
 
   private hideTooltip(): void {
-    if (this.tooltipOpen() !== undefined && this.tooltipOpen()) {
+    // hover 與 focus 是兩個獨立來源，其中一個還在（或 `tooltipOpen` 受控為
+    // true）就不能關；`isVisible()` 已經把三者收攏。
+    if (this.isVisible()) {
       return;
     }
 
@@ -214,6 +279,8 @@ export class MznTooltip implements OnInit {
   private createTooltipElement(): void {
     this.tooltipEl = this.renderer.createElement('div') as HTMLDivElement;
     this.tooltipEl.className = classes.host;
+    this.tooltipEl.setAttribute('role', 'tooltip');
+    this.tooltipEl.id = this.tooltipId;
     this.tooltipEl.style.position = this.tooltipDisablePortal()
       ? 'absolute'
       : 'fixed';

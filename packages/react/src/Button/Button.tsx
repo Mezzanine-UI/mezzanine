@@ -1,7 +1,8 @@
 'use client';
 
-import { forwardRef, MouseEvent } from 'react';
+import { forwardRef, MouseEvent, useCallback, useRef } from 'react';
 import { buttonClasses as classes } from '@mezzanine-ui/core/button';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 import Icon from '../Icon';
@@ -47,6 +48,7 @@ export type ButtonProps<C extends ButtonComponent = 'button'> =
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(props, ref) {
     const {
+      'aria-describedby': ariaDescribedBy,
       children,
       className,
       component: Component = 'button',
@@ -55,7 +57,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       icon,
       iconType,
       loading = false,
+      onBlur,
       onClick,
+      onFocus,
       size = 'main',
       tooltipPosition = 'bottom',
       variant = 'base-primary',
@@ -64,6 +68,26 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const isIconOnly = iconType === 'icon-only';
     const showTooltip = isIconOnly && !disabledTooltip && Boolean(children);
+
+    /**
+     * Tooltip 分支會提供自己的 ref，必須與呼叫端的 ref 合成而非取代，
+     * 否則像 Dropdown 這種以 anchorRef 定位的消費端會拿不到 DOM 節點。
+     * 這裡用 holder + 穩定的 callback ref，避免每次 render 產生新的
+     * ref 函式導致 Tooltip 的 target state 反覆 detach/attach。
+     */
+    const tooltipTargetRef = useRef<React.RefCallback<HTMLElement> | null>(
+      null,
+    );
+    const attachTooltipTarget = useCallback(
+      (element: HTMLButtonElement | null) => {
+        tooltipTargetRef.current?.(element);
+      },
+      [],
+    );
+    const composedRef = useComposeRefs<HTMLButtonElement>([
+      ref,
+      attachTooltipTarget,
+    ]);
 
     // Loading 狀態下的 icon
     const loadingIcon = <Spin loading size="minor" />;
@@ -80,49 +104,69 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const buttonElement = (tooltipProps?: {
+      'aria-describedby': string | undefined;
+      onBlur: React.FocusEventHandler;
+      onFocus: React.FocusEventHandler;
       onMouseEnter: React.MouseEventHandler;
       onMouseLeave: React.MouseEventHandler;
       ref: React.RefCallback<HTMLElement>;
-    }) => (
-      <Component
-        {...rest}
-        ref={tooltipProps?.ref || ref}
-        aria-disabled={disabled}
-        className={cx(
-          classes.host,
-          classes.variant(variant),
-          classes.size(size),
-          {
-            [classes.disabled]: disabled,
-            [classes.loading]: loading,
-            [classes.iconLeading]: iconType === 'leading',
-            [classes.iconTrailing]: iconType === 'trailing',
-            [classes.iconOnly]: isIconOnly,
-          },
-          className,
-        )}
-        disabled={disabled}
-        onClick={(event: MouseEvent<HTMLButtonElement>) => {
-          if (!disabled && !loading && onClick) {
-            onClick(event);
+    }) => {
+      tooltipTargetRef.current = tooltipProps?.ref ?? null;
+
+      return (
+        <Component
+          {...rest}
+          ref={composedRef}
+          aria-describedby={
+            [ariaDescribedBy, tooltipProps?.['aria-describedby']]
+              .filter(Boolean)
+              .join(' ') || undefined
           }
-        }}
-        {...(tooltipProps && {
-          onMouseEnter: tooltipProps.onMouseEnter,
-          onMouseLeave: tooltipProps.onMouseLeave,
-        })}
-      >
-        {loading ? (
-          renderIcon()
-        ) : (
-          <>
-            {(iconType === 'leading' || isIconOnly) && renderIcon()}
-            {!isIconOnly && children}
-            {iconType === 'trailing' && renderIcon()}
-          </>
-        )}
-      </Component>
-    );
+          aria-disabled={disabled}
+          className={cx(
+            classes.host,
+            classes.variant(variant),
+            classes.size(size),
+            {
+              [classes.disabled]: disabled,
+              [classes.loading]: loading,
+              [classes.iconLeading]: iconType === 'leading',
+              [classes.iconTrailing]: iconType === 'trailing',
+              [classes.iconOnly]: isIconOnly,
+            },
+            className,
+          )}
+          disabled={disabled}
+          onClick={(event: MouseEvent<HTMLButtonElement>) => {
+            if (!disabled && !loading && onClick) {
+              onClick(event);
+            }
+          }}
+          onBlur={(event: React.FocusEvent<HTMLButtonElement>) => {
+            onBlur?.(event);
+            tooltipProps?.onBlur(event);
+          }}
+          onFocus={(event: React.FocusEvent<HTMLButtonElement>) => {
+            onFocus?.(event);
+            tooltipProps?.onFocus(event);
+          }}
+          {...(tooltipProps && {
+            onMouseEnter: tooltipProps.onMouseEnter,
+            onMouseLeave: tooltipProps.onMouseLeave,
+          })}
+        >
+          {loading ? (
+            renderIcon()
+          ) : (
+            <>
+              {(iconType === 'leading' || isIconOnly) && renderIcon()}
+              {!isIconOnly && children}
+              {iconType === 'trailing' && renderIcon()}
+            </>
+          )}
+        </Component>
+      );
+    };
 
     if (showTooltip) {
       return (

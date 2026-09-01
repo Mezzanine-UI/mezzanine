@@ -72,6 +72,7 @@ export type ContentHeaderTitleComponent =
     '[attr.description]': 'null',
     '[attr.size]': 'null',
     '[attr.showBackButton]': 'null',
+    '[attr.backButtonLabel]': 'null',
     '[attr.title]': 'null',
     '[attr.titleComponent]': 'null',
   },
@@ -86,7 +87,7 @@ export type ContentHeaderTitleComponent =
               variant="base-tertiary"
               size="sub"
               iconType="icon-only"
-              aria-label="Back"
+              [attr.aria-label]="backButtonLabel()"
               (click)="backClick.emit()"
             >
               <i mznIcon [icon]="chevronLeftIcon" [size]="16"></i>
@@ -215,6 +216,14 @@ export class MznContentHeader {
    * @default false
    */
   readonly showBackButton = input(false);
+
+  /**
+   * 返回鍵的可及名稱。返回鍵只畫一個 chevron、沒有可見文字，因此這是螢幕閱讀器
+   * 唯一能唸出的內容，請與介面其餘文案一起翻譯。
+   * 對齊 React `ContentHeader` 的 `backButtonLabel` prop。
+   * @default 'Back'
+   */
+  readonly backButtonLabel = input('Back');
 
   /** 標題文字。 */
   readonly title = input.required<string>();

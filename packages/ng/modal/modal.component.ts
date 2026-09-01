@@ -3,10 +3,12 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   modalClasses as classes,
@@ -18,7 +20,7 @@ import clsx from 'clsx';
 import { MznBackdrop } from '@mezzanine-ui/ng/backdrop';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
 import { MznScale } from '@mezzanine-ui/ng/transition';
-import { EscapeKeyService } from '@mezzanine-ui/ng/services';
+import { EscapeKeyService, FocusTrapService } from '@mezzanine-ui/ng/services';
 import { TopStackService } from '@mezzanine-ui/ng/services';
 import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
 
@@ -104,11 +106,18 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
       (closed)="onBackdropClose()"
       (backdropClick)="backdropClick.emit()"
     >
-      <div mznScale [in]="open()" [class]="contentWrapperClass">
+      <div
+        #contentWrapper
+        mznScale
+        [in]="open()"
+        [class]="contentWrapperClass"
+        tabindex="-1"
+      >
         <div
           [class]="hostClasses()"
           [style]="dialogStyle() ?? null"
           role="dialog"
+          [attr.aria-modal]="open() ? 'true' : null"
         >
           @if (showModalHeader()) {
             <ng-content select="[mznModalHeader]" />
@@ -132,6 +141,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
 })
 export class MznModal {
   private readonly escapeKey = inject(EscapeKeyService);
+  private readonly focusTrap = inject(FocusTrapService);
   private readonly topStack = inject(TopStackService);
   private readonly modalContext = inject(
     MZN_MODAL_CONTEXT,
@@ -208,6 +218,10 @@ export class MznModal {
   protected readonly closeIconClass = classes.closeIcon;
   protected readonly contentWrapperClass = classes.contentWrapper;
 
+  /** 焦點陷阱的容器；開啟後才存在，故以 signal viewChild 取得。 */
+  private readonly contentWrapper =
+    viewChild<ElementRef<HTMLElement>>('contentWrapper');
+
   constructor() {
     // Sync inputs to context for child components
     effect(() => {
@@ -222,7 +236,7 @@ export class MznModal {
       this.modalContext._setModalType(this.modalType());
     });
 
-    // Manage top stack and escape key
+    // Manage top stack, escape key and the dialog focus model
     effect((onCleanup) => {
       const isOpen = this.open();
 
@@ -235,7 +249,18 @@ export class MznModal {
           }
         });
 
+        /**
+         * Focus moves into the dialog, Tab cycles inside it and focus returns
+         * to the previously focused element on close. Only the topmost dialog
+         * traps Tab, reusing the same stack entry as the escape handler.
+         */
+        const releaseFocusTrap = this.focusTrap.trap({
+          container: () => this.contentWrapper()?.nativeElement,
+          isTop: entry.isTop,
+        });
+
         onCleanup(() => {
+          releaseFocusTrap();
           escapeCleanup();
           entry.unregister();
         });

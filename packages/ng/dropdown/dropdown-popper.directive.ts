@@ -199,6 +199,15 @@ export class MznDropdownPopper {
   /** 是否讓浮層最小寬度與 anchor 對齊。 @default false */
   readonly sameWidth = input(false);
 
+  /**
+   * 是否啟用交叉軸推移，讓浮層在貼近視窗邊緣時被推回可視範圍內。
+   * `flip` 只在主軸翻面，不處理左右溢出，因此 anchor 靠近視窗右緣（例如表格
+   * 最右欄的列動作）時選單仍會被裁切。對齊 React `Dropdown` 的 `shift` prop
+   * （floating-ui shift；CDK 的等價實作為 `withPush`）。
+   * @default false
+   */
+  readonly shift = input(false);
+
   /** z-index 覆蓋值；未設定時以內部遞增序號計算。 */
   readonly zIndex = input<number | string>();
 
@@ -292,7 +301,7 @@ export class MznDropdownPopper {
       .flexibleConnectedTo(anchorEl)
       .withPositions(positions)
       .withFlexibleDimensions(false)
-      .withPush(false);
+      .withPush(this.shift());
 
     positionStrategy.positionChanges
       .pipe(takeUntilDestroyed(this.destroyRef))

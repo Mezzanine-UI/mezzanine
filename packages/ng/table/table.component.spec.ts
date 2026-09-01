@@ -284,3 +284,60 @@ describe('MznTable', () => {
     expect(emptyCell!.textContent).toContain('Nothing here');
   });
 });
+
+/**
+ * MznTable is an attribute directive (`[mznTable]`), so this host wires it onto
+ * a host element rather than using an element selector, which lets the row
+ * actions actually render.
+ */
+@Component({
+  standalone: true,
+  imports: [MznTable],
+  template: `
+    <div
+      mznTable
+      [actions]="actions()"
+      [columns]="columns()"
+      [dataSource]="dataSource()"
+    ></div>
+  `,
+})
+class RowActionsHostComponent {
+  readonly columns = signal<readonly TableColumn[]>([
+    { key: 'name', title: 'Name', dataIndex: 'name' },
+  ]);
+
+  readonly dataSource = signal<readonly TableDataSource[]>([
+    { id: '1', name: 'Alice' },
+  ]);
+
+  readonly actions = signal({
+    render: () => [
+      {
+        key: 'more',
+        type: 'dropdown' as const,
+        label: 'More actions',
+        options: [{ id: 'copy', name: 'Copy' }],
+      },
+    ],
+  });
+}
+
+describe('MznTable row action accessibility', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [RowActionsHostComponent] });
+  });
+
+  it('should name the icon-only dropdown trigger with its label', () => {
+    const fixture = TestBed.createComponent(RowActionsHostComponent);
+    fixture.detectChanges();
+
+    const trigger = (fixture.nativeElement as HTMLElement).querySelector(
+      '.mzn-table__cell__actions button',
+    );
+
+    // The trigger renders only an icon, so without aria-label it has no
+    // accessible name at all.
+    expect(trigger?.getAttribute('aria-label')).toBe('More actions');
+  });
+});

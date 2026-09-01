@@ -7,6 +7,7 @@ import {
   fireEvent,
   render,
   renderHook,
+  waitFor,
 } from '../../__test-utils__';
 import { createRef } from 'react';
 import { ModalControl, ModalControlContext } from './ModalControl';
@@ -34,15 +35,18 @@ describe('<Modal />', () => {
   });
 
   describe('ref', () => {
-    it('should accept a ref prop (ref is overridden by Scale transition cloneElement)', () => {
+    it('should forward ref to the content wrapper', () => {
       const ref = createRef<HTMLDivElement>();
 
       render(<Modal ref={ref} open modalType="standard" />);
 
-      // The ref is forwarded to ModalContainer's inner div, but Scale
-      // transition overwrites it via cloneElement with its own composed ref.
-      // As a result, the forwarded ref is not attached to the DOM node.
-      expect(ref.current).toBeNull();
+      // Scale clones its child with its own ref, so a ref placed directly on
+      // that child was dropped. Routing it through Scale — which composes the
+      // ref it is given — makes the forwarded ref reach the DOM node.
+      expect(ref.current).toBeInstanceOf(HTMLDivElement);
+      expect(
+        ref.current?.classList.contains('mzn-modal__content-wrapper'),
+      ).toBe(true);
     });
   });
 
@@ -674,6 +678,161 @@ describe('<Modal />', () => {
           classes.modalBodyContainerWithBottomSeparator,
         ),
       ).toBe(true);
+    });
+  });
+  describe('dialog semantics', () => {
+    it('should mark the open dialog as modal', () => {
+      render(
+        <Modal modalType="standard" onClose={jest.fn()} open>
+          content
+        </Modal>,
+      );
+      const modalElement = getModalElement()!;
+
+      // role="dialog" alone does not tell assistive technology that the content
+      // behind the dialog is inert.
+      expect(modalElement.getAttribute('role')).toBe('dialog');
+      expect(modalElement.getAttribute('aria-modal')).toBe('true');
+    });
+
+    it('should let the caller override aria-modal', () => {
+      render(
+        <Modal aria-modal={false} modalType="standard" onClose={jest.fn()} open>
+          content
+        </Modal>,
+      );
+      const modalElement = getModalElement()!;
+
+      expect(modalElement.getAttribute('aria-modal')).toBe('false');
+    });
+  });
+  describe('focus model', () => {
+    const ModalHarness = ({ open }: { open: boolean }) => (
+      <Modal modalType="standard" onClose={jest.fn()} open={open}>
+        <button type="button">first</button>
+        <button type="button">second</button>
+      </Modal>
+    );
+
+    it('should move focus into the dialog when it opens', async () => {
+      const { rerender } = render(<ModalHarness open={false} />);
+      const outside = document.createElement('button');
+
+      outside.textContent = 'outside';
+      document.body.appendChild(outside);
+      outside.focus();
+
+      expect(document.activeElement).toBe(outside);
+
+      rerender(<ModalHarness open />);
+
+      await waitFor(() => {
+        expect(document.activeElement?.textContent).toBe('first');
+      });
+
+      outside.remove();
+    });
+
+    it('should restore focus to the previously focused element on close', async () => {
+      const { rerender } = render(<ModalHarness open={false} />);
+      const trigger = document.createElement('button');
+
+      trigger.textContent = 'trigger';
+      document.body.appendChild(trigger);
+      trigger.focus();
+
+      rerender(<ModalHarness open />);
+
+      await waitFor(() => {
+        expect(document.activeElement?.textContent).toBe('first');
+      });
+
+      rerender(<ModalHarness open={false} />);
+
+      expect(document.activeElement).toBe(trigger);
+
+      trigger.remove();
+    });
+
+    it('should cycle Tab from the last focusable back to the first', () => {
+      render(<ModalHarness open />);
+
+      const wrapper = document.querySelector<HTMLElement>(
+        '.mzn-modal__content-wrapper',
+      )!;
+      const buttons = Array.from(
+        wrapper.querySelectorAll<HTMLButtonElement>('button'),
+      );
+
+      buttons[buttons.length - 1].focus();
+      fireEvent.keyDown(document, { key: 'Tab' });
+
+      expect(document.activeElement).toBe(buttons[0]);
+    });
+
+    it('should cycle Shift+Tab from the first focusable back to the last', () => {
+      render(<ModalHarness open />);
+
+      const wrapper = document.querySelector<HTMLElement>(
+        '.mzn-modal__content-wrapper',
+      )!;
+      const buttons = Array.from(
+        wrapper.querySelectorAll<HTMLButtonElement>('button'),
+      );
+
+      buttons[0].focus();
+      fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+
+      expect(document.activeElement).toBe(buttons[buttons.length - 1]);
+    });
+
+    it('should not let focus escape to an element outside the dialog', () => {
+      const outside = document.createElement('button');
+
+      outside.textContent = 'outside';
+      document.body.appendChild(outside);
+
+      render(<ModalHarness open />);
+
+      outside.focus();
+      fireEvent.keyDown(document, { key: 'Tab' });
+
+      // Focus was outside the trap, so Tab pulls it back in rather than
+      // continuing through the page behind the dialog.
+      expect(document.activeElement?.textContent).toBe('first');
+
+      outside.remove();
+    });
+
+    it('should only trap Tab in the topmost of nested dialogs', () => {
+      render(
+        <>
+          <Modal modalType="standard" onClose={jest.fn()} open>
+            <button type="button">outer</button>
+          </Modal>
+          <Modal modalType="standard" onClose={jest.fn()} open>
+            <button type="button">inner-first</button>
+            <button type="button">inner-last</button>
+          </Modal>
+        </>,
+      );
+
+      // The dialog also renders a dismiss button, so take the real last
+      // focusable inside the topmost wrapper rather than assuming it is
+      // the last child we passed in.
+      const wrappers = Array.from(
+        document.querySelectorAll<HTMLElement>('.mzn-modal__content-wrapper'),
+      );
+      const topmost = wrappers[wrappers.length - 1];
+      const focusable = Array.from(
+        topmost.querySelectorAll<HTMLButtonElement>('button'),
+      );
+
+      focusable[focusable.length - 1].focus();
+      fireEvent.keyDown(document, { key: 'Tab' });
+
+      expect(document.activeElement).toBe(focusable[0]);
+      expect(document.activeElement?.textContent).toBe('inner-first');
     });
   });
 });

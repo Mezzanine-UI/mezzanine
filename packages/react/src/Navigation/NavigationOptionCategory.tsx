@@ -6,6 +6,7 @@ import {
   isValidElement,
   ReactNode,
   useCallback,
+  useId,
 } from 'react';
 import { navigationOptionCategoryClasses as classes } from '@mezzanine-ui/core/navigation';
 import { cx } from '../utils/cx';
@@ -22,6 +23,7 @@ const NavigationOptionCategory = forwardRef<
   NavigationOptionCategoryProps
 >((props, ref) => {
   const { children, className, title, ...rest } = props;
+  const titleId = useId();
 
   const renderItemChildren = useCallback(function renderItemChildrenImpl(
     parsedChildren: ReactNode,
@@ -48,14 +50,11 @@ const NavigationOptionCategory = forwardRef<
   }, []);
 
   return (
-    <li
-      {...rest}
-      ref={ref}
-      className={cx(classes.host, className)}
-      role="menuitem"
-    >
-      <span className={classes.title}>{title}</span>
-      <ul>{renderItemChildren(children)}</ul>
+    <li {...rest} ref={ref} className={cx(classes.host, className)}>
+      <span className={classes.title} id={titleId}>
+        {title}
+      </span>
+      <ul aria-labelledby={titleId}>{renderItemChildren(children)}</ul>
     </li>
   );
 });

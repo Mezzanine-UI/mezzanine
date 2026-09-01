@@ -53,6 +53,14 @@ export type ContentHeaderProps = Omit<
    */
   actions?: ButtonProps[];
   /**
+   * Accessible name for the back button. <br />
+   * The back button renders as a bare chevron with no visible text, so this is
+   * the only thing a screen reader can announce for it — translate it along
+   * with the rest of your interface. <br />
+   * @default 'Back'
+   */
+  backButtonLabel?: string;
+  /**
    * Children elements: <br />
    * - Back button which Component with href prop.
    *     - example 1: `<a href="..." />` <br />
@@ -150,6 +158,7 @@ const ContentHeader = forwardRef<HTMLElement, ContentHeaderProps>(
   function ContentHeader(props, ref) {
     const {
       actions,
+      backButtonLabel = 'Back',
       children,
       className,
       description,
@@ -173,7 +182,7 @@ const ContentHeader = forwardRef<HTMLElement, ContentHeaderProps>(
       filter: filterFromChildren,
       actions: actionsFromChildren,
       utilities: utilitiesFromChildren,
-    } = resolveContentHeaderChild(children, size);
+    } = resolveContentHeaderChild(children, size, backButtonLabel);
 
     // prop onBack takes precedence over backButtonOrLink
     const renderBackButton = onBackClick ? (
@@ -181,7 +190,7 @@ const ContentHeader = forwardRef<HTMLElement, ContentHeaderProps>(
         iconType="icon-only"
         icon={ChevronLeftIcon}
         onClick={onBackClick}
-        aria-label="Back"
+        aria-label={backButtonLabel}
         type="button"
         size="sub"
         variant="base-tertiary"

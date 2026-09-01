@@ -10,6 +10,7 @@ import NavigationOption from './NavigationOption';
 import NavigationHeader from './NavigationHeader';
 import NavigationFooter from './NavigationFooter';
 import NavigationOptionCategory from './NavigationOptionCategory';
+import NavigationIconButton from './NavigationIconButton';
 import NavigationUserMenu from './NavigationUserMenu';
 import * as useCurrentPathnameModule from './useCurrentPathname';
 
@@ -108,6 +109,111 @@ describe('<Navigation />', () => {
       const category = element.querySelector('.mzn-navigation-option-category');
 
       expect(category).toBeTruthy();
+    });
+
+    it('should keep native list semantics on NavigationOptionCategory', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const category = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option-category',
+      )!;
+
+      // `role="menuitem"` requires a menu/menubar/group ancestor that Navigation
+      // never renders, and it also overrides the implicit `listitem`, leaving the
+      // parent <ul> with a non-listitem child.
+      expect(category.getAttribute('role')).toBeNull();
+      expect(category.tagName).toBe('LI');
+      expect(category.parentElement?.tagName).toBe('UL');
+    });
+
+    it('should let the caller override the role on NavigationOptionCategory', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory role="presentation" title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const category = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option-category',
+      )!;
+
+      expect(category.getAttribute('role')).toBe('presentation');
+    });
+
+    it('should label the nested option list with the category title', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const category = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option-category',
+      )!;
+      const nestedList = category.querySelector('ul')!;
+      const labelledBy = nestedList.getAttribute('aria-labelledby');
+
+      expect(labelledBy).toBeTruthy();
+      expect(document.getElementById(labelledBy!)?.textContent).toBe(
+        'Category',
+      );
+    });
+
+    it('should not claim menuitem on navigation options', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+
+      // `menuitem` requires a menu/menubar/group ancestor Navigation never
+      // renders, and promises a keyboard model this component does not have.
+      expect(
+        getHostHTMLElement().querySelectorAll('[role="menuitem"]').length,
+      ).toBe(0);
+    });
+
+    it('should expose a leaf option with href as a link', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption
+            href="/dashboard"
+            title="Dashboard"
+            icon={PlusIcon}
+          />
+        </Navigation>,
+      );
+      const anchor = getHostHTMLElement().querySelector(
+        'a[href="/dashboard"]',
+      )!;
+
+      expect(anchor.getAttribute('role')).toBeNull();
+      expect(anchor.tagName).toBe('A');
+    });
+
+    it('should expose a group option as a button', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Settings" icon={PlusIcon}>
+            <NavigationOption title="Profile" icon={PlusIcon} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const content = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option__content',
+      )!;
+
+      // Enter/Space already toggle the group — that is the button contract.
+      expect(content.getAttribute('role')).toBe('button');
     });
 
     it('should allow null and Fragment children', () => {
@@ -508,6 +614,116 @@ describe('<NavigationFooter />', () => {
       expect(
         footer?.classList.contains('mzn-navigation-footer--collapsed'),
       ).toBeTruthy();
+    });
+  });
+  describe('accessible names in the footer', () => {
+    const renderFooter = (children: React.ReactNode) =>
+      render(
+        <Navigation>
+          <NavigationFooter>{children}</NavigationFooter>
+        </Navigation>,
+      );
+
+    it('should name the user menu trigger from its children', () => {
+      const { getHostHTMLElement } = renderFooter(
+        <NavigationUserMenu options={[{ id: '1', name: '登出' }]}>
+          王小明
+        </NavigationUserMenu>,
+      );
+      const trigger = getHostHTMLElement().querySelector(
+        '.mzn-navigation-user-menu',
+      );
+
+      // The user name is hidden while collapsed, so the trigger would otherwise
+      // be an avatar with no accessible name at all.
+      expect(trigger?.getAttribute('aria-label')).toBe('王小明');
+    });
+
+    it('should let the caller override the user menu name', () => {
+      const { getHostHTMLElement } = renderFooter(
+        <NavigationUserMenu
+          aria-label="帳號設定"
+          options={[{ id: '1', name: '登出' }]}
+        >
+          王小明
+        </NavigationUserMenu>,
+      );
+      const trigger = getHostHTMLElement().querySelector(
+        '.mzn-navigation-user-menu',
+      );
+
+      expect(trigger?.getAttribute('aria-label')).toBe('帳號設定');
+    });
+
+    it('should name an icon button from aria-label', () => {
+      const { getHostHTMLElement } = renderFooter(
+        <NavigationIconButton aria-label="通知" icon={PlusIcon} />,
+      );
+      const button = getHostHTMLElement().querySelector(
+        '.mzn-navigation-icon-button',
+      );
+
+      expect(button?.getAttribute('aria-label')).toBe('通知');
+    });
+  });
+  describe('disclosure and toggle semantics', () => {
+    it('should name the collapse toggle and report its state', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationHeader title="App" />
+        </Navigation>,
+      );
+      const toggle = getHostHTMLElement().querySelector(
+        '.mzn-navigation-icon-button',
+      )!;
+
+      expect(toggle.getAttribute('aria-label')).toBe('Toggle navigation');
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('should use a custom collapseToggleLabel', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationHeader collapseToggleLabel="切換導覽" title="App" />
+        </Navigation>,
+      );
+      const toggle = getHostHTMLElement().querySelector(
+        '.mzn-navigation-icon-button',
+      )!;
+
+      expect(toggle.getAttribute('aria-label')).toBe('切換導覽');
+    });
+
+    it('should report aria-expanded on a group option', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Settings" icon={PlusIcon}>
+            <NavigationOption title="Profile" icon={PlusIcon} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const content = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option__content',
+      )!;
+
+      expect(content.getAttribute('aria-expanded')).toBe('false');
+
+      fireEvent.click(content);
+
+      expect(content.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('should not put aria-expanded on a leaf option', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Dashboard" icon={PlusIcon} />
+        </Navigation>,
+      );
+      const content = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option__content',
+      )!;
+
+      expect(content.getAttribute('aria-expanded')).toBeNull();
     });
   });
 });

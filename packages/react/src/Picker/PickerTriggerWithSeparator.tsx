@@ -306,6 +306,7 @@ const PickerTriggerWithSeparator = forwardRef<
 
   return (
     <TextField
+      role="presentation"
       {...restTextFieldProps}
       {...defaultTextFieldProps}
       ref={ref}

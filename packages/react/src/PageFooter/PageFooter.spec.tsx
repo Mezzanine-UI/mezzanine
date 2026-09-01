@@ -78,7 +78,7 @@ describe('<PageFooter />', () => {
       expect(buttons[1].textContent).toBe('Confirm');
     });
 
-    it('should use default text "Button" when primary button has no children', () => {
+    it('should not inject the hardcoded English "Button" label when primary button has no children', () => {
       const { getHostHTMLElement } = render(
         <PageFooter
           actions={{
@@ -90,7 +90,7 @@ describe('<PageFooter />', () => {
       const buttonGroup = element.querySelector('.mzn-button-group');
       const button = buttonGroup!.querySelector('button');
 
-      expect(button!.textContent).toBe('Button');
+      expect(button!.textContent).toBe('');
     });
   });
 
@@ -316,6 +316,47 @@ describe('<PageFooter />', () => {
       const spanElement = messageElement!.querySelector('span');
 
       expect(spanElement).toBe(null);
+    });
+  });
+  describe('empty buttons', () => {
+    it('should not render the supporting action when supportingActionName is absent', () => {
+      const { getHostHTMLElement } = render(
+        <PageFooter
+          actions={{
+            primaryButton: { children: 'Submit', onClick: jest.fn() },
+          }}
+        />,
+      );
+      const annotation = getHostHTMLElement().querySelector(
+        '.mzn-page-footer__annotation',
+      )!;
+
+      // 'standard' is the default type and used to render unconditionally,
+      // leaving a focusable button with no accessible name.
+      expect(annotation.querySelector('button')).toBeNull();
+    });
+
+    it('should still render the supporting action when supportingActionName is given', () => {
+      const { getHostHTMLElement } = render(
+        <PageFooter
+          actions={{
+            primaryButton: { children: 'Submit', onClick: jest.fn() },
+          }}
+          supportingActionName="Back"
+        />,
+      );
+      const annotation = getHostHTMLElement().querySelector(
+        '.mzn-page-footer__annotation',
+      )!;
+
+      expect(annotation.querySelector('button')?.textContent).toBe('Back');
+    });
+
+    it('should not inject a hardcoded "Button" label when no actions are given', () => {
+      const { getHostHTMLElement } = render(<PageFooter />);
+      const buttons = getHostHTMLElement().querySelectorAll('button');
+
+      expect(buttons.length).toBe(0);
     });
   });
 });

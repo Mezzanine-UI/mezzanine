@@ -1,10 +1,12 @@
 import {
   forwardRef,
   ReactElement,
+  FocusEventHandler,
   MouseEventHandler,
   useRef,
   ReactNode,
   useCallback,
+  useId,
   useState,
   RefObject,
 } from 'react';
@@ -13,6 +15,7 @@ import { flip, offset, shift } from '@floating-ui/react-dom';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import Popper, { PopperProps } from '../Popper';
 import { useComposeRefs } from '../hooks/useComposeRefs';
+import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
 import { useDelayMouseEnterLeave } from './useDelayMouseEnterLeave';
 import { cx } from '../utils/cx';
 import { getCSSVariableValue } from '../utils/get-css-variable-value';
@@ -27,9 +30,21 @@ export interface TooltipProps
    */
   arrow?: boolean;
   /**
-   * child function that can receive events and ref
+   * child function that can receive events and ref.
+   *
+   * Spread every field onto the trigger element: the mouse handlers drive the
+   * pointer flow, `onFocus`/`onBlur` make the tooltip reachable by keyboard,
+   * and `aria-describedby` exposes the tooltip content to assistive tech while
+   * it is open.
    */
   children(opt: {
+    /**
+     * Id of the tooltip content node while it is open, otherwise `undefined`.
+     * Apply it to the trigger so assistive technology can read the tooltip.
+     */
+    'aria-describedby': string | undefined;
+    onBlur: FocusEventHandler;
+    onFocus: FocusEventHandler;
     onMouseEnter: MouseEventHandler;
     onMouseLeave: MouseEventHandler;
     ref: React.RefCallback<HTMLElement>;
@@ -56,9 +71,29 @@ export interface TooltipProps
 }
 
 /**
+ * 滑鼠點擊在 Chrome / Firefox 也會 focus `<button>`，若不收斂，
+ * 點一下就會跳出 tooltip，且滑鼠移開後仍不收（要等失焦）。
+ * `:focus-visible` 是瀏覽器維護的「這次 focus 該不該給視覺提示」判準，
+ * 用它把 tooltip 的 focus 觸發限縮在鍵盤情境。
+ *
+ * WCAG 2.1 SC 1.4.13 只規範 focus 觸發的內容要可 dismiss / hover / persist，
+ * 不要求滑鼠 focus 也必須觸發，因此仍然合規。
+ */
+function isFocusVisible(element: Element): boolean {
+  try {
+    return element.matches(':focus-visible');
+  } catch {
+    // 不支援該 pseudo-class 的環境退回原本行為：
+    // 寧可多顯示，也不要讓鍵盤使用者拿不到提示。
+    return true;
+  }
+}
+
+/**
  * 滑鼠懸停時顯示的提示框元件。
  *
- * 採用 render prop 模式，`children` 為接收 `ref`、`onMouseEnter`、`onMouseLeave` 的函式。
+ * 採用 render prop 模式，`children` 為接收 `ref`、滑鼠與焦點事件、以及 `aria-describedby` 的函式；
+ * 將整包 payload 攤到觸發元素上，提示才會同時對滑鼠、鍵盤與輔助科技可用（開啟中按 Escape 可關閉）。
  * 內部使用 `Popper` 進行定位，並整合 `flip`、`shift` 等 floating-ui middleware 自動調整位置以避免溢出視窗。
  * 支援自訂偏移量、顯示箭頭及滑鼠離開延遲時間。
  *
@@ -66,10 +101,10 @@ export interface TooltipProps
  * ```tsx
  * import Tooltip from '@mezzanine-ui/react/Tooltip';
  *
- * // 基本用法
+ * // 基本用法（攤開整包 payload，滑鼠與鍵盤皆可觸發）
  * <Tooltip title="這是提示文字">
- *   {({ ref, onMouseEnter, onMouseLeave }) => (
- *     <button ref={ref} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+ *   {(tooltipProps) => (
+ *     <button {...tooltipProps}>
  *       Hover me
  *     </button>
  *   )}
@@ -104,10 +139,12 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
       children,
       className,
       disablePortal = true,
+      id: idProp,
       mouseLeaveDelay = 0.1,
       offsetMainAxis,
       open = false,
       options = {},
+      role: roleProp,
       title,
       ...rest
     } = props;
@@ -123,8 +160,54 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
     const { onLeave, onPopperEnter, onTargetEnter, visible } =
       useDelayMouseEnterLeave({ mouseLeaveDelay });
 
-    /** tooltip shown only when title existed && visible is true */
-    const isTooltipVisible = open || (visible && Boolean(title));
+    /** keyboard focus opens the tooltip alongside the pointer flow */
+    const [focused, setFocused] = useState(false);
+    /**
+     * Escape hides the tooltip without moving the pointer or the focus
+     * (WCAG 1.4.13). Reset whenever the trigger is entered/focused again so the
+     * tooltip can be brought back.
+     */
+    const [dismissed, setDismissed] = useState(false);
+
+    const generatedId = useId();
+    const tooltipId = idProp ?? generatedId;
+
+    /** tooltip shown only when title existed && hovered or focused */
+    const isTriggerVisible =
+      !dismissed && (visible || focused) && Boolean(title);
+    const isTooltipVisible = open || isTriggerVisible;
+
+    const onTargetFocus = useCallback(
+      (event: React.FocusEvent<HTMLElement>) => {
+        // 只有鍵盤（focus-visible）觸發的 focus 才開啟提示，
+        // 否則滑鼠點一下按鈕就會跳出 tooltip 並黏著不放。
+        if (!isFocusVisible(event.currentTarget)) return;
+
+        setDismissed(false);
+        setFocused(true);
+      },
+      [],
+    );
+
+    const onTargetBlur = useCallback(() => {
+      setFocused(false);
+    }, []);
+
+    const onTargetMouseEnter = useCallback(
+      (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        setDismissed(false);
+        onTargetEnter(event);
+      },
+      [onTargetEnter],
+    );
+
+    // Escape only dismisses the hover/focus driven tooltip — a controlled
+    // `open` tooltip stays under the consumer's control.
+    useDocumentEscapeKeyDown(() => {
+      if (!isTriggerVisible) return;
+
+      return () => setDismissed(true);
+    }, [isTriggerVisible]);
 
     const offsetValue =
       offsetMainAxis ??
@@ -189,9 +272,11 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
             }
             className={cx(classes.host, className)}
             disablePortal={disablePortal}
+            id={tooltipId}
             onMouseEnter={onPopperEnter}
             onMouseLeave={onLeave}
             open={isTooltipVisible}
+            role={roleProp ?? 'tooltip'}
             options={{
               ...options,
               placement,
@@ -203,7 +288,10 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
         </Fade>
         {typeof children === 'function' &&
           children({
-            onMouseEnter: onTargetEnter,
+            'aria-describedby': isTooltipVisible ? tooltipId : undefined,
+            onBlur: onTargetBlur,
+            onFocus: onTargetFocus,
+            onMouseEnter: onTargetMouseEnter,
             onMouseLeave: onLeave,
             ref: setTargetRef,
           })}

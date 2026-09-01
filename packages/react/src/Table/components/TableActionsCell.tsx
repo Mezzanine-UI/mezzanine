@@ -177,8 +177,14 @@ const TableActionsCellInner = forwardRef<
                   }
                   options={dropdownItem.options}
                   placement={dropdownItem.placement ?? 'bottom-end'}
+                  // Row actions sit in the last column, so the menu is routinely
+                  // opened against the right edge of the viewport. `flip` only
+                  // swaps sides on the main axis, so without `shift` the menu is
+                  // clipped there.
+                  shift
                 >
                   <Button
+                    aria-label={dropdownItem.name}
                     iconType="icon-only"
                     icon={dropdownItem?.icon ?? DotHorizontalIcon}
                     size="sub"
@@ -196,6 +202,15 @@ const TableActionsCellInner = forwardRef<
 
             return (
               <Button
+                // `icon-only` turns children into the tooltip title rather than
+                // button content, so `name` alone would leave the button
+                // unnamed. Harmless on the other iconTypes, where the visible
+                // text already names it.
+                aria-label={
+                  buttonItem.iconType === 'icon-only'
+                    ? buttonItem.name
+                    : undefined
+                }
                 disabled={isDisabled}
                 icon={buttonItem.icon}
                 iconType={buttonItem.iconType}

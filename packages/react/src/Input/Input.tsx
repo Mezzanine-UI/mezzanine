@@ -718,6 +718,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         >
           {prefixExternalButton}
           <TextField
+            role="presentation"
             active={active}
             className={cx(
               classes.field,

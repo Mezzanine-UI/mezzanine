@@ -291,6 +291,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
 
     return (
       <TextField
+        role="presentation"
         {...restTextFieldProps}
         {...defaultTextFieldProps}
         ref={ref}

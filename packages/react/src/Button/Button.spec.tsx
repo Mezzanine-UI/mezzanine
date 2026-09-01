@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
 import { act, cleanup, fireEvent, render } from '../../__test-utils__';
@@ -248,6 +249,97 @@ describe('<Button />', () => {
   });
 
   describe('prop: tooltip (icon-only mode)', () => {
+    it('should still forward the caller ref to the host element while the tooltip branch is active', () => {
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button icon={PlusIcon} iconType="icon-only" ref={ref}>
+          More actions
+        </Button>,
+      );
+
+      expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+      expect(ref.current?.classList.contains('mzn-button')).toBeTruthy();
+    });
+
+    it('should forward the caller ref and still open the tooltip on hover', async () => {
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button icon={PlusIcon} iconType="icon-only" ref={ref}>
+          More actions
+        </Button>,
+      );
+
+      await act(async () => {
+        fireEvent.mouseEnter(ref.current!);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.textContent).toBe('More actions');
+    });
+
+    it('should open the tooltip on keyboard focus and describe the button while open', async () => {
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button icon={PlusIcon} iconType="icon-only" ref={ref}>
+          Add new item
+        </Button>,
+      );
+
+      expect(ref.current?.getAttribute('aria-describedby')).toBeNull();
+
+      // Tooltip 以 `:focus-visible` 收斂 focus 觸發，所以要真的移動焦點，
+      // 單純 dispatch focus 事件不會開啟提示。
+      await act(async () => {
+        ref.current!.focus();
+      });
+
+      const describedBy = ref.current?.getAttribute('aria-describedby');
+
+      expect(describedBy).toBeTruthy();
+
+      const tooltip = document.getElementById(describedBy!);
+
+      expect(tooltip?.getAttribute('role')).toBe('tooltip');
+      expect(tooltip?.textContent).toBe('Add new item');
+
+      await act(async () => {
+        ref.current!.blur();
+      });
+
+      expect(document.querySelector('[data-popper-placement]')).toBeNull();
+    });
+
+    it('should still call the caller onFocus/onBlur handlers in icon-only mode', async () => {
+      const onBlur = jest.fn();
+      const onFocus = jest.fn();
+      const ref = createRef<HTMLButtonElement>();
+
+      render(
+        <Button
+          icon={PlusIcon}
+          iconType="icon-only"
+          onBlur={onBlur}
+          onFocus={onFocus}
+          ref={ref}
+        >
+          Add new item
+        </Button>,
+      );
+
+      await act(async () => {
+        fireEvent.focus(ref.current!);
+        fireEvent.blur(ref.current!);
+      });
+
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
+    });
+
     it('should show tooltip on hover when iconType is icon-only and children provided', async () => {
       const { getHostHTMLElement } = render(
         <Button icon={PlusIcon} iconType="icon-only">

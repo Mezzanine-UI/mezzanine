@@ -109,6 +109,7 @@ let dropdownListboxSeq = 0;
     '[attr.emptyIcon]': 'null',
     '[attr.emptyText]': 'null',
     '[attr.flip]': 'null',
+    '[attr.shift]': 'null',
     '[attr.followText]': 'null',
     '[attr.globalPortal]': 'null',
     '[attr.inputPosition]': 'null',
@@ -198,6 +199,7 @@ let dropdownListboxSeq = 0;
         [anchor]="anchor()!"
         [customWidth]="customWidth() ?? undefined"
         [flip]="flip()"
+        [shift]="shift()"
         [globalPortal]="globalPortal()"
         [open]="popperOpen()"
         [placement]="resolvedPlacement()"
@@ -323,6 +325,16 @@ export class MznDropdown {
    * @default false
    */
   readonly flip = input(false);
+
+  /**
+   * 是否啟用 floating-ui `shift` middleware。設為 `true` 時，選單會沿交叉軸
+   * 推移以留在視窗內；`flip` 只在主軸翻面，因此 anchor 貼近視窗邊緣時（例如
+   * 表格最右欄的列動作）選單仍會被裁切。
+   * 預設關閉以維持既有消費端的定位行為。
+   * 鏡像 React `Dropdown` 的 `shift` prop。
+   * @default false
+   */
+  readonly shift = input(false);
 
   /**
    * 搜尋高亮關鍵字。若明確指定,會覆蓋 `isMatchInputValue` 從 header input

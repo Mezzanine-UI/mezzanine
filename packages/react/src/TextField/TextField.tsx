@@ -111,37 +111,37 @@ export type TextFieldAffixProps = {
  */
 export type TextFieldInteractiveStateProps =
   | {
-    /**
-     * Whether the user is currently typing.
-     * If not provided, will be auto-detected.
-     */
-    typing?: boolean;
-    disabled?: never;
-    readonly?: never;
-  }
+      /**
+       * Whether the user is currently typing.
+       * If not provided, will be auto-detected.
+       */
+      typing?: boolean;
+      disabled?: never;
+      readonly?: never;
+    }
   | {
-    typing?: never;
-    /**
-     * Whether the field is disabled.
-     * @default false
-     */
-    disabled: true;
-    readonly?: never;
-  }
+      typing?: never;
+      /**
+       * Whether the field is disabled.
+       * @default false
+       */
+      disabled: true;
+      readonly?: never;
+    }
   | {
-    typing?: never;
-    disabled?: never;
-    /**
-     * Whether the field is readonly.
-     * @default false
-     */
-    readonly: true;
-  }
+      typing?: never;
+      disabled?: never;
+      /**
+       * Whether the field is readonly.
+       * @default false
+       */
+      readonly: true;
+    }
   | {
-    typing?: never;
-    disabled?: never;
-    readonly?: never;
-  };
+      typing?: never;
+      disabled?: never;
+      readonly?: never;
+    };
 
 export type TextFieldProps = TextFieldBaseProps &
   TextFieldAffixProps &
@@ -149,6 +149,16 @@ export type TextFieldProps = TextFieldBaseProps &
 
 /**
  * The react component for `mezzanine` text field.
+ *
+ * `TextField` is a visual frame around a native control. It derives a fallback
+ * `role` for its wrapper (`button` when `onClick` is given, otherwise
+ * `textbox`), which is only appropriate when the wrapper itself is the control.
+ * Components that nest a real `<input>`/`<textarea>` inside it — and therefore
+ * forward naming props such as `aria-label` to that inner element — must pass
+ * `role="presentation"` so the ARIA semantics stay on the native control,
+ * which already has the correct role and naming behaviour. Otherwise the
+ * wrapper claims an ARIA input role it can never name (axe
+ * `aria-input-field-name`).
  */
 const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
   function TextField(props, ref) {
@@ -342,7 +352,11 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
           />
         )}
         {suffix && (
-          <div className={cx(classes.suffix, { [classes.suffixOverlay]: hideSuffixWhenClearable })}>
+          <div
+            className={cx(classes.suffix, {
+              [classes.suffixOverlay]: hideSuffixWhenClearable,
+            })}
+          >
             {hideSuffixWhenClearable ? (
               <>
                 <div className={classes.suffixContent}>{suffix}</div>
@@ -363,7 +377,9 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
                   />
                 )}
               </>
-            ) : suffix}
+            ) : (
+              suffix
+            )}
           </div>
         )}
       </div>
