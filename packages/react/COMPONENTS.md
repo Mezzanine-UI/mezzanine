@@ -241,6 +241,7 @@
 | `useDocumentEscapeKeyDown`     | 監聽全域 Escape 鍵事件                                |
 | `useDocumentEvents`            | 監聽全域 DOM 事件                                     |
 | `useDocumentTabKeyDown`        | 監聽全域 Tab 鍵事件                                   |
+| `useFocusTrap`                 | 將鍵盤焦點困在容器內（dialog 焦點模型）               |
 | `useIsomorphicLayoutEffect`    | SSR 安全的 `useLayoutEffect`                          |
 | `useLastCallback`              | 保持 callback 參照穩定，避免 stale closure            |
 | `useLastValue`                 | 取得最新的值參照                                      |
