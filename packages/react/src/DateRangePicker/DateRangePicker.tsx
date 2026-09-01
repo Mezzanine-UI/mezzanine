@@ -122,7 +122,7 @@ export interface DateRangePickerProps
  */
 const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
   function DateRangePicker(props, ref) {
-    const { addDay, getNow, isBefore, isBetween } = useCalendarContext();
+    const { getNow, isBetween } = useCalendarContext();
     const {
       actions: actionsProp,
       calendarProps,
@@ -175,74 +175,16 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
     const format = formatProp || getDefaultModeFormat(mode);
 
-    function isBetweenRange(
-      valueToCheck: DateType,
-      t1: DateType,
-      t2: DateType,
-      granularity: string,
-    ) {
-      return (
+    const isBetweenRange = useCallback(
+      (
+        valueToCheck: DateType,
+        t1: DateType,
+        t2: DateType,
+        granularity: string,
+      ) =>
         isBetween(valueToCheck, t1, t2, granularity) ||
-        isBetween(valueToCheck, t2, t1, granularity)
-      );
-    }
-
-    /** Check if there are disabled dates in the range */
-    const hasDisabledDateInRange = useCallback(
-      (start: DateType, end: DateType): boolean => {
-        const [rangeStart, rangeEnd] = isBefore(start, end)
-          ? [start, end]
-          : [end, start];
-
-        let current = rangeStart;
-        while (isBefore(current, rangeEnd) || current === rangeEnd) {
-          let isDisabled = false;
-
-          switch (mode) {
-            case 'day':
-              isDisabled = isDateDisabled?.(current) ?? false;
-              break;
-            case 'week':
-              isDisabled = isWeekDisabled?.(current) ?? false;
-              break;
-            case 'month':
-              isDisabled = isMonthDisabled?.(current) ?? false;
-              break;
-            case 'year':
-              isDisabled = isYearDisabled?.(current) ?? false;
-              break;
-            case 'quarter':
-              isDisabled = isQuarterDisabled?.(current) ?? false;
-              break;
-            case 'half-year':
-              isDisabled = isHalfYearDisabled?.(current) ?? false;
-              break;
-            default:
-              break;
-          }
-
-          if (isDisabled) {
-            return true;
-          }
-
-          current = addDay(current, 1);
-          if (isBefore(rangeEnd, current)) {
-            break;
-          }
-        }
-        return false;
-      },
-      [
-        addDay,
-        isBefore,
-        mode,
-        isDateDisabled,
-        isWeekDisabled,
-        isMonthDisabled,
-        isYearDisabled,
-        isQuarterDisabled,
-        isHalfYearDisabled,
-      ],
+        isBetween(valueToCheck, t2, t1, granularity),
+      [isBetween],
     );
 
     /** Using internal reference date */
@@ -273,7 +215,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
     const {
       calendarValue,
-      checkIsInRange,
       hoverFromValue,
       hoverToValue,
       inputFromValue,
@@ -292,7 +233,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       value: internalValue,
     } = useDateRangePickerValue({
       format,
-      hasDisabledDateInRange,
       inputFromRef,
       inputToRef,
       mode,
@@ -374,18 +314,26 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         return undefined;
       }, [actionsProp, confirmMode, internalValue, onConfirm, onCancel]);
 
-    /** Calendar cell in range checker */
-    const getIsInRangeHandler = (granularity: string) => {
-      const [anchor1, anchor2] = calendarValue || [];
+    /**
+     * Calendar cell in range checker.
+     *
+     * Pure geometry — whether the range covers a disabled unit is decided by
+     * `RangeCalendar`, which is the only place that knows which cells are
+     * actually on screen. Keeping that scan out of here is what makes this
+     * component's render cost independent of how wide the range is.
+     */
+    const [rangeAnchorStart, rangeAnchorEnd] = calendarValue || [];
+    const getIsInRangeHandler = useCallback(
+      (granularity: string) => {
+        if (!rangeAnchorStart || !rangeAnchorEnd) {
+          return undefined;
+        }
 
-      // If no range or disabled dates exist in range, return undefined
-      if (!anchor1 || !anchor2 || !checkIsInRange(anchor2)) {
-        return undefined;
-      }
-
-      return (date: DateType) =>
-        isBetweenRange(date, anchor1, anchor2, granularity);
-    };
+        return (date: DateType) =>
+          isBetweenRange(date, rangeAnchorStart, rangeAnchorEnd, granularity);
+      },
+      [isBetweenRange, rangeAnchorEnd, rangeAnchorStart],
+    );
 
     /** Popper settings */
     const anchorRef = useRef<HTMLDivElement>(null);

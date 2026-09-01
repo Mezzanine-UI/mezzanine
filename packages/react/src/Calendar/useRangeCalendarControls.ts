@@ -20,26 +20,31 @@ export function useRangeCalendarControls(
   const [firstReferenceDate, setFirstReferenceDate] =
     useState(referenceDateProp);
 
-  // Calculate the offset between two calendars based on mode
-  const getSecondCalendarDate = useCallback(
-    (firstDate: DateType): DateType => {
+  // Calculate how far apart two adjacent calendars sit, based on mode
+  const addCalendarPeriod = useCallback(
+    (date: DateType, diff: number): DateType => {
       const currentMode = mode || 'day';
       switch (currentMode) {
         case 'year':
-          return addYear(firstDate, calendarYearModuler);
+          return addYear(date, calendarYearModuler * diff);
         case 'month':
-          return addYear(firstDate, 1);
+          return addYear(date, diff);
         case 'quarter':
-          return addYear(firstDate, calendarQuarterYearsCount);
+          return addYear(date, calendarQuarterYearsCount * diff);
         case 'half-year':
-          return addYear(firstDate, calendarHalfYearYearsCount);
+          return addYear(date, calendarHalfYearYearsCount * diff);
         case 'week':
         case 'day':
         default:
-          return addMonth(firstDate, 1);
+          return addMonth(date, diff);
       }
     },
     [addMonth, addYear, mode],
+  );
+
+  const getSecondCalendarDate = useCallback(
+    (firstDate: DateType): DateType => addCalendarPeriod(firstDate, 1),
+    [addCalendarPeriod],
   );
 
   const [secondReferenceDate, setSecondReferenceDate] = useState(() =>
@@ -162,5 +167,18 @@ export function useRangeCalendarControls(
     ),
     updateFirstReferenceDate,
     updateSecondReferenceDate,
+    /**
+     * The span the two calendars can currently paint, padded by one period on
+     * each side so the leading/trailing overflow cells of each grid are
+     * covered. Work that only affects what is on screen can be clamped to it.
+     */
+    visibleRange: useMemo(
+      () =>
+        [
+          addCalendarPeriod(firstReferenceDate, -1),
+          addCalendarPeriod(secondReferenceDate, 1),
+        ] as [DateType, DateType],
+      [addCalendarPeriod, firstReferenceDate, secondReferenceDate],
+    ),
   };
 }

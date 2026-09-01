@@ -1,5 +1,6 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
+import { calendarClasses } from '@mezzanine-ui/core/calendar';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeHostElementClassNameAppendable,
@@ -232,5 +233,86 @@ describe('<RangeCalendar />', () => {
         expect(onChange).toHaveBeenCalledTimes(1);
       }
     });
+  });
+});
+
+/**
+ * Issue #460 — the "a range covering a disabled unit is not painted as a
+ * range" rule moved into this component, and is now answered against the two
+ * grids that are actually on screen rather than against the whole range.
+ */
+describe('<RangeCalendar /> range highlight suppression', () => {
+  afterEach(cleanup);
+
+  const inRangeSelector = `.${calendarClasses.buttonInRange}`;
+
+  const renderRangeCalendar = ({
+    disabledDay,
+    value,
+  }: {
+    disabledDay?: string;
+    value: string[];
+  }) =>
+    render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <RangeCalendar
+          isDateDisabled={
+            disabledDay
+              ? (target) => moment(target).format('YYYY-MM-DD') === disabledDay
+              : undefined
+          }
+          isDateInRange={(target) =>
+            moment(target).isBetween(value[0], value[1], 'day', '[]')
+          }
+          mode="day"
+          referenceDate="2026-08-01"
+          value={value}
+        />
+      </CalendarConfigProvider>,
+    );
+
+  it('should paint the range when no date is disabled', () => {
+    const { getHostHTMLElement } = renderRangeCalendar({
+      value: ['2026-08-05', '2026-09-25'],
+    });
+
+    expect(
+      getHostHTMLElement().querySelectorAll(inRangeSelector).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('should suppress the range when a disabled date sits inside the visible window', () => {
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2026-08-20',
+      value: ['2026-08-05', '2026-09-25'],
+    });
+
+    expect(getHostHTMLElement().querySelectorAll(inRangeSelector).length).toBe(
+      0,
+    );
+  });
+
+  it('should keep painting the range when the disabled date is outside the visible window', () => {
+    // The calendars show Aug/Sep 2026, so 2027-03-15 is never rendered and
+    // cannot change how any visible cell looks.
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2027-03-15',
+      value: ['2026-08-05', '2027-06-30'],
+    });
+
+    expect(
+      getHostHTMLElement().querySelectorAll(inRangeSelector).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('should leave the range alone when only one end is selected', () => {
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2026-08-20',
+      value: ['2026-08-05'],
+    });
+
+    expect(
+      getHostHTMLElement().querySelectorAll(inRangeSelector).length,
+    ).toBeGreaterThan(0);
   });
 });
