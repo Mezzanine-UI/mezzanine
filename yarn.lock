@@ -5883,6 +5883,8 @@ __metadata:
     "@mezzanine-ui/icons": "npm:1.0.2"
     "@mezzanine-ui/system": "npm:1.0.2"
     clsx: "npm:^2.1.1"
+    overlayscrollbars: "npm:^2.13.0"
+    overlayscrollbars-vue: "npm:^0.5.10"
     tslib: "npm:^2.8.1"
   peerDependencies:
     vue: ">=3.5"
@@ -21065,6 +21067,16 @@ __metadata:
     overlayscrollbars: ^2.0.0
     react: ">=16.8.0"
   checksum: 10c0/59a2aad3664d81dc4dee5e747b72bb2645047e0e6d300d9583244167d1e4b19c4cc263932e4b112d5c24358430f78d15d34ea389beb8845e3b5319ccc57db8d8
+  languageName: node
+  linkType: hard
+
+"overlayscrollbars-vue@npm:^0.5.10":
+  version: 0.5.10
+  resolution: "overlayscrollbars-vue@npm:0.5.10"
+  peerDependencies:
+    overlayscrollbars: ^2.0.0
+    vue: ^3.2.25
+  checksum: 10c0/fbf049ee942eb24c4f73a8ab406ef878865015ae2a042e08ffece5c2fff028e7122e1d170f24da6cc9d92dc6023c69fc06e0d18fc81012c2d0c4880dceb00dd8
   languageName: node
   linkType: hard
 
