@@ -949,3 +949,78 @@ export const DisabledInRangeBehavior: Story = {
     );
   },
 };
+
+function HoverRangeExample({
+  description,
+  disabledDay,
+  title,
+}: {
+  description: string;
+  disabledDay?: string;
+  title: string;
+}) {
+  const [resetKey, setResetKey] = useState(0);
+  const [value, setValue] = useState<RangePickerValue>();
+
+  return (
+    <section style={containerStyle}>
+      <Typography style={typoStyle} variant="h3">
+        {title}
+      </Typography>
+      <Typography style={typoStyle} variant="body">
+        {description}
+      </Typography>
+      <button
+        onClick={() => {
+          setValue(undefined);
+          setResetKey((current) => current + 1);
+        }}
+        type="button"
+      >
+        Reset example
+      </button>
+      <Typography style={typoStyle} variant="body">
+        Submitted:{' '}
+        {value
+          ? value.map((date) => moment(date).format('YYYY-MM-DD')).join(' / ')
+          : 'none'}
+      </Typography>
+      <DateRangePicker
+        key={resetKey}
+        inputFromPlaceholder="Start Date"
+        inputToPlaceholder="End Date"
+        isDateDisabled={
+          disabledDay
+            ? (date) => moment(date).format('YYYY-MM-DD') === disabledDay
+            : undefined
+        }
+        onChange={setValue}
+        referenceDate="2026-09-01"
+        value={value}
+      />
+    </section>
+  );
+}
+
+export const HoverRangeSelection: Story = {
+  render: function HoverRangeSelection() {
+    return (
+      <CalendarConfigProviderLuxon locale="en-US">
+        <HoverRangeExample
+          description="Click September 1, move over September 11, then click it. Repeat after navigating next and back. The submitted range must remain September 1–11."
+          title="Normal hover selection"
+        />
+        <HoverRangeExample
+          description="September 5 is disabled. Click September 1 and hover September 11: no range highlight. Clicking September 11 restarts selection without submitting. September 12 then completes a valid short range."
+          disabledDay="2026-09-05"
+          title="Disabled date inside the range"
+        />
+        <HoverRangeExample
+          description="Click September 1, navigate forward twice, and hover November 18. October 5 is disabled and off-screen. The preview must remain unhighlighted and clicking must not submit the range."
+          disabledDay="2026-10-05"
+          title="Disabled date outside the visible months"
+        />
+      </CalendarConfigProviderLuxon>
+    );
+  },
+};

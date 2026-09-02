@@ -992,4 +992,68 @@ describe('<DateRangePicker /> range selection with hover preview', () => {
     expect(moment(start).format('YYYY-MM-DD')).toBe('2026-09-01');
     expect(moment(end).format('YYYY-MM-DD')).toBe('2026-09-11');
   });
+
+  it.each([
+    { disabledDay: '2026-09-05', monthSwitches: 0, targetDay: '2026-09-11' },
+    { disabledDay: '2026-10-05', monthSwitches: 2, targetDay: '2026-11-18' },
+  ])(
+    'should suppress and reject a preview crossing $disabledDay',
+    async ({ disabledDay, monthSwitches, targetDay }) => {
+      const onChange = jest.fn();
+      const { getByRole, getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            isDateDisabled={(date) =>
+              moment(date).format('YYYY-MM-DD') === disabledDay
+            }
+            onChange={onChange}
+            referenceDate="2026-09-01"
+          />
+        </CalendarConfigProvider>,
+      );
+      await openCalendar(getHostHTMLElement());
+      await act(async () => {
+        fireEvent.click(
+          getByRole('button', { name: 'Tuesday, September 1, 2026' }),
+        );
+      });
+      for (let index = 0; index < monthSwitches; index += 1) {
+        await act(async () => {
+          fireEvent.click(getByRole('button', { name: 'Go to next month' }));
+        });
+      }
+      const targetLabel = moment(targetDay)
+        .locale('en')
+        .format('dddd, MMMM D, YYYY');
+      await act(async () => {
+        fireEvent.mouseOver(getByRole('button', { name: targetLabel }));
+      });
+      expect(
+        document.querySelectorAll('.mzn-calendar-button--inRange'),
+      ).toHaveLength(0);
+      await act(async () => {
+        fireEvent.click(getByRole('button', { name: targetLabel }));
+      });
+      expect(onChange).not.toHaveBeenCalled();
+      const [startInput, endInput] =
+        getHostHTMLElement().getElementsByTagName('input');
+      expect(startInput.value).toBe(targetDay);
+      expect(endInput.value).toBe('');
+
+      const nextDay = moment(targetDay).add(1, 'day');
+      const nextLabel = nextDay.locale('en').format('dddd, MMMM D, YYYY');
+      await act(async () =>
+        fireEvent.mouseOver(getByRole('button', { name: nextLabel })),
+      );
+      await act(async () =>
+        fireEvent.click(getByRole('button', { name: nextLabel })),
+      );
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(
+        onChange.mock.calls[0][0].map((date: DateType) =>
+          moment(date).format('YYYY-MM-DD'),
+        ),
+      ).toEqual([targetDay, nextDay.format('YYYY-MM-DD')]);
+    },
+  );
 });
