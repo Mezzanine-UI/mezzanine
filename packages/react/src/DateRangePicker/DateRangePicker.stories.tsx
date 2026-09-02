@@ -4,15 +4,7 @@ import {
   DateType,
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
-import {
-  CSSProperties,
-  Profiler,
-  ProfilerOnRenderCallback,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { CSSProperties, useState } from 'react';
 import moment from 'moment';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import DateRangePicker from '.';
@@ -902,443 +894,41 @@ export const ConfirmMode: Story = {
   },
 };
 
-/* -------------------------------------------------------------------------- *
- * Issue #460 — https://github.com/Mezzanine-UI/mezzanine/issues/460
- *
- * `DateRangePicker` used to walk the selected range one day at a time, six
- * times per render (once per granularity), even with no disabled-date
- * predicate supplied. The two stories below make both sides of the fix
- * observable: `RangeScanPerformance` measures the cost, and
- * `DisabledInRangeBehavior` shows the one semantic change the fix introduces.
- * -------------------------------------------------------------------------- */
-
-const issue460BaselineKey = 'mzn-issue-460-baseline';
-
-/** Flipped to false once localStorage proves unavailable, so we stop retrying. */
-let issue460StorageAvailable = true;
-
-interface Issue460Measurement {
-  predicateCalls: number;
-  renders: number;
-  worstCommit: number;
-}
-
-type Issue460Baseline = Record<string, Issue460Measurement>;
-
-const issue460EmptyMeasurement: Issue460Measurement = {
-  predicateCalls: 0,
-  renders: 0,
-  worstCommit: 0,
-};
-
-function readIssue460Baseline(): Issue460Baseline {
-  if (!issue460StorageAvailable) return {};
-
-  try {
-    const raw = window.localStorage.getItem(issue460BaselineKey);
-
-    return raw ? (JSON.parse(raw) as Issue460Baseline) : {};
-  } catch {
-    issue460StorageAvailable = false;
-
-    return {};
-  }
-}
-
-function writeIssue460Baseline(next: Issue460Baseline) {
-  if (!issue460StorageAvailable) return;
-
-  try {
-    window.localStorage.setItem(issue460BaselineKey, JSON.stringify(next));
-  } catch {
-    issue460StorageAvailable = false;
-  }
-}
-
-const issue460RangeEnd = '2026-08-31';
-
-const issue460Ranges = [
-  { days: 30, from: '2026-08-01', label: '1 month', to: issue460RangeEnd },
-  { days: 364, from: '2025-09-01', label: '1 year', to: issue460RangeEnd },
-  { days: 1825, from: '2021-09-01', label: '5 years', to: issue460RangeEnd },
-  { days: 7304, from: '2006-09-01', label: '20 years', to: issue460RangeEnd },
+const disabledRangeCases = [
   {
-    days: 730455,
-    from: '2026-08-31',
-    label: 'mistyped 4026',
-    to: '4026-08-01',
-  },
-] as const;
-
-const issue460Modes: CalendarMode[] = ['day', 'week', 'month', 'year'];
-
-const issue460PanelStyle: CSSProperties = {
-  border: '1px solid #e0e0e0',
-  borderRadius: '8px',
-  margin: '0 0 24px 0',
-  padding: '16px',
-};
-
-const issue460CellStyle: CSSProperties = {
-  borderBottom: '1px solid #eee',
-  padding: '4px 12px 4px 0',
-  textAlign: 'right',
-};
-
-const issue460LabelCellStyle: CSSProperties = {
-  ...issue460CellStyle,
-  textAlign: 'left',
-};
-
-function formatIssue460Delta(current: number, baseline?: number) {
-  if (baseline === undefined) return '—';
-  if (baseline === 0) return current === 0 ? '±0' : `+${current}`;
-
-  const ratio = ((current - baseline) / baseline) * 100;
-
-  return `${ratio > 0 ? '+' : ''}${ratio.toFixed(1)}%`;
-}
-
-export const RangeScanPerformance: Story = {
-  render: function RangeScanPerformance() {
-    const [baseline, setBaseline] = useState<Issue460Baseline>(() =>
-      readIssue460Baseline(),
-    );
-    const [mode, setMode] = useState<CalendarMode>('day');
-    const [rangeLabel, setRangeLabel] = useState<string>(
-      issue460Ranges[0].label,
-    );
-    const [snapshot, setSnapshot] = useState<Issue460Measurement>(
-      issue460EmptyMeasurement,
-    );
-    const [withPredicate, setWithPredicate] = useState(false);
-
-    const predicateCallsRef = useRef(0);
-    const rendersRef = useRef(0);
-    const worstCommitRef = useRef(0);
-
-    const range =
-      issue460Ranges.find((item) => item.label === rangeLabel) ??
-      issue460Ranges[0];
-    const scenarioKey = `${rangeLabel}|${mode}|${withPredicate ? 'with' : 'without'}`;
-    const recordedBaseline = baseline[scenarioKey];
-
-    const resetMeters = useCallback(() => {
-      predicateCallsRef.current = 0;
-      rendersRef.current = 0;
-      worstCommitRef.current = 0;
-      setSnapshot(issue460EmptyMeasurement);
-    }, []);
-
-    const onProfilerRender = useCallback<ProfilerOnRenderCallback>(
-      (_id, _phase, actualDuration) => {
-        rendersRef.current += 1;
-
-        if (actualDuration > worstCommitRef.current) {
-          worstCommitRef.current = actualDuration;
-        }
-      },
-      [],
-    );
-
-    /**
-     * Poll the meters instead of pushing them from the Profiler callback,
-     * which would feed straight back into the render loop. Returning the
-     * previous object unchanged lets React bail out, so this settles as soon
-     * as the numbers stop moving — and it keeps picking up work driven from
-     * inside the calendar, not just from the controls above.
-     */
-    useEffect(() => {
-      const timer = window.setInterval(() => {
-        setSnapshot((previous) =>
-          previous.predicateCalls === predicateCallsRef.current &&
-          previous.renders === rendersRef.current &&
-          previous.worstCommit === worstCommitRef.current
-            ? previous
-            : {
-                predicateCalls: predicateCallsRef.current,
-                renders: rendersRef.current,
-                worstCommit: worstCommitRef.current,
-              },
-        );
-      }, 500);
-
-      return () => window.clearInterval(timer);
-    }, []);
-
-    /** Always returns false, so the scan runs to completion — the worst case. */
-    const countingPredicate = useCallback((_target: DateType) => {
-      predicateCallsRef.current += 1;
-
-      return false;
-    }, []);
-
-    const predicateProps = withPredicate
-      ? {
-          isDateDisabled: countingPredicate,
-          isHalfYearDisabled: countingPredicate,
-          isMonthDisabled: countingPredicate,
-          isQuarterDisabled: countingPredicate,
-          isWeekDisabled: countingPredicate,
-          isYearDisabled: countingPredicate,
-        }
-      : {};
-
-    const onRecordBaseline = () => {
-      const next = { ...baseline, [scenarioKey]: snapshot };
-
-      setBaseline(next);
-      writeIssue460Baseline(next);
-    };
-
-    const onClearBaseline = () => {
-      setBaseline({});
-      writeIssue460Baseline({});
-    };
-
-    const rows = [
-      {
-        baselineValue: recordedBaseline?.worstCommit,
-        currentValue: snapshot.worstCommit,
-        format: (value: number) => `${value.toFixed(1)} ms`,
-        label: '最差 commit',
-      },
-      {
-        baselineValue: recordedBaseline?.renders,
-        currentValue: snapshot.renders,
-        format: (value: number) => `${value}`,
-        label: 'render 次數',
-      },
-      {
-        baselineValue: recordedBaseline?.predicateCalls,
-        currentValue: snapshot.predicateCalls,
-        format: (value: number) => value.toLocaleString(),
-        label: 'predicate 呼叫次數',
-      },
-    ];
-
-    return (
-      <CalendarConfigProviderLuxon locale="zh-TW">
-        <Typography style={typoStyle} variant="h3">
-          Issue #460 — range scan performance
-        </Typography>
-        <Typography style={typoStyle} variant="body">
-          選一個區間 → 量測會在 0.5 秒後定格 → 按「📌 記錄為 baseline」。 在
-          <b>修正前</b>的程式碼上把每個情境都記錄一次，套用修正後 HMR 重載，
-          baseline 欄會保留舊數字，current 欄變成修正後，Δ 直接可讀。
-        </Typography>
-
-        <div style={issue460PanelStyle}>
-          <Typography style={typoStyle} variant="body-highlight">
-            1. 區間
-          </Typography>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {issue460Ranges.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => {
-                  setRangeLabel(item.label);
-                  resetMeters();
-                }}
-                style={{
-                  background:
-                    item.label === rangeLabel ? '#1976d2' : 'transparent',
-                  border: '1px solid #1976d2',
-                  borderRadius: '4px',
-                  color: item.label === rangeLabel ? '#fff' : '#1976d2',
-                  cursor: 'pointer',
-                  padding: '6px 12px',
-                }}
-                type="button"
-              >
-                {item.label} ({item.days.toLocaleString()} 天)
-              </button>
-            ))}
-          </div>
-          <Typography style={{ margin: '8px 0 0 0' }} variant="caption">
-            ⚠️ 「mistyped 4026」在<b>修正前</b>會讓分頁凍結數十秒（730,455 天 ×
-            6 次掃描）。這正是 issue 描述的鍵盤誤植情境。
-          </Typography>
-        </div>
-
-        <div style={issue460PanelStyle}>
-          <Typography style={typoStyle} variant="body-highlight">
-            2. mode 與 predicate
-          </Typography>
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '16px',
-            }}
-          >
-            <label htmlFor="issue460-mode">
-              mode:{' '}
-              <select
-                id="issue460-mode"
-                onChange={(event) => {
-                  setMode(event.target.value as CalendarMode);
-                  resetMeters();
-                }}
-                value={mode}
-              >
-                {issue460Modes.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label htmlFor="issue460-predicate">
-              <input
-                checked={withPredicate}
-                id="issue460-predicate"
-                onChange={(event) => {
-                  setWithPredicate(event.target.checked);
-                  resetMeters();
-                }}
-                type="checkbox"
-              />{' '}
-              傳入 disabled predicate（永遠回傳 false，讓掃描跑滿）
-            </label>
-            <button onClick={resetMeters} type="button">
-              重設量測
-            </button>
-          </div>
-          <Typography style={{ margin: '8px 0 0 0' }} variant="caption">
-            不勾 predicate = 大多數消費端的情況；修正後這條路徑應完全不掃描。
-            勾起來則展示逐單位步進 + 掃描上限的效果（例如 20 years 在 year mode
-            下，呼叫次數應從 7,304 掉到數十次）。
-          </Typography>
-        </div>
-
-        <div style={issue460PanelStyle}>
-          <Typography style={typoStyle} variant="body-highlight">
-            3. 量測：{scenarioKey}
-          </Typography>
-          <table style={{ borderCollapse: 'collapse', minWidth: '420px' }}>
-            <thead>
-              <tr>
-                <th style={issue460LabelCellStyle}>指標</th>
-                <th style={issue460CellStyle}>baseline</th>
-                <th style={issue460CellStyle}>current</th>
-                <th style={issue460CellStyle}>Δ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.label}>
-                  <td style={issue460LabelCellStyle}>{row.label}</td>
-                  <td style={issue460CellStyle}>
-                    {row.baselineValue === undefined
-                      ? '—'
-                      : row.format(row.baselineValue)}
-                  </td>
-                  <td style={{ ...issue460CellStyle, fontWeight: 600 }}>
-                    {row.format(row.currentValue)}
-                  </td>
-                  <td style={issue460CellStyle}>
-                    {formatIssue460Delta(row.currentValue, row.baselineValue)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-            <button onClick={onRecordBaseline} type="button">
-              📌 記錄為 baseline
-            </button>
-            <button onClick={onClearBaseline} type="button">
-              清除所有 baseline
-            </button>
-          </div>
-        </div>
-
-        <Profiler id="issue-460-picker" onRender={onProfilerRender}>
-          <DateRangePicker
-            {...predicateProps}
-            format={getDefaultModeFormat(mode)}
-            inputFromPlaceholder="Start Date"
-            inputToPlaceholder="End Date"
-            mode={mode}
-            value={[range.from, range.to] as RangePickerValue}
-          />
-        </Profiler>
-      </CalendarConfigProviderLuxon>
-    );
-  },
-};
-
-const isSameIssue460Day = (target: DateType, isoDay: string) =>
-  String(target).slice(0, 10) === isoDay;
-
-const issue460BehaviorCases = [
-  {
-    after: '相同——完全不反白（不變）',
-    before: '完全不反白',
+    description:
+      'A disabled date inside a short range suppresses its highlight.',
     disabledDay: '2026-08-20',
-    hint: '一般長度的區間，掃描走得完，判斷與修正前完全一致。',
-    id: 'A',
-    title: 'A. disabled 在區間內，區間長度在掃描上限內',
+    title: 'Disabled date inside the range',
     value: ['2026-08-01', '2026-09-30'] as RangePickerValue,
   },
   {
-    after: '正常反白，且瞬間完成 ← 唯一的語意變更',
-    before: '完全不反白，但要先凍結分頁約 50 秒才畫得出來',
+    description:
+      'Before review fixes: highlighted. After: no highlight, because the restricted range cannot be fully checked.',
     disabledDay: '2040-01-01',
-    hint: '這格是要謹慎評估的重點：區間超過掃描上限後，掃描會放棄並回報「找不到 disabled」，讓區間維持可用而不是被靜默封鎖。',
-    id: 'B',
-    title: 'B. 區間超過掃描上限（誤植成 4026）',
+    title: 'Restricted range beyond the scan limit',
     value: ['2026-08-01', '4026-08-01'] as RangePickerValue,
   },
   {
-    after: '相同——正常反白（不變）',
-    before: '正常反白',
+    description:
+      'With no disabled predicate, even a very long range remains highlighted and opens without scanning.',
     disabledDay: undefined,
-    hint: '沒有任何 predicate，就是絕大多數消費端的情況。',
-    id: 'C',
-    title: 'C. 完全沒有 disabled predicate',
-    value: ['2026-08-01', '2027-06-30'] as RangePickerValue,
+    title: 'Unrestricted long range',
+    value: ['2026-08-01', '4026-08-01'] as RangePickerValue,
   },
-] as const;
+];
 
 export const DisabledInRangeBehavior: Story = {
   render: function DisabledInRangeBehavior() {
     return (
-      <CalendarConfigProviderLuxon locale="zh-TW">
-        <Typography style={typoStyle} variant="h3">
-          Issue #460 — 修正前後的行為差異
-        </Typography>
-        <Typography style={typoStyle} variant="body">
-          點每一格的輸入框把月曆打開，對照下方標註的「修正前 / 修正後」預期。
-          「區間跨越 disabled 日期就整段不反白」這條規則<b>仍然是全域判斷</b>，
-          與點選時的守門一致，所以預覽不會亮著卻點不成。唯一的變化是加了
-          <b>掃描步數上限</b>，情境 B 就是唯一會改變的地方。
-        </Typography>
-
-        {issue460BehaviorCases.map((item) => (
-          <div key={item.id} style={issue460PanelStyle}>
-            <Typography style={typoStyle} variant="body-highlight">
+      <CalendarConfigProviderLuxon locale="en-US">
+        {disabledRangeCases.map((item) => (
+          <section key={item.title} style={containerStyle}>
+            <Typography style={typoStyle} variant="h3">
               {item.title}
             </Typography>
             <Typography style={typoStyle} variant="body">
-              區間 <code>{item.value[0]}</code> → <code>{item.value[1]}</code>
-              {item.disabledDay ? (
-                <>
-                  ，disabled <code>{item.disabledDay}</code>
-                </>
-              ) : (
-                '，不傳任何 predicate'
-              )}
-            </Typography>
-            <Typography style={typoStyle} variant="body">
-              修正前：{item.before}
-              <br />
-              修正後：{item.after}
-            </Typography>
-            <Typography style={typoStyle} variant="caption">
-              {item.hint}
+              {item.description}
             </Typography>
             <DateRangePicker
               format="YYYY-MM-DD"
@@ -1347,13 +937,13 @@ export const DisabledInRangeBehavior: Story = {
               isDateDisabled={
                 item.disabledDay
                   ? (target: DateType) =>
-                      isSameIssue460Day(target, item.disabledDay)
+                      moment(target).format('YYYY-MM-DD') === item.disabledDay
                   : undefined
               }
-              mode="day"
+              referenceDate="2026-08-01"
               value={item.value}
             />
-          </div>
+          </section>
         ))}
       </CalendarConfigProviderLuxon>
     );

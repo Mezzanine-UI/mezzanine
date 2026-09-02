@@ -11,7 +11,7 @@ import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useMemo, useState } from 'react';
 import CalendarConfigProvider from './CalendarContext';
 import Calendar from './Calendar';
-import RangeCalendar from './RangeCalendar';
+import RangeCalendar, { RangeCalendarProps } from './RangeCalendar';
 import Typography from '../Typography/Typography';
 import { useCalendarControls } from './useCalendarControls';
 import Toggle from '../Toggle';
@@ -461,64 +461,106 @@ export const RangeCalendarPlayground: StoryObj<typeof RangeCalendar> = {
   },
 };
 
-/* -------------------------------------------------------------------------- *
- * Issue #460 — https://github.com/Mezzanine-UI/mezzanine/issues/460
- *
- * The fix moves the "suppress the range highlight when the range crosses a
- * disabled date" rule down into `RangeCalendar`, next to the selection guard
- * that already rejects such a range on click. That makes this a behavior
- * change for anyone using `RangeCalendar` directly with their own
- * `isDateInRange`: it now gets wrapped by the suppression rule.
- * -------------------------------------------------------------------------- */
-
-const issue460RangeCalendarPanelStyle = {
-  border: '1px solid #e0e0e0',
-  borderRadius: '8px',
-  margin: '0 0 24px 0',
-  padding: '16px',
-};
-
-const isSameIssue460CalendarDay = (target: DateType, isoDay: string) =>
-  moment(target).format('YYYY-MM-DD') === isoDay;
-
 export const RangeCalendarDisabledInRange: StoryObj<typeof RangeCalendar> = {
   render: function RangeCalendarDisabledInRange() {
-    const value: DateType[] = ['2026-08-05', '2026-09-25'];
-
-    /** A caller-supplied highlight that the component used to pass straight through. */
-    const isDateInRange = (target: DateType) =>
-      moment(target).isBetween(value[0], value[1], 'day', '[]');
+    const value = ['2026-08-05', '2026-09-25'];
 
     return (
-      <CalendarConfigProvider
-        methods={CalendarMethodsMoment}
-        locale={CalendarLocale.EN_US}
-      >
-        <Typography variant="h3" style={{ margin: '0 0 12px 0' }}>
-          Issue #460 — RangeCalendar 直接使用者的行為變更
+      <CalendarConfigProvider locale="en-US" methods={CalendarMethodsLuxon}>
+        <Typography variant="h3">
+          Disabled date inside a custom range
         </Typography>
-        <Typography variant="body" style={{ margin: '0 0 12px 0' }}>
-          這裡直接使用 <code>RangeCalendar</code> 並自帶{' '}
-          <code>isDateInRange</code>，同時傳入會讓 <code>2026-08-20</code>{' '}
-          失效的 <code>isDateDisabled</code>。
+        <Typography variant="body">
+          August 20 is disabled. The caller supplies a custom highlight, but the
+          range must remain unhighlighted.
         </Typography>
-        <Typography variant="body" style={{ margin: '0 0 12px 0' }}>
-          修正前：自訂的反白照常整段顯示，<code>RangeCalendar</code>{' '}
-          完全不干涉。
-          <br />
-          修正後：區間跨越了 disabled 日期，反白被抑制。
+        <RangeCalendar
+          isDateDisabled={(target) =>
+            moment(target).format('YYYY-MM-DD') === '2026-08-20'
+          }
+          isDateInRange={(target) =>
+            moment(target).isBetween(value[0], value[1], 'day', '[]')
+          }
+          referenceDate="2026-08-01"
+          value={value}
+        />
+      </CalendarConfigProvider>
+    );
+  },
+};
+
+function RangeCalendarValidationExample({
+  initialValue,
+  ...props
+}: Omit<RangeCalendarProps, 'onChange' | 'value'> & {
+  initialValue: DateType[];
+}) {
+  const [value, setValue] = useState(initialValue);
+
+  return (
+    <>
+      <button onClick={() => setValue(initialValue)} type="button">
+        Reset selection
+      </button>
+      <Typography variant="body">
+        Selected:{' '}
+        {value.map((date) => moment(date).format('YYYY-MM-DD')).join(' / ')}
+        {value.length === 1 ? ' / awaiting end' : ''}
+      </Typography>
+      <RangeCalendar
+        {...props}
+        onChange={([start, end]) => setValue(end ? [start, end] : [start])}
+        value={value}
+      />
+    </>
+  );
+}
+
+export const RangeCalendarWeekLocale: StoryObj<typeof RangeCalendar> = {
+  render: function RangeCalendarWeekLocale() {
+    return (
+      <CalendarConfigProvider locale="en-US" methods={CalendarMethodsLuxon}>
+        <Typography variant="h3">
+          Monday-first calendar with a Sunday-first provider
         </Typography>
-        <div style={issue460RangeCalendarPanelStyle}>
-          <RangeCalendar
-            isDateDisabled={(target: DateType) =>
-              isSameIssue460CalendarDay(target, '2026-08-20')
-            }
-            isDateInRange={isDateInRange}
-            mode="day"
-            referenceDate="2026-08-01"
-            value={value}
-          />
-        </div>
+        <Typography variant="body">
+          September 7 is selected; the week starting September 14 is disabled.
+          Click September 21. Before review fixes: September 7–27 is submitted.
+          After: selection restarts at September 21, awaiting an end.
+        </Typography>
+        <RangeCalendarValidationExample
+          displayWeekDayLocale="en-GB"
+          initialValue={['2026-09-07']}
+          isWeekDisabled={(date) =>
+            moment(date).format('YYYY-MM-DD') === '2026-09-14'
+          }
+          mode="week"
+          referenceDate="2026-09-01"
+        />
+      </CalendarConfigProvider>
+    );
+  },
+};
+
+export const RangeCalendarScanLimit: StoryObj<typeof RangeCalendar> = {
+  render: function RangeCalendarScanLimit() {
+    return (
+      <CalendarConfigProvider locale="en-US" methods={CalendarMethodsLuxon}>
+        <Typography variant="h3">Restricted long-range selection</Typography>
+        <Typography variant="body">
+          January 1, 2000 is selected; January 1, 2015 is disabled. Click
+          September 11, 2020. Before review fixes: the entire range is
+          submitted. After: selection restarts at September 11 because the long
+          range could not be fully checked. Then click September 12 to complete
+          a shorter range.
+        </Typography>
+        <RangeCalendarValidationExample
+          initialValue={['2000-01-01']}
+          isDateDisabled={(date) =>
+            moment(date).format('YYYY-MM-DD') === '2015-01-01'
+          }
+          referenceDate="2020-09-01"
+        />
       </CalendarConfigProvider>
     );
   },
