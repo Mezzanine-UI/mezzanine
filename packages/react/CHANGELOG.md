@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.4...@mezzanine-ui/react@1.5.0) (2026-09-02)
+
+### Bug Fixes
+
+- **react/button:** compose caller ref with tooltip ref in icon-only mode ([1d7a452](https://github.com/Mezzanine-UI/mezzanine/commit/1d7a4525f93a6ec0467ebd39ed70635a8dc95385))
+- **react/calendar:** align week scans and reject incomplete validation ([e96d24d](https://github.com/Mezzanine-UI/mezzanine/commit/e96d24d115bd571b20584b8c91136e82b9b5119a))
+- **react/content-header:** make the back button label translatable ([f19d170](https://github.com/Mezzanine-UI/mezzanine/commit/f19d17080ab5df3871920077be115689540ea743))
+- **react/date-range-picker:** bound the disabled-date scan with a step cap ([74e7e8c](https://github.com/Mezzanine-UI/mezzanine/commit/74e7e8caac3b4def599d205271cd2fc597ff1ab2))
+- **react/date-range-picker:** stop rescanning the whole range on every render ([173988a](https://github.com/Mezzanine-UI/mezzanine/commit/173988a7824d152f172f2d77460dc94edcd19b57)), closes [#460](https://github.com/Mezzanine-UI/mezzanine/issues/460)
+- **react/date-range-picker:** stop the hover preview from resetting the range ([a881a54](https://github.com/Mezzanine-UI/mezzanine/commit/a881a54c94d9b8d3d3cfdd0ac79b10e4f6e1e1e0))
+- **react/date-range-picker:** validate hover display anchors before highlighting ([4ece51e](https://github.com/Mezzanine-UI/mezzanine/commit/4ece51e5c600cad8e1c47b7306db4ab50f22b0c9))
+- **react/dropdown:** let the menu be pulled back inside the viewport ([5292c5a](https://github.com/Mezzanine-UI/mezzanine/commit/5292c5ad7cfa0155f3c097472c0b0bee8d68fcf5))
+- **react/inline-message:** spread caller DOM props onto the root element ([63670c0](https://github.com/Mezzanine-UI/mezzanine/commit/63670c065c5e45965b95559a5d24c79e5ffc0261))
+- **react/modal:** announce the dialog as modal ([f0c5d54](https://github.com/Mezzanine-UI/mezzanine/commit/f0c5d548802e514e9cffea7ce218d89e9147fa0f))
+- **react/navigation:** drop the invalid menuitem role from navigation options ([eeb1697](https://github.com/Mezzanine-UI/mezzanine/commit/eeb1697ea448ff3c74d49e26877d5519d27a28fd))
+- **react/navigation:** drop the invalid menuitem role from the option category ([5616202](https://github.com/Mezzanine-UI/mezzanine/commit/5616202604132a260854fc1a1f56d34950eae0eb))
+- **react/navigation:** make every navigation control announce itself ([8c47b33](https://github.com/Mezzanine-UI/mezzanine/commit/8c47b331feb0710951098af49b90b01b4cec2577))
+- **react/page-footer:** stop rendering unnamed empty buttons ([e054ef1](https://github.com/Mezzanine-UI/mezzanine/commit/e054ef15e73f4ac845598dd715db7d5c4e9392a8))
+- **react/table:** give an icon-only button row action an accessible name ([acc7c4d](https://github.com/Mezzanine-UI/mezzanine/commit/acc7c4daa7f20ce74a281ca80ef0a8c79a5e53ad))
+- **react/table:** give the dropdown row action an accessible name ([1eb6bc1](https://github.com/Mezzanine-UI/mezzanine/commit/1eb6bc10137bdae2f183758e66b8edd6b220ff36))
+- **react/table:** keep the row action menu inside the viewport ([b58fe81](https://github.com/Mezzanine-UI/mezzanine/commit/b58fe815be32a175d1401fbefa557f18799d744f))
+- **react/text-field:** keep ARIA input semantics on the native control ([e12c7ff](https://github.com/Mezzanine-UI/mezzanine/commit/e12c7fff8f7cb9d661e61727e61459da6390c6eb))
+- **react/tooltip:** only open on focus when the focus is keyboard-driven ([1c2f8e9](https://github.com/Mezzanine-UI/mezzanine/commit/1c2f8e9aa0e54b877e99ce6d9bef1ac7250bff61))
+
+### Features
+
+- **react/modal:** implement the dialog focus model ([44615f3](https://github.com/Mezzanine-UI/mezzanine/commit/44615f35fbeb3130bc6c5a027a88f0f0793b23f7))
+- **react/tooltip:** reach tooltip content by keyboard and assistive tech ([535ce41](https://github.com/Mezzanine-UI/mezzanine/commit/535ce41b6cf8e771ffc029e8479a5ce4283494a4))
+
 ## [1.4.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.3...@mezzanine-ui/react@1.4.4) (2026-08-26)
 
 ### Bug Fixes

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.13](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.12...@mezzanine-ui/ng@1.0.0-rc.13) (2026-09-02)
+
+### Bug Fixes
+
+- **ng/backdrop:** unmount the overlay once closed, matching React ([68ad595](https://github.com/Mezzanine-UI/mezzanine/commit/68ad595e751863b49fb71a3ebc43153da113065d))
+- **ng/content-header:** make the back button label translatable ([c3f6699](https://github.com/Mezzanine-UI/mezzanine/commit/c3f6699f6256398e61900b447992d59efd615865))
+- **ng/dropdown:** let the menu be pushed back inside the viewport ([f59dea5](https://github.com/Mezzanine-UI/mezzanine/commit/f59dea5409f277aacea9709bdeb8be42cc24b2c2))
+- **ng/modal:** announce the dialog as modal ([d62c13e](https://github.com/Mezzanine-UI/mezzanine/commit/d62c13e94ccd9f686bb851ce727610504351daae))
+- **ng/navigation:** drop the invalid menuitem role, matching React ([b878aca](https://github.com/Mezzanine-UI/mezzanine/commit/b878aca958abca9f6ed7805e65e4617467b7577c))
+- **ng/navigation:** make every navigation control announce itself ([31c07ca](https://github.com/Mezzanine-UI/mezzanine/commit/31c07ca2ef5e6cecc5ecf5cf05d2158a2e17baf5))
+- **ng/navigation:** render a leaf option with href as a real anchor ([e4ce4cb](https://github.com/Mezzanine-UI/mezzanine/commit/e4ce4cb6e70552166567199a629307946ba59e10))
+- **ng/table:** give the dropdown row action an accessible name ([8a78394](https://github.com/Mezzanine-UI/mezzanine/commit/8a78394638fa20f5806004b4168bed879bb7e2db))
+- **ng/tooltip:** reach tooltip content by keyboard and assistive tech ([ed6dbc7](https://github.com/Mezzanine-UI/mezzanine/commit/ed6dbc77f1ac08ccd0548e8521cc39799301adf2))
+
+### Features
+
+- **ng/inline-message:** expose role and aria-live as typed inputs ([03ddfd1](https://github.com/Mezzanine-UI/mezzanine/commit/03ddfd1e4e379ce4f9b951a16840d16aacbffce0))
+- **ng/modal:** implement the dialog focus model, matching React ([5e1dbf3](https://github.com/Mezzanine-UI/mezzanine/commit/5e1dbf33f916ec2433b231bb9ca982cfcdbb0b91))
+
 # [1.0.0-rc.12](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.11...@mezzanine-ui/ng@1.0.0-rc.12) (2026-08-26)
 
 ### Bug Fixes
