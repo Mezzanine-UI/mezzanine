@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "vite.alias.ts",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "**/*.spec.ts",
+    "**/*.stories.ts"
+  ]
+}

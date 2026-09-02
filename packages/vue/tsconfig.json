@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@mezzanine-ui/icons": ["../icons/src"],
+      "@mezzanine-ui/system/*": ["../system/src/*"],
+      "@mezzanine-ui/core/*": ["../core/src/*"],
+      "@mezzanine-ui/vue/*": ["./*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.vue"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "vite.alias.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@mezzanine-ui/vue",
+  "version": "1.0.0-alpha.0",
+  "description": "Mezzanine UI Vue 3 component library",
+  "author": "Mezzanine",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Mezzanine-UI/mezzanine.git",
+    "directory": "packages/vue"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./*": {
+      "types": "./*/index.d.ts",
+      "import": "./*/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node ../../scripts/prepareBuild.js && vite build",
+    "build:clean": "node ../../scripts/cleanBuild.js",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "peerDependencies": {
+    "vue": ">=3.5"
+  },
+  "dependencies": {
+    "@mezzanine-ui/core": "1.2.0",
+    "@mezzanine-ui/icons": "1.0.2",
+    "@mezzanine-ui/system": "1.0.2",
+    "clsx": "^2.1.1",
+    "tslib": "^2.8.1"
+  }
+}
