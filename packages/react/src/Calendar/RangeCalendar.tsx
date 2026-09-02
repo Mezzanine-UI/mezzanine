@@ -6,12 +6,13 @@ import {
   DateType,
 } from '@mezzanine-ui/core/calendar';
 import castArray from 'lodash/castArray';
-import { forwardRef, RefObject, useCallback } from 'react';
+import { forwardRef, RefObject, useCallback, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Calendar, { CalendarProps } from './Calendar';
 import { useCalendarContext } from './CalendarContext';
 import { useRangeCalendarControls } from './useRangeCalendarControls';
+import { useRangeScan } from './useRangeScan';
 import CalendarFooterActions, {
   CalendarFooterActionsProps,
 } from './CalendarFooterActions';
@@ -318,64 +319,54 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       ],
     );
 
-    const hasDisabledDateInRange = useCallback(
-      (start: DateType, end: DateType): boolean => {
-        const [rangeStart, rangeEnd] = isBefore(start, end)
-          ? [start, end]
-          : [end, start];
+    const scanRange = useRangeScan({
+      displayWeekDayLocale,
+      isDateDisabled,
+      isHalfYearDisabled,
+      isMonthDisabled,
+      isQuarterDisabled,
+      isWeekDisabled,
+      isYearDisabled,
+      mode,
+    });
 
-        let current = rangeStart;
-        while (isBefore(current, rangeEnd) || current === rangeEnd) {
-          // Check disabled based on current mode
-          let isDisabled = false;
-
-          switch (mode) {
-            case 'day':
-              isDisabled = isDateDisabled?.(current) ?? false;
-              break;
-            case 'week':
-              isDisabled = isWeekDisabled?.(current) ?? false;
-              break;
-            case 'month':
-              isDisabled = isMonthDisabled?.(current) ?? false;
-              break;
-            case 'year':
-              isDisabled = isYearDisabled?.(current) ?? false;
-              break;
-            case 'quarter':
-              isDisabled = isQuarterDisabled?.(current) ?? false;
-              break;
-            case 'half-year':
-              isDisabled = isHalfYearDisabled?.(current) ?? false;
-              break;
-            default:
-              break;
-          }
-
-          if (isDisabled) {
-            return true;
-          }
-
-          current = addDay(current, 1);
-          // Break if we've passed the end date (safety check)
-          if (isBefore(rangeEnd, current)) {
-            break;
-          }
-        }
-        return false;
-      },
-      [
-        mode,
-        isBefore,
-        addDay,
-        isDateDisabled,
-        isWeekDisabled,
-        isMonthDisabled,
-        isYearDisabled,
-        isQuarterDisabled,
-        isHalfYearDisabled,
-      ],
+    /**
+     * A disabled or incompletely checked range is not selectable, so it is not
+     * painted as one. This asks the same question `handleRangeSelection` asks
+     * before committing a selection, so the preview never invites a click that
+     * would then be rejected. Memoised because the six granularity handlers
+     * below all need the answer and the scan must run once, not once each.
+     */
+    const [rangeAnchorStart, rangeAnchorEnd] = value ?? [];
+    const shouldSuppressInRange = useMemo(
+      () =>
+        Boolean(
+          rangeAnchorStart &&
+            rangeAnchorEnd &&
+            scanRange(rangeAnchorStart, rangeAnchorEnd) !== 'clear',
+        ),
+      // Memoize by anchor values, including when callers recreate the array.
+      [scanRange, rangeAnchorEnd, rangeAnchorStart],
     );
+
+    const resolvedIsDateInRange = shouldSuppressInRange
+      ? undefined
+      : isDateInRange;
+    const resolvedIsHalfYearInRange = shouldSuppressInRange
+      ? undefined
+      : isHalfYearInRange;
+    const resolvedIsMonthInRange = shouldSuppressInRange
+      ? undefined
+      : isMonthInRange;
+    const resolvedIsQuarterInRange = shouldSuppressInRange
+      ? undefined
+      : isQuarterInRange;
+    const resolvedIsWeekInRange = shouldSuppressInRange
+      ? undefined
+      : isWeekInRange;
+    const resolvedIsYearInRange = shouldSuppressInRange
+      ? undefined
+      : isYearInRange;
 
     const handleRangeSelection = useCallback(
       (target: DateType) => {
@@ -391,7 +382,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
           const rawEnd = target;
 
           // 檢查是否有不可選日期
-          if (hasDisabledDateInRange(rawStart, rawEnd)) {
+          if (scanRange(rawStart, rawEnd) !== 'clear') {
             onChangeProp([target, undefined]);
             return;
           }
@@ -413,7 +404,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
         isBefore,
         normalizeRangeStart,
         normalizeRangeEnd,
-        hasDisabledDateInRange,
+        scanRange,
       ],
     );
 
@@ -505,22 +496,22 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               displayMonthLocale={displayMonthLocale}
               displayWeekDayLocale={displayWeekDayLocale}
               isDateDisabled={isDateDisabled}
-              isDateInRange={isDateInRange}
+              isDateInRange={resolvedIsDateInRange}
               onDateHover={onDateHover}
               isMonthDisabled={isMonthDisabled}
-              isMonthInRange={isMonthInRange}
+              isMonthInRange={resolvedIsMonthInRange}
               onMonthHover={onMonthHover}
               isWeekDisabled={isWeekDisabled}
-              isWeekInRange={isWeekInRange}
+              isWeekInRange={resolvedIsWeekInRange}
               onWeekHover={onWeekHover}
               isYearDisabled={isYearDisabled}
-              isYearInRange={isYearInRange}
+              isYearInRange={resolvedIsYearInRange}
               onYearHover={onYearHover}
               isQuarterDisabled={isQuarterDisabled}
-              isQuarterInRange={isQuarterInRange}
+              isQuarterInRange={resolvedIsQuarterInRange}
               onQuarterHover={onQuarterHover}
               isHalfYearDisabled={isHalfYearDisabled}
-              isHalfYearInRange={isHalfYearInRange}
+              isHalfYearInRange={resolvedIsHalfYearInRange}
               onHalfYearHover={onHalfYearHover}
             />
             <Calendar
@@ -547,22 +538,22 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               displayMonthLocale={displayMonthLocale}
               displayWeekDayLocale={displayWeekDayLocale}
               isDateDisabled={isDateDisabled}
-              isDateInRange={isDateInRange}
+              isDateInRange={resolvedIsDateInRange}
               onDateHover={onDateHover}
               isMonthDisabled={isMonthDisabled}
-              isMonthInRange={isMonthInRange}
+              isMonthInRange={resolvedIsMonthInRange}
               onMonthHover={onMonthHover}
               isWeekDisabled={isWeekDisabled}
-              isWeekInRange={isWeekInRange}
+              isWeekInRange={resolvedIsWeekInRange}
               onWeekHover={onWeekHover}
               isYearDisabled={isYearDisabled}
-              isYearInRange={isYearInRange}
+              isYearInRange={resolvedIsYearInRange}
               onYearHover={onYearHover}
               isQuarterDisabled={isQuarterDisabled}
-              isQuarterInRange={isQuarterInRange}
+              isQuarterInRange={resolvedIsQuarterInRange}
               onQuarterHover={onQuarterHover}
               isHalfYearDisabled={isHalfYearDisabled}
-              isHalfYearInRange={isHalfYearInRange}
+              isHalfYearInRange={resolvedIsHalfYearInRange}
               onHalfYearHover={onHalfYearHover}
             />
           </div>

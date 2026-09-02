@@ -16,6 +16,11 @@ export interface UseDateRangePickerValueProps {
   format: string;
   /**
    * Function to check if there are disabled dates in the range
+   *
+   * @deprecated `DateRangePicker` no longer supplies this. Deciding whether a
+   * range covers a disabled unit moved into `RangeCalendar`, where a shared,
+   * bounded scan drives both highlighting and calendar selection.
+   * Still honoured for external callers of this hook.
    */
   hasDisabledDateInRange?: (start: DateType, end: DateType) => boolean;
   /**
@@ -241,6 +246,10 @@ export function useDateRangePickerValue({
   /**
    * Check if date is in range, considering disabled dates
    * Returns a function that can be used as isDateInRange handler
+   *
+   * @deprecated Unused by `DateRangePicker` — see `hasDisabledDateInRange`.
+   * Note that the returned value does not depend on the date passed in; it
+   * describes the range as a whole.
    */
   const checkIsInRange = useCallback(
     (_date: DateType): boolean => {

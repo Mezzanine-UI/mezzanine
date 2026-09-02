@@ -1,5 +1,7 @@
 import moment from 'moment';
+import 'moment/locale/en-gb';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
+import { calendarClasses } from '@mezzanine-ui/core/calendar';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeHostElementClassNameAppendable,
@@ -233,4 +235,160 @@ describe('<RangeCalendar />', () => {
       }
     });
   });
+});
+
+/**
+ * Issue #460 — the "a range covering a disabled unit is not painted as a
+ * range" rule is evaluated for the whole range, including off-screen dates.
+ */
+describe('<RangeCalendar /> range highlight suppression', () => {
+  afterEach(cleanup);
+
+  const inRangeSelector = `.${calendarClasses.buttonInRange}`;
+
+  const renderRangeCalendar = ({
+    disabledDay,
+    value,
+  }: {
+    disabledDay?: string;
+    value: string[];
+  }) =>
+    render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <RangeCalendar
+          isDateDisabled={
+            disabledDay
+              ? (target) => moment(target).format('YYYY-MM-DD') === disabledDay
+              : undefined
+          }
+          isDateInRange={(target) =>
+            moment(target).isBetween(value[0], value[1], 'day', '[]')
+          }
+          mode="day"
+          referenceDate="2026-08-01"
+          value={value}
+        />
+      </CalendarConfigProvider>,
+    );
+
+  it('should paint the range when no date is disabled', () => {
+    const { getHostHTMLElement } = renderRangeCalendar({
+      value: ['2026-08-05', '2026-09-25'],
+    });
+
+    expect(
+      getHostHTMLElement().querySelectorAll(inRangeSelector).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('should suppress the range when a disabled date sits inside the visible window', () => {
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2026-08-20',
+      value: ['2026-08-05', '2026-09-25'],
+    });
+
+    expect(getHostHTMLElement().querySelectorAll(inRangeSelector).length).toBe(
+      0,
+    );
+  });
+
+  it('should suppress the range when the disabled date is outside the visible window', () => {
+    // The calendars show Aug/Sep 2026, so 2027-03-15 is never rendered — but
+    // the rule still applies, because handleRangeSelection would reject this
+    // same range on click. Painting it would invite a click that fails.
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2027-03-15',
+      value: ['2026-08-05', '2027-06-30'],
+    });
+
+    expect(getHostHTMLElement().querySelectorAll(inRangeSelector).length).toBe(
+      0,
+    );
+  });
+
+  it('should suppress a range whose disabled dates cannot be fully checked', () => {
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2040-01-01',
+      value: ['2026-08-05', '4026-08-01'],
+    });
+
+    expect(getHostHTMLElement().querySelectorAll(inRangeSelector)).toHaveLength(
+      0,
+    );
+  });
+
+  it('should leave the range alone when only one end is selected', () => {
+    const { getHostHTMLElement } = renderRangeCalendar({
+      disabledDay: '2026-08-20',
+      value: ['2026-08-05'],
+    });
+
+    expect(
+      getHostHTMLElement().querySelectorAll(inRangeSelector).length,
+    ).toBeGreaterThan(0);
+  });
+});
+
+describe('<RangeCalendar /> range validation', () => {
+  afterEach(cleanup);
+
+  it('should use the displayed week start when checking disabled weeks', () => {
+    const onChange = jest.fn();
+    const { getByRole } = render(
+      <CalendarConfigProvider locale="en-US" methods={CalendarMethodsMoment}>
+        <RangeCalendar
+          displayWeekDayLocale="en-GB"
+          isWeekDisabled={(date) =>
+            moment(date).format('YYYY-MM-DD') === '2026-09-14'
+          }
+          mode="week"
+          onChange={onChange}
+          referenceDate="2026-09-01"
+          value={['2026-09-07']}
+        />
+      </CalendarConfigProvider>,
+    );
+
+    expect(
+      getByRole('button', { name: /14 to .*20.*Not available/ }).hasAttribute(
+        'disabled',
+      ),
+    ).toBe(true);
+    fireEvent.click(getByRole('button', { name: /21 to .*27/ }));
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange.mock.calls[0][0][1]).toBeUndefined();
+  });
+
+  it.each([true, false])(
+    'should only complete a long range without a predicate: %s',
+    (withPredicate) => {
+      const onChange = jest.fn();
+      const { getByRole } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <RangeCalendar
+            isDateDisabled={
+              withPredicate
+                ? (date) => moment(date).format('YYYY-MM-DD') === '2015-01-01'
+                : undefined
+            }
+            onChange={onChange}
+            referenceDate="2020-09-01"
+            value={['2000-01-01']}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      fireEvent.click(getByRole('button', { name: /September 11, 2020/ }));
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+      if (withPredicate) {
+        expect(onChange.mock.calls[0][0][1]).toBeUndefined();
+      } else {
+        expect(moment(onChange.mock.calls[0][0][1]).format('YYYY-MM-DD')).toBe(
+          '2020-09-11',
+        );
+      }
+    },
+  );
 });

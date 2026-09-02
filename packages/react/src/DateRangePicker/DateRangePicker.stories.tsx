@@ -893,3 +893,59 @@ export const ConfirmMode: Story = {
     );
   },
 };
+
+const disabledRangeCases = [
+  {
+    description:
+      'A disabled date inside a short range suppresses its highlight.',
+    disabledDay: '2026-08-20',
+    title: 'Disabled date inside the range',
+    value: ['2026-08-01', '2026-09-30'] as RangePickerValue,
+  },
+  {
+    description:
+      'Before review fixes: highlighted. After: no highlight, because the restricted range cannot be fully checked.',
+    disabledDay: '2040-01-01',
+    title: 'Restricted range beyond the scan limit',
+    value: ['2026-08-01', '4026-08-01'] as RangePickerValue,
+  },
+  {
+    description:
+      'With no disabled predicate, even a very long range remains highlighted and opens without scanning.',
+    disabledDay: undefined,
+    title: 'Unrestricted long range',
+    value: ['2026-08-01', '4026-08-01'] as RangePickerValue,
+  },
+];
+
+export const DisabledInRangeBehavior: Story = {
+  render: function DisabledInRangeBehavior() {
+    return (
+      <CalendarConfigProviderLuxon locale="en-US">
+        {disabledRangeCases.map((item) => (
+          <section key={item.title} style={containerStyle}>
+            <Typography style={typoStyle} variant="h3">
+              {item.title}
+            </Typography>
+            <Typography style={typoStyle} variant="body">
+              {item.description}
+            </Typography>
+            <DateRangePicker
+              format="YYYY-MM-DD"
+              inputFromPlaceholder="Start Date"
+              inputToPlaceholder="End Date"
+              isDateDisabled={
+                item.disabledDay
+                  ? (target: DateType) =>
+                      moment(target).format('YYYY-MM-DD') === item.disabledDay
+                  : undefined
+              }
+              referenceDate="2026-08-01"
+              value={item.value}
+            />
+          </section>
+        ))}
+      </CalendarConfigProviderLuxon>
+    );
+  },
+};

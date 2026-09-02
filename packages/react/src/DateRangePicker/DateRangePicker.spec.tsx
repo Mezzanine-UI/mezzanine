@@ -12,6 +12,7 @@ import {
   getByText,
 } from '../../__test-utils__';
 import { CalendarConfigProvider } from '../Calendar';
+import { maxRangeScanSteps } from '../Calendar/useRangeScan';
 import DateRangePicker from '.';
 
 describe('<DateRangePicker />', () => {
@@ -820,5 +821,107 @@ describe('<DateRangePicker />', () => {
       );
       expect(applyButton?.textContent).toBe('Apply');
     });
+  });
+});
+
+/**
+ * Issue #460 — the picker used to walk the whole selected range one day at a
+ * time, six times per render, whether or not a disabled-date predicate was
+ * supplied. These lock in that its work no longer scales with the range.
+ */
+describe('<DateRangePicker /> wide range rendering', () => {
+  afterEach(() => {
+    cleanup();
+    cleanupHook();
+  });
+
+  const getRangeCalendar = () =>
+    document.querySelector('[aria-label^="Range calendar"]');
+
+  // 2006-09-01 .. 2026-08-31 is 7,304 days.
+  const wideRange: [DateType, DateType] = ['2006-09-01', '2026-08-31'];
+
+  it('should paint a two-decade range without consulting any predicate', async () => {
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <DateRangePicker value={wideRange} />
+      </CalendarConfigProvider>,
+    );
+
+    const [inputFromElement] =
+      getHostHTMLElement().getElementsByTagName('input');
+
+    await act(async () => {
+      fireEvent.focus(inputFromElement);
+    });
+
+    await waitFor(() => {
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+    });
+
+    expect(
+      document.querySelectorAll('.mzn-calendar-button--inRange').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('should keep the disabled-date scan bounded on a two-decade range', async () => {
+    const isDateDisabled = jest.fn((_target: DateType) => false);
+
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <DateRangePicker isDateDisabled={isDateDisabled} value={wideRange} />
+      </CalendarConfigProvider>,
+    );
+
+    const [inputFromElement] =
+      getHostHTMLElement().getElementsByTagName('input');
+
+    await act(async () => {
+      fireEvent.focus(inputFromElement);
+    });
+
+    await waitFor(() => {
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+    });
+
+    /**
+     * The capped scan plus the cells of two 6x7 grids. The slack covers the
+     * popper mounting the calendar twice as it opens, which runs the scan
+     * once per mount. What matters is that the total is a constant: the old
+     * code ran the full 7,304-day walk six times per render — 43,824 calls
+     * each — and grew with the range from there.
+     */
+    expect(isDateDisabled.mock.calls.length).toBeLessThan(
+      maxRangeScanSteps * 3,
+    );
+  });
+
+  it('should stay bounded even when the year is mistyped', async () => {
+    const isDateDisabled = jest.fn((_target: DateType) => false);
+
+    // 2026-08-31 .. 4026-08-01 is 730,455 days, reachable by typing.
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <DateRangePicker
+          isDateDisabled={isDateDisabled}
+          value={['2026-08-31', '4026-08-01']}
+        />
+      </CalendarConfigProvider>,
+    );
+
+    const [inputFromElement] =
+      getHostHTMLElement().getElementsByTagName('input');
+
+    await act(async () => {
+      fireEvent.focus(inputFromElement);
+    });
+
+    await waitFor(() => {
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+    });
+
+    expect(isDateDisabled.mock.calls.length).toBeLessThan(
+      maxRangeScanSteps * 3,
+    );
   });
 });
