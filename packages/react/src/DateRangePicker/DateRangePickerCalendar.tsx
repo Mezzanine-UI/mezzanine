@@ -36,6 +36,7 @@ export interface DateRangePickerCalendarProps
       | 'isHalfYearInRange'
       | 'onDateHover'
       | 'onWeekHover'
+      | 'previewValue'
       | 'onMonthHover'
       | 'onYearHover'
       | 'onQuarterHover'
@@ -119,6 +120,7 @@ const DateRangePickerCalendar = forwardRef<
     onYearHover,
     open,
     popperProps,
+    previewValue,
     quickSelect,
     referenceDate,
     renderAnnotations,
@@ -167,6 +169,7 @@ const DateRangePickerCalendar = forwardRef<
           onQuarterHover={onQuarterHover}
           onWeekHover={onWeekHover}
           onYearHover={onYearHover}
+          previewValue={previewValue}
           quickSelect={quickSelect}
           referenceDate={referenceDate}
           renderAnnotations={renderAnnotations}

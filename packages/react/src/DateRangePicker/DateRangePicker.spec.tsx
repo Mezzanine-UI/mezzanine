@@ -925,3 +925,139 @@ describe('<DateRangePicker /> wide range rendering', () => {
     );
   });
 });
+
+/**
+ * Regression: hovering a cell between the two clicks used to leak the hover
+ * preview into the value that RangeCalendar reads back to decide how far the
+ * selection has got, so the second click was treated as "start over" and the
+ * first date was thrown away.
+ */
+describe('<DateRangePicker /> range selection with hover preview', () => {
+  afterEach(() => {
+    cleanup();
+    cleanupHook();
+  });
+
+  const getRangeCalendar = () =>
+    document.querySelector('[aria-label^="Range calendar"]');
+
+  const getDayButton = (label: string) =>
+    Array.from(
+      document.querySelectorAll<HTMLButtonElement>('.mzn-calendar-button'),
+    ).find((button) => button.textContent === label);
+
+  const openCalendar = async (element: HTMLElement) => {
+    const [inputFromElement] = element.getElementsByTagName('input');
+
+    await act(async () => {
+      fireEvent.focus(inputFromElement);
+    });
+
+    await waitFor(() => {
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+    });
+  };
+
+  it('should complete the range even when the second date was hovered first', async () => {
+    const onChange = jest.fn();
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <DateRangePicker
+          onChange={onChange}
+          referenceDate={moment('2026-09-01').toISOString()}
+        />
+      </CalendarConfigProvider>,
+    );
+
+    await openCalendar(getHostHTMLElement());
+
+    await act(async () => {
+      fireEvent.click(getDayButton('1')!);
+    });
+
+    // The pointer travels over the target cell before it is clicked.
+    await act(async () => {
+      fireEvent.mouseOver(getDayButton('11')!);
+      fireEvent.mouseEnter(getDayButton('11')!);
+    });
+
+    await act(async () => {
+      fireEvent.click(getDayButton('11')!);
+    });
+
+    expect(onChange).toHaveBeenCalled();
+
+    const [start, end] = onChange.mock.calls[onChange.mock.calls.length - 1][0];
+
+    expect(moment(start).format('YYYY-MM-DD')).toBe('2026-09-01');
+    expect(moment(end).format('YYYY-MM-DD')).toBe('2026-09-11');
+  });
+
+  it.each([
+    { disabledDay: '2026-09-05', monthSwitches: 0, targetDay: '2026-09-11' },
+    { disabledDay: '2026-10-05', monthSwitches: 2, targetDay: '2026-11-18' },
+  ])(
+    'should suppress and reject a preview crossing $disabledDay',
+    async ({ disabledDay, monthSwitches, targetDay }) => {
+      const onChange = jest.fn();
+      const { getByRole, getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            isDateDisabled={(date) =>
+              moment(date).format('YYYY-MM-DD') === disabledDay
+            }
+            onChange={onChange}
+            referenceDate="2026-09-01"
+          />
+        </CalendarConfigProvider>,
+      );
+      await openCalendar(getHostHTMLElement());
+      await act(async () => {
+        fireEvent.click(
+          getByRole('button', { name: 'Tuesday, September 1, 2026' }),
+        );
+      });
+      for (let index = 0; index < monthSwitches; index += 1) {
+        await act(async () => {
+          fireEvent.click(getByRole('button', { name: 'Go to next month' }));
+        });
+      }
+      const targetLabel = moment(targetDay)
+        .locale('en')
+        .format('dddd, MMMM D, YYYY');
+      await act(async () => {
+        fireEvent.mouseOver(
+          getByRole('button', { name: new RegExp(targetLabel) }),
+        );
+      });
+      expect(
+        document.querySelectorAll('.mzn-calendar-button--inRange'),
+      ).toHaveLength(0);
+      await act(async () => {
+        fireEvent.click(getByRole('button', { name: new RegExp(targetLabel) }));
+      });
+      expect(onChange).not.toHaveBeenCalled();
+      const [startInput, endInput] =
+        getHostHTMLElement().getElementsByTagName('input');
+      expect(startInput.value).toBe(targetDay);
+      expect(endInput.value).toBe('');
+
+      const nextDay = moment(targetDay).add(1, 'day');
+      const nextLabel = nextDay.locale('en').format('dddd, MMMM D, YYYY');
+      await act(async () =>
+        fireEvent.mouseOver(
+          getByRole('button', { name: new RegExp(nextLabel) }),
+        ),
+      );
+      await act(async () =>
+        fireEvent.click(getByRole('button', { name: new RegExp(nextLabel) })),
+      );
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(
+        onChange.mock.calls[0][0].map((date: DateType) =>
+          moment(date).format('YYYY-MM-DD'),
+        ),
+      ).toEqual([targetDay, nextDay.format('YYYY-MM-DD')]);
+    },
+  );
+});

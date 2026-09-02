@@ -231,6 +231,25 @@ export function useDateRangePickerValue({
 
   const anchor1 = from || to;
   const anchor2 = from && to ? to : hoverValue;
+
+  /**
+   * The anchors the user has actually committed, with no hover preview mixed
+   * in.
+   *
+   * Anything deciding *how far the selection has got* must read this rather
+   * than `calendarValue`: that one folds the hovered date into its second
+   * slot, which makes a half-finished range look finished.
+   */
+  const committedCalendarValue = useMemo(() => {
+    if (from && to) {
+      return [from, to];
+    }
+
+    const onlyAnchor = from || to;
+
+    return onlyAnchor ? [onlyAnchor] : undefined;
+  }, [from, to]);
+
   const calendarValue = useMemo(() => {
     if (anchor1 && anchor2) {
       return [anchor1, anchor2];
@@ -301,6 +320,8 @@ export function useDateRangePickerValue({
   return {
     calendarValue,
     checkIsInRange,
+    committedCalendarValue,
+    hoverValue,
     hoverFromValue,
     hoverToValue,
     inputFromValue,

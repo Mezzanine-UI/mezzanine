@@ -103,6 +103,16 @@ export interface RangeCalendarProps
    */
   referenceDate: DateType;
   /**
+   * The date currently under the pointer, used to preview the range the user
+   * is about to complete.
+   *
+   * Kept separate from `value` on purpose: `value` says what has been
+   * committed and drives what a click means, while this only affects what is
+   * painted. Folding the two together makes a half-finished range look
+   * finished and turns the closing click into a fresh start.
+   */
+  previewValue?: DateType;
+  /**
    * React Ref for the second (right) calendar
    */
   secondCalendarRef?: RefObject<HTMLDivElement | null>;
@@ -177,6 +187,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       onYearHover,
       onQuarterHover,
       onHalfYearHover,
+      previewValue,
       quickSelect,
       referenceDate: referenceDateProp,
       secondCalendarRef,
@@ -185,6 +196,19 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
     } = props;
 
     const value = valueProp ? castArray(valueProp) : undefined;
+
+    /**
+     * What the calendars paint: the committed anchors plus the hover preview
+     * while a range is still half-finished. `value` itself stays untouched so
+     * the click handler keeps seeing only what the user has committed.
+     */
+    const displayValue = (() => {
+      if (!previewValue) return value;
+      if (!value?.length) return [previewValue];
+      if (value.length === 1) return [value[0], previewValue];
+
+      return value;
+    })();
 
     const {
       currentMode,
@@ -337,7 +361,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
      * would then be rejected. Memoised because the six granularity handlers
      * below all need the answer and the scan must run once, not once each.
      */
-    const [rangeAnchorStart, rangeAnchorEnd] = value ?? [];
+    const [rangeAnchorStart, rangeAnchorEnd] = displayValue ?? [];
     const shouldSuppressInRange = useMemo(
       () =>
         Boolean(
@@ -481,7 +505,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               )}
               ref={firstCalendarRef}
               mode={currentMode}
-              value={value}
+              value={displayValue}
               onChange={onChangeFactory(0)}
               referenceDate={referenceDates[0]}
               onPrev={onFirstPrev}
@@ -523,7 +547,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               )}
               ref={secondCalendarRef}
               mode={currentMode}
-              value={value}
+              value={displayValue}
               onChange={onChangeFactory(1)}
               referenceDate={referenceDates[1]}
               onNext={onSecondNext}
