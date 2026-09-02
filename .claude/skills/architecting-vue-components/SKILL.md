@@ -376,6 +376,20 @@ Recommended answers are given, but none may be adopted silently.
 
 ---
 
+## 9b. Component-level decisions already taken
+
+Approved by the user on 2026-09-02. Do not re-litigate; do not guess beyond them.
+
+| #   | Question                                                                                                            | Decision                                                                                                                                                                                                                                                                    |
+| --- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D9  | `scrollbar` — which OverlayScrollbars binding?                                                                      | Use `overlayscrollbars-vue`, mirroring React's use of `overlayscrollbars-react`. Both are declared in `packages/vue/package.json`.                                                                                                                                          |
+| D10 | `transition` family — React builds Fade / Slide / Scale / Rotate / Translate / Collapse on `react-transition-group` | Use Vue's built-in `<Transition>`. The React prop surface (`in`, `timeout`, `appear`, `unmountOnExit`, …) does not have to be reproduced literally; the **rendered result and observable behaviour** must match. Any resulting API difference is a `DEVIATIONS-VUE.md` row. |
+| D11 | `notifier` — React's `createNotifier` factory imperatively mounts a React root                                      | Design it the way a Vue developer would expect (composable / plugin / `createApp` mount, whichever reads naturally). Functional equivalence is the bar, not API shape. Record the shape in `DEVIATIONS-VUE.md`.                                                             |
+| D12 | React's polymorphic `component` prop (Typography, Button, …)                                                        | **Do not mirror it.** It reaches Vue through a factory type the parity extractor treats as passthrough, so declaring it would surface as an unmatched `extra` input. Angular took the same position.                                                                        |
+
+D10 and D11 are the only two places where "same behaviour, different API" is
+sanctioned. Everywhere else R1 still means prop-for-prop.
+
 ## 9a. Reference implementation
 
 `packages/vue/icon` — first ported component, **parity 0 diffs on the first harness run**,
