@@ -491,20 +491,20 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
           mode={mode}
           onChange={onCalendarChangeWithCloseControl}
           onDateHover={onCalendarHover}
-          onLeave={onHoverClear}
           onHalfYearHover={onCalendarHover}
+          onLeave={onHoverClear}
           onMonthHover={onCalendarHover}
           onQuarterHover={onCalendarHover}
           onWeekHover={onCalendarHover}
           onYearHover={onCalendarHover}
           open={open}
           popperProps={popperProps}
+          previewValue={hoverValue}
           quickSelect={quickSelect}
           ref={calendarRef}
           referenceDate={referenceDate}
           renderAnnotations={renderAnnotations}
           secondCalendarRef={secondCalendarRef}
-          previewValue={hoverValue}
           value={committedCalendarValue}
         />
       </>

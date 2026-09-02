@@ -361,7 +361,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
      * would then be rejected. Memoised because the six granularity handlers
      * below all need the answer and the scan must run once, not once each.
      */
-    const [rangeAnchorStart, rangeAnchorEnd] = value ?? [];
+    const [rangeAnchorStart, rangeAnchorEnd] = displayValue ?? [];
     const shouldSuppressInRange = useMemo(
       () =>
         Boolean(

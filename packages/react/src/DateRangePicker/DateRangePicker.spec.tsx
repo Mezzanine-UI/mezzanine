@@ -1026,13 +1026,15 @@ describe('<DateRangePicker /> range selection with hover preview', () => {
         .locale('en')
         .format('dddd, MMMM D, YYYY');
       await act(async () => {
-        fireEvent.mouseOver(getByRole('button', { name: targetLabel }));
+        fireEvent.mouseOver(
+          getByRole('button', { name: new RegExp(targetLabel) }),
+        );
       });
       expect(
         document.querySelectorAll('.mzn-calendar-button--inRange'),
       ).toHaveLength(0);
       await act(async () => {
-        fireEvent.click(getByRole('button', { name: targetLabel }));
+        fireEvent.click(getByRole('button', { name: new RegExp(targetLabel) }));
       });
       expect(onChange).not.toHaveBeenCalled();
       const [startInput, endInput] =
@@ -1043,10 +1045,12 @@ describe('<DateRangePicker /> range selection with hover preview', () => {
       const nextDay = moment(targetDay).add(1, 'day');
       const nextLabel = nextDay.locale('en').format('dddd, MMMM D, YYYY');
       await act(async () =>
-        fireEvent.mouseOver(getByRole('button', { name: nextLabel })),
+        fireEvent.mouseOver(
+          getByRole('button', { name: new RegExp(nextLabel) }),
+        ),
       );
       await act(async () =>
-        fireEvent.click(getByRole('button', { name: nextLabel })),
+        fireEvent.click(getByRole('button', { name: new RegExp(nextLabel) })),
       );
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(
