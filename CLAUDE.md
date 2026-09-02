@@ -29,6 +29,7 @@ Detailed how-to guides are stored in `.claude/skills/` — read the relevant fil
 - **Adding a new icon** → `.claude/skills/add-icon.md`
 - **Adding a spacing token** → `.claude/skills/add-spacing-token.md`
 - **Angular 元件架構（強制規範）** → `.claude/skills/architecting-angular-components/SKILL.md`
+- **Vue 3 元件架構（強制規範）** → `.claude/skills/architecting-vue-components/SKILL.md`（另含 `PORTING-PLAYBOOK.md`、`PARITY-TOOLING.md`）
 
 ## React → Angular Parity
 
@@ -50,3 +51,13 @@ React 是 hybrid 模式 — 常用設定用 flat top-level props（如 `disabled
 例外：`prefix`/`suffix`（ReactNode）用 content projection、`xxxRef` 用 ViewChild、無對應物的 React 專屬 lib（如 `fadeProps`）寫入 `DEVIATIONS.md`。
 
 **完整規範、使用端 OnPush 陷阱警告、遷移 checklist、範例** 見 `.claude/skills/architecting-angular-components/SKILL.md`。所有新元件與重構必須遵守。
+
+## React → Vue 3 Parity — **強制規範**
+
+Vue 3 移植（`packages/vue`）沿用同一套「diff 即規格」機制，驗證管線為 `yarn parity:vue -- <component>`（React :6006 / Vue :6008），deviation 寫入 `DEVIATIONS-VUE.md`。
+
+核心規則：**Vue prop-for-prop 鏡像 React，Vue 不自己發明抽象**。參考對象永遠是 React，**不是 Angular** — Angular 的 deviation 是 Angular 表達能力不足的結果，Vue 需獨立評估（例如具名 `v-model:<prop>` 可保留 React 原始 prop 名稱，因此 Angular 的 `expandedChange` / `opened` 這類改名在 Vue 屬於 bug 而非 deviation）。
+
+樣式一律取自 `@mezzanine-ui/core`：**任何 `.vue` 檔皆不得出現 `<style>` 區塊**；若出現 Vue 專屬樣式需求，必須停下來向使用者確認。
+
+**完整規範、移植方法論、parity 工具契約** 見 `.claude/skills/architecting-vue-components/`。所有 `packages/vue/` 下的新元件與重構必須遵守。
