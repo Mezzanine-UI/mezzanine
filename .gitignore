@@ -9,6 +9,8 @@
 **/storybook-static
 /storybook-ng-static
 **/storybook-ng-static
+/storybook-vue-static
+**/storybook-vue-static
 /storybook-static-react-tmp
 **/storybook-static-react-tmp
 /.storybook-ng/preview.js
@@ -71,4 +73,5 @@ dependency-graph.html
 
 # Parity harness output
 tools/parity/.out/
+tools/parity/.out-vue/
 tools/parity/node_modules/

@@ -13,7 +13,8 @@
     "mezzanine",
     "ui",
     "angular",
-    "react"
+    "react",
+    "vue"
   ],
   "private": true,
   "workspaces": [
@@ -21,7 +22,8 @@
     "packages/icons",
     "packages/ng",
     "packages/react",
-    "packages/system"
+    "packages/system",
+    "packages/vue"
   ],
   "engines": {
     "node": ">=20.9.0"
@@ -66,12 +68,22 @@
     "react:build": "nx run @mezzanine-ui/react:build-storybook",
     "react:storybook": "nx run @mezzanine-ui/react:storybook",
     "storybook": "node scripts/storybook-dispatch.mjs",
-    "storybook:build-composed": "yarn react:build && yarn ng:build-storybook && node scripts/compose-storybooks.mjs",
+    "storybook:build-composed": "yarn react:build && yarn ng:build-storybook && yarn vue:build-storybook && node scripts/compose-storybooks.mjs",
     "parity": "tsx tools/parity/compare.ts",
     "parity:all": "tsx tools/parity/compare.ts --all",
     "parity:lint-ng-content": "node tools/parity/check-ng-content-selectors.mjs",
     "parity:check-tokens": "node tools/parity/check-hardcoded-tokens.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "vue:test": "nx run @mezzanine-ui/vue:test",
+    "vue:test:coverage": "nx run @mezzanine-ui/vue:test:coverage",
+    "vue:storybook": "nx run @mezzanine-ui/vue:storybook",
+    "vue:build-storybook": "nx run @mezzanine-ui/vue:build-storybook",
+    "parity:vue": "tsx tools/parity/compare.ts --target vue",
+    "parity:vue:all": "tsx tools/parity/compare.ts --target vue --all",
+    "parity:vue:lint-styles": "node tools/parity/check-vue-no-local-styles.mjs",
+    "parity:vue:lint-api": "tsx tools/parity/check-vue-emit-syntax.ts && tsx tools/parity/check-vue-slots.ts && tsx tools/parity/check-vue-single-root.ts",
+    "parity:stories": "node tools/parity/check-story-parity.mjs",
+    "components:graph": "node tools/parity/component-graph.mjs"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.2102.6",
@@ -102,6 +114,7 @@
     "@storybook/addon-webpack5-compiler-babel": "^3.0.6",
     "@storybook/angular": "^9.1.20",
     "@storybook/react-webpack5": "^9.1.20",
+    "@storybook/vue3-vite": "9.1.20",
     "@testing-library/angular": "^17.3.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -110,6 +123,9 @@
     "@types/react-refresh": "^0",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitest/coverage-v8": "^4.1.11",
+    "@vue/test-utils": "^2.5.0",
     "babel-loader": "^10.0.0",
     "commitizen": "^4.3.1",
     "css-loader": "^7.1.2",
@@ -122,6 +138,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.0",
     "eslint-plugin-storybook": "^9.1.20",
+    "eslint-plugin-vue": "^10.10.0",
     "fs-extra": "^11.3.2",
     "glob": "^11.0.3",
     "globals": "^16.0.0",
@@ -129,6 +146,7 @@
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "jest-preset-angular": "^16.1.2",
+    "jsdom": "^30.0.1",
     "lerna": "^8.2.4",
     "lint-staged": "^15.5.1",
     "ng-packagr": "^21.2.2",
@@ -155,6 +173,12 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
+    "vite": "^7.3.6",
+    "vite-plugin-dts": "^5.1.0",
+    "vitest": "^4.1.11",
+    "vue": "^3.5.42",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^3.3.11",
     "webpack": "^5.102.1",
     "zone.js": "~0.16.1"
   },

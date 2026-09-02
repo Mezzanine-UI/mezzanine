@@ -1,5 +1,6 @@
 {
   "*.@(ts|tsx)": ["prettier --write", "eslint --fix"],
   "*.@(js|jsx|html|mdx|json|md)": ["prettier --write"],
-  "*.@(css|sass|scss)": ["prettier --write", "stylelint --fix"]
+  "*.@(css|sass|scss)": ["prettier --write", "stylelint --fix"],
+  "*.vue": ["prettier --write", "eslint --fix"]
 }

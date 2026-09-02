@@ -181,9 +181,15 @@ if [ "$RUN_TYPES" = true ]; then
   if [ -f "$ABS_PACKAGE_DIR/tsconfig.json" ]; then
     echo "Checking TypeScript in package: $PACKAGE_DIR"
 
+    # Vue SFCs are invisible to plain `tsc`; packages/vue must use vue-tsc.
+    TSC_BIN="tsc"
+    if [[ "$TARGET_PATH" == packages/vue* ]] || [[ "$PACKAGE_DIR" == packages/vue* ]]; then
+      TSC_BIN="vue-tsc"
+    fi
+
     # Run tsc and filter output (temporarily disable set -e to capture output)
     set +e
-    TSC_OUTPUT=$(cd "$ABS_PACKAGE_DIR" && npx tsc --noEmit 2>&1)
+    TSC_OUTPUT=$(cd "$ABS_PACKAGE_DIR" && npx "$TSC_BIN" --noEmit 2>&1)
     TSC_EXIT_CODE=$?
     set -e
 
