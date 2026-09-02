@@ -146,6 +146,34 @@ async function snapshotStory(
       document.getAnimations().map((a) => a.finished.catch(() => undefined)),
     ),
   );
+  // Some components defer initialisation to `requestIdleCallback` — anything
+  // built on OverlayScrollbars does, via its `defer` option. Whether that
+  // callback has run by snapshot time otherwise depends on how busy the page
+  // is, which differs between the two dev servers and makes the first story of
+  // a run flaky. Wait for idle, then let the resulting DOM changes paint.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        const idle = (
+          window as unknown as {
+            requestIdleCallback?: (
+              cb: () => void,
+              opts?: { timeout: number },
+            ) => void;
+          }
+        ).requestIdleCallback;
+
+        if (typeof idle === 'function')
+          idle(() => resolve(), { timeout: 2000 });
+        else setTimeout(resolve, 100);
+      }),
+  );
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      }),
+  );
   return (await page.evaluate(
     `(${SNAPSHOT_SOURCE})(${JSON.stringify(STYLE_KEYS)})`,
   )) as NormalizedNode | null;
