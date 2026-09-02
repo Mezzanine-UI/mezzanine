@@ -1,9 +1,25 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { memberKey, parseMacroTypeMembers } from './vue-macros.ts';
 
 const REACT_ROOT = resolve(process.cwd(), 'packages/react/src');
 const CORE_ROOT = resolve(process.cwd(), 'packages/core/src');
 const NG_ROOT = resolve(process.cwd(), 'packages/ng');
+const VUE_ROOT = resolve(process.cwd(), 'packages/vue');
+
+/**
+ * Which port is being compared. React is always the reference side; the
+ * target is whichever framework mirrors it.
+ */
+export type ParityTarget = 'ng' | 'vue';
+
+/**
+ * Which source tree a type name is resolved against. React prop interfaces
+ * live under `packages/react/src`; Vue prop interfaces live in
+ * `packages/vue/<component>/<component>.types.ts`. Both may `extends` shared
+ * interfaces from `packages/core/src`, so every scope also walks core.
+ */
+type IndexScope = 'react' | 'vue';
 
 export type ApiSet = {
   inputs: Set<string>;
@@ -11,7 +27,13 @@ export type ApiSet = {
 };
 
 export type ApiDiff = {
-  kind: 'input' | 'output';
+  /**
+   * `error` is reported when the target's API could not be extracted at all
+   * (e.g. a Vue `defineEmits` written in an unsupported form). It must never
+   * be silently treated as "no diffs" — an empty extraction reads exactly
+   * like perfect parity, which is the most dangerous failure mode there is.
+   */
+  kind: 'input' | 'output' | 'error';
   side: 'missing' | 'extra';
   name: string;
 };
@@ -85,6 +107,34 @@ export function locateAngularFile(pascalName: string): string | null {
   return null;
 }
 
+/**
+ * Locate the Vue props contract for a component. The interface deliberately
+ * lives in a plain `.ts` sibling of the SFC (see the
+ * `architecting-vue-components` skill) so it can be resolved by the very same
+ * machinery as the React side, rather than needing SFC type inference.
+ */
+export function locateVueFile(
+  pascalName: string,
+): { typesFile: string; sfcFile: string | null } | null {
+  const k = kebab(pascalName);
+  const candidates = [k, k.replace(/-/g, ''), `${k}s`, singular(k)];
+
+  for (const name of candidates) {
+    const typesFile = findFile(
+      VUE_ROOT,
+      (f) => f.endsWith(`/${name}.types.ts`) && !f.endsWith('.d.ts'),
+    );
+
+    if (!typesFile) continue;
+
+    const sfcFile = findFile(VUE_ROOT, (f) => f.endsWith(`/${name}.vue`));
+
+    return { typesFile, sfcFile };
+  }
+
+  return null;
+}
+
 const SKIP_PROP_NAMES = new Set([
   'children',
   'className',
@@ -149,7 +199,7 @@ type TypeAliasEntry = {
 
 type IndexEntry = InterfaceEntry | TypeAliasEntry;
 
-let interfaceIndex: Map<string, IndexEntry> | null = null;
+const interfaceIndexes = new Map<IndexScope, Map<string, IndexEntry>>();
 
 /**
  * Build a repo-wide index of TypeScript type declarations. We scan source
@@ -162,7 +212,7 @@ let interfaceIndex: Map<string, IndexEntry> | null = null;
  * `TextFieldProps = TextFieldBaseProps & TextFieldAffixProps & TextFieldInteractiveStateProps;`
  * where the "real" props live inside multiple intersected parents.
  */
-function buildInterfaceIndex(): Map<string, IndexEntry> {
+function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
   const index = new Map<string, IndexEntry>();
 
   const walk = (dir: string): void => {
@@ -187,7 +237,8 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
       }
       if (!full.endsWith('.ts') && !full.endsWith('.tsx')) continue;
       if (full.endsWith('.spec.ts') || full.endsWith('.spec.tsx')) continue;
-      if (full.endsWith('.stories.tsx')) continue;
+      if (full.endsWith('.stories.tsx') || full.endsWith('.stories.ts'))
+        continue;
 
       const text = readFileSync(full, 'utf-8');
 
@@ -261,7 +312,7 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
     }
   };
 
-  walk(REACT_ROOT);
+  walk(scope === 'vue' ? VUE_ROOT : REACT_ROOT);
   // Also index shared type declarations under packages/core/src. React prop
   // interfaces frequently `extends` core interfaces (e.g. `DropdownProps
   // extends DropdownItemSharedProps`), so without this the inherited props
@@ -271,9 +322,15 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
   return index;
 }
 
-function getInterfaceIndex(): Map<string, IndexEntry> {
-  if (!interfaceIndex) interfaceIndex = buildInterfaceIndex();
-  return interfaceIndex;
+function getInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
+  let index = interfaceIndexes.get(scope);
+
+  if (!index) {
+    index = buildInterfaceIndex(scope);
+    interfaceIndexes.set(scope, index);
+  }
+
+  return index;
 }
 
 type ParentRef = {
@@ -424,7 +481,11 @@ function splitTopLevel(expr: string, operator: '&' | '|'): string[] {
  * `Omit<X, ...>` / `Pick<X, ...>`, an intersection (`A & B`), a union
  * (`A | B`), an inline type literal (`{ x: T; y: T }`), or combinations.
  */
-function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
+function resolveTypeExpression(
+  expr: string,
+  visited: Set<string>,
+  scope: IndexScope,
+): ApiSet {
   const result: ApiSet = { inputs: new Set(), outputs: new Set() };
 
   // Strip a single layer of wrapping parentheses. Unions like
@@ -455,7 +516,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
   const unionParts = splitTopLevel(expr, '|');
   if (unionParts.length > 1) {
     for (const part of unionParts) {
-      const sub = resolveTypeExpression(part, new Set(visited));
+      const sub = resolveTypeExpression(part, new Set(visited), scope);
       for (const k of sub.inputs) result.inputs.add(k);
       for (const k of sub.outputs) result.outputs.add(k);
     }
@@ -467,7 +528,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
   const intersectionParts = splitTopLevel(expr, '&');
   if (intersectionParts.length > 1) {
     for (const part of intersectionParts) {
-      const sub = resolveTypeExpression(part, new Set(visited));
+      const sub = resolveTypeExpression(part, new Set(visited), scope);
       for (const k of sub.inputs) result.inputs.add(k);
       for (const k of sub.outputs) result.outputs.add(k);
     }
@@ -496,7 +557,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
         .split('|')
         .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
     );
-    const base = resolveInterfaceProps(omitMatch[1], visited);
+    const base = resolveInterfaceProps(omitMatch[1], scope, visited);
     for (const k of base.inputs) if (!keys.has(k)) result.inputs.add(k);
     for (const k of base.outputs) if (!keys.has(k)) result.outputs.add(k);
     return result;
@@ -512,7 +573,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
         .split('|')
         .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
     );
-    const base = resolveInterfaceProps(pickMatch[1], visited);
+    const base = resolveInterfaceProps(pickMatch[1], scope, visited);
     for (const k of base.inputs) if (keys.has(k)) result.inputs.add(k);
     for (const k of base.outputs) if (keys.has(k)) result.outputs.add(k);
     return result;
@@ -521,7 +582,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
   // Plain reference — `X` or `X<Y, Z>`.
   const plain = single.match(/^(\w+)(?:\s*<[^>]*>)?$/);
   if (plain) {
-    const base = resolveInterfaceProps(plain[1], visited);
+    const base = resolveInterfaceProps(plain[1], scope, visited);
     for (const k of base.inputs) result.inputs.add(k);
     for (const k of base.outputs) result.outputs.add(k);
   }
@@ -535,6 +596,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
  */
 function resolveInterfaceProps(
   name: string,
+  scope: IndexScope,
   visited = new Set<string>(),
 ): ApiSet {
   if (visited.has(name)) return { inputs: new Set(), outputs: new Set() };
@@ -544,7 +606,7 @@ function resolveInterfaceProps(
 
   // Fallback to `${name}Base` when the direct name is a type alias (common
   // pattern: `type ButtonProps = Factory<..., ButtonPropsBase>`).
-  const index = getInterfaceIndex();
+  const index = getInterfaceIndex(scope);
   const entry =
     index.get(name) ??
     (name.endsWith('Props') ? index.get(`${name}Base`) : undefined);
@@ -552,7 +614,7 @@ function resolveInterfaceProps(
 
   // Type alias — recursively resolve its RHS expression.
   if (entry.kind === 'alias') {
-    return resolveTypeExpression(entry.rhs, visited);
+    return resolveTypeExpression(entry.rhs, visited, scope);
   }
 
   const result: ApiSet = { inputs: new Set(), outputs: new Set() };
@@ -569,7 +631,11 @@ function resolveInterfaceProps(
       // `CalendarDaysProps` internally references `CalendarMonthsProps`, which
       // used to leak into `visited` and silently drop the second Pick's props.
       const parentVisited = new Set(visited);
-      const parentProps = resolveInterfaceProps(parent.name, parentVisited);
+      const parentProps = resolveInterfaceProps(
+        parent.name,
+        scope,
+        parentVisited,
+      );
       const mergeSet = (target: Set<string>, source: Set<string>): void => {
         for (const k of source) {
           if (parent.pick && !parent.pick.has(k)) continue;
@@ -600,21 +666,21 @@ function resolveInterfaceProps(
  * without the component prefix. Follows `extends` chains recursively.
  */
 export function extractReactApi(file: string, pascalName: string): ApiSet {
-  const index = getInterfaceIndex();
+  const index = getInterfaceIndex('react');
   const baseCandidates = [
     `${pascalName}PropsBase`,
     `${pascalName}Props`,
     `${pascalName}Data`,
   ];
   for (const candidate of baseCandidates) {
-    if (index.has(candidate)) return resolveInterfaceProps(candidate);
+    if (index.has(candidate)) return resolveInterfaceProps(candidate, 'react');
   }
 
   // Fallback: parse the component source for an explicit FC<...> type
   // annotation near the component declaration and resolve that inner type.
   const fcInterface = findFcTypeAnnotation(file, pascalName);
   if (fcInterface && index.has(fcInterface)) {
-    return resolveInterfaceProps(fcInterface);
+    return resolveInterfaceProps(fcInterface, 'react');
   }
   return { inputs: new Set(), outputs: new Set() };
 }
@@ -677,33 +743,169 @@ export function extractAngularApi(file: string): ApiSet {
   return { inputs, outputs };
 }
 
-export function diffApi(pascalName: string): {
-  diffs: ApiDiff[];
-  reactFile: string | null;
-  ngFile: string | null;
+/**
+ * Parse a Vue SFC's `defineEmits<{ ... }>()` declaration.
+ *
+ * Only the named-tuple type form is accepted:
+ *
+ * ```ts
+ * const emit = defineEmits<{
+ *   change: [value: string];
+ *   'update:value': [value: string];
+ * }>();
+ * ```
+ *
+ * The call-signature form and a bare type reference are reported as
+ * malformed rather than yielding an empty set: silently extracting zero
+ * emits is indistinguishable from perfect output parity.
+ */
+export function parseDefineEmits(text: string): {
+  outputs: Set<string>;
+  errors: string[];
 } {
-  const reactFile = locateReactFile(pascalName);
-  const ngFile = locateAngularFile(pascalName);
-  if (!reactFile || !ngFile) {
-    return { diffs: [], reactFile, ngFile };
+  const outputs = new Set<string>();
+  const parsed = parseMacroTypeMembers(text, 'defineEmits');
+
+  if (!parsed) return { outputs, errors: [] };
+
+  const errors = [...parsed.errors];
+
+  for (const member of parsed.members) {
+    const name = memberKey(member);
+
+    if (!name) {
+      errors.push(
+        member.startsWith('(')
+          ? 'defineEmits uses the call-signature form; rewrite it as a ' +
+              'named-tuple literal, e.g. `{ change: [value: string] }`'
+          : `unparseable defineEmits member: \`${member.slice(0, 40)}\``,
+      );
+      continue;
+    }
+
+    // `update:<prop>` is the plumbing behind Vue's named `v-model`; it is
+    // additive to the React-named event, never a replacement, so it is not
+    // part of output parity.
+    if (name.startsWith('update:')) continue;
+
+    outputs.add(name);
   }
-  const r = extractReactApi(reactFile, pascalName);
-  const n = extractAngularApi(ngFile);
+
+  return { outputs, errors };
+}
+
+export type VueApiResult = ApiSet & { errors: string[] };
+
+/**
+ * Extract the Vue side's public API: props from the `<component>.types.ts`
+ * interface (resolved with the same inheritance machinery as the React side)
+ * and emits from the SFC's `defineEmits`.
+ */
+export function extractVueApi(
+  typesFile: string,
+  sfcFile: string | null,
+  pascalName: string,
+): VueApiResult {
+  const errors: string[] = [];
+  const index = getInterfaceIndex('vue');
+  const candidate = [`${pascalName}PropsBase`, `${pascalName}Props`].find((c) =>
+    index.has(c),
+  );
+
+  const props: ApiSet = candidate
+    ? resolveInterfaceProps(candidate, 'vue')
+    : { inputs: new Set(), outputs: new Set() };
+
+  if (!candidate) {
+    errors.push(
+      `no \`${pascalName}Props\` interface exported from ${typesFile.replace(process.cwd(), '')}`,
+    );
+  }
+
+  const outputs = new Set(props.outputs);
+
+  if (sfcFile && existsSync(sfcFile)) {
+    const emits = parseDefineEmits(readFileSync(sfcFile, 'utf-8'));
+
+    for (const name of emits.outputs) outputs.add(name);
+    errors.push(...emits.errors);
+  } else {
+    errors.push(`no SFC found next to ${typesFile.replace(process.cwd(), '')}`);
+  }
+
+  for (const name of SKIP_PROP_NAMES) {
+    props.inputs.delete(name);
+    outputs.delete(name);
+  }
+
+  return { inputs: props.inputs, outputs, errors };
+}
+
+/** Name-level set comparison shared by every target. */
+function compareApiSets(react: ApiSet, target: ApiSet): ApiDiff[] {
   const diffs: ApiDiff[] = [];
-  for (const name of [...r.inputs].sort()) {
-    if (!n.inputs.has(name))
+
+  for (const name of [...react.inputs].sort()) {
+    if (!target.inputs.has(name))
       diffs.push({ kind: 'input', side: 'missing', name });
   }
-  for (const name of [...n.inputs].sort()) {
-    if (!r.inputs.has(name)) diffs.push({ kind: 'input', side: 'extra', name });
+  for (const name of [...target.inputs].sort()) {
+    if (!react.inputs.has(name))
+      diffs.push({ kind: 'input', side: 'extra', name });
   }
-  for (const name of [...r.outputs].sort()) {
-    if (!n.outputs.has(name))
+  for (const name of [...react.outputs].sort()) {
+    if (!target.outputs.has(name))
       diffs.push({ kind: 'output', side: 'missing', name });
   }
-  for (const name of [...n.outputs].sort()) {
-    if (!r.outputs.has(name))
+  for (const name of [...target.outputs].sort()) {
+    if (!react.outputs.has(name))
       diffs.push({ kind: 'output', side: 'extra', name });
   }
-  return { diffs, reactFile, ngFile };
+
+  return diffs;
+}
+
+export function diffApi(
+  pascalName: string,
+  target: ParityTarget = 'ng',
+): {
+  diffs: ApiDiff[];
+  reactFile: string | null;
+  targetFile: string | null;
+} {
+  const reactFile = locateReactFile(pascalName);
+
+  if (target === 'vue') {
+    const located = locateVueFile(pascalName);
+
+    if (!reactFile || !located) {
+      return { diffs: [], reactFile, targetFile: located?.typesFile ?? null };
+    }
+
+    const r = extractReactApi(reactFile, pascalName);
+    const v = extractVueApi(located.typesFile, located.sfcFile, pascalName);
+    const diffs = compareApiSets(r, v);
+
+    // Extraction failures come first: every diff below them is unreliable.
+    for (const message of v.errors.reverse()) {
+      diffs.unshift({ kind: 'error', side: 'extra', name: message });
+    }
+
+    return { diffs, reactFile, targetFile: located.typesFile };
+  }
+
+  const targetFile = locateAngularFile(pascalName);
+
+  if (!reactFile || !targetFile) {
+    return { diffs: [], reactFile, targetFile };
+  }
+
+  return {
+    diffs: compareApiSets(
+      extractReactApi(reactFile, pascalName),
+      extractAngularApi(targetFile),
+    ),
+    reactFile,
+    targetFile,
+  };
 }

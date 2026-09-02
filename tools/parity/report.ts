@@ -1,18 +1,27 @@
 import type { Diff } from './compare.ts';
 
-const KIND_LABEL: Record<Diff['kind'], string> = {
-  tag: 'TAG',
-  attr: 'ATTR',
-  style: 'STYLE',
-  text: 'TEXT',
-  missing: 'MISSING (only in React)',
-  extra: 'EXTRA (only in Angular)',
-  error: 'ERROR',
-  input: 'INPUT',
-  output: 'OUTPUT',
-};
+function kindLabels(targetLabel: string): Record<Diff['kind'], string> {
+  return {
+    tag: 'TAG',
+    attr: 'ATTR',
+    style: 'STYLE',
+    text: 'TEXT',
+    args: 'ARGS',
+    missing: 'MISSING (only in React)',
+    extra: `EXTRA (only in ${targetLabel})`,
+    error: 'ERROR',
+    input: 'INPUT',
+    output: 'OUTPUT',
+  };
+}
 
-export function renderReport(component: string, diffs: Diff[]): string {
+export function renderReport(
+  component: string,
+  diffs: Diff[],
+  targetLabel = 'Angular',
+): string {
+  const KIND_LABEL = kindLabels(targetLabel);
+  const targetKey = targetLabel.toLowerCase();
   if (diffs.length === 0) {
     return `# ${component}\n\nPARITY OK — no diffs.\n`;
   }
@@ -33,8 +42,9 @@ export function renderReport(component: string, diffs: Diff[]): string {
     for (const d of items) {
       lines.push(`  - [${KIND_LABEL[d.kind]}] ${d.path}`);
       if (d.react !== undefined)
-        lines.push(`      react:   ${truncate(d.react)}`);
-      if (d.ng !== undefined) lines.push(`      angular: ${truncate(d.ng)}`);
+        lines.push(`      react:  ${truncate(d.react)}`);
+      if (d.target !== undefined)
+        lines.push(`      ${targetKey}: ${truncate(d.target)}`);
     }
     lines.push('');
   }

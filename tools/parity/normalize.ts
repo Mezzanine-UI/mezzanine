@@ -88,18 +88,31 @@ export const STYLE_KEYS: readonly string[] = [
  */
 export const SNAPSHOT_SOURCE = `
 (styleKeys) => {
-  var DROP_ATTR = /^(_ngcontent|_nghost|ng-version|ng-reflect-|data-reactroot|_)/;
+  var DROP_ATTR = /^(_ngcontent|_nghost|ng-version|ng-reflect-|data-reactroot|data-v-|_)/;
   var KEEP_GENERIC = new Set(['class','role','href','type','name','value','disabled','checked','id','for','placeholder','title','alt','src','tabindex']);
 
   // Mezzanine uses BEM-style class names (e.g. mzn-button--base-text-link),
   // not CSS-module hashes — compare classes verbatim, only sorting tokens.
-  // Drop \`ng-*\` classes (ng-pristine, ng-untouched, ng-valid, ng-dirty,
-  // ng-touched, ng-invalid, etc.) injected by Angular FormsModule when an
-  // element has an NgModel/NgForm directive — they have no React analogue.
+  //
+  // Dropped, because they are framework plumbing with no React analogue:
+  //   - \`ng-*\` (ng-pristine, ng-untouched, ng-valid, ng-dirty, ng-touched,
+  //     ng-invalid, …) injected by Angular FormsModule on NgModel/NgForm hosts
+  //   - Vue \`<Transition>\` state classes, both the default \`v-enter-from\`
+  //     family and custom-named \`xxx-enter-active\` variants
+  //
+  // Nothing else is masked. Vue injects no form-state classes, so its diff is
+  // naturally more honest than Angular's; every masking rule added here is a
+  // place where a real bug can hide.
+  var VUE_TRANSITION_CLASS = /-(enter|leave)-(from|active|to)$/;
   function normalizeClass(value) {
     return value
       .split(/\\s+/)
-      .filter(function (c) { return c && c.indexOf('ng-') !== 0; })
+      .filter(function (c) {
+        if (!c) return false;
+        if (c.indexOf('ng-') === 0) return false;
+        if (VUE_TRANSITION_CLASS.test(c)) return false;
+        return true;
+      })
       .sort()
       .join(' ');
   }
