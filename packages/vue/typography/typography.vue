@@ -12,7 +12,7 @@ import type { TypographyProps } from './typography.types';
  * 文字排版元件，提供一致的語意化文字樣式。
  *
  * 透過 `variant` 套用設計系統中定義的語意排版類型（如 `h1`、`h2`、`h3`、`body`、`caption` 等），
- * 並自動推斷對應的 HTML 標籤（`h1–h3` → `<h1>–<h3>`，body 系列 → `<p>`，其餘 → `<span>`）。
+ * 並自動推斷對應的 HTML 標籤（h1–h3 對應同名標籤，body 系列對應 p，其餘對應 span）。
  * 可透過 `color` 套用調色盤中的文字色彩，`align` 控制對齊方式，`ellipsis` 啟用單行截斷省略號。
  *
  * @example
