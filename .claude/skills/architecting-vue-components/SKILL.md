@@ -266,6 +266,16 @@ The DOM diff is unforgiving. These are the rules that keep it at zero:
    manually, or configure `<Transition>`'s `enter-from-class` etc. to emit exactly React's
    class names. Do not let Vue's default class names reach the DOM.
 5. **No `<style>` blocks.** (R2). Enforced by `check-vue-no-local-styles.mjs`.
+   5a. **No unbalanced HTML tags in `<script>` comments.** Writing
+   ``merges `className` onto the inner `<span>`, not the container `<div>` ``
+   in a JSDoc block can make the entire SFC fail to parse, reported as
+   `Element is missing end tag` pointing at **end-of-file** — not at the
+   comment. Whether it triggers depends on what else the file contains, so the
+   same comment can be harmless in one component and fatal in the next, and
+   `@vue/compiler-sfc`'s own `parse()` does not flag it. Balanced markup is
+   fine (that is what `@example` blocks are); write incidental element
+   mentions without angle brackets. Enforced by
+   `check-vue-comment-tags.mjs`.
 6. **No inline `:style` with literal px/hex.** Same reason; use core classes and tokens.
 7. **Attribute leakage.** Vue does not leak object props to attributes the way React does
    (see the `select` rows in `DEVIATIONS.md` where React leaks

@@ -81,7 +81,7 @@
     "parity:vue": "tsx tools/parity/compare.ts --target vue",
     "parity:vue:all": "tsx tools/parity/compare.ts --target vue --all",
     "parity:vue:lint-styles": "node tools/parity/check-vue-no-local-styles.mjs",
-    "parity:vue:lint-api": "tsx tools/parity/check-vue-emit-syntax.ts && tsx tools/parity/check-vue-slots.ts && tsx tools/parity/check-vue-single-root.ts",
+    "parity:vue:lint-api": "tsx tools/parity/check-vue-emit-syntax.ts && tsx tools/parity/check-vue-slots.ts && tsx tools/parity/check-vue-single-root.ts && node tools/parity/check-vue-comment-tags.mjs",
     "parity:stories": "node tools/parity/check-story-parity.mjs",
     "components:graph": "node tools/parity/component-graph.mjs"
   },
