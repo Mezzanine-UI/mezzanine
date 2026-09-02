@@ -215,6 +215,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
     const {
       calendarValue,
+      committedCalendarValue,
+      hoverValue,
       hoverFromValue,
       hoverToValue,
       inputFromValue,
@@ -502,7 +504,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
           referenceDate={referenceDate}
           renderAnnotations={renderAnnotations}
           secondCalendarRef={secondCalendarRef}
-          value={calendarValue}
+          previewValue={hoverValue}
+          value={committedCalendarValue}
         />
       </>
     );
