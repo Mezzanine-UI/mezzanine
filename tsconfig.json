@@ -2,12 +2,12 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "baseUrl": "./packages",
     "paths": {
-      "@mezzanine-ui/icons": ["icons/src"],
-      "@mezzanine-ui/system/*": ["system/src/*"],
-      "@mezzanine-ui/core/*": ["core/src/*"],
-      "@mezzanine-ui/ng/*": ["ng/src/*"]
+      "@mezzanine-ui/icons": ["./packages/icons/src"],
+      "@mezzanine-ui/system/*": ["./packages/system/src/*"],
+      "@mezzanine-ui/core/*": ["./packages/core/src/*"],
+      "@mezzanine-ui/ng/*": ["./packages/ng/src/*"],
+      "@mezzanine-ui/vue/*": ["./packages/vue/*"]
     }
   }
 }
