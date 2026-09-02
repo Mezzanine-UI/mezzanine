@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as BadgeStories from './badge.stories';
+
+<Meta of={BadgeStories} />
+
+# Badge
+
+徽章元件，用於顯示數字計數、狀態圓點或文字標籤。
+
+支援四種 variant 類型：count（數字計數）、dot（狀態圓點）、dot 含文字以及 text（純文字標籤）。
+計數型徽章可設定 `overflowCount` 限制最大顯示數值；當 `count` 為 0 時徽章自動隱藏。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/badge/badge.vue)
+
+<ArgTypes of={BadgeStories.Playground} />
