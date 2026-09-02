@@ -10,3 +10,9 @@
 | Icon       | `MznIcon`       | `@mezzanine-ui/vue/icon`       | SVG 圖示元件，搭配 `@mezzanine-ui/icons` 使用，支援顏色、尺寸與旋轉動畫控制            |
 | Separator  | `MznSeparator`  | `@mezzanine-ui/vue/separator`  | 水平或垂直分隔線，以 `<hr>` 為基礎，垂直時自動標註 `aria-orientation`                  |
 | Typography | `MznTypography` | `@mezzanine-ui/vue/typography` | 文字排版元件，`variant` 為語意排版類型並自動推斷標籤，支援色彩、對齊、單行截斷與不換行 |
+
+## Data Display（資料展示）
+
+| 元件  | 匯入名稱   | 匯入路徑                  | 說明                                                             |
+| ----- | ---------- | ------------------------- | ---------------------------------------------------------------- |
+| Badge | `MznBadge` | `@mezzanine-ui/vue/badge` | 徽章元件，支援數字計數、狀態圓點、圓點含文字與純文字標籤四種變體 |
