@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TypographyStories from './typography.stories';
+
+<Meta of={TypographyStories} />
+
+# Typography
+
+文字排版元件，提供一致的語意化文字樣式。
+
+透過 `variant` 套用設計系統中定義的語意排版類型（如 `h1`、`h2`、`h3`、`body`、`caption` 等），
+並自動推斷對應的 HTML 標籤（`h1–h3` → `<h1>–<h3>`，body 系列 → `<p>`，其餘 → `<span>`）。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/typography/typography.vue)
+
+<ArgTypes of={TypographyStories.Playground} />
