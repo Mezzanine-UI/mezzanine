@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ScrollbarStories from './scrollbar.stories';
+
+<Meta of={ScrollbarStories} />
+
+# Scrollbar
+
+自訂捲軸容器，在所有瀏覽器上提供一致的捲軸外觀。
+
+以 OverlayScrollbars 實作，透過 `maxHeight` / `maxWidth` 限制容器尺寸並觸發捲動。
+`disabled` 為 true 時退回原生捲軸的純 div，適合巢狀情境。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/scrollbar/scrollbar.vue)
+
+<ArgTypes of={ScrollbarStories.Playground} />
