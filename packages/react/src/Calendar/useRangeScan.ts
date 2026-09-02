@@ -4,7 +4,9 @@ import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import { useCallback } from 'react';
 import { useCalendarContext } from './CalendarContext';
 
-export interface UseHasDisabledDateInRangeProps {
+export interface UseRangeScanProps {
+  /** Locale defining the first day of each displayed week. */
+  displayWeekDayLocale?: string;
   /**
    * Predicate marking a date as unselectable. Consulted in `day` mode.
    */
@@ -36,50 +38,22 @@ export interface UseHasDisabledDateInRangeProps {
   mode: CalendarMode;
 }
 
-/**
- * Upper bound on how many units one scan will walk.
- *
- * Ranges are user-supplied and not always sane — a mistyped year in the inputs
- * produces a span of hundreds of thousands of days. Past this many steps the
- * scan gives up and reports "no disabled unit found", which leaves the range
- * selectable and painted rather than silently blocking it. In `day` mode this
- * covers roughly eleven years; every other mode covers far longer.
- */
+/** Maximum predicate calls per scan, regardless of the supplied range. */
 export const maxRangeScanSteps = 4000;
 
-/**
- * Returns whether `[start, end]` covers at least one disabled unit.
- *
- * Answers for the whole range, so callers deciding what to paint and callers
- * deciding what may be selected always agree.
- */
-export type HasDisabledDateInRange = (
-  start: DateType,
-  end: DateType,
-) => boolean;
+/** An incomplete scan does not establish that a range is selectable. */
+export type RangeScanResult = 'clear' | 'disabled' | 'incomplete';
+
+export type RangeScan = (start: DateType, end: DateType) => RangeScanResult;
 
 /**
- * 判斷一段區間內是否存在「不可選取」的單位。
- *
- * 掃描以 `mode` 對應的單位為步進（`year` 就一年一步，而非一天一步），
- * 並且在該 `mode` 沒有對應的 disabled predicate 時直接短路回傳 `false`——
- * 沒有 predicate 就沒有東西可判斷，不需要走訪任何日期。
- *
- * 走訪步數上限為 {@link maxRangeScanSteps}，超過就視為找不到，
- * 避免打字誤植出來的荒謬區間把畫面鎖死。
- *
- * @example
- * ```tsx
- * const hasDisabledDateInRange = useHasDisabledDateInRange({ isDateDisabled, mode });
- *
- * if (hasDisabledDateInRange(start, end)) {
- *   // 區間跨越了不可選取的單位
- * }
- * ```
- *
- * @see {@link RangeCalendar} 搭配的元件
+ * Checks each selection unit once, using the displayed calendar's week start.
+ * With no predicate, every range is clear without walking any dates.
+ * A capped scan reports incomplete so callers can withhold highlighting and
+ * selection without mistaking an unchecked range for a valid one.
  */
-export function useHasDisabledDateInRange({
+export function useRangeScan({
+  displayWeekDayLocale,
   isDateDisabled,
   isHalfYearDisabled,
   isMonthDisabled,
@@ -87,7 +61,7 @@ export function useHasDisabledDateInRange({
   isWeekDisabled,
   isYearDisabled,
   mode,
-}: UseHasDisabledDateInRangeProps): HasDisabledDateInRange {
+}: UseRangeScanProps): RangeScan {
   const {
     addDay,
     addMonth,
@@ -122,7 +96,7 @@ export function useHasDisabledDateInRange({
        * common case — stops here.
        */
       if (!isUnitDisabled) {
-        return false;
+        return 'clear';
       }
 
       const [rangeStart, rangeEnd] = isBefore(start, end)
@@ -143,7 +117,10 @@ export function useHasDisabledDateInRange({
           case 'quarter':
             return getCurrentQuarterFirstDate(target);
           case 'week':
-            return getCurrentWeekFirstDate(target, locale);
+            return getCurrentWeekFirstDate(
+              target,
+              displayWeekDayLocale ?? locale,
+            );
           case 'year':
             return getCurrentYearFirstDate(target);
           case 'day':
@@ -178,27 +155,25 @@ export function useHasDisabledDateInRange({
       let steps = 0;
 
       while (!isBefore(rangeEnd, current)) {
-        // Give up rather than lock the tab on an absurd range. Reporting
-        // "nothing disabled found" keeps such a range usable; reporting the
-        // opposite would make it permanently unselectable.
         if (steps >= maxRangeScanSteps) {
-          return false;
+          return 'incomplete';
         }
 
         if (isUnitDisabled(current)) {
-          return true;
+          return 'disabled';
         }
 
         current = toNextUnit(current);
         steps += 1;
       }
 
-      return false;
+      return 'clear';
     },
     [
       addDay,
       addMonth,
       addYear,
+      displayWeekDayLocale,
       getCurrentHalfYearFirstDate,
       getCurrentMonthFirstDate,
       getCurrentQuarterFirstDate,

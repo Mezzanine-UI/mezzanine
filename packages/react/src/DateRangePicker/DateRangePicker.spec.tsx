@@ -12,7 +12,7 @@ import {
   getByText,
 } from '../../__test-utils__';
 import { CalendarConfigProvider } from '../Calendar';
-import { maxRangeScanSteps } from '../Calendar/useHasDisabledDateInRange';
+import { maxRangeScanSteps } from '../Calendar/useRangeScan';
 import DateRangePicker from '.';
 
 describe('<DateRangePicker />', () => {

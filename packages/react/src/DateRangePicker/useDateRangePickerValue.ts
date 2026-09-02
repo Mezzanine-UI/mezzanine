@@ -18,9 +18,8 @@ export interface UseDateRangePickerValueProps {
    * Function to check if there are disabled dates in the range
    *
    * @deprecated `DateRangePicker` no longer supplies this. Deciding whether a
-   * range covers a disabled unit moved into `RangeCalendar`, which is the only
-   * place that knows which calendar cells are on screen and can therefore
-   * answer it at a cost that does not grow with the width of the range.
+   * range covers a disabled unit moved into `RangeCalendar`, where a shared,
+   * bounded scan drives both highlighting and calendar selection.
    * Still honoured for external callers of this hook.
    */
   hasDisabledDateInRange?: (start: DateType, end: DateType) => boolean;

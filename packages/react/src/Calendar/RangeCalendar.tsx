@@ -12,7 +12,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Calendar, { CalendarProps } from './Calendar';
 import { useCalendarContext } from './CalendarContext';
 import { useRangeCalendarControls } from './useRangeCalendarControls';
-import { useHasDisabledDateInRange } from './useHasDisabledDateInRange';
+import { useRangeScan } from './useRangeScan';
 import CalendarFooterActions, {
   CalendarFooterActionsProps,
 } from './CalendarFooterActions';
@@ -319,7 +319,8 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       ],
     );
 
-    const hasDisabledDateInRange = useHasDisabledDateInRange({
+    const scanRange = useRangeScan({
+      displayWeekDayLocale,
       isDateDisabled,
       isHalfYearDisabled,
       isMonthDisabled,
@@ -330,7 +331,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
     });
 
     /**
-     * A range that covers a disabled unit is not a valid range, so it is not
+     * A disabled or incompletely checked range is not selectable, so it is not
      * painted as one. This asks the same question `handleRangeSelection` asks
      * before committing a selection, so the preview never invites a click that
      * would then be rejected. Memoised because the six granularity handlers
@@ -342,11 +343,10 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
         Boolean(
           rangeAnchorStart &&
             rangeAnchorEnd &&
-            hasDisabledDateInRange(rangeAnchorStart, rangeAnchorEnd),
+            scanRange(rangeAnchorStart, rangeAnchorEnd) !== 'clear',
         ),
-      // Keyed on the anchors themselves: `value` is rebuilt by castArray on
-      // every render, so depending on it would defeat the memo entirely.
-      [hasDisabledDateInRange, rangeAnchorEnd, rangeAnchorStart],
+      // Memoize by anchor values, including when callers recreate the array.
+      [scanRange, rangeAnchorEnd, rangeAnchorStart],
     );
 
     const resolvedIsDateInRange = shouldSuppressInRange
@@ -382,7 +382,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
           const rawEnd = target;
 
           // 檢查是否有不可選日期
-          if (hasDisabledDateInRange(rawStart, rawEnd)) {
+          if (scanRange(rawStart, rawEnd) !== 'clear') {
             onChangeProp([target, undefined]);
             return;
           }
@@ -404,7 +404,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
         isBefore,
         normalizeRangeStart,
         normalizeRangeEnd,
-        hasDisabledDateInRange,
+        scanRange,
       ],
     );
 
