@@ -56,7 +56,8 @@ for (const component of components) {
 
   for (const file of files) {
     const src = readFileSync(file, 'utf8');
-    const isStory = file.endsWith('.stories.tsx') || file.endsWith('.stories.ts');
+    const isStory =
+      file.endsWith('.stories.tsx') || file.endsWith('.stories.ts');
     const bucket = isStory ? storyDeps : deps;
 
     if (BARREL.test(src)) barrelUsers.add(component);
@@ -99,6 +100,15 @@ while (remaining.size > 0) {
 
 const ported = (c) => existsSync(join(vueRoot, kebab(c)));
 
+/**
+ * A component can only *reach parity* once everything its stories render also
+ * exists — parity includes the stories. Implementation order and
+ * parity-reachable order are therefore different things: `portal` has no
+ * implementation dependencies and sits in batch 1, but its stories render a
+ * Button, which is not ported until batch 4.
+ */
+const storyReady = (c) => [...storyDeps.get(c)].every(ported);
+
 if (process.argv.includes('--json')) {
   console.log(
     JSON.stringify(
@@ -110,8 +120,12 @@ if (process.argv.includes('--json')) {
             react: c,
             vue: kebab(c),
             ported: ported(c),
+            storyReady: storyReady(c),
             dependsOn: [...deps.get(c)].sort(),
             storiesAlsoNeed: [...storyDeps.get(c)].sort(),
+            storiesBlockedOn: [...storyDeps.get(c)]
+              .filter((d) => !ported(d))
+              .sort(),
           })),
         })),
         barrelUsers: [...barrelUsers].sort(),
@@ -135,7 +149,18 @@ for (const [i, batch] of batches.entries()) {
   console.log(`${label} — ${batch.members.length} component(s)`);
   console.log(
     `  ${batch.members
-      .map((c) => `${kebab(c)}${ported(c) ? ' ✓' : ''}`)
+      .map((c) => {
+        if (ported(c)) return `${kebab(c)} ✓`;
+        if (storyReady(c)) return kebab(c);
+
+        const blockers = [...storyDeps.get(c)]
+          .filter((d) => !ported(d))
+          .map(kebab)
+          .sort()
+          .join('+');
+
+        return `${kebab(c)} (stories blocked on ${blockers})`;
+      })
       .join(', ')}\n`,
   );
 }
