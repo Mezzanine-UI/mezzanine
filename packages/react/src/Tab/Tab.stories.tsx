@@ -82,55 +82,76 @@ export const Error = () => {
 export const TabsSize = () => {
   const [tabKey, setTabKey] = useState<Key>('0');
 
-  const horizontalTabs = (
-    <>
-      <TabItem key="0">Tab 1</TabItem>
-      <TabItem key="1">Tab 2</TabItem>
-      <TabItem key="2">Tab 3</TabItem>
-      <TabItem key="3">Tab 4</TabItem>
-      <TabItem key="4">Tab 5</TabItem>
-      <TabItem key="5">Tab 6</TabItem>
-      <TabItem key="6">Tab 7</TabItem>
-    </>
-  );
+  /**
+   * An array, not a fragment. `flattenChildren` concatenates a fragment's own
+   * key onto each child's, so `key="0"` inside one becomes `"0.0"` and never
+   * matches `activeKey` — every tab group below rendered with nothing
+   * selected.
+   */
+  const horizontalTabs = [
+    <TabItem key="0">Tab 1</TabItem>,
+    <TabItem key="1">Tab 2</TabItem>,
+    <TabItem key="2">Tab 3</TabItem>,
+    <TabItem key="3">Tab 4</TabItem>,
+    <TabItem key="4">Tab 5</TabItem>,
+    <TabItem key="5">Tab 6</TabItem>,
+    <TabItem key="6">Tab 7</TabItem>,
+  ];
 
-  const verticalTabs = (
-    <>
-      <TabItem key="0">Tab 1</TabItem>
-      <TabItem key="1">Tab 2</TabItem>
-      <TabItem key="2">Tab 3</TabItem>
-      <TabItem key="3">Tab 4</TabItem>
-      <TabItem key="4">Tab 5</TabItem>
-      <TabItem key="5">Tab 6</TabItem>
-      <TabItem key="6">Tab 7</TabItem>
-      <TabItem key="7">Tab 8</TabItem>
-      <TabItem key="8">Tab 9</TabItem>
-      <TabItem key="9">Tab 10</TabItem>
-    </>
-  );
+  const verticalTabs = [
+    <TabItem key="0">Tab 1</TabItem>,
+    <TabItem key="1">Tab 2</TabItem>,
+    <TabItem key="2">Tab 3</TabItem>,
+    <TabItem key="3">Tab 4</TabItem>,
+    <TabItem key="4">Tab 5</TabItem>,
+    <TabItem key="5">Tab 6</TabItem>,
+    <TabItem key="6">Tab 7</TabItem>,
+    <TabItem key="7">Tab 8</TabItem>,
+    <TabItem key="8">Tab 9</TabItem>,
+    <TabItem key="9">Tab 10</TabItem>,
+  ];
 
   return (
     <div style={{ display: 'grid', gap: 48 }}>
-      分頁列尺寸（Tabs Size）
-      水平分頁列（Horizontal Tabs）
+      分頁列尺寸（Tabs Size） 水平分頁列（Horizontal Tabs）
       <div style={{ display: 'grid', gap: 24 }}>
         Main
-        <Tab activeKey={tabKey} onChange={setTabKey} direction="horizontal" size="main">
+        <Tab
+          activeKey={tabKey}
+          onChange={setTabKey}
+          direction="horizontal"
+          size="main"
+        >
           {horizontalTabs}
         </Tab>
         Sub
-        <Tab activeKey={tabKey} onChange={setTabKey} direction="horizontal" size="sub">
+        <Tab
+          activeKey={tabKey}
+          onChange={setTabKey}
+          direction="horizontal"
+          size="sub"
+        >
           {horizontalTabs}
         </Tab>
       </div>
       垂直分頁列（Vertical Tabs）
       <div style={{ display: 'grid', gap: 24 }}>
         Main
-        <Tab activeKey={tabKey} onChange={setTabKey} direction="vertical" size="main">
+        <Tab
+          activeKey={tabKey}
+          onChange={setTabKey}
+          direction="vertical"
+          size="main"
+        >
           {verticalTabs}
         </Tab>
         Sub
-        <Tab activeKey={tabKey} onChange={setTabKey} direction="vertical" size="sub">
+        <Tab
+          activeKey={tabKey}
+          onChange={setTabKey}
+          direction="vertical"
+          size="sub"
+        >
           {verticalTabs}
         </Tab>
       </div>
