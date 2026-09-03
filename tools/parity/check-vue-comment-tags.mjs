@@ -40,13 +40,24 @@ const VOID_ELEMENTS = new Set([
   'wbr',
 ]);
 
+const TAG = /<(\/?)([a-zA-Z][\w.-]*)\b[^>]*?(\/?)>/g;
+
 /**
- * A tag mention in prose. The leading `(^|[^A-Za-z0-9_$])` matters: it is what
- * separates an element name from a TypeScript generic. `Record<string, any>`
- * and `Meta<typeof MznIcon>` have the `<` welded to an identifier and are not
- * markup; `` `<span>` `` and `onto the <div>` do not, and are.
+ * Whether a match is a TypeScript generic rather than markup.
+ *
+ * A generic welds the `<` to an identifier — `Record<string, any>`,
+ * `Meta<typeof MznIcon>` — while an element mentioned in prose does not.
+ * The test applies to *opening* tags only: `</Name>` is never a generic, and
+ * a closing tag frequently follows text directly, as in
+ * `<MznAnchor href="#a">ACR 1</MznAnchor>`.
  */
-const TAG = /(^|[^A-Za-z0-9_$])<(\/?)([a-zA-Z][\w.-]*)\b[^>]*?(\/?)>/g;
+function isGeneric(text, index, isClosing) {
+  if (isClosing) return false;
+
+  const before = text[index - 1];
+
+  return !!before && /[A-Za-z0-9_$]/.test(before);
+}
 const BLOCK_COMMENT = /\/\*[\s\S]*?\*\//g;
 const LINE_COMMENT = /\/\/[^\n]*/g;
 
@@ -83,7 +94,10 @@ function unbalancedTags(comment) {
   const stack = [];
   const problems = [];
 
-  for (const [, , slash, name, selfClose] of normalized.matchAll(TAG)) {
+  for (const match of normalized.matchAll(TAG)) {
+    const [, slash, name, selfClose] = match;
+
+    if (isGeneric(normalized, match.index, !!slash)) continue;
     if (VOID_ELEMENTS.has(name.toLowerCase()) || selfClose) continue;
 
     if (slash) {
