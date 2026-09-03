@@ -40,6 +40,7 @@
 | 元件     | 匯入名稱      | 匯入路徑                     | 說明                                           |
 | -------- | ------------- | ---------------------------- | ---------------------------------------------- |
 | Skeleton | `MznSkeleton` | `@mezzanine-ui/vue/skeleton` | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態 |
+| Spin     | `MznSpin`     | `@mezzanine-ui/vue/spin`     | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋 |
 
 ## 內部元件（不建議直接使用）
 
@@ -59,7 +60,7 @@
 | ---- | --------- | ------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | Fade | `MznFade` | `@mezzanine-ui/vue/transition` | 淡入淡出轉場。其餘轉場家族成員（Collapse / Rotate / Scale / Slide / Translate）待其 stories 解封後再移植 |
 
-> Portal、Popper、Backdrop、Tooltip 與 Fade 的 stories 需要尚未移植的元件（都直接
+> Portal、Popper、Backdrop、Tooltip、Spin 與 Fade 的 stories 需要尚未移植的元件（都直接
 > 或間接卡在 Button），因此還沒有 story 檔，DOM parity 也還沒跑過
 > （`yarn components:graph` 會標成 `parity pending …`）。目前的把關是 props 契約
 > 比對、靜態檢查與單元測試。
