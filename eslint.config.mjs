@@ -138,6 +138,19 @@ export default tseslint.config(
   // stylistic opinions.
   ...vuePlugin.configs['flat/essential'],
   {
+    /**
+     * `packages/vue` has no React in it, but its `.ts` files — stories and
+     * composables — call things like `useTemplateRef` inside a function named
+     * `setup`, which the React hooks rules read as a hook called outside a
+     * component.
+     */
+    files: ['packages/vue/**/*.ts'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+    },
+  },
+  {
     files: ['**/*.vue'],
     languageOptions: {
       parser: vueParser,
