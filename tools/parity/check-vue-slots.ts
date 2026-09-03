@@ -103,12 +103,24 @@ for (const file of files) {
   }
 
   for (const name of [...declared].sort()) {
-    if (!rendered.has(name)) {
-      problems.push({
-        file,
-        reason: `defineSlots declares "${name}" but no matching <slot> is rendered`,
-      });
-    }
+    if (rendered.has(name)) continue;
+
+    // A slot can be *read* rather than rendered: Anchor parses its children
+    // into a data model instead of projecting them, which is what React does
+    // with `Children.forEach`. That still makes the slot public API, so the
+    // declaration is correct — it just never reaches a `<slot>` element.
+    const readProgrammatically = new RegExp(
+      `slots(?:\\.${name}\\b|\\[['"\`]${name}['"\`]\\])`,
+    ).test(script);
+
+    if (readProgrammatically) continue;
+
+    problems.push({
+      file,
+      reason:
+        `defineSlots declares "${name}" but it is neither rendered as a ` +
+        '<slot> nor read from `slots` in the script',
+    });
   }
 }
 

@@ -43,13 +43,21 @@ for (const file of files) {
     continue;
   }
 
+  // `inheritAttrs: false` is the other valid resolution: it says the component
+  // deliberately forwards nothing, which is what a React component returning a
+  // fragment does too. Only silent dropping is a problem.
+  const script = `${descriptor.scriptSetup?.content ?? ''}\n${descriptor.script?.content ?? ''}`;
+
+  if (/inheritAttrs\s*:\s*false/.test(script)) continue;
+
   problems.push({
     file,
     line: descriptor.template?.loc.start.line,
     reason:
-      `${roots.length} root nodes and no explicit \`v-bind="$attrs"\`. ` +
-      'Fallthrough class/style will be dropped silently. Use a single root ' +
-      'element (React spreads className onto one root) or bind $attrs.',
+      `${roots.length} root nodes, no \`v-bind="$attrs"\` and no ` +
+      '`inheritAttrs: false`. Fallthrough class/style will be dropped ' +
+      'silently. Use a single root element (React spreads className onto one ' +
+      'root), bind $attrs explicitly, or declare that nothing is forwarded.',
   });
 }
 
