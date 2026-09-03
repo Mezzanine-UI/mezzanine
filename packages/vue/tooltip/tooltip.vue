@@ -236,10 +236,23 @@ const forwardedAttrs = computed(() => {
   return rest;
 });
 
+/**
+ * The trigger may be a component rather than an element — React's refs reach
+ * the DOM node either way, Vue's hand back the instance, so its root element
+ * is taken instead.
+ */
 const setTargetRef = (
   element: Element | ComponentPublicInstance | null,
 ): void => {
-  targetElement.value = (element as HTMLElement | null) ?? null;
+  if (!element) {
+    targetElement.value = null;
+
+    return;
+  }
+
+  const node = element instanceof Element ? element : element.$el;
+
+  targetElement.value = node instanceof HTMLElement ? node : null;
 };
 
 const triggerProps = computed(
