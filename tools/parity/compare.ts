@@ -247,6 +247,18 @@ function diffArgs(
 ): void {
   if (!react || !target) return;
 
+  // A story that declares no args has no meaningful Controls panel, and
+  // Storybook populates argTypes inconsistently for those: React leaves the
+  // control and options null on a render-only story while Vue's docgen still
+  // fills them in. Neither offers the reader anything to operate, so there is
+  // nothing to compare.
+  if (
+    Object.keys(react.initialArgs).length === 0 &&
+    Object.keys(target.initialArgs).length === 0
+  ) {
+    return;
+  }
+
   for (const [name, r] of Object.entries(react.argTypes)) {
     const t = target.argTypes[name];
 
