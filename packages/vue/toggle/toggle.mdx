@@ -1,0 +1,16 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ToggleStories from './toggle.stories';
+
+<Meta of={ToggleStories} />
+
+# Toggle
+
+切換開關元件，用於表示開／關二元狀態。
+
+支援受控（`checked` + `@change`，或 `v-model:checked`）與非受控（`defaultChecked`）；
+`label` 顯示於開關右側，`supportingText` 顯示於 label 下方。`disabled` 可由外層
+form control 繼承。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/toggle/toggle.vue)
+
+<ArgTypes of={ToggleStories.Playground} />
