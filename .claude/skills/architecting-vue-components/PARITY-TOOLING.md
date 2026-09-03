@@ -100,6 +100,29 @@ Add to the class filter (currently drops `ng-*`):
 
 `STYLE_KEYS` and the `--mzn-*` custom-property capture stay as they are.
 
+### 2.4a Two settling hazards in `snapshotStory` — do not "simplify" these away
+
+Both were found the hard way and both present as a hang or as phantom diffs
+rather than as an error.
+
+**Animations that never finish.** `document.getAnimations()` returns
+scroll-driven animations too — OverlayScrollbars creates two on every scrollbar
+handle, with computed timing expressed in percentages (`duration: "100%"`)
+because progress comes from a ScrollTimeline rather than the clock. Their
+`finished` promise never resolves, so awaiting it hangs the run indefinitely.
+The injected `animation: none !important` does not save you: it cancels CSS
+animations only, never ones created through the Web Animations API. Anything
+whose computed `endTime` is not a finite number must be **cancelled**, not
+awaited, and a hard cap should back that up.
+
+**Work deferred to idle time.** Components using OverlayScrollbars' `defer`
+option initialise inside `requestIdleCallback`. Whether that has run by
+snapshot time depends on how busy the page is, which differs between the two
+dev servers — so the _first_ story of a run reports a screenful of style and
+attribute diffs that only mean "the other side had not initialised yet", while
+the rest of the same component is clean. Wait for idle, then for two animation
+frames.
+
 ### 2.5 Wire up the unused `argTypes` comparison
 
 `ARGS_SOURCE` exists in `normalize.ts` but `compare.ts` never calls it, even though `CLAUDE.md`
