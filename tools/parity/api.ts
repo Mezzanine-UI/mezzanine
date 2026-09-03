@@ -288,12 +288,47 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
       // --- Type aliases ------------------------------------------------------
       // Greedy match up to the first top-level `;` — we track paren/bracket
       // depth so nested objects and generics don't terminate early.
-      const aliasHeaderPattern =
-        /(?:export\s+)?type\s+(\w+)(?:<[^>]*>)?\s*=\s*/g;
+      //
+      // The alias's own parameter list is skipped by tracking angle depth
+      // rather than by a `<[^>]*>` match: a parameter constrained by a generic
+      // (`C extends JSXElementConstructor<any>`) contains a `>` of its own, and
+      // the simple form stopped there and never reached the `=`. The whole
+      // alias then went unindexed, which is what hid `component` from every
+      // polymorphic component's props.
+      const aliasHeaderPattern = /(?:export\s+)?type\s+(\w+)\s*/g;
       for (const match of text.matchAll(aliasHeaderPattern)) {
         const name = match[1];
         if (index.has(name)) continue; // interface wins if both exist
-        const rhsStart = (match.index ?? 0) + match[0].length;
+
+        let cursor = (match.index ?? 0) + match[0].length;
+
+        if (text[cursor] === '<') {
+          let params = 0;
+
+          while (cursor < text.length) {
+            const ch = text[cursor];
+
+            if (ch === '<') params += 1;
+            else if (ch === '>') {
+              params -= 1;
+
+              if (params === 0) {
+                cursor += 1;
+                break;
+              }
+            }
+
+            cursor += 1;
+          }
+        }
+
+        while (cursor < text.length && /\s/.test(text[cursor])) cursor += 1;
+        if (text[cursor] !== '=') continue;
+
+        cursor += 1;
+        while (cursor < text.length && /\s/.test(text[cursor])) cursor += 1;
+
+        const rhsStart = cursor;
         // Scan forward until a top-level `;` respecting `{}`, `<>`, `()`, `[]`.
         let depthCurly = 0;
         let depthAngle = 0;
@@ -689,9 +724,33 @@ export function extractReactApi(file: string, pascalName: string): ApiSet {
     `${name}Props`,
     `${name}Data`,
   ]);
+  /**
+   * Every candidate that exists contributes, rather than the first one only.
+   *
+   * A polymorphic component declares both: `ButtonPropsBase` holds its own
+   * props, and `ButtonProps` is
+   * `ComponentOverridableForwardRefComponentPropsFactory<…, ButtonPropsBase>`,
+   * whose body ends in `& { component?: VC }`. Stopping at the first hit meant
+   * `component` was never part of React's surface, so a Vue port that declared
+   * it read as an extra input — the reason D12 said not to mirror it at all.
+   * The same merge also picks up variant props on a `XProps` union built from
+   * an `XPropsBase`.
+   */
+  const merged: ApiSet = { inputs: new Set(), outputs: new Set() };
+  let found = false;
+
   for (const candidate of baseCandidates) {
-    if (index.has(candidate)) return resolveInterfaceProps(candidate, 'react');
+    if (!index.has(candidate)) continue;
+
+    found = true;
+
+    const resolved = resolveInterfaceProps(candidate, 'react');
+
+    for (const name of resolved.inputs) merged.inputs.add(name);
+    for (const name of resolved.outputs) merged.outputs.add(name);
   }
+
+  if (found) return merged;
 
   // Fallback: parse the component source for an explicit FC<...> type
   // annotation near the component declaration and resolve that inner type.
