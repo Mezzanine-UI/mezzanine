@@ -140,31 +140,46 @@ export const SNAPSHOT_SOURCE = `
     for (var k = 0; k < keys.length; k++) sorted[keys[k]] = out[keys[k]];
     return sorted;
   }
-  function pickStyle(el) {
-    var cs = window.getComputedStyle(el);
+  // Project-prefixed CSS custom properties resolved at an element.
+  function collectMznVars(cs) {
+    var vars = {};
+    for (var j = 0; j < cs.length; j++) {
+      var name = cs[j];
+      if (name && name.indexOf('--mzn-') === 0) {
+        var cv = cs.getPropertyValue(name);
+        if (cv) vars[name] = cv.trim();
+      }
+    }
+    return vars;
+  }
+  function pickStyle(cs, ownVars) {
     var out = {};
     for (var i = 0; i < styleKeys.length; i++) {
       var key = styleKeys[i];
       var v = cs.getPropertyValue(key);
       if (v) out[key] = v.trim();
     }
-    // Also capture project-prefixed CSS custom properties (variables)
-    // resolved at this element. Both sides must expose the same tokens.
-    for (var j = 0; j < cs.length; j++) {
-      var name = cs[j];
-      if (name && name.indexOf('--mzn-') === 0) {
-        var cv = cs.getPropertyValue(name);
-        if (cv) out[name] = cv.trim();
-      }
-    }
+    for (var name in ownVars) out[name] = ownVars[name];
     return out;
   }
-  function walk(el) {
-    var node = { tag: el.tagName.toLowerCase(), attrs: normalizeAttrs(el), style: pickStyle(el), children: [] };
+  // \`inheritedVars\` is the parent's resolved \`--mzn-*\` map. Only variables an
+  // element actually declares are recorded, because custom properties inherit:
+  // capturing every resolved variable on every node repeated the same ~500
+  // values per element and made up ~89% of a snapshot, for no added signal.
+  // What matters is *where* a variable is set, and that is exactly what a
+  // difference from the parent identifies.
+  function walk(el, inheritedVars) {
+    var cs = window.getComputedStyle(el);
+    var vars = collectMznVars(cs);
+    var own = {};
+    for (var name in vars) {
+      if (inheritedVars[name] !== vars[name]) own[name] = vars[name];
+    }
+    var node = { tag: el.tagName.toLowerCase(), attrs: normalizeAttrs(el), style: pickStyle(cs, own), children: [] };
     var children = Array.from(el.childNodes);
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
-      if (child.nodeType === 1) node.children.push(walk(child));
+      if (child.nodeType === 1) node.children.push(walk(child, vars));
       else if (child.nodeType === 3) {
         var t = (child.textContent || '').trim();
         if (t) node.children.push({ tag: '#text', attrs: {}, style: {}, text: t, children: [] });
@@ -182,7 +197,12 @@ export const SNAPSHOT_SOURCE = `
     first = first.firstElementChild;
   }
   if (!first) return null;
-  return walk(first);
+  // Seed with the variables the snapshot root already inherits, so the root
+  // node does not dump the whole \`:root\` token set either.
+  var seed = first.parentElement
+    ? collectMznVars(window.getComputedStyle(first.parentElement))
+    : {};
+  return walk(first, seed);
 }
 `;
 
