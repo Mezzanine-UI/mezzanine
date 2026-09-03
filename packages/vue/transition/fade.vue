@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { getTransitionStyleProps } from './get-transition-style-props';
+import { fadeEnter, fadeExit } from './fade-transition';
 import type { TransitionImplementationProps } from './transition.types';
 
 /**
@@ -66,54 +66,29 @@ const resolved = computed(() => ({
  */
 const shown = computed((): boolean => props.in || props.keepMount);
 
-function applyTransition(node: HTMLElement, mode: 'enter' | 'exit'): number {
-  const { delay, duration, timingFunction } = getTransitionStyleProps(
-    mode,
-    resolved.value,
-  );
-
-  node.style.transition = `opacity ${duration}ms ${timingFunction} ${delay}ms`;
-
-  return duration + delay;
-}
-
 function onEnter(element: Element, done: () => void): void {
   const node = element as HTMLElement;
 
-  node.style.visibility = '';
-  node.style.opacity = '0';
   emit('enter', node);
-
-  // Force a reflow so the starting opacity is committed before the transition
-  // is armed — the same hack React's Fade performs.
-  void node.scrollTop;
-
-  const total = applyTransition(node, 'enter');
-
-  node.style.opacity = '1';
-  window.setTimeout(() => {
-    node.style.transition = '';
+  fadeEnter(node, resolved.value, () => {
     emit('entered', node);
     done();
-  }, total);
+  });
 }
 
 function onLeave(element: Element, done: () => void): void {
   const node = element as HTMLElement;
 
   emit('exit', node);
-
-  const total = applyTransition(node, 'exit');
-
-  node.style.opacity = '0';
-  window.setTimeout(() => {
-    node.style.transition = '';
-
-    if (props.keepMount) node.style.visibility = 'hidden';
-
-    emit('exited', node);
-    done();
-  }, total);
+  fadeExit(
+    node,
+    resolved.value,
+    () => {
+      emit('exited', node);
+      done();
+    },
+    props.keepMount,
+  );
 }
 </script>
 

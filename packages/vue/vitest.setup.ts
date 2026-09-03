@@ -1,4 +1,4 @@
-import { enableAutoUnmount } from '@vue/test-utils';
+import { config, enableAutoUnmount } from '@vue/test-utils';
 
 /**
  * jsdom ships neither of these, and components that observe their own size or
@@ -31,3 +31,15 @@ if (!Element.prototype.scrollTo) {
  * and the body never unlocks. The component was fine; the suite was leaking.
  */
 enableAutoUnmount(afterEach);
+
+/**
+ * Render real transitions.
+ *
+ * `@vue/test-utils` stubs `Transition` by default, which renders the child but
+ * runs none of the JS hooks — so a transition that never fires looks exactly
+ * like one that works. That is how MznFade shipped without ever applying an
+ * opacity: every assertion was about the element being there, and the stub
+ * always put it there.
+ */
+config.global.stubs.transition = false;
+config.global.stubs['transition-group'] = false;
