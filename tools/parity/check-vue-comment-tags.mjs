@@ -24,11 +24,29 @@ import { report, vueRoot, walk } from './vue-fs.mjs';
 
 /** Elements that never carry an end tag. */
 const VOID_ELEMENTS = new Set([
-  'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-  'link', 'meta', 'param', 'source', 'track', 'wbr',
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
 ]);
 
-const TAG = /<(\/?)([a-zA-Z][\w.-]*)\b[^>]*?(\/?)>/g;
+/**
+ * A tag mention in prose. The leading `(^|[^A-Za-z0-9_$])` matters: it is what
+ * separates an element name from a TypeScript generic. `Record<string, any>`
+ * and `Meta<typeof MznIcon>` have the `<` welded to an identifier and are not
+ * markup; `` `<span>` `` and `onto the <div>` do not, and are.
+ */
+const TAG = /(^|[^A-Za-z0-9_$])<(\/?)([a-zA-Z][\w.-]*)\b[^>]*?(\/?)>/g;
 const BLOCK_COMMENT = /\/\*[\s\S]*?\*\//g;
 const LINE_COMMENT = /\/\/[^\n]*/g;
 
@@ -65,7 +83,7 @@ function unbalancedTags(comment) {
   const stack = [];
   const problems = [];
 
-  for (const [, slash, name, selfClose] of normalized.matchAll(TAG)) {
+  for (const [, , slash, name, selfClose] of normalized.matchAll(TAG)) {
     if (VOID_ELEMENTS.has(name.toLowerCase()) || selfClose) continue;
 
     if (slash) {
