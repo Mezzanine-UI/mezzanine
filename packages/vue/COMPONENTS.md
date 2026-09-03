@@ -11,6 +11,13 @@
 | Separator  | `MznSeparator`  | `@mezzanine-ui/vue/separator`  | 水平或垂直分隔線，以 `<hr>` 為基礎，垂直時自動標註 `aria-orientation`                  |
 | Typography | `MznTypography` | `@mezzanine-ui/vue/typography` | 文字排版元件，`variant` 為語意排版類型並自動推斷標籤，支援色彩、對齊、單行截斷與不換行 |
 
+## Navigation（導航）
+
+| 元件    | 匯入名稱     | 匯入路徑                | 說明                                                     |
+| ------- | ------------ | ----------------------- | -------------------------------------------------------- |
+| Tab     | `MznTab`     | `@mezzanine-ui/vue/tab` | 頁籤導航容器，以底部滑動指示條標示選取項，支援水平與垂直 |
+| TabItem | `MznTabItem` | `@mezzanine-ui/vue/tab` | 頁籤項目，支援圖示、徽章計數、錯誤與停用狀態             |
+
 ## Data Display（資料展示）
 
 | 元件  | 匯入名稱   | 匯入路徑                  | 說明                                                             |
