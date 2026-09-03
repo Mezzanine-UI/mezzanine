@@ -135,6 +135,23 @@ export function locateVueFile(
   return null;
 }
 
+/**
+ * Names to try when looking up a props interface. `locateReactFile` and
+ * `locateVueFile` already fall back to the singular when a story title is
+ * plural — `Inline Messages` finds `InlineMessage.tsx` — but the interface
+ * lookup did not, so `InlineMessagesProps` was searched for, never found, and
+ * the component's whole API silently extracted as empty on both sides.
+ */
+function pascalCandidates(pascalName: string): string[] {
+  const names = [pascalName];
+
+  if (pascalName.endsWith('s') && !pascalName.endsWith('ss')) {
+    names.push(pascalName.slice(0, -1));
+  }
+
+  return names;
+}
+
 const SKIP_PROP_NAMES = new Set([
   'children',
   'className',
@@ -667,11 +684,11 @@ function resolveInterfaceProps(
  */
 export function extractReactApi(file: string, pascalName: string): ApiSet {
   const index = getInterfaceIndex('react');
-  const baseCandidates = [
-    `${pascalName}PropsBase`,
-    `${pascalName}Props`,
-    `${pascalName}Data`,
-  ];
+  const baseCandidates = pascalCandidates(pascalName).flatMap((name) => [
+    `${name}PropsBase`,
+    `${name}Props`,
+    `${name}Data`,
+  ]);
   for (const candidate of baseCandidates) {
     if (index.has(candidate)) return resolveInterfaceProps(candidate, 'react');
   }
@@ -808,9 +825,9 @@ export function extractVueApi(
 ): VueApiResult {
   const errors: string[] = [];
   const index = getInterfaceIndex('vue');
-  const candidate = [`${pascalName}PropsBase`, `${pascalName}Props`].find((c) =>
-    index.has(c),
-  );
+  const candidate = pascalCandidates(pascalName)
+    .flatMap((name) => [`${name}PropsBase`, `${name}Props`])
+    .find((c) => index.has(c));
 
   const props: ApiSet = candidate
     ? resolveInterfaceProps(candidate, 'vue')
