@@ -5,6 +5,22 @@ import type {
 } from '@mezzanine-ui/core/typography';
 import type { TypographySemanticType } from '@mezzanine-ui/system/typography';
 
+import type { Component } from 'vue';
+
+/**
+ * What a Typography may be rendered as. React's list, with Vue's `Component`
+ * standing in for `JSXElementConstructor`.
+ */
+export type TypographyComponent =
+  | `h${1 | 2 | 3 | 4 | 5 | 6}`
+  | 'p'
+  | 'span'
+  | 'label'
+  | 'div'
+  | 'caption'
+  | 'a'
+  | Component;
+
 export interface TypographyProps {
   /**
    * The css variable for `text-align`.
@@ -14,6 +30,11 @@ export interface TypographyProps {
    * The text semantic color from the palette.
    */
   color?: TypographyColor;
+  /**
+   * Override the component used to render. Defaults to the tag the `variant`
+   * implies.
+   */
+  component?: TypographyComponent;
   /**
    * The css variable for `display`.
    */

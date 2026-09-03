@@ -4,6 +4,7 @@ import {
   toTypographyCssVars,
   typographyClasses as classes,
 } from '@mezzanine-ui/core/typography';
+import type { Component } from 'vue';
 import type { TypographySemanticType } from '@mezzanine-ui/system/typography';
 import clsx from 'clsx';
 import type { TypographyProps } from './typography.types';
@@ -39,6 +40,10 @@ import type { TypographyProps } from './typography.types';
  * ```
  */
 const props = withDefaults(defineProps<TypographyProps>(), {
+  align: undefined,
+  color: undefined,
+  component: undefined,
+  display: undefined,
   ellipsis: false,
   noWrap: false,
   variant: 'body',
@@ -59,7 +64,14 @@ function getTagFromType(type: TypographySemanticType): string {
   return 'span';
 }
 
-const tag = computed((): string => getTagFromType(props.variant));
+/**
+ * `:is` takes a tag name or a component, which is wider than
+ * `TypographyComponent`: Vue's prop inference flattens the literal tag union
+ * to `string` on the way through `defineProps`.
+ */
+const tag = computed(
+  (): string | Component => props.component ?? getTagFromType(props.variant),
+);
 
 const hostClasses = computed((): string =>
   clsx(classes.type(props.variant), {

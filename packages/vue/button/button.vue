@@ -44,6 +44,7 @@ import type { ButtonProps } from './button.types';
 defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(defineProps<ButtonProps>(), {
+  component: 'button',
   disabled: false,
   disabledTooltip: false,
   icon: undefined,
@@ -189,13 +190,13 @@ const ButtonContent: FunctionalComponent = () => {
       <slot />
     </template>
     <template #default="tooltipProps">
-      <button v-bind="rootBindings(tooltipProps)">
+      <component :is="component" v-bind="rootBindings(tooltipProps)">
         <ButtonContent />
-      </button>
+      </component>
     </template>
   </MznTooltip>
 
-  <button v-else v-bind="rootBindings()">
+  <component :is="component" v-else v-bind="rootBindings()">
     <ButtonContent />
-  </button>
+  </component>
 </template>

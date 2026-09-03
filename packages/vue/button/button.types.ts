@@ -1,3 +1,4 @@
+import type { Component } from 'vue';
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import type {
   ButtonIconType,
@@ -6,7 +7,18 @@ import type {
 } from '@mezzanine-ui/core/button';
 import type { PopperPlacement } from '../popper/popper.types';
 
+/**
+ * What a Button may be rendered as. React's list, with Vue's `Component`
+ * standing in for `JSXElementConstructor`.
+ */
+export type ButtonComponent = 'button' | 'a' | Component;
+
 export interface ButtonProps {
+  /**
+   * Override the component used to render.
+   * @default 'button'
+   */
+  component?: ButtonComponent;
   /**
    * If true, button will be disabled
    * @default false
