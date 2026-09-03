@@ -122,13 +122,23 @@ export const SNAPSHOT_SOURCE = `
   // Collapse the value to a placeholder so a correctly-wired pair is not flagged
   // as a diff purely because the generated id strings differ.
   var ID_REF_ATTRS = new Set(['id','for','aria-controls','aria-labelledby','aria-describedby','aria-owns','aria-activedescendant']);
+  // React mirrors a controlled input's value into the \`value\` *attribute*;
+  // Vue's v-model and Angular's ngModel set only the DOM property. The field
+  // displays identically either way — \`el.value\` agrees on every side — so the
+  // attribute is an artifact of React's controlled-input model rather than a
+  // difference anyone can see. Ignored on form controls only: elsewhere a
+  // \`value\` attribute is still compared, which is what surfaces React leaking
+  // an object onto a \`<div>\` (see the select rows in DEVIATIONS.md).
+  var VALUE_ATTR_HOSTS = new Set(['input', 'textarea']);
   function normalizeAttrs(el) {
     var out = {};
     var attrs = Array.from(el.attributes);
+    var tag = el.tagName.toLowerCase();
     for (var i = 0; i < attrs.length; i++) {
       var attr = attrs[i];
       var name = attr.name;
       if (DROP_ATTR.test(name)) continue;
+      if (name === 'value' && VALUE_ATTR_HOSTS.has(tag)) continue;
       if (!(name.indexOf('aria-') === 0 || name.indexOf('data-') === 0 || KEEP_GENERIC.has(name))) continue;
       var value = attr.value;
       if (name === 'class') value = normalizeClass(value);
