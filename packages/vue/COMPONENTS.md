@@ -37,4 +37,5 @@
 | 元件         | 匯入名稱          | 匯入路徑                          | 說明                                                                    |
 | ------------ | ----------------- | --------------------------------- | ----------------------------------------------------------------------- |
 | ClearActions | `MznClearActions` | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
+| TextField    | `MznTextField`    | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
 | Scrollbar    | `MznScrollbar`    | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
