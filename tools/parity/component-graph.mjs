@@ -511,14 +511,22 @@ for (const [i, batch] of batches.entries()) {
   console.log(
     `  ${batch.members
       .map((c) => {
-        if (ported(c)) return `${kebab(c)} ✓`;
-        if (storyReady(c)) return kebab(c);
-
         const blockers = [...storyDeps.get(c)]
           .filter((d) => !ported(d))
           .map(kebab)
           .sort()
           .join('+');
+
+        // A ported component whose stories cannot render yet is not finished:
+        // the DOM diff has never run on it. Saying only "✓" would read as
+        // verified, which is the one thing it is not.
+        if (ported(c)) {
+          return blockers.length === 0
+            ? `${kebab(c)} ✓`
+            : `${kebab(c)} ✓ (parity pending ${blockers})`;
+        }
+
+        if (storyReady(c)) return kebab(c);
 
         return `${kebab(c)} (stories blocked on ${blockers})`;
       })
