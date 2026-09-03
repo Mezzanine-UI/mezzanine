@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import {
+  cloneVNode,
+  computed,
+  onMounted,
+  shallowRef,
+  useSlots,
+  watch,
+} from 'vue';
+import type { ComponentPublicInstance, FunctionalComponent, VNode } from 'vue';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { fadeEnter, fadeExit } from './fade-transition';
 import type { TransitionImplementationProps } from './transition.types';
@@ -66,6 +74,65 @@ const resolved = computed(() => ({
  */
 const shown = computed((): boolean => props.in || props.keepMount);
 
+const slots = useSlots();
+const node = shallowRef<Element | ComponentPublicInstance | null>(null);
+
+/**
+ * The child is cloned so a ref can be attached to it — React's `Fade` does the
+ * same with `cloneElement`, and for the same reason: the transition has to
+ * reach an element it does not own.
+ */
+const FadeChild: FunctionalComponent = () => {
+  const [child] = (slots.default?.() ?? []) as VNode[];
+
+  return child ? cloneVNode(child, { ref: node }) : null;
+};
+
+function element(): HTMLElement | null {
+  const current = node.value;
+
+  if (!current) return null;
+
+  const el = current instanceof Element ? current : current.$el;
+
+  return el instanceof HTMLElement ? el : null;
+}
+
+/**
+ * With `keepMount` the child never leaves the DOM, so Vue's `Transition` never
+ * runs its leave hooks — `v-show` would, but it also writes `display: none`,
+ * which React does not. The fade is driven directly instead, which is exactly
+ * what React's Fade does: the element stays laid out and is hidden with
+ * `visibility` once the exit finishes.
+ */
+watch(
+  (): boolean => props.in,
+  (value) => {
+    const el = element();
+
+    if (!props.keepMount || !el) return;
+
+    if (value) {
+      emit('enter', el);
+      fadeEnter(el, resolved.value, () => emit('entered', el));
+    } else {
+      emit('exit', el);
+      fadeExit(el, resolved.value, () => emit('exited', el), true);
+    }
+  },
+  { flush: 'post' },
+);
+
+onMounted(() => {
+  const el = element();
+
+  if (!props.keepMount || !el || props.in) return;
+
+  // Mounted in the exited state: no animation, just the resting styles.
+  el.style.opacity = '0';
+  el.style.visibility = 'hidden';
+});
+
 function onEnter(element: Element, done: () => void): void {
   const node = element as HTMLElement;
 
@@ -94,6 +161,6 @@ function onLeave(element: Element, done: () => void): void {
 
 <template>
   <Transition :appear="appear" :css="false" @enter="onEnter" @leave="onLeave">
-    <slot v-if="shown" />
+    <FadeChild v-if="shown" />
   </Transition>
 </template>

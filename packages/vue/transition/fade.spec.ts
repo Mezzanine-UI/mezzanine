@@ -42,16 +42,34 @@ describe('MznFade', () => {
     expect(child()?.style.transition).toContain('opacity');
   });
 
-  /**
-   * Known gap, pending a decision — see the note in COMPONENTS.md.
-   *
-   * `keepMount` means "stay in the DOM but animate out", and Vue's Transition
-   * only runs its leave hooks when the child is actually removed. Making it
-   * work needs the child rendered through `withDirectives(cloneVNode(child),
-   * [[vShow, props.in]])` in a render function, since `v-show` cannot be put
-   * on a slot outlet. No component in the port uses `keepMount` yet.
-   */
-  it.skip('should keep the child mounted and hide it when keepMount is set', async () => {
+  it('should mount hidden when keepMount starts out exited', async () => {
+    mountFade({ keepMount: true });
+
+    await flushPromises();
+
+    expect(child()).not.toBeNull();
+    expect(child()?.style.visibility).toBe('hidden');
+    expect(child()?.style.opacity).toBe('0');
+  });
+
+  it('should fade back in when keepMount re-enters', async () => {
+    vi.useFakeTimers();
+
+    const { shown } = mountFade({ keepMount: true });
+
+    await flushPromises();
+
+    shown.value = true;
+    await flushPromises();
+
+    expect(child()?.style.visibility).toBe('');
+    expect(child()?.style.opacity).toBe('1');
+
+    vi.advanceTimersByTime(1000);
+    vi.useRealTimers();
+  });
+
+  it('should keep the child mounted and hide it when keepMount is set', async () => {
     vi.useFakeTimers();
 
     const { shown } = mountFade({ in: true, keepMount: true });

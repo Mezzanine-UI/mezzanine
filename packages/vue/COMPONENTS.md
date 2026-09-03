@@ -63,8 +63,3 @@
 > 或間接卡在 Button），因此還沒有 story 檔，DOM parity 也還沒跑過
 > （`yarn components:graph` 會標成 `parity pending …`）。目前的把關是 props 契約
 > 比對、靜態檢查與單元測試。
->
-> **待決事項**：`MznFade` 的 `keepMount`（留在 DOM 但淡出）目前無效 —— Vue 內建的
-> `Transition` 只在子節點真的被移除時才跑 leave hook。修法是改用 render function
-> 搭配 `withDirectives(cloneVNode(child), [[vShow, props.in]])`（`v-show` 無法掛在
-> slot outlet 上）。目前沒有任何元件使用 `keepMount`，對應測試以 `it.skip` 標記。
