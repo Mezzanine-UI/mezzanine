@@ -1,0 +1,13 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import * as TabStories from './tab.stories';
+
+<Meta of={TabStories} />
+
+# Tab
+
+頁籤導航元件，透過底部滑動指示條標示當前選取的頁籤。
+
+以 `MznTabItem` 作為子元件定義每個頁籤項目，支援水平與垂直兩種排列方向。
+可透過 `activeKey`（受控）或 `defaultActiveKey`（非受控）指定當前頁籤。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/tab/tab.vue)
