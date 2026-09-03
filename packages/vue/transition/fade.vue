@@ -42,11 +42,19 @@ const props = withDefaults(defineProps<TransitionImplementationProps>(), {
   lazyMount: true,
 });
 
+/**
+ * React's transition reports six moments, and `isAppearing` tells the enter
+ * three whether this is the first mount. Vue routes the initial run through
+ * `appear` instead of `enter`, so both are bound below and the flag comes from
+ * which one fired.
+ */
 const emit = defineEmits<{
-  enter: [node: HTMLElement];
-  entered: [node: HTMLElement];
+  enter: [node: HTMLElement, isAppearing: boolean];
+  entered: [node: HTMLElement, isAppearing: boolean];
+  entering: [node: HTMLElement, isAppearing: boolean];
   exit: [node: HTMLElement];
   exited: [node: HTMLElement];
+  exiting: [node: HTMLElement];
 }>();
 
 defineSlots<{
@@ -112,13 +120,8 @@ watch(
 
     if (!props.keepMount || !el) return;
 
-    if (value) {
-      emit('enter', el);
-      fadeEnter(el, resolved.value, () => emit('entered', el));
-    } else {
-      emit('exit', el);
-      fadeExit(el, resolved.value, () => emit('exited', el), true);
-    }
+    if (value) runEnter(el, false);
+    else runExit(el);
   },
   { flush: 'post' },
 );
@@ -133,34 +136,56 @@ onMounted(() => {
   el.style.visibility = 'hidden';
 });
 
-function onEnter(element: Element, done: () => void): void {
-  const node = element as HTMLElement;
-
-  emit('enter', node);
+function runEnter(
+  node: HTMLElement,
+  isAppearing: boolean,
+  done?: () => void,
+): void {
+  emit('enter', node, isAppearing);
   fadeEnter(node, resolved.value, () => {
-    emit('entered', node);
-    done();
+    emit('entered', node, isAppearing);
+    done?.();
   });
+  // `fadeEnter` writes the entering styles synchronously, so by here the
+  // entering state is applied — which is the moment React reports.
+  emit('entering', node, isAppearing);
 }
 
-function onLeave(element: Element, done: () => void): void {
-  const node = element as HTMLElement;
-
+function runExit(node: HTMLElement, done?: () => void): void {
   emit('exit', node);
   fadeExit(
     node,
     resolved.value,
     () => {
       emit('exited', node);
-      done();
+      done?.();
     },
     props.keepMount,
   );
+  emit('exiting', node);
+}
+
+function onEnter(element: Element, done: () => void): void {
+  runEnter(element as HTMLElement, false, done);
+}
+
+function onAppear(element: Element, done: () => void): void {
+  runEnter(element as HTMLElement, true, done);
+}
+
+function onLeave(element: Element, done: () => void): void {
+  runExit(element as HTMLElement, done);
 }
 </script>
 
 <template>
-  <Transition :appear="appear" :css="false" @enter="onEnter" @leave="onLeave">
+  <Transition
+    :appear="appear"
+    :css="false"
+    @appear="onAppear"
+    @enter="onEnter"
+    @leave="onLeave"
+  >
     <FadeChild v-if="shown" />
   </Transition>
 </template>
