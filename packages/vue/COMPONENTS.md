@@ -48,9 +48,14 @@
 | ClearActions | `MznClearActions` | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
 | TextField    | `MznTextField`    | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
 | Scrollbar    | `MznScrollbar`    | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
+| Portal       | `MznPortal`       | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
 
 ## Motion（動效）
 
 | 元件 | 匯入名稱  | 匯入路徑                       | 說明                                                                                                     |
 | ---- | --------- | ------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | Fade | `MznFade` | `@mezzanine-ui/vue/transition` | 淡入淡出轉場。其餘轉場家族成員（Collapse / Rotate / Scale / Slide / Translate）待其 stories 解封後再移植 |
+
+> Portal 與 Fade 的 stories 需要尚未移植的 Button，因此還沒有 story 檔，DOM parity
+> 也還沒跑過（`yarn components:graph` 會標成 `parity pending button`）。目前的把關是
+> props 契約比對、靜態檢查與單元測試。
