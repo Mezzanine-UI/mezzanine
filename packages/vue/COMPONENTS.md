@@ -13,10 +13,12 @@
 
 ## Navigation（導航）
 
-| 元件    | 匯入名稱     | 匯入路徑                | 說明                                                     |
-| ------- | ------------ | ----------------------- | -------------------------------------------------------- |
-| Tab     | `MznTab`     | `@mezzanine-ui/vue/tab` | 頁籤導航容器，以底部滑動指示條標示選取項，支援水平與垂直 |
-| TabItem | `MznTabItem` | `@mezzanine-ui/vue/tab` | 頁籤項目，支援圖示、徽章計數、錯誤與停用狀態             |
+| 元件        | 匯入名稱         | 匯入路徑                   | 說明                                                         |
+| ----------- | ---------------- | -------------------------- | ------------------------------------------------------------ |
+| Anchor      | `MznAnchor`      | `@mezzanine-ui/vue/anchor` | 頁面章節導航連結，依網址 hash 自動標示當前位置，最多三層巢狀 |
+| AnchorGroup | `MznAnchorGroup` | `@mezzanine-ui/vue/anchor` | 錨點導航群組容器，可用 `anchors` 資料或子元件描述結構        |
+| Tab         | `MznTab`         | `@mezzanine-ui/vue/tab`    | 頁籤導航容器，以底部滑動指示條標示選取項，支援水平與垂直     |
+| TabItem     | `MznTabItem`     | `@mezzanine-ui/vue/tab`    | 頁籤項目，支援圖示、徽章計數、錯誤與停用狀態                 |
 
 ## Data Display（資料展示）
 
