@@ -67,7 +67,9 @@
 | ---- | --------- | ------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | Fade | `MznFade` | `@mezzanine-ui/vue/transition` | 淡入淡出轉場。其餘轉場家族成員（Collapse / Rotate / Scale / Slide / Translate）待其 stories 解封後再移植 |
 
-> Portal、Popper、Backdrop、Tooltip、Spin 與 Fade 的 stories 需要尚未移植的元件（都直接
-> 或間接卡在 Button），因此還沒有 story 檔，DOM parity 也還沒跑過
-> （`yarn components:graph` 會標成 `parity pending …`）。目前的把關是 props 契約
-> 比對、靜態檢查與單元測試。
+> Portal、Popper、Tooltip 的 stories 已隨 Button 落地補齊，三者都通過 DOM parity。
+>
+> Backdrop（需 drawer / modal / select）、Spin（需 description / modal）、Button
+> 自己（需 dropdown）與 Fade（需轉場家族其餘成員）的 stories 仍缺依賴，DOM parity
+> 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。這些元件目前的把關是
+> props 契約比對、靜態檢查與單元測試。
