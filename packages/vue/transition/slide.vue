@@ -3,46 +3,40 @@ import { computed, useSlots } from 'vue';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { useTransitionImplementation } from './use-transition-implementation';
 import type { TransitionRunnerConfig } from './transition-styles';
-import type { FadeProps } from './fade.types';
+import type { SlideFrom, SlideProps } from './slide.types';
 
 /**
- * 淡入淡出轉場。
+ * 滑入轉場：整塊內容從畫面邊緣滑入，用於抽屜這類覆蓋層。
  *
- * 依 D10 建在 Vue 內建的 `Transition` 之上，但以 JS hook 直接寫 inline style
- * （`:css="false"`），與 React 版一致 — React 的實作同樣是把 `opacity` 與
- * `transition` 寫進元素的 style，而非套用 CSS class。
+ * 位移量是元素自身的 100%，且不帶淡入 —— 與 MznTranslate 的 4px 微幅位移是
+ * 不同用途。
  *
  * @example
  * ```vue
- * <MznFade :in="visible">
- *   <div>內容</div>
- * </MznFade>
+ * <MznSlide from="right" :in="open">
+ *   <div>抽屜內容</div>
+ * </MznSlide>
  * ```
  *
- * @see MznScale 縮放轉場
+ * @see MznTranslate 小幅位移的轉場
  */
-const props = withDefaults(defineProps<FadeProps>(), {
+const props = withDefaults(defineProps<SlideProps>(), {
   appear: true,
   delay: 0,
   duration: () => ({
-    enter: MOTION_DURATION.moderate,
-    exit: MOTION_DURATION.moderate,
+    enter: MOTION_DURATION.slow,
+    exit: MOTION_DURATION.slow,
   }),
   easing: () => ({
-    enter: MOTION_EASING.entrance,
-    exit: MOTION_EASING.exit,
+    enter: MOTION_EASING.standard,
+    exit: MOTION_EASING.standard,
   }),
+  from: 'right',
   in: false,
   keepMount: false,
   lazyMount: true,
 });
 
-/**
- * React's transition reports six moments, and `isAppearing` tells the enter
- * three whether this is the first mount. Vue routes the initial run through
- * `appear` instead of `enter`, so both are bound below and the flag comes from
- * which one fired.
- */
 const emit = defineEmits<{
   enter: [node: HTMLElement, isAppearing: boolean];
   entered: [node: HTMLElement, isAppearing: boolean];
@@ -56,19 +50,23 @@ defineSlots<{
   default?: () => unknown;
 }>();
 
-/** `duration: 'auto'` has no meaning for a fade; React falls back the same way. */
+const OFFSETS: Record<SlideFrom, string> = {
+  top: 'translate3d(0, -100%, 0)',
+  right: 'translate3d(100%, 0, 0)',
+};
+
 const config = computed(
   (): TransitionRunnerConfig => ({
     delay: props.delay,
     duration:
       props.duration === 'auto'
-        ? { enter: MOTION_DURATION.moderate, exit: MOTION_DURATION.moderate }
+        ? { enter: MOTION_DURATION.slow, exit: MOTION_DURATION.slow }
         : props.duration,
     easing: props.easing,
-    entered: { opacity: 1 },
-    entering: { opacity: 1 },
-    exited: { opacity: 0 },
-    properties: ['opacity'],
+    entered: { transform: 'translate3d(0, 0, 0)' },
+    entering: { transform: 'translate3d(0, 0, 0)' },
+    exited: { transform: OFFSETS[props.from] },
+    properties: ['transform'],
   }),
 );
 

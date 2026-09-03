@@ -3,25 +3,24 @@ import { computed, useSlots } from 'vue';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { useTransitionImplementation } from './use-transition-implementation';
 import type { TransitionRunnerConfig } from './transition-styles';
-import type { FadeProps } from './fade.types';
+import type { ScaleProps } from './scale.types';
 
 /**
- * 淡入淡出轉場。
+ * 縮放轉場：進場時從 95% 放大並淡入，離場時反向。
  *
- * 依 D10 建在 Vue 內建的 `Transition` 之上，但以 JS hook 直接寫 inline style
- * （`:css="false"`），與 React 版一致 — React 的實作同樣是把 `opacity` 與
- * `transition` 寫進元素的 style，而非套用 CSS class。
+ * 進場結束後 `transform` 會設回 `none` 而不是 `scale(1)`，與 React 一致 ——
+ * 留著 transform 會讓子元素建立新的 containing block，影響固定定位的內容。
  *
  * @example
  * ```vue
- * <MznFade :in="visible">
+ * <MznScale :in="visible" transform-origin="top left">
  *   <div>內容</div>
- * </MznFade>
+ * </MznScale>
  * ```
  *
- * @see MznScale 縮放轉場
+ * @see MznFade 純淡入淡出
  */
-const props = withDefaults(defineProps<FadeProps>(), {
+const props = withDefaults(defineProps<ScaleProps>(), {
   appear: true,
   delay: 0,
   duration: () => ({
@@ -35,14 +34,9 @@ const props = withDefaults(defineProps<FadeProps>(), {
   in: false,
   keepMount: false,
   lazyMount: true,
+  transformOrigin: 'center',
 });
 
-/**
- * React's transition reports six moments, and `isAppearing` tells the enter
- * three whether this is the first mount. Vue routes the initial run through
- * `appear` instead of `enter`, so both are bound below and the flag comes from
- * which one fired.
- */
 const emit = defineEmits<{
   enter: [node: HTMLElement, isAppearing: boolean];
   entered: [node: HTMLElement, isAppearing: boolean];
@@ -56,19 +50,19 @@ defineSlots<{
   default?: () => unknown;
 }>();
 
-/** `duration: 'auto'` has no meaning for a fade; React falls back the same way. */
 const config = computed(
   (): TransitionRunnerConfig => ({
+    base: { transformOrigin: props.transformOrigin },
     delay: props.delay,
     duration:
       props.duration === 'auto'
         ? { enter: MOTION_DURATION.moderate, exit: MOTION_DURATION.moderate }
         : props.duration,
     easing: props.easing,
-    entered: { opacity: 1 },
-    entering: { opacity: 1 },
-    exited: { opacity: 0 },
-    properties: ['opacity'],
+    entered: { opacity: 1, transform: 'none' },
+    entering: { opacity: 1, transform: 'scale(1)' },
+    exited: { opacity: 0, transform: 'scale(0.95)' },
+    properties: ['opacity', 'transform'],
   }),
 );
 

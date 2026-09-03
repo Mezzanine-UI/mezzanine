@@ -3,25 +3,24 @@ import { computed, useSlots } from 'vue';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { useTransitionImplementation } from './use-transition-implementation';
 import type { TransitionRunnerConfig } from './transition-styles';
-import type { FadeProps } from './fade.types';
+import type { TranslateFrom, TranslateProps } from './translate.types';
 
 /**
- * 淡入淡出轉場。
+ * 小幅位移轉場：從指定方向位移 4px 進場並淡入。
  *
- * 依 D10 建在 Vue 內建的 `Transition` 之上，但以 JS hook 直接寫 inline style
- * （`:css="false"`），與 React 版一致 — React 的實作同樣是把 `opacity` 與
- * `transition` 寫進元素的 style，而非套用 CSS class。
+ * 位移距離刻意很小，用於選單、提示這類「就地出現」的內容；需要整塊滑入請用
+ * MznSlide。
  *
  * @example
  * ```vue
- * <MznFade :in="visible">
+ * <MznTranslate from="bottom" :in="visible">
  *   <div>內容</div>
- * </MznFade>
+ * </MznTranslate>
  * ```
  *
- * @see MznScale 縮放轉場
+ * @see MznSlide 整段滑入的轉場
  */
-const props = withDefaults(defineProps<FadeProps>(), {
+const props = withDefaults(defineProps<TranslateProps>(), {
   appear: true,
   delay: 0,
   duration: () => ({
@@ -29,20 +28,15 @@ const props = withDefaults(defineProps<FadeProps>(), {
     exit: MOTION_DURATION.moderate,
   }),
   easing: () => ({
-    enter: MOTION_EASING.entrance,
-    exit: MOTION_EASING.exit,
+    enter: MOTION_EASING.standard,
+    exit: MOTION_EASING.standard,
   }),
+  from: 'top',
   in: false,
   keepMount: false,
   lazyMount: true,
 });
 
-/**
- * React's transition reports six moments, and `isAppearing` tells the enter
- * three whether this is the first mount. Vue routes the initial run through
- * `appear` instead of `enter`, so both are bound below and the flag comes from
- * which one fired.
- */
 const emit = defineEmits<{
   enter: [node: HTMLElement, isAppearing: boolean];
   entered: [node: HTMLElement, isAppearing: boolean];
@@ -56,7 +50,13 @@ defineSlots<{
   default?: () => unknown;
 }>();
 
-/** `duration: 'auto'` has no meaning for a fade; React falls back the same way. */
+const OFFSETS: Record<TranslateFrom, string> = {
+  top: 'translate3d(0, -4px, 0)',
+  right: 'translate3d(4px, 0, 0)',
+  bottom: 'translate3d(0, 4px, 0)',
+  left: 'translate3d(-4px, 0, 0)',
+};
+
 const config = computed(
   (): TransitionRunnerConfig => ({
     delay: props.delay,
@@ -65,10 +65,10 @@ const config = computed(
         ? { enter: MOTION_DURATION.moderate, exit: MOTION_DURATION.moderate }
         : props.duration,
     easing: props.easing,
-    entered: { opacity: 1 },
-    entering: { opacity: 1 },
-    exited: { opacity: 0 },
-    properties: ['opacity'],
+    entered: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+    entering: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+    exited: { opacity: 0, transform: OFFSETS[props.from] },
+    properties: ['opacity', 'transform'],
   }),
 );
 

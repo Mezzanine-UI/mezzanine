@@ -63,13 +63,20 @@
 
 ## Motion（動效）
 
-| 元件 | 匯入名稱  | 匯入路徑                       | 說明                                                                                                     |
-| ---- | --------- | ------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Fade | `MznFade` | `@mezzanine-ui/vue/transition` | 淡入淡出轉場。其餘轉場家族成員（Collapse / Rotate / Scale / Slide / Translate）待其 stories 解封後再移植 |
+| 元件      | 匯入名稱       | 匯入路徑                       | 說明                                                |
+| --------- | -------------- | ------------------------------ | --------------------------------------------------- |
+| Fade      | `MznFade`      | `@mezzanine-ui/vue/transition` | 淡入淡出                                            |
+| Scale     | `MznScale`     | `@mezzanine-ui/vue/transition` | 由 95% 放大並淡入，進場結束後 transform 設回 `none` |
+| Translate | `MznTranslate` | `@mezzanine-ui/vue/transition` | 從指定方向位移 4px 進場並淡入                       |
+| Slide     | `MznSlide`     | `@mezzanine-ui/vue/transition` | 從邊緣整塊滑入（位移 100%，不淡入）                 |
+| Rotate    | `MznRotate`    | `@mezzanine-ui/vue/transition` | 依 `in` 旋轉既有元素，不負責掛載／卸載              |
 
-> Portal、Popper、Tooltip 的 stories 已隨 Button 落地補齊，三者都通過 DOM parity。
+> Collapse 尚未移植：它沒有自己的 story（harness 無法驗證），使用它的 Accordion 與
+> NavigationOption 也還沒移植，React 端本身標記為 `@deprecated`。
+
+> Portal、Popper、Tooltip、轉場家族的 stories 都已補齊並通過 DOM parity。
 >
-> Backdrop（需 drawer / modal / select）、Spin（需 description / modal）、Button
-> 自己（需 dropdown）與 Fade（需轉場家族其餘成員）的 stories 仍缺依賴，DOM parity
-> 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。這些元件目前的把關是
-> props 契約比對、靜態檢查與單元測試。
+> Backdrop（需 drawer / modal / select）、Spin（需 description / modal）與 Button
+> 自己（需 dropdown）的 stories 仍缺依賴，DOM parity 還沒跑過，
+> `yarn components:graph` 會標成 `parity pending …`。這些元件目前的把關是 props
+> 契約比對、靜態檢查與單元測試。

@@ -142,12 +142,21 @@ export default tseslint.config(
      * `packages/vue` has no React in it, but its `.ts` files — stories and
      * composables — call things like `useTemplateRef` inside a function named
      * `setup`, which the React hooks rules read as a hook called outside a
-     * component.
+     * component. The compiler rules go further and reject ordinary Vue
+     * closures: a composable that keeps a cancel handle in a captured
+     * variable trips `react-hooks/immutability`.
+     *
+     * The whole plugin is turned off here rather than rule by rule, since none
+     * of it applies to a Vue file.
      */
     files: ['packages/vue/**/*.ts'],
     rules: {
-      'react-hooks/rules-of-hooks': 'off',
-      'react-hooks/exhaustive-deps': 'off',
+      ...Object.fromEntries(
+        Object.keys(reactHooksPlugin.rules ?? {}).map((rule) => [
+          `react-hooks/${rule}`,
+          'off',
+        ]),
+      ),
     },
   },
   {
