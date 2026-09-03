@@ -896,7 +896,31 @@ export function diffApi(
     const located = locateVueFile(pascalName);
 
     if (!reactFile || !located) {
-      return { diffs: [], reactFile, targetFile: located?.typesFile ?? null };
+      // A component with an SFC but no props interface is not "not ported yet",
+      // it is ported with its types file misplaced — and returning no diffs for
+      // it reads as parity. ButtonGroup shipped that way for a few minutes,
+      // with `ButtonGroupProps` living in `button.types.ts`.
+      const orphanSfc =
+        reactFile && !located
+          ? findFile(VUE_ROOT, (f) => f.endsWith(`/${kebab(pascalName)}.vue`))
+          : null;
+
+      return {
+        diffs: orphanSfc
+          ? [
+              {
+                kind: 'error',
+                side: 'extra',
+                name:
+                  `${orphanSfc.split('/packages/')[1]} has no ` +
+                  `${kebab(pascalName)}.types.ts, ` +
+                  'so its props were never compared',
+              },
+            ]
+          : [],
+        reactFile,
+        targetFile: located?.typesFile ?? null,
+      };
     }
 
     const r = extractReactApi(reactFile, pascalName);
