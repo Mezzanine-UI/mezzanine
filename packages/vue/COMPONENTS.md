@@ -33,6 +33,7 @@
 | 元件     | 匯入名稱      | 匯入路徑                     | 說明                                                                     |
 | -------- | ------------- | ---------------------------- | ------------------------------------------------------------------------ |
 | Textarea | `MznTextarea` | `@mezzanine-ui/vue/textarea` | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手 |
+| Toggle   | `MznToggle`   | `@mezzanine-ui/vue/toggle`   | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字             |
 
 ## Feedback（回饋）
 
