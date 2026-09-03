@@ -235,6 +235,11 @@ async (storyId) => {
     var name = names[i];
     if (name === 'children') continue;
     var def = defs[name];
+    // Rows hidden from the Controls panel are not part of the scenario a
+    // reader compares by hand. React's docgen infers option lists that Vue's
+    // does not, and comparing those on a disabled row reports a difference
+    // nobody can see.
+    if (def && def.table && def.table.disable) continue;
     var t = def && def.type;
     var typeName = typeof t === 'string' ? t : (t && typeof t === 'object' && 'name' in t ? String(t.name) : null);
     var opts = def && Array.isArray(def.options) ? def.options.slice().sort() : null;
