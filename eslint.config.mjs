@@ -148,10 +148,25 @@ export default tseslint.config(
         extraFileExtensions: ['.vue'],
       },
     },
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
     rules: {
       // Component identity comes from the `Mzn`-prefixed export, not the
       // kebab-case filename, so the multi-word filename rule adds nothing.
       'vue/multi-word-component-names': 'off',
+      // The base rule cannot see type-position identifiers, so a typed slot
+      // signature such as `default?: (info: PaddingInfo) => unknown` reads to
+      // it as an unused variable. Defer to the TypeScript-aware rule, exactly
+      // as the `.ts` configuration above already does.
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
     },
   },
 
