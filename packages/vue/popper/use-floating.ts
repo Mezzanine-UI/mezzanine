@@ -50,6 +50,16 @@ export interface UseFloatingOptions {
 }
 
 export interface UseFloatingReturn {
+  /**
+   * The elements being positioned, mirroring `useFloating`'s `elements`.
+   * A consumer that has to reach the floating node — to animate it, say —
+   * gets it from here rather than from a template ref, which cannot see
+   * through a Teleport.
+   */
+  elements: {
+    floating: ComputedRef<FloatingElement | null>;
+    reference: ComputedRef<ReferenceElement | null>;
+  };
   floatingStyles: ComputedRef<CSSProperties>;
   isPositioned: Ref<boolean>;
   middlewareData: Ref<MiddlewareData>;
@@ -179,7 +189,13 @@ export function useFloating(options: UseFloatingOptions): UseFloatingReturn {
     };
   });
 
+  const elements = {
+    floating: computed((): FloatingElement | null => options.floating()),
+    reference: computed((): ReferenceElement | null => options.reference()),
+  };
+
   return {
+    elements,
     floatingStyles,
     isPositioned,
     middlewareData,
