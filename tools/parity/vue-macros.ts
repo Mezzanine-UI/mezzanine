@@ -14,6 +14,18 @@ export type MacroMembers = {
 };
 
 /**
+ * Comments are removed before anything else is read.
+ *
+ * A documented member (`/** The element you want to portal. *\/` above a slot)
+ * would otherwise be split on its own newlines and reported as three
+ * unparseable members — a checker that rejects documentation is a checker
+ * people delete documentation to satisfy. Angle brackets and braces inside a
+ * doc block would also unbalance the scan that finds the literal's end.
+ */
+const stripComments = (text: string): string =>
+  text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+
+/**
  * Locate `<macro><{ … }>` and split the literal body into top-level members.
  *
  * Returns `null` when the macro is absent. Returns an `errors` entry (and no
@@ -23,9 +35,10 @@ export type MacroMembers = {
  * empty one.
  */
 export function parseMacroTypeMembers(
-  text: string,
+  rawText: string,
   macro: string,
 ): MacroMembers | null {
+  const text = stripComments(rawText);
   const needle = `${macro}<`;
   const start = text.indexOf(needle);
 
