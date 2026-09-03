@@ -141,10 +141,45 @@ async function snapshotStory(
   await page.addStyleTag({
     content: `*, *::before, *::after { transition: none !important; animation: none !important; }`,
   });
-  await page.evaluate(() =>
-    Promise.all(
-      document.getAnimations().map((a) => a.finished.catch(() => undefined)),
-    ),
+  // Settle animations before reading computed styles. Two kinds cannot be
+  // awaited and used to hang the run indefinitely:
+  //   - infinite CSS animations, and
+  //   - scroll-driven animations (OverlayScrollbars creates two on every
+  //     scrollbar handle), whose computed timing is expressed in percentages
+  //     because progress comes from a ScrollTimeline rather than the clock.
+  // Neither has an end state, so their `finished` promise never resolves.
+  // They are cancelled instead, which reverts the element to its base style —
+  // the same thing the injected `animation: none` does to CSS animations, and
+  // symmetric across both sides. A hard cap guards anything not covered.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        const settled = Promise.all(
+          document.getAnimations().map((animation) => {
+            let endTime: unknown;
+
+            try {
+              endTime = animation.effect?.getComputedTiming().endTime;
+            } catch {
+              endTime = undefined;
+            }
+
+            if (typeof endTime !== 'number' || !Number.isFinite(endTime)) {
+              animation.cancel();
+
+              return undefined;
+            }
+
+            return animation.finished.catch(() => undefined);
+          }),
+        );
+        const timer = setTimeout(() => resolve(), 2000);
+
+        void settled.then(() => {
+          clearTimeout(timer);
+          resolve();
+        });
+      }),
   );
   // Some components defer initialisation to `requestIdleCallback` — anything
   // built on OverlayScrollbars does, via its `defer` option. Whether that
