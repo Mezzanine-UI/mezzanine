@@ -7,6 +7,9 @@
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "skipLibCheck": true,
+    // Without this the specs resolve `describe`/`it`/`expect` by accident from
+    // the root `@types/jest`, and `vi` not at all.
+    "types": ["vitest/globals"],
     "paths": {
       "@mezzanine-ui/icons": ["../icons/src"],
       "@mezzanine-ui/system/*": ["../system/src/*"],
