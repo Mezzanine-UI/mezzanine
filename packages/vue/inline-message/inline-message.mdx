@@ -1,0 +1,14 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as InlineMessageStories from './inline-message.stories';
+
+<Meta of={InlineMessageStories} />
+
+# InlineMessage
+
+行內提示訊息，直接放進版面中呈現情境回饋。
+
+根元素預設帶 `role="status"` 與 `aria-live="polite"`，兩者皆可覆寫。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/inline-message/inline-message.vue)
+
+<ArgTypes of={InlineMessageStories.Basic} />
