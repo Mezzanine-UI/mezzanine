@@ -6,7 +6,6 @@ import {
   onMounted,
   useAttrs,
   type ComponentPublicInstance,
-  type CSSProperties,
 } from 'vue';
 import {
   ClickScrollPlugin,
@@ -16,6 +15,7 @@ import {
 } from 'overlayscrollbars';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
 import { scrollbarClasses as classes } from '@mezzanine-ui/core/scrollbar';
+import { toCssLength } from '../_internal/css-length';
 import clsx from 'clsx';
 import type { ScrollbarProps } from './scrollbar.types';
 
@@ -95,18 +95,6 @@ const mergedOptions = computed(
     },
   }),
 );
-
-/**
- * React appends `px` to numeric style values; Vue passes them through and the
- * browser then drops the declaration as invalid. Both `maxHeight` and
- * `maxWidth` are documented as accepting a bare number meaning pixels, so the
- * conversion has to be explicit here.
- */
-function toCssLength(value: CSSProperties['maxHeight']): string | undefined {
-  if (value == null) return undefined;
-
-  return typeof value === 'number' ? `${value}px` : String(value);
-}
 
 const containerStyle = computed(() => ({
   maxHeight: toCssLength(props.maxHeight),
