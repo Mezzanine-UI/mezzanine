@@ -34,7 +34,7 @@ describe('MznTranslate', () => {
   ] as [TranslateFrom, string][])(
     'should rest offset from %s',
     async (from, transform) => {
-      mountTranslate({ from, keepMount: true });
+      mountTranslate({ from, keepMount: true, lazyMount: false });
       await flushPromises();
 
       expect(child()?.style.transform).toBe(transform);

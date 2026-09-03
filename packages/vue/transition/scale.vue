@@ -74,6 +74,7 @@ const { TransitionChild, onAppear, onEnter, onLeave, shown } =
     config: () => config.value,
     in: () => props.in,
     keepMount: () => props.keepMount,
+    lazyMount: () => props.lazyMount,
     on: {
       enter: (node, isAppearing) => emit('enter', node, isAppearing),
       entered: (node, isAppearing) => emit('entered', node, isAppearing),

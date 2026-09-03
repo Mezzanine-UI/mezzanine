@@ -32,7 +32,7 @@ describe('MznSlide', () => {
   ] as [SlideFrom, string][])(
     'should rest off screen from %s',
     async (from, transform) => {
-      mountSlide({ from, keepMount: true });
+      mountSlide({ from, keepMount: true, lazyMount: false });
       await flushPromises();
 
       expect(child()?.style.transform).toBe(transform);

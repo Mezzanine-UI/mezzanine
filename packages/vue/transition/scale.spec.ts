@@ -55,7 +55,7 @@ describe('MznScale', () => {
   });
 
   it('should rest scaled down and hidden while kept mounted', async () => {
-    mountScale({ keepMount: true });
+    mountScale({ keepMount: true, lazyMount: false });
     await flushPromises();
 
     expect(child()?.style.opacity).toBe('0');
@@ -64,7 +64,11 @@ describe('MznScale', () => {
   });
 
   it('should apply the transform origin', async () => {
-    mountScale({ keepMount: true, transformOrigin: 'top left' });
+    mountScale({
+      keepMount: true,
+      lazyMount: false,
+      transformOrigin: 'top left',
+    });
     await flushPromises();
 
     expect(child()?.style.transformOrigin).toBe('top left');

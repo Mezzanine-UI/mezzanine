@@ -3,6 +3,7 @@ import {
   computed,
   normalizeStyle,
   onMounted,
+  ref,
   shallowRef,
   watch,
 } from 'vue';
@@ -39,6 +40,7 @@ export interface UseTransitionImplementationOptions {
   config: () => TransitionRunnerConfig;
   in: () => boolean;
   keepMount: () => boolean;
+  lazyMount: () => boolean;
   on: TransitionCallbacks;
 }
 
@@ -90,7 +92,28 @@ export function useTransitionImplementation(
     override: childStyle,
   });
 
-  const shown = computed((): boolean => options.in() || options.keepMount());
+  /**
+   * `lazyMount` is React's `mountOnEnter`: nothing is rendered until the first
+   * enter. `keepMount` is `unmountOnExit: false`: it stays afterwards. So a
+   * lazily mounted child that has never entered is not in the DOM even with
+   * `keepMount` — which is what the Scale and Slide stories render, and what
+   * made them the first stories to disagree once every root node was compared.
+   */
+  const hasEntered = ref(false);
+
+  watch(
+    options.in,
+    (value) => {
+      if (value) hasEntered.value = true;
+    },
+    { immediate: true },
+  );
+
+  const shown = computed(
+    (): boolean =>
+      options.in() ||
+      (options.keepMount() && (!options.lazyMount() || hasEntered.value)),
+  );
 
   function element(): HTMLElement | null {
     const current = node.value;

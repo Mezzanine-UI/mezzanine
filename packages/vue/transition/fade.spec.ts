@@ -43,7 +43,7 @@ describe('MznFade', () => {
   });
 
   it('should mount hidden when keepMount starts out exited', async () => {
-    mountFade({ keepMount: true });
+    mountFade({ keepMount: true, lazyMount: false });
 
     await flushPromises();
 
@@ -55,7 +55,7 @@ describe('MznFade', () => {
   it('should fade back in when keepMount re-enters', async () => {
     vi.useFakeTimers();
 
-    const { shown } = mountFade({ keepMount: true });
+    const { shown } = mountFade({ keepMount: true, lazyMount: false });
 
     await flushPromises();
 
