@@ -21,10 +21,37 @@
  *
  * Spec files count for neither — they are not part of the parity surface.
  *
+ * ## Why edges are resolved file by file
+ *
+ * A directory is not a unit of dependency. `Toggle.tsx` reads
+ *
+ *     import { useSwitchControlValue } from '../Form/useSwitchControlValue';
+ *     import { FormControlContext } from '../Form';
+ *
+ * and a directory-level scan concludes Toggle depends on Form — which depends
+ * on Select, which sits in the 31-component cycle, so Toggle looks unportable
+ * for months. What Toggle actually needs is a thirty-line boolean-state hook
+ * and a four-field context: both port alongside Toggle in an afternoon, and
+ * Toggle's only real component dependency is Typography.
+ *
+ * So every import is resolved to a **file**, and the file decides:
+ *
+ *   - a `.tsx` module is a component — record a dependency on its directory
+ *     and stop, because whatever it imports is that component's problem;
+ *   - a `.ts` module is a hook, context, type or helper — record it as a
+ *     *shared module* the importer must carry, and keep walking through it,
+ *     since a hook can still reach a real component;
+ *   - a barrel (`index.ts`) is resolved through the named bindings actually
+ *     imported, so `{ FormControlContext } from '../Form'` lands on
+ *     `Form/FormControlContext.ts` and never on `Form/FormField.tsx`.
+ *
+ * Comments are stripped first: JSDoc `@example` blocks are full of import
+ * lines, and they are documentation, not edges.
+ *
  * Usage:  node tools/parity/component-graph.mjs [--json]
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { repoRoot, walk } from './vue-fs.mjs';
 
 const reactRoot = resolve(repoRoot, 'packages/react/src');
@@ -38,37 +65,370 @@ const components = readdirSync(reactRoot)
   .sort();
 
 const componentSet = new Set(components);
-const deps = new Map(components.map((c) => [c, new Set()]));
-const storyDeps = new Map(components.map((c) => [c, new Set()]));
-const barrelUsers = new Set();
 
-const IMPORT = /from\s+['"]\.\.\/([A-Za-z][A-Za-z0-9]*)(?:\/[^'"]*)?['"]/g;
-const BARREL = /from\s+['"]\.\.['"]/;
+const isStoryFile = (f) => f.endsWith('.stories.tsx') || f.endsWith('.stories.ts');
+const isSpecFile = (f) => f.endsWith('.spec.tsx') || f.endsWith('.spec.ts');
+const isSource = (f) => (f.endsWith('.ts') || f.endsWith('.tsx')) && !isSpecFile(f);
 
-for (const component of components) {
-  const files = await walk(
-    join(reactRoot, component),
-    (n) =>
-      (n.endsWith('.ts') || n.endsWith('.tsx')) &&
-      !n.endsWith('.spec.ts') &&
-      !n.endsWith('.spec.tsx'),
+/** Strip block and line comments so JSDoc examples cannot contribute edges. */
+const stripComments = (src) =>
+  src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+
+const sourceCache = new Map();
+
+function read(file) {
+  if (!sourceCache.has(file)) {
+    sourceCache.set(file, stripComments(readFileSync(file, 'utf8')));
+  }
+
+  return sourceCache.get(file);
+}
+
+/** Resolve a relative specifier to an existing file, TypeScript-style. */
+function resolveFile(fromFile, spec) {
+  const base = resolve(dirname(fromFile), spec);
+  const candidates = [
+    base,
+    `${base}.ts`,
+    `${base}.tsx`,
+    join(base, 'index.ts'),
+    join(base, 'index.tsx'),
+  ];
+
+  return (
+    candidates.find((c) => existsSync(c) && statSync(c).isFile()) ?? null
   );
+}
 
-  for (const file of files) {
-    const src = readFileSync(file, 'utf8');
-    const isStory =
-      file.endsWith('.stories.tsx') || file.endsWith('.stories.ts');
-    const bucket = isStory ? storyDeps : deps;
+/** The component directory a file belongs to, or null for hooks/utils/… */
+function ownerOf(file) {
+  const [dir] = relative(reactRoot, file).split('/');
 
-    if (BARREL.test(src)) barrelUsers.add(component);
+  return componentSet.has(dir) ? dir : null;
+}
 
-    for (const m of src.matchAll(IMPORT)) {
-      const dep = m[1];
+const isBarrel = (file) => /\/index\.tsx?$/.test(file);
+const isComponentModule = (file) => file.endsWith('.tsx') && !isBarrel(file);
 
-      if (dep !== component && componentSet.has(dep)) {
-        bucket.get(component).add(dep);
+/**
+ * Import clause → the exported names it pulls in.
+ *
+ * `namespace` is a wildcard: `import * as X from '../Y'` can reach anything Y
+ * exports, so a barrel behind one is resolved conservatively.
+ */
+function parseBindings(clause) {
+  const trimmed = clause.replace(/^type\s+/, '').trim();
+
+  if (/^\*\s+as\s/.test(trimmed)) return { names: [], namespace: true };
+
+  const names = [];
+  const braced = trimmed.match(/\{([\s\S]*)\}/);
+  const beforeBrace = trimmed.split('{')[0].replace(/,\s*$/, '').trim();
+
+  if (beforeBrace) names.push('default');
+
+  if (braced) {
+    for (const part of braced[1].split(',')) {
+      const name = part
+        .trim()
+        .replace(/^type\s+/, '')
+        .split(/\s+as\s+/)[0]
+        .trim();
+
+      if (name) names.push(name);
+    }
+  }
+
+  return { names, namespace: false };
+}
+
+/** Names a module exports at its definition site (for `export * from`). */
+function exportedNames(file) {
+  const names = new Set();
+  const src = read(file);
+
+  for (const m of src.matchAll(
+    /export\s+(?:declare\s+)?(?:abstract\s+)?(?:const|let|var|function|class|interface|type|enum)\s+([A-Za-z_$][\w$]*)/g,
+  )) {
+    names.add(m[1]);
+  }
+
+  for (const m of src.matchAll(/export\s*\{([^}]*)\}(?![\s]*from\b)/g)) {
+    for (const part of m[1].split(',')) {
+      const name = part.trim().split(/\s+as\s+/).pop()?.trim();
+
+      if (name) names.add(name);
+    }
+  }
+
+  if (/export\s+default\s/.test(src)) names.add('default');
+
+  return names;
+}
+
+/**
+ * Local name → file, for every relative import in a file.
+ *
+ * A barrel does not always re-export directly. `Typography/index.ts` imports
+ * its own default, casts it, and exports the cast — so `export … from` alone
+ * finds nothing, and a default import of Typography silently resolves to no
+ * file at all.
+ */
+function localImportBindings(file) {
+  const out = new Map();
+
+  for (const m of read(file).matchAll(
+    /import\s+([^;'"]*?)\s*from\s*['"](\.[^'"]+)['"]/g,
+  )) {
+    const target = resolveFile(file, m[2]);
+
+    if (!target) continue;
+
+    const clause = m[1].replace(/^type\s+/, '').trim();
+    const namespace = clause.match(/^\*\s+as\s+([A-Za-z_$][\w$]*)/);
+
+    if (namespace) {
+      out.set(namespace[1], target);
+      continue;
+    }
+
+    const beforeBrace = clause.split('{')[0].replace(/,\s*$/, '').trim();
+
+    if (beforeBrace) out.set(beforeBrace, target);
+
+    const braced = clause.match(/\{([\s\S]*)\}/);
+
+    if (!braced) continue;
+
+    for (const part of braced[1].split(',')) {
+      const cleaned = part.trim().replace(/^type\s+/, '');
+
+      if (!cleaned) continue;
+
+      const [original, alias] = cleaned.split(/\s+as\s+/);
+
+      out.set((alias ?? original).trim(), target);
+    }
+  }
+
+  return out;
+}
+
+const barrelCache = new Map();
+
+/**
+ * Map every name a barrel re-exports to the file that *defines* it.
+ *
+ * Barrels chain — the package root re-exports `./Dropdown`, which re-exports
+ * `./Dropdown.tsx` — so a nested barrel is resolved rather than treated as the
+ * definition site. Without that, a name looks unresolvable and the caller has
+ * to fall back to the whole barrel.
+ */
+function barrelMap(barrelFile, seen = new Set()) {
+  if (barrelCache.has(barrelFile)) return barrelCache.get(barrelFile);
+  if (seen.has(barrelFile)) return new Map();
+
+  seen.add(barrelFile);
+
+  const map = new Map();
+  const src = read(barrelFile);
+
+  for (const m of src.matchAll(
+    /export\s+(type\s+)?(\*|\{[^}]*\})\s*from\s*['"]([^'"]+)['"]/g,
+  )) {
+    const target = resolveFile(barrelFile, m[3]);
+
+    if (!target) continue;
+
+    const nested = isBarrel(target) ? barrelMap(target, seen) : null;
+
+    if (m[2] === '*') {
+      if (nested) for (const [name, file] of nested) map.set(name, file);
+      else for (const name of exportedNames(target)) map.set(name, target);
+
+      continue;
+    }
+
+    for (const part of m[2].slice(1, -1).split(',')) {
+      const cleaned = part.trim().replace(/^type\s+/, '');
+
+      if (!cleaned) continue;
+
+      const [original, alias] = cleaned.split(/\s+as\s+/);
+      const source = original.trim();
+
+      map.set((alias ?? original).trim(), nested?.get(source) ?? target);
+    }
+  }
+
+  // Exports that go through a local binding rather than straight through.
+  const locals = localImportBindings(barrelFile);
+  const defaultExport = src.match(/export\s+default\s+([A-Za-z_$][\w$]*)/);
+
+  if (defaultExport && locals.has(defaultExport[1])) {
+    map.set('default', locals.get(defaultExport[1]));
+  }
+
+  for (const m of src.matchAll(
+    /export\s+(?:type\s+)?\{([^}]*)\}(?![\s]*from\b)/g,
+  )) {
+    for (const part of m[1].split(',')) {
+      const cleaned = part.trim().replace(/^type\s+/, '');
+
+      if (!cleaned) continue;
+
+      const [original, alias] = cleaned.split(/\s+as\s+/);
+      const target = locals.get(original.trim());
+
+      if (target) map.set((alias ?? original).trim(), target);
+    }
+  }
+
+  if (seen.size === 1) barrelCache.set(barrelFile, map);
+
+  return map;
+}
+
+const importCache = new Map();
+
+/** Every `import … from` / `export … from` in a file, with its bindings. */
+function importsOf(file) {
+  if (importCache.has(file)) return importCache.get(file);
+
+  const src = read(file);
+  const out = [];
+
+  for (const m of src.matchAll(
+    /import\s+([^;'"]*?)\s*from\s*['"]([^'"]+)['"]/g,
+  )) {
+    out.push({ spec: m[2], ...parseBindings(m[1]) });
+  }
+
+  // A re-export is an edge too, and its bindings are just as informative.
+  for (const m of src.matchAll(
+    /export\s+(type\s+)?(\*|\{[^}]*\})\s*from\s*['"]([^'"]+)['"]/g,
+  )) {
+    out.push(
+      m[2] === '*'
+        ? { spec: m[3], names: [], namespace: true }
+        : { spec: m[3], ...parseBindings(m[2]) },
+    );
+  }
+
+  importCache.set(file, out);
+
+  return out;
+}
+
+/**
+ * Files an import reaches. A barrel is opened only for the names actually
+ * imported; an unresolvable name falls back to the whole barrel, so an
+ * unrecognized export shape overstates the dependency rather than hiding it.
+ */
+function targetsOf(file, imported) {
+  const resolved = resolveFile(file, imported.spec);
+
+  if (!resolved) return [];
+  if (!isBarrel(resolved)) return [resolved];
+
+  const map = barrelMap(resolved);
+
+  if (imported.namespace || imported.names.length === 0) {
+    return [...new Set(map.values())];
+  }
+
+  const out = [];
+  let unresolved = false;
+
+  for (const name of imported.names) {
+    const target = map.get(name);
+
+    if (target) out.push(target);
+    else unresolved = true;
+  }
+
+  // A name a component's own barrel cannot account for is followed into that
+  // barrel: walking its imports reaches the real definitions and stops at the
+  // component files they live in.
+  //
+  // The package root barrel is not followed, because everything is behind it —
+  // one unresolved name there (`DropdownOption`, re-exported from
+  // `@mezzanine-ui/core`, so not resolvable in this package at all) would make
+  // a single story depend on all 68 components. Those edges stay missing, and
+  // the barrel-users note at the end of the report says so.
+  if (unresolved && ownerOf(resolved)) out.push(resolved);
+
+  return [...new Set(out)];
+}
+
+/**
+ * Walk out from a component's own files, collecting the components it needs
+ * and the individual modules it borrows from other components' directories.
+ */
+function collect(component, seeds) {
+  const componentDeps = new Set();
+  const moduleDeps = new Set();
+  const seen = new Set(seeds);
+  const queue = [...seeds];
+
+  while (queue.length > 0) {
+    const file = queue.pop();
+
+    for (const imported of importsOf(file)) {
+      if (!imported.spec.startsWith('.')) continue;
+
+      for (const target of targetsOf(file, imported)) {
+        const owner = ownerOf(target);
+
+        if (owner === component) {
+          if (!seen.has(target)) {
+            seen.add(target);
+            queue.push(target);
+          }
+
+          continue;
+        }
+
+        if (owner && isComponentModule(target)) {
+          componentDeps.add(owner);
+          continue;
+        }
+
+        // A hook, context or helper: the importer carries it, so keep
+        // walking — it can still reach a real component further in. A barrel
+        // is only a waypoint, so it is walked but never listed.
+        if (owner && !isBarrel(target)) moduleDeps.add(relative(reactRoot, target));
+
+        if (!seen.has(target)) {
+          seen.add(target);
+          queue.push(target);
+        }
       }
     }
+  }
+
+  return { componentDeps, moduleDeps };
+}
+
+const deps = new Map();
+const storyDeps = new Map();
+const moduleDeps = new Map();
+const barrelUsers = new Set();
+
+for (const component of components) {
+  const files = await walk(join(reactRoot, component), isSource);
+  const implFiles = files.filter((f) => !isStoryFile(f));
+  const storyFiles = files.filter((f) => isStoryFile(f));
+
+  const impl = collect(component, implFiles);
+  const story = collect(component, storyFiles);
+
+  deps.set(component, impl.componentDeps);
+  moduleDeps.set(component, impl.moduleDeps);
+  storyDeps.set(component, story.componentDeps);
+
+  for (const file of files) {
+    if (/from\s+['"]\.\.['"]/.test(read(file))) barrelUsers.add(component);
   }
 }
 
@@ -122,6 +482,7 @@ if (process.argv.includes('--json')) {
             ported: ported(c),
             storyReady: storyReady(c),
             dependsOn: [...deps.get(c)].sort(),
+            sharedModules: [...moduleDeps.get(c)].sort(),
             storiesAlsoNeed: [...storyDeps.get(c)].sort(),
             storiesBlockedOn: [...storyDeps.get(c)]
               .filter((d) => !ported(d))
@@ -171,6 +532,23 @@ console.log(
     'packages/vue/_internal/ or to an already-ported component must be pulled\n' +
     'back onto the main line rather than done in parallel.\n',
 );
+
+const withModules = components.filter((c) => moduleDeps.get(c).size > 0);
+
+if (withModules.length > 0) {
+  console.log(
+    `Shared modules (${withModules.length} component(s)): hooks, contexts and\n` +
+      "helpers borrowed from another component's directory. These are not\n" +
+      'component dependencies — they port alongside the component that needs\n' +
+      'them — but they do have to be ported, so they are listed here:\n',
+  );
+
+  for (const c of withModules) {
+    console.log(`  ${kebab(c)} → ${[...moduleDeps.get(c)].sort().join(', ')}`);
+  }
+
+  console.log('');
+}
 
 const withStoryDeps = components.filter((c) => storyDeps.get(c).size > 0);
 

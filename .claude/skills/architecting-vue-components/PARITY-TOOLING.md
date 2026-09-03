@@ -148,6 +148,50 @@ Each exists because the failure mode it catches is **invisible** to a DOM diff.
 `check-hardcoded-tokens.mjs` is unchanged and still applies — it scans `packages/core/src`
 only, which is shared by all three frameworks.
 
+### 3a. `component-graph.mjs` — porting order
+
+Not a check (it never fails); it derives the React dependency graph and prints the
+batches that decide porting order and what may be fanned out to sub-agents.
+`yarn components:graph`, `--json` for the machine-readable form.
+
+**Edges are resolved file by file, and that is load-bearing.** A directory is not a
+unit of dependency:
+
+```ts
+// Toggle.tsx
+import { useSwitchControlValue } from '../Form/useSwitchControlValue';
+import { FormControlContext } from '../Form';
+```
+
+Read at directory level, Toggle depends on Form, Form depends on Select, and Toggle
+lands in the 31-component cycle — unportable for months. What it actually needs is a
+thirty-line boolean-state hook and a four-field context, both of which port alongside
+it; its only real component dependency is Typography. Three rules keep that honest:
+
+- a `.tsx` module is a **component** — record the dependency and stop, because what it
+  imports is that component's problem;
+- a `.ts` module is a hook, context, type or helper — record it as a **shared module**
+  the importer has to carry (reported in its own section) and keep walking, since a
+  hook can still reach a real component further in;
+- a barrel (`index.ts`) is resolved through the **names actually imported**, including
+  the ones it exports through a local binding (`Typography/index.ts` imports its own
+  default, casts it, and exports the cast — parsing only `export … from` finds nothing
+  and silently loses the edge).
+
+Two deliberate asymmetries. An unresolved name in a _component's_ barrel is followed
+into that barrel, which reaches the real definitions; an unresolved name in the
+**package root** barrel is not followed at all, because everything is behind it — one
+such name (`DropdownOption`, re-exported from `@mezzanine-ui/core`) otherwise makes a
+single story depend on all 68 components. Those edges stay missing and the report says
+which files import from `'..'`.
+
+And type-only imports still count: `Empty/typings.ts` reading `ButtonProps` makes Empty
+depend on Button. Over-ordering is the safe error here; under-ordering means porting a
+container before its children and debugging someone else's diffs.
+
+Comments are stripped before scanning — JSDoc `@example` blocks are full of import
+lines, and they are documentation, not edges.
+
 ---
 
 ## 4. Scripts to add to the root `package.json`
