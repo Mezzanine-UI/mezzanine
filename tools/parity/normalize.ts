@@ -202,17 +202,34 @@ export const SNAPSHOT_SOURCE = `
   if (!root) return null;
   // Skip framework wrappers (e.g. Angular's <storybook-root>) to align both sides.
   var WRAPPER_TAGS = new Set(['storybook-root']);
-  var first = root.firstElementChild;
+  var container = root;
+  var first = container.firstElementChild;
   while (first && WRAPPER_TAGS.has(first.tagName.toLowerCase()) && first.firstElementChild) {
+    container = first;
     first = first.firstElementChild;
   }
   if (!first) return null;
   // Seed with the variables the snapshot root already inherits, so the root
   // node does not dump the whole \`:root\` token set either.
-  var seed = first.parentElement
-    ? collectMznVars(window.getComputedStyle(first.parentElement))
-    : {};
-  return walk(first, seed);
+  var seed = collectMznVars(window.getComputedStyle(container));
+  // A story with several root nodes — \`<><Toggle /><Fade>…</Fade></>\` — used
+  // to be snapshotted from its first element only, so everything after it was
+  // never compared: the transition stories' whole subject sat outside the
+  // diff. Anything past the first root is collected under a synthetic node.
+  // Single-root stories keep their exact previous shape, so their snapshots
+  // and report paths do not churn.
+  var roots = [];
+  var rootNodes = Array.from(container.childNodes);
+  for (var r = 0; r < rootNodes.length; r++) {
+    var rootNode = rootNodes[r];
+    if (rootNode.nodeType === 1) roots.push(walk(rootNode, seed));
+    else if (rootNode.nodeType === 3) {
+      var rootText = (rootNode.textContent || '').trim();
+      if (rootText) roots.push({ tag: '#text', attrs: {}, style: {}, text: rootText, children: [] });
+    }
+  }
+  if (roots.length === 1) return roots[0];
+  return { tag: '#roots', attrs: {}, style: {}, children: roots };
 }
 `;
 
