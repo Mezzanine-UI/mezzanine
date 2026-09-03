@@ -415,10 +415,21 @@ const storyDeps = new Map();
 const moduleDeps = new Map();
 const barrelUsers = new Set();
 
+/**
+ * Per story *file*, not per component: a directory with two story files is
+ * blocked as a whole if either one is, which hid that `ButtonGroup.stories`
+ * needed nothing while `Button.stories` waited on Dropdown.
+ */
+const storyFileDeps = new Map();
+
 for (const component of components) {
   const files = await walk(join(reactRoot, component), isSource);
   const implFiles = files.filter((f) => !isStoryFile(f));
   const storyFiles = files.filter((f) => isStoryFile(f));
+
+  for (const file of storyFiles) {
+    storyFileDeps.set(file, collect(component, [file]).componentDeps);
+  }
 
   const impl = collect(component, implFiles);
   const story = collect(component, storyFiles);
@@ -540,6 +551,48 @@ console.log(
     'packages/vue/_internal/ or to an already-ported component must be pulled\n' +
     'back onto the main line rather than done in parallel.\n',
 );
+
+/**
+ * React story files whose every rendered component is ported, and whose Vue
+ * counterpart does not exist yet. These are writable right now.
+ */
+const vueStoryFiles = (await walk(vueRoot, (n) => n.endsWith('.stories.ts')))
+  .map((f) => f.split('/').pop())
+  .filter(Boolean);
+
+const writableStories = [];
+
+for (const [file, deps] of storyFileDeps) {
+  const owner = ownerOf(file);
+
+  // Only for components that are ported: a story cannot be written for an
+  // implementation that does not exist yet.
+  if (!owner || !ported(owner)) continue;
+  if (![...deps].every(ported)) continue;
+
+  const base = file.split('/').pop().replace(/\.stories\.tsx?$/, '');
+  const expected = `${kebab(base)}.stories.ts`;
+
+  if (!vueStoryFiles.includes(expected)) {
+    writableStories.push({ expected, react: relative(reactRoot, file) });
+  }
+}
+
+if (writableStories.length > 0) {
+  console.log(
+    `Story files ready to write (${writableStories.length}): the component is\n` +
+      'ported, everything the story renders is ported, and the Vue file does\n' +
+      'not exist yet:\n',
+  );
+
+  for (const { expected, react } of writableStories.sort((a, b) =>
+    a.expected.localeCompare(b.expected),
+  )) {
+    console.log(`  ${expected.padEnd(34)} ← ${react}`);
+  }
+
+  console.log('');
+}
 
 const withModules = components.filter((c) => moduleDeps.get(c).size > 0);
 
