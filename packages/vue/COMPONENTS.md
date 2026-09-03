@@ -51,6 +51,7 @@
 | Portal       | `MznPortal`       | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
 | Popper       | `MznPopper`       | `@mezzanine-ui/vue/popper`        | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
 | Backdrop     | `MznBackdrop`     | `@mezzanine-ui/vue/backdrop`      | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
+| Tooltip      | `MznTooltip`      | `@mezzanine-ui/vue/tooltip`       | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
 
 ## Motion（動效）
 
@@ -58,6 +59,12 @@
 | ---- | --------- | ------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | Fade | `MznFade` | `@mezzanine-ui/vue/transition` | 淡入淡出轉場。其餘轉場家族成員（Collapse / Rotate / Scale / Slide / Translate）待其 stories 解封後再移植 |
 
-> Portal、Popper、Backdrop 與 Fade 的 stories 需要尚未移植的元件（都直接或間接
-> 卡在 Button），因此還沒有 story 檔，DOM parity 也還沒跑過（`yarn components:graph`
-> 會標成 `parity pending …`）。目前的把關是 props 契約比對、靜態檢查與單元測試。
+> Portal、Popper、Backdrop、Tooltip 與 Fade 的 stories 需要尚未移植的元件（都直接
+> 或間接卡在 Button），因此還沒有 story 檔，DOM parity 也還沒跑過
+> （`yarn components:graph` 會標成 `parity pending …`）。目前的把關是 props 契約
+> 比對、靜態檢查與單元測試。
+>
+> **待決事項**：`MznFade` 的 `keepMount`（留在 DOM 但淡出）目前無效 —— Vue 內建的
+> `Transition` 只在子節點真的被移除時才跑 leave hook。修法是改用 render function
+> 搭配 `withDirectives(cloneVNode(child), [[vShow, props.in]])`（`v-show` 無法掛在
+> slot outlet 上）。目前沒有任何元件使用 `keepMount`，對應測試以 `it.skip` 標記。
