@@ -37,6 +37,7 @@
     "vue": ">=3.5"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.7.4",
     "@mezzanine-ui/core": "1.2.0",
     "@mezzanine-ui/icons": "1.0.2",
     "@mezzanine-ui/system": "1.0.2",
