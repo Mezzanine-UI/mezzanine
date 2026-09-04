@@ -46,12 +46,13 @@
 
 ## Feedback（回饋）
 
-| 元件        | 匯入名稱         | 匯入路徑                         | 說明                                           |
-| ----------- | ---------------- | -------------------------------- | ---------------------------------------------- |
-| Empty       | `MznEmpty`       | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕   |
-| ResultState | `MznResultState` | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕 |
-| Skeleton    | `MznSkeleton`    | `@mezzanine-ui/vue/skeleton`     | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態 |
-| Spin        | `MznSpin`        | `@mezzanine-ui/vue/spin`         | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋 |
+| 元件        | 匯入名稱         | 匯入路徑                         | 說明                                                 |
+| ----------- | ---------------- | -------------------------------- | ---------------------------------------------------- |
+| Empty       | `MznEmpty`       | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕         |
+| Message     | `message`        | `@mezzanine-ui/vue/message`      | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時 |
+| ResultState | `MznResultState` | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕       |
+| Skeleton    | `MznSkeleton`    | `@mezzanine-ui/vue/skeleton`     | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態       |
+| Spin        | `MznSpin`        | `@mezzanine-ui/vue/spin`         | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋       |
 
 ## 內部元件（不建議直接使用）
 
