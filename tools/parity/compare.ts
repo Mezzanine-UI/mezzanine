@@ -274,7 +274,18 @@ function diffArgs(
       });
     }
 
-    if (r.control !== t.control) {
+    // `vue-component-meta` does not resolve type aliases (`DateType`) or the
+    // props a component inherits through `Pick<>`: it reports them as
+    // `{ name: 'other' }`, and Storybook then falls back to the `object`
+    // control. That fallback says the target's docgen gave up, not that the
+    // two stories offer different scenarios, so it is not compared. Every
+    // other case still is — a control the story declares itself (a `select`
+    // with its own options), or one whose type both docgens resolved — and
+    // option lists are compared regardless.
+    const targetControlIsUnresolvedFallback =
+      t.type === 'other' && t.control === 'object';
+
+    if (r.control !== t.control && !targetControlIsUnresolvedFallback) {
       out.push({
         story,
         path: `argTypes.${name}.control`,

@@ -131,6 +131,21 @@ sorted `options`, `control.type`) and `initialArgs` for each story on both sides
 `args` diffs. This is what enforces R6 ("stories must be scenario-identical") at the control
 level rather than just the rendered-DOM level.
 
+**One documented exemption (approved 2026-09-04).** `react-docgen-typescript` resolves type
+aliases and the props a component inherits through `Pick<>`; `vue-component-meta` does not — it
+reports both as `{ name: 'other' }` (for `Pick<>`-inherited props, with an empty `value`), and
+Storybook then falls back to `control: 'object'`. So `Calendar`'s `referenceDate: DateType`
+offers a text box on the React side and an object editor on the Vue side, with nothing either
+port can do about it. `diffArgs` therefore skips the `control` comparison when the **target's**
+docgen type is unresolved **and** its control is exactly that `object` fallback. Everything else
+is still compared: option lists always, and `control` whenever the story declares one itself (a
+`select` with its own options) or both docgens resolved the type. Verified by injection — changing
+a Vue story's `mode` control to `radio` still fails the run.
+
+This exemption lives in the harness rather than in `DEVIATIONS-VUE.md` because it is a statement
+about the two docgen tools, not about a component: every future component whose props are typed
+through `DateType` or `Pick<>` — the whole picker family — would otherwise need its own row.
+
 ---
 
 ## 3. New Vue-specific static checks
