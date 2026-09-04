@@ -6,12 +6,17 @@ import type { ButtonProps } from '../button/button.types';
 /**
  * A button described as data rather than markup.
  *
+ * Named `ActionButtonsItem`, not `ActionButtonData`: the parity extractor
+ * resolves a component's props from `XProps`/`XPropsBase`/`XData`, and Input's
+ * real `ActionButton` component would have picked this type up as half of its
+ * contract.
+ *
  * React's `ButtonProps` reaches native button props through its polymorphic
  * factory, and carries the label in `children`. Vue's `ButtonProps` holds only
  * the component's own props — everything else is a fallthrough attribute — so
  * the native half is added back here, and `children` becomes the default slot.
  */
-export type ActionButtonData = ButtonProps &
+export type ActionButtonsItem = ButtonProps &
   Omit<ButtonHTMLAttributes, keyof ButtonProps> & {
     /**
      * The button's content.
@@ -21,10 +26,10 @@ export type ActionButtonData = ButtonProps &
 
 export type ActionButtons =
   | {
-      primaryButton?: ActionButtonData;
-      secondaryButton: ActionButtonData;
+      primaryButton?: ActionButtonsItem;
+      secondaryButton: ActionButtonsItem;
     }
-  | ActionButtonData;
+  | ActionButtonsItem;
 
 export interface ResolveActionButtonsOptions {
   actions?: ActionButtons;
@@ -44,7 +49,7 @@ export interface ResolveActionButtonsOptions {
  * the size and variant its container decides.
  */
 function renderButtonOrElement(
-  button: ActionButtonData | VNode | undefined,
+  button: ActionButtonsItem | VNode | undefined,
   size: ButtonProps['size'],
   variant: 'base-primary' | 'base-secondary',
 ): VNodeChild {

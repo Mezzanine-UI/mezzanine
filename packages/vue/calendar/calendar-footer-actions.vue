@@ -3,7 +3,7 @@ import { computed, h, useAttrs } from 'vue';
 import type { FunctionalComponent, VNode } from 'vue';
 import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
 import clsx from 'clsx';
-import type { ActionButtonData } from '../_internal/action-buttons';
+import type { ActionButtonsItem } from '../_internal/action-buttons';
 import MznButton from '../button/button.vue';
 import type { CalendarFooterActionsProps } from './calendar-footer-actions.types';
 
@@ -48,7 +48,7 @@ const forwardedAttrs = computed(() => {
 });
 
 function renderButton(
-  button: ActionButtonData,
+  button: ActionButtonsItem,
   variant: 'base-primary' | 'base-tertiary',
 ): VNode {
   const { children, ...rest } = button;

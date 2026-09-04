@@ -2,7 +2,7 @@ import type {
   ResultStateSize,
   ResultStateType,
 } from '@mezzanine-ui/core/result-state';
-import type { ActionButtonData } from '../_internal/action-buttons';
+import type { ActionButtonsItem } from '../_internal/action-buttons';
 
 /**
  * Actions can be either single button or two buttons.
@@ -14,8 +14,8 @@ import type { ActionButtonData } from '../_internal/action-buttons';
  * missing secondary either way.
  */
 export interface ResultStateActions {
-  primaryButton?: ActionButtonData;
-  secondaryButton: ActionButtonData;
+  primaryButton?: ActionButtonsItem;
+  secondaryButton: ActionButtonsItem;
 }
 
 export interface ResultStateProps {

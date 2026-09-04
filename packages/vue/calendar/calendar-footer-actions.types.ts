@@ -1,4 +1,4 @@
-import type { ActionButtonData } from '../_internal/action-buttons';
+import type { ActionButtonsItem } from '../_internal/action-buttons';
 
 export interface CalendarFooterActionsProps {
   /**
@@ -6,8 +6,8 @@ export interface CalendarFooterActionsProps {
    */
   actions: {
     /** The confirming button, rendered as `base-primary`. */
-    primaryButtonProps: ActionButtonData;
+    primaryButtonProps: ActionButtonsItem;
     /** The dismissing button, rendered as `base-tertiary`. */
-    secondaryButtonProps: ActionButtonData;
+    secondaryButtonProps: ActionButtonsItem;
   };
 }
