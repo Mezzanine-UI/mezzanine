@@ -121,6 +121,22 @@ const forwardedAttrs = computed(() => {
 });
 
 /**
+ * React's DOM layer treats `disabled` as a boolean attribute on every element:
+ * `true` renders `disabled=""` and `false` removes it, an anchor included. Vue
+ * only does that where the DOM object has a `disabled` property, and writes the
+ * literal string anywhere else (`a disabled="true"`), so the value is picked
+ * to land on React's markup — the empty string for a plain tag, the boolean for
+ * a button and for a component, whose own prop expects one.
+ */
+const disabledBinding = computed((): boolean | string | undefined => {
+  if (!props.disabled) return undefined;
+
+  return typeof props.component === 'string' && props.component !== 'button'
+    ? ''
+    : true;
+});
+
+/**
  * Everything the root element takes, in one place: React writes it once and
  * calls it from both the plain and the tooltip-wrapped branch, and so does the
  * template below.
@@ -134,7 +150,7 @@ function rootBindings(tooltipProps?: TooltipTriggerProps) {
         .join(' ') || undefined,
     'aria-disabled': props.disabled,
     class: hostClasses.value,
-    disabled: props.disabled,
+    disabled: disabledBinding.value,
     onBlur: (event: FocusEvent): void => {
       call(attrs.onBlur as AttrHandler, event);
       tooltipProps?.onBlur();
