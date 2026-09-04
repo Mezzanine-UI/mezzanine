@@ -533,6 +533,35 @@ function splitTopLevel(expr: string, operator: '&' | '|'): string[] {
  * `Omit<X, ...>` / `Pick<X, ...>`, an intersection (`A & B`), a union
  * (`A | B`), an inline type literal (`{ x: T; y: T }`), or combinations.
  */
+/**
+ * The name an `onXxx` prop takes in the outputs set.
+ *
+ * `Omit`/`Pick` key lists are written in prop form — `Omit<NotifierData,
+ * 'onClose'>` — while callbacks have already been folded into outputs under
+ * their event name, so filtering by the literal key missed them entirely.
+ * Message omits `onClose` and still reported a `close` output; the transition
+ * props picked into `MessageConfigProps` were dropped instead of kept.
+ */
+function outputName(name: string): string {
+  return name.startsWith('on') &&
+    name.length > 2 &&
+    name[2] === name[2].toUpperCase()
+    ? name[2].toLowerCase() + name.slice(3)
+    : name;
+}
+
+/** A key list that matches both the prop spelling and the output spelling. */
+function keyFilter(rawKeys: string[]): Set<string> {
+  const keys = new Set<string>();
+
+  rawKeys.forEach((key) => {
+    keys.add(key);
+    keys.add(outputName(key));
+  });
+
+  return keys;
+}
+
 function resolveTypeExpression(
   expr: string,
   visited: Set<string>,
@@ -604,7 +633,7 @@ function resolveTypeExpression(
     /^Omit\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
   );
   if (omitMatch) {
-    const keys = new Set(
+    const keys = keyFilter(
       omitMatch[2]
         .split('|')
         .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
@@ -620,7 +649,7 @@ function resolveTypeExpression(
     /^Pick\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
   );
   if (pickMatch) {
-    const keys = new Set(
+    const keys = keyFilter(
       pickMatch[2]
         .split('|')
         .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
@@ -688,10 +717,14 @@ function resolveInterfaceProps(
         scope,
         parentVisited,
       );
+      // Both spellings, because an `extends Omit<X, 'onClose'>` names the prop
+      // while the set holds the output under its event name.
+      const pick = parent.pick && keyFilter([...parent.pick]);
+      const omit = parent.omit && keyFilter([...parent.omit]);
       const mergeSet = (target: Set<string>, source: Set<string>): void => {
         for (const k of source) {
-          if (parent.pick && !parent.pick.has(k)) continue;
-          if (parent.omit && parent.omit.has(k)) continue;
+          if (pick && !pick.has(k)) continue;
+          if (omit && omit.has(k)) continue;
           target.add(k);
         }
       };
