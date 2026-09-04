@@ -20,6 +20,28 @@ export interface InputWithClearControlValue {
 }
 
 /**
+ * React derives the change event from the click with `Object.create` and then
+ * assigns `target`, which its synthetic event allows. On a native event
+ * `target` and `currentTarget` are getter-only accessors inherited from
+ * `Event.prototype`, so assigning to them throws — they are defined as own
+ * properties here instead.
+ */
+function clearEvent(
+  target: HTMLInputElement | HTMLTextAreaElement,
+  originalEvent: MouseEvent,
+): Event {
+  const event = new Event('change');
+
+  Object.defineProperties(event, {
+    currentTarget: { configurable: true, value: target },
+    originalEvent: { configurable: true, value: originalEvent },
+    target: { configurable: true, value: target },
+  });
+
+  return event;
+}
+
+/**
  * 在 useInputControlValue 之上加一個清除處理器。
  *
  * 清除時會暫時把輸入框的值設成空字串、送出一次 change，再還原 —— 這樣受控流程拿到的
@@ -53,13 +75,7 @@ export function useInputWithClearControlValue(
      * then put the original back.
      */
     target.value = '';
-    onChange(
-      Object.assign(new Event('change'), {
-        target,
-        currentTarget: target,
-        originalEvent: event,
-      }),
-    );
+    onChange(clearEvent(target, event));
     target.value = originalValue;
   }
 
