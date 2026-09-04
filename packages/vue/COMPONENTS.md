@@ -48,6 +48,7 @@
 
 | 元件        | 匯入名稱         | 匯入路徑                         | 說明                                                 |
 | ----------- | ---------------- | -------------------------------- | ---------------------------------------------------- |
+| AlertBanner | `MznAlertBanner` | `@mezzanine-ui/vue/alert-banner` | 頁面層級警示橫幅，命令式 `alertBanner` 共用 alert 層 |
 | Empty       | `MznEmpty`       | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕         |
 | Message     | `message`        | `@mezzanine-ui/vue/message`      | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時 |
 | ResultState | `MznResultState` | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕       |
