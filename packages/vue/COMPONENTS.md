@@ -39,10 +39,11 @@
 
 ## Data Entry（資料輸入）
 
-| 元件     | 匯入名稱      | 匯入路徑                     | 說明                                                                     |
-| -------- | ------------- | ---------------------------- | ------------------------------------------------------------------------ |
-| Textarea | `MznTextarea` | `@mezzanine-ui/vue/textarea` | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手 |
-| Toggle   | `MznToggle`   | `@mezzanine-ui/vue/toggle`   | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字             |
+| 元件       | 匯入名稱        | 匯入路徑                        | 說明                                                                     |
+| ---------- | --------------- | ------------------------------- | ------------------------------------------------------------------------ |
+| TimePicker | `MznTimePicker` | `@mezzanine-ui/vue/time-picker` | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                   |
+| Textarea   | `MznTextarea`   | `@mezzanine-ui/vue/textarea`    | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手 |
+| Toggle     | `MznToggle`     | `@mezzanine-ui/vue/toggle`      | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字             |
 
 ## Feedback（回饋）
 
@@ -63,6 +64,7 @@
 | RangeCalendar          | `MznRangeCalendar`          | `@mezzanine-ui/vue/calendar`      | 並排兩個日曆的區間選取版本，含區間掃描與底部動作按鈕                    |
 | CalendarConfigProvider | `MznCalendarConfigProvider` | `@mezzanine-ui/vue/calendar`      | 提供日期函式庫（Moment／Dayjs／Luxon／Temporal）與語系                  |
 | ClearActions           | `MznClearActions`           | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
+| InputTriggerPopper     | `MznInputTriggerPopper`     | 內部使用（`_internal`）           | 由輸入框觸發的淡入浮層，picker 面板的容器                               |
 | TimePanel              | `MznTimePanel`              | `@mezzanine-ui/vue/time-panel`    | 時間面板，時／分／秒三個捲動欄位，可個別隱藏與設定步進                  |
 | TextField              | `MznTextField`              | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
 | Scrollbar              | `MznScrollbar`              | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |

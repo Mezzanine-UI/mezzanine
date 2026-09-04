@@ -25,8 +25,15 @@ export interface UsePickerValueResult {
   onChange: (val?: DateType) => void;
   /** Binds to the input's change event. */
   onInputChange: (event: Event) => void;
-  /** Blurs and restores on Enter or Escape, ignoring IME composition. */
-  onKeyDown: (event: KeyboardEvent) => void;
+  /**
+   * Blurs and restores on Enter or Escape, ignoring IME composition.
+   *
+   * Spelled Vue's way, not React's `onKeyDown`: the result of this composable
+   * ends up in a prop object bound to an `<input>`, and Vue hyphenates a
+   * handler key into its event name, so `onKeyDown` would listen for a
+   * `key-down` event that never fires.
+   */
+  onKeydown: (event: KeyboardEvent) => void;
   /** The value the picker currently holds. */
   value: Ref<DateType | undefined>;
 }
@@ -129,7 +136,7 @@ export function usePickerValue({
     onBlur: guardValidDateTypeOnEvents,
     onChange: onSyncInputAndStateChange,
     onInputChange: inputChangeHandler,
-    onKeyDown: guardValidDateTypeOnKeyDown,
+    onKeydown: guardValidDateTypeOnKeyDown,
     value,
   };
 }

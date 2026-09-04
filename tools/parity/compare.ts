@@ -297,6 +297,37 @@ function diffArgs(
   }
 }
 
+/** The instant every page in a run reports as "now". */
+const RUN_TIMESTAMP = Date.now();
+
+/**
+ * Installed into both pages before any of their own scripts. `new Date()` and
+ * `Date.now()` report the run's instant; every other use of `Date` — parsing,
+ * arithmetic, explicit arguments, `instanceof` — goes through untouched, so
+ * only "what time is it" becomes deterministic.
+ *
+ * Authored as a string for the same reason as SNAPSHOT_SOURCE: a function
+ * would be compiled on the way out and any esbuild helper it picked up would
+ * be undefined in the page, where the failure is silent.
+ */
+const freezeClockSource = (fixed: number): string => `
+(() => {
+  const RealDate = Date;
+  const fixed = ${fixed};
+
+  window.Date = new Proxy(RealDate, {
+    construct(target, args) {
+      return args.length === 0 ? new target(fixed) : new target(...args);
+    },
+    get(target, prop, receiver) {
+      if (prop === 'now') return () => fixed;
+
+      return Reflect.get(target, prop, receiver);
+    },
+  });
+})();
+`;
+
 function nodePath(prefix: string, idx: number, tag: string): string {
   return `${prefix}/${tag}[${idx}]`;
 }
@@ -395,6 +426,26 @@ async function runComponent(
 ): Promise<{ component: string; diffs: Diff[] }> {
   const reactCtx = await browser.newContext();
   const targetCtx = await browser.newContext();
+
+  /**
+   * Pin both pages to the same instant.
+   *
+   * A story that renders `now` — TimePicker's Basic renders the current time
+   * to the second — otherwise differs simply because the two dev servers
+   * answered a few seconds apart, and reports a diff that says nothing about
+   * either port. One timestamp is chosen per run and installed before any
+   * page script runs, so `moment()`, `dayjs()` and friends all see it.
+   *
+   * Vue only, like the argTypes comparison below: the Angular baseline was
+   * signed off against a live clock and stays that way until it is evaluated
+   * on its own.
+   */
+  if (cfg.id === 'vue') {
+    for (const ctx of [reactCtx, targetCtx]) {
+      await ctx.addInitScript({ content: freezeClockSource(RUN_TIMESTAMP) });
+    }
+  }
+
   const reactPage = await reactCtx.newPage();
   const targetPage = await targetCtx.newPage();
   const allDiffs: Diff[] = [];

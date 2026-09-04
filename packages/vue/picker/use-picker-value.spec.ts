@@ -117,7 +117,7 @@ describe('usePickerValue', () => {
   it('should blur and restore the controlled value on Enter', () => {
     const input = document.createElement('input');
     const blur = vi.spyOn(input, 'blur');
-    const { onKeyDown, value } = withCalendarContext(() =>
+    const { onKeydown, value } = withCalendarContext(() =>
       usePickerValue({
         format,
         inputRef: ref(input),
@@ -126,7 +126,7 @@ describe('usePickerValue', () => {
     );
 
     value.value = undefined;
-    onKeyDown(new KeyboardEvent('keydown', { key: 'Enter' }));
+    onKeydown(new KeyboardEvent('keydown', { key: 'Enter' }));
 
     expect(blur).toHaveBeenCalledTimes(1);
     expect(value.value).toBe('2026-09-15T00:00:00.000Z');
@@ -135,11 +135,11 @@ describe('usePickerValue', () => {
   it('should ignore keys pressed while composing', () => {
     const input = document.createElement('input');
     const blur = vi.spyOn(input, 'blur');
-    const { onKeyDown } = withCalendarContext(() =>
+    const { onKeydown } = withCalendarContext(() =>
       usePickerValue({ format, inputRef: ref(input) }),
     );
 
-    onKeyDown(
+    onKeydown(
       new KeyboardEvent('keydown', { key: 'Enter', isComposing: true }),
     );
 
