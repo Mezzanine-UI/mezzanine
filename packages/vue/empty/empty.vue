@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, isVNode, useAttrs, useSlots } from 'vue';
+import { computed, h, useAttrs, useSlots } from 'vue';
 import type { FunctionalComponent, VNode, VNodeChild } from 'vue';
 import { emptyClasses as classes } from '@mezzanine-ui/core/empty';
 import {
@@ -10,12 +10,10 @@ import {
 } from '@mezzanine-ui/icons';
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
+import { resolveActionButtons } from '../_internal/action-buttons';
 import { flattenChildren } from '../_internal/flatten-children';
-import MznButton from '../button/button.vue';
 import MznButtonGroup from '../button/button-group.vue';
 import MznIcon from '../icon/icon.vue';
-import type { ButtonProps } from '../button/button.types';
-import type { EmptyActionButton } from './empty.types';
 import EmptyMainInitialDataIcon from './icons/empty-main-initial-data-icon.vue';
 import EmptyMainNotificationIcon from './icons/empty-main-notification-icon.vue';
 import EmptyMainResultIcon from './icons/empty-main-result-icon.vue';
@@ -94,65 +92,14 @@ const forwardedAttrs = computed(() => {
   return rest;
 });
 
-/**
- * A plain object becomes a Button; an already-rendered Button is cloned with
- * the size and variant the empty state decides. Mirrors React's
- * `renderButtonOrElement`.
- */
-function renderButtonOrElement(
-  button: EmptyActionButton | VNode | undefined,
-  size: ButtonProps['size'],
-  variant: 'base-primary' | 'base-secondary',
-): VNodeChild {
-  if (!button) return null;
-
-  if (isVNode(button)) return h(button, { size, variant });
-
-  // React spreads the object onto a Button, so its `children` becomes the
-  // content; in Vue that is the default slot.
-  const { children, ...rest } = button;
-
-  return h(MznButton, { ...rest, size, variant }, () => children);
-}
-
-const actionButtons = computed((): VNodeChild[] | null => {
-  const { actions, size } = props;
-
-  if (actions) {
-    if ('secondaryButton' in actions) {
-      return [
-        renderButtonOrElement(actions.secondaryButton, size, 'base-secondary'),
-        renderButtonOrElement(actions.primaryButton, size, 'base-primary'),
-      ];
-    }
-
-    return [renderButtonOrElement(actions, size, 'base-secondary')];
-  }
-
-  const children = flattenChildren(slots.default?.());
-
-  if (children.length === 0) return null;
-
-  return children.map((child, index) => {
-    if (child.type !== MznButton) {
-      console.warn('Only Button components are allowed as children of Empty.');
-
-      return null;
-    }
-
-    if (index === 0) {
-      return renderButtonOrElement(child, size, 'base-secondary');
-    }
-
-    if (index === 1) return renderButtonOrElement(child, size, 'base-primary');
-
-    console.warn(
-      'Only up to two Button components are allowed as children of Empty.',
-    );
-
-    return null;
-  });
-});
+const actionButtons = computed((): VNodeChild[] | null =>
+  resolveActionButtons({
+    actions: props.actions,
+    children: flattenChildren(slots.default?.()),
+    componentName: 'Empty',
+    size: props.size,
+  }),
+);
 
 const showActions = computed(
   (): boolean =>

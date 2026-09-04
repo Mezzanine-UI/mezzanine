@@ -1,5 +1,5 @@
-import type { ButtonHTMLAttributes, VNodeChild } from 'vue';
-import type { ButtonProps } from '../button/button.types';
+import type { VNodeChild } from 'vue';
+import type { ActionButtons } from '../_internal/action-buttons';
 
 /**
  * React splits these into four interfaces and intersects two discriminated
@@ -13,34 +13,13 @@ import type { ButtonProps } from '../button/button.types';
  * `size="minor"` excludes `actions` and `description` is lost, and the runtime
  * already ignores both in that size exactly as React does.
  */
-/**
- * A button described as data rather than markup.
- *
- * React's `ButtonProps` reaches native button props through its polymorphic
- * factory, and carries the label in `children`. Vue's `ButtonProps` holds only
- * the component's own props — everything else is a fallthrough attribute — so
- * the native half is added back here, and `children` becomes the default slot.
- */
-export type EmptyActionButton = ButtonProps &
-  Omit<ButtonHTMLAttributes, keyof ButtonProps> & {
-    /**
-     * The button's content.
-     */
-    children?: VNodeChild;
-  };
-
 export interface EmptyProps {
   /**
    * Action buttons configuration for primary and secondary actions. <br />
    * Renders buttons in the order: secondary (left or only one), primary (right). <br />
    * If actions provided, children will be ignored. <br />
    */
-  actions?:
-    | {
-        primaryButton?: EmptyActionButton;
-        secondaryButton: EmptyActionButton;
-      }
-    | EmptyActionButton;
+  actions?: ActionButtons;
   /**
    * Optional description text displayed below the title.
    * Provides additional context or details about the empty state.
