@@ -337,6 +337,16 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
         let i = rhsStart;
         while (i < text.length) {
           const ch = text[i];
+          // A function type's `=>` is not a generic argument list: counting its
+          // `>` as one leaves the angle depth negative for the rest of the
+          // alias, so the terminating `;` is never recognised and the captured
+          // RHS runs on into whatever follows. That is what hid every prop of
+          // `SelectInputProps` — the only Input variant with a callback.
+          if (ch === '=' && text[i + 1] === '>') {
+            i += 2;
+            continue;
+          }
+
           if (ch === '{') depthCurly += 1;
           else if (ch === '}') depthCurly -= 1;
           else if (ch === '<') depthAngle += 1;
