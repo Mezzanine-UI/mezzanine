@@ -39,15 +39,16 @@
 
 ## Data Entry（資料輸入）
 
-| 元件            | 匯入名稱             | 匯入路徑                              | 說明                                                                     |
-| --------------- | -------------------- | ------------------------------------- | ------------------------------------------------------------------------ |
-| DateTimePicker  | `MznDateTimePicker`  | `@mezzanine-ui/vue/date-time-picker`  | 日期時間選擇器，左右兩個輸入框各自帶日曆與時間面板                       |
-| DateRangePicker | `MznDateRangePicker` | `@mezzanine-ui/vue/date-range-picker` | 日期區間選擇器，雙日曆浮層，支援即時與手動確認兩種模式                   |
-| DatePicker      | `MznDatePicker`      | `@mezzanine-ui/vue/date-picker`       | 日期選擇器，六種模式的日曆浮層，可用 predicate 限制可選範圍              |
-| TimePicker      | `MznTimePicker`      | `@mezzanine-ui/vue/time-picker`       | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                   |
-| TimeRangePicker | `MznTimeRangePicker` | `@mezzanine-ui/vue/time-range-picker` | 時間區間選擇器，兩個輸入框共用一個時間面板                               |
-| Textarea        | `MznTextarea`        | `@mezzanine-ui/vue/textarea`          | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手 |
-| Toggle          | `MznToggle`          | `@mezzanine-ui/vue/toggle`            | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字             |
+| 元件                | 匯入名稱                 | 匯入路徑                                   | 說明                                                                     |
+| ------------------- | ------------------------ | ------------------------------------------ | ------------------------------------------------------------------------ |
+| DateTimePicker      | `MznDateTimePicker`      | `@mezzanine-ui/vue/date-time-picker`       | 日期時間選擇器，左右兩個輸入框各自帶日曆與時間面板                       |
+| DateTimeRangePicker | `MznDateTimeRangePicker` | `@mezzanine-ui/vue/date-time-range-picker` | 日期時間區間選擇器，兩個日期時間選擇器加方向箭頭                         |
+| DateRangePicker     | `MznDateRangePicker`     | `@mezzanine-ui/vue/date-range-picker`      | 日期區間選擇器，雙日曆浮層，支援即時與手動確認兩種模式                   |
+| DatePicker          | `MznDatePicker`          | `@mezzanine-ui/vue/date-picker`            | 日期選擇器，六種模式的日曆浮層，可用 predicate 限制可選範圍              |
+| TimePicker          | `MznTimePicker`          | `@mezzanine-ui/vue/time-picker`            | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                   |
+| TimeRangePicker     | `MznTimeRangePicker`     | `@mezzanine-ui/vue/time-range-picker`      | 時間區間選擇器，兩個輸入框共用一個時間面板                               |
+| Textarea            | `MznTextarea`            | `@mezzanine-ui/vue/textarea`               | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手 |
+| Toggle              | `MznToggle`              | `@mezzanine-ui/vue/toggle`                 | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字             |
 
 ## Feedback（回饋）
 
