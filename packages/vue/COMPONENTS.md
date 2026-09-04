@@ -41,6 +41,7 @@
 
 | 元件            | 匯入名稱             | 匯入路徑                              | 說明                                                                     |
 | --------------- | -------------------- | ------------------------------------- | ------------------------------------------------------------------------ |
+| DateTimePicker  | `MznDateTimePicker`  | `@mezzanine-ui/vue/date-time-picker`  | 日期時間選擇器，左右兩個輸入框各自帶日曆與時間面板                       |
 | DateRangePicker | `MznDateRangePicker` | `@mezzanine-ui/vue/date-range-picker` | 日期區間選擇器，雙日曆浮層，支援即時與手動確認兩種模式                   |
 | DatePicker      | `MznDatePicker`      | `@mezzanine-ui/vue/date-picker`       | 日期選擇器，六種模式的日曆浮層，可用 predicate 限制可選範圍              |
 | TimePicker      | `MznTimePicker`      | `@mezzanine-ui/vue/time-picker`       | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                   |
