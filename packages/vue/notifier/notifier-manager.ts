@@ -23,6 +23,11 @@ export interface NotifierManager<N extends NotifierData> {
    */
   queued: ShallowRef<(N & { key: NotifierKey })[]>;
   remove: (key: NotifierKey) => void;
+  /**
+   * Drop everything. React gets this for free by unmounting the manager, which
+   * takes its state with it.
+   */
+  reset: () => void;
 }
 
 /**
@@ -109,5 +114,10 @@ export function createNotifierManager<N extends NotifierData>(
     drain();
   }
 
-  return { add, displayed, queued, remove };
+  function reset(): void {
+    displayed.value = [];
+    queued.value = [];
+  }
+
+  return { add, displayed, queued, remove, reset };
 }

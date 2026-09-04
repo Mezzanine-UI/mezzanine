@@ -52,6 +52,7 @@ export function createNotifier<
   } = props;
 
   let container: HTMLDivElement | null = null;
+  let mounted = false;
   let currentConfig = {
     duration,
     maxCount,
@@ -98,14 +99,25 @@ export function createNotifier<
     },
   });
 
+  /**
+   * `destroy` unmounts the manager and detaches the container, but a later
+   * `add` has to work: React re-renders because its controller ref is cleared
+   * on unmount, and the state goes with the unmounted component. Here the
+   * manager outlives the render, so both have to be redone explicitly.
+   */
   function ensureInitialized(): void {
-    if (container || typeof document === 'undefined') return;
+    if (typeof document === 'undefined') return;
 
-    container = document.createElement('div');
+    if (!container) {
+      container = document.createElement('div');
 
-    if (setRoot) setRoot(container);
+      if (setRoot) setRoot(container);
+    }
 
-    render(h(Manager), container);
+    if (!mounted) {
+      render(h(Manager), container);
+      mounted = true;
+    }
   }
 
   return {
@@ -141,6 +153,8 @@ export function createNotifier<
       if (container === null) return;
 
       render(null, container);
+      mounted = false;
+      manager.reset();
 
       if (container.parentNode) {
         container.parentNode.removeChild(container);

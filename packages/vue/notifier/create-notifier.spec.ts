@@ -100,6 +100,23 @@ describe('createNotifier', () => {
     expect(document.body.children).toHaveLength(0);
   });
 
+  it('should work again after being destroyed', async () => {
+    const notifier = makeNotifier();
+
+    notifier.add({ children: 'first' });
+    await flushPromises();
+    notifier.destroy();
+    await flushPromises();
+
+    notifier.add({ children: 'second' });
+    await flushPromises();
+
+    // React re-renders because unmounting clears its controller ref, and the
+    // old notifications go with the unmounted component.
+    expect(notifications()).toHaveLength(1);
+    expect(notifications()[0].textContent).toBe('second');
+  });
+
   describe('config', () => {
     it('should expose the constructor config', () => {
       const notifier = makeNotifier({ duration: 3000, maxCount: 4 });
