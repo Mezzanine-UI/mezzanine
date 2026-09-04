@@ -39,18 +39,22 @@
 
 ## Data Entry（資料輸入）
 
-| 元件                | 匯入名稱                 | 匯入路徑                                   | 說明                                                                     |
-| ------------------- | ------------------------ | ------------------------------------------ | ------------------------------------------------------------------------ |
-| DateTimePicker      | `MznDateTimePicker`      | `@mezzanine-ui/vue/date-time-picker`       | 日期時間選擇器，左右兩個輸入框各自帶日曆與時間面板                       |
-| DateTimeRangePicker | `MznDateTimeRangePicker` | `@mezzanine-ui/vue/date-time-range-picker` | 日期時間區間選擇器，兩個日期時間選擇器加方向箭頭                         |
-| DateRangePicker     | `MznDateRangePicker`     | `@mezzanine-ui/vue/date-range-picker`      | 日期區間選擇器，雙日曆浮層，支援即時與手動確認兩種模式                   |
-| FormField           | `MznFormField`           | `@mezzanine-ui/vue/form`                   | 表單欄位容器，整合標籤、提示文字、計數器與 form control 狀態             |
-| FormGroup           | `MznFormGroup`           | `@mezzanine-ui/vue/form`                   | 表單欄位群組，一個標題加一組欄位                                         |
-| DatePicker          | `MznDatePicker`          | `@mezzanine-ui/vue/date-picker`            | 日期選擇器，六種模式的日曆浮層，可用 predicate 限制可選範圍              |
-| TimePicker          | `MznTimePicker`          | `@mezzanine-ui/vue/time-picker`            | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                   |
-| TimeRangePicker     | `MznTimeRangePicker`     | `@mezzanine-ui/vue/time-range-picker`      | 時間區間選擇器，兩個輸入框共用一個時間面板                               |
-| Textarea            | `MznTextarea`            | `@mezzanine-ui/vue/textarea`               | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手 |
-| Toggle              | `MznToggle`              | `@mezzanine-ui/vue/toggle`                 | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字             |
+| 元件                | 匯入名稱                 | 匯入路徑                                   | 說明                                                                                           |
+| ------------------- | ------------------------ | ------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| Checkbox            | `MznCheckbox`            | `@mezzanine-ui/vue/checkbox`               | 核取方塊，default／chip 兩種模式，支援中間態與勾選後的可編輯輸入框                             |
+| CheckboxGroup       | `MznCheckboxGroup`       | `@mezzanine-ui/vue/checkbox`               | 一組共用 name 的核取方塊，以 `options` 或預設 slot 提供，可帶全選控制                          |
+| CheckAll            | `MznCheckAll`            | `@mezzanine-ui/vue/checkbox`               | 包住一組 CheckboxGroup 的全選核取方塊                                                          |
+| DateTimePicker      | `MznDateTimePicker`      | `@mezzanine-ui/vue/date-time-picker`       | 日期時間選擇器，左右兩個輸入框各自帶日曆與時間面板                                             |
+| DateTimeRangePicker | `MznDateTimeRangePicker` | `@mezzanine-ui/vue/date-time-range-picker` | 日期時間區間選擇器，兩個日期時間選擇器加方向箭頭                                               |
+| DateRangePicker     | `MznDateRangePicker`     | `@mezzanine-ui/vue/date-range-picker`      | 日期區間選擇器，雙日曆浮層，支援即時與手動確認兩種模式                                         |
+| FormField           | `MznFormField`           | `@mezzanine-ui/vue/form`                   | 表單欄位容器，整合標籤、提示文字、計數器與 form control 狀態                                   |
+| FormGroup           | `MznFormGroup`           | `@mezzanine-ui/vue/form`                   | 表單欄位群組，一個標題加一組欄位                                                               |
+| DatePicker          | `MznDatePicker`          | `@mezzanine-ui/vue/date-picker`            | 日期選擇器，六種模式的日曆浮層，可用 predicate 限制可選範圍                                    |
+| Input               | `MznInput`               | `@mezzanine-ui/vue/input`                  | 多功能輸入框，以 `variant` 切換 base／affix／search／number／measure／action／select／password |
+| TimePicker          | `MznTimePicker`          | `@mezzanine-ui/vue/time-picker`            | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                                         |
+| TimeRangePicker     | `MznTimeRangePicker`     | `@mezzanine-ui/vue/time-range-picker`      | 時間區間選擇器，兩個輸入框共用一個時間面板                                                     |
+| Textarea            | `MznTextarea`            | `@mezzanine-ui/vue/textarea`               | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手                       |
+| Toggle              | `MznToggle`              | `@mezzanine-ui/vue/toggle`                 | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字                                   |
 
 ## Feedback（回饋）
 
@@ -65,23 +69,32 @@
 
 ## 內部元件（不建議直接使用）
 
-| 元件                   | 匯入名稱                    | 匯入路徑                          | 說明                                                                    |
-| ---------------------- | --------------------------- | --------------------------------- | ----------------------------------------------------------------------- |
-| Calendar               | `MznCalendar`               | `@mezzanine-ui/vue/calendar`      | 日曆，依 `mode` 顯示日／週／月／季／半年／年面板                        |
-| RangeCalendar          | `MznRangeCalendar`          | `@mezzanine-ui/vue/calendar`      | 並排兩個日曆的區間選取版本，含區間掃描與底部動作按鈕                    |
-| CalendarConfigProvider | `MznCalendarConfigProvider` | `@mezzanine-ui/vue/calendar`      | 提供日期函式庫（Moment／Dayjs／Luxon／Temporal）與語系                  |
-| ClearActions           | `MznClearActions`           | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
-| InputTriggerPopper     | `MznInputTriggerPopper`     | 內部使用（`_internal`）           | 由輸入框觸發的淡入浮層，picker 面板的容器                               |
-| TimePanel              | `MznTimePanel`              | `@mezzanine-ui/vue/time-panel`    | 時間面板，時／分／秒三個捲動欄位，可個別隱藏與設定步進                  |
-| TextField              | `MznTextField`              | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
-| Scrollbar              | `MznScrollbar`              | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
-| Notifier               | `createNotifier`            | `@mezzanine-ui/vue/notifier`      | 建立命令式通知的工廠，Message／AlertBanner 建於其上                     |
-| PickerTrigger          | `MznPickerTrigger`          | `@mezzanine-ui/vue/picker`        | Picker 的觸發輸入框，依格式遮罩輸入日期／時間                           |
-| RangePickerTrigger     | `MznRangePickerTrigger`     | `@mezzanine-ui/vue/picker`        | 區間 picker 的觸發輸入框，兩個輸入框與箭頭                              |
-| Portal                 | `MznPortal`                 | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
-| Popper                 | `MznPopper`                 | `@mezzanine-ui/vue/popper`        | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
-| Backdrop               | `MznBackdrop`               | `@mezzanine-ui/vue/backdrop`      | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
-| Tooltip                | `MznTooltip`                | `@mezzanine-ui/vue/tooltip`       | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
+| 元件                      | 匯入名稱                       | 匯入路徑                          | 說明                                                                    |
+| ------------------------- | ------------------------------ | --------------------------------- | ----------------------------------------------------------------------- |
+| Calendar                  | `MznCalendar`                  | `@mezzanine-ui/vue/calendar`      | 日曆，依 `mode` 顯示日／週／月／季／半年／年面板                        |
+| RangeCalendar             | `MznRangeCalendar`             | `@mezzanine-ui/vue/calendar`      | 並排兩個日曆的區間選取版本，含區間掃描與底部動作按鈕                    |
+| CalendarConfigProvider    | `MznCalendarConfigProvider`    | `@mezzanine-ui/vue/calendar`      | 提供日期函式庫（Moment／Dayjs／Luxon／Temporal）與語系                  |
+| ClearActions              | `MznClearActions`              | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
+| InputTriggerPopper        | `MznInputTriggerPopper`        | 內部使用（`_internal`）           | 由輸入框觸發的淡入浮層，picker 面板的容器                               |
+| Dropdown                  | `MznDropdown`                  | `@mezzanine-ui/vue/dropdown`      | 下拉選單，觸發元素由 scoped slot 提供，支援鍵盤導覽、樹狀與多選         |
+| DropdownItem              | `MznDropdownItem`              | `@mezzanine-ui/vue/dropdown`      | 下拉選單的清單本體，含狀態、動作列與捲動事件                            |
+| DropdownItemCard          | `MznDropdownItemCard`          | `@mezzanine-ui/vue/dropdown`      | 下拉選單的單一選項列，支援關鍵字標色、快捷鍵文字與勾選                  |
+| DropdownAction            | `MznDropdownAction`            | `@mezzanine-ui/vue/dropdown`      | 下拉選單底部的操作列，依監聽的事件決定顯示哪些按鈕                      |
+| DropdownStatus            | `MznDropdownStatus`            | `@mezzanine-ui/vue/dropdown`      | 下拉選單的載入／無資料狀態                                              |
+| InputActionButton         | `MznInputActionButton`         | `@mezzanine-ui/vue/input`         | Input `variant="action"` 的動作按鈕                                     |
+| InputSelectButton         | `MznInputSelectButton`         | `@mezzanine-ui/vue/input`         | Input `variant="select"` 的下拉選擇按鈕                                 |
+| InputSpinnerButton        | `MznInputSpinnerButton`        | `@mezzanine-ui/vue/input`         | Input `variant="measure"` 的上下步進按鈕                                |
+| PasswordStrengthIndicator | `MznPasswordStrengthIndicator` | `@mezzanine-ui/vue/input`         | 密碼強度指示器，強度條加提示文字                                        |
+| TimePanel                 | `MznTimePanel`                 | `@mezzanine-ui/vue/time-panel`    | 時間面板，時／分／秒三個捲動欄位，可個別隱藏與設定步進                  |
+| TextField                 | `MznTextField`                 | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
+| Scrollbar                 | `MznScrollbar`                 | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
+| Notifier                  | `createNotifier`               | `@mezzanine-ui/vue/notifier`      | 建立命令式通知的工廠，Message／AlertBanner 建於其上                     |
+| PickerTrigger             | `MznPickerTrigger`             | `@mezzanine-ui/vue/picker`        | Picker 的觸發輸入框，依格式遮罩輸入日期／時間                           |
+| RangePickerTrigger        | `MznRangePickerTrigger`        | `@mezzanine-ui/vue/picker`        | 區間 picker 的觸發輸入框，兩個輸入框與箭頭                              |
+| Portal                    | `MznPortal`                    | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
+| Popper                    | `MznPopper`                    | `@mezzanine-ui/vue/popper`        | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
+| Backdrop                  | `MznBackdrop`                  | `@mezzanine-ui/vue/backdrop`      | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
+| Tooltip                   | `MznTooltip`                   | `@mezzanine-ui/vue/tooltip`       | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
 
 ## Motion（動效）
 
@@ -98,11 +111,14 @@
 
 > Portal、Popper、Tooltip、轉場家族的 stories 都已補齊並通過 DOM parity。
 >
-> Form（FormField／FormGroup）的 stories 需要 Checkbox／Input／Radio，DatePicker 的
-> stories 需要 Modal（`InsideModal`），因此這兩者的 DOM parity 還沒跑過；
+> Form.stories 需要 Radio、DatePicker 的 stories 需要 Modal（`InsideModal`），
+> 這兩份 story 的 DOM parity 還沒跑過（FormGroup 的已經跑過）；
 > 目前的把關是 props 契約、靜態檢查與單元測試。
 >
-> Backdrop（需 drawer / modal / select）、Spin（需 description / modal）與 Button
-> 自己（需 dropdown）的 stories 仍缺依賴，DOM parity 還沒跑過，
-> `yarn components:graph` 會標成 `parity pending …`。這些元件目前的把關是 props
-> 契約比對、靜態檢查與單元測試。
+> Backdrop（需 drawer / modal / select）與 Spin（需 description / modal）的 stories
+> 仍缺依賴，DOM parity 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。
+> 這些元件目前的把關是 props 契約比對、靜態檢查與單元測試。
+>
+> Checkbox 自己的 stories 需要 Tag、Dropdown 的 stories 需要 AutoComplete 與 Tag，
+> 兩者的 DOM parity 同樣延後；CheckboxGroup、Input 與 Dropdown 的 Action／Status
+> stories 都已補齊並通過。
