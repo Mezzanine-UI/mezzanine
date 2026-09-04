@@ -56,6 +56,7 @@
 | ClearActions | `MznClearActions` | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
 | TextField    | `MznTextField`    | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
 | Scrollbar    | `MznScrollbar`    | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
+| Notifier     | `createNotifier`  | `@mezzanine-ui/vue/notifier`      | 建立命令式通知的工廠，Message／AlertBanner 建於其上                     |
 | Portal       | `MznPortal`       | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
 | Popper       | `MznPopper`       | `@mezzanine-ui/vue/popper`        | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
 | Backdrop     | `MznBackdrop`     | `@mezzanine-ui/vue/backdrop`      | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
