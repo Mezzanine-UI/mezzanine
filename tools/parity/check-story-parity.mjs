@@ -19,6 +19,8 @@ import { resolve } from 'node:path';
 import { repoRoot, report, walk } from './vue-fs.mjs';
 
 const TITLE = /title:\s*['"`]([^'"`]+)['"`]/;
+const COMPONENT = /^\s*component:\s*\S/m;
+const ARGS = /^\s*args:\s*\S/m;
 const EXPORT_CONST = /^export\s+const\s+([A-Za-z_$][\w$]*)/gm;
 
 function readStories(file) {
@@ -26,7 +28,13 @@ function readStories(file) {
   const title = src.match(TITLE)?.[1] ?? null;
   const names = [...src.matchAll(EXPORT_CONST)].map((m) => m[1]);
 
-  return { file, title, names };
+  return {
+    args: ARGS.test(src),
+    component: COMPONENT.test(src),
+    file,
+    title,
+    names,
+  };
 }
 
 const reactFiles = await walk(
@@ -68,6 +76,26 @@ for (const file of vueFiles) {
         'character makes every story of this component unpairable.',
     });
     continue;
+  }
+
+  // A story that declares no `argTypes` of its own gets them from the meta's
+  // `component`, via docgen. Without it Storybook infers the control from the
+  // arg's value instead — `status: 'loading'` becomes a free-text control
+  // where React offers the union's radio — and the harness reports an [ARGS]
+  // diff for a scenario that is otherwise identical.
+  //
+  // Only stories with `args` are affected: the harness skips the argTypes
+  // comparison when neither side has any, which is also the case where the
+  // React `component` may have no Vue counterpart to name (Message's is the
+  // imperative object, not a component).
+  if (react.component && !vue.component && vue.args) {
+    problems.push({
+      file,
+      reason:
+        'the React meta declares `component` and this one does not, so ' +
+        "Storybook cannot derive this component's argTypes and falls back to " +
+        "inferring controls from the args' values",
+    });
   }
 
   const missing = react.names.filter((n) => !vue.names.includes(n));
