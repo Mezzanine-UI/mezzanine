@@ -16,6 +16,7 @@ import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import clsx from 'clsx';
 import { getCSSVariableValue } from '../_internal/css-variable';
+import { resolveElement } from '../_internal/resolve-element';
 import { useDocumentEscapeKeyDown } from '../_internal/use-document-escape-key-down';
 import MznPopper from '../popper/popper.vue';
 import { fadeEnter } from '../transition/fade-transition';
@@ -238,21 +239,12 @@ const forwardedAttrs = computed(() => {
 
 /**
  * The trigger may be a component rather than an element — React's refs reach
- * the DOM node either way, Vue's hand back the instance, so its root element
- * is taken instead.
+ * the DOM node either way, Vue's hand back the instance.
  */
 const setTargetRef = (
   element: Element | ComponentPublicInstance | null,
 ): void => {
-  if (!element) {
-    targetElement.value = null;
-
-    return;
-  }
-
-  const node = element instanceof Element ? element : element.$el;
-
-  targetElement.value = node instanceof HTMLElement ? node : null;
+  targetElement.value = resolveElement(element);
 };
 
 const triggerProps = computed(

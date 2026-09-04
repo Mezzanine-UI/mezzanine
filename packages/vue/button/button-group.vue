@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { cloneVNode, computed, useAttrs, useSlots } from 'vue';
-import type { FunctionalComponent, VNode } from 'vue';
+import type { FunctionalComponent } from 'vue';
 import { buttonGroupClasses as classes } from '@mezzanine-ui/core/button';
 import clsx from 'clsx';
+import { flattenChildren } from '../_internal/flatten-children';
 import type { ButtonGroupProps } from './button-group.types';
 
 /**
@@ -60,11 +61,9 @@ const role = computed((): string => (attrs.role as string) ?? 'group');
  * disabled state passes `false`, which must survive.
  */
 const GroupChildren: FunctionalComponent = () => {
-  const children = (slots.default?.() ?? []) as VNode[];
+  const children = flattenChildren(slots.default?.());
 
   return children.map((child) => {
-    if (!child) return child;
-
     const childProps = (child.props ?? {}) as Record<string, unknown>;
 
     return cloneVNode(child, {

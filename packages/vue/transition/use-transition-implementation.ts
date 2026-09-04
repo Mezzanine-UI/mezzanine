@@ -14,6 +14,7 @@ import type {
   FunctionalComponent,
   VNode,
 } from 'vue';
+import { resolveElement } from '../_internal/resolve-element';
 import {
   applyExitedStyles,
   runEnterTransition,
@@ -115,15 +116,7 @@ export function useTransitionImplementation(
       (options.keepMount() && (!options.lazyMount() || hasEntered.value)),
   );
 
-  function element(): HTMLElement | null {
-    const current = node.value;
-
-    if (!current) return null;
-
-    const el = current instanceof Element ? current : current.$el;
-
-    return el instanceof HTMLElement ? el : null;
-  }
+  const element = (): HTMLElement | null => resolveElement(node.value);
 
   let cancelPending: (() => void) | null = null;
 
