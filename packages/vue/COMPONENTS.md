@@ -57,16 +57,19 @@
 
 ## 內部元件（不建議直接使用）
 
-| 元件         | 匯入名稱          | 匯入路徑                          | 說明                                                                    |
-| ------------ | ----------------- | --------------------------------- | ----------------------------------------------------------------------- |
-| ClearActions | `MznClearActions` | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
-| TextField    | `MznTextField`    | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
-| Scrollbar    | `MznScrollbar`    | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
-| Notifier     | `createNotifier`  | `@mezzanine-ui/vue/notifier`      | 建立命令式通知的工廠，Message／AlertBanner 建於其上                     |
-| Portal       | `MznPortal`       | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
-| Popper       | `MznPopper`       | `@mezzanine-ui/vue/popper`        | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
-| Backdrop     | `MznBackdrop`     | `@mezzanine-ui/vue/backdrop`      | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
-| Tooltip      | `MznTooltip`      | `@mezzanine-ui/vue/tooltip`       | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
+| 元件                   | 匯入名稱                    | 匯入路徑                          | 說明                                                                    |
+| ---------------------- | --------------------------- | --------------------------------- | ----------------------------------------------------------------------- |
+| Calendar               | `MznCalendar`               | `@mezzanine-ui/vue/calendar`      | 日曆，依 `mode` 顯示日／週／月／季／半年／年面板                        |
+| RangeCalendar          | `MznRangeCalendar`          | `@mezzanine-ui/vue/calendar`      | 並排兩個日曆的區間選取版本，含區間掃描與底部動作按鈕                    |
+| CalendarConfigProvider | `MznCalendarConfigProvider` | `@mezzanine-ui/vue/calendar`      | 提供日期函式庫（Moment／Dayjs／Luxon／Temporal）與語系                  |
+| ClearActions           | `MznClearActions`           | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
+| TextField              | `MznTextField`              | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
+| Scrollbar              | `MznScrollbar`              | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
+| Notifier               | `createNotifier`            | `@mezzanine-ui/vue/notifier`      | 建立命令式通知的工廠，Message／AlertBanner 建於其上                     |
+| Portal                 | `MznPortal`                 | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
+| Popper                 | `MznPopper`                 | `@mezzanine-ui/vue/popper`        | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
+| Backdrop               | `MznBackdrop`               | `@mezzanine-ui/vue/backdrop`      | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
+| Tooltip                | `MznTooltip`                | `@mezzanine-ui/vue/tooltip`       | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
 
 ## Motion（動效）
 
