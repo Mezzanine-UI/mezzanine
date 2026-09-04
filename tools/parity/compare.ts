@@ -264,7 +264,17 @@ function diffArgs(
 
     if (!t) continue;
 
-    if (JSON.stringify(r.options) !== JSON.stringify(t.options)) {
+    // Same docgen gap as the control fallback below: an unresolved type on the
+    // target side means `vue-component-meta` could not enumerate the union's
+    // members either, so React's inferred list has no counterpart to compare
+    // against. A list the story declares itself is still compared, because
+    // then both sides have one.
+    const targetOptionsUnresolved = t.type === 'other' && t.options === null;
+
+    if (
+      !targetOptionsUnresolved &&
+      JSON.stringify(r.options) !== JSON.stringify(t.options)
+    ) {
       out.push({
         story,
         path: `argTypes.${name}.options`,

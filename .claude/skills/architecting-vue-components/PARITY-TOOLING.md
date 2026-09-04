@@ -131,7 +131,7 @@ sorted `options`, `control.type`) and `initialArgs` for each story on both sides
 `args` diffs. This is what enforces R6 ("stories must be scenario-identical") at the control
 level rather than just the rendered-DOM level.
 
-**One documented exemption (approved 2026-09-04).** `react-docgen-typescript` resolves type
+**One documented exemption, in two halves (approved 2026-09-04).** `react-docgen-typescript` resolves type
 aliases and the props a component inherits through `Pick<>`; `vue-component-meta` does not — it
 reports both as `{ name: 'other' }` (for `Pick<>`-inherited props, with an empty `value`), and
 Storybook then falls back to `control: 'object'`. So `Calendar`'s `referenceDate: DateType`
@@ -142,9 +142,17 @@ is still compared: option lists always, and `control` whenever the story declare
 `select` with its own options) or both docgens resolved the type. Verified by injection — changing
 a Vue story's `mode` control to `radio` still fails the run.
 
+The same gap costs the option list: `react-docgen-typescript` expands a union alias into its
+members, `vue-component-meta` does not, so `DateTimePicker`'s `mode` offers a six-way select on
+one side and nothing on the other. `diffArgs` therefore also skips the `options` comparison when
+the target's type is unresolved **and** it produced no list at all. A list a story declares
+itself is still compared on both counts — shortening DateRangePicker's own `mode` options fails
+the run.
+
 This exemption lives in the harness rather than in `DEVIATIONS-VUE.md` because it is a statement
 about the two docgen tools, not about a component: every future component whose props are typed
-through `DateType` or `Pick<>` — the whole picker family — would otherwise need its own row.
+through `DateType`, `CalendarMode` or `Pick<>` — the whole picker family — would otherwise need
+its own row.
 
 ---
 
