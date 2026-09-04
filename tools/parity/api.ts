@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { memberKey, parseMacroTypeMembers } from './vue-macros.ts';
 
 const REACT_ROOT = resolve(process.cwd(), 'packages/react/src');
@@ -877,6 +877,15 @@ export type VueApiResult = ApiSet & { errors: string[] };
  * interface (resolved with the same inheritance machinery as the React side)
  * and emits from the SFC's `defineEmits`.
  */
+/** Whether the types file's own directory contains any SFC. */
+function dirHasSfc(typesFile: string): boolean {
+  try {
+    return readdirSync(dirname(typesFile)).some((f) => f.endsWith('.vue'));
+  } catch {
+    return false;
+  }
+}
+
 export function extractVueApi(
   typesFile: string,
   sfcFile: string | null,
@@ -884,8 +893,11 @@ export function extractVueApi(
 ): VueApiResult {
   const errors: string[] = [];
   const index = getInterfaceIndex('vue');
+  // `${name}Data` matches the React side's candidate list: a factory-shaped
+  // module — Notifier — describes its payload as `NotifierData`, and without
+  // this the Vue interface is never found and the whole API extracts as empty.
   const candidate = pascalCandidates(pascalName)
-    .flatMap((name) => [`${name}PropsBase`, `${name}Props`])
+    .flatMap((name) => [`${name}PropsBase`, `${name}Props`, `${name}Data`])
     .find((c) => index.has(c));
 
   const props: ApiSet = candidate
@@ -905,7 +917,11 @@ export function extractVueApi(
 
     for (const name of emits.outputs) outputs.add(name);
     errors.push(...emits.errors);
-  } else {
+  } else if (dirHasSfc(typesFile)) {
+    // Only an error when the directory holds components: then the SFC exists
+    // under a name the lookup cannot see, and its emits are silently absent.
+    // A directory with no `.vue` at all is a module by design — Notifier is a
+    // factory, and React has no `Notifier.tsx` either.
     errors.push(`no SFC found next to ${typesFile.replace(process.cwd(), '')}`);
   }
 
