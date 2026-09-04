@@ -44,6 +44,8 @@
 | DateTimePicker      | `MznDateTimePicker`      | `@mezzanine-ui/vue/date-time-picker`       | 日期時間選擇器，左右兩個輸入框各自帶日曆與時間面板                       |
 | DateTimeRangePicker | `MznDateTimeRangePicker` | `@mezzanine-ui/vue/date-time-range-picker` | 日期時間區間選擇器，兩個日期時間選擇器加方向箭頭                         |
 | DateRangePicker     | `MznDateRangePicker`     | `@mezzanine-ui/vue/date-range-picker`      | 日期區間選擇器，雙日曆浮層，支援即時與手動確認兩種模式                   |
+| FormField           | `MznFormField`           | `@mezzanine-ui/vue/form`                   | 表單欄位容器，整合標籤、提示文字、計數器與 form control 狀態             |
+| FormGroup           | `MznFormGroup`           | `@mezzanine-ui/vue/form`                   | 表單欄位群組，一個標題加一組欄位                                         |
 | DatePicker          | `MznDatePicker`          | `@mezzanine-ui/vue/date-picker`            | 日期選擇器，六種模式的日曆浮層，可用 predicate 限制可選範圍              |
 | TimePicker          | `MznTimePicker`          | `@mezzanine-ui/vue/time-picker`            | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                   |
 | TimeRangePicker     | `MznTimeRangePicker`     | `@mezzanine-ui/vue/time-range-picker`      | 時間區間選擇器，兩個輸入框共用一個時間面板                               |
@@ -96,7 +98,8 @@
 
 > Portal、Popper、Tooltip、轉場家族的 stories 都已補齊並通過 DOM parity。
 >
-> DatePicker 的 stories 需要 Modal（`InsideModal`），因此 DOM parity 還沒跑過；
+> Form（FormField／FormGroup）的 stories 需要 Checkbox／Input／Radio，DatePicker 的
+> stories 需要 Modal（`InsideModal`），因此這兩者的 DOM parity 還沒跑過；
 > 目前的把關是 props 契約、靜態檢查與單元測試。
 >
 > Backdrop（需 drawer / modal / select）、Spin（需 description / modal）與 Button
