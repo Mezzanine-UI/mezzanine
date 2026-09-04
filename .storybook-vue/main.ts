@@ -47,7 +47,14 @@ const config: StorybookConfig = {
           p && typeof p === 'object' && 'name' in p && p.name === 'vite:vue',
       );
 
-    if (!hasVuePlugin) config.plugins.push(vue());
+    // `unshift`, not `push`: Storybook's `storybook:vue-component-meta-plugin`
+    // appends generated JS to whatever source it receives. If `vite:vue` runs
+    // after it, that JS is appended to the raw SFC and then parsed as one —
+    // a component JSDoc containing a `<template>`/`lang="ts"` example then
+    // fails the SFC tokenizer and the module 404s. In a normal project
+    // `@vitejs/plugin-vue` comes from the user's own Vite config, which
+    // Storybook merges ahead of its own plugins; this restores that order.
+    if (!hasVuePlugin) config.plugins.unshift(vue());
 
     config.resolve = config.resolve ?? {};
     config.resolve.alias = [
