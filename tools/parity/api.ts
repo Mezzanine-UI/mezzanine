@@ -929,15 +929,24 @@ export function extractVueApi(
   // `${name}Data` matches the React side's candidate list: a factory-shaped
   // module — Notifier — describes its payload as `NotifierData`, and without
   // this the Vue interface is never found and the whole API extracts as empty.
-  const candidate = pascalCandidates(pascalName)
+  //
+  // Every candidate that exists contributes, exactly as on the React side: a
+  // component that is also a notifier — AlertBanner — splits its surface
+  // across `XProps` and `XData`, and stopping at the first hid half of it.
+  const candidates = pascalCandidates(pascalName)
     .flatMap((name) => [`${name}PropsBase`, `${name}Props`, `${name}Data`])
-    .find((c) => index.has(c));
+    .filter((c) => index.has(c));
 
-  const props: ApiSet = candidate
-    ? resolveInterfaceProps(candidate, 'vue')
-    : { inputs: new Set(), outputs: new Set() };
+  const props: ApiSet = { inputs: new Set(), outputs: new Set() };
 
-  if (!candidate) {
+  candidates.forEach((candidate) => {
+    const resolved = resolveInterfaceProps(candidate, 'vue');
+
+    for (const name of resolved.inputs) props.inputs.add(name);
+    for (const name of resolved.outputs) props.outputs.add(name);
+  });
+
+  if (candidates.length === 0) {
     errors.push(
       `no \`${pascalName}Props\` interface exported from ${typesFile.replace(process.cwd(), '')}`,
     );
