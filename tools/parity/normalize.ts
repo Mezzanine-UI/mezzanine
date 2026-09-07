@@ -228,6 +228,22 @@ export const SNAPSHOT_SOURCE = `
       if (rootText) roots.push({ tag: '#text', attrs: {}, style: {}, text: rootText, children: [] });
     }
   }
+  // Portalled content lives outside \`#storybook-root\`: both ports append their
+  // portal containers to \`document.body\`, so everything a Popper, Modal,
+  // Drawer or Tooltip renders was invisible to the diff. A component whose
+  // whole subject is portalled — OverflowTooltip — reported "0 diff" while
+  // comparing nothing but its anchor. The containers are walked as extra
+  // roots, in the order the registry creates them, and skipped when empty so
+  // no story's snapshot shape changes unless it actually portals something.
+  var PORTAL_CONTAINER_IDS = ['mzn-portal-container', 'mzn-alert-container'];
+  for (var p = 0; p < PORTAL_CONTAINER_IDS.length; p++) {
+    var portalContainer = document.getElementById(PORTAL_CONTAINER_IDS[p]);
+    if (!portalContainer) continue;
+    var portalNodes = Array.from(portalContainer.childNodes);
+    for (var q = 0; q < portalNodes.length; q++) {
+      if (portalNodes[q].nodeType === 1) roots.push(walk(portalNodes[q], seed));
+    }
+  }
   if (roots.length === 1) return roots[0];
   return { tag: '#roots', attrs: {}, style: {}, children: roots };
 }

@@ -17,10 +17,44 @@ import { parse } from '@vue/compiler-sfc';
 // @ts-expect-error -- plain .mjs helper, no type declarations by design
 import { report, vueRoot, walk } from './vue-fs.mjs';
 
-type AstNode = { type: number; tag?: string; content?: string };
+type AstProp = { type: number; name?: string };
+type AstNode = {
+  type: number;
+  tag?: string;
+  content?: string;
+  props?: AstProp[];
+};
 
 const ELEMENT = 1;
 const TEXT = 2;
+const DIRECTIVE = 7;
+
+/**
+ * A `v-if` / `v-else-if` / `v-else` chain is one root, not several: exactly one
+ * branch renders, so Vue's subtree is a single vnode and fallthrough attributes
+ * land on it. Tag renders a `button` or a `span` that way, mirroring the two
+ * elements React returns from its own branches.
+ */
+function directives(node: AstNode): string[] {
+  return (node.props ?? [])
+    .filter((prop) => prop.type === DIRECTIVE)
+    .map((prop) => prop.name ?? '');
+}
+
+function countRoots(nodes: AstNode[]): number {
+  let count = 0;
+
+  for (const node of nodes) {
+    const names = directives(node);
+
+    // Continuations of the branch opened by the preceding `v-if`.
+    if (names.includes('else-if') || names.includes('else')) continue;
+
+    count += 1;
+  }
+
+  return count;
+}
 
 const files: string[] = await walk(vueRoot, (n: string) => n.endsWith('.vue'));
 const problems: { file: string; line?: number; reason: string }[] = [];
@@ -38,7 +72,9 @@ for (const file of files) {
     (n) => n.type === ELEMENT || (n.type === TEXT && (n.content ?? '').trim()),
   );
 
-  if (roots.length <= 1) continue;
+  const rootCount = countRoots(roots);
+
+  if (rootCount <= 1) continue;
   if (/v-bind\s*=\s*(["'])\$attrs\1/.test(descriptor.template?.content ?? '')) {
     continue;
   }
@@ -54,7 +90,7 @@ for (const file of files) {
     file,
     line: descriptor.template?.loc.start.line,
     reason:
-      `${roots.length} root nodes, no \`v-bind="$attrs"\` and no ` +
+      `${rootCount} root nodes, no \`v-bind="$attrs"\` and no ` +
       '`inheritAttrs: false`. Fallthrough class/style will be dropped ' +
       'silently. Use a single root element (React spreads className onto one ' +
       'root), bind $attrs explicitly, or declare that nothing is forwarded.',
