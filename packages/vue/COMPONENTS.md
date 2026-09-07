@@ -54,6 +54,7 @@
 | DatePicker          | `MznDatePicker`          | `@mezzanine-ui/vue/date-picker`            | 日期選擇器，六種模式的日曆浮層，可用 predicate 限制可選範圍                                    |
 | Input               | `MznInput`               | `@mezzanine-ui/vue/input`                  | 多功能輸入框，以 `variant` 切換 base／affix／search／number／measure／action／select／password |
 | Select              | `MznSelect`              | `@mezzanine-ui/vue/select`                 | 下拉選擇，單選或多選；多選以標籤呈現，巢狀 options 自動切換樹狀勾選                            |
+| AutoComplete        | `MznAutoComplete`        | `@mezzanine-ui/vue/auto-complete`          | 自動完成輸入，輸入時即時篩選；可切換搜尋框在選單外或內，並支援動態新增選項                     |
 | TimePicker          | `MznTimePicker`          | `@mezzanine-ui/vue/time-picker`            | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                                         |
 | TimeRangePicker     | `MznTimeRangePicker`     | `@mezzanine-ui/vue/time-range-picker`      | 時間區間選擇器，兩個輸入框共用一個時間面板                                                     |
 | Textarea            | `MznTextarea`            | `@mezzanine-ui/vue/textarea`               | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手                       |
@@ -86,6 +87,7 @@
 | DropdownStatus            | `MznDropdownStatus`            | `@mezzanine-ui/vue/dropdown`         | 下拉選單的載入／無資料狀態                                              |
 | SelectTrigger             | `MznSelectTrigger`             | `@mezzanine-ui/vue/select`           | Select 的觸發器：唯讀輸入框加收合箭頭                                   |
 | SelectTriggerTags         | `MznSelectTriggerTags`         | `@mezzanine-ui/vue/select`           | 多選觸發器裡的標籤列，counter 會把放不下的收進計數標籤                  |
+| AutoCompleteInsideTrigger | `MznAutoCompleteInsideTrigger` | `@mezzanine-ui/vue/auto-complete`    | inputPosition 為 inside 時 AutoComplete 的觸發輸入框                    |
 | InputActionButton         | `MznInputActionButton`         | `@mezzanine-ui/vue/input`            | Input `variant="action"` 的動作按鈕                                     |
 | InputSelectButton         | `MznInputSelectButton`         | `@mezzanine-ui/vue/input`            | Input `variant="select"` 的下拉選擇按鈕                                 |
 | InputSpinnerButton        | `MznInputSpinnerButton`        | `@mezzanine-ui/vue/input`            | Input `variant="measure"` 的上下步進按鈕                                |
