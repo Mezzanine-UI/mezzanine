@@ -20,6 +20,7 @@ import {
   type Middleware,
 } from '@floating-ui/dom';
 import { flattenChildren } from '../_internal/flatten-children';
+import { useHasListener } from '../_internal/use-has-listener';
 import { resolveElement } from '../_internal/resolve-element';
 import MznButton from '../button/button.vue';
 import MznPopper from '../popper/popper.vue';
@@ -202,8 +203,17 @@ const ariaActivedescendant = computed((): string | undefined =>
     : undefined,
 );
 
-const actionConfig = computed(
-  (): DropdownActionConfig => ({
+const hasActionListener = useHasListener();
+
+/**
+ * Only the handlers the caller actually listens for are passed on: the action
+ * row decides which buttons to show from which of them are present, so
+ * supplying all four unconditionally would leave it permanently in the
+ * cancel/confirm mode — AutoComplete's create action could never appear.
+ * React passes its own props through, which are undefined when unset.
+ */
+const actionConfig = computed((): DropdownActionConfig => {
+  const config: DropdownActionConfig = {
     actionText: props.actionText,
     cancelText: props.actionCancelText,
     clearText: props.actionClearText,
@@ -211,12 +221,26 @@ const actionConfig = computed(
     customActionButtonProps: props.actionCustomButtonProps,
     showActions: props.showDropdownActions,
     showTopBar: props.showActionShowTopBar,
-    onCancel: () => emit('actionCancel'),
-    onClear: () => emit('actionClear'),
-    onClick: () => emit('actionCustom'),
-    onConfirm: () => emit('actionConfirm'),
-  }),
-);
+  };
+
+  if (hasActionListener('actionCancel')) {
+    config.onCancel = () => emit('actionCancel');
+  }
+
+  if (hasActionListener('actionClear')) {
+    config.onClear = () => emit('actionClear');
+  }
+
+  if (hasActionListener('actionCustom')) {
+    config.onClick = () => emit('actionCustom');
+  }
+
+  if (hasActionListener('actionConfirm')) {
+    config.onConfirm = () => emit('actionConfirm');
+  }
+
+  return config;
+});
 
 const translateProps = {
   duration: {
