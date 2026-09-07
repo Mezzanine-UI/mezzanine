@@ -31,11 +31,13 @@
 
 ## Data Display（資料展示）
 
-| 元件               | 匯入名稱                | 匯入路徑                           | 說明                                                             |
-| ------------------ | ----------------------- | ---------------------------------- | ---------------------------------------------------------------- |
-| InlineMessage      | `MznInlineMessage`      | `@mezzanine-ui/vue/inline-message` | 行內提示訊息，依 `severity` 顯示對應圖示，info 可關閉            |
-| InlineMessageGroup | `MznInlineMessageGroup` | `@mezzanine-ui/vue/inline-message` | 行內提示訊息群組，可用 `items` 或 slot 提供內容                  |
-| Badge              | `MznBadge`              | `@mezzanine-ui/vue/badge`          | 徽章元件，支援數字計數、狀態圓點、圓點含文字與純文字標籤四種變體 |
+| 元件               | 匯入名稱                | 匯入路徑                           | 說明                                                                       |
+| ------------------ | ----------------------- | ---------------------------------- | -------------------------------------------------------------------------- |
+| InlineMessage      | `MznInlineMessage`      | `@mezzanine-ui/vue/inline-message` | 行內提示訊息，依 `severity` 顯示對應圖示，info 可關閉                      |
+| InlineMessageGroup | `MznInlineMessageGroup` | `@mezzanine-ui/vue/inline-message` | 行內提示訊息群組，可用 `items` 或 slot 提供內容                            |
+| Badge              | `MznBadge`              | `@mezzanine-ui/vue/badge`          | 徽章元件，支援數字計數、狀態圓點、圓點含文字與純文字標籤四種變體           |
+| Tag                | `MznTag`                | `@mezzanine-ui/vue/tag`            | 標籤元件，static／counter／overflow-counter／dismissable／addable 五種模式 |
+| TagGroup           | `MznTagGroup`           | `@mezzanine-ui/vue/tag`            | 標籤群組，只收 MznTag 與 MznOverflowCounterTag，可選淡入淡出               |
 
 ## Data Entry（資料輸入）
 
@@ -69,32 +71,34 @@
 
 ## 內部元件（不建議直接使用）
 
-| 元件                      | 匯入名稱                       | 匯入路徑                          | 說明                                                                    |
-| ------------------------- | ------------------------------ | --------------------------------- | ----------------------------------------------------------------------- |
-| Calendar                  | `MznCalendar`                  | `@mezzanine-ui/vue/calendar`      | 日曆，依 `mode` 顯示日／週／月／季／半年／年面板                        |
-| RangeCalendar             | `MznRangeCalendar`             | `@mezzanine-ui/vue/calendar`      | 並排兩個日曆的區間選取版本，含區間掃描與底部動作按鈕                    |
-| CalendarConfigProvider    | `MznCalendarConfigProvider`    | `@mezzanine-ui/vue/calendar`      | 提供日期函式庫（Moment／Dayjs／Luxon／Temporal）與語系                  |
-| ClearActions              | `MznClearActions`              | `@mezzanine-ui/vue/clear-actions` | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
-| InputTriggerPopper        | `MznInputTriggerPopper`        | 內部使用（`_internal`）           | 由輸入框觸發的淡入浮層，picker 面板的容器                               |
-| Dropdown                  | `MznDropdown`                  | `@mezzanine-ui/vue/dropdown`      | 下拉選單，觸發元素由 scoped slot 提供，支援鍵盤導覽、樹狀與多選         |
-| DropdownItem              | `MznDropdownItem`              | `@mezzanine-ui/vue/dropdown`      | 下拉選單的清單本體，含狀態、動作列與捲動事件                            |
-| DropdownItemCard          | `MznDropdownItemCard`          | `@mezzanine-ui/vue/dropdown`      | 下拉選單的單一選項列，支援關鍵字標色、快捷鍵文字與勾選                  |
-| DropdownAction            | `MznDropdownAction`            | `@mezzanine-ui/vue/dropdown`      | 下拉選單底部的操作列，依監聽的事件決定顯示哪些按鈕                      |
-| DropdownStatus            | `MznDropdownStatus`            | `@mezzanine-ui/vue/dropdown`      | 下拉選單的載入／無資料狀態                                              |
-| InputActionButton         | `MznInputActionButton`         | `@mezzanine-ui/vue/input`         | Input `variant="action"` 的動作按鈕                                     |
-| InputSelectButton         | `MznInputSelectButton`         | `@mezzanine-ui/vue/input`         | Input `variant="select"` 的下拉選擇按鈕                                 |
-| InputSpinnerButton        | `MznInputSpinnerButton`        | `@mezzanine-ui/vue/input`         | Input `variant="measure"` 的上下步進按鈕                                |
-| PasswordStrengthIndicator | `MznPasswordStrengthIndicator` | `@mezzanine-ui/vue/input`         | 密碼強度指示器，強度條加提示文字                                        |
-| TimePanel                 | `MznTimePanel`                 | `@mezzanine-ui/vue/time-panel`    | 時間面板，時／分／秒三個捲動欄位，可個別隱藏與設定步進                  |
-| TextField                 | `MznTextField`                 | `@mezzanine-ui/vue/text-field`    | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
-| Scrollbar                 | `MznScrollbar`                 | `@mezzanine-ui/vue/scrollbar`     | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
-| Notifier                  | `createNotifier`               | `@mezzanine-ui/vue/notifier`      | 建立命令式通知的工廠，Message／AlertBanner 建於其上                     |
-| PickerTrigger             | `MznPickerTrigger`             | `@mezzanine-ui/vue/picker`        | Picker 的觸發輸入框，依格式遮罩輸入日期／時間                           |
-| RangePickerTrigger        | `MznRangePickerTrigger`        | `@mezzanine-ui/vue/picker`        | 區間 picker 的觸發輸入框，兩個輸入框與箭頭                              |
-| Portal                    | `MznPortal`                    | `@mezzanine-ui/vue/portal`        | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
-| Popper                    | `MznPopper`                    | `@mezzanine-ui/vue/popper`        | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
-| Backdrop                  | `MznBackdrop`                  | `@mezzanine-ui/vue/backdrop`      | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
-| Tooltip                   | `MznTooltip`                   | `@mezzanine-ui/vue/tooltip`       | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
+| 元件                      | 匯入名稱                       | 匯入路徑                             | 說明                                                                    |
+| ------------------------- | ------------------------------ | ------------------------------------ | ----------------------------------------------------------------------- |
+| Calendar                  | `MznCalendar`                  | `@mezzanine-ui/vue/calendar`         | 日曆，依 `mode` 顯示日／週／月／季／半年／年面板                        |
+| RangeCalendar             | `MznRangeCalendar`             | `@mezzanine-ui/vue/calendar`         | 並排兩個日曆的區間選取版本，含區間掃描與底部動作按鈕                    |
+| CalendarConfigProvider    | `MznCalendarConfigProvider`    | `@mezzanine-ui/vue/calendar`         | 提供日期函式庫（Moment／Dayjs／Luxon／Temporal）與語系                  |
+| ClearActions              | `MznClearActions`              | `@mezzanine-ui/vue/clear-actions`    | 清除／關閉按鈕，依 `type` 提供 standard / embedded / clearable 三種情境 |
+| InputTriggerPopper        | `MznInputTriggerPopper`        | 內部使用（`_internal`）              | 由輸入框觸發的淡入浮層，picker 面板的容器                               |
+| Dropdown                  | `MznDropdown`                  | `@mezzanine-ui/vue/dropdown`         | 下拉選單，觸發元素由 scoped slot 提供，支援鍵盤導覽、樹狀與多選         |
+| DropdownItem              | `MznDropdownItem`              | `@mezzanine-ui/vue/dropdown`         | 下拉選單的清單本體，含狀態、動作列與捲動事件                            |
+| DropdownItemCard          | `MznDropdownItemCard`          | `@mezzanine-ui/vue/dropdown`         | 下拉選單的單一選項列，支援關鍵字標色、快捷鍵文字與勾選                  |
+| DropdownAction            | `MznDropdownAction`            | `@mezzanine-ui/vue/dropdown`         | 下拉選單底部的操作列，依監聽的事件決定顯示哪些按鈕                      |
+| DropdownStatus            | `MznDropdownStatus`            | `@mezzanine-ui/vue/dropdown`         | 下拉選單的載入／無資料狀態                                              |
+| InputActionButton         | `MznInputActionButton`         | `@mezzanine-ui/vue/input`            | Input `variant="action"` 的動作按鈕                                     |
+| InputSelectButton         | `MznInputSelectButton`         | `@mezzanine-ui/vue/input`            | Input `variant="select"` 的下拉選擇按鈕                                 |
+| InputSpinnerButton        | `MznInputSpinnerButton`        | `@mezzanine-ui/vue/input`            | Input `variant="measure"` 的上下步進按鈕                                |
+| PasswordStrengthIndicator | `MznPasswordStrengthIndicator` | `@mezzanine-ui/vue/input`            | 密碼強度指示器，強度條加提示文字                                        |
+| TimePanel                 | `MznTimePanel`                 | `@mezzanine-ui/vue/time-panel`       | 時間面板，時／分／秒三個捲動欄位，可個別隱藏與設定步進                  |
+| TextField                 | `MznTextField`                 | `@mezzanine-ui/vue/text-field`       | 輸入類元件的視覺外框，支援前後綴、清除鈕與交由使用端接管內距            |
+| Scrollbar                 | `MznScrollbar`                 | `@mezzanine-ui/vue/scrollbar`        | 自訂捲軸容器（OverlayScrollbars），可用 `disabled` 退回原生捲軸         |
+| Notifier                  | `createNotifier`               | `@mezzanine-ui/vue/notifier`         | 建立命令式通知的工廠，Message／AlertBanner 建於其上                     |
+| PickerTrigger             | `MznPickerTrigger`             | `@mezzanine-ui/vue/picker`           | Picker 的觸發輸入框，依格式遮罩輸入日期／時間                           |
+| RangePickerTrigger        | `MznRangePickerTrigger`        | `@mezzanine-ui/vue/picker`           | 區間 picker 的觸發輸入框，兩個輸入框與箭頭                              |
+| Portal                    | `MznPortal`                    | `@mezzanine-ui/vue/portal`           | 以 Teleport 將內容送往 alert／default portal 容器或指定的目的地         |
+| Popper                    | `MznPopper`                    | `@mezzanine-ui/vue/popper`           | 依錨點定位的浮層（`@floating-ui/dom`），支援箭頭與 middleware           |
+| Backdrop                  | `MznBackdrop`                  | `@mezzanine-ui/vue/backdrop`         | Modal／Drawer 用的遮罩層，開啟時淡入並鎖定 body 捲動                    |
+| Tooltip                   | `MznTooltip`                   | `@mezzanine-ui/vue/tooltip`          | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
+| OverflowTooltip           | `MznOverflowTooltip`           | `@mezzanine-ui/vue/overflow-tooltip` | 收合標籤的浮層，開啟後量測每列寬度把浮層收到最寬的那一列                |
+| OverflowCounterTag        | `MznOverflowCounterTag`        | `@mezzanine-ui/vue/overflow-tooltip` | 顯示收合數量的計數標籤，點一下展開 MznOverflowTooltip                   |
 
 ## Motion（動效）
 
@@ -119,6 +123,6 @@
 > 仍缺依賴，DOM parity 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。
 > 這些元件目前的把關是 props 契約比對、靜態檢查與單元測試。
 >
-> Checkbox 自己的 stories 需要 Tag、Dropdown 的 stories 需要 AutoComplete 與 Tag，
-> 兩者的 DOM parity 同樣延後；CheckboxGroup、Input 與 Dropdown 的 Action／Status
-> stories 都已補齊並通過。
+> Checkbox 的 stories 需要 Tag、Tag 自己的 stories 需要 AutoComplete、Dropdown 的
+> stories 兩者都需要，因此這三份的 DOM parity 延後；CheckboxGroup、Input、
+> OverflowTooltip 與 Dropdown 的 Action／Status stories 都已補齊並通過。
