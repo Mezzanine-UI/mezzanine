@@ -200,15 +200,6 @@
 > Collapse 沒有自己的 story（harness 無法驗證），因此以單元測試把關；React 端本身
 > 標記為 `@deprecated`，但 Accordion、Cascader、Navigation 與 FilterArea 仍在用它。
 
-> Portal、Popper、Tooltip、轉場家族的 stories 都已補齊並通過 DOM parity。
->
-> DatePicker 的 stories 需要 Modal（`InsideModal`），依賴已經到位，story 待補；
-> 目前的把關是 props 契約、靜態檢查與單元測試。Form 的已經隨 Radio 補齊。
->
-> Backdrop 與 Spin 的依賴（Drawer、Description）都已就位，stories 待補，
-> DOM parity 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。
-> 這些元件目前的把關是 props 契約比對、靜態檢查與單元測試。
->
-> Checkbox 的 stories 需要 Tag、Tag 自己的 stories 需要 AutoComplete、Dropdown 的
-> stories 兩者都需要，因此這三份的 DOM parity 延後；CheckboxGroup、Input、
-> OverflowTooltip 與 Dropdown 的 Action／Status stories 都已補齊並通過。
+> 每一個已移植的元件都有自己的 stories，並且全部通過 DOM parity；
+> `yarn components:graph` 的「Story files ready to write」清單為空，
+> 也沒有任何 `parity pending`。唯一還沒移植的元件是 Table。
