@@ -1,5 +1,5 @@
 import { Comment, createTextVNode, Fragment, Text } from 'vue';
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
 
 export interface FlattenChildrenOptions {
   /**
@@ -23,15 +23,18 @@ export interface FlattenChildrenOptions {
  * sees one Fragment instead of the items and silently clones nothing useful.
  * Comment nodes (`v-if` placeholders) and whitespace-only text are dropped for
  * the same reason React drops `null` and `false`.
+ *
+ * A slot normally hands back an array, but one written as a bare `h(...)` hands
+ * back the node itself. `Children.toArray` takes either, so this does too.
  */
 export function flattenChildren(
-  children: VNodeArrayChildren = [],
+  children: VNodeArrayChildren | VNodeChild = [],
   options: FlattenChildrenOptions = {},
 ): VNode[] {
   const { keepText = false } = options;
   const out: VNode[] = [];
 
-  for (const child of children) {
+  for (const child of Array.isArray(children) ? children : [children]) {
     if (child === null || child === undefined || typeof child === 'boolean') {
       continue;
     }
