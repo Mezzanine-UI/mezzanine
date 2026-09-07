@@ -34,10 +34,12 @@
     "test:coverage": "vitest run --coverage"
   },
   "peerDependencies": {
+    "lodash": ">=4",
     "vue": ">=3.5"
   },
   "devDependencies": {
     "@js-temporal/polyfill": "^0.5.1",
+    "@types/lodash": "^4.17.20",
     "dayjs": "^1.11.19",
     "luxon": "^3.7.2",
     "moment": "^2.30.1"
@@ -49,6 +51,7 @@
     "@mezzanine-ui/system": "1.0.2",
     "clsx": "^2.1.1",
     "keycode": "^2.2.1",
+    "lodash": "^4.17.21",
     "overlayscrollbars": "^2.13.0",
     "overlayscrollbars-vue": "^0.5.10",
     "tslib": "^2.8.1"
