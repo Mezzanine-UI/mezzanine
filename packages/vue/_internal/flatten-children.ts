@@ -1,5 +1,18 @@
-import { Comment, Fragment, Text } from 'vue';
+import { Comment, createTextVNode, Fragment, Text } from 'vue';
 import type { VNode, VNodeArrayChildren } from 'vue';
+
+export interface FlattenChildrenOptions {
+  /**
+   * Keep text among the results instead of dropping it.
+   *
+   * The callers that clone their children to inject props have no use for text
+   * and are better off without it, so it goes by default. Accordion is the
+   * other kind of caller: the children it does not recognise become the
+   * accordion's content, text included.
+   * @default false
+   */
+  keepText?: boolean;
+}
 
 /**
  * Flatten a slot's output into the vnodes a parent can actually operate on,
@@ -11,7 +24,11 @@ import type { VNode, VNodeArrayChildren } from 'vue';
  * Comment nodes (`v-if` placeholders) and whitespace-only text are dropped for
  * the same reason React drops `null` and `false`.
  */
-export function flattenChildren(children: VNodeArrayChildren = []): VNode[] {
+export function flattenChildren(
+  children: VNodeArrayChildren = [],
+  options: FlattenChildrenOptions = {},
+): VNode[] {
+  const { keepText = false } = options;
   const out: VNode[] = [];
 
   for (const child of children) {
@@ -20,11 +37,14 @@ export function flattenChildren(children: VNodeArrayChildren = []): VNode[] {
     }
 
     if (Array.isArray(child)) {
-      out.push(...flattenChildren(child));
+      out.push(...flattenChildren(child, options));
       continue;
     }
 
-    if (typeof child === 'string' || typeof child === 'number') continue;
+    if (typeof child === 'string' || typeof child === 'number') {
+      if (keepText) out.push(createTextVNode(String(child)));
+      continue;
+    }
 
     const vnode = child as VNode;
 
@@ -32,12 +52,20 @@ export function flattenChildren(children: VNodeArrayChildren = []): VNode[] {
 
     if (vnode.type === Fragment) {
       out.push(
-        ...flattenChildren(vnode.children as VNodeArrayChildren | undefined),
+        ...flattenChildren(
+          vnode.children as VNodeArrayChildren | undefined,
+          options,
+        ),
       );
       continue;
     }
 
-    if (vnode.type === Text && !String(vnode.children ?? '').trim()) continue;
+    if (
+      vnode.type === Text &&
+      !keepText &&
+      !String(vnode.children ?? '').trim()
+    )
+      continue;
 
     out.push(vnode);
   }
