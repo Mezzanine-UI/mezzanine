@@ -87,7 +87,24 @@ export function locateReactFile(pascalName: string): string | null {
     );
     if (found) return found;
   }
-  return null;
+
+  // A component whose file is named after something else still has to be
+  // compared: React's `AutoCompleteInside.tsx` declares
+  // `AutoCompleteInsideTriggerProps` for its `AutoCompleteInsideTrigger`. The
+  // props interface is the contract the extractor reads anyway, so the file
+  // declaring it is the right file — and the name is specific enough that this
+  // cannot pair two unrelated components.
+  const byPropsInterface = findFile(REACT_ROOT, (f) => {
+    if (!f.endsWith('.tsx') && !f.endsWith('.ts')) return false;
+    if (f.endsWith('.spec.tsx') || f.endsWith('.spec.ts')) return false;
+    if (f.endsWith('.stories.tsx') || f.endsWith('.stories.ts')) return false;
+
+    return new RegExp(
+      `export\\s+(?:interface|type)\\s+${pascalName}Props\\b`,
+    ).test(readFileSync(f, 'utf-8'));
+  });
+
+  return byPropsInterface;
 }
 
 export function locateAngularFile(pascalName: string): string | null {
