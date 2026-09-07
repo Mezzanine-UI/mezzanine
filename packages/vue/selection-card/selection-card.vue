@@ -45,8 +45,6 @@ const props = withDefaults(defineProps<SelectionCardProps>(), {
   name: undefined,
   readonly: false,
   supportingText: undefined,
-  supportingTextMaxWidth: undefined,
-  textMaxWidth: undefined,
   value: undefined,
 });
 
