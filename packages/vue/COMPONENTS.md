@@ -65,15 +65,17 @@
 
 ## Feedback（回饋）
 
-| 元件        | 匯入名稱         | 匯入路徑                         | 說明                                                     |
-| ----------- | ---------------- | -------------------------------- | -------------------------------------------------------- |
-| AlertBanner | `MznAlertBanner` | `@mezzanine-ui/vue/alert-banner` | 頁面層級警示橫幅，命令式 `alertBanner` 共用 alert 層     |
-| Empty       | `MznEmpty`       | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕             |
-| Message     | `message`        | `@mezzanine-ui/vue/message`      | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時     |
-| Progress    | `MznProgress`    | `@mezzanine-ui/vue/progress`     | 進度條，可顯示百分比文字或狀態圖示，並在指定位置標記刻度 |
-| ResultState | `MznResultState` | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕           |
-| Skeleton    | `MznSkeleton`    | `@mezzanine-ui/vue/skeleton`     | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態           |
-| Spin        | `MznSpin`        | `@mezzanine-ui/vue/spin`         | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋           |
+| 元件              | 匯入名稱               | 匯入路徑                         | 說明                                                     |
+| ----------------- | ---------------------- | -------------------------------- | -------------------------------------------------------- |
+| AlertBanner       | `MznAlertBanner`       | `@mezzanine-ui/vue/alert-banner` | 頁面層級警示橫幅，命令式 `alertBanner` 共用 alert 層     |
+| Empty             | `MznEmpty`             | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕             |
+| Message           | `message`              | `@mezzanine-ui/vue/message`      | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時     |
+| MediaPreviewModal | `MznMediaPreviewModal` | `@mezzanine-ui/vue/modal`        | 媒體預覽對話框，前後切換並交叉淡入，可受控或自行記住索引 |
+| Modal             | `MznModal`             | `@mezzanine-ui/vue/modal`        | 對話框，五種佈局與六種狀態圖示，內容過長時自動加分隔線   |
+| Progress          | `MznProgress`          | `@mezzanine-ui/vue/progress`     | 進度條，可顯示百分比文字或狀態圖示，並在指定位置標記刻度 |
+| ResultState       | `MznResultState`       | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕           |
+| Skeleton          | `MznSkeleton`          | `@mezzanine-ui/vue/skeleton`     | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態           |
+| Spin              | `MznSpin`              | `@mezzanine-ui/vue/spin`         | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋           |
 
 ## 內部元件（不建議直接使用）
 
@@ -89,6 +91,10 @@
 | DropdownItemCard          | `MznDropdownItemCard`          | `@mezzanine-ui/vue/dropdown`         | 下拉選單的單一選項列，支援關鍵字標色、快捷鍵文字與勾選                  |
 | DropdownAction            | `MznDropdownAction`            | `@mezzanine-ui/vue/dropdown`         | 下拉選單底部的操作列，依監聽的事件決定顯示哪些按鈕                      |
 | DropdownStatus            | `MznDropdownStatus`            | `@mezzanine-ui/vue/dropdown`         | 下拉選單的載入／無資料狀態                                              |
+| ModalBodyForVerification  | `MznModalBodyForVerification`  | `@mezzanine-ui/vue/modal`            | 驗證碼輸入區，一格一字元，可貼上整串                                    |
+| ModalContainer            | `MznModalContainer`            | `@mezzanine-ui/vue/modal`            | Modal 的外殼：遮罩、縮放進出場、Escape 關閉與焦點困住                   |
+| ModalFooter               | `MznModalFooter`               | `@mezzanine-ui/vue/modal`            | Modal 的操作列，左側可放註記、按鈕、核取方塊或密碼欄位                  |
+| ModalHeader               | `MznModalHeader`               | `@mezzanine-ui/vue/modal`            | Modal 的標題列，含狀態圖示與輔助說明                                    |
 | SelectTrigger             | `MznSelectTrigger`             | `@mezzanine-ui/vue/select`           | Select 的觸發器：唯讀輸入框加收合箭頭                                   |
 | SelectTriggerTags         | `MznSelectTriggerTags`         | `@mezzanine-ui/vue/select`           | 多選觸發器裡的標籤列，counter 會把放不下的收進計數標籤                  |
 | AutoCompleteInsideTrigger | `MznAutoCompleteInsideTrigger` | `@mezzanine-ui/vue/auto-complete`    | inputPosition 為 inside 時 AutoComplete 的觸發輸入框                    |
@@ -125,10 +131,10 @@
 
 > Portal、Popper、Tooltip、轉場家族的 stories 都已補齊並通過 DOM parity。
 >
-> DatePicker 的 stories 需要 Modal（`InsideModal`），這份 story 的 DOM parity 還沒
-> 跑過；目前的把關是 props 契約、靜態檢查與單元測試。Form 的已經隨 Radio 補齊。
+> DatePicker 的 stories 需要 Modal（`InsideModal`），依賴已經到位，story 待補；
+> 目前的把關是 props 契約、靜態檢查與單元測試。Form 的已經隨 Radio 補齊。
 >
-> Backdrop（需 drawer / modal / select）與 Spin（需 description / modal）的 stories
+> Backdrop（還缺 drawer）與 Spin（還缺 description）的 stories
 > 仍缺依賴，DOM parity 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。
 > 這些元件目前的把關是 props 契約比對、靜態檢查與單元測試。
 >
