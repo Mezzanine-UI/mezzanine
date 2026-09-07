@@ -1,3 +1,5 @@
+export { default as MznCollapse } from './collapse.vue';
+export type { CollapseProps } from './collapse.types';
 export { default as MznFade } from './fade.vue';
 export type { FadeProps } from './fade.types';
 export { default as MznRotate } from './rotate.vue';
@@ -8,6 +10,7 @@ export { default as MznSlide } from './slide.vue';
 export type { SlideFrom, SlideProps } from './slide.types';
 export { default as MznTranslate } from './translate.vue';
 export type { TranslateFrom, TranslateProps } from './translate.types';
+export { getAutoSizeDuration } from './get-auto-size-duration';
 export type {
   TransitionDelay,
   TransitionDuration,
@@ -17,7 +20,7 @@ export type {
 } from './transition.types';
 
 /**
- * `Collapse` is not ported yet: it has no story of its own, so the harness
- * cannot verify it, and its only consumers — Accordion and NavigationOption —
- * are not ported either. React marks it `@deprecated`.
+ * `Collapse` has no story of its own on either side, so the DOM harness cannot
+ * verify it — its unit tests are the gate, as they are for the transition
+ * family's own styles.
  */
