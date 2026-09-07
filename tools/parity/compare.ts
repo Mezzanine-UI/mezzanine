@@ -269,7 +269,7 @@ function diffArgs(
     // members either, so React's inferred list has no counterpart to compare
     // against. A list the story declares itself is still compared, because
     // then both sides have one.
-    const targetOptionsUnresolved = t.type === 'other' && t.options === null;
+    const targetOptionsUnresolved = t.unresolved && t.options === null;
 
     if (
       !targetOptionsUnresolved &&
@@ -284,16 +284,17 @@ function diffArgs(
       });
     }
 
-    // `vue-component-meta` does not resolve type aliases (`DateType`) or the
-    // props a component inherits through `Pick<>`: it reports them as
-    // `{ name: 'other' }`, and Storybook then falls back to the `object`
-    // control. That fallback says the target's docgen gave up, not that the
+    // `vue-component-meta` does not resolve type aliases (`DateType`), the
+    // props a component inherits through `Pick<>`, or the members of an inline
+    // literal union: it reports them as `{ name: 'other' }` — a union comes
+    // back as `union` of `other`s — and Storybook then falls back to the
+    // `object` control. That fallback says the target's docgen gave up, not that the
     // two stories offer different scenarios, so it is not compared. Every
     // other case still is — a control the story declares itself (a `select`
     // with its own options), or one whose type both docgens resolved — and
     // option lists are compared regardless.
     const targetControlIsUnresolvedFallback =
-      t.type === 'other' && t.control === 'object';
+      t.unresolved && t.control === 'object';
 
     if (r.control !== t.control && !targetControlIsUnresolvedFallback) {
       out.push({

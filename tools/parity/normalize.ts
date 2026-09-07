@@ -259,7 +259,13 @@ export const SNAPSHOT_SOURCE = `
 export type StoryArgs = {
   argTypes: Record<
     string,
-    { type: string | null; options: string[] | null; control: string | null }
+    {
+      type: string | null;
+      options: string[] | null;
+      control: string | null;
+      /** Whether the docgen failed to enumerate the type (see ARGS_SOURCE). */
+      unresolved: boolean;
+    }
   >;
   initialArgs: Record<string, unknown>;
 };
@@ -295,7 +301,21 @@ async (storyId) => {
     var opts = def && Array.isArray(def.options) ? def.options.slice().sort() : null;
     var ctl = def && def.control;
     var ctlName = typeof ctl === 'string' ? ctl : (ctl && typeof ctl === 'object' && 'type' in ctl ? String(ctl.type) : null);
-    argTypes[name] = { type: typeName, options: opts, control: ctlName };
+    // Whether the target's docgen actually enumerated the type. \`other\` is
+    // what vue-component-meta reports for anything it could not follow, and a
+    // union whose every member is \`other\` is the same gap one level down —
+    // an inline \`'left' | 'right'\` comes back that way, so Storybook has no
+    // option list to build a radio from and falls back to the object control.
+    var unresolved = false;
+    if (t && typeof t === 'object') {
+      if (t.name === 'other') unresolved = true;
+      else if (t.name === 'union' && Array.isArray(t.value) && t.value.length) {
+        unresolved = t.value.every(function (member) {
+          return member && member.name === 'other';
+        });
+      }
+    }
+    argTypes[name] = { type: typeName, options: opts, control: ctlName, unresolved: unresolved };
   }
   return { argTypes: argTypes, initialArgs: story.initialArgs || {} };
 }
