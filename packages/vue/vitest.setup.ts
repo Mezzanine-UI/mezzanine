@@ -21,6 +21,10 @@ if (!Element.prototype.scrollTo) {
   Element.prototype.scrollTo = function scrollTo(): void {};
 }
 
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = function scrollIntoView(): void {};
+}
+
 /**
  * Unmount every wrapper after each test, the way React Testing Library's
  * `cleanup` does for the React suite.
