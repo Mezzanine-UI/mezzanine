@@ -473,6 +473,46 @@ type ParentRef = {
   pick?: Set<string>;
 };
 
+const TRANSPARENT_WRAPPERS = new Set([
+  'NonNullable',
+  'Partial',
+  'Readonly',
+  'Required',
+]);
+
+/**
+ * Strip wrapper generics that change only a type's modifiers, never its key
+ * set. `Partial<Omit<ModalFooterProps, …>>` is the same contract as the `Omit`
+ * it wraps, but neither the extends parser nor the alias resolver recognised
+ * the outer form, so the whole clause was skipped in silence — Modal inherited
+ * none of the sixteen footer props it declares and forwards.
+ */
+function stripTransparentWrappers(expr: string): string {
+  let current = expr.trim();
+
+  for (;;) {
+    const match = current.match(/^([A-Za-z_$][\w$]*)\s*<([\s\S]*)>$/);
+
+    if (!match || !TRANSPARENT_WRAPPERS.has(match[1])) return current;
+
+    // The trailing `>` has to be the one that closes this wrapper, or
+    // `Partial<A> | Partial<B>` would read as one wrapper around
+    // `A> | Partial<B`.
+    const inner = match[2];
+    let depth = 0;
+
+    for (const ch of inner) {
+      if (ch === '<') depth += 1;
+      else if (ch === '>') depth -= 1;
+      if (depth < 0) return current;
+    }
+
+    if (depth !== 0) return current;
+
+    current = inner.trim();
+  }
+}
+
 /**
  * Parse an `extends` clause into parent refs. Supports plain `X`,
  * `Omit<X, 'a' | 'b'>`, and `Pick<X, 'a'>` forms. Unknown constructs
@@ -494,8 +534,9 @@ function parseExtends(clause: string): ParentRef[] {
   }
   parts.push(clause.slice(start).trim());
 
-  for (const p of parts) {
-    if (!p) continue;
+  for (const rawPart of parts) {
+    if (!rawPart) continue;
+    const p = stripTransparentWrappers(rawPart);
     const omitMatch = p.match(
       /^Omit\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([^>]+)>$/,
     );
@@ -672,6 +713,12 @@ function resolveTypeExpression(
     trimmed = trimmed.slice(1, -1).trim();
   }
   expr = trimmed;
+
+  const unwrapped = stripTransparentWrappers(expr);
+
+  if (unwrapped !== expr) {
+    return resolveTypeExpression(unwrapped, visited, scope);
+  }
 
   // Split on top-level `|` first (union) — for parity purposes, we want the
   // union of props across all branches (any branch may expose any prop).
