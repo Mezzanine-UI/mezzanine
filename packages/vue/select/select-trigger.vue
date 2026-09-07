@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, useAttrs } from 'vue';
+import { computed, h, ref, useAttrs } from 'vue';
 import type { VNodeChild } from 'vue';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
@@ -72,6 +72,14 @@ const slots = defineSlots<{
 }>();
 
 const attrs = useAttrs();
+
+const input = ref<HTMLInputElement | null>(null);
+
+/**
+ * React hands the input out through an `inputRef` prop; Vue's equivalent is
+ * the parent placing a `ref` on this component, so the element is exposed.
+ */
+defineExpose({ input });
 
 const isMultiple = computed((): boolean => props.mode === 'multiple');
 
@@ -208,6 +216,7 @@ const inputAttrs = computed(() => {
       <component :is="() => suffixActionIcon" />
     </template>
     <input
+      ref="input"
       v-bind="inputAttrs"
       aria-autocomplete="list"
       aria-haspopup="listbox"

@@ -345,6 +345,36 @@ provide(
   ),
 );
 
+const trigger = ref<InstanceType<typeof MznSelectTrigger> | null>(null);
+
+/**
+ * The dropdown hands its anchor setter down in the slot payload, and the
+ * trigger's input has to be reachable too. React composes the two refs; a
+ * template can only carry one, so it calls both.
+ */
+function setTrigger(
+  element: unknown,
+  setAnchor: DropdownTriggerProps['ref'],
+): void {
+  setAnchor(element as Element | null);
+  trigger.value = element as InstanceType<typeof MznSelectTrigger> | null;
+}
+
+/** Everything from the payload except the ref, which `setTrigger` owns. */
+function triggerBindings(
+  triggerProps: DropdownTriggerProps,
+): Record<string, unknown> {
+  const { ref: _ref, ...rest } = triggerProps;
+
+  return rest;
+}
+
+/**
+ * React forwards an `inputRef` down to the trigger's input; the same element is
+ * exposed here.
+ */
+defineExpose({ input: computed(() => trigger.value?.input ?? null) });
+
 const hostClasses = computed((): string =>
   clsx(classes.host, {
     [classes.hostFullWidth]: fullWidth.value,
@@ -390,7 +420,8 @@ const triggerRenderValue = computed((): SelectTriggerProps['renderValue'] =>
     >
       <template #default="triggerProps: DropdownTriggerProps">
         <MznSelectTrigger
-          v-bind="triggerProps"
+          :ref="(element) => setTrigger(element, triggerProps.ref)"
+          v-bind="triggerBindings(triggerProps)"
           :active="!readOnly && open"
           :clearable="clearable"
           :disabled="disabled"
