@@ -71,6 +71,8 @@
 | DescriptionContent          | `MznDescriptionContent`          | `@mezzanine-ui/vue/description`    | 描述列的內容，可帶趨勢箭頭或可點的圖示                                     |
 | DescriptionGroup            | `MznDescriptionGroup`            | `@mezzanine-ui/vue/description`    | 把多個描述列排在一起                                                       |
 | DescriptionTitle            | `MznDescriptionTitle`            | `@mezzanine-ui/vue/description`    | 描述列的標題，可帶徽章與提示圖示                                           |
+| Section                     | `MznSection`                     | `@mezzanine-ui/vue/section`        | 內容分區，標題列、篩選區與頁籤各自認得自己的元件並排到對應版位             |
+| SectionGroup                | `MznSectionGroup`                | `@mezzanine-ui/vue/section`        | 把多個分區排成一欄或一列                                                   |
 
 ## Data Entry（資料輸入）
 
@@ -109,17 +111,22 @@
 
 ## Feedback（回饋）
 
-| 元件              | 匯入名稱               | 匯入路徑                         | 說明                                                     |
-| ----------------- | ---------------------- | -------------------------------- | -------------------------------------------------------- |
-| AlertBanner       | `MznAlertBanner`       | `@mezzanine-ui/vue/alert-banner` | 頁面層級警示橫幅，命令式 `alertBanner` 共用 alert 層     |
-| Empty             | `MznEmpty`             | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕             |
-| Message           | `message`              | `@mezzanine-ui/vue/message`      | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時     |
-| MediaPreviewModal | `MznMediaPreviewModal` | `@mezzanine-ui/vue/modal`        | 媒體預覽對話框，前後切換並交叉淡入，可受控或自行記住索引 |
-| Modal             | `MznModal`             | `@mezzanine-ui/vue/modal`        | 對話框，五種佈局與六種狀態圖示，內容過長時自動加分隔線   |
-| Progress          | `MznProgress`          | `@mezzanine-ui/vue/progress`     | 進度條，可顯示百分比文字或狀態圖示，並在指定位置標記刻度 |
-| ResultState       | `MznResultState`       | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕           |
-| Skeleton          | `MznSkeleton`          | `@mezzanine-ui/vue/skeleton`     | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態           |
-| Spin              | `MznSpin`              | `@mezzanine-ui/vue/spin`         | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋           |
+| 元件                     | 匯入名稱                      | 匯入路徑                                | 說明                                                        |
+| ------------------------ | ----------------------------- | --------------------------------------- | ----------------------------------------------------------- |
+| AlertBanner              | `MznAlertBanner`              | `@mezzanine-ui/vue/alert-banner`        | 頁面層級警示橫幅，命令式 `alertBanner` 共用 alert 層        |
+| Cropper                  | `MznCropper`                  | `@mezzanine-ui/vue/cropper`             | 裁切器外框，只負責樣式與尺寸                                |
+| CropperElement           | `MznCropperElement`           | `@mezzanine-ui/vue/cropper`             | 裁切畫布，拖曳圖片、滾輪或滑桿縮放，角落標出原圖像素尺寸    |
+| CropperModal             | `MznCropperModal`             | `@mezzanine-ui/vue/cropper`             | 裁切對話框，`MznCropperModal.open()` 可命令式開啟並取回結果 |
+| Empty                    | `MznEmpty`                    | `@mezzanine-ui/vue/empty`               | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕                |
+| Message                  | `message`                     | `@mezzanine-ui/vue/message`             | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時        |
+| MediaPreviewModal        | `MznMediaPreviewModal`        | `@mezzanine-ui/vue/modal`               | 媒體預覽對話框，前後切換並交叉淡入，可受控或自行記住索引    |
+| Modal                    | `MznModal`                    | `@mezzanine-ui/vue/modal`               | 對話框，五種佈局與六種狀態圖示，內容過長時自動加分隔線      |
+| NotificationCenter       | `MznNotificationCenter`       | `@mezzanine-ui/vue/notification-center` | 單則通知，命令式 `notificationCenter` 同時最多顯示三則      |
+| NotificationCenterDrawer | `MznNotificationCenterDrawer` | `@mezzanine-ui/vue/notification-center` | 通知抽屜，依今天／昨天／過去七天／更早分組                  |
+| Progress                 | `MznProgress`                 | `@mezzanine-ui/vue/progress`            | 進度條，可顯示百分比文字或狀態圖示，並在指定位置標記刻度    |
+| ResultState              | `MznResultState`              | `@mezzanine-ui/vue/result-state`        | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕              |
+| Skeleton                 | `MznSkeleton`                 | `@mezzanine-ui/vue/skeleton`            | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態              |
+| Spin                     | `MznSpin`                     | `@mezzanine-ui/vue/spin`                | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋              |
 
 ## 內部元件（不建議直接使用）
 
@@ -198,8 +205,8 @@
 > DatePicker 的 stories 需要 Modal（`InsideModal`），依賴已經到位，story 待補；
 > 目前的把關是 props 契約、靜態檢查與單元測試。Form 的已經隨 Radio 補齊。
 >
-> Backdrop（還缺 drawer）與 Spin（還缺 description）的 stories
-> 仍缺依賴，DOM parity 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。
+> Backdrop 與 Spin 的依賴（Drawer、Description）都已就位，stories 待補，
+> DOM parity 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。
 > 這些元件目前的把關是 props 契約比對、靜態檢查與單元測試。
 >
 > Checkbox 的 stories 需要 Tag、Tag 自己的 stories 需要 AutoComplete、Dropdown 的
