@@ -65,11 +65,19 @@ const icon = computed(() =>
   type.value === 'clearable' ? DangerousFilledIcon : CloseIcon,
 );
 
+/**
+ * React writes its own `aria-label` and `type` after the rest spread, so they
+ * win over anything a caller passes; Vue merges fallthrough attributes last, so
+ * they have to be bound ahead of the component's own to keep that order.
+ */
+defineOptions({ inheritAttrs: false });
+
 const iconClass = classes.icon;
 </script>
 
 <template>
   <button
+    v-bind="$attrs"
     aria-label="Close"
     :class="hostClasses"
     type="button"

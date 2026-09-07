@@ -136,6 +136,11 @@ export const SNAPSHOT_SOURCE = `
   // it. Matched on the value's shape — React's \`_r_0_\` / \`:r0:\`, Vue's
   // \`v-0\`, Angular's \`cdk-*\` — so a real name is still compared.
   var GENERATED_ID = /^(?:_r_[0-9a-z]+_|:r[0-9a-z]+:|v-[0-9]+|cdk-[0-9a-z-]*[0-9]+)$/;
+  // An object URL is minted per call: it carries the page's own origin — which
+  // differs by port between the two Storybooks — and a fresh uuid that is not
+  // even stable between two runs of the same app. Only its presence is
+  // comparable, so it collapses the way generated ids do.
+  var OBJECT_URL = /^blob:/;
   function normalizeAttrs(el) {
     var out = {};
     var attrs = Array.from(el.attributes);
@@ -150,6 +155,7 @@ export const SNAPSHOT_SOURCE = `
       if (name === 'class') value = normalizeClass(value);
       else if (ID_REF_ATTRS.has(name) && value) value = '<id>';
       else if (value && GENERATED_ID.test(value)) value = '<id>';
+      else if (value && OBJECT_URL.test(value)) value = '<blob>';
       out[name] = value;
     }
     var sorted = {};
