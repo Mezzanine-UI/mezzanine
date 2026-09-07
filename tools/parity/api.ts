@@ -229,9 +229,134 @@ type TypeAliasEntry = {
   file: string;
   /** Right-hand side of the `type X = RHS;` declaration (trimmed, no trailing `;`). */
   rhs: string;
+  /**
+   * The alias's own type parameters, in declaration order. Needed to resolve a
+   * generic factory: `ButtonProps` is
+   * `ComponentOverridableForwardRefComponentPropsFactory<…, ButtonPropsBase>`,
+   * and without substituting `P` the factory's `& P` contributes nothing —
+   * every prop a polymorphic component declares went missing that way.
+   */
+  params: string[];
 };
 
 type IndexEntry = InterfaceEntry | TypeAliasEntry;
+
+/**
+ * Split a generic argument or parameter list at its top-level commas.
+ * `VC extends NativeElementTag | JSXElementConstructor<any>, C extends VC, P`
+ * is three entries, not five.
+ */
+function splitTypeList(text: string): string[] {
+  const out: string[] = [];
+  let angle = 0;
+  let paren = 0;
+  let curly = 0;
+  let bracket = 0;
+  let start = 0;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+
+    if (ch === '=' && text[i + 1] === '>') {
+      i += 1;
+      continue;
+    }
+    if (ch === '<') angle += 1;
+    else if (ch === '>') angle -= 1;
+    else if (ch === '(') paren += 1;
+    else if (ch === ')') paren -= 1;
+    else if (ch === '{') curly += 1;
+    else if (ch === '}') curly -= 1;
+    else if (ch === '[') bracket += 1;
+    else if (ch === ']') bracket -= 1;
+    else if (
+      ch === ',' &&
+      angle === 0 &&
+      paren === 0 &&
+      curly === 0 &&
+      bracket === 0
+    ) {
+      out.push(text.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+
+  const last = text.slice(start).trim();
+
+  if (last) out.push(last);
+
+  return out.filter((part) => part.length > 0);
+}
+
+/** The declared names of a type-parameter list, dropping constraints and defaults. */
+function parseTypeParams(paramList: string): string[] {
+  if (!paramList.trim()) return [];
+
+  return splitTypeList(paramList)
+    .map((part) => part.match(/^([A-Za-z_$][\w$]*)/)?.[1] ?? '')
+    .filter(Boolean);
+}
+
+/**
+ * A generic reference split into its name and its argument expressions, or
+ * `null` when the expression is not one. Depth-aware, unlike the regexes it
+ * replaces: `Omit<Foo<C>, 'a'>` has one nested `>` that a `[^>]*` match stops
+ * at, which is why every polymorphic component resolved to nothing.
+ */
+function matchGeneric(expr: string): { name: string; args: string[] } | null {
+  const head = expr.match(/^([A-Za-z_$][\w$.]*)\s*</);
+
+  if (!head || !expr.endsWith('>')) return null;
+
+  let depth = 0;
+
+  for (let i = head[0].length - 1; i < expr.length; i += 1) {
+    const ch = expr[i];
+
+    if (ch === '<') depth += 1;
+    else if (ch === '>') {
+      depth -= 1;
+
+      // The closing angle has to be the last character, or this is something
+      // like `Partial<A> | Partial<B>` rather than one generic reference.
+      if (depth === 0) {
+        if (i !== expr.length - 1) return null;
+
+        return {
+          name: head[1],
+          args: splitTypeList(expr.slice(head[0].length, i)),
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Substitute a generic alias's arguments into its right-hand side.
+ *
+ * Textual, on whole-word boundaries: the alias body is small and its parameter
+ * names are single identifiers, so this reaches `& P` without needing a type
+ * checker.
+ */
+function substituteTypeParams(
+  rhs: string,
+  params: string[],
+  args: string[],
+): string {
+  let out = rhs;
+
+  params.forEach((param, index) => {
+    const arg = args[index];
+
+    if (!arg) return;
+
+    out = out.replace(new RegExp(`\\b${param}\\b`, 'g'), arg);
+  });
+
+  return out;
+}
 
 const interfaceIndexes = new Map<IndexScope, Map<string, IndexEntry>>();
 
@@ -373,9 +498,11 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
         if (index.has(name)) continue; // interface wins if both exist
 
         let cursor = (match.index ?? 0) + match[0].length;
+        let paramList = '';
 
         if (text[cursor] === '<') {
           let params = 0;
+          const paramStart = cursor + 1;
 
           while (cursor < text.length) {
             const ch = text[cursor];
@@ -385,6 +512,7 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
               params -= 1;
 
               if (params === 0) {
+                paramList = text.slice(paramStart, cursor);
                 cursor += 1;
                 break;
               }
@@ -440,7 +568,12 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
         }
         const rhs = text.slice(rhsStart, i).trim();
         if (rhs) {
-          index.set(name, { kind: 'alias', file: full, rhs });
+          index.set(name, {
+            kind: 'alias',
+            file: full,
+            rhs,
+            params: parseTypeParams(paramList),
+          });
         }
       }
     }
@@ -757,42 +890,54 @@ function resolveTypeExpression(
     return result;
   }
 
-  // Omit<X, 'a' | 'b'> — resolve X then filter.
-  const omitMatch = single.match(
-    /^Omit\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
-  );
-  if (omitMatch) {
+  const generic = matchGeneric(single);
+
+  // Omit<X, 'a' | 'b'> / Pick<X, 'a'> — resolve X, then filter. `X` is resolved
+  // as an expression rather than looked up as a name, because it is routinely
+  // one: `Omit<Omit<ComponentProps<C>, keyof P> & P, 'component'>` is what a
+  // polymorphic component's props alias expands to.
+  if (
+    generic &&
+    (generic.name === 'Omit' || generic.name === 'Pick') &&
+    generic.args.length === 2
+  ) {
     const keys = keyFilter(
-      omitMatch[2]
+      generic.args[1]
         .split('|')
         .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
     );
-    const base = resolveInterfaceProps(omitMatch[1], scope, visited);
-    for (const k of base.inputs) if (!keys.has(k)) result.inputs.add(k);
-    for (const k of base.outputs) if (!keys.has(k)) result.outputs.add(k);
+    const base = resolveTypeExpression(generic.args[0], visited, scope);
+    const keep = (key: string): boolean =>
+      generic.name === 'Omit' ? !keys.has(key) : keys.has(key);
+
+    for (const k of base.inputs) if (keep(k)) result.inputs.add(k);
+    for (const k of base.outputs) if (keep(k)) result.outputs.add(k);
     return result;
   }
 
-  // Pick<X, 'a' | 'b'> — resolve X then filter to the picked keys only.
-  const pickMatch = single.match(
-    /^Pick\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
-  );
-  if (pickMatch) {
-    const keys = keyFilter(
-      pickMatch[2]
-        .split('|')
-        .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
-    );
-    const base = resolveInterfaceProps(pickMatch[1], scope, visited);
-    for (const k of base.inputs) if (keys.has(k)) result.inputs.add(k);
-    for (const k of base.outputs) if (keys.has(k)) result.outputs.add(k);
-    return result;
+  // A generic alias reference — substitute the arguments into its right-hand
+  // side before resolving, so the type parameters carrying the real props
+  // (`P` in the factories) are not dropped.
+  if (generic && !visited.has(generic.name)) {
+    const entry = getInterfaceIndex(scope).get(generic.name);
+
+    if (entry?.kind === 'alias' && entry.params.length) {
+      const nested = new Set(visited);
+
+      nested.add(generic.name);
+
+      return resolveTypeExpression(
+        substituteTypeParams(entry.rhs, entry.params, generic.args),
+        nested,
+        scope,
+      );
+    }
   }
 
   // Plain reference — `X` or `X<Y, Z>`.
-  const plain = single.match(/^(\w+)(?:\s*<[^>]*>)?$/);
+  const plain = generic ? generic.name : single.match(/^(\w+)$/)?.[1];
   if (plain) {
-    const base = resolveInterfaceProps(plain[1], scope, visited);
+    const base = resolveInterfaceProps(plain, scope, visited);
     for (const k of base.inputs) result.inputs.add(k);
     for (const k of base.outputs) result.outputs.add(k);
   }
