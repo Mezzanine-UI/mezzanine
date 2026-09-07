@@ -46,6 +46,8 @@
 | Checkbox            | `MznCheckbox`            | `@mezzanine-ui/vue/checkbox`               | 核取方塊，default／chip 兩種模式，支援中間態與勾選後的可編輯輸入框                             |
 | CheckboxGroup       | `MznCheckboxGroup`       | `@mezzanine-ui/vue/checkbox`               | 一組共用 name 的核取方塊，以 `options` 或預設 slot 提供，可帶全選控制                          |
 | CheckAll            | `MznCheckAll`            | `@mezzanine-ui/vue/checkbox`               | 包住一組 CheckboxGroup 的全選核取方塊                                                          |
+| Radio               | `MznRadio`               | `@mezzanine-ui/vue/radio`                  | 單選按鈕，radio／segment 兩種模式，選取後可帶可編輯輸入框                                      |
+| RadioGroup          | `MznRadioGroup`          | `@mezzanine-ui/vue/radio`                  | 一組互斥的單選按鈕，以 `options` 或預設 slot 提供，可水平或垂直排列                            |
 | DateTimePicker      | `MznDateTimePicker`      | `@mezzanine-ui/vue/date-time-picker`       | 日期時間選擇器，左右兩個輸入框各自帶日曆與時間面板                                             |
 | DateTimeRangePicker | `MznDateTimeRangePicker` | `@mezzanine-ui/vue/date-time-range-picker` | 日期時間區間選擇器，兩個日期時間選擇器加方向箭頭                                               |
 | DateRangePicker     | `MznDateRangePicker`     | `@mezzanine-ui/vue/date-range-picker`      | 日期區間選擇器，雙日曆浮層，支援即時與手動確認兩種模式                                         |
@@ -58,18 +60,20 @@
 | TimePicker          | `MznTimePicker`          | `@mezzanine-ui/vue/time-picker`            | 時間選擇器，遮罩輸入加時間面板浮層，支援步進與隱藏欄位                                         |
 | TimeRangePicker     | `MznTimeRangePicker`     | `@mezzanine-ui/vue/time-range-picker`      | 時間區間選擇器，兩個輸入框共用一個時間面板                                                     |
 | Textarea            | `MznTextarea`            | `@mezzanine-ui/vue/textarea`               | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手                       |
+| Slider              | `MznSlider`              | `@mezzanine-ui/vue/slider`                 | 滑桿，值的型別決定單點或範圍；可加輸入框、加減圖示與刻度                                       |
 | Toggle              | `MznToggle`              | `@mezzanine-ui/vue/toggle`                 | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字                                   |
 
 ## Feedback（回饋）
 
-| 元件        | 匯入名稱         | 匯入路徑                         | 說明                                                 |
-| ----------- | ---------------- | -------------------------------- | ---------------------------------------------------- |
-| AlertBanner | `MznAlertBanner` | `@mezzanine-ui/vue/alert-banner` | 頁面層級警示橫幅，命令式 `alertBanner` 共用 alert 層 |
-| Empty       | `MznEmpty`       | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕         |
-| Message     | `message`        | `@mezzanine-ui/vue/message`      | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時 |
-| ResultState | `MznResultState` | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕       |
-| Skeleton    | `MznSkeleton`    | `@mezzanine-ui/vue/skeleton`     | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態       |
-| Spin        | `MznSpin`        | `@mezzanine-ui/vue/spin`         | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋       |
+| 元件        | 匯入名稱         | 匯入路徑                         | 說明                                                     |
+| ----------- | ---------------- | -------------------------------- | -------------------------------------------------------- |
+| AlertBanner | `MznAlertBanner` | `@mezzanine-ui/vue/alert-banner` | 頁面層級警示橫幅，命令式 `alertBanner` 共用 alert 層     |
+| Empty       | `MznEmpty`       | `@mezzanine-ui/vue/empty`        | 空狀態，四種情境插畫與三種尺寸，可帶動作按鈕             |
+| Message     | `message`        | `@mezzanine-ui/vue/message`      | 命令式訊息提示，最多四則、預設三秒，滑鼠懸停暫停計時     |
+| Progress    | `MznProgress`    | `@mezzanine-ui/vue/progress`     | 進度條，可顯示百分比文字或狀態圖示，並在指定位置標記刻度 |
+| ResultState | `MznResultState` | `@mezzanine-ui/vue/result-state` | 結果狀態，六種語意圖示與兩種尺寸，可帶動作按鈕           |
+| Skeleton    | `MznSkeleton`    | `@mezzanine-ui/vue/skeleton`     | 骨架屏佔位元件，支援文字條、圓形與方塊三種形態           |
+| Spin        | `MznSpin`        | `@mezzanine-ui/vue/spin`         | 載入指示器，可單獨使用或包住內容以淺色遮罩覆蓋           |
 
 ## 內部元件（不建議直接使用）
 
@@ -109,20 +113,20 @@
 
 | 元件      | 匯入名稱       | 匯入路徑                       | 說明                                                |
 | --------- | -------------- | ------------------------------ | --------------------------------------------------- |
+| Collapse  | `MznCollapse`  | `@mezzanine-ui/vue/transition` | 高度收合展開，量測內容高度後過渡                    |
 | Fade      | `MznFade`      | `@mezzanine-ui/vue/transition` | 淡入淡出                                            |
 | Scale     | `MznScale`     | `@mezzanine-ui/vue/transition` | 由 95% 放大並淡入，進場結束後 transform 設回 `none` |
 | Translate | `MznTranslate` | `@mezzanine-ui/vue/transition` | 從指定方向位移 4px 進場並淡入                       |
 | Slide     | `MznSlide`     | `@mezzanine-ui/vue/transition` | 從邊緣整塊滑入（位移 100%，不淡入）                 |
 | Rotate    | `MznRotate`    | `@mezzanine-ui/vue/transition` | 依 `in` 旋轉既有元素，不負責掛載／卸載              |
 
-> Collapse 尚未移植：它沒有自己的 story（harness 無法驗證），使用它的 Accordion 與
-> NavigationOption 也還沒移植，React 端本身標記為 `@deprecated`。
+> Collapse 沒有自己的 story（harness 無法驗證），因此以單元測試把關；React 端本身
+> 標記為 `@deprecated`，但 Accordion、Cascader、Navigation 與 FilterArea 仍在用它。
 
 > Portal、Popper、Tooltip、轉場家族的 stories 都已補齊並通過 DOM parity。
 >
-> Form.stories 需要 Radio、DatePicker 的 stories 需要 Modal（`InsideModal`），
-> 這兩份 story 的 DOM parity 還沒跑過（FormGroup 的已經跑過）；
-> 目前的把關是 props 契約、靜態檢查與單元測試。
+> DatePicker 的 stories 需要 Modal（`InsideModal`），這份 story 的 DOM parity 還沒
+> 跑過；目前的把關是 props 契約、靜態檢查與單元測試。Form 的已經隨 Radio 補齊。
 >
 > Backdrop（需 drawer / modal / select）與 Spin（需 description / modal）的 stories
 > 仍缺依賴，DOM parity 還沒跑過，`yarn components:graph` 會標成 `parity pending …`。
