@@ -260,12 +260,67 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
       const text = readFileSync(full, 'utf-8');
 
       // --- Interfaces --------------------------------------------------------
-      const interfacePattern =
-        /(?:export\s+)?interface\s+(\w+)(?:<[^>]*>)?\s*(?:extends\s+([^{]+?))?\s*\{/g;
+      const interfacePattern = /(?:export\s+)?interface\s+(\w+)/g;
       for (const match of text.matchAll(interfacePattern)) {
         const name = match[1];
-        const extendsClause = match[2] ? match[2].trim() : null;
-        const headerEnd = (match.index ?? 0) + match[0].length;
+        // Walk the header instead of matching it: an extends clause can carry
+        // an object type — `PickRenameMulti<…, { options: 'popperOptions' }>` —
+        // and a regex that stops at the first `{` reads that as the body, so
+        // every own prop of the interface goes missing. `AutoCompleteBaseProps`
+        // lost thirty of them that way.
+        let cursor = (match.index ?? 0) + match[0].length;
+        // The type parameter list belongs to the name, not to the extends
+        // clause: its own `extends` (`<T extends DropdownType>`) must not be
+        // mistaken for the interface's.
+        while (cursor < text.length && /\s/.test(text[cursor])) cursor += 1;
+        if (text[cursor] === '<') {
+          let params = 0;
+
+          while (cursor < text.length) {
+            const ch = text[cursor];
+
+            if (ch === '=' && text[cursor + 1] === '>') {
+              cursor += 2;
+              continue;
+            }
+            if (ch === '<') params += 1;
+            else if (ch === '>') {
+              params -= 1;
+              if (params === 0) {
+                cursor += 1;
+                break;
+              }
+            }
+            cursor += 1;
+          }
+        }
+        const headerStart = cursor;
+        let angle = 0;
+        let paren = 0;
+        let bracket = 0;
+
+        while (cursor < text.length) {
+          const ch = text[cursor];
+
+          if (ch === '{' && angle === 0 && paren === 0 && bracket === 0) break;
+          if (ch === '=' && text[cursor + 1] === '>') {
+            cursor += 2;
+            continue;
+          }
+          if (ch === '<') angle += 1;
+          else if (ch === '>') angle -= 1;
+          else if (ch === '(') paren += 1;
+          else if (ch === ')') paren -= 1;
+          else if (ch === '[') bracket += 1;
+          else if (ch === ']') bracket -= 1;
+          cursor += 1;
+        }
+        if (cursor >= text.length) continue;
+        const extendsMatch = text
+          .slice(headerStart, cursor)
+          .match(/^\s*extends\s+([\s\S]+)$/);
+        const extendsClause = extendsMatch ? extendsMatch[1].trim() : null;
+        const headerEnd = cursor + 1;
         let depth = 1;
         let i = headerEnd;
         while (i < text.length && depth > 0) {
