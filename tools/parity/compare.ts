@@ -288,15 +288,20 @@ function diffArgs(
     // props a component inherits through `Pick<>`, or the members of an inline
     // literal union: it reports them as `{ name: 'other' }` — a union comes
     // back as `union` of `other`s — and Storybook then falls back to the
-    // `object` control. That fallback says the target's docgen gave up, not that the
+    // `object` control. That fallback says a docgen gave up, not that the
     // two stories offer different scenarios, so it is not compared. Every
     // other case still is — a control the story declares itself (a `select`
     // with its own options), or one whose type both docgens resolved — and
     // option lists are compared regardless.
-    const targetControlIsUnresolvedFallback =
-      t.unresolved && t.control === 'object';
+    // Checked on both sides, because React is the one that gives up on a
+    // handler: `onChange` comes back as `other` there, and Storybook renders a
+    // JSON editor nobody can write a function into, while Vue's emit has no
+    // control at all. Neither panel offers the reader anything to operate.
+    const controlIsUnresolvedFallback =
+      (t.unresolved && t.control === 'object') ||
+      (r.unresolved && r.control === 'object');
 
-    if (r.control !== t.control && !targetControlIsUnresolvedFallback) {
+    if (r.control !== t.control && !controlIsUnresolvedFallback) {
       out.push({
         story,
         path: `argTypes.${name}.control`,
