@@ -85,7 +85,12 @@ export function useTransitionImplementation(
     childStyle = (normalizeStyle((child.props as { style?: unknown })?.style) ??
       {}) as CSSProperties;
 
-    return cloneVNode(child, { ref: node });
+    // `mergeRef`, because Vue's clone otherwise *replaces* the child's own
+    // ref: a consumer that measures the element it wrote — OverflowTooltip
+    // sizing its content — would silently read null. React reaches the same
+    // element by composing the transition's ref with the one forwarded into
+    // `<Fade ref={…}>`, so both hold it there too.
+    return cloneVNode(child, { ref: node }, true);
   };
 
   const config = (): TransitionRunnerConfig => ({
