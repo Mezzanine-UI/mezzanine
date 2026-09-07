@@ -196,8 +196,13 @@ if [ "$RUN_TYPES" = true ]; then
     if [ $TSC_EXIT_CODE -eq 0 ]; then
       echo -e "${GREEN}✅ TypeScript: No errors found${NC}"
     else
-      # First, filter out node_modules
-      ALL_ERRORS=$(echo "$TSC_OUTPUT" | grep -v "node_modules")
+      # First, drop errors whose *file* sits in node_modules. Matching the
+      # whole line would also drop errors that merely mention node_modules in
+      # their message (TS2742 does), and a filter that removes every line exits
+      # 1, which `set -e` turns into a silent failure with nothing printed.
+      set +e
+      ALL_ERRORS=$(echo "$TSC_OUTPUT" | grep -vE '^[^(]*node_modules[^(]*\([0-9]+,[0-9]+\): error TS')
+      set -e
 
       # Count total errors (non-empty lines that look like errors)
       TOTAL_ERROR_COUNT=$(echo "$ALL_ERRORS" | grep -c "error TS" || echo "0")
