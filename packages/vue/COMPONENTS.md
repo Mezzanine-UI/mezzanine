@@ -20,14 +20,19 @@
 
 ## Navigation（導航）
 
-| 元件        | 匯入名稱         | 匯入路徑                    | 說明                                                         |
-| ----------- | ---------------- | --------------------------- | ------------------------------------------------------------ |
-| Anchor      | `MznAnchor`      | `@mezzanine-ui/vue/anchor`  | 頁面章節導航連結，依網址 hash 自動標示當前位置，最多三層巢狀 |
-| AnchorGroup | `MznAnchorGroup` | `@mezzanine-ui/vue/anchor`  | 錨點導航群組容器，可用 `anchors` 資料或子元件描述結構        |
-| Stepper     | `MznStepper`     | `@mezzanine-ui/vue/stepper` | 步驟進度指示器，支援水平／垂直排列與數字／圓點兩種指示器     |
-| Step        | `MznStep`        | `@mezzanine-ui/vue/stepper` | 單一步驟，狀態由父層 stepper 指定，可掛 click 成為互動元素   |
-| Tab         | `MznTab`         | `@mezzanine-ui/vue/tab`     | 頁籤導航容器，以底部滑動指示條標示選取項，支援水平與垂直     |
-| TabItem     | `MznTabItem`     | `@mezzanine-ui/vue/tab`     | 頁籤項目，支援圖示、徽章計數、錯誤與停用狀態                 |
+| 元件           | 匯入名稱            | 匯入路徑                           | 說明                                                         |
+| -------------- | ------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| Anchor         | `MznAnchor`         | `@mezzanine-ui/vue/anchor`         | 頁面章節導航連結，依網址 hash 自動標示當前位置，最多三層巢狀 |
+| AnchorGroup    | `MznAnchorGroup`    | `@mezzanine-ui/vue/anchor`         | 錨點導航群組容器，可用 `anchors` 資料或子元件描述結構        |
+| Stepper        | `MznStepper`        | `@mezzanine-ui/vue/stepper`        | 步驟進度指示器，支援水平／垂直排列與數字／圓點兩種指示器     |
+| Step           | `MznStep`           | `@mezzanine-ui/vue/stepper`        | 單一步驟，狀態由父層 stepper 指定，可掛 click 成為互動元素   |
+| Tab            | `MznTab`            | `@mezzanine-ui/vue/tab`            | 頁籤導航容器，以底部滑動指示條標示選取項，支援水平與垂直     |
+| TabItem        | `MznTabItem`        | `@mezzanine-ui/vue/tab`            | 頁籤項目，支援圖示、徽章計數、錯誤與停用狀態                 |
+| Breadcrumb     | `MznBreadcrumb`     | `@mezzanine-ui/vue/breadcrumb`     | 麵包屑導覽，超過四節收成「…」選單，condensed 只留最後兩節    |
+| BreadcrumbItem | `MznBreadcrumbItem` | `@mezzanine-ui/vue/breadcrumb`     | 麵包屑的一節，給 options 就變下拉、給 href 就變連結          |
+| ContentHeader  | `MznContentHeader`  | `@mezzanine-ui/vue/content-header` | 內容標題列，依元件種類把 slot 分派到篩選、動作與工具區       |
+| PageFooter     | `MznPageFooter`     | `@mezzanine-ui/vue/page-footer`    | 頁尾操作列，左側可放註記、按鈕、核取方塊或密碼欄位           |
+| Pagination     | `MznPagination`     | `@mezzanine-ui/vue/pagination`     | 分頁導覽，可加跳頁輸入框與每頁筆數選擇器                     |
 
 ## Data Display（資料展示）
 
@@ -61,6 +66,8 @@
 | TimeRangePicker     | `MznTimeRangePicker`     | `@mezzanine-ui/vue/time-range-picker`      | 時間區間選擇器，兩個輸入框共用一個時間面板                                                     |
 | Textarea            | `MznTextarea`            | `@mezzanine-ui/vue/textarea`               | 多行文字輸入區域，`type` 控制預設／警告／錯誤樣式，`resize` 開啟縮放把手                       |
 | Slider              | `MznSlider`              | `@mezzanine-ui/vue/slider`                 | 滑桿，值的型別決定單點或範圍；可加輸入框、加減圖示與刻度                                       |
+| SelectionCard       | `MznSelectionCard`       | `@mezzanine-ui/vue/selection-card`         | 以整張卡片作為選項的單選或多選控制項                                                           |
+| SelectionCardGroup  | `MznSelectionCardGroup`  | `@mezzanine-ui/vue/selection-card`         | 把多張選擇卡片排成一組，可用 slot 或 `selections` 提供                                         |
 | Toggle              | `MznToggle`              | `@mezzanine-ui/vue/toggle`                 | 開／關切換開關，支援 `v-model:checked`、label 與輔助說明文字                                   |
 
 ## Feedback（回饋）
@@ -95,6 +102,10 @@
 | ModalContainer            | `MznModalContainer`            | `@mezzanine-ui/vue/modal`            | Modal 的外殼：遮罩、縮放進出場、Escape 關閉與焦點困住                   |
 | ModalFooter               | `MznModalFooter`               | `@mezzanine-ui/vue/modal`            | Modal 的操作列，左側可放註記、按鈕、核取方塊或密碼欄位                  |
 | ModalHeader               | `MznModalHeader`               | `@mezzanine-ui/vue/modal`            | Modal 的標題列，含狀態圖示與輔助說明                                    |
+| PaginationItem            | `MznPaginationItem`            | `@mezzanine-ui/vue/pagination`       | 分頁列上的頁碼、箭頭或省略號                                            |
+| PaginationJumper          | `MznPaginationJumper`          | `@mezzanine-ui/vue/pagination`       | 分頁列的跳頁欄                                                          |
+| PaginationPageSize        | `MznPaginationPageSize`        | `@mezzanine-ui/vue/pagination`       | 分頁列的每頁筆數選擇器                                                  |
+| ContentHeaderResponsive   | `MznContentHeaderResponsive`   | `@mezzanine-ui/vue/content-header`   | 把一段 ContentHeader 子項標記成只在某斷點顯示                           |
 | SelectTrigger             | `MznSelectTrigger`             | `@mezzanine-ui/vue/select`           | Select 的觸發器：唯讀輸入框加收合箭頭                                   |
 | SelectTriggerTags         | `MznSelectTriggerTags`         | `@mezzanine-ui/vue/select`           | 多選觸發器裡的標籤列，counter 會把放不下的收進計數標籤                  |
 | AutoCompleteInsideTrigger | `MznAutoCompleteInsideTrigger` | `@mezzanine-ui/vue/auto-complete`    | inputPosition 為 inside 時 AutoComplete 的觸發輸入框                    |
@@ -114,6 +125,12 @@
 | Tooltip                   | `MznTooltip`                   | `@mezzanine-ui/vue/tooltip`          | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
 | OverflowTooltip           | `MznOverflowTooltip`           | `@mezzanine-ui/vue/overflow-tooltip` | 收合標籤的浮層，開啟後量測每列寬度把浮層收到最寬的那一列                |
 | OverflowCounterTag        | `MznOverflowCounterTag`        | `@mezzanine-ui/vue/overflow-tooltip` | 顯示收合數量的計數標籤，點一下展開 MznOverflowTooltip                   |
+
+## Others（其他）
+
+| 元件           | 匯入名稱            | 匯入路徑                            | 說明                                             |
+| -------------- | ------------------- | ----------------------------------- | ------------------------------------------------ |
+| FloatingButton | `MznFloatingButton` | `@mezzanine-ui/vue/floating-button` | 浮動按鈕，固定在畫面角落，可在面板開啟時自動收起 |
 
 ## Motion（動效）
 
