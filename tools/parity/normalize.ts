@@ -130,6 +130,12 @@ export const SNAPSHOT_SOURCE = `
   // \`value\` attribute is still compared, which is what surfaces React leaking
   // an object onto a \`<div>\` (see the select rows in DEVIATIONS.md).
   var VALUE_ATTR_HOSTS = new Set(['input', 'textarea']);
+  // The same generated ids also reach attributes that are not id references: a
+  // Checkbox with no \`name\` falls back to its own generated id, on both
+  // sides, so a tree option's checkbox differed only by which generator wrote
+  // it. Matched on the value's shape — React's \`_r_0_\` / \`:r0:\`, Vue's
+  // \`v-0\`, Angular's \`cdk-*\` — so a real name is still compared.
+  var GENERATED_ID = /^(?:_r_[0-9a-z]+_|:r[0-9a-z]+:|v-[0-9]+|cdk-[0-9a-z-]*[0-9]+)$/;
   function normalizeAttrs(el) {
     var out = {};
     var attrs = Array.from(el.attributes);
@@ -143,6 +149,7 @@ export const SNAPSHOT_SOURCE = `
       var value = attr.value;
       if (name === 'class') value = normalizeClass(value);
       else if (ID_REF_ATTRS.has(name) && value) value = '<id>';
+      else if (value && GENERATED_ID.test(value)) value = '<id>';
       out[name] = value;
     }
     var sorted = {};
