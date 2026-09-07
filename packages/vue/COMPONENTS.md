@@ -40,6 +40,8 @@
 | NavigationOption         | `MznNavigationOption`         | `@mezzanine-ui/vue/navigation`     | 導航的單一選項，有子項時是收合群組、有 href 時是連結               |
 | NavigationOptionCategory | `MznNavigationOptionCategory` | `@mezzanine-ui/vue/navigation`     | 導航選項的分組標題                                                 |
 | NavigationUserMenu       | `MznNavigationUserMenu`       | `@mezzanine-ui/vue/navigation`     | 導航中的使用者選單，頭像加名字加下拉                               |
+| Drawer                   | `MznDrawer`                   | `@mezzanine-ui/vue/drawer`         | 側邊抽屜，從右側滑入，可帶標題列、篩選區與底部操作列               |
+| PageHeader               | `MznPageHeader`               | `@mezzanine-ui/vue/page-header`    | 頁面標頭，一組麵包屑加上一個內容標題列                             |
 
 ## Data Display（資料展示）
 
@@ -65,6 +67,10 @@
 | AccordionContent            | `MznAccordionContent`            | `@mezzanine-ui/vue/accordion`      | 手風琴展開後的內容區                                                       |
 | AccordionGroup              | `MznAccordionGroup`              | `@mezzanine-ui/vue/accordion`      | 把多個手風琴排成一組，`exclusive` 時同時只開一個                           |
 | AccordionTitle              | `MznAccordionTitle`              | `@mezzanine-ui/vue/accordion`      | 手風琴的標題列，點一下切換展開狀態                                         |
+| Description                 | `MznDescription`                 | `@mezzanine-ui/vue/description`    | 描述列，一個標題配一段內容                                                 |
+| DescriptionContent          | `MznDescriptionContent`          | `@mezzanine-ui/vue/description`    | 描述列的內容，可帶趨勢箭頭或可點的圖示                                     |
+| DescriptionGroup            | `MznDescriptionGroup`            | `@mezzanine-ui/vue/description`    | 把多個描述列排在一起                                                       |
+| DescriptionTitle            | `MznDescriptionTitle`            | `@mezzanine-ui/vue/description`    | 描述列的標題，可帶徽章與提示圖示                                           |
 
 ## Data Entry（資料輸入）
 
@@ -96,6 +102,10 @@
 | Filter              | `MznFilter`              | `@mezzanine-ui/vue/filter-area`            | 單一篩選條件，決定欄位在行裡佔幾欄                                                             |
 | FilterArea          | `MznFilterArea`          | `@mezzanine-ui/vue/filter-area`            | 篩選器容器，管理多條 FilterLine 的展開與收合                                                   |
 | FilterLine          | `MznFilterLine`          | `@mezzanine-ui/vue/filter-area`            | 篩選器中的單行條件列                                                                           |
+| Upload              | `MznUpload`              | `@mezzanine-ui/vue/upload`                 | 檔案上傳，五種版面；檔案狀態完全受控                                                           |
+| UploadItem          | `MznUploadItem`          | `@mezzanine-ui/vue/upload`                 | 上傳清單裡的一列，依狀態顯示取消／下載／重試                                                   |
+| UploadPictureCard   | `MznUploadPictureCard`   | `@mezzanine-ui/vue/upload`                 | 圖片上傳的卡片式預覽                                                                           |
+| Uploader            | `MznUploader`            | `@mezzanine-ui/vue/upload`                 | 上傳觸發區，可拖放的區塊或一顆按鈕                                                             |
 
 ## Feedback（回饋）
 
@@ -160,9 +170,14 @@
 
 ## Others（其他）
 
-| 元件           | 匯入名稱            | 匯入路徑                            | 說明                                             |
-| -------------- | ------------------- | ----------------------------------- | ------------------------------------------------ |
-| FloatingButton | `MznFloatingButton` | `@mezzanine-ui/vue/floating-button` | 浮動按鈕，固定在畫面角落，可在面板開啟時自動收起 |
+| 元件             | 匯入名稱              | 匯入路徑                            | 說明                                             |
+| ---------------- | --------------------- | ----------------------------------- | ------------------------------------------------ |
+| FloatingButton   | `MznFloatingButton`   | `@mezzanine-ui/vue/floating-button` | 浮動按鈕，固定在畫面角落，可在面板開啟時自動收起 |
+| Layout           | `MznLayout`           | `@mezzanine-ui/vue/layout`          | 頁面版面：導航、左面板、主要區域、右面板         |
+| LayoutHost       | `MznLayoutHost`       | `@mezzanine-ui/vue/layout`          | 版面的最外層容器，提供量測用的 context           |
+| LayoutLeftPanel  | `MznLayoutLeftPanel`  | `@mezzanine-ui/vue/layout`          | 版面左側可拖曳改寬度的面板                       |
+| LayoutMain       | `MznLayoutMain`       | `@mezzanine-ui/vue/layout`          | 版面的主要內容區，自己捲動                       |
+| LayoutRightPanel | `MznLayoutRightPanel` | `@mezzanine-ui/vue/layout`          | 版面右側可拖曳改寬度的面板                       |
 
 ## Motion（動效）
 
