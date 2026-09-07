@@ -828,6 +828,59 @@ function keyFilter(rawKeys: string[]): Set<string> {
   return keys;
 }
 
+/**
+ * Split `A extends B ? X : Y` into its two branches, or return null when the
+ * expression is not a top-level conditional.
+ *
+ * Depth is tracked so that the `?` of an optional property and the `:` of an
+ * object literal — both of which live inside braces — are never mistaken for
+ * the ternary's own. Nested conditionals are matched by counting, so the `:`
+ * that closes the outer one is the one that brings the count back to zero.
+ */
+function splitConditional(
+  expr: string,
+): { whenFalse: string; whenTrue: string } | null {
+  let depth = 0;
+  let quote: string | null = null;
+  let questionAt = -1;
+  let pending = 0;
+
+  for (let i = 0; i < expr.length; i += 1) {
+    const ch = expr[i];
+
+    if (quote) {
+      if (ch === quote) quote = null;
+      continue;
+    }
+
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch;
+      continue;
+    }
+
+    if (ch === '<' || ch === '(' || ch === '[' || ch === '{') depth += 1;
+    else if (ch === '>' || ch === ')' || ch === ']' || ch === '}') depth -= 1;
+    else if (depth === 0 && ch === '=' && expr[i + 1] === '>') i += 1;
+    else if (depth === 0 && ch === '?') {
+      if (questionAt === -1) questionAt = i;
+      else pending += 1;
+    } else if (depth === 0 && ch === ':' && questionAt !== -1) {
+      if (pending === 0) {
+        if (!/\bextends\b/.test(expr.slice(0, questionAt))) return null;
+
+        return {
+          whenFalse: expr.slice(i + 1).trim(),
+          whenTrue: expr.slice(questionAt + 1, i).trim(),
+        };
+      }
+
+      pending -= 1;
+    }
+  }
+
+  return null;
+}
+
 function resolveTypeExpression(
   expr: string,
   visited: Set<string>,
@@ -897,6 +950,23 @@ function resolveTypeExpression(
     const inner = extractBodyProps(body);
     for (const k of inner.inputs) result.inputs.add(k);
     for (const k of inner.outputs) result.outputs.add(k);
+    return result;
+  }
+
+  // A conditional type — `T extends U ? X : Y`. Every branch may expose props,
+  // so both are resolved and merged, the same way a union is. `never` resolves
+  // to nothing, which is what makes the distributive-omit idiom
+  // (`T extends any ? Omit<T, K> : never`) come out as the Omit it stands for.
+  const conditional = splitConditional(single);
+
+  if (conditional) {
+    for (const branch of [conditional.whenTrue, conditional.whenFalse]) {
+      const sub = resolveTypeExpression(branch, new Set(visited), scope);
+
+      for (const k of sub.inputs) result.inputs.add(k);
+      for (const k of sub.outputs) result.outputs.add(k);
+    }
+
     return result;
   }
 
