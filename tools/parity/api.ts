@@ -476,7 +476,7 @@ function extractBodyProps(body: string): ApiSet {
       else if (ch === ')') parenDepth -= 1;
     }
     if (!atTopLevel) continue;
-    const m = trimmed.match(/^(\w+)\??\s*:/);
+    const m = trimmed.match(/^(\w+)\??\s*[:(]/);
     if (!m) continue;
     const name = m[1];
     if (SKIP_PROP_NAMES.has(name)) continue;
