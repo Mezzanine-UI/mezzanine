@@ -754,6 +754,16 @@ function splitTopLevel(expr: string, operator: '&' | '|'): string[] {
   let start = 0;
   for (let i = 0; i < expr.length; i += 1) {
     const ch = expr[i];
+    // A function type's `=>` is not a generic argument list. Counting its `>`
+    // leaves the angle depth negative for the rest of the expression, so every
+    // later operator stops looking top-level and the split silently collapses
+    // to one operand — which is how ContentHeader's `onBackClick` / `size`
+    // union went missing. The alias scanner was taught this; the splitter it
+    // hands its result to was not.
+    if (ch === '=' && expr[i + 1] === '>') {
+      i += 1;
+      continue;
+    }
     if (ch === '<') depthAngle += 1;
     else if (ch === '>') depthAngle -= 1;
     else if (ch === '(') depthParen += 1;
