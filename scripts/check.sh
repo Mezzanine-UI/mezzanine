@@ -181,20 +181,44 @@ if [ "$RUN_TYPES" = true ]; then
   if [ -f "$ABS_PACKAGE_DIR/tsconfig.json" ]; then
     echo "Checking TypeScript in package: $PACKAGE_DIR"
 
+    # Vue SFCs are invisible to plain `tsc`; packages/vue must use vue-tsc.
+    TSC_BIN="tsc"
+    if [[ "$TARGET_PATH" == packages/vue* ]] || [[ "$PACKAGE_DIR" == packages/vue* ]]; then
+      TSC_BIN="vue-tsc"
+    fi
+
     # Run tsc and filter output (temporarily disable set -e to capture output)
     set +e
-    TSC_OUTPUT=$(cd "$ABS_PACKAGE_DIR" && npx tsc --noEmit 2>&1)
+    TSC_OUTPUT=$(cd "$ABS_PACKAGE_DIR" && npx "$TSC_BIN" --noEmit 2>&1)
     TSC_EXIT_CODE=$?
     set -e
 
     if [ $TSC_EXIT_CODE -eq 0 ]; then
       echo -e "${GREEN}✅ TypeScript: No errors found${NC}"
     else
-      # First, filter out node_modules
-      ALL_ERRORS=$(echo "$TSC_OUTPUT" | grep -v "node_modules")
+      # First, drop errors whose *file* sits in node_modules. Matching the
+      # whole line would also drop errors that merely mention node_modules in
+      # their message (TS2742 does), and a filter that removes every line exits
+      # 1, which `set -e` turns into a silent failure with nothing printed.
+      set +e
+      ALL_ERRORS=$(echo "$TSC_OUTPUT" | grep -vE '^[^(]*node_modules[^(]*\([0-9]+,[0-9]+\): error TS')
+      set -e
 
-      # Count total errors (non-empty lines that look like errors)
-      TOTAL_ERROR_COUNT=$(echo "$ALL_ERRORS" | grep -c "error TS" || echo "0")
+      # Count total errors (non-empty lines that look like errors). `grep -c`
+      # already prints 0 when it matches nothing, so the fallback must not
+      # print a second one.
+      set +e
+      TOTAL_ERROR_COUNT=$(echo "$ALL_ERRORS" | grep -c "error TS")
+      set -e
+
+      if [ "$TOTAL_ERROR_COUNT" -eq 0 ]; then
+        # Everything tsc reported lives in node_modules — a dependency's own
+        # types, not this package's code.
+        echo -e "${GREEN}✅ TypeScript: No errors found (errors exist only in node_modules)${NC}"
+        TSC_CLEAN=true
+      else
+        TSC_CLEAN=false
+      fi
 
       # Determine if we need to filter by specific path
       SHOULD_FILTER=false
@@ -209,7 +233,9 @@ if [ "$RUN_TYPES" = true ]; then
       fi
 
       # Apply path filtering if needed
-      if [ "$SHOULD_FILTER" = true ]; then
+      if [ "$TSC_CLEAN" = true ]; then
+        : # already reported above
+      elif [ "$SHOULD_FILTER" = true ]; then
         # Filter errors to only those in target path
         set +e
         FILTERED_OUTPUT=$(echo "$ALL_ERRORS" | grep "$REL_PATH")

@@ -1,0 +1,58 @@
+{
+  "name": "@mezzanine-ui/vue",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/vue",
+  "projectType": "library",
+  "tags": ["type:lib", "framework:vue"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/prepareBuild.js && vite build",
+        "cwd": "packages/vue"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "dependsOn": [
+        "@mezzanine-ui/system:build",
+        "@mezzanine-ui/icons:build",
+        "@mezzanine-ui/core:build"
+      ]
+    },
+    "build:clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/cleanBuild.js",
+        "cwd": "packages/vue"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run",
+        "cwd": "packages/vue"
+      }
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run --coverage",
+        "cwd": "packages/vue"
+      }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "storybook dev -p 6008 -c .storybook-vue",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "storybook build -c .storybook-vue -o storybook-vue-static",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": ["{workspaceRoot}/storybook-vue-static"]
+    }
+  }
+}

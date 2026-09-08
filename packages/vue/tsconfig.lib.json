@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    // The published package ships `dist/` only, so a declaration map would
+    // point every editor at sources that are not in the tarball. React's build
+    // emits none either.
+    "declarationMap": false
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "vite.alias.ts",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "**/*.spec.ts",
+    "**/*.stories.ts"
+  ]
+}

@@ -5,6 +5,8 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
 import storybookPlugin from 'eslint-plugin-storybook';
+import vuePlugin from 'eslint-plugin-vue';
+import vueParser from 'vue-eslint-parser';
 import globals from 'globals';
 
 export default tseslint.config(
@@ -126,6 +128,70 @@ export default tseslint.config(
     },
   },
 
+  // Vue SFC configuration
+  //
+  // `flat/essential` only — not `flat/recommended`. The recommended set adds
+  // `vue/attributes-order`, which mandates a fixed attribute grouping and
+  // directly contradicts this repo's "sort component props alphabetically"
+  // rule in CLAUDE.md. Essential keeps the genuine bug-catchers
+  // (`vue/no-mutating-props`, `vue/require-v-for-key`, …) without the
+  // stylistic opinions.
+  ...vuePlugin.configs['flat/essential'],
+  {
+    /**
+     * `packages/vue` has no React in it, but its `.ts` files — stories and
+     * composables — call things like `useTemplateRef` inside a function named
+     * `setup`, which the React hooks rules read as a hook called outside a
+     * component. The compiler rules go further and reject ordinary Vue
+     * closures: a composable that keeps a cancel handle in a captured
+     * variable trips `react-hooks/immutability`.
+     *
+     * The whole plugin is turned off here rather than rule by rule, since none
+     * of it applies to a Vue file.
+     */
+    files: ['packages/vue/**/*.ts'],
+    rules: {
+      ...Object.fromEntries(
+        Object.keys(reactHooksPlugin.rules ?? {}).map((rule) => [
+          `react-hooks/${rule}`,
+          'off',
+        ]),
+      ),
+    },
+  },
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        ecmaVersion: 2020,
+        sourceType: 'module',
+        extraFileExtensions: ['.vue'],
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
+    rules: {
+      // Component identity comes from the `Mzn`-prefixed export, not the
+      // kebab-case filename, so the multi-word filename rule adds nothing.
+      'vue/multi-word-component-names': 'off',
+      // The base rule cannot see type-position identifiers, so a typed slot
+      // signature such as `default?: (info: PaddingInfo) => unknown` reads to
+      // it as an unused variable. Defer to the TypeScript-aware rule, exactly
+      // as the `.ts` configuration above already does.
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
+
   // Storybook files configuration
   {
     files: ['**/*.stories.@(ts|tsx|js|jsx|mjs|cjs)'],
@@ -153,5 +219,14 @@ export default tseslint.config(
   {
     files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
     ...tseslint.configs.disableTypeChecked,
+    languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
+      // The repo's `.mjs` tooling scripts use top-level `await`, which needs
+      // ES2022. Without this every such script is reported as a parse error
+      // (`Cannot use keyword 'await' outside an async function`) rather than
+      // being linted at all.
+      ecmaVersion: 2022,
+      sourceType: 'module',
+    },
   },
 );

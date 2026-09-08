@@ -3,7 +3,8 @@ import { resolve } from 'node:path';
 
 export type DeviationKey = `${string}::${string}::${string}`;
 
-const FILE = resolve(process.cwd(), 'DEVIATIONS.md');
+/** React ↔ Angular deviations. React ↔ Vue lives in `DEVIATIONS-VUE.md`. */
+const DEFAULT_FILE = resolve(process.cwd(), 'DEVIATIONS.md');
 
 /**
  * Strip markdown emphasis wrappers (`**`, `__`, `*`, `_`, `` ` ``) that
@@ -42,11 +43,16 @@ function stripEmphasis(cell: string): string {
  * `*` in Story matches any story for that component+kind. Cell values
  * are passed through `stripEmphasis` so markdown-bold/italic/code
  * wrappers are tolerated.
+ *
+ * The two ports keep separate tables on purpose: an Angular deviation is
+ * evidence that Angular could not express something, which says nothing
+ * about whether Vue can. Sharing one file would quietly inherit Angular's
+ * compromises.
  */
-export function loadDeviations(): Set<DeviationKey> {
+export function loadDeviations(file: string = DEFAULT_FILE): Set<DeviationKey> {
   const out = new Set<DeviationKey>();
-  if (!existsSync(FILE)) return out;
-  const text = readFileSync(FILE, 'utf-8');
+  if (!existsSync(file)) return out;
+  const text = readFileSync(file, 'utf-8');
   for (const rawLine of text.split('\n')) {
     const line = rawLine.trim();
     if (!line.startsWith('|')) continue;

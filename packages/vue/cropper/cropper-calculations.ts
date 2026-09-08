@@ -1,0 +1,159 @@
+import type { CropArea } from './cropper.types';
+
+export interface ImagePosition {
+  /** The distance between the canvas' left edge and the image's. */
+  offsetX: number;
+  /** The distance between the canvas' top edge and the image's. */
+  offsetY: number;
+}
+
+export interface BaseDisplaySize {
+  /** The drawn height of the image at scale 1. */
+  height: number;
+  /** The drawn width of the image at scale 1. */
+  width: number;
+}
+
+export interface InitialCropAreaResult {
+  /** The drawn height of the image at scale 1. */
+  baseDisplayHeight: number;
+  /** The drawn width of the image at scale 1. */
+  baseDisplayWidth: number;
+  /** The crop rectangle to start from, in canvas coordinates. */
+  cropArea: CropArea;
+  /** Where the image sits under that rectangle. */
+  imagePosition: ImagePosition;
+}
+
+/**
+ * Calculate base scale for image to cover canvas (both dimensions).
+ */
+export function getBaseScale(rect: DOMRect, img: HTMLImageElement): number {
+  if (!rect.height || !rect.width) return 1;
+
+  return Math.min(img.height / rect.height, img.width / rect.width);
+}
+
+/**
+ * Calculate base display size of image.
+ */
+export function getBaseDisplaySize(
+  rect: DOMRect,
+  img: HTMLImageElement,
+): BaseDisplaySize {
+  const baseScale = getBaseScale(rect, img);
+
+  return {
+    width: img.width / baseScale,
+    height: img.height / baseScale,
+  };
+}
+
+/**
+ * Calculate initial crop area and image position.
+ */
+export function calculateInitialCropArea(
+  img: HTMLImageElement,
+  rect: DOMRect,
+  aspectRatio?: number,
+): InitialCropAreaResult {
+  const baseScale = getBaseScale(rect, img);
+  const baseDisplayWidth = img.width / baseScale;
+  const baseDisplayHeight = img.height / baseScale;
+  const initialOffsetX = (rect.width - baseDisplayWidth) / 2;
+  const initialOffsetY = (rect.height - baseDisplayHeight) / 2;
+
+  let initialWidth = rect.width;
+  let initialHeight = rect.height;
+
+  if (aspectRatio) {
+    const maxWidthByCanvasHeight = rect.height * aspectRatio;
+    const maxHeightByCanvasWidth = rect.width / aspectRatio;
+
+    if (maxWidthByCanvasHeight <= rect.width) {
+      // Height is the limiting factor → crop fills full canvas height
+      initialWidth = maxWidthByCanvasHeight;
+      initialHeight = rect.height;
+    } else {
+      // Width is the limiting factor → crop fills full canvas width
+      initialWidth = rect.width;
+      initialHeight = maxHeightByCanvasWidth;
+    }
+  }
+
+  const initialX = (rect.width - initialWidth) / 2;
+  const initialY = (rect.height - initialHeight) / 2;
+
+  return {
+    baseDisplayHeight,
+    baseDisplayWidth,
+    cropArea: {
+      height: initialHeight,
+      width: initialWidth,
+      x: initialX,
+      y: initialY,
+    },
+    imagePosition: {
+      offsetX: initialOffsetX,
+      offsetY: initialOffsetY,
+    },
+  };
+}
+
+/**
+ * Constrain image position to ensure it covers crop area.
+ */
+export function constrainImagePosition(
+  newOffsetX: number,
+  newOffsetY: number,
+  displayWidth: number,
+  displayHeight: number,
+  cropArea: CropArea,
+): ImagePosition {
+  const { x: cx, y: cy, width: cw, height: ch } = cropArea;
+
+  // Ensure image always covers crop area (no white space in crop area)
+  const minOffsetX = cx + cw - displayWidth;
+  const maxOffsetX = cx;
+  const minOffsetY = cy + ch - displayHeight;
+  const maxOffsetY = cy;
+
+  return {
+    offsetX: Math.max(minOffsetX, Math.min(newOffsetX, maxOffsetX)),
+    offsetY: Math.max(minOffsetY, Math.min(newOffsetY, maxOffsetY)),
+  };
+}
+
+/**
+ * Check if two crop areas are similar (within threshold).
+ */
+export function isCropAreaSimilar(
+  a: CropArea | null,
+  b: CropArea | null,
+  threshold = 0.5,
+): boolean {
+  if (!a || !b) return a === b;
+
+  return (
+    Math.abs(a.x - b.x) < threshold &&
+    Math.abs(a.y - b.y) < threshold &&
+    Math.abs(a.width - b.width) < threshold &&
+    Math.abs(a.height - b.height) < threshold
+  );
+}
+
+/**
+ * Check if two image positions are similar (within threshold).
+ */
+export function isImagePositionSimilar(
+  a: ImagePosition | null,
+  b: ImagePosition | null,
+  threshold = 0.1,
+): boolean {
+  if (!a || !b) return a === b;
+
+  return (
+    Math.abs(a.offsetX - b.offsetX) < threshold &&
+    Math.abs(a.offsetY - b.offsetY) < threshold
+  );
+}

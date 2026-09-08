@@ -1,0 +1,191 @@
+import {
+  cloneVNode,
+  computed,
+  normalizeStyle,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+} from 'vue';
+import type {
+  ComponentPublicInstance,
+  ComputedRef,
+  CSSProperties,
+  FunctionalComponent,
+  VNode,
+} from 'vue';
+import { resolveElement } from '../_internal/resolve-element';
+import {
+  applyExitedStyles,
+  runEnterTransition,
+  runExitTransition,
+} from './transition-styles';
+import type { TransitionRunnerConfig } from './transition-styles';
+
+export interface TransitionCallbacks {
+  enter?: (node: HTMLElement, isAppearing: boolean) => void;
+  entered?: (node: HTMLElement, isAppearing: boolean) => void;
+  entering?: (node: HTMLElement, isAppearing: boolean) => void;
+  exit?: (node: HTMLElement) => void;
+  exited?: (node: HTMLElement) => void;
+  exiting?: (node: HTMLElement) => void;
+}
+
+export interface UseTransitionImplementationOptions {
+  /**
+   * Reads the default slot. Passed in rather than read here so the slot is
+   * visible in the component that declares it — both to a reader and to the
+   * slot checker.
+   */
+  child: () => VNode[] | undefined;
+  config: () => TransitionRunnerConfig;
+  in: () => boolean;
+  keepMount: () => boolean;
+  lazyMount: () => boolean;
+  on: TransitionCallbacks;
+}
+
+export interface TransitionImplementation {
+  /**
+   * Renders the default slot's single child with a ref attached, so the
+   * transition can reach an element the component does not own — React's
+   * `cloneElement` does exactly this, and a `slot` outlet cannot take a ref.
+   */
+  TransitionChild: FunctionalComponent;
+  onAppear: (element: Element, done: () => void) => void;
+  onEnter: (element: Element, done: () => void) => void;
+  onLeave: (element: Element, done: () => void) => void;
+  /**
+   * Whether the child is rendered at all: `keepMount` holds it in the DOM
+   * after exiting, which is React's `unmountOnExit: false`.
+   */
+  shown: ComputedRef<boolean>;
+}
+
+/**
+ * The shared body of every transition implementation.
+ *
+ * Vue's `Transition` handles mounting and the enter/leave hooks; the styles are
+ * written by the runner, in the same order and with the same values React
+ * writes them. `keepMount` is driven here instead, because a child that never
+ * leaves the DOM never triggers Vue's leave hooks.
+ */
+export function useTransitionImplementation(
+  options: UseTransitionImplementationOptions,
+): TransitionImplementation {
+  const node = shallowRef<Element | ComponentPublicInstance | null>(null);
+  /** The child's own inline style, which outranks the transition's. */
+  let childStyle: CSSProperties = {};
+
+  const TransitionChild: FunctionalComponent = () => {
+    const [child] = options.child() ?? [];
+
+    if (!child) return null;
+
+    childStyle = (normalizeStyle((child.props as { style?: unknown })?.style) ??
+      {}) as CSSProperties;
+
+    // `mergeRef`, because Vue's clone otherwise *replaces* the child's own
+    // ref: a consumer that measures the element it wrote — OverflowTooltip
+    // sizing its content — would silently read null. React reaches the same
+    // element by composing the transition's ref with the one forwarded into
+    // `<Fade ref={…}>`, so both hold it there too.
+    return cloneVNode(child, { ref: node }, true);
+  };
+
+  const config = (): TransitionRunnerConfig => ({
+    ...options.config(),
+    override: childStyle,
+  });
+
+  /**
+   * `lazyMount` is React's `mountOnEnter`: nothing is rendered until the first
+   * enter. `keepMount` is `unmountOnExit: false`: it stays afterwards. So a
+   * lazily mounted child that has never entered is not in the DOM even with
+   * `keepMount` — which is what the Scale and Slide stories render, and what
+   * made them the first stories to disagree once every root node was compared.
+   */
+  const hasEntered = ref(false);
+
+  watch(
+    options.in,
+    (value) => {
+      if (value) hasEntered.value = true;
+    },
+    { immediate: true },
+  );
+
+  const shown = computed(
+    (): boolean =>
+      options.in() ||
+      (options.keepMount() && (!options.lazyMount() || hasEntered.value)),
+  );
+
+  const element = (): HTMLElement | null => resolveElement(node.value);
+
+  let cancelPending: (() => void) | null = null;
+
+  function cancel(): void {
+    cancelPending?.();
+    cancelPending = null;
+  }
+
+  function enter(
+    node: HTMLElement,
+    isAppearing: boolean,
+    done?: () => void,
+  ): void {
+    cancel();
+    options.on.enter?.(node, isAppearing);
+    cancelPending = runEnterTransition(node, config(), () => {
+      options.on.entered?.(node, isAppearing);
+      done?.();
+    });
+    // The runner writes the entering styles synchronously, so the entering
+    // state is applied by here — which is the moment React reports.
+    options.on.entering?.(node, isAppearing);
+  }
+
+  function exit(node: HTMLElement, done?: () => void): void {
+    cancel();
+    options.on.exit?.(node);
+    cancelPending = runExitTransition(
+      node,
+      config(),
+      () => {
+        options.on.exited?.(node);
+        done?.();
+      },
+      options.keepMount(),
+    );
+    options.on.exiting?.(node);
+  }
+
+  watch(options.in, (value) => {
+    const el = element();
+
+    if (!options.keepMount() || !el) return;
+
+    if (value) enter(el, false);
+    else exit(el);
+  });
+
+  onMounted(() => {
+    const el = element();
+
+    if (!el) return;
+
+    // Mounted in the exited state: no animation, just the resting styles.
+    if (options.keepMount() && !options.in()) {
+      applyExitedStyles(el, config());
+    }
+  });
+
+  return {
+    TransitionChild,
+    onAppear: (el, done) => enter(el as HTMLElement, true, done),
+    onEnter: (el, done) => enter(el as HTMLElement, false, done),
+    onLeave: (el, done) => exit(el as HTMLElement, done),
+    shown,
+  };
+}

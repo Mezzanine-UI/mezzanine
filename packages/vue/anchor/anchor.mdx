@@ -1,0 +1,14 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AnchorStories from './anchor.stories';
+
+<Meta of={AnchorStories} />
+
+# Anchor
+
+頁面章節導航連結，會依網址 hash 自動標示當前位置。
+
+可用 `anchors` 直接傳入資料，或以巢狀的 `MznAnchor` 子元件描述結構。巢狀最多支援三層。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/anchor/anchor.vue)
+
+<ArgTypes of={AnchorStories.All} />

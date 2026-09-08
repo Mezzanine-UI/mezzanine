@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * Compose React + Angular Storybook static outputs plus a hand-written
+ * Compose React + Angular + Vue Storybook static outputs plus a hand-written
  * landing page into a single directory tree:
  *
  *   storybook-static/
- *   ├── index.html            Landing (links to both frameworks)
+ *   ├── index.html            Landing (links to every framework)
  *   ├── react/                React Storybook (full static output)
- *   └── angular/              Angular Storybook (full static output)
+ *   ├── angular/              Angular Storybook (full static output)
+ *   └── vue/                  Vue Storybook (full static output)
  *
  * Earlier iterations used a Storybook-based "hub" with Composition refs,
  * but the manager's dynamic `import.meta.url` resolution clashed with
@@ -24,6 +25,7 @@
  * Expected pre-conditions (this script does NOT run the builds itself):
  *   - yarn react:build            → storybook-static/      (will be moved)
  *   - yarn ng:build-storybook     → storybook-ng-static/
+ *   - yarn vue:build-storybook    → storybook-vue-static/
  */
 
 import {
@@ -42,6 +44,7 @@ const repoRoot = resolve(fileURLToPath(import.meta.url), '..', '..');
 const sources = {
   react: resolve(repoRoot, 'storybook-static'),
   angular: resolve(repoRoot, 'storybook-ng-static'),
+  vue: resolve(repoRoot, 'storybook-vue-static'),
 };
 
 const finalDest = resolve(repoRoot, 'storybook-static');
@@ -51,7 +54,8 @@ for (const [name, path] of Object.entries(sources)) {
   if (!existsSync(path)) {
     console.error(
       `[compose-storybooks] Missing source "${name}" at ${path}. ` +
-        `Run the corresponding build first (react:build / ng:build-storybook).`,
+        `Run the corresponding build first ` +
+        `(react:build / ng:build-storybook / vue:build-storybook).`,
     );
     process.exit(1);
   }
@@ -72,8 +76,9 @@ mkdirSync(finalDest, { recursive: true });
 // Step 3 — React at /react (move the staged bundle in).
 renameSync(reactStaging, resolve(finalDest, 'react'));
 
-// Step 4 — Angular at /angular.
+// Step 4 — Angular at /angular, Vue at /vue.
 cpSync(sources.angular, resolve(finalDest, 'angular'), { recursive: true });
+cpSync(sources.vue, resolve(finalDest, 'vue'), { recursive: true });
 
 // Step 5 — landing page at /index.html.
 writeFileSync(resolve(finalDest, 'index.html'), renderLanding(), 'utf-8');
@@ -82,6 +87,7 @@ console.log(`[compose-storybooks] Composed into ${finalDest}`);
 console.log('  /          → landing page');
 console.log('  /react/    → React Storybook');
 console.log('  /angular/  → Angular Storybook');
+console.log('  /vue/      → Vue Storybook');
 
 function renderLanding() {
   return `<!DOCTYPE html>
@@ -92,7 +98,7 @@ function renderLanding() {
     <title>Mezzanine UI</title>
     <meta
       name="description"
-      content="Mezzanine UI — component library for React and Angular."
+      content="Mezzanine UI — component library for React, Angular and Vue."
     />
     <link rel="icon" href="./react/favicon.svg" type="image/svg+xml" />
     <style>
@@ -229,7 +235,7 @@ function renderLanding() {
     <main>
       <header>
         <h1>Mezzanine UI</h1>
-        <p>Design system for React and Angular, sharing the same core styles.</p>
+        <p>Design system for React, Angular and Vue, sharing the same core styles.</p>
       </header>
 
       <section class="cards" aria-label="Browse by framework">
@@ -245,6 +251,12 @@ function renderLanding() {
           <p>Interactive component documentation for the Angular implementation.</p>
           <span class="cta">Open Storybook →</span>
         </a>
+        <a class="card" href="./vue/">
+          <h2>Vue</h2>
+          <p class="pkg">@mezzanine-ui/vue</p>
+          <p>Interactive component documentation for the Vue 3 implementation.</p>
+          <span class="cta">Open Storybook →</span>
+        </a>
       </section>
     </main>
 
@@ -254,6 +266,8 @@ function renderLanding() {
       <a href="https://www.npmjs.com/package/@mezzanine-ui/react">npm (React)</a>
       &nbsp;·&nbsp;
       <a href="https://www.npmjs.com/package/@mezzanine-ui/ng">npm (Angular)</a>
+      &nbsp;·&nbsp;
+      <a href="https://www.npmjs.com/package/@mezzanine-ui/vue">npm (Vue)</a>
     </footer>
   </body>
 </html>

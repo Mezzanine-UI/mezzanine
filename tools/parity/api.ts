@@ -1,9 +1,25 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { memberKey, parseMacroTypeMembers } from './vue-macros.ts';
 
 const REACT_ROOT = resolve(process.cwd(), 'packages/react/src');
 const CORE_ROOT = resolve(process.cwd(), 'packages/core/src');
 const NG_ROOT = resolve(process.cwd(), 'packages/ng');
+const VUE_ROOT = resolve(process.cwd(), 'packages/vue');
+
+/**
+ * Which port is being compared. React is always the reference side; the
+ * target is whichever framework mirrors it.
+ */
+export type ParityTarget = 'ng' | 'vue';
+
+/**
+ * Which source tree a type name is resolved against. React prop interfaces
+ * live under `packages/react/src`; Vue prop interfaces live in
+ * `packages/vue/<component>/<component>.types.ts`. Both may `extends` shared
+ * interfaces from `packages/core/src`, so every scope also walks core.
+ */
+type IndexScope = 'react' | 'vue';
 
 export type ApiSet = {
   inputs: Set<string>;
@@ -11,7 +27,13 @@ export type ApiSet = {
 };
 
 export type ApiDiff = {
-  kind: 'input' | 'output';
+  /**
+   * `error` is reported when the target's API could not be extracted at all
+   * (e.g. a Vue `defineEmits` written in an unsupported form). It must never
+   * be silently treated as "no diffs" — an empty extraction reads exactly
+   * like perfect parity, which is the most dangerous failure mode there is.
+   */
+  kind: 'input' | 'output' | 'error';
   side: 'missing' | 'extra';
   name: string;
 };
@@ -65,7 +87,24 @@ export function locateReactFile(pascalName: string): string | null {
     );
     if (found) return found;
   }
-  return null;
+
+  // A component whose file is named after something else still has to be
+  // compared: React's `AutoCompleteInside.tsx` declares
+  // `AutoCompleteInsideTriggerProps` for its `AutoCompleteInsideTrigger`. The
+  // props interface is the contract the extractor reads anyway, so the file
+  // declaring it is the right file — and the name is specific enough that this
+  // cannot pair two unrelated components.
+  const byPropsInterface = findFile(REACT_ROOT, (f) => {
+    if (!f.endsWith('.tsx') && !f.endsWith('.ts')) return false;
+    if (f.endsWith('.spec.tsx') || f.endsWith('.spec.ts')) return false;
+    if (f.endsWith('.stories.tsx') || f.endsWith('.stories.ts')) return false;
+
+    return new RegExp(
+      `export\\s+(?:interface|type)\\s+${pascalName}Props\\b`,
+    ).test(readFileSync(f, 'utf-8'));
+  });
+
+  return byPropsInterface;
 }
 
 export function locateAngularFile(pascalName: string): string | null {
@@ -83,6 +122,51 @@ export function locateAngularFile(pascalName: string): string | null {
     if (found) return found;
   }
   return null;
+}
+
+/**
+ * Locate the Vue props contract for a component. The interface deliberately
+ * lives in a plain `.ts` sibling of the SFC (see the
+ * `architecting-vue-components` skill) so it can be resolved by the very same
+ * machinery as the React side, rather than needing SFC type inference.
+ */
+export function locateVueFile(
+  pascalName: string,
+): { typesFile: string; sfcFile: string | null } | null {
+  const k = kebab(pascalName);
+  const candidates = [k, k.replace(/-/g, ''), `${k}s`, singular(k)];
+
+  for (const name of candidates) {
+    const typesFile = findFile(
+      VUE_ROOT,
+      (f) => f.endsWith(`/${name}.types.ts`) && !f.endsWith('.d.ts'),
+    );
+
+    if (!typesFile) continue;
+
+    const sfcFile = findFile(VUE_ROOT, (f) => f.endsWith(`/${name}.vue`));
+
+    return { typesFile, sfcFile };
+  }
+
+  return null;
+}
+
+/**
+ * Names to try when looking up a props interface. `locateReactFile` and
+ * `locateVueFile` already fall back to the singular when a story title is
+ * plural — `Inline Messages` finds `InlineMessage.tsx` — but the interface
+ * lookup did not, so `InlineMessagesProps` was searched for, never found, and
+ * the component's whole API silently extracted as empty on both sides.
+ */
+function pascalCandidates(pascalName: string): string[] {
+  const names = [pascalName];
+
+  if (pascalName.endsWith('s') && !pascalName.endsWith('ss')) {
+    names.push(pascalName.slice(0, -1));
+  }
+
+  return names;
 }
 
 const SKIP_PROP_NAMES = new Set([
@@ -145,11 +229,136 @@ type TypeAliasEntry = {
   file: string;
   /** Right-hand side of the `type X = RHS;` declaration (trimmed, no trailing `;`). */
   rhs: string;
+  /**
+   * The alias's own type parameters, in declaration order. Needed to resolve a
+   * generic factory: `ButtonProps` is
+   * `ComponentOverridableForwardRefComponentPropsFactory<…, ButtonPropsBase>`,
+   * and without substituting `P` the factory's `& P` contributes nothing —
+   * every prop a polymorphic component declares went missing that way.
+   */
+  params: string[];
 };
 
 type IndexEntry = InterfaceEntry | TypeAliasEntry;
 
-let interfaceIndex: Map<string, IndexEntry> | null = null;
+/**
+ * Split a generic argument or parameter list at its top-level commas.
+ * `VC extends NativeElementTag | JSXElementConstructor<any>, C extends VC, P`
+ * is three entries, not five.
+ */
+function splitTypeList(text: string): string[] {
+  const out: string[] = [];
+  let angle = 0;
+  let paren = 0;
+  let curly = 0;
+  let bracket = 0;
+  let start = 0;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+
+    if (ch === '=' && text[i + 1] === '>') {
+      i += 1;
+      continue;
+    }
+    if (ch === '<') angle += 1;
+    else if (ch === '>') angle -= 1;
+    else if (ch === '(') paren += 1;
+    else if (ch === ')') paren -= 1;
+    else if (ch === '{') curly += 1;
+    else if (ch === '}') curly -= 1;
+    else if (ch === '[') bracket += 1;
+    else if (ch === ']') bracket -= 1;
+    else if (
+      ch === ',' &&
+      angle === 0 &&
+      paren === 0 &&
+      curly === 0 &&
+      bracket === 0
+    ) {
+      out.push(text.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+
+  const last = text.slice(start).trim();
+
+  if (last) out.push(last);
+
+  return out.filter((part) => part.length > 0);
+}
+
+/** The declared names of a type-parameter list, dropping constraints and defaults. */
+function parseTypeParams(paramList: string): string[] {
+  if (!paramList.trim()) return [];
+
+  return splitTypeList(paramList)
+    .map((part) => part.match(/^([A-Za-z_$][\w$]*)/)?.[1] ?? '')
+    .filter(Boolean);
+}
+
+/**
+ * A generic reference split into its name and its argument expressions, or
+ * `null` when the expression is not one. Depth-aware, unlike the regexes it
+ * replaces: `Omit<Foo<C>, 'a'>` has one nested `>` that a `[^>]*` match stops
+ * at, which is why every polymorphic component resolved to nothing.
+ */
+function matchGeneric(expr: string): { name: string; args: string[] } | null {
+  const head = expr.match(/^([A-Za-z_$][\w$.]*)\s*</);
+
+  if (!head || !expr.endsWith('>')) return null;
+
+  let depth = 0;
+
+  for (let i = head[0].length - 1; i < expr.length; i += 1) {
+    const ch = expr[i];
+
+    if (ch === '<') depth += 1;
+    else if (ch === '>') {
+      depth -= 1;
+
+      // The closing angle has to be the last character, or this is something
+      // like `Partial<A> | Partial<B>` rather than one generic reference.
+      if (depth === 0) {
+        if (i !== expr.length - 1) return null;
+
+        return {
+          name: head[1],
+          args: splitTypeList(expr.slice(head[0].length, i)),
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Substitute a generic alias's arguments into its right-hand side.
+ *
+ * Textual, on whole-word boundaries: the alias body is small and its parameter
+ * names are single identifiers, so this reaches `& P` without needing a type
+ * checker.
+ */
+function substituteTypeParams(
+  rhs: string,
+  params: string[],
+  args: string[],
+): string {
+  let out = rhs;
+
+  params.forEach((param, index) => {
+    const arg = args[index];
+
+    if (!arg) return;
+
+    out = out.replace(new RegExp(`\\b${param}\\b`, 'g'), arg);
+  });
+
+  return out;
+}
+
+const interfaceIndexes = new Map<IndexScope, Map<string, IndexEntry>>();
 
 /**
  * Build a repo-wide index of TypeScript type declarations. We scan source
@@ -162,7 +371,7 @@ let interfaceIndex: Map<string, IndexEntry> | null = null;
  * `TextFieldProps = TextFieldBaseProps & TextFieldAffixProps & TextFieldInteractiveStateProps;`
  * where the "real" props live inside multiple intersected parents.
  */
-function buildInterfaceIndex(): Map<string, IndexEntry> {
+function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
   const index = new Map<string, IndexEntry>();
 
   const walk = (dir: string): void => {
@@ -187,17 +396,73 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
       }
       if (!full.endsWith('.ts') && !full.endsWith('.tsx')) continue;
       if (full.endsWith('.spec.ts') || full.endsWith('.spec.tsx')) continue;
-      if (full.endsWith('.stories.tsx')) continue;
+      if (full.endsWith('.stories.tsx') || full.endsWith('.stories.ts'))
+        continue;
 
       const text = readFileSync(full, 'utf-8');
 
       // --- Interfaces --------------------------------------------------------
-      const interfacePattern =
-        /(?:export\s+)?interface\s+(\w+)(?:<[^>]*>)?\s*(?:extends\s+([^{]+?))?\s*\{/g;
+      const interfacePattern = /(?:export\s+)?interface\s+(\w+)/g;
       for (const match of text.matchAll(interfacePattern)) {
         const name = match[1];
-        const extendsClause = match[2] ? match[2].trim() : null;
-        const headerEnd = (match.index ?? 0) + match[0].length;
+        // Walk the header instead of matching it: an extends clause can carry
+        // an object type — `PickRenameMulti<…, { options: 'popperOptions' }>` —
+        // and a regex that stops at the first `{` reads that as the body, so
+        // every own prop of the interface goes missing. `AutoCompleteBaseProps`
+        // lost thirty of them that way.
+        let cursor = (match.index ?? 0) + match[0].length;
+        // The type parameter list belongs to the name, not to the extends
+        // clause: its own `extends` (`<T extends DropdownType>`) must not be
+        // mistaken for the interface's.
+        while (cursor < text.length && /\s/.test(text[cursor])) cursor += 1;
+        if (text[cursor] === '<') {
+          let params = 0;
+
+          while (cursor < text.length) {
+            const ch = text[cursor];
+
+            if (ch === '=' && text[cursor + 1] === '>') {
+              cursor += 2;
+              continue;
+            }
+            if (ch === '<') params += 1;
+            else if (ch === '>') {
+              params -= 1;
+              if (params === 0) {
+                cursor += 1;
+                break;
+              }
+            }
+            cursor += 1;
+          }
+        }
+        const headerStart = cursor;
+        let angle = 0;
+        let paren = 0;
+        let bracket = 0;
+
+        while (cursor < text.length) {
+          const ch = text[cursor];
+
+          if (ch === '{' && angle === 0 && paren === 0 && bracket === 0) break;
+          if (ch === '=' && text[cursor + 1] === '>') {
+            cursor += 2;
+            continue;
+          }
+          if (ch === '<') angle += 1;
+          else if (ch === '>') angle -= 1;
+          else if (ch === '(') paren += 1;
+          else if (ch === ')') paren -= 1;
+          else if (ch === '[') bracket += 1;
+          else if (ch === ']') bracket -= 1;
+          cursor += 1;
+        }
+        if (cursor >= text.length) continue;
+        const extendsMatch = text
+          .slice(headerStart, cursor)
+          .match(/^\s*extends\s+([\s\S]+)$/);
+        const extendsClause = extendsMatch ? extendsMatch[1].trim() : null;
+        const headerEnd = cursor + 1;
         let depth = 1;
         let i = headerEnd;
         while (i < text.length && depth > 0) {
@@ -220,12 +485,50 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
       // --- Type aliases ------------------------------------------------------
       // Greedy match up to the first top-level `;` — we track paren/bracket
       // depth so nested objects and generics don't terminate early.
-      const aliasHeaderPattern =
-        /(?:export\s+)?type\s+(\w+)(?:<[^>]*>)?\s*=\s*/g;
+      //
+      // The alias's own parameter list is skipped by tracking angle depth
+      // rather than by a `<[^>]*>` match: a parameter constrained by a generic
+      // (`C extends JSXElementConstructor<any>`) contains a `>` of its own, and
+      // the simple form stopped there and never reached the `=`. The whole
+      // alias then went unindexed, which is what hid `component` from every
+      // polymorphic component's props.
+      const aliasHeaderPattern = /(?:export\s+)?type\s+(\w+)\s*/g;
       for (const match of text.matchAll(aliasHeaderPattern)) {
         const name = match[1];
         if (index.has(name)) continue; // interface wins if both exist
-        const rhsStart = (match.index ?? 0) + match[0].length;
+
+        let cursor = (match.index ?? 0) + match[0].length;
+        let paramList = '';
+
+        if (text[cursor] === '<') {
+          let params = 0;
+          const paramStart = cursor + 1;
+
+          while (cursor < text.length) {
+            const ch = text[cursor];
+
+            if (ch === '<') params += 1;
+            else if (ch === '>') {
+              params -= 1;
+
+              if (params === 0) {
+                paramList = text.slice(paramStart, cursor);
+                cursor += 1;
+                break;
+              }
+            }
+
+            cursor += 1;
+          }
+        }
+
+        while (cursor < text.length && /\s/.test(text[cursor])) cursor += 1;
+        if (text[cursor] !== '=') continue;
+
+        cursor += 1;
+        while (cursor < text.length && /\s/.test(text[cursor])) cursor += 1;
+
+        const rhsStart = cursor;
         // Scan forward until a top-level `;` respecting `{}`, `<>`, `()`, `[]`.
         let depthCurly = 0;
         let depthAngle = 0;
@@ -234,6 +537,16 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
         let i = rhsStart;
         while (i < text.length) {
           const ch = text[i];
+          // A function type's `=>` is not a generic argument list: counting its
+          // `>` as one leaves the angle depth negative for the rest of the
+          // alias, so the terminating `;` is never recognised and the captured
+          // RHS runs on into whatever follows. That is what hid every prop of
+          // `SelectInputProps` — the only Input variant with a callback.
+          if (ch === '=' && text[i + 1] === '>') {
+            i += 2;
+            continue;
+          }
+
           if (ch === '{') depthCurly += 1;
           else if (ch === '}') depthCurly -= 1;
           else if (ch === '<') depthAngle += 1;
@@ -255,13 +568,18 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
         }
         const rhs = text.slice(rhsStart, i).trim();
         if (rhs) {
-          index.set(name, { kind: 'alias', file: full, rhs });
+          index.set(name, {
+            kind: 'alias',
+            file: full,
+            rhs,
+            params: parseTypeParams(paramList),
+          });
         }
       }
     }
   };
 
-  walk(REACT_ROOT);
+  walk(scope === 'vue' ? VUE_ROOT : REACT_ROOT);
   // Also index shared type declarations under packages/core/src. React prop
   // interfaces frequently `extends` core interfaces (e.g. `DropdownProps
   // extends DropdownItemSharedProps`), so without this the inherited props
@@ -271,9 +589,15 @@ function buildInterfaceIndex(): Map<string, IndexEntry> {
   return index;
 }
 
-function getInterfaceIndex(): Map<string, IndexEntry> {
-  if (!interfaceIndex) interfaceIndex = buildInterfaceIndex();
-  return interfaceIndex;
+function getInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
+  let index = interfaceIndexes.get(scope);
+
+  if (!index) {
+    index = buildInterfaceIndex(scope);
+    interfaceIndexes.set(scope, index);
+  }
+
+  return index;
 }
 
 type ParentRef = {
@@ -281,6 +605,46 @@ type ParentRef = {
   omit?: Set<string>;
   pick?: Set<string>;
 };
+
+const TRANSPARENT_WRAPPERS = new Set([
+  'NonNullable',
+  'Partial',
+  'Readonly',
+  'Required',
+]);
+
+/**
+ * Strip wrapper generics that change only a type's modifiers, never its key
+ * set. `Partial<Omit<ModalFooterProps, …>>` is the same contract as the `Omit`
+ * it wraps, but neither the extends parser nor the alias resolver recognised
+ * the outer form, so the whole clause was skipped in silence — Modal inherited
+ * none of the sixteen footer props it declares and forwards.
+ */
+function stripTransparentWrappers(expr: string): string {
+  let current = expr.trim();
+
+  for (;;) {
+    const match = current.match(/^([A-Za-z_$][\w$]*)\s*<([\s\S]*)>$/);
+
+    if (!match || !TRANSPARENT_WRAPPERS.has(match[1])) return current;
+
+    // The trailing `>` has to be the one that closes this wrapper, or
+    // `Partial<A> | Partial<B>` would read as one wrapper around
+    // `A> | Partial<B`.
+    const inner = match[2];
+    let depth = 0;
+
+    for (const ch of inner) {
+      if (ch === '<') depth += 1;
+      else if (ch === '>') depth -= 1;
+      if (depth < 0) return current;
+    }
+
+    if (depth !== 0) return current;
+
+    current = inner.trim();
+  }
+}
 
 /**
  * Parse an `extends` clause into parent refs. Supports plain `X`,
@@ -303,8 +667,9 @@ function parseExtends(clause: string): ParentRef[] {
   }
   parts.push(clause.slice(start).trim());
 
-  for (const p of parts) {
-    if (!p) continue;
+  for (const rawPart of parts) {
+    if (!rawPart) continue;
+    const p = stripTransparentWrappers(rawPart);
     const omitMatch = p.match(
       /^Omit\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([^>]+)>$/,
     );
@@ -357,7 +722,7 @@ function extractBodyProps(body: string): ApiSet {
       else if (ch === ')') parenDepth -= 1;
     }
     if (!atTopLevel) continue;
-    const m = trimmed.match(/^(\w+)\??\s*:/);
+    const m = trimmed.match(/^(\w+)\??\s*[:(]/);
     if (!m) continue;
     const name = m[1];
     if (SKIP_PROP_NAMES.has(name)) continue;
@@ -389,6 +754,16 @@ function splitTopLevel(expr: string, operator: '&' | '|'): string[] {
   let start = 0;
   for (let i = 0; i < expr.length; i += 1) {
     const ch = expr[i];
+    // A function type's `=>` is not a generic argument list. Counting its `>`
+    // leaves the angle depth negative for the rest of the expression, so every
+    // later operator stops looking top-level and the split silently collapses
+    // to one operand — which is how ContentHeader's `onBackClick` / `size`
+    // union went missing. The alias scanner was taught this; the splitter it
+    // hands its result to was not.
+    if (ch === '=' && expr[i + 1] === '>') {
+      i += 1;
+      continue;
+    }
     if (ch === '<') depthAngle += 1;
     else if (ch === '>') depthAngle -= 1;
     else if (ch === '(') depthParen += 1;
@@ -424,7 +799,93 @@ function splitTopLevel(expr: string, operator: '&' | '|'): string[] {
  * `Omit<X, ...>` / `Pick<X, ...>`, an intersection (`A & B`), a union
  * (`A | B`), an inline type literal (`{ x: T; y: T }`), or combinations.
  */
-function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
+/**
+ * The name an `onXxx` prop takes in the outputs set.
+ *
+ * `Omit`/`Pick` key lists are written in prop form — `Omit<NotifierData,
+ * 'onClose'>` — while callbacks have already been folded into outputs under
+ * their event name, so filtering by the literal key missed them entirely.
+ * Message omits `onClose` and still reported a `close` output; the transition
+ * props picked into `MessageConfigProps` were dropped instead of kept.
+ */
+function outputName(name: string): string {
+  return name.startsWith('on') &&
+    name.length > 2 &&
+    name[2] === name[2].toUpperCase()
+    ? name[2].toLowerCase() + name.slice(3)
+    : name;
+}
+
+/** A key list that matches both the prop spelling and the output spelling. */
+function keyFilter(rawKeys: string[]): Set<string> {
+  const keys = new Set<string>();
+
+  rawKeys.forEach((key) => {
+    keys.add(key);
+    keys.add(outputName(key));
+  });
+
+  return keys;
+}
+
+/**
+ * Split `A extends B ? X : Y` into its two branches, or return null when the
+ * expression is not a top-level conditional.
+ *
+ * Depth is tracked so that the `?` of an optional property and the `:` of an
+ * object literal — both of which live inside braces — are never mistaken for
+ * the ternary's own. Nested conditionals are matched by counting, so the `:`
+ * that closes the outer one is the one that brings the count back to zero.
+ */
+function splitConditional(
+  expr: string,
+): { whenFalse: string; whenTrue: string } | null {
+  let depth = 0;
+  let quote: string | null = null;
+  let questionAt = -1;
+  let pending = 0;
+
+  for (let i = 0; i < expr.length; i += 1) {
+    const ch = expr[i];
+
+    if (quote) {
+      if (ch === quote) quote = null;
+      continue;
+    }
+
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch;
+      continue;
+    }
+
+    if (ch === '<' || ch === '(' || ch === '[' || ch === '{') depth += 1;
+    else if (ch === '>' || ch === ')' || ch === ']' || ch === '}') depth -= 1;
+    else if (depth === 0 && ch === '=' && expr[i + 1] === '>') i += 1;
+    else if (depth === 0 && ch === '?') {
+      if (questionAt === -1) questionAt = i;
+      else pending += 1;
+    } else if (depth === 0 && ch === ':' && questionAt !== -1) {
+      if (pending === 0) {
+        if (!/\bextends\b/.test(expr.slice(0, questionAt))) return null;
+
+        return {
+          whenFalse: expr.slice(i + 1).trim(),
+          whenTrue: expr.slice(questionAt + 1, i).trim(),
+        };
+      }
+
+      pending -= 1;
+    }
+  }
+
+  return null;
+}
+
+function resolveTypeExpression(
+  expr: string,
+  visited: Set<string>,
+  scope: IndexScope,
+): ApiSet {
   const result: ApiSet = { inputs: new Set(), outputs: new Set() };
 
   // Strip a single layer of wrapping parentheses. Unions like
@@ -449,13 +910,19 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
   }
   expr = trimmed;
 
+  const unwrapped = stripTransparentWrappers(expr);
+
+  if (unwrapped !== expr) {
+    return resolveTypeExpression(unwrapped, visited, scope);
+  }
+
   // Split on top-level `|` first (union) — for parity purposes, we want the
   // union of props across all branches (any branch may expose any prop).
   // Clone `visited` per sibling branch to avoid cross-branch poisoning.
   const unionParts = splitTopLevel(expr, '|');
   if (unionParts.length > 1) {
     for (const part of unionParts) {
-      const sub = resolveTypeExpression(part, new Set(visited));
+      const sub = resolveTypeExpression(part, new Set(visited), scope);
       for (const k of sub.inputs) result.inputs.add(k);
       for (const k of sub.outputs) result.outputs.add(k);
     }
@@ -467,7 +934,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
   const intersectionParts = splitTopLevel(expr, '&');
   if (intersectionParts.length > 1) {
     for (const part of intersectionParts) {
-      const sub = resolveTypeExpression(part, new Set(visited));
+      const sub = resolveTypeExpression(part, new Set(visited), scope);
       for (const k of sub.inputs) result.inputs.add(k);
       for (const k of sub.outputs) result.outputs.add(k);
     }
@@ -486,42 +953,71 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
     return result;
   }
 
-  // Omit<X, 'a' | 'b'> — resolve X then filter.
-  const omitMatch = single.match(
-    /^Omit\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
-  );
-  if (omitMatch) {
-    const keys = new Set(
-      omitMatch[2]
-        .split('|')
-        .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
-    );
-    const base = resolveInterfaceProps(omitMatch[1], visited);
-    for (const k of base.inputs) if (!keys.has(k)) result.inputs.add(k);
-    for (const k of base.outputs) if (!keys.has(k)) result.outputs.add(k);
+  // A conditional type — `T extends U ? X : Y`. Every branch may expose props,
+  // so both are resolved and merged, the same way a union is. `never` resolves
+  // to nothing, which is what makes the distributive-omit idiom
+  // (`T extends any ? Omit<T, K> : never`) come out as the Omit it stands for.
+  const conditional = splitConditional(single);
+
+  if (conditional) {
+    for (const branch of [conditional.whenTrue, conditional.whenFalse]) {
+      const sub = resolveTypeExpression(branch, new Set(visited), scope);
+
+      for (const k of sub.inputs) result.inputs.add(k);
+      for (const k of sub.outputs) result.outputs.add(k);
+    }
+
     return result;
   }
 
-  // Pick<X, 'a' | 'b'> — resolve X then filter to the picked keys only.
-  const pickMatch = single.match(
-    /^Pick\s*<\s*([\w.]+)(?:<[^>]*>)?\s*,\s*([\s\S]+)>$/,
-  );
-  if (pickMatch) {
-    const keys = new Set(
-      pickMatch[2]
+  const generic = matchGeneric(single);
+
+  // Omit<X, 'a' | 'b'> / Pick<X, 'a'> — resolve X, then filter. `X` is resolved
+  // as an expression rather than looked up as a name, because it is routinely
+  // one: `Omit<Omit<ComponentProps<C>, keyof P> & P, 'component'>` is what a
+  // polymorphic component's props alias expands to.
+  if (
+    generic &&
+    (generic.name === 'Omit' || generic.name === 'Pick') &&
+    generic.args.length === 2
+  ) {
+    const keys = keyFilter(
+      generic.args[1]
         .split('|')
         .map((k) => k.trim().replace(/^['"`]|['"`]$/g, '')),
     );
-    const base = resolveInterfaceProps(pickMatch[1], visited);
-    for (const k of base.inputs) if (keys.has(k)) result.inputs.add(k);
-    for (const k of base.outputs) if (keys.has(k)) result.outputs.add(k);
+    const base = resolveTypeExpression(generic.args[0], visited, scope);
+    const keep = (key: string): boolean =>
+      generic.name === 'Omit' ? !keys.has(key) : keys.has(key);
+
+    for (const k of base.inputs) if (keep(k)) result.inputs.add(k);
+    for (const k of base.outputs) if (keep(k)) result.outputs.add(k);
     return result;
+  }
+
+  // A generic alias reference — substitute the arguments into its right-hand
+  // side before resolving, so the type parameters carrying the real props
+  // (`P` in the factories) are not dropped.
+  if (generic && !visited.has(generic.name)) {
+    const entry = getInterfaceIndex(scope).get(generic.name);
+
+    if (entry?.kind === 'alias' && entry.params.length) {
+      const nested = new Set(visited);
+
+      nested.add(generic.name);
+
+      return resolveTypeExpression(
+        substituteTypeParams(entry.rhs, entry.params, generic.args),
+        nested,
+        scope,
+      );
+    }
   }
 
   // Plain reference — `X` or `X<Y, Z>`.
-  const plain = single.match(/^(\w+)(?:\s*<[^>]*>)?$/);
+  const plain = generic ? generic.name : single.match(/^(\w+)$/)?.[1];
   if (plain) {
-    const base = resolveInterfaceProps(plain[1], visited);
+    const base = resolveInterfaceProps(plain, scope, visited);
     for (const k of base.inputs) result.inputs.add(k);
     for (const k of base.outputs) result.outputs.add(k);
   }
@@ -535,6 +1031,7 @@ function resolveTypeExpression(expr: string, visited: Set<string>): ApiSet {
  */
 function resolveInterfaceProps(
   name: string,
+  scope: IndexScope,
   visited = new Set<string>(),
 ): ApiSet {
   if (visited.has(name)) return { inputs: new Set(), outputs: new Set() };
@@ -544,7 +1041,7 @@ function resolveInterfaceProps(
 
   // Fallback to `${name}Base` when the direct name is a type alias (common
   // pattern: `type ButtonProps = Factory<..., ButtonPropsBase>`).
-  const index = getInterfaceIndex();
+  const index = getInterfaceIndex(scope);
   const entry =
     index.get(name) ??
     (name.endsWith('Props') ? index.get(`${name}Base`) : undefined);
@@ -552,7 +1049,7 @@ function resolveInterfaceProps(
 
   // Type alias — recursively resolve its RHS expression.
   if (entry.kind === 'alias') {
-    return resolveTypeExpression(entry.rhs, visited);
+    return resolveTypeExpression(entry.rhs, visited, scope);
   }
 
   const result: ApiSet = { inputs: new Set(), outputs: new Set() };
@@ -569,11 +1066,19 @@ function resolveInterfaceProps(
       // `CalendarDaysProps` internally references `CalendarMonthsProps`, which
       // used to leak into `visited` and silently drop the second Pick's props.
       const parentVisited = new Set(visited);
-      const parentProps = resolveInterfaceProps(parent.name, parentVisited);
+      const parentProps = resolveInterfaceProps(
+        parent.name,
+        scope,
+        parentVisited,
+      );
+      // Both spellings, because an `extends Omit<X, 'onClose'>` names the prop
+      // while the set holds the output under its event name.
+      const pick = parent.pick && keyFilter([...parent.pick]);
+      const omit = parent.omit && keyFilter([...parent.omit]);
       const mergeSet = (target: Set<string>, source: Set<string>): void => {
         for (const k of source) {
-          if (parent.pick && !parent.pick.has(k)) continue;
-          if (parent.omit && parent.omit.has(k)) continue;
+          if (pick && !pick.has(k)) continue;
+          if (omit && omit.has(k)) continue;
           target.add(k);
         }
       };
@@ -600,21 +1105,45 @@ function resolveInterfaceProps(
  * without the component prefix. Follows `extends` chains recursively.
  */
 export function extractReactApi(file: string, pascalName: string): ApiSet {
-  const index = getInterfaceIndex();
-  const baseCandidates = [
-    `${pascalName}PropsBase`,
-    `${pascalName}Props`,
-    `${pascalName}Data`,
-  ];
+  const index = getInterfaceIndex('react');
+  const baseCandidates = pascalCandidates(pascalName).flatMap((name) => [
+    `${name}PropsBase`,
+    `${name}Props`,
+    `${name}Data`,
+  ]);
+  /**
+   * Every candidate that exists contributes, rather than the first one only.
+   *
+   * A polymorphic component declares both: `ButtonPropsBase` holds its own
+   * props, and `ButtonProps` is
+   * `ComponentOverridableForwardRefComponentPropsFactory<…, ButtonPropsBase>`,
+   * whose body ends in `& { component?: VC }`. Stopping at the first hit meant
+   * `component` was never part of React's surface, so a Vue port that declared
+   * it read as an extra input — the reason D12 said not to mirror it at all.
+   * The same merge also picks up variant props on a `XProps` union built from
+   * an `XPropsBase`.
+   */
+  const merged: ApiSet = { inputs: new Set(), outputs: new Set() };
+  let found = false;
+
   for (const candidate of baseCandidates) {
-    if (index.has(candidate)) return resolveInterfaceProps(candidate);
+    if (!index.has(candidate)) continue;
+
+    found = true;
+
+    const resolved = resolveInterfaceProps(candidate, 'react');
+
+    for (const name of resolved.inputs) merged.inputs.add(name);
+    for (const name of resolved.outputs) merged.outputs.add(name);
   }
+
+  if (found) return merged;
 
   // Fallback: parse the component source for an explicit FC<...> type
   // annotation near the component declaration and resolve that inner type.
   const fcInterface = findFcTypeAnnotation(file, pascalName);
   if (fcInterface && index.has(fcInterface)) {
-    return resolveInterfaceProps(fcInterface);
+    return resolveInterfaceProps(fcInterface, 'react');
   }
   return { inputs: new Set(), outputs: new Set() };
 }
@@ -677,33 +1206,218 @@ export function extractAngularApi(file: string): ApiSet {
   return { inputs, outputs };
 }
 
-export function diffApi(pascalName: string): {
-  diffs: ApiDiff[];
-  reactFile: string | null;
-  ngFile: string | null;
+/**
+ * Parse a Vue SFC's `defineEmits<{ ... }>()` declaration.
+ *
+ * Only the named-tuple type form is accepted:
+ *
+ * ```ts
+ * const emit = defineEmits<{
+ *   change: [value: string];
+ *   'update:value': [value: string];
+ * }>();
+ * ```
+ *
+ * The call-signature form and a bare type reference are reported as
+ * malformed rather than yielding an empty set: silently extracting zero
+ * emits is indistinguishable from perfect output parity.
+ */
+export function parseDefineEmits(text: string): {
+  outputs: Set<string>;
+  errors: string[];
 } {
-  const reactFile = locateReactFile(pascalName);
-  const ngFile = locateAngularFile(pascalName);
-  if (!reactFile || !ngFile) {
-    return { diffs: [], reactFile, ngFile };
+  const outputs = new Set<string>();
+  const parsed = parseMacroTypeMembers(text, 'defineEmits');
+
+  if (!parsed) return { outputs, errors: [] };
+
+  const errors = [...parsed.errors];
+
+  for (const member of parsed.members) {
+    const name = memberKey(member);
+
+    if (!name) {
+      errors.push(
+        member.startsWith('(')
+          ? 'defineEmits uses the call-signature form; rewrite it as a ' +
+              'named-tuple literal, e.g. `{ change: [value: string] }`'
+          : `unparseable defineEmits member: \`${member.slice(0, 40)}\``,
+      );
+      continue;
+    }
+
+    // `update:<prop>` is the plumbing behind Vue's named `v-model`; it is
+    // additive to the React-named event, never a replacement, so it is not
+    // part of output parity.
+    if (name.startsWith('update:')) continue;
+
+    outputs.add(name);
   }
-  const r = extractReactApi(reactFile, pascalName);
-  const n = extractAngularApi(ngFile);
+
+  return { outputs, errors };
+}
+
+export type VueApiResult = ApiSet & { errors: string[] };
+
+/**
+ * Extract the Vue side's public API: props from the `<component>.types.ts`
+ * interface (resolved with the same inheritance machinery as the React side)
+ * and emits from the SFC's `defineEmits`.
+ */
+/** Whether the types file's own directory contains any SFC. */
+function dirHasSfc(typesFile: string): boolean {
+  try {
+    return readdirSync(dirname(typesFile)).some((f) => f.endsWith('.vue'));
+  } catch {
+    return false;
+  }
+}
+
+export function extractVueApi(
+  typesFile: string,
+  sfcFile: string | null,
+  pascalName: string,
+): VueApiResult {
+  const errors: string[] = [];
+  const index = getInterfaceIndex('vue');
+  // `${name}Data` matches the React side's candidate list: a factory-shaped
+  // module — Notifier — describes its payload as `NotifierData`, and without
+  // this the Vue interface is never found and the whole API extracts as empty.
+  //
+  // Every candidate that exists contributes, exactly as on the React side: a
+  // component that is also a notifier — AlertBanner — splits its surface
+  // across `XProps` and `XData`, and stopping at the first hid half of it.
+  const candidates = pascalCandidates(pascalName)
+    .flatMap((name) => [`${name}PropsBase`, `${name}Props`, `${name}Data`])
+    .filter((c) => index.has(c));
+
+  const props: ApiSet = { inputs: new Set(), outputs: new Set() };
+
+  candidates.forEach((candidate) => {
+    const resolved = resolveInterfaceProps(candidate, 'vue');
+
+    for (const name of resolved.inputs) props.inputs.add(name);
+    for (const name of resolved.outputs) props.outputs.add(name);
+  });
+
+  if (candidates.length === 0) {
+    errors.push(
+      `no \`${pascalName}Props\` interface exported from ${typesFile.replace(process.cwd(), '')}`,
+    );
+  }
+
+  const outputs = new Set(props.outputs);
+
+  if (sfcFile && existsSync(sfcFile)) {
+    const emits = parseDefineEmits(readFileSync(sfcFile, 'utf-8'));
+
+    for (const name of emits.outputs) outputs.add(name);
+    errors.push(...emits.errors);
+  } else if (dirHasSfc(typesFile)) {
+    // Only an error when the directory holds components: then the SFC exists
+    // under a name the lookup cannot see, and its emits are silently absent.
+    // A directory with no `.vue` at all is a module by design — Notifier is a
+    // factory, and React has no `Notifier.tsx` either.
+    errors.push(`no SFC found next to ${typesFile.replace(process.cwd(), '')}`);
+  }
+
+  for (const name of SKIP_PROP_NAMES) {
+    props.inputs.delete(name);
+    outputs.delete(name);
+  }
+
+  return { inputs: props.inputs, outputs, errors };
+}
+
+/** Name-level set comparison shared by every target. */
+function compareApiSets(react: ApiSet, target: ApiSet): ApiDiff[] {
   const diffs: ApiDiff[] = [];
-  for (const name of [...r.inputs].sort()) {
-    if (!n.inputs.has(name))
+
+  for (const name of [...react.inputs].sort()) {
+    if (!target.inputs.has(name))
       diffs.push({ kind: 'input', side: 'missing', name });
   }
-  for (const name of [...n.inputs].sort()) {
-    if (!r.inputs.has(name)) diffs.push({ kind: 'input', side: 'extra', name });
+  for (const name of [...target.inputs].sort()) {
+    if (!react.inputs.has(name))
+      diffs.push({ kind: 'input', side: 'extra', name });
   }
-  for (const name of [...r.outputs].sort()) {
-    if (!n.outputs.has(name))
+  for (const name of [...react.outputs].sort()) {
+    if (!target.outputs.has(name))
       diffs.push({ kind: 'output', side: 'missing', name });
   }
-  for (const name of [...n.outputs].sort()) {
-    if (!r.outputs.has(name))
+  for (const name of [...target.outputs].sort()) {
+    if (!react.outputs.has(name))
       diffs.push({ kind: 'output', side: 'extra', name });
   }
-  return { diffs, reactFile, ngFile };
+
+  return diffs;
+}
+
+export function diffApi(
+  pascalName: string,
+  target: ParityTarget = 'ng',
+): {
+  diffs: ApiDiff[];
+  reactFile: string | null;
+  targetFile: string | null;
+} {
+  const reactFile = locateReactFile(pascalName);
+
+  if (target === 'vue') {
+    const located = locateVueFile(pascalName);
+
+    if (!reactFile || !located) {
+      // A component with an SFC but no props interface is not "not ported yet",
+      // it is ported with its types file misplaced — and returning no diffs for
+      // it reads as parity. ButtonGroup shipped that way for a few minutes,
+      // with `ButtonGroupProps` living in `button.types.ts`.
+      const orphanSfc =
+        reactFile && !located
+          ? findFile(VUE_ROOT, (f) => f.endsWith(`/${kebab(pascalName)}.vue`))
+          : null;
+
+      return {
+        diffs: orphanSfc
+          ? [
+              {
+                kind: 'error',
+                side: 'extra',
+                name:
+                  `${orphanSfc.split('/packages/')[1]} has no ` +
+                  `${kebab(pascalName)}.types.ts, ` +
+                  'so its props were never compared',
+              },
+            ]
+          : [],
+        reactFile,
+        targetFile: located?.typesFile ?? null,
+      };
+    }
+
+    const r = extractReactApi(reactFile, pascalName);
+    const v = extractVueApi(located.typesFile, located.sfcFile, pascalName);
+    const diffs = compareApiSets(r, v);
+
+    // Extraction failures come first: every diff below them is unreliable.
+    for (const message of v.errors.reverse()) {
+      diffs.unshift({ kind: 'error', side: 'extra', name: message });
+    }
+
+    return { diffs, reactFile, targetFile: located.typesFile };
+  }
+
+  const targetFile = locateAngularFile(pascalName);
+
+  if (!reactFile || !targetFile) {
+    return { diffs: [], reactFile, targetFile };
+  }
+
+  return {
+    diffs: compareApiSets(
+      extractReactApi(reactFile, pascalName),
+      extractAngularApi(targetFile),
+    ),
+    reactFile,
+    targetFile,
+  };
 }

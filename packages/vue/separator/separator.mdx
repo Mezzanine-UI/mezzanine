@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SeparatorStories from './separator.stories';
+
+<Meta of={SeparatorStories} />
+
+# Separator
+
+水平或垂直分隔線元件。
+
+以 `<hr>` 元素為基礎，透過 `orientation` prop 切換水平與垂直方向。
+垂直方向時會自動設置 `aria-orientation="vertical"` 以符合無障礙規範。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/separator/separator.vue)
+
+<ArgTypes of={SeparatorStories.Playground} />

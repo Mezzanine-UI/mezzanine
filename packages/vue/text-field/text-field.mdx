@@ -1,0 +1,14 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TextFieldStories from './text-field.stories';
+
+<Meta of={TextFieldStories} />
+
+# TextField
+
+輸入類元件的視覺外框，包住原生 input 或 textarea。
+
+預設 slot 會收到 `paddingClassName`；一旦取用，外框就不再自行套用內距，改由使用端決定。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/text-field/text-field.vue)
+
+<ArgTypes of={TextFieldStories.Playground} />

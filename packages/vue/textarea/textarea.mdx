@@ -1,0 +1,15 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TextareaStories from './textarea.stories';
+
+<Meta of={TextareaStories} />
+
+# Textarea
+
+多行文字輸入區域元件，支援禁用、唯讀、警告與錯誤等視覺狀態。
+
+以 `MznTextField` 作為外框容器，`type` 控制視覺樣式，`disabled` 與 `readOnly` 僅在
+`type="default"` 時有效。`resize` 設為非 `none` 時會顯示右下角的調整大小拖曳圖示。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/textarea/textarea.vue)
+
+<ArgTypes of={TextareaStories.Playground} />

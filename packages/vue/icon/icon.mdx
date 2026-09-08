@@ -1,0 +1,16 @@
+import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as IconStories from './icon.stories';
+
+<Meta of={IconStories} />
+
+# Icon
+
+渲染來自 `@mezzanine-ui/icons` 的 SVG 圖示元件。
+
+透過 `icon` prop 傳入圖示定義物件，支援調整顏色、尺寸與旋轉動畫。
+當元件綁定 `@click` 或 `@mouseover` 事件時，游標樣式會自動切換為 pointer。
+可透過 `title` prop 提供無障礙標題文字。
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/vue/icon/icon.vue)
+
+<ArgTypes of={IconStories.Playground} />
