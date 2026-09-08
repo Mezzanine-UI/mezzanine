@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, h, useAttrs, useSlots } from 'vue';
-import type { FunctionalComponent, VNode } from 'vue';
+import { computed, h, shallowRef, useAttrs, useSlots } from 'vue';
+import type { ComponentPublicInstance, FunctionalComponent, VNode } from 'vue';
+import { resolveElement } from '../_internal/resolve-element';
 import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import clsx from 'clsx';
 import MznIcon from '../icon/icon.vue';
@@ -80,6 +81,33 @@ function call(handler: AttrHandler, event: Event): void {
   );
 }
 
+/**
+ * React's Button is a `forwardRef`, and the tooltip branch **composes** the
+ * caller's ref with the tooltip's own rather than replacing it — otherwise a
+ * consumer that positions against the button, such as Dropdown, has no node to
+ * anchor to. Vue hands a ref on a component the public instance, whose `$el`
+ * is a fragment anchor once the tooltip branch renders the popper alongside
+ * the button, so the element is exposed explicitly instead.
+ *
+ * The composed ref has to stay one stable function: a new one per render makes
+ * Vue tear the ref down and set it up again, which detaches the tooltip's
+ * target on every re-render. The tooltip's own ref therefore lives in a holder
+ * the render writes to, exactly as React's does.
+ */
+const rootElement = shallowRef<HTMLElement | null>(null);
+let tooltipTargetRef: TooltipTriggerProps['ref'] | null = null;
+
+const setRootElement = (
+  value: Element | ComponentPublicInstance | null,
+): void => {
+  const element = resolveElement(value);
+
+  rootElement.value = element;
+  tooltipTargetRef?.(element);
+};
+
+defineExpose({ $el: rootElement });
+
 const isIconOnly = computed((): boolean => props.iconType === 'icon-only');
 
 const showTooltip = computed(
@@ -142,8 +170,11 @@ const disabledBinding = computed((): boolean | string | undefined => {
  * template below.
  */
 function rootBindings(tooltipProps?: TooltipTriggerProps) {
+  tooltipTargetRef = tooltipProps?.ref ?? null;
+
   return {
     ...forwardedAttrs.value,
+    ref: setRootElement,
     'aria-describedby':
       [attrs['aria-describedby'], tooltipProps?.['aria-describedby']]
         .filter(Boolean)
@@ -167,7 +198,6 @@ function rootBindings(tooltipProps?: TooltipTriggerProps) {
     ...(tooltipProps && {
       onMouseenter: tooltipProps.onMouseenter,
       onMouseleave: tooltipProps.onMouseleave,
-      ref: tooltipProps.ref,
     }),
   };
 }

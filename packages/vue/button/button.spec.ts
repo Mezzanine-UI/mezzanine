@@ -1,4 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
+import { defineComponent, h } from 'vue';
+import type { ComponentPublicInstance } from 'vue';
+import { resolveElement } from '../_internal/resolve-element';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import { iconClasses as spinClasses } from '@mezzanine-ui/core/spin';
@@ -232,6 +235,67 @@ describe('MznButton', () => {
       await wrapper.get('button').trigger('focus');
 
       expect(onFocus).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('ref forwarding', () => {
+    /** Mount the button under a parent that keeps whatever the ref hands it. */
+    const renderWithRef = (props: Partial<ButtonProps> = {}) => {
+      let captured: HTMLElement | null = null;
+
+      const wrapper = mount(
+        defineComponent({
+          setup() {
+            return () =>
+              h(
+                MznButton,
+                {
+                  ...props,
+                  ref: (value: Element | ComponentPublicInstance | null) => {
+                    captured = resolveElement(value);
+                  },
+                },
+                { default: () => 'Add' },
+              );
+          },
+        }),
+        { attachTo: document.body },
+      );
+
+      return { captured: () => captured, wrapper };
+    };
+
+    it('should hand a consumer the rendered element', () => {
+      const { captured, wrapper } = renderWithRef();
+
+      expect(captured()).toBe(wrapper.get('button').element);
+    });
+
+    // The tooltip branch renders the popper alongside the button, so the
+    // component's own root is a fragment and `$el` is its anchor node. A
+    // consumer that positions against the button — Dropdown does — needs the
+    // button itself, and the tooltip still needs the same element for its own
+    // target, so the two refs compose rather than replace one another.
+    it('should hand a consumer the button even behind the tooltip', () => {
+      const { captured, wrapper } = renderWithRef({
+        icon: PlusIcon,
+        iconType: 'icon-only',
+      });
+
+      expect(wrapper.find(`.${tooltipClasses.host}`).exists()).toBe(false);
+      expect(captured()).toBe(wrapper.get('button').element);
+    });
+
+    it('should still show the tooltip on hover', async () => {
+      const { wrapper } = renderWithRef({
+        icon: PlusIcon,
+        iconType: 'icon-only',
+      });
+
+      await wrapper.get('button').trigger('mouseenter');
+      await flushPromises();
+
+      expect(document.querySelector(`.${tooltipClasses.host}`)).not.toBeNull();
     });
   });
 
