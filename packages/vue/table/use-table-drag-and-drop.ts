@@ -1,6 +1,7 @@
 import {
   computed,
   inject,
+  nextTick,
   onBeforeUnmount,
   provide,
   shallowRef,
@@ -77,6 +78,22 @@ export const TABLE_DRAG_AND_DROP_CONTEXT: InjectionKey<
 const DRAG_Z_INDEX = 5000;
 
 /**
+ * How a displaced row slides to its new slot.
+ *
+ * `@hello-pangea/dnd` does not put this on the element: it injects a
+ * stylesheet for the duration of the drag that gives every row in the context
+ * `transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1)`, and writes an inline
+ * `transition: none` on the rows whose displacement must not animate. The port
+ * has no stylesheet of its own to inject — no `.vue` file may carry one — so
+ * the same two values are written inline instead. Same declaration, same
+ * elements, same motion.
+ */
+const DISPLACEMENT_TRANSITION = 'transform 0.2s cubic-bezier(0.2, 0, 0, 1)';
+
+/** The lifted row follows the pointer, so only its opacity may animate. */
+const DRAGGED_TRANSITION = 'opacity 0.2s cubic-bezier(0.2, 0, 0, 1)';
+
+/**
  * The inline style `@hello-pangea/dnd` gives its live region, copied verbatim
  * so the announcement stays off-screen without a stylesheet of our own.
  */
@@ -139,6 +156,13 @@ export const TABLE_DRAG_VISUALLY_HIDDEN: CSSProperties = {
    * rows would oscillate under the pointer.
    */
   const layout = shallowRef<TableDragLayout | null>(null);
+  /**
+   * Whether a displaced row may animate to its slot yet. The transform applied
+   * at lift only compensates for the row leaving the flow — the rows do not
+   * actually move — so animating it would slide everything below the lifted row
+   * down and back. It is turned on once that transform has been painted.
+   */
+  const animateDisplacement = shallowRef(false);
 
   /** React keeps the row elements in refs; a Map is the equivalent. */
   const rowElements = new Map<string, HTMLElement>();
@@ -175,6 +199,7 @@ export const TABLE_DRAG_VISUALLY_HIDDEN: CSSProperties = {
     targetIndex.value = -1;
     layout.value = null;
     offsetY.value = 0;
+    animateDisplacement.value = false;
     pointerStartY = 0;
   }
 
@@ -188,7 +213,20 @@ export const TABLE_DRAG_VISUALLY_HIDDEN: CSSProperties = {
     sourceIndex.value = index;
     targetIndex.value = index;
     offsetY.value = 0;
+    animateDisplacement.value = false;
     message.value = `You have lifted an item in position ${index + 1}.`;
+
+    void nextTick().then(() => {
+      if (!isDragging.value) return;
+
+      // Force a reflow so the compensating transform is committed before the
+      // transition is armed — the same hack the transitions perform. Arming it
+      // any earlier animates that transform, which slides every row below the
+      // lifted one down and back as it is picked up.
+      rowElements.forEach((element) => void element.scrollTop);
+
+      animateDisplacement.value = true;
+    });
 
     return true;
   }
@@ -357,19 +395,26 @@ export const TABLE_DRAG_VISUALLY_HIDDEN: CSSProperties = {
         pointerEvents: 'none',
         position: 'fixed',
         top: `${current.top + offsetY.value}px`,
+        transition: DRAGGED_TRANSITION,
         width: `${current.width}px`,
         zIndex: DRAG_Z_INDEX,
       };
     }
 
     const collapsedSlot = index - (index > from ? 1 : 0);
+    const transition = animateDisplacement.value
+      ? DISPLACEMENT_TRANSITION
+      : 'none';
 
-    return collapsedSlot >= targetIndex.value
-      ? {
-          transform: `translate(0px, ${current.height}px)`,
-          transition: 'none',
-        }
-      : { transition: 'none' };
+    // The row that keeps its place is given an explicit zero translate rather
+    // than no transform at all. `@hello-pangea/dnd` omits it and relies on
+    // `none` interpolating as the identity, which is what the spec says but
+    // not something worth depending on: writing the value makes every step of
+    // the drag a plain value-to-value interpolation.
+    return {
+      transform: `translate(0px, ${collapsedSlot >= targetIndex.value ? current.height : 0}px)`,
+      transition,
+    };
   }
 
   const draggableFor = (

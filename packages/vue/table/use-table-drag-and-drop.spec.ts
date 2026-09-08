@@ -65,6 +65,17 @@ const rowTransforms = (wrapper: Wrapper): (string | null)[] =>
     return match ? match[0] : null;
   });
 
+/** The `transition` each row carries. */
+const rowTransitions = (wrapper: Wrapper): (string | null)[] =>
+  bodyRows(wrapper).map((row) => {
+    const match = /transition:\s*([^;]+)/.exec(row.attributes('style') ?? '');
+
+    return match ? match[1].trim() : null;
+  });
+
+/** Let the composable's own post-lift callback arm the transition. */
+const armTransition = (): Promise<void> => nextTick().then(() => nextTick());
+
 const mouseTo = (clientY: number): void => {
   document.dispatchEvent(new MouseEvent('mousemove', { clientY }));
 };
@@ -266,9 +277,80 @@ describe('useTableDragAndDrop', () => {
     // vacated first slot, and the one below it stays where it is.
     expect(rowTransforms(wrapper)).toEqual([
       null,
-      null,
+      'translate(0px, 0px)',
       `translate(0px, ${ROW_HEIGHT}px)`,
     ]);
+  });
+
+  it('should commit the lift transform before arming the transition', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+
+    const row = bodyRows(wrapper)[1].element;
+    const atReflow: (string | null)[] = [];
+
+    Object.defineProperty(row, 'scrollTop', {
+      configurable: true,
+      get() {
+        atReflow.push(row.getAttribute('style'));
+
+        return 0;
+      },
+    });
+
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+    await armTransition();
+
+    // Reading a layout property makes the browser take the compensating
+    // transform as the starting point. The rows have not moved on screen — the
+    // transform only cancels the gap the lifted row left — so the transition
+    // must not be armed until that has been committed, or picking a row up
+    // slides everything below it down and back.
+    expect(atReflow).toHaveLength(1);
+    expect(atReflow[0]).toContain(`translate(0px, ${ROW_HEIGHT}px)`);
+    expect(atReflow[0]).toContain('transition: none');
+  });
+
+  it('should slide the rows to their new slot once the lift is painted', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+    await armTransition();
+    mouseTo(60);
+    await nextTick();
+
+    expect(rowTransitions(wrapper).slice(1)).toEqual([
+      'transform 0.2s cubic-bezier(0.2, 0, 0, 1)',
+      'transform 0.2s cubic-bezier(0.2, 0, 0, 1)',
+    ]);
+  });
+
+  it('should not animate the lifted row away from the pointer', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+    await armTransition();
+    await nextTick();
+
+    expect(rowTransitions(wrapper)[0]).toBe(
+      'opacity 0.2s cubic-bezier(0.2, 0, 0, 1)',
+    );
+  });
+
+  it('should stop animating once the row is dropped', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+    await armTransition();
+    mouseTo(60);
+    document.dispatchEvent(new MouseEvent('mouseup'));
+    await nextTick();
+
+    expect(rowTransitions(wrapper)).toEqual([null, null, null]);
   });
 
   it('should not fall back to the start on an exact row boundary', async () => {
@@ -282,7 +364,7 @@ describe('useTableDragAndDrop', () => {
 
     expect(rowTransforms(wrapper)).toEqual([
       null,
-      null,
+      'translate(0px, 0px)',
       `translate(0px, ${ROW_HEIGHT}px)`,
     ]);
   });
@@ -305,7 +387,7 @@ describe('useTableDragAndDrop', () => {
 
     expect(rowTransforms(wrapper)).toEqual([
       null,
-      null,
+      'translate(0px, 0px)',
       `translate(0px, ${ROW_HEIGHT}px)`,
     ]);
   });
