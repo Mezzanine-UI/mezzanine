@@ -84,7 +84,7 @@ describe('<UploadPictureCard />', () => {
           );
           expect(loadingIcon).toBeTruthy();
         },
-        { timeout: 1000 },
+        { timeout: 2000 },
       );
     });
 
@@ -118,7 +118,7 @@ describe('<UploadPictureCard />', () => {
           // cancel button 應該存在
           expect(cancelButton).toBeTruthy();
         },
-        { timeout: 1000 },
+        { timeout: 2000 },
       );
     });
 

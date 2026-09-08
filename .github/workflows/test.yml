@@ -42,6 +42,16 @@ jobs:
       - name: Test
         run: yarn test
 
+      # `check.sh` defaults its target to `.`, which would pull in the errors
+      # `packages/react` and `packages/ng` already carry on main. Scoped to the
+      # package whose rules these are.
+      - name: Vue type check and parity guards
+        run: |
+          yarn check packages/vue
+          yarn parity:vue:lint-api
+          yarn parity:vue:lint-styles
+          yarn parity:stories
+
       - name: Lint ng-content selectors (parity guard)
         run: yarn parity:lint-ng-content
 

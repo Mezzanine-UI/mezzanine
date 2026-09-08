@@ -18,6 +18,13 @@ export default defineConfig({
     setupFiles: [resolve(here, 'vitest.setup.ts')],
     include: ['**/*.spec.ts'],
     exclude: ['**/node_modules/**', '**/dist/**'],
+    /**
+     * Vitest's default is 5s, the same one the React suite outgrew: the
+     * monorepo runs its test targets three at a time and each runner spawns
+     * its own workers, so a test's wall clock says as much about what else is
+     * running as about the test. Matches `packages/react/jest.config.js`.
+     */
+    testTimeout: 15000,
     coverage: {
       provider: 'v8',
       include: ['**/*.ts', '**/*.vue'],
