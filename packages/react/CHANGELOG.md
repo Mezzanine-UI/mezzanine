@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.5.0...@mezzanine-ui/react@1.5.1) (2026-09-08)
+
+### Bug Fixes
+
+- **react/tab:** select the intended tab in the TabsSize story ([bfa0355](https://github.com/Mezzanine-UI/mezzanine/commit/bfa03550223689b968f20af402765936c3305845))
+
 # [1.5.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.4.4...@mezzanine-ui/react@1.5.0) (2026-09-02)
 
 ### Bug Fixes

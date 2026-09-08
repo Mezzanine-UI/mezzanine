@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.0...@mezzanine-ui/core@1.2.1) (2026-09-08)
+
+### Bug Fixes
+
+- **core/table:** drop the React-only floating-ui import ([8c6c71a](https://github.com/Mezzanine-UI/mezzanine/commit/8c6c71a1ffb7b40fef420ecce57bd456e714d8cd))
+
 # [1.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.1.0...@mezzanine-ui/core@1.2.0) (2026-08-17)
 
 ### Features
