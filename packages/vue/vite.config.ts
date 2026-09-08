@@ -58,6 +58,15 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
+      // The aliases above point `@mezzanine-ui/*` at package **sources** so
+      // Storybook and the tests read the same code the React side does. Rollup
+      // decides what is external before they apply, so the emitted JavaScript
+      // keeps the bare specifiers — but the declaration emit resolves them and
+      // writes `../../core/src/table`. That path only exists in this repo: the
+      // published package root is `dist/`, so every consumer's types would
+      // resolve to nothing. Excluding them leaves the specifier alone, which is
+      // what `scripts/build.js` produces for the React package.
+      aliasesExclude: [/^@mezzanine-ui\//],
       tsconfigPath: resolve(here, 'tsconfig.lib.json'),
       entryRoot: here,
       outDir: resolve(here, 'dist'),

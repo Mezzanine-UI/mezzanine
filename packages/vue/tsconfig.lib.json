@@ -2,7 +2,10 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "declarationMap": true
+    // The published package ships `dist/` only, so a declaration map would
+    // point every editor at sources that are not in the tarball. React's build
+    // emits none either.
+    "declarationMap": false
   },
   "exclude": [
     "dist",
