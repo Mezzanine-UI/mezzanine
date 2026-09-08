@@ -1,6 +1,6 @@
 # Mezzanine UI
 
-A comprehensive React and Angular component library with a complete design system, built for modern web applications.
+A comprehensive component library for React, Angular and Vue 3 with a complete design system, built for modern web applications.
 
 ## 📦 Version
 
@@ -8,21 +8,23 @@ Current releases:
 
 ```json
 {
-  "@mezzanine-ui/core": "1.0.3",
-  "@mezzanine-ui/react": "1.0.3",
-  "@mezzanine-ui/ng": "1.0.0-rc.2",
+  "@mezzanine-ui/core": "1.2.1",
+  "@mezzanine-ui/react": "1.5.1",
+  "@mezzanine-ui/ng": "1.0.0-rc.14",
+  "@mezzanine-ui/vue": "1.0.0-rc.1",
   "@mezzanine-ui/system": "1.0.2",
   "@mezzanine-ui/icons": "1.0.2"
 }
 ```
 
-> `@mezzanine-ui/ng` is published under the `rc` dist-tag while the Angular port stabilises. Install with `@rc` (see below).
+> `@mezzanine-ui/ng` and `@mezzanine-ui/vue` are release candidates: the component set is complete and mirrors React prop-for-prop, and the public API may still receive minor adjustments before the stable release. Install them like any other package (see below).
 
 ## 📚 Documentation
 
-- **[Storybook](https://storybook.mezzanine-ui.org)** — unified hub that composes the React and Angular Storybooks side by side
+- **[Storybook](https://storybook.mezzanine-ui.org)** — unified hub that links the React, Angular and Vue Storybooks side by side
   - `https://storybook.mezzanine-ui.org/react/` — React canonical URL
   - `https://storybook.mezzanine-ui.org/angular/` — Angular canonical URL
+  - `https://storybook.mezzanine-ui.org/vue/` — Vue canonical URL
 - **[Migration Guide](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations)** — Upgrading from previous versions
 
 ## 🌐 Browser Support
@@ -73,9 +75,21 @@ Requires Angular 21+.
 
 ```bash
 yarn add @mezzanine-ui/core @mezzanine-ui/system @mezzanine-ui/icons
-yarn add @mezzanine-ui/ng@rc
+yarn add @mezzanine-ui/ng
 yarn add @angular/animations @angular/cdk @angular/common @angular/core
 ```
+
+### Vue 3 (release candidate)
+
+Requires Vue 3.5+.
+
+```bash
+yarn add @mezzanine-ui/core @mezzanine-ui/system @mezzanine-ui/icons
+yarn add @mezzanine-ui/vue
+yarn add vue lodash
+```
+
+### Date libraries (all frameworks)
 
 If you plan to use date-related components (DatePicker, Calendar, TimePicker, etc.), install one of the supported date libraries:
 
@@ -305,6 +319,72 @@ export class AppComponent {
 ### 3. API parity with React
 
 Angular inputs/outputs mirror React props 1:1, including both flat top-level props (e.g. `disabledMonthSwitch`, `placeholderLeft`) and bundle props (e.g. `calendarProps`, `popperProps`). When both are provided, flat props win. See `.claude/skills/architecting-angular-components/SKILL.md` for the full contract.
+
+---
+
+## 💚 Vue Quick Start
+
+The Vue package mirrors the React API prop-for-prop. Every component is prefixed with `Mzn` and distributed as a **sub-path entry point** — import each component from its own path so that your bundler only pulls in what you use.
+
+### 1. Share the same SCSS setup
+
+`@mezzanine-ui/vue` ships no stylesheet of its own; all styles come from `@mezzanine-ui/core` + `@mezzanine-ui/system`. Reuse the `main.scss` shown in the [React Quick Start](#1-setup-styles) verbatim and import it once in your app entry:
+
+```ts
+// main.ts
+import { createApp } from 'vue';
+import App from './App.vue';
+import './main.scss';
+
+createApp(App).mount('#app');
+```
+
+### 2. Import components from sub-path entry points
+
+```vue
+<!-- App.vue -->
+<script setup lang="ts">
+import { MznButton } from '@mezzanine-ui/vue/button';
+import { MznTypography } from '@mezzanine-ui/vue/typography';
+import { PlusIcon } from '@mezzanine-ui/icons';
+</script>
+
+<template>
+  <MznTypography variant="h1">Welcome to Mezzanine UI</MznTypography>
+  <MznButton :icon="PlusIcon" icon-type="leading" size="main" variant="base-primary">Click Me</MznButton>
+</template>
+```
+
+> ⚠️ The package root `@mezzanine-ui/vue` exports no components. Always use the per-component path (e.g. `@mezzanine-ui/vue/button`). See `packages/vue/COMPONENTS.md` for the full list of import names and paths.
+
+### 3. Setup CalendarConfigProvider (Required for Date Components)
+
+Date-related components (DatePicker, DateRangePicker, Calendar, TimePicker, etc.) read their date library and locale from a `MznCalendarConfigProvider`. Wrap your app once with the preset provider for the date library you installed — all presets live in `@mezzanine-ui/vue/calendar`:
+
+| Preset                            | Date library |
+| --------------------------------- | ------------ |
+| `MznCalendarConfigProviderDayjs`  | Day.js       |
+| `MznCalendarConfigProviderMoment` | Moment.js    |
+| `MznCalendarConfigProviderLuxon`  | Luxon        |
+
+```vue
+<!-- App.vue -->
+<script setup lang="ts">
+import { ref } from 'vue';
+import { CalendarLocale, MznCalendarConfigProviderDayjs } from '@mezzanine-ui/vue/calendar';
+import { MznDatePicker } from '@mezzanine-ui/vue/date-picker';
+
+const date = ref<string>();
+</script>
+
+<template>
+  <MznCalendarConfigProviderDayjs :locale="CalendarLocale.ZH_TW">
+    <MznDatePicker :value="date" placeholder="Select a date" @change="(value) => (date = value)" />
+  </MznCalendarConfigProviderDayjs>
+</template>
+```
+
+The preset providers accept the same `locale`, `defaultDateFormat` and `defaultTimeFormat` props documented in [CalendarConfigProvider Configuration](#-calendarconfigprovider-configuration).
 
 ---
 
@@ -827,6 +907,7 @@ MIT License - see [LICENSE](./LICENSE) for details.
 - NPM Packages:
   - [@mezzanine-ui/react](https://www.npmjs.com/package/@mezzanine-ui/react)
   - [@mezzanine-ui/ng](https://www.npmjs.com/package/@mezzanine-ui/ng)
+  - [@mezzanine-ui/vue](https://www.npmjs.com/package/@mezzanine-ui/vue)
   - [@mezzanine-ui/core](https://www.npmjs.com/package/@mezzanine-ui/core)
   - [@mezzanine-ui/system](https://www.npmjs.com/package/@mezzanine-ui/system)
   - [@mezzanine-ui/icons](https://www.npmjs.com/package/@mezzanine-ui/icons)
