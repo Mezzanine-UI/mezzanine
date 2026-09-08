@@ -73,6 +73,7 @@
 | DescriptionTitle            | `MznDescriptionTitle`            | `@mezzanine-ui/vue/description`    | 描述列的標題，可帶徽章與提示圖示                                           |
 | Section                     | `MznSection`                     | `@mezzanine-ui/vue/section`        | 內容分區，標題列、篩選區與頁籤各自認得自己的元件並排到對應版位             |
 | SectionGroup                | `MznSectionGroup`                | `@mezzanine-ui/vue/section`        | 把多個分區排成一欄或一列                                                   |
+| Table                       | `MznTable`                       | `@mezzanine-ui/vue/table`          | 功能完整的表格，支援排序、選取、展開、虛擬捲動、拖曳、固定欄與可調欄寬     |
 
 ## Data Entry（資料輸入）
 
@@ -174,6 +175,22 @@
 | Tooltip                      | `MznTooltip`                      | `@mezzanine-ui/vue/tooltip`              | 懸停提示，觸發元素由 scoped slot 提供，支援鍵盤與 Escape 關閉           |
 | OverflowTooltip              | `MznOverflowTooltip`              | `@mezzanine-ui/vue/overflow-tooltip`     | 收合標籤的浮層，開啟後量測每列寬度把浮層收到最寬的那一列                |
 | OverflowCounterTag           | `MznOverflowCounterTag`           | `@mezzanine-ui/vue/overflow-tooltip`     | 顯示收合數量的計數標籤，點一下展開 MznOverflowTooltip                   |
+| TableBody                    | `MznTableBody`                    | `@mezzanine-ui/vue/table`                | 表格的 tbody，依序決定渲染骨架列、空狀態或資料列                        |
+| TableHeader                  | `MznTableHeader`                  | `@mezzanine-ui/vue/table`                | 表格的 thead，把手／展開／選取三欄在前，其餘依 columns 排列             |
+| TableColGroup                | `MznTableColGroup`                | `@mezzanine-ui/vue/table`                | 表格的 colgroup，欄寬統一在這裡決定，儲存格自己不設寬度                 |
+| TableRow                     | `MznTableRow`                     | `@mezzanine-ui/vue/table`                | 表格的一列，把把手／展開／選取三欄與資料欄排在一起                      |
+| TableCell                    | `MznTableCell`                    | `@mezzanine-ui/vue/table`                | 表格的一般資料儲存格                                                    |
+| TableActionsCell             | `MznTableActionsCell`             | `@mezzanine-ui/vue/table`                | 每一列最右側的操作欄，內容由 actions.render 決定                        |
+| TableSelectionCell           | `MznTableSelectionCell`           | `@mezzanine-ui/vue/table`                | 選取欄的儲存格，表頭是全選、資料列是單列選取                            |
+| TableExpandCell              | `MznTableExpandCell`              | `@mezzanine-ui/vue/table`                | 展開欄的儲存格，資料列放一顆會旋轉的箭頭按鈕                            |
+| TableExpandedRow             | `MznTableExpandedRow`             | `@mezzanine-ui/vue/table`                | 展開後的內容列，橫跨整個表格寬度                                        |
+| TableToggleableCell          | `MznTableToggleableCell`          | `@mezzanine-ui/vue/table`                | 開關欄的儲存格，狀態來自 toggleable.toggledRowKeys                      |
+| TableCollectableCell         | `MznTableCollectableCell`         | `@mezzanine-ui/vue/table`                | 收藏欄的儲存格，狀態來自 collectable.collectedRowKeys                   |
+| TableDragOrPinHandleCell     | `MznTableDragOrPinHandleCell`     | `@mezzanine-ui/vue/table`                | 拖曳把手或釘選按鈕的儲存格，兩者共用同一欄                              |
+| TableColumnTitleMenu         | `MznTableColumnTitleMenu`         | `@mezzanine-ui/vue/table`                | 表頭欄位右側的選單，只有欄位給了 titleMenu 時才渲染                     |
+| TableResizeHandle            | `MznTableResizeHandle`            | `@mezzanine-ui/vue/table`                | 表頭欄位右緣的拖曳把手，負責調整欄寬                                    |
+| TableBulkActions             | `MznTableBulkActions`             | `@mezzanine-ui/vue/table`                | 有列被選取時浮在表格下方的批次操作列                                    |
+| TablePagination              | `MznTablePagination`              | `@mezzanine-ui/vue/table`                | 表格底部的分頁，就是 MznPagination 的一層轉接                           |
 
 ## Others（其他）
 
@@ -202,4 +219,4 @@
 
 > 每一個已移植的元件都有自己的 stories，並且全部通過 DOM parity；
 > `yarn components:graph` 的「Story files ready to write」清單為空，
-> 也沒有任何 `parity pending`。唯一還沒移植的元件是 Table。
+> 也沒有任何 `parity pending`。React 端的 68 個元件已全數移植完成。
