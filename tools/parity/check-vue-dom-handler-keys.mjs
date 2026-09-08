@@ -18,10 +18,16 @@
  * (`attrs.onMouseOver`), which are how a component deliberately accepts both
  * spellings from its consumers.
  *
+ * Names that `@mezzanine-ui/core` itself declares are exempt: those are fields
+ * of a shared config object, not listener keys, and Vue has to spell them the
+ * way the contract does. `TableDraggable.onDragEnd` is the only one today —
+ * without the exemption every consumer of it reads as a bug.
+ *
  * Usage:  node tools/parity/check-vue-dom-handler-keys.mjs
  */
 import { readFileSync } from 'node:fs';
-import { report, vueRoot, walk } from './vue-fs.mjs';
+import { resolve } from 'node:path';
+import { repoRoot, report, vueRoot, walk } from './vue-fs.mjs';
 
 /**
  * DOM events whose React handler name differs from Vue's. Component emits are
@@ -69,9 +75,21 @@ const REACT_DOM_HANDLERS = [
 ];
 
 const HANDLER_KEY = new RegExp(
-  `(?<![.\\w])(on(?:${REACT_DOM_HANDLERS.join('|')}))\\s*:`,
+  `(?<![.\\w])(on(?:${REACT_DOM_HANDLERS.join('|')}))\\s*\\??\\s*:`,
   'g',
 );
+
+/** `on*` field names declared by the shared core package. */
+const coreDeclared = new Set();
+
+for (const file of await walk(
+  resolve(repoRoot, 'packages', 'core', 'src'),
+  (n) => n.endsWith('.ts'),
+)) {
+  for (const match of readFileSync(file, 'utf8').matchAll(HANDLER_KEY)) {
+    coreDeclared.add(match[1]);
+  }
+}
 
 const files = await walk(
   vueRoot,
@@ -84,6 +102,9 @@ for (const file of files) {
 
   for (const match of src.matchAll(HANDLER_KEY)) {
     const key = match[1];
+
+    if (coreDeclared.has(key)) continue;
+
     const vueKey = `on${key.slice(2, 3)}${key.slice(3).toLowerCase()}`;
 
     problems.push({
