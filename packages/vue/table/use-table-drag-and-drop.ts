@@ -37,6 +37,20 @@ export interface UseTableDragAndDropOptions<
   draggable?: () => TableDraggable<T> | undefined;
 }
 
+/** The rows' geometry, frozen at the moment a drag starts. */
+interface TableDragLayout {
+  /** The lifted row's height, which is also how far the others move. */
+  height: number;
+  /** The lifted row's left edge, so it can be pinned to the viewport. */
+  left: number;
+  /** Every row's vertical extent, by index, before anything moved. */
+  rows: { bottom: number; top: number }[];
+  /** The lifted row's top edge. */
+  top: number;
+  /** The lifted row's width, which it loses on leaving the table. */
+  width: number;
+}
+
 export interface TableDragAndDropContextValue {
   /** What one row needs to take part in a drag. */
   draggableFor: (rowKey: string, index: number) => TableDraggableProvided;
@@ -102,8 +116,7 @@ export const TABLE_DRAG_VISUALLY_HIDDEN: CSSProperties = {
  *
  * @see MznTable 使用它的元件
  * @see useTableDraggableRow 每一列讀取它的 composable
- */
-export function useTableDragAndDrop<
+ */ export function useTableDragAndDrop<
   T extends TableDataSource = TableDataSource,
 >(options: UseTableDragAndDropOptions<T> = {}): UseTableDragAndDropReturn {
   const { dataSource = () => [] as T[], draggable = () => undefined } = options;
@@ -116,35 +129,68 @@ export function useTableDragAndDrop<
   const draggingKey = shallowRef<string | null>(null);
   const sourceIndex = shallowRef(-1);
   const targetIndex = shallowRef(-1);
-  /** Set while the drag is following a pointer rather than the keyboard. */
-  const pointerRect = shallowRef<{
-    height: number;
-    left: number;
-    top: number;
-    width: number;
-  } | null>(null);
+  /** How far the lifted row has travelled from where it started. */
+  const offsetY = shallowRef(0);
+  /**
+   * The rows' boxes as they were the moment the drag started. Everything is
+   * measured against this and never against the live DOM: the lifted row goes
+   * `position: fixed`, which takes it out of the table and moves every row
+   * below it, so measuring live would feed the drag its own output and the
+   * rows would oscillate under the pointer.
+   */
+  const layout = shallowRef<TableDragLayout | null>(null);
 
   /** React keeps the row elements in refs; a Map is the equivalent. */
   const rowElements = new Map<string, HTMLElement>();
   let pointerStartY = 0;
-  let pointerDeltaY = 0;
 
   const isDragging = computed((): boolean => draggingKey.value !== null);
 
-  const rowHeight = (): number =>
-    pointerRect.value?.height ??
-    (draggingKey.value
-      ? (rowElements.get(draggingKey.value)?.getBoundingClientRect().height ??
-        0)
-      : 0);
+  /** Snapshot every row's box, plus the lifted row's own, before it moves. */
+  function measure(index: number): TableDragLayout | null {
+    const records = dataSource();
+    const record = records[index];
+    const element = record && rowElements.get(getRowKey(record));
+
+    if (!element) return null;
+
+    const bounds = element.getBoundingClientRect();
+
+    return {
+      height: bounds.height,
+      left: bounds.left,
+      rows: records.map((row) => {
+        const rect = rowElements.get(getRowKey(row))?.getBoundingClientRect();
+
+        return { bottom: rect?.bottom ?? 0, top: rect?.top ?? 0 };
+      }),
+      top: bounds.top,
+      width: bounds.width,
+    };
+  }
 
   function reset(): void {
     draggingKey.value = null;
     sourceIndex.value = -1;
     targetIndex.value = -1;
-    pointerRect.value = null;
+    layout.value = null;
+    offsetY.value = 0;
     pointerStartY = 0;
-    pointerDeltaY = 0;
+  }
+
+  function lift(rowKey: string, index: number): boolean {
+    const measured = measure(index);
+
+    if (!measured) return false;
+
+    layout.value = measured;
+    draggingKey.value = rowKey;
+    sourceIndex.value = index;
+    targetIndex.value = index;
+    offsetY.value = 0;
+    message.value = `You have lifted an item in position ${index + 1}.`;
+
+    return true;
   }
 
   function commit(): void {
@@ -180,45 +226,44 @@ export function useTableDragAndDrop<
     reset();
   }
 
-  /** Which row the pointer is currently over, as an index into the data. */
+  /**
+   * Which slot the lifted row currently covers, in the pre-drag geometry.
+   *
+   * A row counts as passed once the lifted row's centre is past its middle,
+   * and the destination is simply how many of the others have been passed.
+   * Counting beats hit-testing each row's box: boxes leave a hairline between
+   * them at every boundary, and a centre landing exactly there matches nothing
+   * — the destination would snap back to the start for that one frame.
+   */
   function indexUnderPointer(): number {
-    const rect = pointerRect.value;
+    const current = layout.value;
 
-    if (!rect) return targetIndex.value;
+    if (!current) return targetIndex.value;
 
-    const centre = rect.top + pointerDeltaY + rect.height / 2;
-    const rows = dataSource();
-    let index = sourceIndex.value;
+    const from = sourceIndex.value;
+    const centre = current.top + offsetY.value + current.height / 2;
 
-    rows.forEach((record, rowIndex) => {
-      if (rowIndex === sourceIndex.value) return;
-
-      const element = rowElements.get(getRowKey(record));
-
-      if (!element) return;
-
-      const bounds = element.getBoundingClientRect();
-
-      if (centre > bounds.top && centre < bounds.bottom) {
-        index = rowIndex;
-      }
-    });
-
-    return index;
+    return current.rows.reduce(
+      (slot, row, index) =>
+        index !== from && (row.top + row.bottom) / 2 < centre ? slot + 1 : slot,
+      0,
+    );
   }
 
   function handleMousemove(event: MouseEvent): void {
-    if (!pointerRect.value) return;
+    if (!layout.value) return;
 
-    pointerDeltaY = event.clientY - pointerStartY;
+    offsetY.value = event.clientY - pointerStartY;
     targetIndex.value = indexUnderPointer();
-    // Re-assign so the style recomputes as the pointer moves.
-    pointerRect.value = { ...pointerRect.value };
+  }
+
+  function stopListening(): void {
+    document.removeEventListener('mousemove', handleMousemove);
+    document.removeEventListener('mouseup', handleMouseup);
   }
 
   function handleMouseup(): void {
-    document.removeEventListener('mousemove', handleMousemove);
-    document.removeEventListener('mouseup', handleMouseup);
+    stopListening();
     commit();
   }
 
@@ -229,26 +274,11 @@ export function useTableDragAndDrop<
   ): void {
     if (!draggable()?.enabled || event.button !== 0) return;
 
-    const element = rowElements.get(rowKey);
+    pointerStartY = event.clientY;
 
-    if (!element) return;
+    if (!lift(rowKey, index)) return;
 
     event.preventDefault();
-
-    const bounds = element.getBoundingClientRect();
-
-    draggingKey.value = rowKey;
-    sourceIndex.value = index;
-    targetIndex.value = index;
-    pointerStartY = event.clientY;
-    pointerDeltaY = 0;
-    pointerRect.value = {
-      height: bounds.height,
-      left: bounds.left,
-      top: bounds.top,
-      width: bounds.width,
-    };
-    message.value = `You have lifted an item in position ${index + 1}.`;
 
     document.addEventListener('mousemove', handleMousemove);
     document.addEventListener('mouseup', handleMouseup);
@@ -272,10 +302,7 @@ export function useTableDragAndDrop<
         return;
       }
 
-      draggingKey.value = rowKey;
-      sourceIndex.value = index;
-      targetIndex.value = index;
-      message.value = `You have lifted an item in position ${index + 1}.`;
+      lift(rowKey, index);
 
       return;
     }
@@ -297,44 +324,52 @@ export function useTableDragAndDrop<
       if (next < 0 || next > dataSource().length - 1) return;
 
       targetIndex.value = next;
+      // No pointer to follow, so the row is moved a slot at a time itself.
+      offsetY.value = (next - sourceIndex.value) * (layout.value?.height ?? 0);
       message.value = `You have moved the item to position ${next + 1}.`;
     }
   }
 
-  /** The dragged row leaves the flow; the rows it passes shift to make room. */
+  /**
+   * The lifted row is taken out of the table and follows the pointer; the rest
+   * are moved with a transform, exactly as `@hello-pangea/dnd` does it.
+   *
+   * The arithmetic has one subtlety. Going `position: fixed` removes the row
+   * from the table, so the browser has *already* pulled every row below it up
+   * by one row height. Undoing that and then opening a gap at the destination
+   * comes to a single rule: after the collapse the remaining rows occupy slots
+   * `0..n-2`, and the lifted row has to be inserted at slot `to`, so every row
+   * whose collapsed slot is at or below `to` drops by one height and the rest
+   * stay where they are.
+   */
   function styleFor(index: number): CSSProperties | undefined {
-    if (!isDragging.value) return undefined;
+    const current = layout.value;
+
+    if (!isDragging.value || !current) return undefined;
 
     const from = sourceIndex.value;
-    const to = targetIndex.value;
 
     if (index === from) {
-      const rect = pointerRect.value;
-
-      if (!rect) return undefined;
-
       return {
-        height: `${rect.height}px`,
-        left: `${rect.left}px`,
+        boxSizing: 'border-box',
+        height: `${current.height}px`,
+        left: `${current.left}px`,
         pointerEvents: 'none',
         position: 'fixed',
-        top: `${rect.top + pointerDeltaY}px`,
-        width: `${rect.width}px`,
+        top: `${current.top + offsetY.value}px`,
+        width: `${current.width}px`,
         zIndex: DRAG_Z_INDEX,
       };
     }
 
-    const height = rowHeight();
+    const collapsedSlot = index - (index > from ? 1 : 0);
 
-    if (from < to && index > from && index <= to) {
-      return { transform: `translateY(-${height}px)` };
-    }
-
-    if (from > to && index >= to && index < from) {
-      return { transform: `translateY(${height}px)` };
-    }
-
-    return undefined;
+    return collapsedSlot >= targetIndex.value
+      ? {
+          transform: `translate(0px, ${current.height}px)`,
+          transition: 'none',
+        }
+      : { transition: 'none' };
   }
 
   const draggableFor = (
@@ -375,10 +410,7 @@ export function useTableDragAndDrop<
     ),
   );
 
-  onBeforeUnmount(() => {
-    document.removeEventListener('mousemove', handleMousemove);
-    document.removeEventListener('mouseup', handleMouseup);
-  });
+  onBeforeUnmount(stopListening);
 
   const droppable = computed(
     (): TableDroppableProvided => ({

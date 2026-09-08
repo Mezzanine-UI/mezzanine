@@ -57,6 +57,14 @@ const stubRects = (wrapper: Wrapper): void => {
   });
 };
 
+/** The `translate` each row carries, or null when it carries none. */
+const rowTransforms = (wrapper: Wrapper): (string | null)[] =>
+  bodyRows(wrapper).map((row) => {
+    const match = /translate\([^)]*\)/.exec(row.attributes('style') ?? '');
+
+    return match ? match[0] : null;
+  });
+
 const mouseTo = (clientY: number): void => {
   document.dispatchEvent(new MouseEvent('mousemove', { clientY }));
 };
@@ -227,9 +235,93 @@ describe('useTableDragAndDrop', () => {
 
     expect(dragged.classes()).toContain(classes.bodyRowDragging);
     expect(dragged.attributes('style')).toContain('position: fixed');
-    expect(bodyRows(wrapper)[1].attributes('style')).toContain(
-      `translateY(-${ROW_HEIGHT}px)`,
-    );
+    expect(dragged.attributes('style')).toContain('top: 50px');
+  });
+
+  it('should hold the gap open while the row has not moved yet', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+    await nextTick();
+
+    // Leaving the flow already pulled every later row up by one row height;
+    // the transform puts them back so the row keeps its own slot open.
+    expect(rowTransforms(wrapper)).toEqual([
+      null,
+      `translate(0px, ${ROW_HEIGHT}px)`,
+      `translate(0px, ${ROW_HEIGHT}px)`,
+    ]);
+  });
+
+  it('should let only the rows above the destination close the gap', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+    mouseTo(60);
+    await nextTick();
+
+    // Dropped onto the second slot: the row it displaced moves up into the
+    // vacated first slot, and the one below it stays where it is.
+    expect(rowTransforms(wrapper)).toEqual([
+      null,
+      null,
+      `translate(0px, ${ROW_HEIGHT}px)`,
+    ]);
+  });
+
+  it('should not fall back to the start on an exact row boundary', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+    // Puts the lifted row's centre exactly on the seam between two rows.
+    mouseTo(70);
+    await nextTick();
+
+    expect(rowTransforms(wrapper)).toEqual([
+      null,
+      null,
+      `translate(0px, ${ROW_HEIGHT}px)`,
+    ]);
+  });
+
+  it('should keep measuring against the geometry the drag started with', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('mousedown', { button: 0, clientY: 10 });
+
+    // Every row now reports the lifted row's own box, which is what a live
+    // re-measure during the drag would see once it goes `position: fixed`.
+    bodyRows(wrapper).forEach((row) => {
+      row.element.getBoundingClientRect = (): DOMRect =>
+        ({ bottom: ROW_HEIGHT, height: ROW_HEIGHT, top: 0 }) as DOMRect;
+    });
+
+    mouseTo(60);
+    await nextTick();
+
+    expect(rowTransforms(wrapper)).toEqual([
+      null,
+      null,
+      `translate(0px, ${ROW_HEIGHT}px)`,
+    ]);
+  });
+
+  it('should lift the row out of the flow for a keyboard drag too', async () => {
+    const { wrapper } = render();
+
+    stubRects(wrapper);
+    await handles(wrapper)[0].trigger('keydown', { key: ' ' });
+    await handles(wrapper)[0].trigger('keydown', { key: 'ArrowDown' });
+
+    const dragged = bodyRows(wrapper)[0];
+
+    expect(dragged.classes()).toContain(classes.bodyRowDragging);
+    expect(dragged.attributes('style')).toContain('position: fixed');
+    expect(dragged.attributes('style')).toContain(`top: ${ROW_HEIGHT}px`);
   });
 
   it('should reorder to whichever row the pointer was released over', async () => {
@@ -260,9 +352,7 @@ describe('useTableDragAndDrop', () => {
     expect(bodyRows(wrapper)[0].classes()).not.toContain(
       classes.bodyRowDragging,
     );
-    expect(bodyRows(wrapper)[1].attributes('style')).not.toContain(
-      'translateY',
-    );
+    expect(rowTransforms(wrapper)).toEqual([null, null, null]);
   });
 
   it('should ignore anything but the primary button', async () => {
