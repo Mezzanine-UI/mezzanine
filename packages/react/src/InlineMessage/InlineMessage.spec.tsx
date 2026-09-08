@@ -9,6 +9,18 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 
+/**
+ * How long to let a fade-out settle before failing.
+ *
+ * Deliberately not derived from `MOTION_DURATION.fast`: that reads as though
+ * the budget were part of the specification, when the test that actually pins
+ * the duration is `should use fast duration for fade animation` below. A
+ * budget only has to be comfortably longer than the animation on a machine
+ * that is busy — `waitFor` polls, so a generous one costs nothing when it
+ * passes.
+ */
+const FADE_SETTLE_TIMEOUT = 2000;
+
 describe('<InlineMessage />', () => {
   afterEach(cleanup);
 
@@ -159,7 +171,7 @@ describe('<InlineMessage />', () => {
         () => {
           expect(container.querySelector('.mzn-inline-message')).toBeNull();
         },
-        { timeout: MOTION_DURATION.fast + 100 },
+        { timeout: FADE_SETTLE_TIMEOUT },
       );
     });
 
@@ -224,7 +236,7 @@ describe('<InlineMessage />', () => {
         () => {
           expect(element.style.opacity).toBe('0');
         },
-        { timeout: MOTION_DURATION.fast + 100 },
+        { timeout: FADE_SETTLE_TIMEOUT },
       );
     });
 

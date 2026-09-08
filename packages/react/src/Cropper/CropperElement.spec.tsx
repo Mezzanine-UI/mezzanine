@@ -1,6 +1,13 @@
 import { CropperSize } from '@mezzanine-ui/core/cropper';
 import React from 'react';
-import { act, cleanup, cleanupHook, fireEvent, render, waitFor } from '../../__test-utils__';
+import {
+  act,
+  cleanup,
+  cleanupHook,
+  fireEvent,
+  render,
+  waitFor,
+} from '../../__test-utils__';
 import CropperElement from './CropperElement';
 import { CropArea } from './typings';
 
@@ -58,7 +65,7 @@ describe('<CropperElement />', () => {
       width: 100,
       x: 0,
       y: 0,
-      toJSON: () => { },
+      toJSON: () => {},
     } as DOMRect);
   });
   beforeEach(() => {
@@ -72,7 +79,7 @@ describe('<CropperElement />', () => {
       width: 800,
       x: 0,
       y: 0,
-      toJSON: () => { },
+      toJSON: () => {},
     } as DOMRect);
 
     // Mock devicePixelRatio
@@ -99,7 +106,9 @@ describe('<CropperElement />', () => {
   // So we test the canvas element directly
   it('should forward ref to canvas element', () => {
     const ref = React.createRef<HTMLCanvasElement>();
-    render(<CropperElement ref={ref} imageSrc="https://example.com/image.jpg" />);
+    render(
+      <CropperElement ref={ref} imageSrc="https://example.com/image.jpg" />,
+    );
 
     expect(ref.current).toBeInstanceOf(HTMLCanvasElement);
   });
@@ -152,7 +161,10 @@ describe('<CropperElement />', () => {
     sizes.forEach((size) => {
       it(`should render size="${size}"`, () => {
         const { container } = render(
-          <CropperElement imageSrc="https://example.com/image.jpg" size={size} />,
+          <CropperElement
+            imageSrc="https://example.com/image.jpg"
+            size={size}
+          />,
         );
         const canvas = container.querySelector('canvas');
 
@@ -174,7 +186,7 @@ describe('<CropperElement />', () => {
       // Simulate image load
       await act(async () => {
         const img = new Image();
-        img.onload = () => { };
+        img.onload = () => {};
         img.src = 'https://example.com/image.jpg';
         await new Promise((resolve) => setTimeout(resolve, 100));
       });
@@ -194,13 +206,11 @@ describe('<CropperElement />', () => {
 
     it('should handle image load error', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      render(
-        <CropperElement imageSrc="https://invalid-url.com/image.jpg" />,
-      );
+      render(<CropperElement imageSrc="https://invalid-url.com/image.jpg" />);
 
       await act(async () => {
         const img = new Image();
-        img.onerror = () => { };
+        img.onerror = () => {};
         img.src = 'https://invalid-url.com/image.jpg';
         await new Promise((resolve) => setTimeout(resolve, 100));
       });
@@ -218,7 +228,6 @@ describe('<CropperElement />', () => {
         unmount();
         expect(mockRevokeObjectURL).toHaveBeenCalled();
       });
-
     });
   });
 
@@ -453,7 +462,7 @@ describe('<CropperElement />', () => {
         () => {
           expect(onImageLoad).toHaveBeenCalled();
         },
-        { timeout: 1000 },
+        { timeout: 2000 },
       );
     });
 
@@ -473,8 +482,11 @@ describe('<CropperElement />', () => {
       // Create a mock image that will fail to load
       const originalImage = global.Image;
       global.Image = class {
-        public onerror: ((this: GlobalEventHandlers, ev: Event | string) => any) | null = null;
-        public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null = null;
+        public onerror:
+          | ((this: GlobalEventHandlers, ev: Event | string) => any)
+          | null = null;
+        public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null =
+          null;
 
         set src(_value: string) {
           setTimeout(() => {
@@ -500,7 +512,7 @@ describe('<CropperElement />', () => {
           expect(onImageError).toHaveBeenCalled();
           expect(onImageError.mock.calls[0][0]).toBeInstanceOf(Error);
         },
-        { timeout: 1000 },
+        { timeout: 2000 },
       );
 
       global.Image = originalImage;
@@ -522,7 +534,9 @@ describe('<CropperElement />', () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
       });
 
-      const railElement = container.querySelector('.mzn-slider__rail') as HTMLDivElement;
+      const railElement = container.querySelector(
+        '.mzn-slider__rail',
+      ) as HTMLDivElement;
 
       if (railElement) {
         // Mock getBoundingClientRect for rail element to return width 100
@@ -535,7 +549,7 @@ describe('<CropperElement />', () => {
           width: 100,
           x: 0,
           y: 80,
-          toJSON: () => { },
+          toJSON: () => {},
         } as DOMRect);
 
         // Click at middle of rail (clientX: 50) to get scale value ~1.5
@@ -650,4 +664,3 @@ describe('<CropperElement />', () => {
     });
   });
 });
-

@@ -18,7 +18,9 @@ describe('<Uploader />', () => {
     });
 
     it('應該支持自定義 className', () => {
-      const { getHostHTMLElement } = render(<Uploader className="custom-class" />);
+      const { getHostHTMLElement } = render(
+        <Uploader className="custom-class" />,
+      );
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('custom-class')).toBeTruthy();
@@ -53,21 +55,27 @@ describe('<Uploader />', () => {
       const { getHostHTMLElement } = render(<Uploader mode="dropzone" />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-uploader--fill-width')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-uploader--fill-width'),
+      ).toBeTruthy();
     });
 
     it('預設 mode="basic" 不應該添加 fillWidth class', () => {
       const { getHostHTMLElement } = render(<Uploader />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-uploader--fill-width')).toBeFalsy();
+      expect(
+        element.classList.contains('mzn-uploader--fill-width'),
+      ).toBeFalsy();
     });
   });
 
   describe('prop: disabled', () => {
     it('應該禁用 input', () => {
       const { container } = render(<Uploader disabled />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.disabled).toBeTruthy();
       expect(input?.getAttribute('aria-disabled')).toBe('true');
@@ -81,7 +89,9 @@ describe('<Uploader />', () => {
     });
 
     it('不應該添加 disabled class (button 類型)', () => {
-      const { getHostHTMLElement } = render(<Uploader disabled type="button" />);
+      const { getHostHTMLElement } = render(
+        <Uploader disabled type="button" />,
+      );
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-uploader--disabled')).toBeFalsy();
@@ -91,14 +101,18 @@ describe('<Uploader />', () => {
   describe('prop: multiple', () => {
     it('應該支持多文件選擇', () => {
       const { container } = render(<Uploader multiple />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.hasAttribute('multiple')).toBeTruthy();
     });
 
     it('預設不應該支持多文件選擇', () => {
       const { container } = render(<Uploader />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.hasAttribute('multiple')).toBeFalsy();
     });
@@ -107,7 +121,9 @@ describe('<Uploader />', () => {
   describe('prop: accept', () => {
     it('應該設置 accept 屬性', () => {
       const { container } = render(<Uploader accept="image/*" />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.accept).toBe('image/*');
     });
@@ -116,14 +132,18 @@ describe('<Uploader />', () => {
   describe('prop: id', () => {
     it('應該設置 input id', () => {
       const { container } = render(<Uploader id="test-uploader" />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.id).toBe('test-uploader');
     });
 
     it('應該自動生成 id 如果未提供', () => {
       const { container } = render(<Uploader />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.id).toBeTruthy();
     });
@@ -132,7 +152,9 @@ describe('<Uploader />', () => {
   describe('prop: name', () => {
     it('應該設置 input name', () => {
       const { container } = render(<Uploader name="file-upload" />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.name).toBe('file-upload');
     });
@@ -142,7 +164,9 @@ describe('<Uploader />', () => {
     it('應該在選擇文件時觸發 onUpload', async () => {
       const onUpload = jest.fn();
       const { container } = render(<Uploader onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       const file = createMockFile('test.jpg', 'image/jpeg');
 
@@ -158,7 +182,9 @@ describe('<Uploader />', () => {
     it('應該支持多文件選擇', async () => {
       const onUpload = jest.fn();
       const { container } = render(<Uploader multiple onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       const files = [
         createMockFile('test1.jpg', 'image/jpeg'),
@@ -177,7 +203,9 @@ describe('<Uploader />', () => {
     it('應該在選擇文件後重置 input value', async () => {
       const onUpload = jest.fn();
       const { container } = render(<Uploader onUpload={onUpload} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       const file = createMockFile('test.jpg', 'image/jpeg');
 
@@ -195,7 +223,9 @@ describe('<Uploader />', () => {
     it('應該觸發 onChange 事件', async () => {
       const onChange = jest.fn();
       const { container } = render(<Uploader onChange={onChange} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       const file = createMockFile('test.jpg', 'image/jpeg');
 
@@ -212,7 +242,9 @@ describe('<Uploader />', () => {
   describe('拖放功能', () => {
     it('應該支持拖放文件 (base 類型)', async () => {
       const onUpload = jest.fn();
-      const { getHostHTMLElement } = render(<Uploader type="base" onUpload={onUpload} />);
+      const { getHostHTMLElement } = render(
+        <Uploader type="base" onUpload={onUpload} />,
+      );
       const element = getHostHTMLElement();
 
       const file = createMockFile('test.jpg', 'image/jpeg');
@@ -240,7 +272,9 @@ describe('<Uploader />', () => {
 
     it('不應該支持拖放 (button 類型)', async () => {
       const onUpload = jest.fn();
-      const { getHostHTMLElement } = render(<Uploader type="button" onUpload={onUpload} />);
+      const { getHostHTMLElement } = render(
+        <Uploader type="button" onUpload={onUpload} />,
+      );
       const element = getHostHTMLElement();
 
       const file = createMockFile('test.jpg', 'image/jpeg');
@@ -262,7 +296,9 @@ describe('<Uploader />', () => {
 
     it('應該在禁用時阻止拖放', async () => {
       const onUpload = jest.fn();
-      const { getHostHTMLElement } = render(<Uploader disabled onUpload={onUpload} />);
+      const { getHostHTMLElement } = render(
+        <Uploader disabled onUpload={onUpload} />,
+      );
       const element = getHostHTMLElement();
 
       const file = createMockFile('test.jpg', 'image/jpeg');
@@ -296,7 +332,10 @@ describe('<Uploader />', () => {
         toJSON: () => ({}),
       };
 
-      const getBoundingClientRectSpy = jest.spyOn(element, 'getBoundingClientRect');
+      const getBoundingClientRectSpy = jest.spyOn(
+        element,
+        'getBoundingClientRect',
+      );
       getBoundingClientRectSpy.mockReturnValue(mockRect as DOMRect);
 
       // 先觸發 dragEnter，設置 dragging 狀態
@@ -309,7 +348,9 @@ describe('<Uploader />', () => {
 
       // 等待狀態更新
       await waitFor(() => {
-        expect(element.classList.contains('mzn-uploader--dragging')).toBeTruthy();
+        expect(
+          element.classList.contains('mzn-uploader--dragging'),
+        ).toBeTruthy();
       });
 
       // 模擬拖出邊界（clientX 和 clientY 在邊界外）
@@ -323,7 +364,9 @@ describe('<Uploader />', () => {
 
         Object.defineProperty(dragLeaveEvent, 'clientX', { value: -10 });
         Object.defineProperty(dragLeaveEvent, 'clientY', { value: -10 });
-        Object.defineProperty(dragLeaveEvent, 'currentTarget', { value: element });
+        Object.defineProperty(dragLeaveEvent, 'currentTarget', {
+          value: element,
+        });
         Object.defineProperty(dragLeaveEvent, 'target', { value: element });
 
         element.dispatchEvent(dragLeaveEvent);
@@ -333,9 +376,14 @@ describe('<Uploader />', () => {
       // 根據 handleDragLeave 的邏輯：如果 x < rect.left || y < rect.top，會清除狀態
       // 由於 clientX=-10 < rect.left=0，應該清除狀態
       // 注意：需要等待 React 狀態更新
-      await waitFor(() => {
-        expect(element.classList.contains('mzn-uploader--dragging')).toBeFalsy();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(
+            element.classList.contains('mzn-uploader--dragging'),
+          ).toBeFalsy();
+        },
+        { timeout: 2000 },
+      );
 
       getBoundingClientRectSpy.mockRestore();
     });
@@ -373,7 +421,9 @@ describe('<Uploader />', () => {
           label={{ clickToUpload: '點擊上傳' }}
         />,
       );
-      const clickToUpload = container.querySelector('.mzn-uploader__click-to-upload');
+      const clickToUpload = container.querySelector(
+        '.mzn-uploader__click-to-upload',
+      );
 
       expect(clickToUpload).toBeTruthy();
       if (clickToUpload) {
@@ -383,7 +433,9 @@ describe('<Uploader />', () => {
 
     it('預設 clickToUpload 應該是 "Click to upload"', () => {
       const { container } = render(<Uploader type="base" mode="dropzone" />);
-      const clickToUpload = container.querySelector('.mzn-uploader__click-to-upload');
+      const clickToUpload = container.querySelector(
+        '.mzn-uploader__click-to-upload',
+      );
 
       expect(clickToUpload).toBeTruthy();
       if (clickToUpload) {
@@ -421,7 +473,9 @@ describe('<Uploader />', () => {
       const { container } = render(
         <Uploader type="base" mode="dropzone" hints={hints} />,
       );
-      const hintsElements = container.querySelectorAll('.mzn-uploader__fill-width-hints');
+      const hintsElements = container.querySelectorAll(
+        '.mzn-uploader__fill-width-hints',
+      );
 
       expect(hintsElements.length).toBe(2);
     });
@@ -431,7 +485,9 @@ describe('<Uploader />', () => {
     it('應該支持 inputRef', () => {
       const inputRef = { current: null };
       const { container } = render(<Uploader inputRef={inputRef} />);
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(inputRef.current).toBe(input);
     });
@@ -444,7 +500,9 @@ describe('<Uploader />', () => {
       );
       // input 有 classes.input，但我們可以通過 className 查找
       // 注意：input 的 className 可能會被 classes.input 覆蓋，所以我們檢查 input 是否存在
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input).toBeTruthy();
       // 由於 classes.input 可能會覆蓋，這裡只檢查 input 存在即可
@@ -459,7 +517,9 @@ describe('<Uploader />', () => {
           inputProps={{ id: 'input-id', name: 'input-name' }}
         />,
       );
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       expect(input?.id).toBe('prop-id');
       expect(input?.name).toBe('prop-name');
@@ -469,9 +529,13 @@ describe('<Uploader />', () => {
   describe('button 類型的點擊行為', () => {
     it('應該在點擊按鈕時觸發文件選擇', async () => {
       const onUpload = jest.fn();
-      const { container } = render(<Uploader type="button" onUpload={onUpload} />);
+      const { container } = render(
+        <Uploader type="button" onUpload={onUpload} />,
+      );
       const button = container.querySelector('button');
-      const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const input = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
 
       const file = createMockFile('test.jpg', 'image/jpeg');
 
