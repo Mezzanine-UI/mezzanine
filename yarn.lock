@@ -5781,6 +5781,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/core@workspace:packages/core"
   dependencies:
+    "@floating-ui/dom": "npm:^1.7.4"
     "@js-temporal/polyfill": "npm:^0.5.1"
     "@mezzanine-ui/icons": "npm:1.0.2"
     "@mezzanine-ui/system": "npm:1.0.2"
@@ -5884,6 +5885,7 @@ __metadata:
     "@mezzanine-ui/core": "npm:1.2.0"
     "@mezzanine-ui/icons": "npm:1.0.2"
     "@mezzanine-ui/system": "npm:1.0.2"
+    "@tanstack/vue-virtual": "npm:3.13.13"
     "@types/lodash": "npm:^4.17.20"
     clsx: "npm:^2.1.1"
     dayjs: "npm:^1.11.19"
@@ -8352,6 +8354,17 @@ __metadata:
   version: 3.13.13
   resolution: "@tanstack/virtual-core@npm:3.13.13"
   checksum: 10c0/0411295054a6fff21a22944c224f2e414c77c6455015b319f378ea3e9937aefb3b43f4113df2ab9096e5f3db673b085cd778d69ec9918f42bbb94c2dbd43a639
+  languageName: node
+  linkType: hard
+
+"@tanstack/vue-virtual@npm:3.13.13":
+  version: 3.13.13
+  resolution: "@tanstack/vue-virtual@npm:3.13.13"
+  dependencies:
+    "@tanstack/virtual-core": "npm:3.13.13"
+  peerDependencies:
+    vue: ^2.7.0 || ^3.0.0
+  checksum: 10c0/04669351bc47782817419477843fdeb65bccbf365b0c5bf9d6416d3c28c5c56861c13abfeaaf4f6443e490ddd9fa6b414902446260fd91a0a69e2d93a9af9025
   languageName: node
   linkType: hard
 

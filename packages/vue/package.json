@@ -49,6 +49,7 @@
     "@mezzanine-ui/core": "1.2.0",
     "@mezzanine-ui/icons": "1.0.2",
     "@mezzanine-ui/system": "1.0.2",
+    "@tanstack/vue-virtual": "3.13.13",
     "clsx": "^2.1.1",
     "keycode": "^2.2.1",
     "lodash": "^4.17.21",
