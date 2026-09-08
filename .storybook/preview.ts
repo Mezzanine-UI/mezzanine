@@ -15,6 +15,13 @@ const preview: Preview = {
     },
     options: {
       storySort: {
+        // Without this the sidebar falls back to the order the builder happens
+        // to index files in — webpack's path order here, Vite's module graph in
+        // `.storybook-vue`, which is no order at all. Sorting explicitly keeps
+        // the two Storybooks comparable and survives a file being moved.
+        // `includeNames` stays at its default, so this orders sections and
+        // components only and leaves each component's stories as declared.
+        method: 'alphabetical',
         order: [
           'Foundation',
           'Motion',
