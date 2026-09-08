@@ -8,8 +8,10 @@ import type { EmptyProps } from '../empty/empty.types';
 import MznFade from '../transition/fade.vue';
 import MznTableExpandedRow from './table-expanded-row.vue';
 import MznTableRow from './table-row.vue';
+import type { TableDraggableProvided } from './table-drag-and-drop.types';
 import { useTableContext } from './table-context';
 import { useTableDataContext } from './table-data-context';
+import { useTableDraggableRow } from './use-table-drag-and-drop';
 import { useTableVirtualization } from './use-table-virtualization';
 
 /**
@@ -33,6 +35,22 @@ const virtualization = useTableVirtualization({
   scrollContainerRef:
     table.value.scrollContainerRef ?? shallowRef<HTMLDivElement | null>(null),
 });
+
+/** Feature: Drag n Drop */
+const dragAndDrop = useTableDraggableRow();
+
+/**
+ * React wraps a row in a `Draggable` only when dragging is on and the body is
+ * not virtualized — the two measure the same rows in incompatible ways.
+ */
+const draggableProvidedFor = (
+  record: (typeof data.value.dataSource)[number],
+  index: number,
+): TableDraggableProvided | undefined => {
+  if (!table.value.draggable?.enabled || virtualization.value) return undefined;
+
+  return dragAndDrop?.value.draggableFor(getRowKey(record), index);
+};
 
 /** Feature: Empty State */
 const isEmpty = computed((): boolean => !table.value.dataSource.length);
@@ -121,6 +139,7 @@ const itemsToRender = computed(() =>
       </tr>
       <template v-for="item in itemsToRender" :key="getRowKey(item.record)">
         <MznTableRow
+          :draggable-provided="draggableProvidedFor(item.record, item.index)"
           :measure-ref="item.measureRef"
           :record="item.record"
           :row-index="item.index"

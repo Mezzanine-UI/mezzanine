@@ -25,7 +25,11 @@ import { provideTableContext } from './table-context';
 import type { TableContextValue } from './table-context';
 import { provideTableDataContext } from './table-data-context';
 import { provideTableSuperContext } from './table-super-context';
-import { useTableDragAndDrop } from './use-table-drag-and-drop';
+import {
+  TABLE_DRAG_HANDLE_DESCRIPTION,
+  TABLE_DRAG_VISUALLY_HIDDEN,
+  useTableDragAndDrop,
+} from './use-table-drag-and-drop';
 import { useTableExpansion } from './use-table-expansion';
 import { useTableFixedOffsets } from './use-table-fixed-offsets';
 import { useTableResizedColumns } from './use-table-resized-columns';
@@ -257,8 +261,12 @@ const fixedOffsetsState = useTableFixedOffsets({
   getResizedColumnWidth: columnState.getResizedColumnWidth,
 });
 
-/** Feature: Drag n Drop — the static half; the drag itself lands in its own wave. */
-const { droppable } = useTableDragAndDrop();
+/** Feature: Drag n Drop */
+const { announcementId, droppable, hiddenTextId, message } =
+  useTableDragAndDrop({
+    dataSource: () => props.dataSource,
+    draggable: () => props.draggable,
+  });
 
 /** Context values */
 provideTableContext<T>(
@@ -492,6 +500,19 @@ const handleScrollbarViewportReady = (viewport: HTMLDivElement): void => {
         <tbody v-if="!nested && droppable.placeholder" />
       </table>
     </MznScrollbar>
+    <Teleport v-if="!nested" to="body">
+      <div
+        :id="announcementId"
+        aria-atomic="true"
+        aria-live="assertive"
+        :style="TABLE_DRAG_VISUALLY_HIDDEN"
+      >
+        {{ message }}
+      </div>
+      <div :id="hiddenTextId" :style="{ display: 'none' }">
+        {{ TABLE_DRAG_HANDLE_DESCRIPTION }}
+      </div>
+    </Teleport>
     <MznTablePagination
       v-if="pagination"
       ref="paginationRef"
