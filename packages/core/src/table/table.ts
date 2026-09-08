@@ -1,6 +1,6 @@
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
-import type { Placement } from '@floating-ui/react-dom';
+import type { Placement } from '@floating-ui/dom';
 import type { ButtonVariant, ButtonIconType } from '@mezzanine-ui/core/button';
 
 export const tablePrefix = 'mzn-table';
