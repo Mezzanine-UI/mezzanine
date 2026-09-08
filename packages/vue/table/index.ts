@@ -142,10 +142,17 @@ export type {
   TableDroppableProvided,
 } from './table-drag-and-drop.types';
 export {
+  TABLE_DRAG_AND_DROP_CONTEXT,
+  TABLE_DRAG_HANDLE_DESCRIPTION,
   TABLE_DROPPABLE_ID,
   useTableDragAndDrop,
+  useTableDraggableRow,
 } from './use-table-drag-and-drop';
-export type { UseTableDragAndDropReturn } from './use-table-drag-and-drop';
+export type {
+  TableDragAndDropContextValue,
+  UseTableDragAndDropOptions,
+  UseTableDragAndDropReturn,
+} from './use-table-drag-and-drop';
 export { useTableVirtualization } from './use-table-virtualization';
 export type {
   UseTableVirtualizationOptions,
