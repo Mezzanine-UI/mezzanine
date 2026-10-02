@@ -141,6 +141,25 @@ $z-index-config: (
   }
 }
 
+// Size containment keeps the table's min-content width from leaking into
+// grid / flex ancestors, so wide tables scroll inside their own viewport
+// instead of widening the page layout.
+.#{$scroll-container-prefix} {
+  contain: inline-size;
+}
+
+// Containment also hides the table's max-content width from shrink-to-fit
+// ancestors (e.g. `width: max-content` modals). This zero-height replaced
+// element restores it: its percentage max-width makes its min-content
+// contribution zero while its max-content contribution stays the table width.
+.#{$prefix}__intrinsic-sizer {
+  display: block;
+  width: var(--mzn-table-intrinsic-width, 0);
+  max-width: 100%;
+  height: 0;
+  pointer-events: none;
+}
+
 .#{$prefix} {
   border-collapse: separate;
   border-spacing: 0;
