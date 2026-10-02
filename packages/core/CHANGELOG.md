@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.1...@mezzanine-ui/core@1.2.2) (2026-10-02)
+
+### Bug Fixes
+
+- **core/table:** keep a wide table from widening grid and flex layouts ([ce9782e](https://github.com/Mezzanine-UI/mezzanine/commit/ce9782e54101c8c5396ae9040fabb8e610556053)), closes [Mezzanine-UI/mezzanine#467](https://github.com/Mezzanine-UI/mezzanine/issues/467)
+
 ## [1.2.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.0...@mezzanine-ui/core@1.2.1) (2026-09-08)
 
 ### Bug Fixes

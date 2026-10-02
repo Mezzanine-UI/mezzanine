@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.15](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.14...@mezzanine-ui/ng@1.0.0-rc.15) (2026-10-02)
+
+### Bug Fixes
+
+- **ng/scrollbar:** respect a caller-supplied options.overflow ([6c49e25](https://github.com/Mezzanine-UI/mezzanine/commit/6c49e252c3589b5ceef697ee29b58d8d9d70cd80))
+
+### Features
+
+- **ng/table:** add scrollbarOptions and contain the scroll area ([d505852](https://github.com/Mezzanine-UI/mezzanine/commit/d505852c6a35d55b91640d18a0a0e81244d3c345))
+
 # [1.0.0-rc.14](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.13...@mezzanine-ui/ng@1.0.0-rc.14) (2026-09-08)
 
 **Note:** Version bump only for package @mezzanine-ui/ng

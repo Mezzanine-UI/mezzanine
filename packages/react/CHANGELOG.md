@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.5.1...@mezzanine-ui/react@1.6.0) (2026-10-02)
+
+### Bug Fixes
+
+- **react/scrollbar:** respect a caller-supplied options.overflow ([85aeeed](https://github.com/Mezzanine-UI/mezzanine/commit/85aeeedbb93e6f4fb96cb6117f0f53dd27f56c23))
+
+### Features
+
+- **react/table:** add scrollbarOptions and contain the scroll area ([1c6ca2a](https://github.com/Mezzanine-UI/mezzanine/commit/1c6ca2a6a6ec135363272031910bb3d38cce90e5))
+
 ## [1.5.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.5.0...@mezzanine-ui/react@1.5.1) (2026-09-08)
 
 ### Bug Fixes
