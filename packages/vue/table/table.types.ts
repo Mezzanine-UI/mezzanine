@@ -1,3 +1,4 @@
+import type { PartialOptions } from 'overlayscrollbars';
 import type { VNodeChild } from 'vue';
 import type {
   ColumnAlign,
@@ -341,6 +342,18 @@ export interface TableProps<T extends TableDataSource = TableDataSource> {
    * `y` is required when `virtualized` is true.
    */
   scroll?: TableScroll;
+  /**
+   * Options forwarded to the table's inner `MznScrollbar` (OverlayScrollbars).
+   * Merged per key over the `MznScrollbar` defaults, so only the keys you pass change.
+   * Ignored when `nested` is true, because nested tables render without a scrollbar.
+   * Do not set `overflow` to `'visible'` together with `scroll.virtualized`:
+   * virtualization needs the table's own scroll viewport.
+   * @example
+   * <!-- Let an outer scroll container handle overflow instead of the table -->
+   * <MznTable :scrollbar-options="{ overflow: { x: 'visible', y: 'visible' } }" />
+   * @see https://kingsora.github.io/OverlayScrollbars/#!documentation/options
+   */
+  scrollbarOptions?: PartialOptions;
   /** Row indexes where a separator border should be displayed */
   separatorAtRowIndexes?: number[];
   /**
