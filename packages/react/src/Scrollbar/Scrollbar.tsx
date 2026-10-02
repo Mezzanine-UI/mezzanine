@@ -48,6 +48,7 @@ const Scrollbar = forwardRef<
       overflow: {
         x: 'scroll',
         y: 'scroll',
+        ...options?.overflow,
       },
       scrollbars: {
         autoHide: 'scroll',
