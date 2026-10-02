@@ -15,6 +15,7 @@ import type {
   TableSize,
   TableToggleable,
 } from '@mezzanine-ui/core/table';
+import type { PartialOptions } from 'overlayscrollbars';
 import type { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import type { EmptyProps } from '../Empty';
 import type { TablePaginationProps } from './components/TablePagination';
@@ -86,6 +87,22 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   rowSelection?: TableRowSelection<T>;
   /** Semantic state applied to each row. Accepts a state string or a function that receives the row data and returns a state string. */
   rowState?: TableRowState | ((rowData: T) => TableRowState | undefined);
+  /**
+   * Options forwarded to the table's inner `Scrollbar` (OverlayScrollbars).
+   * Merged per key over the `Scrollbar` defaults, so only the keys you pass change.
+   * Ignored when `nested` is true, because nested tables render without a `Scrollbar`.
+   * Do not set `overflow` to `'visible'` together with `scroll.virtualized`:
+   * virtualization needs the table's own scroll viewport.
+   * Memoize the object (or hoist it) to avoid re-applying options on every render.
+   * @example
+   * // Let an outer scroll container handle overflow instead of the table
+   * <Table scrollbarOptions={{ overflow: { x: 'visible', y: 'visible' } }} />
+   * @example
+   * // Keep the overlay scrollbar visible instead of hiding it after scrolling
+   * <Table scrollbarOptions={{ scrollbars: { autoHide: 'never' } }} />
+   * @see https://kingsora.github.io/OverlayScrollbars/#!documentation/options
+   */
+  scrollbarOptions?: PartialOptions;
   /** Row indexes where a separator border should be displayed */
   separatorAtRowIndexes?: number[];
   /** Show header row */

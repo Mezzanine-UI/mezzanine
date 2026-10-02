@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { OverlayScrollbars } from 'overlayscrollbars';
 import { cleanup, render, screen } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -126,6 +127,116 @@ describe('<Table />', () => {
       const table = getHostHTMLElement().querySelector('table');
 
       expect(table?.style.width).toBe('100%');
+    });
+  });
+
+  describe('scrollbarOptions prop', () => {
+    const getScrollbarOptions = (host: HTMLElement) => {
+      const scrollHost = host.querySelector<HTMLElement>('.mzn-scrollbar');
+      const instance = scrollHost ? OverlayScrollbars(scrollHost) : undefined;
+
+      if (!instance) throw new Error('OverlayScrollbars was not initialised');
+
+      return instance.options();
+    };
+
+    it('should keep the Scrollbar defaults when not provided', () => {
+      const { getHostHTMLElement } = render(
+        <Table columns={testColumns} dataSource={testData} />,
+      );
+      const options = getScrollbarOptions(getHostHTMLElement());
+
+      expect(options.overflow).toEqual({ x: 'scroll', y: 'scroll' });
+      expect(options.scrollbars.autoHide).toBe('scroll');
+    });
+
+    it('should forward scrollbarOptions to the inner Scrollbar', () => {
+      const { getHostHTMLElement } = render(
+        <Table
+          columns={testColumns}
+          dataSource={testData}
+          scrollbarOptions={{
+            overflow: { x: 'visible', y: 'visible' },
+            scrollbars: { autoHide: 'never' },
+          }}
+        />,
+      );
+      const options = getScrollbarOptions(getHostHTMLElement());
+
+      expect(options.overflow).toEqual({ x: 'visible', y: 'visible' });
+      expect(options.scrollbars.autoHide).toBe('never');
+    });
+
+    it('should not create a Scrollbar for nested tables', () => {
+      const { getHostHTMLElement } = render(
+        <Table
+          columns={testColumns}
+          dataSource={testData}
+          nested
+          scrollbarOptions={{ overflow: { x: 'visible' } }}
+        />,
+      );
+
+      expect(getHostHTMLElement().querySelector('.mzn-scrollbar')).toBeNull();
+    });
+  });
+
+  describe('Intrinsic width containment', () => {
+    it('should contain the scroll area and render a hidden sizer', () => {
+      const { getHostHTMLElement } = render(
+        <Table columns={testColumns} dataSource={testData} />,
+      );
+      const host = getHostHTMLElement();
+      const sizer = host.querySelector('.mzn-table__intrinsic-sizer');
+
+      expect(
+        host.querySelector('.mzn-scrollbar.mzn-table-scroll-area'),
+      ).not.toBeNull();
+      expect(sizer?.tagName.toLowerCase()).toBe('svg');
+      expect(sizer).toHaveAttribute('aria-hidden', 'true');
+      expect(sizer).toHaveAttribute('focusable', 'false');
+    });
+
+    it('should skip containment and the sizer for nested tables', () => {
+      const { getHostHTMLElement } = render(
+        <Table columns={testColumns} dataSource={testData} nested />,
+      );
+      const host = getHostHTMLElement();
+
+      expect(host.querySelector('.mzn-table-scroll-area')).toBeNull();
+      expect(host.querySelector('.mzn-table__intrinsic-sizer')).toBeNull();
+    });
+
+    it('should expose the measured table width as a CSS variable', () => {
+      const OriginalResizeObserver = global.ResizeObserver;
+      const callbacks: ResizeObserverCallback[] = [];
+
+      global.ResizeObserver = class {
+        constructor(callback: ResizeObserverCallback) {
+          callbacks.push(callback);
+        }
+
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      } as unknown as typeof ResizeObserver;
+
+      try {
+        const { getHostHTMLElement } = render(
+          <Table columns={testColumns} dataSource={testData} />,
+        );
+        const host = getHostHTMLElement();
+        const table = host.querySelector('table') as HTMLTableElement;
+
+        Object.defineProperty(table, 'scrollWidth', { value: 1180 });
+        callbacks.forEach((callback) => callback([], {} as ResizeObserver));
+
+        expect(host.style.getPropertyValue('--mzn-table-intrinsic-width')).toBe(
+          '1180px',
+        );
+      } finally {
+        global.ResizeObserver = OriginalResizeObserver;
+      }
     });
   });
 

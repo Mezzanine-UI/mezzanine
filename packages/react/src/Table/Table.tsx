@@ -80,6 +80,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     rowHeightPreset = 'base',
     rowSelection,
     scroll,
+    scrollbarOptions,
     showHeader = true,
     size = 'main',
     sticky = true,
@@ -612,6 +613,28 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     return;
   }, []);
 
+  /** Expose the table's own width for the intrinsic sizer (see core table styles) */
+  const tableRef = useRef<HTMLTableElement | null>(null);
+
+  useEffect(() => {
+    const { current: tableEl } = tableRef;
+
+    if (nested || !tableEl) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      hostRef.current?.style.setProperty(
+        '--mzn-table-intrinsic-width',
+        `${tableEl.scrollWidth}px`,
+      );
+    });
+
+    resizeObserver.observe(tableEl);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [nested]);
+
   /** Main render */
   const renderMainTable = (droppableProvided?: DroppableProvided) => {
     if (droppableProvided) {
@@ -631,19 +654,24 @@ function TableInner<T extends TableDataSource = TableDataSource>(
           >
             <Scrollbar
               {...droppableProvided?.droppableProps}
-              className={sticky ? classes.sticky : undefined}
+              className={
+                cx(!nested && classes.scrollArea, sticky && classes.sticky) ||
+                undefined
+              }
               defer={false}
               disabled={nested}
               events={scrollbarEvents}
-              onViewportReady={handleScrollbarViewportReady}
-              style={scrollContainerStyle}
               maxHeight={scroll?.y}
+              onViewportReady={handleScrollbarViewportReady}
+              options={scrollbarOptions}
+              style={scrollContainerStyle}
             >
               <table
                 className={cx(
                   classes.root,
                   size === 'sub' ? classes.sub : classes.main,
                 )}
+                ref={tableRef}
                 style={tableStyle}
               >
                 <TableColGroup />
@@ -654,6 +682,13 @@ function TableInner<T extends TableDataSource = TableDataSource>(
                 ) : null}
               </table>
             </Scrollbar>
+            {!nested && (
+              <svg
+                aria-hidden="true"
+                className={classes.intrinsicSizer}
+                focusable="false"
+              />
+            )}
             {pagination && (
               <TablePaginationComponent {...pagination} ref={paginationRef} />
             )}
