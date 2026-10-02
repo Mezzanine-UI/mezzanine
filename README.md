@@ -8,10 +8,10 @@ Current releases:
 
 ```json
 {
-  "@mezzanine-ui/core": "1.2.1",
-  "@mezzanine-ui/react": "1.5.1",
-  "@mezzanine-ui/ng": "1.0.0-rc.14",
-  "@mezzanine-ui/vue": "1.0.0-rc.1",
+  "@mezzanine-ui/core": "1.2.2",
+  "@mezzanine-ui/react": "1.6.0",
+  "@mezzanine-ui/ng": "1.0.0-rc.15",
+  "@mezzanine-ui/vue": "1.0.0-rc.2",
   "@mezzanine-ui/system": "1.0.2",
   "@mezzanine-ui/icons": "1.0.2"
 }
