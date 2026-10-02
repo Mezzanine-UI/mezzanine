@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { OverlayScrollbars, type PartialOptions } from 'overlayscrollbars';
 import { MznScrollbar } from './scrollbar.component';
 
 @Component({
@@ -109,5 +110,55 @@ describe('MznScrollbar', () => {
 
     expect(host.viewportReadyPayload).toBeTruthy();
     expect(host.viewportReadyPayload?.viewport).toBeTruthy();
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [MznScrollbar],
+  template: `
+    <div mznScrollbar [defer]="false" [options]="options">
+      <p>Content</p>
+    </div>
+  `,
+})
+class OptionsHostComponent {
+  options: PartialOptions | undefined = undefined;
+}
+
+describe('MznScrollbar options', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [OptionsHostComponent] });
+  });
+
+  async function getOptions(
+    options: PartialOptions | undefined,
+  ): Promise<ReturnType<OverlayScrollbars['options']>> {
+    const fixture = TestBed.createComponent(OptionsHostComponent);
+
+    fixture.componentInstance.options = options;
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const el = fixture.nativeElement.querySelector('[mznScrollbar]');
+    const instance = OverlayScrollbars(el);
+
+    if (!instance) throw new Error('OverlayScrollbars was not initialised');
+
+    return instance.options();
+  }
+
+  it('should scroll on both axes and auto-hide by default', async () => {
+    const options = await getOptions(undefined);
+
+    expect(options.overflow).toEqual({ x: 'scroll', y: 'scroll' });
+    expect(options.scrollbars.autoHide).toBe('scroll');
+    expect(options.scrollbars.autoHideDelay).toBe(600);
+  });
+
+  it('should respect a caller-supplied options.overflow', async () => {
+    const options = await getOptions({ overflow: { x: 'hidden' } });
+
+    expect(options.overflow).toEqual({ x: 'hidden', y: 'scroll' });
   });
 });

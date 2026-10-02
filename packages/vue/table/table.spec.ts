@@ -1,4 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils';
+import { OverlayScrollbars } from 'overlayscrollbars';
 import { h } from 'vue';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';
 import type { TableRowSelectionCheckbox } from '@mezzanine-ui/core/table';
@@ -33,6 +34,94 @@ const bodyRows = (wrapper: ReturnType<typeof render>) =>
   wrapper.findAll(`tbody.${classes.body} tr`);
 
 describe('<MznTable />', () => {
+  describe('prop: scrollbarOptions', () => {
+    const getScrollbarOptions = (wrapper: ReturnType<typeof render>) => {
+      const scrollHost = (wrapper.element as HTMLElement).querySelector(
+        '.mzn-scrollbar',
+      ) as HTMLElement | null;
+      const instance = scrollHost ? OverlayScrollbars(scrollHost) : undefined;
+
+      if (!instance) throw new Error('OverlayScrollbars was not initialised');
+
+      return instance.options();
+    };
+
+    it('should keep the Scrollbar defaults when not provided', () => {
+      const options = getScrollbarOptions(render());
+
+      expect(options.overflow).toEqual({ x: 'scroll', y: 'scroll' });
+      expect(options.scrollbars.autoHide).toBe('scroll');
+    });
+
+    it('should forward scrollbarOptions to the inner Scrollbar', () => {
+      const options = getScrollbarOptions(
+        render({
+          scrollbarOptions: {
+            overflow: { x: 'visible', y: 'visible' },
+            scrollbars: { autoHide: 'never' },
+          },
+        }),
+      );
+
+      expect(options.overflow).toEqual({ x: 'visible', y: 'visible' });
+      expect(options.scrollbars.autoHide).toBe('never');
+    });
+  });
+
+  describe('intrinsic width containment', () => {
+    it('should contain the scroll area and render a hidden sizer', () => {
+      const wrapper = render();
+      const sizer = wrapper.find(`.${classes.intrinsicSizer}`);
+
+      expect(
+        wrapper.find(`.mzn-scrollbar.${classes.scrollArea}`).exists(),
+      ).toBe(true);
+      expect(sizer.element.tagName.toLowerCase()).toBe('svg');
+      expect(sizer.attributes('aria-hidden')).toBe('true');
+      expect(sizer.attributes('focusable')).toBe('false');
+    });
+
+    it('should skip containment and the sizer for nested tables', () => {
+      const wrapper = render({ nested: true });
+
+      expect(wrapper.find(`.${classes.scrollArea}`).exists()).toBe(false);
+      expect(wrapper.find(`.${classes.intrinsicSizer}`).exists()).toBe(false);
+    });
+
+    it('should expose the measured table width as a CSS variable', async () => {
+      const OriginalResizeObserver = globalThis.ResizeObserver;
+      const callbacks: ResizeObserverCallback[] = [];
+
+      globalThis.ResizeObserver = class {
+        constructor(callback: ResizeObserverCallback) {
+          callbacks.push(callback);
+        }
+
+        observe(): void {}
+        unobserve(): void {}
+        disconnect(): void {}
+      } as unknown as typeof ResizeObserver;
+
+      try {
+        const wrapper = render();
+
+        await flushPromises();
+
+        const host = wrapper.element as HTMLElement;
+        const table = host.querySelector('table') as HTMLTableElement;
+
+        Object.defineProperty(table, 'scrollWidth', { value: 1180 });
+        callbacks.forEach((callback) => callback([], {} as ResizeObserver));
+
+        expect(host.style.getPropertyValue('--mzn-table-intrinsic-width')).toBe(
+          '1180px',
+        );
+      } finally {
+        globalThis.ResizeObserver = OriginalResizeObserver;
+      }
+    });
+  });
+
   it('should render a row per record and a cell per column', () => {
     const wrapper = render();
 

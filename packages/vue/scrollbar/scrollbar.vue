@@ -86,6 +86,7 @@ const mergedOptions = computed(
     overflow: {
       x: 'scroll',
       y: 'scroll',
+      ...props.options?.overflow,
     },
     scrollbars: {
       autoHide: 'scroll',

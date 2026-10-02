@@ -17,6 +17,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import type { PartialOptions } from 'overlayscrollbars';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -260,6 +261,7 @@ function throttleRaf(
     '[attr.pinnable]': 'null',
     '[attr.resizable]': 'null',
     '[attr.scroll]': 'null',
+    '[attr.scrollbarOptions]': 'null',
     '[attr.toggleable]': 'null',
     '[attr.transitionState]': 'null',
     '[attr.rowHeightPreset]': 'null',
@@ -276,12 +278,16 @@ function throttleRaf(
     <!-- Scrollbar wrapper mirrors React <Scrollbar class="mzn-table--sticky"> -->
     <div
       mznScrollbar
+      [class.mzn-table-scroll-area]="!nested()"
       [class.mzn-table--sticky]="sticky()"
+      [defer]="false"
       [disabled]="nested()"
       [maxHeight]="scrollMaxHeight() ?? undefined"
+      [options]="scrollbarOptions()"
       (viewportReady)="onScrollViewportReady($event)"
     >
       <table
+        #tableEl
         [class]="rootClasses()"
         [style.width]="fullWidth() ? '100%' : null"
       >
@@ -842,6 +848,13 @@ function throttleRaf(
         </tbody>
       </table>
     </div>
+    @if (!nested()) {
+      <svg
+        aria-hidden="true"
+        class="mzn-table__intrinsic-sizer"
+        focusable="false"
+      ></svg>
+    }
     @if (pagination(); as pg) {
       <div #paginationHost [class]="paginationWrapperClass">
         <nav
@@ -1504,6 +1517,24 @@ export class MznTable {
       this.destroyRef.onDestroy(() => ro.disconnect());
     });
 
+    // Expose the table's own width for the intrinsic sizer (see core table
+    // styles). Mirrors React `Table.tsx`'s `tableRef` ResizeObserver.
+    effect((onCleanup) => {
+      const tableEl = this.tableElRef()?.nativeElement;
+
+      if (this.nested() || !tableEl) return;
+
+      const ro = new ResizeObserver(() => {
+        this.hostEl.nativeElement.style.setProperty(
+          '--mzn-table-intrinsic-width',
+          `${tableEl.scrollWidth}px`,
+        );
+      });
+
+      ro.observe(tableEl);
+      onCleanup(() => ro.disconnect());
+    });
+
     // Track pagination element height and write it to a CSS variable on the
     // table host (`--mzn-table-pagination-height`) so the bulk-actions
     // fixed-bottom math can subtract it. Mirrors React `Table.tsx`'s
@@ -1686,6 +1717,22 @@ export class MznTable {
    * @default undefined
    */
   readonly scroll = input<TableScroll>();
+
+  /**
+   * 傳遞給內層 `MznScrollbar`（OverlayScrollbars）的選項，
+   * 會與 `MznScrollbar` 預設值逐鍵合併，只有傳入的鍵會被覆寫。
+   * `nested` 為 true 時無效（巢狀表格不渲染 scrollbar）。
+   * 請勿與 `scroll.virtualized` 同時將 `overflow` 設為 `'visible'`。
+   *
+   * @example
+   * ```html
+   * <!-- 由外層捲動容器處理溢出，關閉表格自身捲動 -->
+   * <div mznTable [scrollbarOptions]="{ overflow: { x: 'visible', y: 'visible' } }"></div>
+   * ```
+   * @see {@link https://kingsora.github.io/OverlayScrollbars/#!documentation/options OverlayScrollbars Options}
+   * @default undefined
+   */
+  readonly scrollbarOptions = input<PartialOptions>();
 
   /**
    * 欄位顯示切換設定。啟用後在每列顯示開關，追蹤顯示狀態。
@@ -2116,6 +2163,10 @@ export class MznTable {
    */
   private readonly paginationHostRef =
     viewChild<ElementRef<HTMLElement>>('paginationHost');
+
+  /** `<table>` element ref — measured for the intrinsic sizer. */
+  private readonly tableElRef =
+    viewChild<ElementRef<HTMLTableElement>>('tableEl');
 
   /**
    * Bulk actions configuration — returns the `bulkActions` object only when

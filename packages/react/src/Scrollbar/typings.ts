@@ -33,6 +33,9 @@ export interface ScrollbarProps
   maxWidth?: CSSProperties['maxWidth'];
   /**
    * Additional options to pass to OverlayScrollbars.
+   * `overflow` defaults to `{ x: 'scroll', y: 'scroll' }` and `scrollbars`
+   * defaults to `{ autoHide: 'scroll', autoHideDelay: 600, clickScroll: true }`;
+   * keys supplied here override those defaults per key.
    * @see https://kingsora.github.io/OverlayScrollbars/#!documentation/options
    */
   options?: PartialOptions;

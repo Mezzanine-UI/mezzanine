@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, signal } from '@angular/core';
+import { OverlayScrollbars, type PartialOptions } from 'overlayscrollbars';
 import { MznTable } from './table.component';
 import type { TableColumn, TableDataSource, TableSize } from './table-types';
 
@@ -339,5 +340,131 @@ describe('MznTable row action accessibility', () => {
     // The trigger renders only an icon, so without aria-label it has no
     // accessible name at all.
     expect(trigger?.getAttribute('aria-label')).toBe('More actions');
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [MznTable],
+  template: `
+    <div
+      mznTable
+      [columns]="columns"
+      [dataSource]="dataSource"
+      [nested]="nested()"
+      [scrollbarOptions]="scrollbarOptions()"
+    ></div>
+  `,
+})
+class ScrollContainmentHostComponent {
+  readonly columns: readonly TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name' },
+  ];
+
+  readonly dataSource: readonly TableDataSource[] = [
+    { key: '1', name: 'Alice' },
+  ];
+
+  readonly nested = signal(false);
+  readonly scrollbarOptions = signal<PartialOptions | undefined>(undefined);
+}
+
+describe('MznTable scroll containment', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ScrollContainmentHostComponent],
+    });
+  });
+
+  async function render(
+    setup: (host: ScrollContainmentHostComponent) => void = () => {},
+  ): Promise<HTMLElement> {
+    const fixture = TestBed.createComponent(ScrollContainmentHostComponent);
+
+    setup(fixture.componentInstance);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    return fixture.nativeElement.querySelector('[mznTable]');
+  }
+
+  function getScrollbarOptions(
+    host: HTMLElement,
+  ): ReturnType<OverlayScrollbars['options']> {
+    const scrollHost = host.querySelector<HTMLElement>('.mzn-scrollbar');
+    const instance = scrollHost ? OverlayScrollbars(scrollHost) : undefined;
+
+    if (!instance) throw new Error('OverlayScrollbars was not initialised');
+
+    return instance.options();
+  }
+
+  it('should keep the Scrollbar defaults when scrollbarOptions is not provided', async () => {
+    const options = getScrollbarOptions(await render());
+
+    expect(options.overflow).toEqual({ x: 'scroll', y: 'scroll' });
+    expect(options.scrollbars.autoHide).toBe('scroll');
+  });
+
+  it('should forward scrollbarOptions to the inner Scrollbar', async () => {
+    const options = getScrollbarOptions(
+      await render((host) =>
+        host.scrollbarOptions.set({
+          overflow: { x: 'visible', y: 'visible' },
+          scrollbars: { autoHide: 'never' },
+        }),
+      ),
+    );
+
+    expect(options.overflow).toEqual({ x: 'visible', y: 'visible' });
+    expect(options.scrollbars.autoHide).toBe('never');
+  });
+
+  it('should contain the scroll area and render a hidden sizer', async () => {
+    const host = await render();
+    const sizer = host.querySelector('.mzn-table__intrinsic-sizer');
+
+    expect(
+      host.querySelector('.mzn-scrollbar.mzn-table-scroll-area'),
+    ).not.toBeNull();
+    expect(sizer?.tagName.toLowerCase()).toBe('svg');
+    expect(sizer?.getAttribute('aria-hidden')).toBe('true');
+    expect(sizer?.getAttribute('focusable')).toBe('false');
+  });
+
+  it('should skip containment and the sizer for nested tables', async () => {
+    const host = await render((h) => h.nested.set(true));
+
+    expect(host.querySelector('.mzn-table-scroll-area')).toBeNull();
+    expect(host.querySelector('.mzn-table__intrinsic-sizer')).toBeNull();
+  });
+
+  it('should expose the measured table width as a CSS variable', async () => {
+    const OriginalResizeObserver = globalThis.ResizeObserver;
+    const callbacks: ResizeObserverCallback[] = [];
+
+    globalThis.ResizeObserver = class {
+      constructor(callback: ResizeObserverCallback) {
+        callbacks.push(callback);
+      }
+
+      observe(): void {}
+      unobserve(): void {}
+      disconnect(): void {}
+    } as unknown as typeof ResizeObserver;
+
+    try {
+      const host = await render();
+      const table = host.querySelector('table') as HTMLTableElement;
+
+      Object.defineProperty(table, 'scrollWidth', { value: 1180 });
+      callbacks.forEach((callback) => callback([], {} as ResizeObserver));
+
+      expect(host.style.getPropertyValue('--mzn-table-intrinsic-width')).toBe(
+        '1180px',
+      );
+    } finally {
+      globalThis.ResizeObserver = OriginalResizeObserver;
+    }
   });
 });

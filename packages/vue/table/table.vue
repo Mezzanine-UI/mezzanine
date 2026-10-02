@@ -84,6 +84,7 @@ const props = withDefaults(defineProps<TableProps<T>>(), {
   rowSelection: undefined,
   rowState: undefined,
   scroll: undefined,
+  scrollbarOptions: undefined,
   separatorAtRowIndexes: undefined,
   showHeader: true,
   size: 'main',
@@ -95,6 +96,7 @@ const props = withDefaults(defineProps<TableProps<T>>(), {
 
 const hostRef = shallowRef<HTMLDivElement | null>(null);
 const paginationRef = shallowRef<ComponentPublicInstance | null>(null);
+const tableRef = shallowRef<HTMLTableElement | null>(null);
 
 /** Feature: Row Height Preset */
 const rowHeightVariableName = computed((): string => {
@@ -475,6 +477,26 @@ onBeforeUnmount(() => {
   paginationObserver = null;
 });
 
+/** Expose the table's own width for the intrinsic sizer (see core table styles) */
+watch(
+  [tableRef, () => props.nested],
+  ([tableEl, nested], _, onCleanup) => {
+    if (nested || !tableEl) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      hostRef.value?.style.setProperty(
+        '--mzn-table-intrinsic-width',
+        `${tableEl.scrollWidth}px`,
+      );
+    });
+
+    resizeObserver.observe(tableEl);
+
+    onCleanup(() => resizeObserver.disconnect());
+  },
+  { flush: 'post', immediate: true },
+);
+
 const handleScrollbarViewportReady = (viewport: HTMLDivElement): void => {
   handleViewportReady(viewport);
   droppable.value.innerRef(viewport);
@@ -485,21 +507,28 @@ const handleScrollbarViewportReady = (viewport: HTMLDivElement): void => {
   <div ref="hostRef" :class="classes.host">
     <MznScrollbar
       v-bind="nested ? {} : droppable.droppableProps"
-      :class="sticky ? classes.sticky : undefined"
+      :class="[!nested && classes.scrollArea, sticky && classes.sticky]"
       :defer="false"
       :disabled="nested"
       :events="scrollbarEvents"
       :max-height="scroll?.y"
+      :options="scrollbarOptions"
       :style="scrollContainerStyle"
       @viewport-ready="handleScrollbarViewportReady"
     >
-      <table :class="tableClassName" :style="tableStyle">
+      <table ref="tableRef" :class="tableClassName" :style="tableStyle">
         <MznTableColGroup />
         <MznTableHeader v-if="showHeader" />
         <MznTableBody />
         <tbody v-if="!nested && droppable.placeholder" />
       </table>
     </MznScrollbar>
+    <svg
+      v-if="!nested"
+      aria-hidden="true"
+      :class="classes.intrinsicSizer"
+      focusable="false"
+    />
     <Teleport v-if="!nested" to="body">
       <div
         :id="announcementId"
