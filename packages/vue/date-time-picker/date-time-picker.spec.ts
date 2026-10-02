@@ -12,6 +12,13 @@ import MznDateTimePicker from './date-time-picker.vue';
 
 const value = '2026-09-15T08:30:45.000Z';
 
+/**
+ * Pins the calendar to September 2026 for tests that pick a day by label.
+ * Without it the calendar opens on today's month, and the day button the
+ * test clicks only exists while the suite happens to run in September.
+ */
+const referenceDate = '2026-09-15';
+
 function mountPicker(props: Record<string, unknown> = {}): VueWrapper {
   return mount(MznCalendarConfigProvider, {
     attachTo: document.body,
@@ -132,7 +139,7 @@ describe('<MznDateTimePicker />', () => {
   describe('selection', () => {
     it('should emit change only once both halves are set', async () => {
       const onChange = vi.fn();
-      const wrapper = mountPicker({ onChange });
+      const wrapper = mountPicker({ onChange, referenceDate });
 
       await wrapper.findAll('input')[0].trigger('focus');
       dayButton('Thursday, September 10, 2026')?.click();
@@ -183,7 +190,7 @@ describe('<MznDateTimePicker />', () => {
     });
 
     it('should move focus to the time input once a date is picked', async () => {
-      const wrapper = mountPicker();
+      const wrapper = mountPicker({ referenceDate });
 
       await wrapper.findAll('input')[0].trigger('focus');
       dayButton('Thursday, September 10, 2026')?.click();
