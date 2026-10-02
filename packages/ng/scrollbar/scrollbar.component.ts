@@ -85,7 +85,8 @@ export class MznScrollbar implements OnDestroy {
 
   /**
    * 傳遞給 OverlayScrollbars 的額外選項。
-   * 會與預設選項合併（預設啟用點擊捲軸與自動隱藏）。
+   * 會與預設選項逐鍵合併：`overflow` 預設 `{ x: 'scroll', y: 'scroll' }`，
+   * `scrollbars` 預設 `{ autoHide: 'scroll', autoHideDelay: 600, clickScroll: true }`。
    * @see {@link https://kingsora.github.io/OverlayScrollbars/#!documentation/options OverlayScrollbars Options}
    */
   readonly options = input<PartialOptions>();
@@ -129,6 +130,7 @@ export class MznScrollbar implements OnDestroy {
         overflow: {
           x: 'scroll',
           y: 'scroll',
+          ...userOptions?.overflow,
         },
         scrollbars: {
           autoHide: 'scroll',
