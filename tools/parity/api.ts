@@ -50,6 +50,18 @@ function singular(k: string): string {
   return k;
 }
 
+/**
+ * Directories never walked when looking for source files. Build output
+ * (`dist`) carries `.d.ts` copies of the same declarations, and a stale copy
+ * would shadow the real source — the index keeps the first declaration it
+ * meets. Mirrors the ignore list in `vue-fs.mjs`.
+ */
+const IGNORED_DIRS = new Set(['node_modules', 'dist', 'coverage']);
+
+function isIgnoredDir(name: string): boolean {
+  return IGNORED_DIRS.has(name) || name.startsWith('.');
+}
+
 function findFile(
   root: string,
   predicate: (full: string) => boolean,
@@ -64,7 +76,7 @@ function findFile(
       continue;
     }
     if (st.isDirectory()) {
-      if (entry === 'node_modules' || entry.startsWith('.')) continue;
+      if (isIgnoredDir(entry)) continue;
       const found = findFile(full, predicate);
       if (found) return found;
     } else if (predicate(full)) {
@@ -382,7 +394,7 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
       return;
     }
     for (const entry of entries) {
-      if (entry === 'node_modules' || entry.startsWith('.')) continue;
+      if (isIgnoredDir(entry)) continue;
       const full = join(dir, entry);
       let st;
       try {
@@ -395,6 +407,8 @@ function buildInterfaceIndex(scope: IndexScope): Map<string, IndexEntry> {
         continue;
       }
       if (!full.endsWith('.ts') && !full.endsWith('.tsx')) continue;
+      // Declaration files are generated output, never the props contract.
+      if (full.endsWith('.d.ts')) continue;
       if (full.endsWith('.spec.ts') || full.endsWith('.spec.tsx')) continue;
       if (full.endsWith('.stories.tsx') || full.endsWith('.stories.ts'))
         continue;
