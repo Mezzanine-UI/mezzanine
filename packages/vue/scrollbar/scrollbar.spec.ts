@@ -1,8 +1,43 @@
 import { mount } from '@vue/test-utils';
+import { OverlayScrollbars } from 'overlayscrollbars';
 import { scrollbarClasses } from '@mezzanine-ui/core/scrollbar';
 import MznScrollbar from './scrollbar.vue';
 
+function getOptions(element: Element) {
+  const instance = OverlayScrollbars(element as HTMLElement);
+
+  if (!instance) throw new Error('OverlayScrollbars was not initialised');
+
+  return instance.options();
+}
+
 describe('MznScrollbar', () => {
+  describe('prop: options', () => {
+    it('should scroll on both axes and auto-hide by default', () => {
+      const wrapper = mount(MznScrollbar, {
+        attachTo: document.body,
+        props: { defer: false },
+      });
+      const options = getOptions(wrapper.element);
+
+      expect(options.overflow).toEqual({ x: 'scroll', y: 'scroll' });
+      expect(options.scrollbars.autoHide).toBe('scroll');
+      expect(options.scrollbars.autoHideDelay).toBe(600);
+    });
+
+    it('should respect a caller-supplied options.overflow', () => {
+      const wrapper = mount(MznScrollbar, {
+        attachTo: document.body,
+        props: { defer: false, options: { overflow: { x: 'hidden' } } },
+      });
+
+      expect(getOptions(wrapper.element).overflow).toEqual({
+        x: 'hidden',
+        y: 'scroll',
+      });
+    });
+  });
+
   describe('prop: disabled', () => {
     it('should render a plain div without the host class', () => {
       const wrapper = mount(MznScrollbar, {
