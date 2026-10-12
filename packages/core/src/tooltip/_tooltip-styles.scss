@@ -8,6 +8,7 @@
 
 .#{$prefix} {
   max-width: spacing.semantic-variable(size, container, narrow);
+  width: max-content;
   display: flex;
   align-items: center;
   justify-content: flex-start;
