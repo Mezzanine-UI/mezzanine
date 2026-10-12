@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.2...@mezzanine-ui/core@1.2.3) (2026-10-12)
+
+### Bug Fixes
+
+- **core/tooltip:** size tooltip by its content instead of the containing block ([924baee](https://github.com/Mezzanine-UI/mezzanine/commit/924baeed366ffa62a801a76aa4d60f8e794b233d)), closes [#469](https://github.com/Mezzanine-UI/mezzanine/issues/469)
+
 ## [1.2.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.1...@mezzanine-ui/core@1.2.2) (2026-10-02)
 
 ### Bug Fixes
