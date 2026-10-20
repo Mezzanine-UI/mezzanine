@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.17](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.16...@mezzanine-ui/ng@1.0.0-rc.17) (2026-10-20)
+
+### Bug Fixes
+
+- **ng/table:** skip leading action cols when snapshotting resize widths ([e844563](https://github.com/Mezzanine-UI/mezzanine/commit/e84456395683bd6ddb41bae2141349d6b88efba7))
+
+### Features
+
+- **ng/table:** add columnWidths input and columnWidthsChange output ([e0c7fee](https://github.com/Mezzanine-UI/mezzanine/commit/e0c7feee2713282166ff572fd2f7dc2447f53165)), closes [#471](https://github.com/Mezzanine-UI/mezzanine/issues/471)
+
 # [1.0.0-rc.16](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.15...@mezzanine-ui/ng@1.0.0-rc.16) (2026-10-12)
 
 **Note:** Version bump only for package @mezzanine-ui/ng

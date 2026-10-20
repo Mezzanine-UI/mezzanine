@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.6.1...@mezzanine-ui/react@1.7.0) (2026-10-20)
+
+### Bug Fixes
+
+- **react/table:** include pinnable handle column in resize offset ([1052f9b](https://github.com/Mezzanine-UI/mezzanine/commit/1052f9ba6bb0be74c7f5c0c79450e24bf79b2ffd))
+- **react/table:** skip no-op resize reports and sanitize controlled widths ([c3605c8](https://github.com/Mezzanine-UI/mezzanine/commit/c3605c8c3f7edb1101dd32b62630fa8582c5f9cf))
+
+### Features
+
+- **react/table:** add columnWidths and onColumnWidthsChange for resizable columns ([484e538](https://github.com/Mezzanine-UI/mezzanine/commit/484e538aefb334fc3cddec45c211f4a3cf5e376f)), closes [#471](https://github.com/Mezzanine-UI/mezzanine/issues/471)
+
 ## [1.6.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.6.0...@mezzanine-ui/react@1.6.1) (2026-10-12)
 
 **Note:** Version bump only for package @mezzanine-ui/react

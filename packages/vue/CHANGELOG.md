@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.3...@mezzanine-ui/vue@1.0.0-rc.4) (2026-10-20)
+
+### Bug Fixes
+
+- **vue/table:** include pinnable handle column in resize offset ([c8aacc6](https://github.com/Mezzanine-UI/mezzanine/commit/c8aacc6a5412a0c09ae8972a2de4a2243dee0495))
+
+### Features
+
+- **vue/table:** add columnWidths and columnWidthsChange for resizable columns ([35add9b](https://github.com/Mezzanine-UI/mezzanine/commit/35add9b5639c1129eb12cfd0786ace09ae0c664f)), closes [#471](https://github.com/Mezzanine-UI/mezzanine/issues/471)
+
 # [1.0.0-rc.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.2...@mezzanine-ui/vue@1.0.0-rc.3) (2026-10-12)
 
 **Note:** Version bump only for package @mezzanine-ui/vue
