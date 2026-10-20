@@ -2986,6 +2986,17 @@ export class MznTable {
   });
 
   /**
+   * Number of action <col>s rendered before the data columns. Must mirror the
+   * colgroup: drag and pin share a single handle column.
+   */
+  private readonly leadingActionColumnCount = computed(
+    (): number =>
+      (this.isExpandableEnabled() ? 1 : 0) +
+      (this.isDragEnabled() || this.isPinEnabled() ? 1 : 0) +
+      (this.hasSelection() ? 1 : 0),
+  );
+
+  /**
    * Right-control column (collectable / toggleable / actions) widths.
    * They live **inside** `columns()` as reserved keys in React's
    * `columnsWithRightControls`; Angular renders them outside `columns()`,
@@ -3627,10 +3638,13 @@ export class MznTable {
     this.resizingColIndex.set(colIndex);
     this.resizeStartX.set(event.clientX);
 
-    // Snapshot current widths from DOM col elements
+    // Snapshot current widths from this table's own data <col>s, skipping the
+    // leading action <col>s (and any nested table's colgroup).
     const cols = Array.from(
-      this.hostEl.nativeElement.querySelectorAll('table col'),
-    ) as HTMLElement[];
+      this.tableElRef()?.nativeElement.querySelectorAll<HTMLElement>(
+        ':scope > colgroup > col',
+      ) ?? [],
+    ).slice(this.leadingActionColumnCount());
     const startWidths = new Map<string, number>();
     const colDefs = this.columns();
 
