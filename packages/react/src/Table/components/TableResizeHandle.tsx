@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import {
   tableClasses as classes,
   type TableColumn,
@@ -32,12 +32,29 @@ export const TableResizeHandle = memo(function TableResizeHandle({
     selection,
   } = useTableContext();
   const { columns } = useTableDataContext();
-  const { commitResizedColumnWidths, setResizedColumnWidth } =
-    columnState || {};
+  const {
+    commitResizedColumnWidths,
+    discardResizedColumnWidths,
+    setResizedColumnWidth,
+  } = columnState || {};
 
   const startWidthRef = useRef(0);
   const nextStartWidthRef = useRef(0);
   const startXRef = useRef(0);
+  // Detaches the document listeners of an in-progress drag (null when idle)
+  const stopDraggingRef = useRef<(() => void) | null>(null);
+
+  // A drag still in progress when the handle unmounts must not report later
+  useEffect(
+    () => () => {
+      if (!stopDraggingRef.current) return;
+
+      stopDraggingRef.current();
+      stopDraggingRef.current = null;
+      discardResizedColumnWidths?.();
+    },
+    [discardResizedColumnWidths],
+  );
 
   // Calculate action columns offset. Must mirror the leading <col>s rendered
   // by TableColGroup: drag and pin share a single handle column.
@@ -125,6 +142,9 @@ export const TableResizeHandle = memo(function TableResizeHandle({
       const lastGrowBudget =
         lastMaxWidth !== undefined ? lastMaxWidth - lastWidth : Infinity;
 
+      // Net drag distance last written to the widths; 0 means no visible change
+      let appliedDiff = 0;
+
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const diff = moveEvent.clientX - startXRef.current;
         const newWidth = startWidthRef.current + diff;
@@ -144,6 +164,7 @@ export const TableResizeHandle = memo(function TableResizeHandle({
 
           setResizedColumnWidth?.(column.key, newWidth);
           setResizedColumnWidth?.(nextColumn.key, newNextWidth);
+          appliedDiff = diff;
 
           return;
         }
@@ -172,14 +193,28 @@ export const TableResizeHandle = memo(function TableResizeHandle({
         setResizedColumnWidth?.(column.key, newWidth);
         setResizedColumnWidth?.(lastColumn.key, newLastWidth);
         setResizedColumnWidth?.(nextColumn.key, newNextWidth);
+        appliedDiff = diff;
+      };
+
+      const stopDragging = () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        stopDraggingRef.current = null;
       };
 
       const handleMouseUp = () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        commitResizedColumnWidths?.();
+        stopDragging();
+
+        // A drag that ends where it started only re-wrote measured start
+        // widths; dropping them avoids reporting (and pinning) a no-op.
+        if (appliedDiff === 0) {
+          discardResizedColumnWidths?.();
+        } else {
+          commitResizedColumnWidths?.();
+        }
       };
 
+      stopDraggingRef.current = stopDragging;
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     },
@@ -188,6 +223,7 @@ export const TableResizeHandle = memo(function TableResizeHandle({
       columnIndex,
       columns,
       commitResizedColumnWidths,
+      discardResizedColumnWidths,
       getColumnActualWidth,
       setResizedColumnWidth,
     ],

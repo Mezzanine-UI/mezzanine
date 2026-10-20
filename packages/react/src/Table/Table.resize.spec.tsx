@@ -155,6 +155,55 @@ describe('<Table resizable />', () => {
     ]);
   });
 
+  it('should not report when a drag returns to its start position', () => {
+    const onColumnWidthsChange = jest.fn();
+    const { container } = render(
+      <Table<TestDataType>
+        columns={columns}
+        dataSource={dataSource}
+        onColumnWidthsChange={onColumnWidthsChange}
+        resizable
+      />,
+    );
+    const handle = container.querySelector('.mzn-table__resize-handle')!;
+
+    fireEvent.mouseDown(handle, { clientX: 0 });
+    act(() => {
+      fireEvent.mouseMove(document, { clientX: 40 });
+    });
+    act(() => {
+      fireEvent.mouseMove(document, { clientX: 0 });
+    });
+    act(() => {
+      fireEvent.mouseUp(document, { clientX: 0 });
+    });
+
+    expect(onColumnWidthsChange).not.toHaveBeenCalled();
+    expect(getColWidths(container)).toEqual(['160px', '100px', '400px']);
+  });
+
+  it('should not report when the table unmounts mid-drag', () => {
+    const onColumnWidthsChange = jest.fn();
+    const { container, unmount } = render(
+      <Table<TestDataType>
+        columns={columns}
+        dataSource={dataSource}
+        onColumnWidthsChange={onColumnWidthsChange}
+        resizable
+      />,
+    );
+    const handle = container.querySelector('.mzn-table__resize-handle')!;
+
+    fireEvent.mouseDown(handle, { clientX: 0 });
+    act(() => {
+      fireEvent.mouseMove(document, { clientX: 40 });
+    });
+    unmount();
+    fireEvent.mouseUp(document, { clientX: 40 });
+
+    expect(onColumnWidthsChange).not.toHaveBeenCalled();
+  });
+
   describe('controlled columnWidths', () => {
     it('should render widths from columnWidths over column.width', () => {
       const { container } = render(
@@ -213,6 +262,19 @@ describe('<Table resizable />', () => {
         name: 210,
       });
       expect(getColWidths(container)).toEqual(['160px', '100px', '400px']);
+    });
+
+    it('should clamp columnWidths to minWidth/maxWidth and ignore invalid values', () => {
+      const { container } = render(
+        <Table<TestDataType>
+          columnWidths={{ address: Number.NaN, age: -5, name: 10 }}
+          columns={columns}
+          dataSource={dataSource}
+          resizable
+        />,
+      );
+
+      expect(getColWidths(container)).toEqual(['80px', '100px', '400px']);
     });
   });
 });

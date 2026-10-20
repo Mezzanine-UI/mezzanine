@@ -97,6 +97,20 @@ describe('useTableResizedColumns', () => {
 
       expect(onColumnWidthsChange).toHaveBeenCalledTimes(1);
     });
+    it('should drop in-progress widths on discard without reporting', () => {
+      const onColumnWidthsChange = jest.fn();
+      const { result } = renderResizedColumns({ onColumnWidthsChange });
+
+      act(() => {
+        result.current.setResizedColumnWidth('name', 200);
+      });
+      act(() => {
+        result.current.discardResizedColumnWidths();
+      });
+
+      expect(result.current.getResizedColumnWidth('name')).toBeUndefined();
+      expect(onColumnWidthsChange).not.toHaveBeenCalled();
+    });
   });
 
   describe('controlled', () => {

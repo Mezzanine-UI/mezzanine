@@ -24,7 +24,8 @@ const EMPTY_WIDTHS: Record<string, number> = {};
  *
  * Widths written during a drag live in a draft layer so the table can render
  * live feedback; `commitResizedColumnWidths` (called on mouseup) merges the
- * draft into the committed widths and notifies `onColumnWidthsChange`.
+ * draft into the committed widths and notifies `onColumnWidthsChange`, while
+ * `discardResizedColumnWidths` drops the draft (e.g. a drag back to its start).
  * In controlled mode the committed widths are always `columnWidths`.
  */
 export function useTableResizedColumns({
@@ -81,8 +82,14 @@ export function useTableResizedColumns({
     onColumnWidthsChangeRef.current?.(next);
   }, [isControlled]);
 
+  const discardResizedColumnWidths = useCallback(() => {
+    draftWidthsRef.current = EMPTY_WIDTHS;
+    setDraftWidths(EMPTY_WIDTHS);
+  }, []);
+
   return {
     commitResizedColumnWidths,
+    discardResizedColumnWidths,
     getResizedColumnWidth,
     setResizedColumnWidth,
   };

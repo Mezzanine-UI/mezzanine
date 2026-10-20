@@ -19,6 +19,7 @@ const defaultContextValue = {
   },
   columnState: {
     commitResizedColumnWidths: () => {},
+    discardResizedColumnWidths: () => {},
     getResizedColumnWidth: () => undefined,
     resizedColumns: {},
     setResizedColumnWidth: () => {},

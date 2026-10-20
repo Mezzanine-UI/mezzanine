@@ -47,6 +47,7 @@ import { useTableFixedOffsets } from './hooks/useTableFixedOffsets';
 import { useTableScroll } from './hooks/useTableScroll';
 import { useTableSelection } from './hooks/useTableSelection';
 import { useTableSorting } from './hooks/useTableSorting';
+import { sanitizeColumnWidths } from './utils/calculateColumnWidths';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
@@ -225,8 +226,18 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   });
 
   /** Feature: Column resized */
+  const sanitizedColumnWidths = useMemo(
+    () =>
+      columnWidths
+        ? sanitizeColumnWidths(
+            columnWidths,
+            columnsWithRightControls as TableColumn[],
+          )
+        : undefined,
+    [columnWidths, columnsWithRightControls],
+  );
   const columnState = useTableResizedColumns({
-    columnWidths,
+    columnWidths: sanitizedColumnWidths,
     onColumnWidthsChange,
   });
 
