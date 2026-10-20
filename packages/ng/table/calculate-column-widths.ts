@@ -22,6 +22,32 @@ export function clampWidth(
   return result;
 }
 
+/**
+ * Sanitize externally supplied column widths (e.g. restored from storage):
+ * drops non-finite or non-positive values and clamps the rest to each
+ * column's minWidth/maxWidth. Keys without a matching column are kept as-is.
+ * Port of React `sanitizeColumnWidths`.
+ */
+export function sanitizeColumnWidths(
+  widths: Readonly<Record<string, number>>,
+  columns: readonly Pick<TableColumn, 'key' | 'maxWidth' | 'minWidth'>[],
+): Record<string, number> {
+  const columnsByKey = new Map(columns.map((column) => [column.key, column]));
+
+  return Object.fromEntries(
+    Object.entries(widths)
+      .filter(([, width]) => Number.isFinite(width) && width > 0)
+      .map(([key, width]) => {
+        const column = columnsByKey.get(key);
+
+        return [
+          key,
+          column ? clampWidth(width, column.minWidth, column.maxWidth) : width,
+        ];
+      }),
+  );
+}
+
 export interface CalculateColumnWidthsOptions {
   readonly actionColumnsWidth: number;
   readonly columns: readonly TableColumn[];

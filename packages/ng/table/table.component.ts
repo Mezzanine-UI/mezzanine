@@ -103,11 +103,17 @@ import {
   TOGGLEABLE_KEY,
   tableClasses,
 } from '@mezzanine-ui/core/table';
-import { calculateColumnWidths } from './calculate-column-widths';
+import {
+  calculateColumnWidths,
+  sanitizeColumnWidths,
+} from './calculate-column-widths';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
+
+/** Shared empty widths record, so resets keep a stable reference. */
+const EMPTY_COLUMN_WIDTHS: Readonly<Record<string, number>> = Object.freeze({});
 
 const CELL_ALIGN_MAP: Record<ColumnAlign, string> = {
   start: tableClasses.cellAlignStart,
@@ -187,6 +193,16 @@ function throttleRaf(
  * import { MznTable } from '@mezzanine-ui/ng/table';
  *
  * <div mznTable [columns]="columns" [dataSource]="data" ></div>
+ *
+ * <!-- Resizable columns with persisted widths (controlled; set `{}` to reset to column.width) -->
+ * <div
+ *   mznTable
+ *   [columnWidths]="columnWidths()"
+ *   [columns]="columns"
+ *   [dataSource]="data"
+ *   [resizable]="true"
+ *   (columnWidthsChange)="onColumnWidthsChange($event)"
+ * ></div>
  * ```
  *
  * @see TableColumn
@@ -245,6 +261,7 @@ function throttleRaf(
     '[style]': 'hostStyles()',
     '[attr.actions]': 'null',
     '[attr.collectable]': 'null',
+    '[attr.columnWidths]': 'null',
     '[attr.columns]': 'null',
     '[attr.dataSource]': 'null',
     '[attr.draggable]': 'null',
@@ -302,9 +319,9 @@ function throttleRaf(
           @if (hasSelection()) {
             <col style="width: 40px; min-width: 40px; max-width: 40px;" />
           }
-          @for (col of columns(); track col.key; let colIndex = $index) {
+          @for (col of columns(); track col.key) {
             <col
-              [style.width]="getColWidth(col, colIndex)"
+              [style.width]="getColWidth(col)"
               [style.min-width]="formatWidth(col.minWidth)"
               [style.max-width]="formatWidth(col.maxWidth)"
             />
@@ -982,6 +999,35 @@ export class MznTable {
    */
   readonly collectable = input<TableCollectable>();
 
+  /**
+   * Controlled column widths in pixels, keyed by column key. Use with
+   * `resizable`.
+   * When provided, these widths take precedence over `column.width` and the
+   * table only reports drags through `columnWidthsChange`; pass `{}` to reset
+   * every column back to `column.width`.
+   * Values are clamped to each column's `minWidth`/`maxWidth`, and non-finite
+   * or non-positive values are ignored, so stale persisted widths stay valid.
+   * Leave undefined for uncontrolled mode (the table keeps widths internally).
+   *
+   * Hoist the record to a class field or signal rather than an inline object
+   * literal, so it keeps its reference between change detection cycles.
+   * @example
+   * ```html
+   * <div
+   *   mznTable
+   *   [columnWidths]="columnWidths()"
+   *   [columns]="columns"
+   *   [dataSource]="data"
+   *   [resizable]="true"
+   *   (columnWidthsChange)="columnWidths.set($event)"
+   * ></div>
+   * ```
+   * @default undefined
+   */
+  readonly columnWidths = input<Readonly<Record<string, number>> | undefined>(
+    undefined,
+  );
+
   /** 欄位定義。 */
   readonly columns = input.required<readonly TableColumn[]>();
 
@@ -1487,6 +1533,12 @@ export class MznTable {
   );
 
   constructor() {
+    // A resize drag still in progress on destroy must not emit later
+    this.destroyRef.onDestroy(() => {
+      this.stopResizeDrag();
+      this.discardResizedColumnWidths();
+    });
+
     // Sync controlled expandedRowKeys → internal signal whenever input changes.
     effect(() => {
       const controlled = this.expandableConfig()?.expandedRowKeys;
@@ -1805,6 +1857,15 @@ export class MznTable {
   /*  Outputs                                                          */
   /* ---------------------------------------------------------------- */
 
+  /**
+   * Emitted once when a column resize drag ends (pointerup), with the widths
+   * of every column resized so far, keyed by column key. Not emitted if the
+   * drag did not change any width (including a drag released at its start
+   * point). Works in both controlled and uncontrolled mode.
+   * Mirrors React `onColumnWidthsChange`.
+   */
+  readonly columnWidthsChange = output<Record<string, number>>();
+
   /** 展開列 key 變更事件。 */
   readonly expandedRowKeysChange = output<readonly string[]>();
 
@@ -1883,12 +1944,42 @@ export class MznTable {
   private readonly resizingColIndex = signal<number | null>(null);
   /** Resizable: pointer X at drag start. */
   private readonly resizeStartX = signal(0);
-  /** Resizable: map of col key → width in px captured at drag start. */
+  /** Resizable: map of column key → width in px captured at drag start. */
   private readonly resizeStartWidths = signal<ReadonlyMap<string, number>>(
     new Map(),
   );
-  /** Resizable: live overridden widths (col key → px). */
-  readonly resizedWidths = signal<ReadonlyMap<string, number>>(new Map());
+  /**
+   * Resizable: net drag distance last written to the draft widths during the
+   * current drag; 0 means the drag made no visible change.
+   */
+  private resizeAppliedDelta = 0;
+  /** Resizable: widths committed by past drags in uncontrolled mode. */
+  private readonly uncontrolledColumnWidths =
+    signal<Readonly<Record<string, number>>>(EMPTY_COLUMN_WIDTHS);
+  /**
+   * Resizable: widths written during the current drag. Kept apart from the
+   * committed widths so the drag gives live feedback and is reported once.
+   */
+  private readonly draftColumnWidths =
+    signal<Readonly<Record<string, number>>>(EMPTY_COLUMN_WIDTHS);
+  /** Resizable: `columnWidths` clamped to each column's min/max width. */
+  private readonly sanitizedColumnWidths = computed(
+    (): Readonly<Record<string, number>> | undefined => {
+      const controlled = this.columnWidths();
+
+      return controlled
+        ? sanitizeColumnWidths(controlled, this.columns())
+        : undefined;
+    },
+  );
+  /**
+   * Resizable: committed widths keyed by column key — always `columnWidths`
+   * in controlled mode, otherwise the widths kept from past drags.
+   */
+  private readonly committedColumnWidths = computed(
+    (): Readonly<Record<string, number>> =>
+      this.sanitizedColumnWidths() ?? this.uncontrolledColumnWidths(),
+  );
 
   /**
    * 測得的 scroll container 寬度，供 column width 分配使用。
@@ -2958,9 +3049,8 @@ export class MznTable {
    * table fills its container and flex columns receive the remaining space —
    * mirroring React `calculateColumnWidths`.
    */
-  protected getColWidth(col: TableColumn, colIndex: number): string | null {
-    const overrideKey = `${col.key}_${colIndex}`;
-    const overrideWidth = this.resizedWidths().get(overrideKey);
+  protected getColWidth(col: TableColumn): string | null {
+    const overrideWidth = this.getResizedColumnWidth(col.key);
 
     if (overrideWidth != null) return `${overrideWidth}px`;
 
@@ -3057,9 +3147,8 @@ export class MznTable {
         return r;
       };
 
-      cols.forEach((col, index) => {
-        const resizedKey = `${col.key}_${index}`;
-        const resized = this.resizedWidths().get(resizedKey);
+      cols.forEach((col) => {
+        const resized = this.getResizedColumnWidth(col.key);
 
         if (resized !== undefined) {
           map.set(col.key, resized);
@@ -3456,7 +3545,7 @@ export class MznTable {
         actionColumnsWidth,
         columns,
         containerWidth,
-        getResizedColumnWidth: (key) => this.resizedWidths().get(key),
+        getResizedColumnWidth: (key) => this.getResizedColumnWidth(key),
       });
 
       // Source cells: lock widths so the placeholder (invisible via
@@ -3631,12 +3720,58 @@ export class MznTable {
   /*  Resizable handlers                                               */
   /* ---------------------------------------------------------------- */
 
+  /**
+   * Effective resized width for a column: the in-progress drag width first,
+   * then the committed width (controlled `columnWidths` or past drags).
+   * Mirrors React `useTableResizedColumns().getResizedColumnWidth`.
+   */
+  private getResizedColumnWidth(key: string): number | undefined {
+    return this.draftColumnWidths()[key] ?? this.committedColumnWidths()[key];
+  }
+
+  private setResizedColumnWidth(key: string, width: number): void {
+    this.draftColumnWidths.update((draft) => ({ ...draft, [key]: width }));
+  }
+
+  /**
+   * Merges the current drag widths into the committed widths and emits
+   * `columnWidthsChange`, unless the drag left every width unchanged.
+   */
+  private commitResizedColumnWidths(): void {
+    const draft = this.draftColumnWidths();
+    const committed = this.committedColumnWidths();
+    const hasChanges = Object.keys(draft).some(
+      (key) => draft[key] !== committed[key],
+    );
+
+    this.draftColumnWidths.set(EMPTY_COLUMN_WIDTHS);
+
+    if (!hasChanges) return;
+
+    const next = { ...committed, ...draft };
+
+    if (this.columnWidths() === undefined) {
+      this.uncontrolledColumnWidths.set(next);
+    }
+
+    this.columnWidthsChange.emit(next);
+  }
+
+  /** Drops the current drag widths without reporting them. */
+  private discardResizedColumnWidths(): void {
+    this.draftColumnWidths.set(EMPTY_COLUMN_WIDTHS);
+  }
+
   protected onResizeStart(event: PointerEvent, colIndex: number): void {
     event.preventDefault();
     (event.target as HTMLElement).setPointerCapture(event.pointerId);
 
+    // A drag that never received its pointerup must not leak listeners
+    this.stopResizeDrag();
+
     this.resizingColIndex.set(colIndex);
     this.resizeStartX.set(event.clientX);
+    this.resizeAppliedDelta = 0;
 
     // Snapshot current widths from this table's own data <col>s, skipping the
     // leading action <col>s (and any nested table's colgroup).
@@ -3652,18 +3787,18 @@ export class MznTable {
       const colDef = colDefs[idx];
 
       if (colDef) {
-        const key = `${colDef.key}_${idx}`;
-        const currentOverride = this.resizedWidths().get(key);
-        const width = currentOverride ?? col.getBoundingClientRect().width;
+        const width =
+          this.getResizedColumnWidth(colDef.key) ??
+          col.getBoundingClientRect().width;
 
-        startWidths.set(key, width);
+        startWidths.set(colDef.key, width);
       }
     });
     this.resizeStartWidths.set(startWidths);
 
     this.boundPointerMove = (e: PointerEvent): void =>
       this.onResizeMove(e, colIndex);
-    this.boundPointerUp = (e: PointerEvent): void => this.onResizeEnd(e);
+    this.boundPointerUp = (): void => this.onResizeEnd();
 
     document.addEventListener('pointermove', this.boundPointerMove);
     document.addEventListener('pointerup', this.boundPointerUp);
@@ -3683,14 +3818,9 @@ export class MznTable {
     const isAdjacentToLast = colIndex + 1 === lastIdx;
 
     const startWidths = this.resizeStartWidths();
-    const makeKey = (key: string, idx: number): string => `${key}_${idx}`;
-    const currentKey = makeKey(currentCol.key, colIndex);
-    const nextKey = makeKey(nextCol.key, colIndex + 1);
-    const lastKey = makeKey(lastCol.key, lastIdx);
-
-    const currentStartWidth = startWidths.get(currentKey) ?? 100;
-    const nextStartWidth = startWidths.get(nextKey) ?? 100;
-    const lastStartWidth = startWidths.get(lastKey) ?? 100;
+    const currentStartWidth = startWidths.get(currentCol.key) ?? 100;
+    const nextStartWidth = startWidths.get(nextCol.key) ?? 100;
+    const lastStartWidth = startWidths.get(lastCol.key) ?? 100;
 
     const minCurrent = currentCol.minWidth ?? 40;
     const maxCurrent = currentCol.maxWidth;
@@ -3704,8 +3834,6 @@ export class MznTable {
     if (newCurrentWidth < minCurrent) return;
     if (maxCurrent !== undefined && newCurrentWidth > maxCurrent) return;
 
-    const updated = new Map(this.resizedWidths());
-
     if (isAdjacentToLast) {
       // Donor === N+1 === last; collapse to legacy adjacent compensation
       // to avoid writing the same key twice.
@@ -3714,9 +3842,9 @@ export class MznTable {
       if (newNextWidth < minNext) return;
       if (maxNext !== undefined && newNextWidth > maxNext) return;
 
-      updated.set(currentKey, newCurrentWidth);
-      updated.set(nextKey, newNextWidth);
-      this.resizedWidths.set(updated);
+      this.setResizedColumnWidth(currentCol.key, newCurrentWidth);
+      this.setResizedColumnWidth(nextCol.key, newNextWidth);
+      this.resizeAppliedDelta = delta;
 
       return;
     }
@@ -3743,13 +3871,26 @@ export class MznTable {
     if (newNextWidth < minNext) return;
     if (maxNext !== undefined && newNextWidth > maxNext) return;
 
-    updated.set(currentKey, newCurrentWidth);
-    updated.set(lastKey, newLastWidth);
-    updated.set(nextKey, newNextWidth);
-    this.resizedWidths.set(updated);
+    this.setResizedColumnWidth(currentCol.key, newCurrentWidth);
+    this.setResizedColumnWidth(lastCol.key, newLastWidth);
+    this.setResizedColumnWidth(nextCol.key, newNextWidth);
+    this.resizeAppliedDelta = delta;
   }
 
-  private onResizeEnd(_event: PointerEvent): void {
+  private onResizeEnd(): void {
+    this.stopResizeDrag();
+
+    // A drag that ends where it started only re-wrote measured start widths;
+    // dropping them avoids reporting (and pinning) a no-op.
+    if (this.resizeAppliedDelta === 0) {
+      this.discardResizedColumnWidths();
+    } else {
+      this.commitResizedColumnWidths();
+    }
+  }
+
+  /** Detaches the document listeners of an in-progress drag, if any. */
+  private stopResizeDrag(): void {
     this.resizingColIndex.set(null);
 
     if (this.boundPointerMove) {
