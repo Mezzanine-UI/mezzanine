@@ -176,11 +176,11 @@ export interface TableNonResizableProps<
 > extends TableBaseProps<T> {
   /** Actions column configuration */
   actions?: TableActions<T>;
-  /** 此模式下不適用。 */
+  /** Not available when resizable is disabled */
   columnWidths?: never;
   /** Column configuration */
   columns: TableColumn<T>[];
-  /** 此模式下不適用。 */
+  /** Not available when resizable is disabled */
   onColumnWidthsChange?: never;
   /**
    * Whether columns are resizable by user interaction

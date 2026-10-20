@@ -789,7 +789,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
  *   }}
  * />
  *
- * // 可調欄寬 + 持久化（受控模式，傳入 `{}` 即可重設為 column.width）
+ * // Resizable columns with persisted widths (controlled; pass `{}` to reset to column.width)
  * <Table
  *   columnWidths={columnWidths}
  *   columns={columns}
