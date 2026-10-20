@@ -23,8 +23,14 @@ export const TableResizeHandle = memo(function TableResizeHandle({
   column,
   columnIndex,
 }: TableResizeHandleProps) {
-  const { columnState, draggable, expansion, scrollContainerRef, selection } =
-    useTableContext();
+  const {
+    columnState,
+    draggable,
+    expansion,
+    pinnable,
+    scrollContainerRef,
+    selection,
+  } = useTableContext();
   const { columns } = useTableDataContext();
   const { commitResizedColumnWidths, setResizedColumnWidth } =
     columnState || {};
@@ -33,11 +39,12 @@ export const TableResizeHandle = memo(function TableResizeHandle({
   const nextStartWidthRef = useRef(0);
   const startXRef = useRef(0);
 
-  // Calculate action columns offset
+  // Calculate action columns offset. Must mirror the leading <col>s rendered
+  // by TableColGroup: drag and pin share a single handle column.
   const actionColumnsOffset = (() => {
     let offset = 0;
 
-    if (draggable?.enabled) offset += 1;
+    if (draggable?.enabled || pinnable?.enabled) offset += 1;
     if (expansion) offset += 1;
     if (selection) offset += 1;
 

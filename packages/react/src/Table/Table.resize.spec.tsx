@@ -4,6 +4,7 @@ import Table from '.';
 import type {
   TableColumnWithMinWidth,
   TableDataSourceWithKey,
+  TablePinnable,
 } from '@mezzanine-ui/core/table';
 
 interface TestDataType extends TableDataSourceWithKey {
@@ -27,6 +28,12 @@ const columns: TableColumnWithMinWidth<TestDataType>[] = [
 const dataSource: TestDataType[] = [
   { address: 'Taipei', age: 32, key: '1', name: 'John' },
 ];
+
+const pinnable: TablePinnable<TestDataType> = {
+  enabled: true,
+  onPinChange: () => {},
+  pinnedRowKeys: [],
+};
 
 const getColWidths = (container: HTMLElement) =>
   Array.from(container.querySelectorAll('colgroup > col')).map(
@@ -120,6 +127,32 @@ describe('<Table resizable />', () => {
     });
 
     expect(onColumnWidthsChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('should resize the right column when pinnable adds a handle column', () => {
+    const onColumnWidthsChange = jest.fn();
+    const { container } = render(
+      <Table<TestDataType>
+        columns={columns}
+        dataSource={dataSource}
+        onColumnWidthsChange={onColumnWidthsChange}
+        pinnable={pinnable}
+        resizable
+      />,
+    );
+
+    dragHandle(container, 0, 50);
+
+    expect(onColumnWidthsChange).toHaveBeenCalledWith({
+      address: 350,
+      age: 100,
+      name: 210,
+    });
+    expect(getColWidths(container).slice(1)).toEqual([
+      '210px',
+      '100px',
+      '350px',
+    ]);
   });
 
   describe('controlled columnWidths', () => {
