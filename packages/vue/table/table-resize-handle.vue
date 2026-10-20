@@ -32,12 +32,13 @@ let startWidth = 0;
 let nextStartWidth = 0;
 let startX = 0;
 
-// Calculate action columns offset
+// Calculate action columns offset. Must mirror the leading cols rendered
+// by MznTableColGroup: drag and pin share a single handle column.
 const actionColumnsOffset = computed((): number => {
-  const { draggable, expansion, selection } = table.value;
+  const { draggable, expansion, pinnable, selection } = table.value;
   let offset = 0;
 
-  if (draggable?.enabled) offset += 1;
+  if (draggable?.enabled || pinnable?.enabled) offset += 1;
   if (expansion) offset += 1;
   if (selection) offset += 1;
 
