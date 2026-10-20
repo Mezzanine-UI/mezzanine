@@ -1389,6 +1389,101 @@ export const WithResizableColumns: Story = {
   render: () => ({ render: () => h(WithResizableColumnsStory) }),
 };
 
+const COLUMN_WIDTHS_STORAGE_KEY = 'mzn-storybook-table-column-widths';
+
+const readStoredColumnWidths = (): Record<string, number> => {
+  try {
+    const parsed: unknown = JSON.parse(
+      localStorage.getItem(COLUMN_WIDTHS_STORAGE_KEY) ?? '{}',
+    );
+
+    return parsed && typeof parsed === 'object'
+      ? (parsed as Record<string, number>)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const writeStoredColumnWidths = (widths: Record<string, number>): void => {
+  try {
+    localStorage.setItem(COLUMN_WIDTHS_STORAGE_KEY, JSON.stringify(widths));
+  } catch {
+    // Storage may be unavailable (private mode / blocked); widths still apply.
+  }
+};
+
+const PERSISTED_COLUMN_WIDTHS_TEXT =
+  'Controlled mode: `columnWidths` + `onColumnWidthsChange`. Resize a column and reload the page — widths are restored from localStorage. `onColumnWidthsChange` fires once per drag, on mouseup.';
+
+const WithPersistedColumnWidthsStory = defineComponent({
+  setup() {
+    const persistedColumns: TableColumnWithMinWidth<DataType>[] = [
+      {
+        dataIndex: 'name',
+        key: 'name',
+        minWidth: 80,
+        title: 'Name',
+        width: 160,
+      },
+      {
+        align: 'center',
+        dataIndex: 'age',
+        key: 'age',
+        minWidth: 60,
+        title: 'Age',
+        width: 100,
+      },
+      {
+        dataIndex: 'address',
+        key: 'address',
+        minWidth: 200,
+        title: 'Address',
+      },
+    ];
+    const columnWidths = shallowRef(readStoredColumnWidths());
+
+    const handleColumnWidthsChange = (widths: Record<string, number>): void => {
+      columnWidths.value = widths;
+      writeStoredColumnWidths(widths);
+    };
+
+    const handleReset = (): void => {
+      handleColumnWidthsChange({});
+    };
+
+    return () =>
+      h(
+        'div',
+        { style: { display: 'flex', flexFlow: 'column', gap: '12px' } },
+        [
+          h('span', PERSISTED_COLUMN_WIDTHS_TEXT),
+          h('div', [
+            h(
+              MznButton,
+              { onClick: handleReset, variant: 'base-secondary' },
+              () => 'Reset column widths',
+            ),
+          ]),
+          h(MznTypography, { component: 'span', variant: 'caption' }, () =>
+            JSON.stringify(columnWidths.value),
+          ),
+          h(MznTable as unknown as Component, {
+            columnWidths: columnWidths.value,
+            columns: persistedColumns,
+            dataSource: baseData,
+            onColumnWidthsChange: handleColumnWidthsChange,
+            resizable: true,
+          }),
+        ],
+      );
+  },
+});
+
+export const WithPersistedColumnWidths: Story = {
+  render: () => ({ render: () => h(WithPersistedColumnWidthsStory) }),
+};
+
 const WithCustomRenderStory = defineComponent({
   setup() {
     const customColumns: TableColumn<DataType>[] = [

@@ -16,6 +16,7 @@ import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import throttle from 'lodash/throttle';
 import { getNumericCSSVariablePixelValue } from '../_internal/css-variable';
 import MznScrollbar from '../scrollbar/scrollbar.vue';
+import { sanitizeColumnWidths } from './calculate-column-widths';
 import MznTableBody from './table-body.vue';
 import MznTableBulkActions from './table-bulk-actions.vue';
 import MznTableColGroup from './table-col-group.vue';
@@ -46,7 +47,9 @@ import type { TableColumn, TableProps } from './table.types';
  * 啟用勾選功能、`expandable` 展開子列、`scroll.virtualized` 開啟虛擬捲動以渲染大量資料。
  * `draggable` 與 `pinnable` 為互斥選項，無法同時啟用。
  *
- * 所有回呼都在設定物件裡，因此這個元件**沒有任何 emit** —— 與 React 端一致。
+ * With `resizable`, `columnWidths` (or `v-model:columnWidths`) controls the
+ * column widths; `columnWidthsChange` fires once per drag, on mouseup. Every
+ * other callback lives in a configuration object, as in React.
  *
  * @example
  * ```vue
@@ -62,12 +65,40 @@ import type { TableColumn, TableProps } from './table.types';
  * </template>
  * ```
  *
+ * @example
+ * ```vue
+ * <script setup lang="ts">
+ * import { ref } from 'vue';
+ * import { MznTable } from '@mezzanine-ui/vue/table';
+ *
+ * // Resizable columns with persisted widths (pass `{}` to reset to column.width)
+ * const columnWidths = ref<Record<string, number>>(
+ *   JSON.parse(localStorage.getItem('table-widths') ?? '{}'),
+ * );
+ *
+ * const handleColumnWidthsChange = (widths: Record<string, number>) => {
+ *   localStorage.setItem('table-widths', JSON.stringify(widths));
+ * };
+ * <\/script>
+ *
+ * <template>
+ *   <MznTable
+ *     v-model:column-widths="columnWidths"
+ *     :columns="columns"
+ *     :data-source="data"
+ *     resizable
+ *     @column-widths-change="handleColumnWidthsChange"
+ *   />
+ * </template>
+ * ```
+ *
  * @see MznTableRow 每一列
  * @see useTableDataSource 讓新增與刪除帶動畫的資料來源
  */
 const props = withDefaults(defineProps<TableProps<T>>(), {
   actions: undefined,
   collectable: undefined,
+  columnWidths: undefined,
   draggable: undefined,
   emptyProps: undefined,
   expandable: undefined,
@@ -93,6 +124,18 @@ const props = withDefaults(defineProps<TableProps<T>>(), {
   transitionState: undefined,
   zebraStriping: undefined,
 });
+
+const emit = defineEmits<{
+  /**
+   * Fired once when a column resize drag ends (mouseup), with the widths of
+   * every column resized so far, keyed by column key. Not fired if the drag
+   * did not change any width (including a drag released at its start point).
+   * Fires in both controlled and uncontrolled mode.
+   */
+  columnWidthsChange: [widths: Record<string, number>];
+  /** Same payload as `columnWidthsChange`; backs `v-model:columnWidths`. */
+  'update:columnWidths': [widths: Record<string, number>];
+}>();
 
 const hostRef = shallowRef<HTMLDivElement | null>(null);
 const paginationRef = shallowRef<ComponentPublicInstance | null>(null);
@@ -207,7 +250,22 @@ const expansionState = useTableExpansion<T>({
 });
 
 /** Feature: Column resized */
-const columnState = useTableResizedColumns();
+const sanitizedColumnWidths = computed(
+  (): Record<string, number> | undefined =>
+    props.columnWidths
+      ? sanitizeColumnWidths(
+          props.columnWidths,
+          columnsWithRightControls.value as TableColumn[],
+        )
+      : undefined,
+);
+const columnState = useTableResizedColumns({
+  columnWidths: () => sanitizedColumnWidths.value,
+  onColumnWidthsChange: (widths) => {
+    emit('columnWidthsChange', widths);
+    emit('update:columnWidths', widths);
+  },
+});
 
 /** Feature: Scroll and dimensions calculation */
 const {

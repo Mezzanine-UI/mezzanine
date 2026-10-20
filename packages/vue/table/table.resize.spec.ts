@@ -39,7 +39,12 @@ const pinnable: TablePinnable<TestDataType> = {
   pinnedRowKeys: [],
 };
 
-const render = (props: Partial<TableProps<TestDataType>> = {}) =>
+type ResizeTableProps = Partial<TableProps<TestDataType>> & {
+  'onUpdate:columnWidths'?: (widths: Record<string, number>) => void;
+  onColumnWidthsChange?: (widths: Record<string, number>) => void;
+};
+
+const render = (props: ResizeTableProps = {}) =>
   mount(MznTable, {
     attachTo: document.body,
     props: {
@@ -100,11 +105,144 @@ afterEach(() => {
 });
 
 describe('<MznTable resizable />', () => {
-  it('should resize the right column when pinnable adds a handle column', async () => {
-    const wrapper = render({ pinnable });
+  it('should report resized widths through columnWidthsChange on mouseup', async () => {
+    const onColumnWidthsChange = vi.fn();
+    const wrapper = render({ onColumnWidthsChange });
 
     await dragHandle(wrapper, 0, 50);
 
+    expect(onColumnWidthsChange).toHaveBeenCalledTimes(1);
+    expect(onColumnWidthsChange).toHaveBeenCalledWith({
+      address: 350,
+      age: 100,
+      name: 210,
+    });
+    expect(wrapper.emitted('update:columnWidths')).toEqual([
+      [{ address: 350, age: 100, name: 210 }],
+    ]);
+  });
+
+  it('should not report while dragging, only on mouseup', async () => {
+    const onColumnWidthsChange = vi.fn();
+    const wrapper = render({ onColumnWidthsChange });
+
+    await getHandle(wrapper).trigger('mousedown', { clientX: 0 });
+    await fireDocumentMouse('mousemove', 30);
+
+    expect(onColumnWidthsChange).not.toHaveBeenCalled();
+
+    await fireDocumentMouse('mouseup', 30);
+
+    expect(onColumnWidthsChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('should resize the right column when pinnable adds a handle column', async () => {
+    const onColumnWidthsChange = vi.fn();
+    const wrapper = render({ onColumnWidthsChange, pinnable });
+
+    await dragHandle(wrapper, 0, 50);
+
+    expect(onColumnWidthsChange).toHaveBeenCalledWith({
+      address: 350,
+      age: 100,
+      name: 210,
+    });
     expect(getColWidths(wrapper).slice(1)).toEqual(['210px', '100px', '350px']);
+  });
+
+  it('should not report when a drag returns to its start position', async () => {
+    const onColumnWidthsChange = vi.fn();
+    const wrapper = render({ onColumnWidthsChange });
+
+    await getHandle(wrapper).trigger('mousedown', { clientX: 0 });
+    await fireDocumentMouse('mousemove', 40);
+    await fireDocumentMouse('mousemove', 0);
+    await fireDocumentMouse('mouseup', 0);
+
+    expect(onColumnWidthsChange).not.toHaveBeenCalled();
+    expect(getColWidths(wrapper)).toEqual(['160px', '100px', '400px']);
+  });
+
+  it('should not report when the table unmounts mid-drag', async () => {
+    const onColumnWidthsChange = vi.fn();
+    const wrapper = render({ onColumnWidthsChange });
+
+    // Vue already drops emits from an unmounted instance, so also check the
+    // drag's own document listeners are detached rather than left to leak.
+    const addEventListener = vi.spyOn(document, 'addEventListener');
+
+    await getHandle(wrapper).trigger('mousedown', { clientX: 0 });
+    await fireDocumentMouse('mousemove', 40);
+
+    const dragListeners = addEventListener.mock.calls.filter(([type]) =>
+      ['mousemove', 'mouseup'].includes(type),
+    );
+    const removeEventListener = vi.spyOn(document, 'removeEventListener');
+
+    wrapper.unmount();
+
+    expect(dragListeners).toHaveLength(2);
+    dragListeners.forEach(([type, listener]) => {
+      expect(removeEventListener).toHaveBeenCalledWith(type, listener);
+    });
+    addEventListener.mockRestore();
+    removeEventListener.mockRestore();
+
+    await fireDocumentMouse('mouseup', 40);
+
+    expect(onColumnWidthsChange).not.toHaveBeenCalled();
+  });
+
+  describe('controlled columnWidths', () => {
+    it('should render widths from columnWidths over column.width', () => {
+      const wrapper = render({ columnWidths: { name: 240 } });
+
+      expect(getColWidths(wrapper)).toEqual(['240px', '100px', '400px']);
+    });
+
+    it('should reset to column.width when columnWidths becomes {}', async () => {
+      const wrapper = render({ columnWidths: { address: 350, name: 210 } });
+
+      expect(getColWidths(wrapper)).toEqual(['210px', '100px', '350px']);
+
+      await wrapper.setProps({ columnWidths: {} } as never);
+
+      expect(getColWidths(wrapper)).toEqual(['160px', '100px', '400px']);
+    });
+
+    it('should keep columnWidths when the parent ignores the change', async () => {
+      const onColumnWidthsChange = vi.fn();
+      const wrapper = render({ columnWidths: {}, onColumnWidthsChange });
+
+      await dragHandle(wrapper, 0, 50);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({
+        address: 350,
+        age: 100,
+        name: 210,
+      });
+      expect(getColWidths(wrapper)).toEqual(['160px', '100px', '400px']);
+    });
+
+    it('should follow v-model:columnWidths', async () => {
+      const wrapper = render({
+        columnWidths: {},
+        'onUpdate:columnWidths': (widths) =>
+          wrapper.setProps({ columnWidths: widths } as never),
+      });
+
+      await dragHandle(wrapper, 0, 50);
+      await nextTick();
+
+      expect(getColWidths(wrapper)).toEqual(['210px', '100px', '350px']);
+    });
+
+    it('should clamp columnWidths to minWidth/maxWidth and ignore invalid values', () => {
+      const wrapper = render({
+        columnWidths: { address: Number.NaN, age: -5, name: 10 },
+      });
+
+      expect(getColWidths(wrapper)).toEqual(['80px', '100px', '400px']);
+    });
   });
 });
