@@ -55,6 +55,8 @@ export interface TableExpansionState<
 
 /** Column state with computed widths */
 export interface TableResizedColumnState {
+  /** Merges in-progress drag widths into the committed widths and reports them. */
+  commitResizedColumnWidths: () => void;
   getResizedColumnWidth: (key: string) => number | undefined;
   setResizedColumnWidth: (key: string, width: number) => void;
 }

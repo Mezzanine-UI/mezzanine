@@ -26,7 +26,8 @@ export const TableResizeHandle = memo(function TableResizeHandle({
   const { columnState, draggable, expansion, scrollContainerRef, selection } =
     useTableContext();
   const { columns } = useTableDataContext();
-  const { setResizedColumnWidth } = columnState || {};
+  const { commitResizedColumnWidths, setResizedColumnWidth } =
+    columnState || {};
 
   const startWidthRef = useRef(0);
   const nextStartWidthRef = useRef(0);
@@ -169,12 +170,20 @@ export const TableResizeHandle = memo(function TableResizeHandle({
       const handleMouseUp = () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        commitResizedColumnWidths?.();
       };
 
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     },
-    [column, columnIndex, columns, getColumnActualWidth, setResizedColumnWidth],
+    [
+      column,
+      columnIndex,
+      columns,
+      commitResizedColumnWidths,
+      getColumnActualWidth,
+      setResizedColumnWidth,
+    ],
   );
 
   // Don't show resize handle for the last column (no adjacent column to resize)

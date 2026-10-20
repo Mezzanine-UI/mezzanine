@@ -62,6 +62,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const {
     actions,
     className,
+    columnWidths,
     columns,
     dataSource,
     draggable,
@@ -73,6 +74,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     loadingRowsCount = 10,
     minHeight,
     nested = false,
+    onColumnWidthsChange,
     pagination,
     pinnable,
     resizable = false,
@@ -223,7 +225,10 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   });
 
   /** Feature: Column resized */
-  const columnState = useTableResizedColumns();
+  const columnState = useTableResizedColumns({
+    columnWidths,
+    onColumnWidthsChange,
+  });
 
   /** Feature: Scroll and dimensions calculation */
   const {
@@ -771,6 +776,18 @@ function TableInner<T extends TableDataSource = TableDataSource>(
  *   expandable={{
  *     expandedRowRender: (row) => <div>{row.detail}</div>,
  *   }}
+ * />
+ *
+ * // 可調欄寬 + 持久化（受控模式，傳入 `{}` 即可重設為 column.width）
+ * <Table
+ *   columnWidths={columnWidths}
+ *   columns={columns}
+ *   dataSource={data}
+ *   onColumnWidthsChange={(widths) => {
+ *     setColumnWidths(widths);
+ *     localStorage.setItem('table-widths', JSON.stringify(widths));
+ *   }}
+ *   resizable
  * />
  * ```
  *

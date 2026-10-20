@@ -1324,6 +1324,99 @@ Columns:
   },
 };
 
+const COLUMN_WIDTHS_STORAGE_KEY = 'mzn-storybook-table-column-widths';
+
+const readStoredColumnWidths = (): Record<string, number> => {
+  try {
+    const parsed: unknown = JSON.parse(
+      localStorage.getItem(COLUMN_WIDTHS_STORAGE_KEY) ?? '{}',
+    );
+
+    return parsed && typeof parsed === 'object'
+      ? (parsed as Record<string, number>)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const writeStoredColumnWidths = (widths: Record<string, number>) => {
+  try {
+    localStorage.setItem(COLUMN_WIDTHS_STORAGE_KEY, JSON.stringify(widths));
+  } catch {
+    // Storage may be unavailable (private mode / blocked); widths still apply.
+  }
+};
+
+export const WithPersistedColumnWidths: Story = {
+  render: function PersistedColumnWidthsStory() {
+    const persistedColumns: TableColumnWithMinWidth<DataType>[] = useMemo(
+      () => [
+        {
+          dataIndex: 'name',
+          key: 'name',
+          minWidth: 80,
+          title: 'Name',
+          width: 160,
+        },
+        {
+          align: 'center',
+          dataIndex: 'age',
+          key: 'age',
+          minWidth: 60,
+          title: 'Age',
+          width: 100,
+        },
+        {
+          dataIndex: 'address',
+          key: 'address',
+          minWidth: 200,
+          title: 'Address',
+        },
+      ],
+      [],
+    );
+    const [columnWidths, setColumnWidths] = useState(readStoredColumnWidths);
+
+    const handleColumnWidthsChange = useCallback(
+      (widths: Record<string, number>) => {
+        setColumnWidths(widths);
+        writeStoredColumnWidths(widths);
+      },
+      [],
+    );
+
+    const handleReset = useCallback(() => {
+      handleColumnWidthsChange({});
+    }, [handleColumnWidthsChange]);
+
+    return (
+      <div style={{ display: 'flex', flexFlow: 'column', gap: '12px' }}>
+        <span>
+          Controlled mode: `columnWidths` + `onColumnWidthsChange`. Resize a
+          column and reload the page — widths are restored from localStorage.
+          `onColumnWidthsChange` fires once per drag, on mouseup.
+        </span>
+        <div>
+          <Button onClick={handleReset} variant="base-secondary">
+            Reset column widths
+          </Button>
+        </div>
+        <Typography component="span" variant="caption">
+          {JSON.stringify(columnWidths)}
+        </Typography>
+        <Table<DataType>
+          columnWidths={columnWidths}
+          columns={persistedColumns}
+          dataSource={baseData}
+          onColumnWidthsChange={handleColumnWidthsChange}
+          resizable
+        />
+      </div>
+    );
+  },
+};
+
 export const WithCustomRender: Story = {
   render: function CustomRenderStory() {
     const customColumns: TableColumn<DataType>[] = useMemo(

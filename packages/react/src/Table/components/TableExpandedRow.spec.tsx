@@ -16,6 +16,7 @@ const defaultContextValue = {
   actions: undefined,
   collectable: undefined,
   columnState: {
+    commitResizedColumnWidths: () => {},
     getResizedColumnWidth: () => undefined,
     resizedColumns: {},
     setResizedColumnWidth: () => {},
