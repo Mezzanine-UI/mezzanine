@@ -1522,6 +1522,73 @@ interface ResizableRowType extends TableDataSource {
   readonly tags: readonly string[];
 }
 
+/** Shared by the resizable column stories (mirrors React `baseData` rows). */
+const RESIZABLE_DATA: readonly ResizableRowType[] = [
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+    tags: ['nice', 'developer'],
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    age: 42,
+    address: 'London No. 1 Lake Park',
+    tags: ['loser'],
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 35,
+    address: 'Sydney No. 1 Lake Park',
+    tags: ['cool', 'teacher'],
+  },
+  {
+    key: '4',
+    name: 'Jane Doe',
+    age: 30,
+    address: 'Tokyo No. 1 Lake Park',
+    tags: ['developer'],
+  },
+  {
+    key: '5',
+    name: 'Jack Smith',
+    age: 21,
+    address: 'Paris No. 1 Lake Park',
+    tags: ['nice', 'cool'],
+  },
+  {
+    key: '6',
+    name: 'Emily Davis',
+    age: 45,
+    address: 'Berlin No. 1 Lake Park',
+    tags: ['loser', 'teacher'],
+  },
+  {
+    key: '7',
+    name: 'Michael Johnson',
+    age: 38,
+    address: 'Madrid No. 1 Lake Park',
+    tags: ['developer', 'teacher'],
+  },
+  {
+    key: '8',
+    name: 'Sarah Wilson',
+    age: 29,
+    address: 'Rome No. 1 Lake Park',
+    tags: ['nice'],
+  },
+  {
+    key: '9',
+    name: 'David Brown',
+    age: 33,
+    address: 'Dublin No. 1 Lake Park',
+    tags: ['cool', 'developer'],
+  },
+];
+
 @Component({
   selector: 'story-table-resizable-columns',
   standalone: true,
@@ -1570,71 +1637,7 @@ class WithResizableColumnsStoryComponent {
     `  Tags      width  80, minWidth 60\n` +
     `  Address   minWidth 200 (donor)`;
 
-  readonly dataSource: readonly ResizableRowType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 35,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-    {
-      key: '4',
-      name: 'Jane Doe',
-      age: 30,
-      address: 'Tokyo No. 1 Lake Park',
-      tags: ['developer'],
-    },
-    {
-      key: '5',
-      name: 'Jack Smith',
-      age: 21,
-      address: 'Paris No. 1 Lake Park',
-      tags: ['nice', 'cool'],
-    },
-    {
-      key: '6',
-      name: 'Emily Davis',
-      age: 45,
-      address: 'Berlin No. 1 Lake Park',
-      tags: ['loser', 'teacher'],
-    },
-    {
-      key: '7',
-      name: 'Michael Johnson',
-      age: 38,
-      address: 'Madrid No. 1 Lake Park',
-      tags: ['developer', 'teacher'],
-    },
-    {
-      key: '8',
-      name: 'Sarah Wilson',
-      age: 29,
-      address: 'Rome No. 1 Lake Park',
-      tags: ['nice'],
-    },
-    {
-      key: '9',
-      name: 'David Brown',
-      age: 33,
-      address: 'Dublin No. 1 Lake Park',
-      tags: ['cool', 'developer'],
-    },
-  ];
+  readonly dataSource = RESIZABLE_DATA;
 
   readonly resizableColumns: TableColumn[] = [
     {
@@ -1665,6 +1668,113 @@ export const WithResizableColumns: Story = {
   ],
   render: () => ({
     template: `<story-table-resizable-columns />`,
+  }),
+};
+
+const COLUMN_WIDTHS_STORAGE_KEY = 'mzn-storybook-table-column-widths';
+
+const readStoredColumnWidths = (): Record<string, number> => {
+  try {
+    const parsed: unknown = JSON.parse(
+      localStorage.getItem(COLUMN_WIDTHS_STORAGE_KEY) ?? '{}',
+    );
+
+    return parsed && typeof parsed === 'object'
+      ? (parsed as Record<string, number>)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const writeStoredColumnWidths = (widths: Record<string, number>): void => {
+  try {
+    localStorage.setItem(COLUMN_WIDTHS_STORAGE_KEY, JSON.stringify(widths));
+  } catch {
+    // Storage may be unavailable (private mode / blocked); widths still apply.
+  }
+};
+
+@Component({
+  selector: '[storyTablePersistedColumnWidths]',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  // Host is the root <div>, matching React's flex column wrapper
+  host: { style: 'display: flex; flex-flow: column; gap: 12px;' },
+  imports: [MznButton, MznTable, MznTypography],
+  template: `
+    <span
+      >Controlled mode: \`columnWidths\` + \`onColumnWidthsChange\`. Resize a
+      column and reload the page — widths are restored from localStorage.
+      \`onColumnWidthsChange\` fires once per drag, on mouseup.</span
+    >
+    <div>
+      <button mznButton variant="base-secondary" (click)="onReset()">
+        Reset column widths
+      </button>
+    </div>
+    <span mznTypography variant="caption">{{ columnWidthsText() }}</span>
+    <div
+      mznTable
+      [columnWidths]="columnWidths()"
+      [columns]="persistedColumns"
+      [dataSource]="dataSource"
+      [resizable]="true"
+      (columnWidthsChange)="onColumnWidthsChange($event)"
+    ></div>
+  `,
+})
+class WithPersistedColumnWidthsStoryComponent {
+  readonly columnWidths = signal(readStoredColumnWidths());
+
+  readonly columnWidthsText = computed(() =>
+    JSON.stringify(this.columnWidths()),
+  );
+
+  readonly dataSource = RESIZABLE_DATA;
+
+  readonly persistedColumns: readonly TableColumn[] = [
+    {
+      dataIndex: 'name',
+      key: 'name',
+      minWidth: 80,
+      title: 'Name',
+      width: 160,
+    },
+    {
+      align: 'center',
+      dataIndex: 'age',
+      key: 'age',
+      minWidth: 60,
+      title: 'Age',
+      width: 100,
+    },
+    {
+      dataIndex: 'address',
+      key: 'address',
+      minWidth: 200,
+      title: 'Address',
+    },
+  ];
+
+  onColumnWidthsChange(widths: Record<string, number>): void {
+    this.columnWidths.set(widths);
+    writeStoredColumnWidths(widths);
+  }
+
+  onReset(): void {
+    this.onColumnWidthsChange({});
+  }
+}
+
+export const WithPersistedColumnWidths: Story = {
+  name: 'With Persisted Column Widths',
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [WithPersistedColumnWidthsStoryComponent] }),
+  ],
+  render: () => ({
+    template: `<div storyTablePersistedColumnWidths></div>`,
   }),
 };
 

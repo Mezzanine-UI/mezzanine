@@ -15,7 +15,7 @@
 為了讓 AI 工具在消費端專案中能精準理解元件用法，本專案遵循以下 JSDoc 規範：
 
 1. **元件 JSDoc**：每個 default export 元件必須包含：一行摘要、關鍵行為描述（2-3 行）、至少一個 `@example`（含 `@mezzanine-ui/react` import 路徑）、`@see` 相關元件。
-2. **Prop JSDoc**：每個 props interface 的屬性必須有 `/** */` 描述，適用時加上 `@default`。discriminated union 中的 `never` 屬性使用 `/** 此模式下不適用。 */`。
+2. **Prop JSDoc**：每個 props interface 的屬性必須有 `/** */` 描述，適用時加上 `@default`。discriminated union 中的 `never` 屬性使用英文描述，例如 `/** Not available in this mode. */` 或更具體的 `/** Not available when resizable is disabled */`。所有程式註解（含 JSDoc）一律使用英文。
 3. **Core Union Type JSDoc**：`packages/core/src/` 中的每個 union type 必須有 JSDoc，以 `- \`'value'\` —` 格式逐值說明。
 4. **Hook JSDoc**：每個公開 hook 必須有 JSDoc，包含搭配元件說明與 `@example`。
 5. **元件目錄**：`packages/react/COMPONENTS.md` 為元件索引，新增元件時須同步更新。

@@ -132,8 +132,36 @@ export interface TableResizableProps<
 > extends TableBaseProps<T> {
   /** Actions column configuration - minWidth required when resizable */
   actions?: TableActionsWithMinWidth<T>;
+  /**
+   * Controlled column widths in pixels, keyed by column key.
+   * When provided, these widths take precedence over `column.width` and the
+   * table only reports drags through `onColumnWidthsChange`; pass `{}` to reset
+   * every column back to `column.width`.
+   * Values are clamped to each column's `minWidth`/`maxWidth`, and non-finite
+   * or non-positive values are ignored, so stale persisted widths stay valid.
+   * Leave undefined for uncontrolled mode (the table keeps widths internally).
+   * @example
+   * const [widths, setWidths] = useState<Record<string, number>>(() =>
+   *   JSON.parse(localStorage.getItem('table-widths') ?? '{}'),
+   * );
+   * <Table
+   *   columnWidths={widths}
+   *   columns={columns}
+   *   dataSource={data}
+   *   onColumnWidthsChange={setWidths}
+   *   resizable
+   * />
+   */
+  columnWidths?: Record<string, number>;
   /** Column configuration - minWidth required for each column when resizable */
   columns: TableColumnWithMinWidth<T>[];
+  /**
+   * Called once when a column resize drag ends (mouseup), with the widths of
+   * every column resized so far, keyed by column key. Not called if the drag
+   * did not change any width (including a drag released at its start point).
+   * Works in both controlled and uncontrolled mode.
+   */
+  onColumnWidthsChange?: (widths: Record<string, number>) => void;
   /**
    * Whether columns are resizable by user interaction
    */
@@ -148,8 +176,12 @@ export interface TableNonResizableProps<
 > extends TableBaseProps<T> {
   /** Actions column configuration */
   actions?: TableActions<T>;
+  /** Not available when resizable is disabled */
+  columnWidths?: never;
   /** Column configuration */
   columns: TableColumn<T>[];
+  /** Not available when resizable is disabled */
+  onColumnWidthsChange?: never;
   /**
    * Whether columns are resizable by user interaction
    * @default false

@@ -47,6 +47,7 @@ import { useTableFixedOffsets } from './hooks/useTableFixedOffsets';
 import { useTableScroll } from './hooks/useTableScroll';
 import { useTableSelection } from './hooks/useTableSelection';
 import { useTableSorting } from './hooks/useTableSorting';
+import { sanitizeColumnWidths } from './utils/calculateColumnWidths';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
@@ -62,6 +63,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const {
     actions,
     className,
+    columnWidths,
     columns,
     dataSource,
     draggable,
@@ -73,6 +75,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     loadingRowsCount = 10,
     minHeight,
     nested = false,
+    onColumnWidthsChange,
     pagination,
     pinnable,
     resizable = false,
@@ -223,7 +226,20 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   });
 
   /** Feature: Column resized */
-  const columnState = useTableResizedColumns();
+  const sanitizedColumnWidths = useMemo(
+    () =>
+      columnWidths
+        ? sanitizeColumnWidths(
+            columnWidths,
+            columnsWithRightControls as TableColumn[],
+          )
+        : undefined,
+    [columnWidths, columnsWithRightControls],
+  );
+  const columnState = useTableResizedColumns({
+    columnWidths: sanitizedColumnWidths,
+    onColumnWidthsChange,
+  });
 
   /** Feature: Scroll and dimensions calculation */
   const {
@@ -771,6 +787,18 @@ function TableInner<T extends TableDataSource = TableDataSource>(
  *   expandable={{
  *     expandedRowRender: (row) => <div>{row.detail}</div>,
  *   }}
+ * />
+ *
+ * // Resizable columns with persisted widths (controlled; pass `{}` to reset to column.width)
+ * <Table
+ *   columnWidths={columnWidths}
+ *   columns={columns}
+ *   dataSource={data}
+ *   onColumnWidthsChange={(widths) => {
+ *     setColumnWidths(widths);
+ *     localStorage.setItem('table-widths', JSON.stringify(widths));
+ *   }}
+ *   resizable
  * />
  * ```
  *

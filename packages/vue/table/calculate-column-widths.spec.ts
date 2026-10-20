@@ -1,6 +1,7 @@
 import {
   calculateColumnWidths,
   clampWidth,
+  sanitizeColumnWidths,
   shouldCalculateWidths,
 } from './calculate-column-widths';
 import type { TableColumn } from './table.types';
@@ -36,6 +37,39 @@ describe('clampWidth', () => {
   it('should ignore a bound that was not given', () => {
     expect(clampWidth(10, undefined, 200)).toBe(10);
     expect(clampWidth(999, 50, undefined)).toBe(999);
+  });
+});
+
+describe('sanitizeColumnWidths', () => {
+  const columns = [
+    column('name', { maxWidth: 300, minWidth: 80 }),
+    column('age', { minWidth: 60 }),
+  ];
+
+  it('should clamp widths to each column minWidth/maxWidth', () => {
+    expect(sanitizeColumnWidths({ age: 70, name: 10 }, columns)).toEqual({
+      age: 70,
+      name: 80,
+    });
+    expect(sanitizeColumnWidths({ name: 900 }, columns)).toEqual({
+      name: 300,
+    });
+  });
+
+  it('should drop non-finite and non-positive widths', () => {
+    expect(
+      sanitizeColumnWidths(
+        { age: -5, name: Number.NaN, other: Number.POSITIVE_INFINITY },
+        columns,
+      ),
+    ).toEqual({});
+    expect(sanitizeColumnWidths({ age: 0 }, columns)).toEqual({});
+  });
+
+  it('should keep widths for keys without a matching column as-is', () => {
+    expect(sanitizeColumnWidths({ unknown: 42 }, columns)).toEqual({
+      unknown: 42,
+    });
   });
 });
 

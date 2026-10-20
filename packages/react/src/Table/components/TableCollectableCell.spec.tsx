@@ -18,6 +18,8 @@ const defaultContextValue = {
     onCollectChange: jest.fn(),
   },
   columnState: {
+    commitResizedColumnWidths: () => {},
+    discardResizedColumnWidths: () => {},
     getResizedColumnWidth: () => undefined,
     resizedColumns: {},
     setResizedColumnWidth: () => {},

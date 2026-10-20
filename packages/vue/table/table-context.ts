@@ -70,6 +70,10 @@ export interface TableExpansionState<
 
 /** Column state with computed widths */
 export interface TableResizedColumnState {
+  /** Merges in-progress drag widths into the committed widths and reports them. */
+  commitResizedColumnWidths: () => void;
+  /** Drops in-progress drag widths without reporting them. */
+  discardResizedColumnWidths: () => void;
   /** The width the user dragged this column to, if any. */
   getResizedColumnWidth: (key: string) => number | undefined;
   /** Records the width the user dragged this column to. */
