@@ -244,9 +244,11 @@ export interface TableTransitionState {
  * Select、Modal、Slider 同樣的限制），因此每個變體的 prop 都以選用的形式列在這裡。
  * prop 名稱、型別與執行期行為都沒有變；失去的只有上面三條的編譯期保證。
  *
- * 另外，React 端的 Table 一個 callback prop 都沒有 —— 所有回呼都在 `rowSelection`、
- * `expandable`、`draggable`、`pinnable`、`collectable`、`toggleable`、`pagination`、
- * `actions`、`emptyProps` 這些設定物件裡。Vue 因此**沒有任何 emit**。
+ * React's only top-level callback prop is `onColumnWidthsChange`; it is the
+ * `columnWidthsChange` emit (plus `update:columnWidths` for
+ * `v-model:columnWidths`) on MznTable. Every other callback lives inside a
+ * configuration object (`rowSelection`, `expandable`, `draggable`, `pinnable`,
+ * `collectable`, `toggleable`, `pagination`, `actions`, `emptyProps`).
  */
 export interface TableProps<T extends TableDataSource = TableDataSource> {
   /**
@@ -256,6 +258,20 @@ export interface TableProps<T extends TableDataSource = TableDataSource> {
   actions?: TableActions<T>;
   /** Collectable row configuration (star/favorite functionality) */
   collectable?: TableCollectable<T>;
+  /**
+   * Controlled column widths in pixels, keyed by column key.
+   * When provided, these widths take precedence over `column.width` and the
+   * table only reports drags through the `columnWidthsChange` emit; pass `{}`
+   * to reset every column back to `column.width`.
+   * Values are clamped to each column's `minWidth`/`maxWidth`, and non-finite
+   * or non-positive values are ignored, so stale persisted widths stay valid.
+   * Leave undefined for uncontrolled mode (the table keeps widths internally).
+   * Only takes effect when `resizable` is true.
+   * @example
+   * <!-- Persist widths: v-model writes back the widths reported on mouseup -->
+   * <MznTable v-model:column-widths="widths" :columns="columns" :data-source="data" resizable />
+   */
+  columnWidths?: Record<string, number>;
   /**
    * Column configuration.
    * `minWidth` is required on every column when `resizable` is true.

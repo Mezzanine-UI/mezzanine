@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount } from 'vue';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';
 import { useTableContext } from './table-context';
 import { useTableDataContext } from './table-data-context';
@@ -31,13 +31,25 @@ const data = useTableDataContext();
 let startWidth = 0;
 let nextStartWidth = 0;
 let startX = 0;
+// Detaches the document listeners of an in-progress drag (null when idle)
+let stopDraggingFn: (() => void) | null = null;
 
-// Calculate action columns offset
+// A drag still in progress when the handle unmounts must not report later
+onBeforeUnmount(() => {
+  if (!stopDraggingFn) return;
+
+  stopDraggingFn();
+  stopDraggingFn = null;
+  table.value.columnState?.discardResizedColumnWidths();
+});
+
+// Calculate action columns offset. Must mirror the leading cols rendered
+// by MznTableColGroup: drag and pin share a single handle column.
 const actionColumnsOffset = computed((): number => {
-  const { draggable, expansion, selection } = table.value;
+  const { draggable, expansion, pinnable, selection } = table.value;
   let offset = 0;
 
-  if (draggable?.enabled) offset += 1;
+  if (draggable?.enabled || pinnable?.enabled) offset += 1;
   if (expansion) offset += 1;
   if (selection) offset += 1;
 
@@ -75,7 +87,11 @@ function handleMouseDown(event: MouseEvent): void {
   event.stopPropagation();
 
   const { columns } = data.value;
-  const { setResizedColumnWidth } = table.value.columnState ?? {};
+  const {
+    commitResizedColumnWidths,
+    discardResizedColumnWidths,
+    setResizedColumnWidth,
+  } = table.value.columnState ?? {};
 
   // Get next column (the one to the right)
   const nextColumn = columns[props.columnIndex + 1];
@@ -118,6 +134,9 @@ function handleMouseDown(event: MouseEvent): void {
   const lastGrowBudget =
     lastMaxWidth !== undefined ? lastMaxWidth - lastWidth : Infinity;
 
+  // Net drag distance last written to the widths; 0 means no visible change
+  let appliedDiff = 0;
+
   const handleMouseMove = (moveEvent: MouseEvent): void => {
     const diff = moveEvent.clientX - startX;
     const newWidth = startWidth + diff;
@@ -137,6 +156,7 @@ function handleMouseDown(event: MouseEvent): void {
 
       setResizedColumnWidth?.(props.column.key, newWidth);
       setResizedColumnWidth?.(nextColumn.key, newNextWidth);
+      appliedDiff = diff;
 
       return;
     }
@@ -165,13 +185,28 @@ function handleMouseDown(event: MouseEvent): void {
     setResizedColumnWidth?.(props.column.key, newWidth);
     setResizedColumnWidth?.(lastColumn.key, newLastWidth);
     setResizedColumnWidth?.(nextColumn.key, newNextWidth);
+    appliedDiff = diff;
+  };
+
+  const stopDragging = (): void => {
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+    stopDraggingFn = null;
   };
 
   const handleMouseUp = (): void => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+    stopDragging();
+
+    // A drag that ends where it started only re-wrote measured start
+    // widths; dropping them avoids reporting (and pinning) a no-op.
+    if (appliedDiff === 0) {
+      discardResizedColumnWidths?.();
+    } else {
+      commitResizedColumnWidths?.();
+    }
   };
 
+  stopDraggingFn = stopDragging;
   document.addEventListener('mousemove', handleMouseMove);
   document.addEventListener('mouseup', handleMouseUp);
 }
