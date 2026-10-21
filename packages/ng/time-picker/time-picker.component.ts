@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -18,6 +20,7 @@ import { ClockIcon } from '@mezzanine-ui/icons';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPickerTrigger } from '@mezzanine-ui/ng/picker';
+import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznTimePickerPanel } from './time-picker-panel.component';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 
@@ -101,8 +104,11 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     ></div>
   `,
 })
-export class MznTimePicker implements ControlValueAccessor {
+export class MznTimePicker implements ControlValueAccessor, AfterViewInit {
+  private readonly clickAway = inject(ClickAwayService);
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   /** 佔位文字。 */
   readonly placeholder = input('');
@@ -195,6 +201,20 @@ export class MznTimePicker implements ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  /** Click away → cancel (do not commit), like React TimePicker. */
+  ngAfterViewInit(): void {
+    this.clickAway.listen(
+      this.hostElRef.nativeElement,
+      () => {
+        if (this.isOpen()) {
+          this.onCancel();
+          this.onTouched?.();
+        }
+      },
+      this.destroyRef,
+    );
   }
 
   protected openPanel(): void {
