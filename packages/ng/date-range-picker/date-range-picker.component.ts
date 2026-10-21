@@ -366,14 +366,8 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
       ].filter((fn): fn is (date: DateType) => boolean => !!fn);
       if (checks.length === 0) return undefined;
       return (isoDate: string): boolean => {
-        const c = this.config;
-        const parsed = c.parseFormattedValue(
-          isoDate,
-          this.resolvedFormat(),
-          c.locale,
-        );
-        if (!parsed) return false;
-        return !checks.some((fn) => fn(parsed));
+        // The formatter hands over an already-parsed ISO date
+        return !checks.some((fn) => fn(isoDate));
       };
     },
   );
@@ -447,15 +441,11 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     rawDigits: string;
   }): void {
     if (!isoValue) return;
-    const c = this.config;
-    const parsed = c.parseFormattedValue(
-      isoValue,
-      this.resolvedFormat(),
-      c.locale,
-    );
-    if (!parsed) return;
     const validate = this.validateFn();
     if (validate && !validate(isoValue)) return;
+    const c = this.config;
+    // The formatter has already parsed the typed text into an ISO date
+    const parsed = isoValue;
     const [, currentTo] = this.effectiveRange();
     const [nextFrom, nextTo]: [DateType, DateType | undefined] =
       currentTo && c.isBefore(currentTo, parsed)
@@ -472,15 +462,11 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     rawDigits: string;
   }): void {
     if (!isoValue) return;
-    const c = this.config;
-    const parsed = c.parseFormattedValue(
-      isoValue,
-      this.resolvedFormat(),
-      c.locale,
-    );
-    if (!parsed) return;
     const validate = this.validateFn();
     if (validate && !validate(isoValue)) return;
+    const c = this.config;
+    // The formatter has already parsed the typed text into an ISO date
+    const parsed = isoValue;
     const [currentFrom] = this.effectiveRange();
     const [nextFrom, nextTo]: [DateType | undefined, DateType] =
       currentFrom && c.isBefore(parsed, currentFrom)
