@@ -273,23 +273,40 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
   });
 
   /**
+   * Disabled predicate matching the current mode; the others only affect the
+   * calendar. Mirrors React DatePicker `validateDate`.
+   */
+  private readonly modeDisabledCheck = computed(
+    (): ((date: DateType) => boolean) | undefined => {
+      switch (this.mode()) {
+        case 'day':
+          return this.isDateDisabled();
+        case 'week':
+          return this.isWeekDisabled();
+        case 'month':
+          return this.isMonthDisabled();
+        case 'quarter':
+          return this.isQuarterDisabled();
+        case 'year':
+          return this.isYearDisabled();
+        case 'half-year':
+          return this.isHalfYearDisabled();
+        default:
+          return undefined;
+      }
+    },
+  );
+
+  /**
    * Validate predicate passed to MznPickerTrigger.
-   * Combines isDateDisabled / isMonthDisabled / isYearDisabled / isWeekDisabled
-   * / isQuarterDisabled / isHalfYearDisabled to reject typed input that
-   * resolves to a disabled date.
+   * Rejects typed input that resolves to a date disabled by the predicate of
+   * the current mode.
    */
   protected readonly validateFn = computed(
     (): ((isoDate: string) => boolean) | undefined => {
-      const checks = [
-        this.isDateDisabled(),
-        this.isMonthDisabled(),
-        this.isYearDisabled(),
-        this.isWeekDisabled(),
-        this.isQuarterDisabled(),
-        this.isHalfYearDisabled(),
-      ].filter((fn): fn is (date: DateType) => boolean => !!fn);
+      const check = this.modeDisabledCheck();
 
-      if (checks.length === 0) return undefined;
+      if (!check) return undefined;
 
       return (isoDate: string): boolean => {
         const c = this.config;
@@ -299,7 +316,7 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
           c.locale,
         );
         if (!parsed) return false;
-        return !checks.some((fn) => fn(parsed));
+        return !check(parsed);
       };
     },
   );
