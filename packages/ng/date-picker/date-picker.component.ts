@@ -292,14 +292,8 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
       if (checks.length === 0) return undefined;
 
       return (isoDate: string): boolean => {
-        const c = this.config;
-        const parsed = c.parseFormattedValue(
-          isoDate,
-          this.resolvedFormat(),
-          c.locale,
-        );
-        if (!parsed) return false;
-        return !checks.some((fn) => fn(parsed));
+        // The formatter hands over an already-parsed ISO date
+        return !checks.some((fn) => fn(isoDate));
       };
     },
   );
@@ -381,8 +375,10 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
 
   /**
    * Handle typed-input changes from MznPickerTrigger.
-   * Parses the formatted string and commits if it resolves to a valid,
-   * non-disabled date. Mirrors React DatePicker.onInputChange path.
+   * The formatter has already parsed the typed text into an ISO date, so it
+   * is committed as-is once it passes validation (re-parsing it with the
+   * display format fails under strict adapters such as Moment). Mirrors React
+   * DatePicker.onInputChange path.
    */
   protected onTriggerValueChange({
     isoValue,
@@ -391,19 +387,12 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
     rawDigits: string;
   }): void {
     if (!isoValue) return;
-    const c = this.config;
-    const parsed = c.parseFormattedValue(
-      isoValue,
-      this.resolvedFormat(),
-      c.locale,
-    );
-    if (!parsed) return;
     const validate = this.validateFn();
     if (validate && !validate(isoValue)) return;
-    this.internalValue.set(parsed);
-    this.internalReferenceDate.set(parsed);
-    this.onChange?.(parsed);
-    this.dateChanged.emit(parsed);
+    this.internalValue.set(isoValue);
+    this.internalReferenceDate.set(isoValue);
+    this.onChange?.(isoValue);
+    this.dateChanged.emit(isoValue);
     this.onTouched?.();
   }
 
