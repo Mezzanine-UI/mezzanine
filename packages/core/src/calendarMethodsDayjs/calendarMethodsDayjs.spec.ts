@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import CalendarMethodsDayjs from '.';
 
 describe('calendarMethodsDayjs', () => {
@@ -24,5 +25,35 @@ describe('calendarMethodsDayjs', () => {
         expect(CalendarMethodsDayjs.getWeekYear(date, locale)).toBe(expected);
       });
     }
+  });
+
+  describe('parseFormattedValue', () => {
+    const parse = (text: string, format: string) =>
+      CalendarMethodsDayjs.parseFormattedValue(text, format, 'en-US');
+
+    it.each([
+      ['21:30', 'HH:mm', '21:30:00'],
+      ['21:30:15', 'HH:mm:ss', '21:30:15'],
+    ])('should parse the time-only text %s with %s', (text, format, time) => {
+      const parsed = parse(text, format);
+
+      expect(parsed).toBeDefined();
+      expect(dayjs(parsed).format('HH:mm:ss')).toBe(time);
+    });
+
+    it.each([
+      ['2026-08-15', 'YYYY-MM-DD', '2026-08-15'],
+      ['2026-08', 'YYYY-MM', '2026-08-01'],
+    ])('should parse the date text %s with %s', (text, format, date) => {
+      expect(dayjs(parse(text, format)).format('YYYY-MM-DD')).toBe(date);
+    });
+
+    it.each([
+      ['2026-13', 'YYYY-MM'],
+      ['2026-02-30', 'YYYY-MM-DD'],
+      ['25:00', 'HH:mm'],
+    ])('should reject the out-of-range text %s with %s', (text, format) => {
+      expect(parse(text, format)).toBeUndefined();
+    });
   });
 });

@@ -6,6 +6,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 import IsoWeek from 'dayjs/plugin/isoWeek';
 import utc from 'dayjs/plugin/utc';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 // Import common locales - these imports have side effects and must be preserved
 import 'dayjs/locale/zh-cn';
@@ -151,6 +152,9 @@ function init() {
   dayjs.extend(IsoWeek);
   dayjs.extend(utc);
   dayjs.extend(quarterOfYear);
+  // Without it dayjs ignores the format argument, so parseFormattedValue could
+  // not parse time-only text and let overflowing dates (2026-02-30) through
+  dayjs.extend(customParseFormat);
 
   hasInit = true;
   return true;
