@@ -32,6 +32,25 @@ describe('<MznTimePanelColumn />', () => {
     expect(active[0].text()).toBe('08');
   });
 
+  it('should scroll the active unit into view once the viewport is ready', async () => {
+    const scrollTo = vi
+      .spyOn(HTMLElement.prototype, 'scrollTo')
+      .mockImplementation(() => {});
+
+    mount(MznTimePanelColumn, {
+      attachTo: document.body,
+      props: { activeUnit: 15, cellHeight: 36, units: testUnits },
+    });
+
+    await vi.waitFor(() => {
+      expect(scrollTo).toHaveBeenCalledWith(
+        expect.objectContaining({ top: 15 * 36 }),
+      );
+    });
+
+    scrollTo.mockRestore();
+  });
+
   describe('emit: change', () => {
     it('should emit the clicked unit', async () => {
       const wrapper = mount(MznTimePanelColumn, {

@@ -38,6 +38,20 @@ describe('MznScrollbar', () => {
     });
   });
 
+  describe('emit: viewportReady', () => {
+    it('should emit the OverlayScrollbars viewport once a listener is bound', () => {
+      const onViewportReady = vi.fn();
+
+      mount(MznScrollbar, {
+        attachTo: document.body,
+        props: { defer: false, onViewportReady },
+      });
+
+      expect(onViewportReady).toHaveBeenCalledTimes(1);
+      expect(onViewportReady.mock.calls[0][0]).toBeInstanceOf(HTMLDivElement);
+    });
+  });
+
   describe('prop: disabled', () => {
     it('should render a plain div without the host class', () => {
       const wrapper = mount(MznScrollbar, {
