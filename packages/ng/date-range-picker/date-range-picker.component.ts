@@ -81,6 +81,8 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
     '[attr.readOnly]': 'null',
     '[attr.referenceDate]': 'null',
     '[attr.size]': 'null',
+    '[attr.validateFrom]': 'null',
+    '[attr.validateTo]': 'null',
     '[attr.value]': 'null',
   },
   standalone: true,
@@ -103,8 +105,8 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
       [fullWidth]="fullWidth()"
       [size]="size()"
       [hostClassModifier]="rangeHostClass()"
-      [validateFrom]="validateFn()"
-      [validateTo]="validateFn()"
+      [validateFrom]="validateFrom()"
+      [validateTo]="validateTo()"
       (fromFocused)="openCalendar()"
       (toFocused)="openCalendar()"
       (iconClick)="toggleCalendar($event)"
@@ -241,6 +243,22 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   /** 尺寸。 @default 'main' */
   readonly size = input<TextFieldSize>('main');
 
+  /**
+   * Custom validation for typed input in the 'from' field; a rejected value
+   * is not committed. The isXDisabled predicates only affect the calendar.
+   */
+  readonly validateFrom = input<((isoDate: string) => boolean) | undefined>(
+    undefined,
+  );
+
+  /**
+   * Custom validation for typed input in the 'to' field; a rejected value is
+   * not committed. The isXDisabled predicates only affect the calendar.
+   */
+  readonly validateTo = input<((isoDate: string) => boolean) | undefined>(
+    undefined,
+  );
+
   /** 外部值（受控模式）。 */
   readonly value = input<RangePickerValue | undefined>(undefined);
 
@@ -353,25 +371,6 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
   /**
    * 左側日曆的參考日期。
    */
-  /** Validate predicate for typed-input on both from/to inputs. */
-  protected readonly validateFn = computed(
-    (): ((isoDate: string) => boolean) | undefined => {
-      const checks = [
-        this.isDateDisabled(),
-        this.isMonthDisabled(),
-        this.isYearDisabled(),
-        this.isWeekDisabled(),
-        this.isQuarterDisabled(),
-        this.isHalfYearDisabled(),
-      ].filter((fn): fn is (date: DateType) => boolean => !!fn);
-      if (checks.length === 0) return undefined;
-      return (isoDate: string): boolean => {
-        // The formatter hands over an already-parsed ISO date
-        return !checks.some((fn) => fn(isoDate));
-      };
-    },
-  );
-
   protected readonly referenceRef = computed((): DateType => {
     const c = this.config;
     const extRef = this.referenceDate();
@@ -441,7 +440,7 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     rawDigits: string;
   }): void {
     if (!isoValue) return;
-    const validate = this.validateFn();
+    const validate = this.validateFrom();
     if (validate && !validate(isoValue)) return;
     const c = this.config;
     // The formatter has already parsed the typed text into an ISO date
@@ -462,7 +461,7 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     rawDigits: string;
   }): void {
     if (!isoValue) return;
-    const validate = this.validateFn();
+    const validate = this.validateTo();
     if (validate && !validate(isoValue)) return;
     const c = this.config;
     // The formatter has already parsed the typed text into an ISO date
