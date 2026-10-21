@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import 'overlayscrollbars/overlayscrollbars.css';
 
-import {
-  computed,
-  onMounted,
-  useAttrs,
-  type ComponentPublicInstance,
-} from 'vue';
+import { computed, onMounted, type ComponentPublicInstance } from 'vue';
 import {
   ClickScrollPlugin,
   OverlayScrollbars,
@@ -16,6 +11,7 @@ import {
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
 import { scrollbarClasses as classes } from '@mezzanine-ui/core/scrollbar';
 import { toCssLength } from '../_internal/css-length';
+import { useHasListener } from '../_internal/use-has-listener';
 import clsx from 'clsx';
 import type { ScrollbarProps } from './scrollbar.types';
 
@@ -61,7 +57,7 @@ defineSlots<{
  */
 defineOptions({ inheritAttrs: false });
 
-const attrs = useAttrs();
+const hasListener = useHasListener();
 
 /** Register ClickScrollPlugin once (required for the clickScroll option). */
 onMounted(() => {
@@ -106,13 +102,14 @@ const hostClasses = computed((): string => clsx(classes.host));
 
 /**
  * React skips the events object entirely when neither `onViewportReady` nor
- * `events` is supplied. `$attrs` tells us whether a `viewportReady` listener is
- * bound, which is the same signal React reads from its props.
+ * `events` is supplied. A declared emit's listener never shows up in `$attrs`,
+ * so `useHasListener` reads it from the vnode instead — the same signal React
+ * reads from its props.
  */
 const mergedEvents = computed((): EventListeners | undefined => {
   const { events } = props;
 
-  if (!attrs.onViewportReady && !events) return undefined;
+  if (!hasListener('viewportReady') && !events) return undefined;
 
   const listeners = events && typeof events !== 'boolean' ? events : undefined;
 

@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -18,6 +20,7 @@ import { ClockIcon } from '@mezzanine-ui/icons';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPickerTrigger } from '@mezzanine-ui/ng/picker';
+import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznTimePickerPanel } from './time-picker-panel.component';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 
@@ -101,8 +104,11 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     ></div>
   `,
 })
-export class MznTimePicker implements ControlValueAccessor {
+export class MznTimePicker implements ControlValueAccessor, AfterViewInit {
+  private readonly clickAway = inject(ClickAwayService);
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   /** 佔位文字。 */
   readonly placeholder = input('');
@@ -197,6 +203,20 @@ export class MznTimePicker implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
+  /** Click away → cancel (do not commit), like React TimePicker. */
+  ngAfterViewInit(): void {
+    this.clickAway.listen(
+      this.hostElRef.nativeElement,
+      () => {
+        if (this.isOpen()) {
+          this.onCancel();
+          this.onTouched?.();
+        }
+      },
+      this.destroyRef,
+    );
+  }
+
   protected openPanel(): void {
     if (this.readOnly() || this.disabled()) return;
     const init = this.internalValue() ?? this.computeCurrentTime();
@@ -217,17 +237,38 @@ export class MznTimePicker implements ControlValueAccessor {
   }
 
   /**
-   * Validate predicate for typed time input.
-   * Pass-through: any string that parses to a valid time is accepted.
+   * Validate predicate for typed time input: rejects a time off the hour /
+   * minute / second step. The formatter has already parsed it into an ISO
+   * date. Mirrors React TimePicker.validateTimeStep.
    */
   protected readonly validateFn = (isoTime: string): boolean => {
     const c = this.config;
-    return !!c.parseFormattedValue(isoTime, this.resolvedFormat(), c.locale);
+    const isValidStep = (value: number, step: number): boolean =>
+      step <= 1 || value % step === 0;
+
+    if (!this.hideHour() && !isValidStep(c.getHour(isoTime), this.hourStep())) {
+      return false;
+    }
+    if (
+      !this.hideMinute() &&
+      !isValidStep(c.getMinute(isoTime), this.minuteStep())
+    ) {
+      return false;
+    }
+    if (
+      !this.hideSecond() &&
+      !isValidStep(c.getSecond(isoTime), this.secondStep())
+    ) {
+      return false;
+    }
+
+    return true;
   };
 
   /**
    * Handle typed time string from MznPickerTrigger.
-   * Parses against resolvedFormat (HH:mm:ss / HH:mm) and commits.
+   * The formatter has already parsed it into an ISO date, so it is committed
+   * as-is, mirroring React TimePicker.
    */
   protected onTriggerValueChange({
     isoValue,
@@ -236,16 +277,11 @@ export class MznTimePicker implements ControlValueAccessor {
     rawDigits: string;
   }): void {
     if (!isoValue) return;
-    const c = this.config;
-    const parsed = c.parseFormattedValue(
-      isoValue,
-      this.resolvedFormat(),
-      c.locale,
-    );
-    if (!parsed) return;
-    this.internalValue.set(parsed);
-    this.onChange?.(parsed);
-    this.timeChanged.emit(parsed);
+    this.internalValue.set(isoValue);
+    this.onChange?.(isoValue);
+    this.timeChanged.emit(isoValue);
+    // Keep the panel's pending value in sync so Ok does not restore the old time
+    this.pendingValue.set(isoValue);
     this.onTouched?.();
   }
 

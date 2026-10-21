@@ -217,6 +217,30 @@ describe('<MznDateTimePicker />', () => {
       ]);
     });
 
+    it('should emit change when a pasted ISO date fills the empty time', async () => {
+      const onChange = vi.fn();
+      const wrapper = mountPicker({ onChange, referenceDate });
+      const pasted = moment('2026-09-10 09:15:00').toISOString();
+
+      await wrapper.findAll('input')[0].trigger('focus');
+      dayButton('Thursday, September 10, 2026')?.click();
+      await nextTick();
+
+      expect(onChange).not.toHaveBeenCalled();
+
+      wrapper.findAll('input')[0].element.dispatchEvent(
+        Object.assign(new Event('paste', { bubbles: true }), {
+          clipboardData: { getData: () => pasted },
+        }),
+      );
+      await nextTick();
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(moment(onChange.mock.calls[0][0]).format('YYYY-MM-DD HH:mm')).toBe(
+        '2026-09-10 09:15',
+      );
+    });
+
     it('should emit undefined when cleared', async () => {
       const onChange = vi.fn();
       const onClear = vi.fn();

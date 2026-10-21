@@ -31,7 +31,8 @@ export interface UseDateInputFormatterProps {
    */
   onBlur?: (event: FocusEvent) => void;
   /**
-   * Change handler receiving formatted value and raw digits
+   * Change handler receiving formatted value and raw digits.
+   * Not called when typed digits reproduce the current `value`.
    */
   onChange?: (formattedValue: string, rawDigits: string) => void;
   /**
@@ -157,13 +158,23 @@ export function useDateInputFormatter(
   });
 
   /**
-   * Trigger value change
+   * Trigger value change.
+   * `skipIfUnchanged` suppresses onChange when the value equals the committed
+   * one; only digit typing passes it, so paste still re-commits for cross-field sync.
    */
-  function triggerChange(newValue: string, cursorPosition?: number): void {
+  function triggerChange(
+    newValue: string,
+    cursorPosition?: number,
+    skipIfUnchanged = false,
+  ): void {
     internalValue.value = newValue;
 
     // Only trigger onChange if value is complete and valid
-    if (onChange && isValueComplete(newValue)) {
+    if (
+      onChange &&
+      isValueComplete(newValue) &&
+      !(skipIfUnchanged && newValue === currentExternalValue())
+    ) {
       // Try to parse and validate the formatted value
       const isoDate = calendar.value.parseFormattedValue(
         newValue,
@@ -422,59 +433,62 @@ export function useDateInputFormatter(
       const targetCell = maskFormat.maskCells[targetCellIndex];
       const [minVal, maxVal] = getMaskRange(targetCell.mask || '');
 
-      // Get current cell value
-      const currentCellValue = internalValue.value.slice(
-        targetCell.start,
-        targetCell.end,
-      );
-
-      // Build the new cell value with the input at cursor position
-      const newCellValue = currentCellValue.split('');
       const posInCell = nextEditablePos - targetCell.start;
 
-      newCellValue[posInCell] = key;
+      // Typing the first digit of a cell starts a fresh entry (like native
+      // date inputs): the old digits are dropped so they are not validated
+      // together with the new one, and the cell waits for its remaining digits.
+      const baseValue =
+        posInCell === 0
+          ? internalValue.value.slice(0, targetCell.start) +
+            templateValue.slice(targetCell.start, targetCell.end) +
+            internalValue.value.slice(targetCell.end)
+          : internalValue.value;
+
+      const cellLength = targetCell.end - targetCell.start;
+      let digits = key;
+
+      if (posInCell === 0 && cellLength > 1) {
+        // No value starting with this digit can reach the minimum
+        // (e.g. year 0xxx), block it
+        if (parseInt(key.padEnd(cellLength, '9'), 10) < minVal) {
+          return;
+        }
+
+        // Every value starting with this digit is too large (e.g. month 5x):
+        // pad it with leading zeros (5 → 05) to finish the cell, like native
+        // date inputs
+        if (parseInt(key.padEnd(cellLength, '0'), 10) > maxVal) {
+          digits = key.padStart(cellLength, '0');
+        }
+      }
+
+      // Build the new cell value with the digits at cursor position
+      const newCellValue = baseValue
+        .slice(targetCell.start, targetCell.end)
+        .split('');
+
+      newCellValue.splice(posInCell, digits.length, ...digits);
 
       // Validate the new cell value
       const newCellStr = newCellValue.join('');
 
-      // Check if all positions are filled
-      if (!/^\d+$/.test(newCellStr)) {
-        // Not all filled, allow input
-        const newValue = internalValue.value.split('');
+      // Once all positions are filled, validate range
+      if (/^\d+$/.test(newCellStr)) {
+        const cellNum = parseInt(newCellStr, 10);
 
-        newValue[nextEditablePos] = key;
-
-        // Check if we need to jump to next cell
-        let nextPos = nextEditablePos + 1;
-
-        if (
-          nextPos >= targetCell.end &&
-          targetCellIndex < maskFormat.maskCells.length - 1
-        ) {
-          // Jump to next cell
-          nextPos = maskFormat.maskCells[targetCellIndex + 1].start;
+        if (cellNum < minVal || cellNum > maxVal) {
+          // Invalid, block input
+          return;
         }
-
-        triggerChange(newValue.join(''), nextPos);
-
-        return;
       }
 
-      // All filled, validate range
-      const cellNum = parseInt(newCellStr, 10);
+      const newValue = baseValue.split('');
 
-      if (cellNum < minVal || cellNum > maxVal) {
-        // Invalid, block input
-        return;
-      }
-
-      // Valid, update
-      const newValue = internalValue.value.split('');
-
-      newValue[nextEditablePos] = key;
+      newValue.splice(nextEditablePos, digits.length, ...digits);
 
       // Jump to next cell after filling current cell
-      let nextPos = nextEditablePos + 1;
+      let nextPos = nextEditablePos + digits.length;
 
       if (
         nextPos >= targetCell.end &&
@@ -484,7 +498,8 @@ export function useDateInputFormatter(
         nextPos = maskFormat.maskCells[targetCellIndex + 1].start;
       }
 
-      triggerChange(newValue.join(''), nextPos);
+      // Re-typing the committed digits only moves the cursor
+      triggerChange(newValue.join(''), nextPos, true);
 
       return;
     }

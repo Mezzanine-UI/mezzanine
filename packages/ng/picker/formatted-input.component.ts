@@ -180,8 +180,8 @@ export class MznFormattedInput {
   // -------------------------------------------------------------------------
 
   /**
-   * 值變更事件，回傳 ISO date string 與原始數字字串。
-   * 僅在值完整且合法時觸發。
+   * Emits the ISO date string and raw digits once the value is complete and valid.
+   * Not emitted when typed digits reproduce the current `value`.
    */
   readonly valueChanged = output<{ isoValue: string; rawDigits: string }>();
 
@@ -483,10 +483,22 @@ export class MznFormattedInput {
     this.templateValue = getTemplateWithoutBrackets(format);
   }
 
-  private applyChange(newValue: string, cursorPosition?: number): void {
+  /**
+   * `skipIfUnchanged` suppresses `valueChanged` when the value equals the
+   * committed one; only digit typing passes it, so paste still re-commits for
+   * cross-field sync.
+   */
+  private applyChange(
+    newValue: string,
+    cursorPosition?: number,
+    skipIfUnchanged = false,
+  ): void {
     this.internalValue.set(newValue);
 
-    if (this.maskFormat.match(newValue)) {
+    if (
+      this.maskFormat.match(newValue) &&
+      !(skipIfUnchanged && newValue === this.value())
+    ) {
       const isoDate = this.config.parseFormattedValue(
         newValue,
         this.format(),
@@ -644,36 +656,57 @@ export class MznFormattedInput {
     const targetCell = maskCells[targetCellIndex];
     const [minVal, maxVal] = getMaskRange(targetCell.mask ?? '');
 
-    const currentCellValue = current.slice(targetCell.start, targetCell.end);
-    const newCellValue = currentCellValue.split('');
     const posInCell = nextEditablePos - targetCell.start;
-    newCellValue[posInCell] = key;
+
+    // Typing the first digit of a cell starts a fresh entry (like native date
+    // inputs): the old digits are dropped so they are not validated together
+    // with the new one, and the cell waits for its remaining digits.
+    const baseValue =
+      posInCell === 0
+        ? current.slice(0, targetCell.start) +
+          this.templateValue.slice(targetCell.start, targetCell.end) +
+          current.slice(targetCell.end)
+        : current;
+
+    const cellLength = targetCell.end - targetCell.start;
+    let digits = key;
+
+    if (posInCell === 0 && cellLength > 1) {
+      // No value starting with this digit can reach the minimum (e.g. year
+      // 0xxx), block it
+      if (parseInt(key.padEnd(cellLength, '9'), 10) < minVal) {
+        return;
+      }
+
+      // Every value starting with this digit is too large (e.g. month 5x):
+      // pad it with leading zeros (5 → 05) to finish the cell, like native
+      // date inputs
+      if (parseInt(key.padEnd(cellLength, '0'), 10) > maxVal) {
+        digits = key.padStart(cellLength, '0');
+      }
+    }
+
+    const newCellValue = baseValue
+      .slice(targetCell.start, targetCell.end)
+      .split('');
+    newCellValue.splice(posInCell, digits.length, ...digits);
     const newCellStr = newCellValue.join('');
 
-    if (!/^\d+$/.test(newCellStr)) {
-      // Not all positions filled yet — allow partial input
-      const newValue = current.split('');
-      newValue[nextEditablePos] = key;
-      let nextPos = nextEditablePos + 1;
-      if (nextPos >= targetCell.end && targetCellIndex < maskCells.length - 1) {
-        nextPos = maskCells[targetCellIndex + 1].start;
+    // Once all positions are filled — validate range
+    if (/^\d+$/.test(newCellStr)) {
+      const cellNum = parseInt(newCellStr, 10);
+      if (cellNum < minVal || cellNum > maxVal) {
+        return; // Block invalid value
       }
-      this.applyChange(newValue.join(''), nextPos);
-      return;
     }
 
-    // All positions filled — validate range
-    const cellNum = parseInt(newCellStr, 10);
-    if (cellNum < minVal || cellNum > maxVal) {
-      return; // Block invalid value
-    }
-
-    const newValue = current.split('');
-    newValue[nextEditablePos] = key;
-    let nextPos = nextEditablePos + 1;
+    const newValue = baseValue.split('');
+    newValue.splice(nextEditablePos, digits.length, ...digits);
+    let nextPos = nextEditablePos + digits.length;
     if (nextPos >= targetCell.end && targetCellIndex < maskCells.length - 1) {
       nextPos = maskCells[targetCellIndex + 1].start;
     }
-    this.applyChange(newValue.join(''), nextPos);
+    // Re-typing the committed digits only moves the cursor
+    this.applyChange(newValue.join(''), nextPos, true);
   }
 }

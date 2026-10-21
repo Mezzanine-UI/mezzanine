@@ -273,33 +273,44 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
   });
 
   /**
+   * Disabled predicate matching the current mode; the others only affect the
+   * calendar. Mirrors React DatePicker `validateDate`.
+   */
+  private readonly modeDisabledCheck = computed(
+    (): ((date: DateType) => boolean) | undefined => {
+      switch (this.mode()) {
+        case 'day':
+          return this.isDateDisabled();
+        case 'week':
+          return this.isWeekDisabled();
+        case 'month':
+          return this.isMonthDisabled();
+        case 'quarter':
+          return this.isQuarterDisabled();
+        case 'year':
+          return this.isYearDisabled();
+        case 'half-year':
+          return this.isHalfYearDisabled();
+        default:
+          return undefined;
+      }
+    },
+  );
+
+  /**
    * Validate predicate passed to MznPickerTrigger.
-   * Combines isDateDisabled / isMonthDisabled / isYearDisabled / isWeekDisabled
-   * / isQuarterDisabled / isHalfYearDisabled to reject typed input that
-   * resolves to a disabled date.
+   * Rejects typed input that resolves to a date disabled by the predicate of
+   * the current mode.
    */
   protected readonly validateFn = computed(
     (): ((isoDate: string) => boolean) | undefined => {
-      const checks = [
-        this.isDateDisabled(),
-        this.isMonthDisabled(),
-        this.isYearDisabled(),
-        this.isWeekDisabled(),
-        this.isQuarterDisabled(),
-        this.isHalfYearDisabled(),
-      ].filter((fn): fn is (date: DateType) => boolean => !!fn);
+      const check = this.modeDisabledCheck();
 
-      if (checks.length === 0) return undefined;
+      if (!check) return undefined;
 
       return (isoDate: string): boolean => {
-        const c = this.config;
-        const parsed = c.parseFormattedValue(
-          isoDate,
-          this.resolvedFormat(),
-          c.locale,
-        );
-        if (!parsed) return false;
-        return !checks.some((fn) => fn(parsed));
+        // The formatter hands over an already-parsed ISO date
+        return !check(isoDate);
       };
     },
   );
@@ -381,8 +392,10 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
 
   /**
    * Handle typed-input changes from MznPickerTrigger.
-   * Parses the formatted string and commits if it resolves to a valid,
-   * non-disabled date. Mirrors React DatePicker.onInputChange path.
+   * The formatter has already parsed the typed text into an ISO date, so it
+   * is committed as-is once it passes validation (re-parsing it with the
+   * display format fails under strict adapters such as Moment). Mirrors React
+   * DatePicker.onInputChange path.
    */
   protected onTriggerValueChange({
     isoValue,
@@ -391,19 +404,12 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
     rawDigits: string;
   }): void {
     if (!isoValue) return;
-    const c = this.config;
-    const parsed = c.parseFormattedValue(
-      isoValue,
-      this.resolvedFormat(),
-      c.locale,
-    );
-    if (!parsed) return;
     const validate = this.validateFn();
     if (validate && !validate(isoValue)) return;
-    this.internalValue.set(parsed);
-    this.internalReferenceDate.set(parsed);
-    this.onChange?.(parsed);
-    this.dateChanged.emit(parsed);
+    this.internalValue.set(isoValue);
+    this.internalReferenceDate.set(isoValue);
+    this.onChange?.(isoValue);
+    this.dateChanged.emit(isoValue);
     this.onTouched?.();
   }
 

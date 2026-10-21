@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
 import isBetween from 'dayjs/plugin/isBetween';
@@ -6,6 +6,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 import IsoWeek from 'dayjs/plugin/isoWeek';
 import utc from 'dayjs/plugin/utc';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 // Import common locales - these imports have side effects and must be preserved
 import 'dayjs/locale/zh-cn';
@@ -151,6 +152,9 @@ function init() {
   dayjs.extend(IsoWeek);
   dayjs.extend(utc);
   dayjs.extend(quarterOfYear);
+  // Without it dayjs ignores the format argument, so parseFormattedValue could
+  // not parse time-only text and let overflowing dates (2026-02-30) through
+  dayjs.extend(customParseFormat);
 
   hasInit = true;
   return true;
@@ -186,6 +190,220 @@ const usesISOWeekRules = (locale: string): boolean => {
   return isMondayFirst(locale) && isISOWeekLocale(locale);
 };
 
+/**
+ * dayjs has no native locale `.weekYear()`. Use the same heuristic as
+ * moment.js: when the date sits on a year boundary that crosses week
+ * boundaries, the weekYear differs from the calendar year.
+ *   • early-January (month=0) with week >= 52 → previous calendar's
+ *     final week. weekYear = year - 1.
+ *   • late-December (month=11) with week === 1 → next calendar's first
+ *     week. weekYear = year + 1.
+ *   • otherwise weekYear = year.
+ * `date` must already carry the target locale.
+ */
+const getLocaleWeekYear = (date: Dayjs): number => {
+  const week = date.week();
+  const month = date.month();
+  const year = date.year();
+  if (month === 0 && week >= 52) return year - 1;
+  if (month === 11 && week === 1) return year + 1;
+  return year;
+};
+
+/**
+ * Week / quarter / half-year text parsing.
+ *
+ * dayjs cannot parse these formats, even with `customParseFormat`: it does
+ * not know the week-year / week tokens (GGGG, gggg, WW, ww), `Q` needs
+ * `advancedFormat`, and `n` (half-year) is specific to this library. Such
+ * formats are matched manually and resolved to the first day of the period.
+ */
+type PeriodField =
+  | 'halfYear'
+  | 'isoWeek'
+  | 'isoWeekYear'
+  | 'quarter'
+  | 'week'
+  | 'weekYear'
+  | 'year';
+
+type PeriodKind = 'halfYear' | 'isoWeek' | 'quarter' | 'week';
+
+interface PeriodFormat {
+  kind: PeriodKind;
+  pattern: RegExp;
+  valueGroup: number;
+  yearGroup: number;
+}
+
+interface FormatPart {
+  field?: PeriodField;
+  source: string;
+}
+
+interface WeekRules {
+  startOf: (date: Dayjs) => Dayjs;
+  week: (date: Dayjs) => number;
+  weekYear: (date: Dayjs) => number;
+}
+
+const PERIOD_FIELD_TOKENS: Record<
+  string,
+  { field: PeriodField; pattern: string }
+> = {
+  GGGG: { field: 'isoWeekYear', pattern: '\\d{4}' },
+  gggg: { field: 'weekYear', pattern: '\\d{4}' },
+  YYYY: { field: 'year', pattern: '\\d{4}' },
+  WW: { field: 'isoWeek', pattern: '\\d{2}' },
+  W: { field: 'isoWeek', pattern: '\\d{1,2}' },
+  ww: { field: 'week', pattern: '\\d{2}' },
+  w: { field: 'week', pattern: '\\d{1,2}' },
+  Q: { field: 'quarter', pattern: '\\d' },
+  n: { field: 'halfYear', pattern: '\\d' },
+};
+
+const PERIOD_KINDS: Array<{
+  kind: PeriodKind;
+  valueField: PeriodField;
+  yearField: PeriodField;
+}> = [
+  { kind: 'isoWeek', valueField: 'isoWeek', yearField: 'isoWeekYear' },
+  { kind: 'week', valueField: 'week', yearField: 'weekYear' },
+  { kind: 'quarter', valueField: 'quarter', yearField: 'year' },
+  { kind: 'halfYear', valueField: 'halfYear', yearField: 'year' },
+];
+
+// Bracketed literal | period token | any other token | single separator
+const FORMAT_TOKEN_REGEX =
+  /\[[^\]]*\]|GGGG|gggg|YYYY|WW?|ww?|Q|n|[A-Za-z]+|[^A-Za-z]/g;
+
+const escapeRegExp = (value: string): string =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const toFormatPart = (token: string): FormatPart | null => {
+  if (token.length > 1 && token.startsWith('[')) {
+    return { source: escapeRegExp(token.slice(1, -1)) };
+  }
+
+  const fieldToken = PERIOD_FIELD_TOKENS[token];
+
+  if (fieldToken) {
+    return { field: fieldToken.field, source: `(${fieldToken.pattern})` };
+  }
+
+  // Any other token (MM, DD, HH …) means the format is left to dayjs
+  return /[A-Za-z]/.test(token) ? null : { source: escapeRegExp(token) };
+};
+
+/**
+ * Return the period format described by `format`, or undefined when it is
+ * not made of exactly one year token and one week / quarter / half-year
+ * token (plus literals).
+ */
+const getPeriodFormat = (format: string): PeriodFormat | undefined => {
+  const parts = (format.match(FORMAT_TOKEN_REGEX) ?? []).map(toFormatPart);
+
+  if (parts.some((part) => part === null)) return undefined;
+
+  const formatParts = parts as FormatPart[];
+  const fields = formatParts.flatMap((part) =>
+    part.field ? [part.field] : [],
+  );
+  const periodKind = PERIOD_KINDS.find(
+    ({ valueField, yearField }) =>
+      fields.length === 2 &&
+      fields.includes(valueField) &&
+      fields.includes(yearField),
+  );
+
+  if (!periodKind) return undefined;
+
+  return {
+    kind: periodKind.kind,
+    pattern: new RegExp(`^${formatParts.map((part) => part.source).join('')}$`),
+    valueGroup: fields.indexOf(periodKind.valueField) + 1,
+    yearGroup: fields.indexOf(periodKind.yearField) + 1,
+  };
+};
+
+const isoWeekRules: WeekRules = {
+  startOf: (date) => date.startOf('isoWeek'),
+  week: (date) => date.isoWeek(),
+  weekYear: (date) => date.isoWeekYear(),
+};
+
+/** Same week rules as `getWeek` / `getWeekYear` / `getCurrentWeekFirstDate` */
+const getWeekRules = (locale: string): WeekRules => {
+  if (usesISOWeekRules(locale)) return isoWeekRules;
+
+  const mappedLocale = localeMapping(locale);
+
+  return {
+    startOf: (date) => date.locale(mappedLocale).startOf('week'),
+    week: (date) => date.locale(mappedLocale).week(),
+    weekYear: (date) => getLocaleWeekYear(date.locale(mappedLocale)),
+  };
+};
+
+/**
+ * First day of week `week` in week year `year`, or undefined when that week
+ * does not exist (week 0, week 54, week 53 of a 52-week year).
+ */
+const findWeekStart = (
+  year: number,
+  week: number,
+  rules: WeekRules,
+): string | undefined => {
+  const firstWeekStart = rules.startOf(dayjs().year(year).startOf('year'));
+
+  // Week 1 starts either in the week holding Jan 1 or in the week after it
+  return [week - 1, week]
+    .map((offset) => firstWeekStart.add(offset, 'week'))
+    .find(
+      (start) => rules.week(start) === week && rules.weekYear(start) === year,
+    )
+    ?.toISOString();
+};
+
+/** First day of the `index`-th quarter / half-year of `year` */
+const getPeriodStart = (
+  year: number,
+  index: number,
+  monthsPerPeriod: number,
+): string | undefined => {
+  if (index < 1 || index > 12 / monthsPerPeriod) return undefined;
+
+  return dayjs()
+    .year(year)
+    .startOf('year')
+    .month((index - 1) * monthsPerPeriod)
+    .toISOString();
+};
+
+const parsePeriodText = (
+  text: string,
+  periodFormat: PeriodFormat,
+  locale: string,
+): string | undefined => {
+  const match = periodFormat.pattern.exec(text);
+
+  if (!match) return undefined;
+
+  const year = Number(match[periodFormat.yearGroup]);
+  const value = Number(match[periodFormat.valueGroup]);
+
+  switch (periodFormat.kind) {
+    case 'isoWeek':
+      return findWeekStart(year, value, isoWeekRules);
+    case 'week':
+      return findWeekStart(year, value, getWeekRules(locale));
+    case 'quarter':
+      return getPeriodStart(year, value, 3);
+    case 'halfYear':
+      return getPeriodStart(year, value, 6);
+  }
+};
+
 const CalendarMethodsDayjs: CalendarMethodsType = {
   /** Locale helpers */
   getFirstDayOfWeek: (locale) => getActualFirstDayOfWeek(locale),
@@ -211,21 +429,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     if (usesISOWeekRules(locale)) {
       return dayjs(date).isoWeekYear();
     }
-    // dayjs has no native locale `.weekYear()`. Use the same heuristic as
-    // moment.js: when the date sits on a year boundary that crosses week
-    // boundaries, the weekYear differs from the calendar year.
-    //   • early-January (month=0) with week >= 52 → previous calendar's
-    //     final week. weekYear = year - 1.
-    //   • late-December (month=11) with week === 1 → next calendar's first
-    //     week. weekYear = year + 1.
-    //   • otherwise weekYear = year.
-    const d = dayjs(date).locale(localeMapping(locale));
-    const week = d.week();
-    const month = d.month();
-    const year = d.year();
-    if (month === 0 && week >= 52) return year - 1;
-    if (month === 11 && week === 1) return year + 1;
-    return year;
+    return getLocaleWeekYear(dayjs(date).locale(localeMapping(locale)));
   },
   getWeekDay: (date) => {
     const clone = dayjs(date).locale('en');
@@ -472,113 +676,52 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
         .replace(/\[([^\]]*)\]/g, '$1');
     }
 
+    // dayjs formats `Q` only with advancedFormat, so fill in the quarter
+    // number here. Bracketed literals such as `[Q]` are left for dayjs.
+    if (format.includes('Q')) {
+      const quarter = String(result.quarter());
+
+      return result.format(
+        format.replace(/\[[^\]]*\]|Q/g, (token) =>
+          token === 'Q' ? quarter : token,
+        ),
+      );
+    }
+
     return result.format(format);
   },
   formatToISOString: (date) => dayjs(date).toISOString(),
 
   /** Parse and validate formatted input */
   parseFormattedValue: (text, format, locale) => {
-    // Handle half-year format: convert n to Q for parsing
-    let parseFormat = format;
-    let parseText = text;
+    const periodFormat = getPeriodFormat(format);
 
-    if (format.includes('[H]n')) {
-      // Extract half-year value (1 or 2) and convert to quarter (1-4)
-      const halfYearMatch = text.match(/(\d{4})-H(\d)/);
-      if (halfYearMatch) {
-        const year = halfYearMatch[1];
-        const halfYear = parseInt(halfYearMatch[2], 10);
-
-        if (halfYear < 1 || halfYear > 2) {
-          return undefined;
-        }
-
-        // Convert n to Q: H1 → Q1, H2 → Q3
-        const quarter = halfYear === 1 ? 1 : 3;
-        parseText = `${year}-Q${quarter}`;
-        parseFormat = format.replace('[H]n', '[Q]Q');
-      }
+    // Week / quarter / half-year formats are beyond dayjs parsing
+    if (periodFormat) {
+      return parsePeriodText(text, periodFormat, locale);
     }
 
-    // Try to parse with dayjs
-    const parsed = dayjs(parseText, parseFormat, 'en', true);
+    const parsed = dayjs(text, format, 'en', true);
 
     if (!parsed.isValid()) {
       return undefined;
     }
 
     // Validate based on format keys present
-    // Check for ISO week format (GGGG-[W]WW) vs regular week format (gggg-[W]ww)
-    const hasISOWeek = parseFormat.includes('G') && parseFormat.includes('W');
-    const hasWeek = parseFormat.includes('w') && !hasISOWeek;
-    const hasQuarter = parseFormat.includes('Q');
-    const hasMonth = parseFormat.includes('M') && !hasQuarter;
-    const hasDay = parseFormat.includes('D');
-    const hasYear =
-      parseFormat.includes('Y') ||
-      parseFormat.includes('G') ||
-      parseFormat.includes('g');
-
-    // If it's an ISO week format (GGGG-[W]WW)
-    if (hasISOWeek && hasYear && !hasMonth && !hasDay) {
-      const isoWeekNum = parsed.isoWeek();
-
-      // ISO week numbers are 1-53
-      if (isoWeekNum < 1 || isoWeekNum > 53) {
-        return undefined;
-      }
-
-      // Return the first day of the ISO week (Monday)
-      return parsed
-        .startOf('isoWeek')
-        .hour(0)
-        .minute(0)
-        .second(0)
-        .millisecond(0)
-        .toISOString();
-    }
-
-    // If it's a regular week format (gggg-[W]ww)
-    if (hasWeek && hasYear && !hasMonth && !hasDay) {
-      const weekNum = parsed.week();
-
-      // Week numbers are generally 1-53
-      if (weekNum < 1 || weekNum > 53) {
-        return undefined;
-      }
-
-      return CalendarMethodsDayjs.getCurrentWeekFirstDate(
-        parsed.toISOString(),
-        locale,
-      );
-    }
-
-    // If it's a quarter format, validate and normalize
-    if (hasQuarter && hasYear && !hasMonth && !hasDay) {
-      const quarter = parsed.quarter();
-      if (quarter < 1 || quarter > 4) {
-        return undefined;
-      }
-      return CalendarMethodsDayjs.getCurrentQuarterFirstDate(
-        parsed.toISOString(),
-      );
-    }
+    const hasMonth = format.includes('M');
+    const hasDay = format.includes('D');
+    const hasYear = format.includes('Y');
 
     // If it's a month format without day, normalize to first day
-    if (hasMonth && hasYear && !hasDay && !hasWeek && !hasQuarter) {
+    if (hasMonth && hasYear && !hasDay) {
       return CalendarMethodsDayjs.getCurrentMonthFirstDate(
         parsed.toISOString(),
       );
     }
 
     // If it's year only, normalize to first day of year
-    if (hasYear && !hasMonth && !hasDay && !hasWeek && !hasQuarter) {
+    if (hasYear && !hasMonth && !hasDay) {
       return CalendarMethodsDayjs.getCurrentYearFirstDate(parsed.toISOString());
-    }
-
-    // For complete dates, just validate
-    if (hasYear && hasMonth && hasDay) {
-      return parsed.toISOString();
     }
 
     return parsed.toISOString();
