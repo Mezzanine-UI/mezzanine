@@ -753,16 +753,8 @@ export class MznDateTimePicker implements ControlValueAccessor, AfterViewInit {
       if (override) return override;
       const isDis = this.resolvedCalendar().isDateDisabled;
       if (!isDis) return undefined;
-      return (isoDate: string): boolean => {
-        const c = this.config;
-        const parsed = c.parseFormattedValue(
-          isoDate,
-          this.formatDateResolved(),
-          c.locale,
-        );
-        if (!parsed) return false;
-        return !isDis(parsed);
-      };
+      // The formatter hands over an already-parsed ISO date
+      return (isoDate: string): boolean => !isDis(isoDate);
     },
   );
 
