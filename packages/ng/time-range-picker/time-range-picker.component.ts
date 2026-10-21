@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -21,6 +23,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { MznTimePanel } from '@mezzanine-ui/ng/time-panel';
 import { MznRangePickerTrigger } from '@mezzanine-ui/ng/picker';
+import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
 
 /**
@@ -119,8 +122,11 @@ import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
     }
   `,
 })
-export class MznTimeRangePicker implements ControlValueAccessor {
+export class MznTimeRangePicker implements ControlValueAccessor, AfterViewInit {
+  private readonly clickAway = inject(ClickAwayService);
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly hostElRef = inject(ElementRef<HTMLElement>);
 
   readonly placeholder = input('');
   readonly disabled = input(false);
@@ -219,6 +225,20 @@ export class MznTimeRangePicker implements ControlValueAccessor {
       this.onChange?.(range);
       this.rangeChanged.emit(range);
     }
+  }
+
+  /** Click away → cancel (do not commit), like React TimeRangePicker. */
+  ngAfterViewInit(): void {
+    this.clickAway.listen(
+      this.hostElRef.nativeElement,
+      () => {
+        if (this.focusedInput()) {
+          this.onCancel();
+          this.onTouched?.();
+        }
+      },
+      this.destroyRef,
+    );
   }
 
   protected openPanel(side: 'from' | 'to'): void {
