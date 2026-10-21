@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.3...@mezzanine-ui/core@1.2.4) (2026-10-21)
+
+### Bug Fixes
+
+- **core/calendar-methods-dayjs:** load customParseFormat so formats are honoured ([7bae961](https://github.com/Mezzanine-UI/mezzanine/commit/7bae9615441bbf876f6cf84df51e8b760029c5df))
+- **core/calendar-methods-dayjs:** parse week, quarter and half-year text ([d12f44a](https://github.com/Mezzanine-UI/mezzanine/commit/d12f44af88b7943f52ee0167991d6d9b672495f1))
+
 ## [1.2.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.2...@mezzanine-ui/core@1.2.3) (2026-10-12)
 
 ### Bug Fixes

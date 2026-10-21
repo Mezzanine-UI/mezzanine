@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.4...@mezzanine-ui/vue@1.0.0-rc.5) (2026-10-21)
+
+### Bug Fixes
+
+- **vue/picker:** let typing replace a filled cell and skip unchanged commits ([#473](https://github.com/Mezzanine-UI/mezzanine/issues/473)) ([adc23b2](https://github.com/Mezzanine-UI/mezzanine/commit/adc23b25bb9e4aaeb0138ae9e8215160a833893d))
+- **vue/scrollbar:** detect a viewportReady listener from the vnode ([dd92446](https://github.com/Mezzanine-UI/mezzanine/commit/dd92446e8092e24dd750ad2f377f399968e57800))
+
 # [1.0.0-rc.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.3...@mezzanine-ui/vue@1.0.0-rc.4) (2026-10-20)
 
 ### Bug Fixes

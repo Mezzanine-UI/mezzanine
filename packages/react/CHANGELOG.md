@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.0...@mezzanine-ui/react@1.7.1) (2026-10-21)
+
+### Bug Fixes
+
+- **react/picker:** let typing replace a filled cell and skip unchanged commits ([#473](https://github.com/Mezzanine-UI/mezzanine/issues/473)) ([4d97303](https://github.com/Mezzanine-UI/mezzanine/commit/4d973036ff9980e0468e4d01f231571ef535bb80))
+
 # [1.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.6.1...@mezzanine-ui/react@1.7.0) (2026-10-20)
 
 ### Bug Fixes

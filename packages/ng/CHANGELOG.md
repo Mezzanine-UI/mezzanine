@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.18](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.17...@mezzanine-ui/ng@1.0.0-rc.18) (2026-10-21)
+
+### Bug Fixes
+
+- **ng/date-picker:** commit the formatter's ISO value without re-parsing it ([c7538cc](https://github.com/Mezzanine-UI/mezzanine/commit/c7538cce1edc006eba3ef6d30df75b77e65a514a))
+- **ng/date-picker:** validate typed input with the current mode's predicate ([a809ed2](https://github.com/Mezzanine-UI/mezzanine/commit/a809ed20d3ce28ce85ddc40949d78edbbf13fd23))
+- **ng/date-range-picker:** add validateFrom / validateTo like React ([07b3fb0](https://github.com/Mezzanine-UI/mezzanine/commit/07b3fb08c9cd490c0bcd73fd5e9d82a4f8548d05))
+- **ng/date-range-picker:** commit the formatter's ISO value without re-parsing it ([87c98b4](https://github.com/Mezzanine-UI/mezzanine/commit/87c98b47569d985dadf4b35c9f56e57231b821be))
+- **ng/date-time-picker:** validate the formatter's ISO value without re-parsing it ([2a899b9](https://github.com/Mezzanine-UI/mezzanine/commit/2a899b939f86038d69947d2be9583c3945e8aae6))
+- **ng/picker:** let typing replace a filled cell and skip unchanged commits ([#473](https://github.com/Mezzanine-UI/mezzanine/issues/473)) ([2e03aaf](https://github.com/Mezzanine-UI/mezzanine/commit/2e03aafc5213060af16202026041684674a7ac92))
+- **ng/time-picker:** close the panel on click-away like React ([635aeb6](https://github.com/Mezzanine-UI/mezzanine/commit/635aeb63f461eff7cc52fb95b867ae8287536fb2))
+- **ng/time-picker:** commit typed time and keep the panel's pending value in sync ([206ca9a](https://github.com/Mezzanine-UI/mezzanine/commit/206ca9ac864a29dedfa897ad38ec3c96160d6254))
+- **ng/time-range-picker:** close the panel on click-away like React ([6764376](https://github.com/Mezzanine-UI/mezzanine/commit/67643760d9a6725dbfbc6f3593e134108b5231be))
+- **ng/time-range-picker:** commit typed time and keep the pending value in sync ([7592288](https://github.com/Mezzanine-UI/mezzanine/commit/759228818f150299d259262ef53ad9416edc69ec))
+
 # [1.0.0-rc.17](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.16...@mezzanine-ui/ng@1.0.0-rc.17) (2026-10-20)
 
 ### Bug Fixes
