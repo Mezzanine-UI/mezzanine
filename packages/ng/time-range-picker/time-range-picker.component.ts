@@ -260,16 +260,10 @@ export class MznTimeRangePicker implements ControlValueAccessor {
   }): void {
     if (!isoValue) return;
 
-    const c = this.config;
-    const parsed = c.parseFormattedValue(
-      isoValue,
-      this.resolvedFormat(),
-      c.locale,
-    );
-
-    if (!parsed) return;
-
-    this.committedFrom.set(parsed);
+    // The formatter has already parsed the typed text into an ISO date
+    this.committedFrom.set(isoValue);
+    // Keep the panel's pending value in sync so Ok does not restore the old time
+    this.pendingStart.set(isoValue);
     this.emitIfComplete();
     this.onTouched?.();
   }
@@ -282,16 +276,10 @@ export class MznTimeRangePicker implements ControlValueAccessor {
   }): void {
     if (!isoValue) return;
 
-    const c = this.config;
-    const parsed = c.parseFormattedValue(
-      isoValue,
-      this.resolvedFormat(),
-      c.locale,
-    );
-
-    if (!parsed) return;
-
-    this.committedTo.set(parsed);
+    // The formatter has already parsed the typed text into an ISO date
+    this.committedTo.set(isoValue);
+    // Keep the panel's pending value in sync so Ok does not restore the old time
+    this.pendingEnd.set(isoValue);
     this.emitIfComplete();
     this.onTouched?.();
   }
