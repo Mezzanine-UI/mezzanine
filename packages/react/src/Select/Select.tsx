@@ -252,6 +252,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       fullWidth = fullWidthFromFormControl || false,
       inputProps,
       inputRef,
+      isForceClearable,
       loading = false,
       loadingPosition = 'bottom',
       loadingText,
@@ -605,6 +606,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
               error={error}
               fullWidth={fullWidth}
               inputRef={inputRef}
+              isForceClearable={isForceClearable}
               mode={mode}
               onTagClose={onChange}
               onClear={onClear}

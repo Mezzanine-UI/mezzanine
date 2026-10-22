@@ -269,6 +269,18 @@ describe('<MznSelect />', () => {
       expect(empty.find('.mzn-clear-actions').exists()).toBe(false);
     });
 
+    it('should offer the clear button in single mode when isForceClearable is set', async () => {
+      const wrapper = mountSelect({
+        isForceClearable: true,
+        value: { id: '1', name: 'item1' },
+      });
+
+      await wrapper.get('.mzn-clear-actions').trigger('click');
+
+      expect(wrapper.emitted('change')?.[0]).toEqual([null]);
+      expect(wrapper.emitted('clear')).toHaveLength(1);
+    });
+
     it('should empty the selection and report it', async () => {
       const wrapper = mountSelect({
         clearable: true,

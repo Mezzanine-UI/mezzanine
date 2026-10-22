@@ -428,6 +428,7 @@ const triggerRenderValue = computed((): SelectTriggerProps['renderValue'] =>
           :error="error"
           :full-width="fullWidth"
           :input-props="resolvedInputProps"
+          :is-force-clearable="isForceClearable"
           :mode="mode"
           :placeholder="resolvedPlaceholder"
           :overflow-strategy="overflowStrategy"

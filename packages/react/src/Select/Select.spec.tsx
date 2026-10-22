@@ -508,6 +508,46 @@ describe('<Select />', () => {
       expect(onChange).toHaveBeenCalledTimes(0);
     });
 
+    it('should render clear icon in single mode when isForceClearable is true', async () => {
+      const onChange = jest.fn();
+      const onClear = jest.fn();
+      const defaultValue: SelectValue = { id: '1', name: 'foo' };
+
+      const { getHostHTMLElement } = render(
+        <Select
+          defaultValue={defaultValue}
+          isForceClearable
+          mode="single"
+          onChange={onChange}
+          onClear={onClear}
+        />,
+      );
+
+      const element = getHostHTMLElement();
+      const textField = element.querySelector('.mzn-text-field');
+
+      expect(textField?.classList).toContain('mzn-text-field--clearable');
+
+      await act(async () => {
+        fireEvent.mouseEnter(textField!);
+      });
+
+      const clearIcon = await waitFor(() => {
+        const icon = element.querySelector('.mzn-text-field__clear-icon');
+
+        expect(icon).toBeTruthy();
+
+        return icon;
+      });
+
+      await act(async () => {
+        fireEvent.click(clearIcon!);
+      });
+
+      expect(onChange).toHaveBeenCalledWith(null);
+      expect(onClear).toHaveBeenCalledTimes(1);
+    });
+
     it('should clear value to empty array when clear icon clicked in multiple mode', async () => {
       const onChange = jest.fn();
       const defaultValue: SelectValue[] = [{ id: '1', name: 'foo' }];
