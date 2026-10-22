@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.1...@mezzanine-ui/react@1.7.2) (2026-10-22)
+
+### Bug Fixes
+
+- **react/select:** forward isForceClearable to SelectTrigger ([5c870af](https://github.com/Mezzanine-UI/mezzanine/commit/5c870af0a1a8cc6e2059e4716ff6255f7e1d2ef8)), closes [#475](https://github.com/Mezzanine-UI/mezzanine/issues/475)
+
 ## [1.7.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.0...@mezzanine-ui/react@1.7.1) (2026-10-21)
 
 ### Bug Fixes

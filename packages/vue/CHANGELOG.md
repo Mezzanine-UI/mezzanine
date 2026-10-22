@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.5...@mezzanine-ui/vue@1.0.0-rc.6) (2026-10-22)
+
+### Bug Fixes
+
+- **vue/select:** forward isForceClearable to SelectTrigger ([ffc73c0](https://github.com/Mezzanine-UI/mezzanine/commit/ffc73c0530f093512f9b00c79331af0f9b7c93e6)), closes [#475](https://github.com/Mezzanine-UI/mezzanine/issues/475)
+
 # [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.4...@mezzanine-ui/vue@1.0.0-rc.5) (2026-10-21)
 
 ### Bug Fixes
