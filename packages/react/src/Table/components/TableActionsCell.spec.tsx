@@ -202,6 +202,40 @@ describe('<TableActionsCell />', () => {
       ).toBeInTheDocument();
     });
 
+    it('should close the menu after an option is clicked', async () => {
+      const onSelect = jest.fn();
+
+      renderWithContext({
+        ...dropdownActions,
+        render: () => [
+          {
+            name: 'More actions',
+            onSelect,
+            options: [{ id: 'edit', name: 'Edit' }],
+            type: 'dropdown',
+          },
+        ],
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: 'More actions' }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Edit')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByText('Edit'));
+
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'edit' }),
+        testRecord,
+        0,
+      );
+
+      await waitFor(() => {
+        expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+      });
+    });
+
     describe('menu position at the viewport edge', () => {
       const VIEWPORT_WIDTH = 1024;
       const MENU_WIDTH = 200;
