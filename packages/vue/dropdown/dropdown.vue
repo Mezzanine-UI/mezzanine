@@ -382,6 +382,17 @@ function setOpen(next: boolean): void {
   emit('visibilityChange', next);
 }
 
+function handleItemSelect(option: DropdownOption): void {
+  emit('select', option);
+
+  // Match the Enter key path. Controlled consumers close the menu in their
+  // own `select` handler, and some keep it open on purpose, so only the
+  // uncontrolled state closes.
+  if (!isOpenControlled.value && props.mode !== 'multiple') {
+    setOpen(false);
+  }
+}
+
 watch(isOpen, (open) => {
   if (open) {
     emit('open');
@@ -650,7 +661,7 @@ const popperWithPortalClass = dropdownClasses.popperWithPortal;
             @scroll="
               (computedScroll, target) => emit('scroll', computedScroll, target)
             "
-            @select="emit('select', $event)"
+            @select="handleItemSelect"
             @toggle-expand="handleToggleExpand"
           />
         </div>
@@ -676,7 +687,7 @@ const popperWithPortalClass = dropdownClasses.popperWithPortal;
             @scroll="
               (computedScroll, target) => emit('scroll', computedScroll, target)
             "
-            @select="emit('select', $event)"
+            @select="handleItemSelect"
             @toggle-expand="handleToggleExpand"
           />
         </div>

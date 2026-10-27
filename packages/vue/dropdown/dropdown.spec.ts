@@ -94,7 +94,7 @@ describe('<MznDropdown />', () => {
     expect(listbox()).not.toBeNull();
   });
 
-  it('should emit the option a click picks, leaving the list open', async () => {
+  it('should emit the option a click picks and close the list', async () => {
     const wrapper = mountDropdown();
 
     await wrapper.get('button').trigger('click');
@@ -102,10 +102,35 @@ describe('<MznDropdown />', () => {
     items()[1].click();
     await nextTick();
 
-    // React forwards a clicked option and leaves the open state to the caller;
-    // only a keyboard pick closes the list.
     expect(wrapper.emitted('select')?.[0]).toEqual([options[1]]);
+    expect(wrapper.emitted('visibilityChange')?.at(-1)).toEqual([false]);
+    expect(wrapper.emitted('close')).toHaveLength(1);
+  });
+
+  it('should stay open after a click pick in multiple mode', async () => {
+    const wrapper = mountDropdown({ mode: 'multiple', value: [] });
+
+    await wrapper.get('button').trigger('click');
+    await nextTick();
+    items()[1].click();
+    await nextTick();
+
+    expect(wrapper.emitted('select')).toHaveLength(1);
     expect(wrapper.emitted('visibilityChange')?.at(-1)).toEqual([true]);
+    expect(listbox()).not.toBeNull();
+  });
+
+  it('should leave closing to the caller after a click pick when controlled', async () => {
+    const wrapper = mountDropdown({ open: true });
+
+    await nextTick();
+    await nextTick();
+    items()[1].click();
+    await nextTick();
+
+    expect(wrapper.emitted('select')?.[0]).toEqual([options[1]]);
+    expect(wrapper.emitted('visibilityChange')).toBeUndefined();
+    expect(listbox()).not.toBeNull();
   });
 
   it('should stay open after a keyboard pick in multiple mode', async () => {

@@ -189,6 +189,104 @@ describe('<Dropdown />', () => {
       await user.click(option);
       expect(onSelect).toHaveBeenCalledWith(mockOptions[0]);
     });
+
+    it('should close the uncontrolled menu after an option is clicked', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      const onSelect = jest.fn();
+      render(
+        <Dropdown
+          inputPosition="outside"
+          onClose={onClose}
+          onSelect={onSelect}
+          options={mockOptions}
+        >
+          <Button>Trigger</Button>
+        </Dropdown>,
+      );
+      await user.click(screen.getByText('Trigger'));
+      await waitFor(() => {
+        expect(screen.getByText('Option 1')).toBeInTheDocument();
+      });
+      await user.click(screen.getByText('Option 1'));
+      expect(onSelect).toHaveBeenCalledWith(mockOptions[0]);
+      expect(onClose).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.queryByText('Option 1')).not.toBeInTheDocument();
+      });
+    });
+
+    it('should keep the menu open after a click in multiple mode', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      render(
+        <Dropdown
+          inputPosition="outside"
+          mode="multiple"
+          onClose={onClose}
+          options={mockOptions}
+          value={[]}
+        >
+          <Button>Trigger</Button>
+        </Dropdown>,
+      );
+      await user.click(screen.getByText('Trigger'));
+      await waitFor(() => {
+        expect(screen.getByText('Option 1')).toBeInTheDocument();
+      });
+      await user.click(screen.getByText('Option 1'));
+      expect(onClose).not.toHaveBeenCalled();
+      expect(screen.getByText('Option 1')).toBeInTheDocument();
+    });
+
+    it('should leave closing to the consumer when open is controlled', async () => {
+      const user = userEvent.setup();
+      const onVisibilityChange = jest.fn();
+      render(
+        <Dropdown
+          inputPosition="outside"
+          onVisibilityChange={onVisibilityChange}
+          open
+          options={mockOptions}
+        >
+          <Button>Trigger</Button>
+        </Dropdown>,
+      );
+      await waitFor(() => {
+        expect(screen.getByText('Option 1')).toBeInTheDocument();
+      });
+      await user.click(screen.getByText('Option 1'));
+      expect(onVisibilityChange).not.toHaveBeenCalledWith(false);
+    });
+
+    it('should keep the menu open when a tree parent is clicked', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      const treeOptions: DropdownOption[] = [
+        {
+          id: '1',
+          name: 'Parent',
+          children: [{ id: '1-1', name: 'Child' }],
+        },
+      ];
+      render(
+        <Dropdown
+          inputPosition="outside"
+          onClose={onClose}
+          options={treeOptions}
+          type="tree"
+        >
+          <Button>Trigger</Button>
+        </Dropdown>,
+      );
+      await user.click(screen.getByText('Trigger'));
+      await waitFor(() => {
+        expect(screen.getByText('Parent')).toBeInTheDocument();
+      });
+      await user.click(screen.getByText('Parent'));
+      expect(onClose).not.toHaveBeenCalled();
+      expect(screen.getByText('Parent')).toBeInTheDocument();
+    });
   });
 
   describe('prop: activeIndex', () => {
