@@ -11,7 +11,7 @@ import {
 import { FormField } from '../Form';
 import Input from '../Input';
 import Filter from './Filter';
-import FilterArea from './FilterArea';
+import FilterArea, { FilterAreaProps } from './FilterArea';
 import FilterLine from './FilterLine';
 
 describe('<FilterArea />', () => {
@@ -339,6 +339,126 @@ describe('<FilterArea />', () => {
       resetButton?.click();
 
       expect(handleReset).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('prop: loading', () => {
+    const renderWithLoading = (props: Partial<FilterAreaProps> = {}) =>
+      render(
+        <FilterArea {...props}>
+          <FilterLine>
+            <Filter>
+              <FormField label="Test" name="test">
+                <Input />
+              </FormField>
+            </Filter>
+          </FilterLine>
+        </FilterArea>,
+      );
+
+    it('should not render submit button as loading by default', () => {
+      const { getHostHTMLElement } = renderWithLoading();
+      const submitButton = getHostHTMLElement().querySelector('button');
+
+      expect(submitButton?.classList.contains('mzn-button--loading')).toBe(
+        false,
+      );
+    });
+
+    it('should render submit button as loading and ignore clicks if loading=true', () => {
+      const handleSubmit = jest.fn();
+      const { getHostHTMLElement } = renderWithLoading({
+        loading: true,
+        onSubmit: handleSubmit,
+      });
+      const submitButton = getHostHTMLElement().querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      fireEvent.click(submitButton);
+
+      expect(submitButton.classList.contains('mzn-button--loading')).toBe(true);
+      expect(handleSubmit).not.toHaveBeenCalled();
+    });
+
+    it('should not affect reset button', () => {
+      const { getHostHTMLElement } = renderWithLoading({ loading: true });
+      const resetButton = getHostHTMLElement().querySelectorAll('button')[1];
+
+      expect(resetButton.classList.contains('mzn-button--loading')).toBe(false);
+      expect(resetButton.hasAttribute('disabled')).toBe(false);
+    });
+  });
+
+  describe('prop: submitButtonProps and resetButtonProps', () => {
+    const renderWithButtonProps = (props: Partial<FilterAreaProps> = {}) =>
+      render(
+        <FilterArea {...props}>
+          <FilterLine>
+            <Filter>
+              <FormField label="Test" name="test">
+                <Input />
+              </FormField>
+            </Filter>
+          </FilterLine>
+        </FilterArea>,
+      );
+
+    it('should pass props to the submit and reset buttons', () => {
+      const { getHostHTMLElement } = renderWithButtonProps({
+        resetButtonProps: { className: 'reset', disabled: true },
+        submitButtonProps: { className: 'submit', loading: true },
+      });
+      const host = getHostHTMLElement();
+      const [submitButton, resetButton] = host.querySelectorAll('button');
+
+      expect(submitButton.classList.contains('submit')).toBe(true);
+      expect(submitButton.classList.contains('mzn-button--loading')).toBe(true);
+      expect(resetButton.classList.contains('reset')).toBe(true);
+      expect(resetButton.hasAttribute('disabled')).toBe(true);
+      expect(host.hasAttribute('submitButtonProps')).toBe(false);
+      expect(host.hasAttribute('resetButtonProps')).toBe(false);
+    });
+
+    it('should let loading prop override submitButtonProps.loading', () => {
+      const { getHostHTMLElement } = renderWithButtonProps({
+        loading: false,
+        submitButtonProps: { loading: true },
+      });
+      const submitButton = getHostHTMLElement().querySelector('button');
+
+      expect(submitButton?.classList.contains('mzn-button--loading')).toBe(
+        false,
+      );
+    });
+
+    it('should keep reset button disabled when isDirty=false', () => {
+      const { getHostHTMLElement } = renderWithButtonProps({
+        isDirty: false,
+        resetButtonProps: { disabled: false },
+      });
+      const resetButton = getHostHTMLElement().querySelectorAll('button')[1];
+
+      expect(resetButton.hasAttribute('disabled')).toBe(true);
+    });
+
+    it('should keep size, type and onClick controlled by FilterArea', () => {
+      const handleSubmit = jest.fn();
+      const { getHostHTMLElement } = renderWithButtonProps({
+        onSubmit: handleSubmit,
+        size: 'sub',
+        submitButtonProps: { size: 'main', type: 'reset' },
+        submitButtonType: 'submit',
+      });
+      const submitButton = getHostHTMLElement().querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      fireEvent.click(submitButton);
+
+      expect(submitButton.getAttribute('type')).toBe('submit');
+      expect(submitButton.classList.contains('mzn-button--sub')).toBe(true);
+      expect(handleSubmit).toHaveBeenCalledTimes(1);
     });
   });
 
