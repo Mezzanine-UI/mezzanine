@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.2...@mezzanine-ui/react@1.7.3) (2026-10-27)
+
+### Bug Fixes
+
+- **react/dropdown:** close uncontrolled menu after an option is clicked ([5ece5af](https://github.com/Mezzanine-UI/mezzanine/commit/5ece5afa4243762f23a76c1f49648f0e9f9e9881)), closes [#477](https://github.com/Mezzanine-UI/mezzanine/issues/477)
+- **react/filter-area:** support loading and button props on actions ([a81bef3](https://github.com/Mezzanine-UI/mezzanine/commit/a81bef347560cd6f0891c790065e813480c951a5)), closes [#478](https://github.com/Mezzanine-UI/mezzanine/issues/478)
+
 ## [1.7.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.1...@mezzanine-ui/react@1.7.2) (2026-10-22)
 
 ### Bug Fixes

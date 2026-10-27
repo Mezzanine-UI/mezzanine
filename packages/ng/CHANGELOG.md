@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.19](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.18...@mezzanine-ui/ng@1.0.0-rc.19) (2026-10-27)
+
+### Bug Fixes
+
+- **ng/filter-area:** support loading and button props on actions ([a5fdf95](https://github.com/Mezzanine-UI/mezzanine/commit/a5fdf95c87b1cd3fff58070351e83652fbada531)), closes [#478](https://github.com/Mezzanine-UI/mezzanine/issues/478)
+
 # [1.0.0-rc.18](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.17...@mezzanine-ui/ng@1.0.0-rc.18) (2026-10-21)
 
 ### Bug Fixes

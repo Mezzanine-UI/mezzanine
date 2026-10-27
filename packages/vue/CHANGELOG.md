@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.6...@mezzanine-ui/vue@1.0.0-rc.7) (2026-10-27)
+
+### Bug Fixes
+
+- **vue/dropdown:** close uncontrolled menu after an option is clicked ([2ead220](https://github.com/Mezzanine-UI/mezzanine/commit/2ead22043dd3e34c7ca203485523ed934d7bab91)), closes [#477](https://github.com/Mezzanine-UI/mezzanine/issues/477)
+- **vue/filter-area:** support loading and button props on actions ([5062118](https://github.com/Mezzanine-UI/mezzanine/commit/506211862a36b01a826bfa7f9f24749c68ade987)), closes [#478](https://github.com/Mezzanine-UI/mezzanine/issues/478)
+
 # [1.0.0-rc.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.5...@mezzanine-ui/vue@1.0.0-rc.6) (2026-10-22)
 
 ### Bug Fixes
