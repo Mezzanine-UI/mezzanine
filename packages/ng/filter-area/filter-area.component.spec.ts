@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, signal } from '@angular/core';
 import { FilterAreaSize } from '@mezzanine-ui/core/filter-area';
-import { MznFilterArea } from './filter-area.component';
+import { FilterAreaButtonProps, MznFilterArea } from './filter-area.component';
 import { MznFilterLine } from './filter-line.component';
 import { MznFilter } from './filter.component';
 
@@ -75,6 +75,36 @@ class MultiLineHost {
   `,
 })
 class SubSizeHost {}
+
+@Component({
+  standalone: true,
+  imports: [MznFilterArea, MznFilterLine, MznFilter],
+  template: `
+    <div
+      mznFilterArea
+      [isDirty]="isDirty()"
+      [loading]="loading()"
+      [resetButtonProps]="resetButtonProps()"
+      [size]="size()"
+      [submitButtonProps]="submitButtonProps()"
+      (filterReset)="onReset()"
+      (filterSubmit)="onSubmit()"
+    >
+      <div mznFilterLine>
+        <div mznFilter [span]="2">Field</div>
+      </div>
+    </div>
+  `,
+})
+class LoadingHost {
+  isDirty = signal(true);
+  loading = signal<boolean | undefined>(undefined);
+  resetButtonProps = signal<FilterAreaButtonProps | undefined>(undefined);
+  size = signal<FilterAreaSize>('main');
+  submitButtonProps = signal<FilterAreaButtonProps | undefined>(undefined);
+  onReset = jest.fn();
+  onSubmit = jest.fn();
+}
 
 describe('MznFilterArea', () => {
   describe('single line', () => {
@@ -247,6 +277,91 @@ describe('MznFilterArea', () => {
         subFixture.nativeElement.querySelector('[mznFilterArea]');
 
       expect(el.classList.contains('mzn-filter-area--sub')).toBe(true);
+    });
+  });
+
+  describe('loading and button props', () => {
+    let fixture: ComponentFixture<LoadingHost>;
+    let host: LoadingHost;
+
+    const getButtons = (): HTMLButtonElement[] =>
+      Array.from(
+        fixture.nativeElement.querySelectorAll(
+          '[mznFilterArea] button[mznbutton]',
+        ),
+      );
+
+    const update = (fn: () => void): void => {
+      fn();
+      fixture.detectChanges();
+    };
+
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
+        imports: [LoadingHost],
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(LoadingHost);
+      host = fixture.componentInstance;
+      fixture.detectChanges();
+      fixture.detectChanges();
+    });
+
+    it('should not show the submit button as loading by default', () => {
+      expect(getButtons()[0].classList.contains('mzn-button--loading')).toBe(
+        false,
+      );
+    });
+
+    it('should show the submit button as loading and ignore clicks', () => {
+      update(() => host.loading.set(true));
+
+      const [submitBtn, resetBtn] = getButtons();
+
+      submitBtn.click();
+
+      expect(submitBtn.classList.contains('mzn-button--loading')).toBe(true);
+      expect(host.onSubmit).not.toHaveBeenCalled();
+      expect(resetBtn.classList.contains('mzn-button--loading')).toBe(false);
+      expect(resetBtn.getAttribute('aria-disabled')).toBe('false');
+    });
+
+    it('should pass submitButtonProps and resetButtonProps to the buttons', () => {
+      update(() => {
+        host.resetButtonProps.set({ disabled: true, variant: 'base-ghost' });
+        host.submitButtonProps.set({ loading: true });
+      });
+
+      const [submitBtn, resetBtn] = getButtons();
+
+      expect(submitBtn.classList.contains('mzn-button--loading')).toBe(true);
+      expect(resetBtn.getAttribute('aria-disabled')).toBe('true');
+      expect(resetBtn.classList.contains('mzn-button--base-ghost')).toBe(true);
+      expect(
+        fixture.nativeElement
+          .querySelector('[mznFilterArea]')
+          .hasAttribute('submitButtonProps'),
+      ).toBe(false);
+    });
+
+    it('should let loading override submitButtonProps.loading', () => {
+      update(() => {
+        host.loading.set(false);
+        host.submitButtonProps.set({ loading: true });
+      });
+
+      expect(getButtons()[0].classList.contains('mzn-button--loading')).toBe(
+        false,
+      );
+    });
+
+    it('should keep reset disabled while untouched despite resetButtonProps', () => {
+      update(() => {
+        host.isDirty.set(false);
+        host.resetButtonProps.set({ disabled: false });
+      });
+
+      expect(getButtons()[1].getAttribute('aria-disabled')).toBe('true');
     });
   });
 });

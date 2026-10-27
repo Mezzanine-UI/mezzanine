@@ -1,19 +1,35 @@
 'use client';
 
-import { Children, ComponentPropsWithoutRef, forwardRef, ReactElement, useCallback, useMemo, useState } from 'react';
+import {
+  Children,
+  ComponentPropsWithoutRef,
+  forwardRef,
+  ReactElement,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { cx } from '../utils/cx';
 
-import { filterAreaClasses as classes, FilterAreaActionsAlign, FilterAreaRowAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
+import {
+  filterAreaClasses as classes,
+  FilterAreaActionsAlign,
+  FilterAreaRowAlign,
+  FilterAreaSize,
+} from '@mezzanine-ui/core/filter-area';
 import { ChevronDownIcon, ChevronUpIcon } from '@mezzanine-ui/icons';
 
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-import Button from '../Button';
+import Button, { ButtonProps } from '../Button';
 import { FilterLineProps } from './FilterLine';
 import FilterAreaContext from './FilterAreaContext';
 
 export interface FilterAreaProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onSubmit' | 'onReset'> {
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'div'>,
+    'children' | 'onSubmit' | 'onReset'
+  > {
   /**
    * The alignment of the actions.
    * @default 'end'
@@ -30,6 +46,12 @@ export interface FilterAreaProps
    */
   isDirty?: boolean;
   /**
+   * Whether the submit button shows the loading state.
+   * Clicks on the submit button are ignored while loading.
+   * Takes precedence over `submitButtonProps.loading`.
+   */
+  loading?: boolean;
+  /**
    * Callback function triggered when the form is reset.
    * Used to clear all filter conditions and restore to initial state.
    */
@@ -41,6 +63,11 @@ export interface FilterAreaProps
    */
   onSubmit?: () => void;
   /**
+   * Additional props for the reset button.
+   * `onClick`, `size` and `type` are controlled by FilterArea; `disabled` is combined with `isDirty`.
+   */
+  resetButtonProps?: ButtonProps;
+  /**
    * The text of the reset button.
    * @default 'Reset'
    */
@@ -50,6 +77,11 @@ export interface FilterAreaProps
    * @default 'main'
    */
   size?: FilterAreaSize;
+  /**
+   * Additional props for the submit button.
+   * `onClick`, `size` and `type` are controlled by FilterArea; `loading` is overridden by the `loading` prop when set.
+   */
+  submitButtonProps?: ButtonProps;
   /**
    * The text of the submit button.
    * @default 'Search'
@@ -78,7 +110,9 @@ export interface FilterAreaProps
  * 預設僅顯示第一行（`FilterLine`），多行時自動出現展開／收合切換按鈕。
  * 透過 `size` 統一控制內部所有表單欄位的尺寸；
  * 透過 `actionsAlign` 調整「送出／重設」按鈕區塊的對齊；
- * 透過 `isDirty` 控制重設按鈕的啟用狀態（`false` 時禁用）。
+ * 透過 `isDirty` 控制重設按鈕的啟用狀態（`false` 時禁用）；
+ * 透過 `loading` 讓送出按鈕在等待查詢結果時顯示 loading 並忽略點擊，
+ * 其餘按鈕設定可透過 `submitButtonProps` / `resetButtonProps` 傳入。
  *
  * @example
  * ```tsx
@@ -87,6 +121,7 @@ export interface FilterAreaProps
  * import Input from '@mezzanine-ui/react/Input';
  *
  * <FilterArea
+ *   loading={searching}
  *   submitText="搜尋"
  *   resetText="重設"
  *   onSubmit={handleSubmit}
@@ -112,11 +147,14 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
       children,
       className,
       isDirty = true,
+      loading,
       onReset,
       onSubmit,
+      resetButtonProps,
       resetText = 'Reset',
       rowAlign = 'center',
       size = 'main',
+      submitButtonProps,
       submitText = 'Search',
       resetButtonType = 'button',
       submitButtonType = 'button',
@@ -143,12 +181,14 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
 
     const renderAction = () => {
       return (
-        <div className={cx(
-          classes.actions,
-          classes.actionsAlign(actionsAlign),
-          { [classes.actionsExpanded]: expanded },
-        )}>
+        <div
+          className={cx(classes.actions, classes.actionsAlign(actionsAlign), {
+            [classes.actionsExpanded]: expanded,
+          })}
+        >
           <Button
+            {...submitButtonProps}
+            loading={loading ?? submitButtonProps?.loading}
             onClick={handleSubmit}
             size={size}
             type={submitButtonType}
@@ -156,11 +196,12 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
             {submitText}
           </Button>
           <Button
-            disabled={!isDirty}
+            variant="base-secondary"
+            {...resetButtonProps}
+            disabled={!isDirty || resetButtonProps?.disabled}
             onClick={onReset}
             size={size}
             type={resetButtonType}
-            variant="base-secondary"
           >
             {resetText}
           </Button>
@@ -188,13 +229,9 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
         <div
           {...rest}
           ref={ref}
-          className={cx(
-            classes.host,
-            className,
-            {
-              [classes.size(size)]: size,
-            },
-          )}
+          className={cx(classes.host, className, {
+            [classes.size(size)]: size,
+          })}
         >
           {expanded ? (
             <>
@@ -220,4 +257,3 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
 );
 
 export default FilterArea;
-

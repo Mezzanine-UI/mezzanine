@@ -14,6 +14,7 @@ import {
   FilterAreaSize,
 } from '@mezzanine-ui/core/filter-area';
 import { ChevronDownIcon, ChevronUpIcon } from '@mezzanine-ui/icons';
+import { ButtonVariant } from '@mezzanine-ui/core/button';
 import clsx from 'clsx';
 import { MznButton } from '@mezzanine-ui/ng/button';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
@@ -24,18 +25,35 @@ import {
 import { MznFilterLine } from './filter-line.component';
 
 /**
+ * React `submitButtonProps` / `resetButtonProps` 的型別為完整的 `ButtonProps`，
+ * Angular 取常用欄位透傳給內部的 `<button mznButton>`；`size` 與 `type`
+ * 由 FilterArea 控制，因此不開放。
+ */
+export interface FilterAreaButtonProps {
+  /** 是否禁用。 */
+  disabled?: boolean;
+  /** 是否載入中。 */
+  loading?: boolean;
+  /** 按鈕樣式變體。 */
+  variant?: ButtonVariant;
+}
+
+/**
  * 篩選器容器元件，管理多個 MznFilterLine 的展示與收合。
  *
  * 預設僅顯示第一行（MznFilterLine），多行時自動出現展開／收合切換按鈕。
  * 透過 `size` 統一控制內部所有表單欄位的尺寸；
  * 透過 `actionsAlign` 調整「送出／重設」按鈕區塊的對齊；
- * 透過 `isDirty` 控制重設按鈕的啟用狀態（`false` 時禁用）。
+ * 透過 `isDirty` 控制重設按鈕的啟用狀態（`false` 時禁用）；
+ * 透過 `loading` 讓送出按鈕在等待查詢結果時顯示 loading 並忽略點擊，
+ * 其餘按鈕設定可透過 `submitButtonProps` / `resetButtonProps` 傳入。
  *
  * @example
  * ```html
  * import { MznFilterArea, MznFilterLine, MznFilter } from '@mezzanine-ui/ng/filter-area';
  *
  * <div mznFilterArea
+ *   [loading]="searching"
  *   submitText="Search"
  *   resetText="Reset"
  *   (filterSubmit)="onSubmit()"
@@ -72,9 +90,12 @@ import { MznFilterLine } from './filter-line.component';
     '[class]': 'hostClasses()',
     '[attr.actionsAlign]': 'null',
     '[attr.isDirty]': 'null',
+    '[attr.loading]': 'null',
+    '[attr.resetButtonProps]': 'null',
     '[attr.resetText]': 'null',
     '[attr.rowAlign]': 'null',
     '[attr.size]': 'null',
+    '[attr.submitButtonProps]': 'null',
     '[attr.submitText]': 'null',
     '[attr.resetButtonType]': 'null',
     '[attr.submitButtonType]': 'null',
@@ -95,15 +116,19 @@ import { MznFilterLine } from './filter-line.component';
         <button
           mznButton
           [type]="submitButtonType()"
+          [disabled]="submitButtonProps()?.disabled"
+          [loading]="submitLoading()"
           [size]="size()"
+          [variant]="submitButtonProps()?.variant"
           (click)="filterSubmit.emit()"
           >{{ submitText() }}</button
         >
         <button
           mznButton
           [type]="resetButtonType()"
-          variant="base-secondary"
-          [disabled]="!isDirty()"
+          [variant]="resetButtonProps()?.variant ?? 'base-secondary'"
+          [disabled]="resetDisabled()"
+          [loading]="resetButtonProps()?.loading ?? false"
           [size]="size()"
           (click)="filterReset.emit()"
           >{{ resetText() }}</button
@@ -141,6 +166,18 @@ export class MznFilterArea {
   readonly isDirty = input(true);
 
   /**
+   * 送出按鈕是否顯示 loading；loading 時點擊會被忽略。
+   * 有設定時優先於 `submitButtonProps.loading`。
+   */
+  readonly loading = input<boolean | undefined>(undefined);
+
+  /**
+   * 重設按鈕的額外設定（ButtonProps 子集），鏡像 React `resetButtonProps`。
+   * `disabled` 會與 `isDirty` 合併。
+   */
+  readonly resetButtonProps = input<FilterAreaButtonProps>();
+
+  /**
    * 重設按鈕文字。
    * @default 'Reset'
    */
@@ -157,6 +194,12 @@ export class MznFilterArea {
    * @default 'main'
    */
   readonly size = input<FilterAreaSize>('main');
+
+  /**
+   * 送出按鈕的額外設定（ButtonProps 子集），鏡像 React `submitButtonProps`。
+   * `loading` 會被 `loading` input 覆寫。
+   */
+  readonly submitButtonProps = input<FilterAreaButtonProps>();
 
   /**
    * 送出按鈕文字。
@@ -190,6 +233,14 @@ export class MznFilterArea {
 
   protected readonly hasMultipleLines = computed(
     (): boolean => this.filterLines().length > 1,
+  );
+
+  protected readonly submitLoading = computed(
+    (): boolean => this.loading() ?? this.submitButtonProps()?.loading ?? false,
+  );
+
+  protected readonly resetDisabled = computed(
+    (): boolean => !this.isDirty() || !!this.resetButtonProps()?.disabled,
   );
 
   protected readonly toggleIcon = computed(() =>

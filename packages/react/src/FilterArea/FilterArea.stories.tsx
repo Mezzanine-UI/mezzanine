@@ -1,5 +1,9 @@
 import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
-import { FilterAreaActionsAlign, FilterAreaRowAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
+import {
+  FilterAreaActionsAlign,
+  FilterAreaRowAlign,
+  FilterAreaSize,
+} from '@mezzanine-ui/core/filter-area';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { Filter, FilterArea, FilterAreaProps, FilterLine } from '.';
@@ -267,7 +271,6 @@ export const SubSize: Story = {
                   menuMaxHeight={140}
                   options={autoCompleteOptions}
                   placeholder="請輸入"
-
                 />
               </FormField>
             </Filter>
@@ -284,7 +287,6 @@ export const SubSize: Story = {
                   menuMaxHeight={140}
                   options={autoCompleteOptions}
                   placeholder="請輸入"
-
                 />
               </FormField>
             </Filter>
@@ -368,6 +370,55 @@ export const IsDirty: Story = {
     },
   },
   render: function IsDirtyStory(args) {
+    const horizontal = {
+      density: FormFieldDensity.BASE,
+      layout: FormFieldLayout.HORIZONTAL,
+    };
+
+    return (
+      <CalendarConfigProviderDayjs locale="zh-TW">
+        <FilterArea {...args}>
+          <FilterLine>
+            <Filter span={2}>
+              <FormField
+                label="Label"
+                name="name"
+                density={horizontal.density}
+                layout={horizontal.layout}
+              >
+                <Input placeholder="Enter name" />
+              </FormField>
+            </Filter>
+            <Filter span={2}>
+              <FormField
+                label="Label"
+                name="remark"
+                density={horizontal.density}
+                layout={horizontal.layout}
+              >
+                <Input placeholder="Enter remark" />
+              </FormField>
+            </Filter>
+          </FilterLine>
+        </FilterArea>
+      </CalendarConfigProviderDayjs>
+    );
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    ...Basic.args,
+    loading: true,
+  },
+  argTypes: {
+    loading: {
+      control: {
+        type: 'boolean',
+      },
+    },
+  },
+  render: function LoadingStory(args) {
     const horizontal = {
       density: FormFieldDensity.BASE,
       layout: FormFieldLayout.HORIZONTAL,

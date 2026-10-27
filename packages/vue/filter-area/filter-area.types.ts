@@ -4,6 +4,7 @@ import type {
   FilterAreaRowAlign,
   FilterAreaSize,
 } from '@mezzanine-ui/core/filter-area';
+import type { ButtonProps } from '../button/button.types';
 
 export interface FilterAreaProps {
   /**
@@ -17,6 +18,17 @@ export interface FilterAreaProps {
    * @default true
    */
   isDirty?: boolean;
+  /**
+   * Whether the submit button shows the loading state.
+   * Clicks on the submit button are ignored while loading.
+   * Takes precedence over `submitButtonProps.loading`.
+   */
+  loading?: boolean;
+  /**
+   * Additional props for the reset button.
+   * `size` and `type` are controlled by FilterArea; `disabled` is combined with `isDirty`.
+   */
+  resetButtonProps?: ButtonProps;
   /**
    * The type of the reset button.
    * @default 'button'
@@ -37,6 +49,11 @@ export interface FilterAreaProps {
    * @default 'main'
    */
   size?: FilterAreaSize;
+  /**
+   * Additional props for the submit button.
+   * `size` and `type` are controlled by FilterArea; `loading` is overridden by the `loading` prop when set.
+   */
+  submitButtonProps?: ButtonProps;
   /**
    * The type of the submit button.
    * @default 'button'
