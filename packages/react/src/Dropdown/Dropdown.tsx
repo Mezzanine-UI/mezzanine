@@ -806,6 +806,20 @@ export default function Dropdown(props: DropdownProps) {
     ],
   );
 
+  const handleItemSelect = useCallback(
+    (option: DropdownOption) => {
+      onSelect?.(option);
+
+      // Match the Enter key path. Controlled consumers close the menu in their
+      // own `onSelect`, and some (e.g. `SelectButton` with `closeOnSelect`
+      // off) keep it open on purpose, so only the uncontrolled state closes.
+      if (!isOpenControlled && mode !== 'multiple') {
+        setOpen(false);
+      }
+    },
+    [isOpenControlled, mode, onSelect, setOpen],
+  );
+
   // Extract shared DropdownItem props to avoid duplication
   const baseDropdownItemProps = useMemo(
     () => ({
@@ -821,7 +835,7 @@ export default function Dropdown(props: DropdownProps) {
       minWidth,
       sameWidth,
       onHover: handleItemHover,
-      onSelect,
+      onSelect: handleItemSelect,
       onToggleExpand: handleToggleExpand,
       onReachBottom,
       onLeaveBottom,
@@ -855,7 +869,7 @@ export default function Dropdown(props: DropdownProps) {
       handleItemHover,
       handleToggleExpand,
       expandedNodes,
-      onSelect,
+      handleItemSelect,
       onReachBottom,
       onLeaveBottom,
       onScroll,
