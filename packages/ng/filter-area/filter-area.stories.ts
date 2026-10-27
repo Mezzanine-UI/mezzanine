@@ -320,6 +320,47 @@ export const IsDirty: Story = {
   }),
 };
 
+export const Loading: Story = {
+  args: {
+    ...Basic.args,
+    loading: true,
+  },
+  argTypes: {
+    loading: {
+      control: { type: 'boolean' },
+    },
+  },
+  render: (args) => ({
+    props: {
+      ...args,
+      density: FormFieldDensity.BASE,
+      layout: FormFieldLayout.HORIZONTAL,
+    },
+    template: `
+      <div mznFilterArea
+        [actionsAlign]="actionsAlign"
+        [loading]="loading"
+        [resetText]="resetText"
+        [size]="size"
+        [submitText]="submitText"
+      >
+        <div mznFilterLine>
+          <div mznFilter [span]="2">
+            <div mznFormField label="Label" name="name" [density]="density" [layout]="layout">
+              <div mznInput placeholder="Enter name"></div>
+            </div>
+          </div>
+          <div mznFilter [span]="2">
+            <div mznFormField label="Label" name="remark" [density]="density" [layout]="layout">
+              <div mznInput placeholder="Enter remark"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `,
+  }),
+};
+
 export const VerticalLabel: Story = {
   args: {
     ...Basic.args,

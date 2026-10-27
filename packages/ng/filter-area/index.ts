@@ -2,6 +2,7 @@
 // MZN_FILTER_AREA_CONTEXT / FilterAreaContextValue are Angular-only DI
 // wiring (React uses hidden Context) and stay unexported.
 export { MznFilterArea } from './filter-area.component';
+export type { FilterAreaButtonProps } from './filter-area.component';
 export { MznFilter } from './filter.component';
 export { MznFilterLine } from './filter-line.component';
 export type {
