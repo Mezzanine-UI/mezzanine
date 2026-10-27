@@ -134,6 +134,71 @@ describe('<MznFilterArea />', () => {
 
     expect(wrapper.findAll('button')[1].attributes('disabled')).toBeDefined();
   });
+
+  it('should not show the submit button as loading by default', () => {
+    const wrapper = render();
+
+    expect(wrapper.findAll('button')[0].classes()).not.toContain(
+      'mzn-button--loading',
+    );
+  });
+
+  it('should show the submit button as loading and swallow clicks', async () => {
+    const wrapper = render({ loading: true });
+    const [submit, reset] = wrapper.findAll('button');
+
+    await submit.trigger('click');
+
+    expect(submit.classes()).toContain('mzn-button--loading');
+    expect(wrapper.emitted('submit')).toBeUndefined();
+    expect(reset.classes()).not.toContain('mzn-button--loading');
+    expect(reset.attributes('disabled')).toBeUndefined();
+  });
+
+  it('should pass submitButtonProps and resetButtonProps to the buttons', () => {
+    const wrapper = render({
+      resetButtonProps: { disabled: true, variant: 'base-ghost' },
+      submitButtonProps: { loading: true },
+    });
+    const [submit, reset] = wrapper.findAll('button');
+
+    expect(submit.classes()).toContain('mzn-button--loading');
+    expect(reset.attributes('disabled')).toBeDefined();
+    expect(reset.classes()).toContain('mzn-button--base-ghost');
+    expect(wrapper.attributes('submitbuttonprops')).toBeUndefined();
+  });
+
+  it('should let loading override submitButtonProps.loading', () => {
+    const wrapper = render({
+      loading: false,
+      submitButtonProps: { loading: true },
+    });
+
+    expect(wrapper.findAll('button')[0].classes()).not.toContain(
+      'mzn-button--loading',
+    );
+  });
+
+  it('should keep the reset button disabled while untouched despite resetButtonProps', () => {
+    const wrapper = render({
+      isDirty: false,
+      resetButtonProps: { disabled: false },
+    });
+
+    expect(wrapper.findAll('button')[1].attributes('disabled')).toBeDefined();
+  });
+
+  it('should keep size and type controlled by the filter area', () => {
+    const wrapper = render({
+      size: 'sub',
+      submitButtonProps: { size: 'main' },
+      submitButtonType: 'submit',
+    });
+    const submit = wrapper.findAll('button')[0];
+
+    expect(submit.attributes('type')).toBe('submit');
+    expect(submit.classes()).toContain('mzn-button--sub');
+  });
 });
 
 describe('<MznFilter />', () => {

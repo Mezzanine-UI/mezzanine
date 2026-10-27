@@ -13,7 +13,9 @@ import type { FilterAreaProps } from './filter-area.types';
  * 篩選器容器，管理多條 MznFilterLine 的展開與收合。
  *
  * 預設只顯示第一行，超過一行時操作區會多出一顆展開／收合的按鈕。`size` 會一路
- * 傳到裡面每個欄位，`isDirty` 為 false 時重設按鈕停用。
+ * 傳到裡面每個欄位，`isDirty` 為 false 時重設按鈕停用。`loading` 讓送出按鈕在等待
+ * 查詢結果時顯示 loading 並擋下點擊，其餘按鈕設定可透過 `submitButtonProps` /
+ * `resetButtonProps` 傳入。
  *
  * @example
  * ```vue
@@ -36,6 +38,7 @@ import type { FilterAreaProps } from './filter-area.types';
 const props = withDefaults(defineProps<FilterAreaProps>(), {
   actionsAlign: 'end',
   isDirty: true,
+  loading: undefined,
   resetButtonType: 'button',
   resetText: 'Reset',
   rowAlign: 'center',
@@ -102,6 +105,8 @@ const FirstLine: FunctionalComponent = () => filterLines.value[0] ?? null;
       <FirstLine v-if="!expanded" />
       <div :class="actionsClasses">
         <MznButton
+          v-bind="submitButtonProps"
+          :loading="loading ?? submitButtonProps?.loading"
           :size="size"
           :type="submitButtonType"
           @click="emit('submit')"
@@ -109,10 +114,11 @@ const FirstLine: FunctionalComponent = () => filterLines.value[0] ?? null;
           {{ submitText }}
         </MznButton>
         <MznButton
-          :disabled="!isDirty"
+          variant="base-secondary"
+          v-bind="resetButtonProps"
+          :disabled="!isDirty || resetButtonProps?.disabled"
           :size="size"
           :type="resetButtonType"
-          variant="base-secondary"
           @click="emit('reset')"
         >
           {{ resetText }}

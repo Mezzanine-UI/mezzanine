@@ -414,6 +414,52 @@ export const IsDirty: Story = {
   }),
 };
 
+export const Loading: Story = {
+  args: {
+    ...Basic.args,
+    loading: true,
+  },
+  argTypes: {
+    loading: {
+      control: {
+        type: 'boolean',
+      },
+    },
+  },
+  render: (args) => ({
+    components: STORY_COMPONENTS,
+    setup: () => ({ args, horizontal }),
+    template: `
+      <MznCalendarConfigProviderDayjs locale="zh-TW">
+        <MznFilterArea v-bind="args">
+          <MznFilterLine>
+            <MznFilter :span="2">
+              <MznFormField
+                label="Label"
+                name="name"
+                :density="horizontal.density"
+                :layout="horizontal.layout"
+              >
+                <MznInput placeholder="Enter name" />
+              </MznFormField>
+            </MznFilter>
+            <MznFilter :span="2">
+              <MznFormField
+                label="Label"
+                name="remark"
+                :density="horizontal.density"
+                :layout="horizontal.layout"
+              >
+                <MznInput placeholder="Enter remark" />
+              </MznFormField>
+            </MznFilter>
+          </MznFilterLine>
+        </MznFilterArea>
+      </MznCalendarConfigProviderDayjs>
+    `,
+  }),
+};
+
 export const VerticalLabel: Story = {
   args: {
     ...Basic.args,
