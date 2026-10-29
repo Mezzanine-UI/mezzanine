@@ -69,6 +69,26 @@ class FocusModelHost {
   readonly open = signal(false);
 }
 
+/** Dialog whose first focusable is disabled by an ancestor fieldset. */
+@Component({
+  standalone: true,
+  imports: [MznModal],
+  template: `
+    <div
+      mznModal
+      [open]="true"
+      [disablePortal]="true"
+      [showDismissButton]="false"
+    >
+      <fieldset disabled>
+        <button type="button">inside-fieldset</button>
+      </fieldset>
+      <button type="button">outside-fieldset</button>
+    </div>
+  `,
+})
+class FieldsetFocusHost {}
+
 function createFixture<T>(component: new () => T): {
   fixture: ReturnType<typeof TestBed.createComponent<T>>;
   host: T;
@@ -324,6 +344,22 @@ describe('MznModal', () => {
       expect(document.activeElement?.textContent).toBe('first');
 
       outside.remove();
+    });
+
+    it('should skip controls disabled by an ancestor fieldset on Tab', async () => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, FieldsetFocusHost],
+      });
+
+      const fixture = TestBed.createComponent(FieldsetFocusHost);
+
+      fixture.detectChanges();
+      await Promise.resolve();
+
+      (document.activeElement as HTMLElement | null)?.blur();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }));
+
+      expect(document.activeElement?.textContent).toBe('outside-fieldset');
     });
   });
 });
