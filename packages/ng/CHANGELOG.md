@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.20](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.19...@mezzanine-ui/ng@1.0.0-rc.20) (2026-10-29)
+
+### Bug Fixes
+
+- **ng/services:** skip fieldset-disabled controls in FocusTrapService ([12d7d66](https://github.com/Mezzanine-UI/mezzanine/commit/12d7d66d27fe8423d01ad3bc7b8118feece73d5e)), closes [#481](https://github.com/Mezzanine-UI/mezzanine/issues/481)
+
 # [1.0.0-rc.19](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.18...@mezzanine-ui/ng@1.0.0-rc.19) (2026-10-27)
 
 ### Bug Fixes

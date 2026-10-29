@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.3...@mezzanine-ui/react@1.7.4) (2026-10-29)
+
+### Bug Fixes
+
+- **react/hooks:** skip fieldset-disabled controls in useFocusTrap ([13dc640](https://github.com/Mezzanine-UI/mezzanine/commit/13dc640983e9294e365090b2cbc72ee05092997f)), closes [#481](https://github.com/Mezzanine-UI/mezzanine/issues/481)
+- **react/modal:** keep in-dialog focus when the enter transition ends ([167397f](https://github.com/Mezzanine-UI/mezzanine/commit/167397fd451b4f3d99b26f2fc1be76f1ad71185d)), closes [#482](https://github.com/Mezzanine-UI/mezzanine/issues/482)
+
 ## [1.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.2...@mezzanine-ui/react@1.7.3) (2026-10-27)
 
 ### Bug Fixes

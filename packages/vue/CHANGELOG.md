@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.7...@mezzanine-ui/vue@1.0.0-rc.8) (2026-10-29)
+
+### Bug Fixes
+
+- **vue/internal:** skip fieldset-disabled controls in focus trap ([691bd76](https://github.com/Mezzanine-UI/mezzanine/commit/691bd768534e85231e6422b04766e8b3be413cf0)), closes [#481](https://github.com/Mezzanine-UI/mezzanine/issues/481)
+- **vue/modal:** keep in-dialog focus when the enter transition ends ([8349ef6](https://github.com/Mezzanine-UI/mezzanine/commit/8349ef62e621ea02c2ef52f5923707c6be08d1da)), closes [#482](https://github.com/Mezzanine-UI/mezzanine/issues/482)
+
 # [1.0.0-rc.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.6...@mezzanine-ui/vue@1.0.0-rc.7) (2026-10-27)
 
 ### Bug Fixes
