@@ -96,8 +96,11 @@ function onEntered(): void {
   exited.value = false;
   // The content is portalled and animated in, so it can be moved after mount —
   // which drops focus back to the body. Re-assert it once the enter transition
-  // has finished.
-  focusFirst();
+  // has finished, but leave it alone if something inside the dialog already
+  // took focus meanwhile.
+  if (!content.value?.contains(document.activeElement)) {
+    focusFirst();
+  }
 }
 
 const SCALE_EASING = {
