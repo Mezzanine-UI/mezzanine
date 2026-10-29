@@ -116,8 +116,11 @@ const ModalContainer = forwardRef<HTMLDivElement, ModalContainerProps>(
             setExited(false);
             // The content is portalled and animated in, so it can be moved
             // after mount — which drops focus back to <body>. Re-assert it
-            // once the enter transition has finished.
-            focusFirst();
+            // once the enter transition has finished, but leave it alone if
+            // something inside the dialog already took focus meanwhile.
+            if (!contentRef.current?.contains(document.activeElement)) {
+              focusFirst();
+            }
           }}
           onExited={() => setExited(true)}
           /**

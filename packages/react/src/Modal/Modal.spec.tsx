@@ -759,6 +759,39 @@ describe('<Modal />', () => {
       trigger.remove();
     });
 
+    it('should keep focus that moved inside the dialog during the enter transition', async () => {
+      const { rerender } = render(
+        <Modal modalType="standard" onClose={jest.fn()} open={false}>
+          <button type="button">first</button>
+          <input aria-label="Name" />
+        </Modal>,
+      );
+
+      rerender(
+        <Modal modalType="standard" onClose={jest.fn()} open>
+          <button type="button">first</button>
+          <input aria-label="Name" />
+        </Modal>,
+      );
+
+      await waitFor(() => {
+        expect(document.activeElement?.textContent).toBe('first');
+      });
+
+      const input = document.querySelector<HTMLInputElement>(
+        'input[aria-label="Name"]',
+      )!;
+
+      input.focus();
+
+      // Let the enter transition finish so `onEntered` runs.
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      });
+
+      expect(document.activeElement).toBe(input);
+    });
+
     it('should cycle Tab from the last focusable back to the first', () => {
       render(<ModalHarness open />);
 

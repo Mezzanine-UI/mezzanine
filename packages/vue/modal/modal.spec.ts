@@ -424,4 +424,34 @@ describe('<MznModal />', () => {
       expect(wrapper.emitted('backdropClick')).toHaveLength(1);
     });
   });
+
+  describe('focus model', () => {
+    it('should keep focus that moved inside the dialog during the enter transition', async () => {
+      const wrapper = mount(MznModal, {
+        attachTo: document.body,
+        props: { open: false } as ModalProps,
+        slots: {
+          default: () => [
+            h('button', { type: 'button' }, 'first'),
+            h('input', { 'aria-label': 'Name' }),
+          ],
+        },
+      });
+
+      await wrapper.setProps({ open: true });
+      await flushPromises();
+
+      expect(document.activeElement?.textContent).toBe('first');
+
+      const input = query('input[aria-label="Name"]')!;
+
+      input.focus();
+
+      // Let the enter transition finish so `entered` runs.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await flushPromises();
+
+      expect(document.activeElement).toBe(input);
+    });
+  });
 });
