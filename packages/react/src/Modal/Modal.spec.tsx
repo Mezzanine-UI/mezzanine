@@ -707,6 +707,11 @@ describe('<Modal />', () => {
     });
   });
   describe('focus model', () => {
+    const getButton = (text: string): HTMLButtonElement =>
+      Array.from(document.querySelectorAll<HTMLButtonElement>('button')).find(
+        (button) => button.textContent === text,
+      )!;
+
     const ModalHarness = ({ open }: { open: boolean }) => (
       <Modal modalType="standard" onClose={jest.fn()} open={open}>
         <button type="button">first</button>
@@ -833,6 +838,73 @@ describe('<Modal />', () => {
 
       expect(document.activeElement).toBe(focusable[0]);
       expect(document.activeElement?.textContent).toBe('inner-first');
+    });
+
+    it('should skip controls disabled by an ancestor fieldset on Tab', () => {
+      render(
+        <Modal
+          modalType="standard"
+          onClose={jest.fn()}
+          open
+          showDismissButton={false}
+        >
+          <fieldset disabled>
+            <button type="button">inside-fieldset</button>
+          </fieldset>
+          <button type="button">outside-fieldset</button>
+        </Modal>,
+      );
+
+      (document.activeElement as HTMLElement | null)?.blur();
+      fireEvent.keyDown(document, { key: 'Tab' });
+
+      expect(document.activeElement?.textContent).toBe('outside-fieldset');
+    });
+
+    it('should skip controls disabled by an ancestor fieldset on Shift+Tab', () => {
+      render(
+        <Modal
+          modalType="standard"
+          onClose={jest.fn()}
+          open
+          showDismissButton={false}
+        >
+          <button type="button">first</button>
+          <button type="button">last-enabled</button>
+          <fieldset disabled>
+            <button type="button">inside-fieldset</button>
+          </fieldset>
+        </Modal>,
+      );
+
+      getButton('first').focus();
+      fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+
+      expect(document.activeElement?.textContent).toBe('last-enabled');
+    });
+
+    it('should still reach a control inside the first legend of a disabled fieldset', () => {
+      render(
+        <Modal
+          modalType="standard"
+          onClose={jest.fn()}
+          open
+          showDismissButton={false}
+        >
+          <fieldset disabled>
+            <legend>
+              <button type="button">in-legend</button>
+            </legend>
+            <button type="button">inside-fieldset</button>
+          </fieldset>
+          <button type="button">outside-fieldset</button>
+        </Modal>,
+      );
+
+      getButton('outside-fieldset').focus();
+      fireEvent.keyDown(document, { key: 'Tab' });
+
+      expect(document.activeElement?.textContent).toBe('in-legend');
     });
   });
 });
