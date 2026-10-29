@@ -143,7 +143,8 @@ export class FocusTrapService {
   /**
    * 取得容器內目前實際可聚焦的元素，依 DOM 順序排列。
    *
-   * 排除 disabled、`tabindex="-1"`、`aria-hidden` 子樹，以及被
+   * 排除 `:disabled`（含 `<fieldset disabled>` 內的控制項）、`tabindex="-1"`、
+   * `aria-hidden` 子樹，以及被
    * `display: none` / `visibility: hidden` 隱藏的節點。刻意用 computed style
    * 而非版面盒判斷：jsdom 完全不回報版面，用後者會把所有元素都濾掉。
    */
@@ -151,7 +152,9 @@ export class FocusTrapService {
     return Array.from(
       container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
     ).filter((element) => {
-      if (element.hasAttribute('disabled')) return false;
+      // `:disabled` also covers controls disabled by an ancestor
+      // `<fieldset disabled>`, which carry no attribute of their own.
+      if (element.matches(':disabled')) return false;
       if (element.getAttribute('aria-hidden') === 'true') return false;
       if (element.tabIndex < 0) return false;
       if (element.closest('[aria-hidden="true"]')) return false;

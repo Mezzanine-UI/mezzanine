@@ -364,6 +364,27 @@ describe('<MznModal />', () => {
     });
   });
 
+  describe('focus model', () => {
+    it('should skip controls disabled by an ancestor fieldset on Tab', async () => {
+      await renderModal(
+        { showDismissButton: false },
+        {
+          default: () => [
+            h('fieldset', { disabled: true }, [
+              h('button', { type: 'button' }, 'inside-fieldset'),
+            ]),
+            h('button', { type: 'button' }, 'outside-fieldset'),
+          ],
+        },
+      );
+
+      (document.activeElement as HTMLElement | null)?.blur();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }));
+
+      expect(document.activeElement?.textContent).toBe('outside-fieldset');
+    });
+  });
+
   describe('closing', () => {
     it('should close on Escape', async () => {
       const wrapper = await renderModal();
