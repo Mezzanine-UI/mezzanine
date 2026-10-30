@@ -5,20 +5,20 @@ export type ComposedRef<T> = Extract<Ref<T>, (...args: any[]) => any>;
 
 /**
  * Compose all refs to single one.
- * It's helpful if you want to use useRef in an forwardRef component.
+ * It's helpful if you want to use useRef alongside a `ref` prop.
  *
  * @example
  *
- * const Some = forwardRef((props, ref) => {
+ * function Some({ ref, ...props }: SomeProps & RefAttributes<HTMLDivElement>) {
  *   const refFromHook = useRef(null);
  *   const composedRef = composeRefs([ref, refFromHook]);
  *
  *   return (
- *     <div ref{composedRef}>
+ *     <div ref={composedRef}>
  *       ...
  *     </div>
  *   );
- * });
+ * }
  */
 export function composeRefs<T>(refs: ComposableRef<T>[]): ComposedRef<T> {
   return (element) => {
