@@ -1,6 +1,11 @@
 'use client';
 
-import { ComponentProps, forwardRef, ReactElement, useMemo } from 'react';
+import {
+  ComponentProps,
+  type RefAttributes,
+  ReactElement,
+  useMemo,
+} from 'react';
 
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -24,8 +29,8 @@ export interface SelectionCardGroupProps extends SelectionCardGroupBaseProps {
    * When provided, will take priority over selections prop.
    */
   children?:
-  | ReactElement<ComponentProps<typeof SelectionCard>>
-  | ReactElement<ComponentProps<typeof SelectionCard>>[];
+    | ReactElement<ComponentProps<typeof SelectionCard>>
+    | ReactElement<ComponentProps<typeof SelectionCard>>[];
   /**
    * The selections array.
    * When provided, SelectionCard components will be automatically rendered.
@@ -37,45 +42,45 @@ export interface SelectionCardGroupProps extends SelectionCardGroupBaseProps {
 /**
  * The react component for `mezzanine` selection card group.
  */
-const SelectionCardGroup = forwardRef<HTMLDivElement, SelectionCardGroupProps>(
-  function SelectionCardGroup(props, ref) {
-    const { className, ...rest } = props;
+function SelectionCardGroup({
+  ref,
+  ...props
+}: SelectionCardGroupProps & RefAttributes<HTMLDivElement>) {
+  const { className, ...rest } = props;
 
-    const hasSelections = 'selections' in rest && rest.selections !== undefined;
-    const hasChildren = 'children' in rest && rest.children !== undefined;
+  const hasSelections = 'selections' in rest && rest.selections !== undefined;
+  const hasChildren = 'children' in rest && rest.children !== undefined;
 
-    const renderedChildren = useMemo(() => {
-      // Children take priority over selections
-      if (hasChildren) {
-        return rest.children;
-      }
+  const renderedChildren = useMemo(() => {
+    // Children take priority over selections
+    if (hasChildren) {
+      return rest.children;
+    }
 
-      if (hasSelections && rest.selections) {
-        return rest.selections.map((selectionProps, index) => (
-          <SelectionCard key={selectionProps.value || index} {...selectionProps} />
-        ));
-      }
+    if (hasSelections && rest.selections) {
+      return rest.selections.map((selectionProps, index) => (
+        <SelectionCard
+          key={selectionProps.value || index}
+          {...selectionProps}
+        />
+      ));
+    }
 
-      return null;
-    }, [hasSelections, hasChildren, rest]);
+    return null;
+  }, [hasSelections, hasChildren, rest]);
 
-    const divProps = hasSelections
-      ? (() => {
+  const divProps = hasSelections
+    ? (() => {
         const { selections: _selections, ...otherProps } = rest;
         return otherProps;
       })()
-      : rest;
+    : rest;
 
-    return (
-      <div
-        ref={ref}
-        {...divProps}
-        className={cx(classes.group, className)}
-      >
-        {renderedChildren}
-      </div>
-    );
-  },
-);
+  return (
+    <div ref={ref} {...divProps} className={cx(classes.group, className)}>
+      {renderedChildren}
+    </div>
+  );
+}
 
 export default SelectionCardGroup;

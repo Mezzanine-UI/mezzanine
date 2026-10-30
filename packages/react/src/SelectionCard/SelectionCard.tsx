@@ -1,12 +1,25 @@
 'use client';
 
-import { CSSProperties, ChangeEventHandler, forwardRef, MouseEvent, Ref, useId, useMemo } from 'react';
+import {
+  CSSProperties,
+  ChangeEventHandler,
+  type RefAttributes,
+  MouseEvent,
+  Ref,
+  useId,
+  useMemo,
+} from 'react';
 
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-import { selectionCardClasses as classes, SelectionCardDirection, SelectionCardImageObjectFit, SelectionCardType } from '@mezzanine-ui/core/selection-card';
+import {
+  selectionCardClasses as classes,
+  SelectionCardDirection,
+  SelectionCardImageObjectFit,
+  SelectionCardType,
+} from '@mezzanine-ui/core/selection-card';
 
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import { FileIcon } from '@mezzanine-ui/icons';
@@ -123,138 +136,156 @@ export interface SelectionCardProps extends SelectionCardPropsBase {
 /**
  * The react component for `mezzanine` selection card.
  */
-const SelectionCard = forwardRef<HTMLLabelElement, SelectionCardProps>(
-  function SelectionCard(props, ref) {
-    const {
-      checked: checkedProp,
-      className,
-      defaultChecked = false,
-      disabled = false,
-      direction = 'horizontal',
-      id,
-      image,
-      imageObjectFit = 'cover',
-      inputRef: inputRefProp,
-      name,
-      onChange: onChangeProp,
-      readonly = false,
-      selector = 'radio',
-      supportingText,
-      supportingTextMaxWidth,
-      text,
-      textMaxWidth,
-      value,
-      customIcon,
-      onClick,
-      ...rest
-    } = props;
+function SelectionCard({
+  ref,
+  ...props
+}: SelectionCardProps & RefAttributes<HTMLLabelElement>) {
+  const {
+    checked: checkedProp,
+    className,
+    defaultChecked = false,
+    disabled = false,
+    direction = 'horizontal',
+    id,
+    image,
+    imageObjectFit = 'cover',
+    inputRef: inputRefProp,
+    name,
+    onChange: onChangeProp,
+    readonly = false,
+    selector = 'radio',
+    supportingText,
+    supportingTextMaxWidth,
+    text,
+    textMaxWidth,
+    value,
+    customIcon,
+    onClick,
+    ...rest
+  } = props;
 
-    const generatedId = useId();
-    const inputId = id ?? generatedId;
-    const textId = useMemo(() => `${inputId}-text`, [inputId]);
-    const supportingTextId = useMemo(() => `${inputId}-supporting-text`, [inputId]);
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+  const textId = useMemo(() => `${inputId}-text`, [inputId]);
+  const supportingTextId = useMemo(
+    () => `${inputId}-supporting-text`,
+    [inputId],
+  );
 
-    const isRadioOrCheckbox = selector === 'radio' || selector === 'checkbox';
-    const onInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-      onChangeProp?.(event);
-    };
+  const isRadioOrCheckbox = selector === 'radio' || selector === 'checkbox';
+  const onInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    onChangeProp?.(event);
+  };
 
-    const haveImage = useMemo(() => Boolean(image && typeof image === 'string' && image.trim().length > 0), [image]);
+  const haveImage = useMemo(
+    () =>
+      Boolean(image && typeof image === 'string' && image.trim().length > 0),
+    [image],
+  );
 
-    if (!text) {
-      console.error('SelectionCard: `text` (title) is required.');
+  if (!text) {
+    console.error('SelectionCard: `text` (title) is required.');
 
-      return null;
-    }
+    return null;
+  }
 
-    if (!supportingText) {
-      console.warn('SelectionCard: `supportingText` is optional but strongly recommended for better accessibility.');
-    }
+  if (!supportingText) {
+    console.warn(
+      'SelectionCard: `supportingText` is optional but strongly recommended for better accessibility.',
+    );
+  }
 
-    return (
-      <label
-        {...rest}
-        ref={ref}
-        htmlFor={inputId}
-        className={cx(
-          classes.host,
-          classes.direction(direction),
-          {
-            [classes.disabled]: disabled,
-            [classes.readonly]: readonly,
-          },
-          className,
-        )}
-        {...(disabled && { 'aria-disabled': true })}
-        {...(onClick && { onClick })}
-      >
-        <div className={classes.container}>
-          {
-            haveImage
-              ? <img
-                src={image}
-                alt={text}
-                className={classes.selectionImage}
-                style={{ objectFit: imageObjectFit }}
-              />
-              : <Icon
-                aria-hidden="true"
-                className={classes.icon}
-                color="neutral-solid"
-                icon={customIcon || FileIcon}
-                size={SELECTION_ICON_SIZE}
-              />
-          }
-          <div className={classes.content}>
-            <Typography
-              className={classes.text}
-              color="text-neutral-solid"
-              display="block"
-              ellipsis
-              id={textId}
-              style={textMaxWidth !== undefined ? { maxWidth: textMaxWidth } : undefined}
-              variant="body-highlight"
-            >
-              {text}
-            </Typography>
-            {supportingText && (
-              <Typography
-                className={classes.supportingText}
-                color="text-neutral"
-                display="block"
-                ellipsis
-                id={supportingTextId}
-                style={supportingTextMaxWidth !== undefined ? { maxWidth: supportingTextMaxWidth } : undefined}
-                variant="caption"
-              >
-                {supportingText}
-              </Typography>
-            )}
-          </div>
-        </div>
-        {!readonly && (
-          <input
-            ref={inputRefProp}
-            type={selector}
-            name={name}
-            id={inputId}
-            className={classes.input}
-            disabled={disabled}
-            {...(checkedProp !== undefined
-              ? { checked: checkedProp }
-              : { defaultChecked })}
-            value={value}
-            onChange={onInputChange}
-            {...(isRadioOrCheckbox && checkedProp !== undefined
-              ? { 'aria-checked': checkedProp }
-              : {})}
-            aria-labelledby={textId}
-            aria-describedby={supportingText ? supportingTextId : undefined}
+  return (
+    <label
+      {...rest}
+      ref={ref}
+      htmlFor={inputId}
+      className={cx(
+        classes.host,
+        classes.direction(direction),
+        {
+          [classes.disabled]: disabled,
+          [classes.readonly]: readonly,
+        },
+        className,
+      )}
+      {...(disabled && { 'aria-disabled': true })}
+      {...(onClick && { onClick })}
+    >
+      <div className={classes.container}>
+        {haveImage ? (
+          <img
+            src={image}
+            alt={text}
+            className={classes.selectionImage}
+            style={{ objectFit: imageObjectFit }}
+          />
+        ) : (
+          <Icon
+            aria-hidden="true"
+            className={classes.icon}
+            color="neutral-solid"
+            icon={customIcon || FileIcon}
+            size={SELECTION_ICON_SIZE}
           />
         )}
-      </label>
-    );
-  },
-);
+        <div className={classes.content}>
+          <Typography
+            className={classes.text}
+            color="text-neutral-solid"
+            display="block"
+            ellipsis
+            id={textId}
+            style={
+              textMaxWidth !== undefined
+                ? { maxWidth: textMaxWidth }
+                : undefined
+            }
+            variant="body-highlight"
+          >
+            {text}
+          </Typography>
+          {supportingText && (
+            <Typography
+              className={classes.supportingText}
+              color="text-neutral"
+              display="block"
+              ellipsis
+              id={supportingTextId}
+              style={
+                supportingTextMaxWidth !== undefined
+                  ? { maxWidth: supportingTextMaxWidth }
+                  : undefined
+              }
+              variant="caption"
+            >
+              {supportingText}
+            </Typography>
+          )}
+        </div>
+      </div>
+      {!readonly && (
+        <input
+          ref={inputRefProp}
+          type={selector}
+          name={name}
+          id={inputId}
+          className={classes.input}
+          disabled={disabled}
+          {...(checkedProp !== undefined
+            ? { checked: checkedProp }
+            : { defaultChecked })}
+          value={value}
+          onChange={onInputChange}
+          {...(isRadioOrCheckbox && checkedProp !== undefined
+            ? { 'aria-checked': checkedProp }
+            : {})}
+          aria-labelledby={textId}
+          aria-describedby={supportingText ? supportingTextId : undefined}
+        />
+      )}
+    </label>
+  );
+}
 
 export default SelectionCard;
