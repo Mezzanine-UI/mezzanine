@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import Button from '../Button';
 import Drawer from '../Drawer';
