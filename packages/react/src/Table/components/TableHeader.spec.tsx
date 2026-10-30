@@ -81,15 +81,15 @@ const renderWithContext = (
   superContextValue: any = defaultSuperContextValue,
 ) => {
   return render(
-    <TableDataContext.Provider value={dataContextValue}>
-      <TableContext.Provider value={contextValue}>
-        <TableSuperContext.Provider value={superContextValue}>
+    <TableDataContext value={dataContextValue}>
+      <TableContext value={contextValue}>
+        <TableSuperContext value={superContextValue}>
           <table>
             <TableHeader />
           </table>
-        </TableSuperContext.Provider>
-      </TableContext.Provider>
-    </TableDataContext.Provider>,
+        </TableSuperContext>
+      </TableContext>
+    </TableDataContext>,
   );
 };
 

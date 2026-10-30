@@ -71,11 +71,7 @@ const renderWithContext = (
     </table>
   );
 
-  return render(
-    <TableContext.Provider value={contextValue}>
-      {Component}
-    </TableContext.Provider>,
-  );
+  return render(<TableContext value={contextValue}>{Component}</TableContext>);
 };
 
 // Mock ResizeObserver

@@ -64,7 +64,7 @@ const renderWithContext = (
   contextValue: any = defaultContextValue,
 ) => {
   return render(
-    <TableContext.Provider value={contextValue}>
+    <TableContext value={contextValue}>
       <table>
         <tbody>
           <tr>
@@ -75,7 +75,7 @@ const renderWithContext = (
           </tr>
         </tbody>
       </table>
-    </TableContext.Provider>,
+    </TableContext>,
   );
 };
 
@@ -224,7 +224,7 @@ describe('<TableToggleableCell />', () => {
 
     it('should apply shadow class when showShadow is true', () => {
       const { getHostHTMLElement } = render(
-        <TableContext.Provider value={defaultContextValue as any}>
+        <TableContext value={defaultContextValue as any}>
           <table>
             <tbody>
               <tr>
@@ -237,7 +237,7 @@ describe('<TableToggleableCell />', () => {
               </tr>
             </tbody>
           </table>
-        </TableContext.Provider>,
+        </TableContext>,
       );
 
       const cell = getHostHTMLElement().querySelector('td');

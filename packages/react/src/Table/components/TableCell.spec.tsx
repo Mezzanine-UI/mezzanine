@@ -74,8 +74,8 @@ const renderWithContext = (
   superContextValue: any = defaultSuperContextValue,
 ) => {
   return render(
-    <TableSuperContext.Provider value={superContextValue}>
-      <TableContext.Provider value={contextValue}>
+    <TableSuperContext value={superContextValue}>
+      <TableContext value={contextValue}>
         <table>
           <tbody>
             <tr>
@@ -88,8 +88,8 @@ const renderWithContext = (
             </tr>
           </tbody>
         </table>
-      </TableContext.Provider>
-    </TableSuperContext.Provider>,
+      </TableContext>
+    </TableSuperContext>,
   );
 };
 
@@ -199,8 +199,8 @@ describe('<TableCell />', () => {
   describe('Fixed columns', () => {
     it('should apply fixed start classes', () => {
       const { getHostHTMLElement } = render(
-        <TableSuperContext.Provider value={defaultSuperContextValue as any}>
-          <TableContext.Provider value={defaultContextValue as any}>
+        <TableSuperContext value={defaultSuperContextValue as any}>
+          <TableContext value={defaultContextValue as any}>
             <table>
               <tbody>
                 <tr>
@@ -215,8 +215,8 @@ describe('<TableCell />', () => {
                 </tr>
               </tbody>
             </table>
-          </TableContext.Provider>
-        </TableSuperContext.Provider>,
+          </TableContext>
+        </TableSuperContext>,
       );
 
       const cell = getHostHTMLElement().querySelector('td');
@@ -229,8 +229,8 @@ describe('<TableCell />', () => {
 
     it('should apply fixed end classes', () => {
       const { getHostHTMLElement } = render(
-        <TableSuperContext.Provider value={defaultSuperContextValue as any}>
-          <TableContext.Provider value={defaultContextValue as any}>
+        <TableSuperContext value={defaultSuperContextValue as any}>
+          <TableContext value={defaultContextValue as any}>
             <table>
               <tbody>
                 <tr>
@@ -245,8 +245,8 @@ describe('<TableCell />', () => {
                 </tr>
               </tbody>
             </table>
-          </TableContext.Provider>
-        </TableSuperContext.Provider>,
+          </TableContext>
+        </TableSuperContext>,
       );
 
       const cell = getHostHTMLElement().querySelector('td');

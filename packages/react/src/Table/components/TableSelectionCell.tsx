@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo } from 'react';
+import { type RefAttributes, memo } from 'react';
 import {
   tableClasses as classes,
   type TableSelectionMode,
@@ -28,10 +28,10 @@ export interface TableSelectionCellProps {
   width?: number;
 }
 
-const TableSelectionCellInner = forwardRef<
-  HTMLTableCellElement,
-  TableSelectionCellProps
->(function TableSelectionCell(props, ref) {
+const TableSelectionCellInner = function TableSelectionCell({
+  ref,
+  ...props
+}: TableSelectionCellProps & RefAttributes<HTMLTableCellElement>) {
   const { loading } = useTableContext();
   const {
     className,
@@ -107,6 +107,6 @@ const TableSelectionCellInner = forwardRef<
       <div className={classes.selectionCheckbox}>{renderChild()}</div>
     </CellComponent>
   );
-});
+};
 
 export const TableSelectionCell = memo(TableSelectionCellInner);
