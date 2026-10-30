@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { SearchIcon } from '@mezzanine-ui/icons';
 import { TextFieldSize } from '@mezzanine-ui/core/text-field';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
@@ -334,7 +335,11 @@ describe('<TextField />', () => {
   describe('prop: hideSuffixWhenClearable', () => {
     it('should render suffix directly (no wrapper) when hideSuffixWhenClearable=false', () => {
       const { getHostHTMLElement } = render(
-        <TextField suffix={<Icon icon={SearchIcon} />} clearable onClear={jest.fn()}>
+        <TextField
+          suffix={<Icon icon={SearchIcon} />}
+          clearable
+          onClear={jest.fn()}
+        >
           <input type="text" />
         </TextField>,
       );
@@ -358,10 +363,16 @@ describe('<TextField />', () => {
       );
       const element = getHostHTMLElement();
       const suffixElement = element.querySelector('.mzn-text-field__suffix');
-      const suffixContent = element.querySelector('.mzn-text-field__suffix-content');
-      const clearIcon = suffixElement?.querySelector('.mzn-text-field__clear-icon');
+      const suffixContent = element.querySelector(
+        '.mzn-text-field__suffix-content',
+      );
+      const clearIcon = suffixElement?.querySelector(
+        '.mzn-text-field__clear-icon',
+      );
 
-      expect(suffixElement?.classList.contains('mzn-text-field__suffix--overlay')).toBe(true);
+      expect(
+        suffixElement?.classList.contains('mzn-text-field__suffix--overlay'),
+      ).toBe(true);
       expect(suffixContent).toBeInstanceOf(HTMLElement);
       expect(clearIcon).toBeInstanceOf(HTMLElement);
     });
@@ -379,7 +390,9 @@ describe('<TextField />', () => {
       );
       const element = getHostHTMLElement();
       const suffixElement = element.querySelector('.mzn-text-field__suffix');
-      const allClearIcons = element.querySelectorAll('.mzn-text-field__clear-icon');
+      const allClearIcons = element.querySelectorAll(
+        '.mzn-text-field__clear-icon',
+      );
 
       // All clear icons should be inside the suffix overlay
       allClearIcons.forEach((icon) => {
@@ -435,6 +448,125 @@ describe('<TextField />', () => {
 
       fireEvent.blur(input!);
       expect(element.classList.contains('mzn-text-field--typing')).toBe(false);
+    });
+  });
+
+  describe('input event handling (#485)', () => {
+    it('should not attach native input listeners to the inner input', () => {
+      const addEventListenerSpy = jest.spyOn(
+        EventTarget.prototype,
+        'addEventListener',
+      );
+
+      try {
+        const { getHostHTMLElement } = render(
+          <TextField>
+            <input type="text" />
+          </TextField>,
+        );
+        const input = getHostHTMLElement().querySelector('input');
+        const nativeInputListenerCount = addEventListenerSpy.mock.calls.filter(
+          ([type], index) =>
+            type === 'input' &&
+            addEventListenerSpy.mock.contexts[index] === input,
+        ).length;
+
+        expect(nativeInputListenerCount).toBe(0);
+      } finally {
+        addEventListenerSpy.mockRestore();
+      }
+    });
+
+    it('should show clear icon after typing into an empty field', () => {
+      const { getHostHTMLElement } = render(
+        <TextField clearable>
+          <input type="text" />
+        </TextField>,
+      );
+      const element = getHostHTMLElement();
+      const input = element.querySelector('input');
+
+      expect(element.classList.contains('mzn-text-field--clearing')).toBe(
+        false,
+      );
+
+      fireEvent.input(input!, { target: { value: 'a' } });
+
+      expect(element.classList.contains('mzn-text-field--clearing')).toBe(true);
+    });
+
+    it('should not show clear icon for whitespace-only value', () => {
+      const { getHostHTMLElement } = render(
+        <TextField clearable>
+          <input type="text" />
+        </TextField>,
+      );
+      const element = getHostHTMLElement();
+      const input = element.querySelector('input');
+
+      fireEvent.input(input!, { target: { value: '   ' } });
+
+      expect(element.classList.contains('mzn-text-field--typing')).toBe(true);
+      expect(element.classList.contains('mzn-text-field--clearing')).toBe(
+        false,
+      );
+    });
+
+    it('should not detect typing when typing prop is controlled', () => {
+      const { getHostHTMLElement } = render(
+        <TextField typing={false}>
+          <input type="text" />
+        </TextField>,
+      );
+      const element = getHostHTMLElement();
+      const input = element.querySelector('input');
+
+      fireEvent.input(input!, { target: { value: 'a' } });
+
+      expect(element.classList.contains('mzn-text-field--typing')).toBe(false);
+    });
+
+    it('should still call consumer onInput', () => {
+      const onInput = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TextField onInput={onInput}>
+          <input type="text" />
+        </TextField>,
+      );
+      const input = getHostHTMLElement().querySelector('input');
+
+      fireEvent.input(input!, { target: { value: 'a' } });
+
+      expect(onInput).toHaveBeenCalledTimes(1);
+    });
+
+    it('should keep controlled value and fire onChange on the first keystroke', () => {
+      const onChange = jest.fn();
+
+      function ControlledField() {
+        const [value, setValue] = useState('');
+
+        return (
+          <TextField clearable>
+            <input
+              onChange={(event) => {
+                onChange(event.target.value);
+                setValue(event.target.value);
+              }}
+              type="text"
+              value={value}
+            />
+          </TextField>
+        );
+      }
+
+      const { getHostHTMLElement } = render(<ControlledField />);
+      const input = getHostHTMLElement().querySelector('input');
+
+      fireEvent.input(input!, { target: { value: 'a' } });
+
+      expect(onChange).toHaveBeenCalledWith('a');
+      expect(input!.value).toBe('a');
     });
   });
 });
