@@ -30,7 +30,18 @@ const config: StorybookConfig = {
 
   addons: [getAbsolutePath('@storybook/addon-docs')],
 
-  framework: getAbsolutePath('@storybook/vue3-vite'),
+  framework: {
+    name: getAbsolutePath('@storybook/vue3-vite'),
+    options: {
+      // `vue-docgen-api`, the default, is deprecated in Storybook 10 and
+      // removed in 11. `vue-component-meta` reads props through Volar's type
+      // checker, so it needs the tsconfig that sees `packages/vue`.
+      docgen: {
+        plugin: 'vue-component-meta',
+        tsconfig: 'packages/vue/tsconfig.json',
+      },
+    },
+  },
 
   viteFinal: (config) => {
     // `@storybook/vue3-vite` does not depend on, or inject, `@vitejs/plugin-vue`
