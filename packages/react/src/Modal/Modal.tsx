@@ -3,7 +3,13 @@ import {
   ModalSize,
   ModalStatusType,
 } from '@mezzanine-ui/core/modal';
-import { forwardRef, useCallback, useRef, useState, useMemo } from 'react';
+import {
+  type RefAttributes,
+  useCallback,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 import { cx } from '../utils/cx';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import useModalContainer, { ModalContainerProps } from './useModalContainer';
@@ -245,245 +251,240 @@ export type ModalProps = BaseModalProps &
  * @see {@link Drawer} 從側邊滑入的抽屜式對話框元件
  * @see {@link useModalContainer} 用於自訂 Modal 掛載容器的 Hook
  */
-const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  function Modal(props, ref) {
-    const {
-      actionsButtonLayout,
-      annotation,
-      auxiliaryContentButtonProps,
-      auxiliaryContentButtonText,
-      auxiliaryContentChecked,
-      auxiliaryContentLabel,
-      auxiliaryContentOnChange,
-      auxiliaryContentOnClick,
-      auxiliaryContentType,
-      backdropClassName,
-      cancelButtonProps,
-      cancelText,
-      children,
-      className,
-      confirmButtonProps,
-      confirmText,
-      container,
-      disableCloseOnBackdropClick = false,
-      disableCloseOnEscapeKeyDown = false,
-      disablePortal = false,
-      extendedSplitLeftSideContent,
-      extendedSplitRightSideContent,
-      extendedSplitSidebarPosition = 'right',
-      fullScreen = false,
-      loading = false,
-      modalStatusType = 'info',
-      modalType = 'standard',
-      onBackdropClick,
-      onCancel,
-      onClose,
-      onConfirm,
-      open,
-      passwordButtonProps,
-      passwordButtonText,
-      passwordChecked,
-      passwordCheckedLabel,
-      passwordCheckedOnChange,
-      passwordOnClick,
-      showCancelButton,
-      showDismissButton = true,
-      showModalFooter = false,
-      showModalHeader,
-      showStatusTypeIcon,
-      size = 'regular',
-      statusTypeIconLayout,
-      supportingText,
-      supportingTextAlign,
-      title,
-      titleAlign,
-      ...rest
-    } = props;
+function Modal({ ref, ...props }: ModalProps & RefAttributes<HTMLDivElement>) {
+  const {
+    actionsButtonLayout,
+    annotation,
+    auxiliaryContentButtonProps,
+    auxiliaryContentButtonText,
+    auxiliaryContentChecked,
+    auxiliaryContentLabel,
+    auxiliaryContentOnChange,
+    auxiliaryContentOnClick,
+    auxiliaryContentType,
+    backdropClassName,
+    cancelButtonProps,
+    cancelText,
+    children,
+    className,
+    confirmButtonProps,
+    confirmText,
+    container,
+    disableCloseOnBackdropClick = false,
+    disableCloseOnEscapeKeyDown = false,
+    disablePortal = false,
+    extendedSplitLeftSideContent,
+    extendedSplitRightSideContent,
+    extendedSplitSidebarPosition = 'right',
+    fullScreen = false,
+    loading = false,
+    modalStatusType = 'info',
+    modalType = 'standard',
+    onBackdropClick,
+    onCancel,
+    onClose,
+    onConfirm,
+    open,
+    passwordButtonProps,
+    passwordButtonText,
+    passwordChecked,
+    passwordCheckedLabel,
+    passwordCheckedOnChange,
+    passwordOnClick,
+    showCancelButton,
+    showDismissButton = true,
+    showModalFooter = false,
+    showModalHeader,
+    showStatusTypeIcon,
+    size = 'regular',
+    statusTypeIconLayout,
+    supportingText,
+    supportingTextAlign,
+    title,
+    titleAlign,
+    ...rest
+  } = props;
 
-    const bodyContentRef = useRef<HTMLDivElement>(null);
-    const [hasTopSeparator, setHasTopSeparator] = useState(false);
-    const [hasBottomSeparator, setHasBottomSeparator] = useState(false);
-    const scrollCleanupRef = useRef<(() => void) | null>(null);
+  const bodyContentRef = useRef<HTMLDivElement>(null);
+  const [hasTopSeparator, setHasTopSeparator] = useState(false);
+  const [hasBottomSeparator, setHasBottomSeparator] = useState(false);
+  const scrollCleanupRef = useRef<(() => void) | null>(null);
 
-    const handleBodyContainerRef = useCallback(
-      (node: HTMLDivElement | null) => {
-        if (scrollCleanupRef.current) {
-          scrollCleanupRef.current();
-          scrollCleanupRef.current = null;
-        }
+  const handleBodyContainerRef = useCallback((node: HTMLDivElement | null) => {
+    if (scrollCleanupRef.current) {
+      scrollCleanupRef.current();
+      scrollCleanupRef.current = null;
+    }
 
-        if (!node) {
-          setHasTopSeparator(false);
-          setHasBottomSeparator(false);
+    if (!node) {
+      setHasTopSeparator(false);
+      setHasBottomSeparator(false);
 
-          return;
-        }
+      return;
+    }
 
-        const checkScroll = () => {
-          const { scrollTop, scrollHeight, clientHeight } = node;
+    const checkScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = node;
 
-          setHasTopSeparator(scrollTop > 0);
-          setHasBottomSeparator(scrollTop + clientHeight < scrollHeight);
-        };
+      setHasTopSeparator(scrollTop > 0);
+      setHasBottomSeparator(scrollTop + clientHeight < scrollHeight);
+    };
 
-        const rafId = requestAnimationFrame(checkScroll);
+    const rafId = requestAnimationFrame(checkScroll);
 
-        node.addEventListener('scroll', checkScroll);
+    node.addEventListener('scroll', checkScroll);
 
-        const observer = new ResizeObserver(checkScroll);
+    const observer = new ResizeObserver(checkScroll);
 
-        observer.observe(node);
+    observer.observe(node);
 
-        const content = bodyContentRef.current;
+    const content = bodyContentRef.current;
 
-        if (content) {
-          observer.observe(content);
-        }
+    if (content) {
+      observer.observe(content);
+    }
 
-        scrollCleanupRef.current = () => {
-          cancelAnimationFrame(rafId);
-          node.removeEventListener('scroll', checkScroll);
-          observer.disconnect();
-        };
-      },
-      [],
-    );
+    scrollCleanupRef.current = () => {
+      cancelAnimationFrame(rafId);
+      node.removeEventListener('scroll', checkScroll);
+      observer.disconnect();
+    };
+  }, []);
 
-    const modalControl: ModalControl = useMemo(
-      () => ({
+  const modalControl: ModalControl = useMemo(
+    () => ({
+      loading,
+      modalStatusType: modalStatusType,
+    }),
+    [loading, modalStatusType],
+  );
+
+  const { Container: ModalContainer } = useModalContainer();
+
+  const renderModalFooter = () => (
+    <ModalFooter
+      {...({
+        actionsButtonLayout,
+        annotation,
+        auxiliaryContentButtonProps,
+        auxiliaryContentButtonText,
+        auxiliaryContentChecked,
+        auxiliaryContentLabel,
+        auxiliaryContentOnChange,
+        auxiliaryContentOnClick,
+        auxiliaryContentType,
+        cancelButtonProps,
+        cancelText,
+        confirmButtonProps,
+        confirmText: confirmText as string,
         loading,
-        modalStatusType: modalStatusType,
-      }),
-      [loading, modalStatusType],
-    );
+        onCancel,
+        onConfirm,
+        passwordButtonProps,
+        passwordButtonText,
+        passwordChecked,
+        passwordCheckedLabel,
+        passwordCheckedOnChange,
+        passwordOnClick,
+        showCancelButton,
+      } as ModalFooterProps)}
+    />
+  );
 
-    const { Container: ModalContainer } = useModalContainer();
-
-    const renderModalFooter = () => (
-      <ModalFooter
-        {...({
-          actionsButtonLayout,
-          annotation,
-          auxiliaryContentButtonProps,
-          auxiliaryContentButtonText,
-          auxiliaryContentChecked,
-          auxiliaryContentLabel,
-          auxiliaryContentOnChange,
-          auxiliaryContentOnClick,
-          auxiliaryContentType,
-          cancelButtonProps,
-          cancelText,
-          confirmButtonProps,
-          confirmText: confirmText as string,
-          loading,
-          onCancel,
-          onConfirm,
-          passwordButtonProps,
-          passwordButtonText,
-          passwordChecked,
-          passwordCheckedLabel,
-          passwordCheckedOnChange,
-          passwordOnClick,
-          showCancelButton,
-        } as ModalFooterProps)}
-      />
-    );
-
-    return (
-      <ModalControlContext.Provider value={modalControl}>
-        <ModalContainer
-          className={backdropClassName}
-          container={container}
-          disableCloseOnBackdropClick={disableCloseOnBackdropClick}
-          disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
-          disablePortal={disablePortal}
-          onBackdropClick={onBackdropClick}
-          onClose={onClose}
-          open={open}
-          ref={ref}
+  return (
+    <ModalControlContext value={modalControl}>
+      <ModalContainer
+        className={backdropClassName}
+        container={container}
+        disableCloseOnBackdropClick={disableCloseOnBackdropClick}
+        disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
+        disablePortal={disablePortal}
+        onBackdropClick={onBackdropClick}
+        onClose={onClose}
+        open={open}
+        ref={ref}
+      >
+        <div
+          aria-modal={open ? true : undefined}
+          {...rest}
+          className={cx(
+            classes.host,
+            classes.modalStatusType(modalStatusType),
+            classes.size(size),
+            {
+              [classes.fullScreen]: fullScreen,
+              [classes.withCloseIcon]: showDismissButton,
+            },
+            className,
+          )}
+          role="dialog"
         >
-          <div
-            aria-modal={open ? true : undefined}
-            {...rest}
-            className={cx(
-              classes.host,
-              classes.modalStatusType(modalStatusType),
-              classes.size(size),
-              {
-                [classes.fullScreen]: fullScreen,
-                [classes.withCloseIcon]: showDismissButton,
-              },
-              className,
-            )}
-            role="dialog"
-          >
-            {showModalHeader && (
-              <ModalHeader
-                {...({
-                  showStatusTypeIcon,
-                  statusTypeIconLayout,
-                  supportingText,
-                  supportingTextAlign,
-                  title: title as string,
-                  titleAlign,
-                } as ModalHeaderProps)}
-              />
-            )}
-            {modalType === 'extendedSplit' && (
-              <div
-                className={cx(classes.modalBodyContainerExtendedSplit, {
-                  [classes.modalBodyContainerExtendedSplitSidebarLeft]:
-                    extendedSplitSidebarPosition === 'left',
-                })}
-              >
-                <div className={classes.modalBodyContainerExtendedSplitRight}>
-                  {extendedSplitRightSideContent}
-                </div>
-                <div className={classes.modalBodyContainerExtendedSplitLeft}>
-                  <div
-                    className={
-                      classes.modalBodyContainerExtendedSplitLeftSideContent
-                    }
-                  >
-                    {extendedSplitLeftSideContent}
-                  </div>
-                  {showModalFooter && renderModalFooter()}
-                </div>
+          {showModalHeader && (
+            <ModalHeader
+              {...({
+                showStatusTypeIcon,
+                statusTypeIconLayout,
+                supportingText,
+                supportingTextAlign,
+                title: title as string,
+                titleAlign,
+              } as ModalHeaderProps)}
+            />
+          )}
+          {modalType === 'extendedSplit' && (
+            <div
+              className={cx(classes.modalBodyContainerExtendedSplit, {
+                [classes.modalBodyContainerExtendedSplitSidebarLeft]:
+                  extendedSplitSidebarPosition === 'left',
+              })}
+            >
+              <div className={classes.modalBodyContainerExtendedSplitRight}>
+                {extendedSplitRightSideContent}
               </div>
-            )}
-            {(modalType === 'standard' ||
-              modalType === 'verification' ||
-              modalType === 'extended' ||
-              modalType === 'mediaPreview') && (
-              <>
-                {children && (
-                  <div
-                    ref={handleBodyContainerRef}
-                    className={cx(classes.modalBodyContainer, {
-                      [classes.modalBodyContainerWithTopSeparator]:
-                        modalType === 'extended' || hasTopSeparator,
-                      [classes.modalBodyContainerWithBottomSeparator]:
-                        modalType === 'extended' || hasBottomSeparator,
-                    })}
-                  >
-                    <div ref={bodyContentRef}>{children}</div>
-                  </div>
-                )}
+              <div className={classes.modalBodyContainerExtendedSplitLeft}>
+                <div
+                  className={
+                    classes.modalBodyContainerExtendedSplitLeftSideContent
+                  }
+                >
+                  {extendedSplitLeftSideContent}
+                </div>
                 {showModalFooter && renderModalFooter()}
-              </>
-            )}
-            {showDismissButton && (
-              <ClearActions
-                onClick={onClose}
-                className={classes.closeIcon}
-                variant="base"
-              />
-            )}
-          </div>
-        </ModalContainer>
-      </ModalControlContext.Provider>
-    );
-  },
-);
+              </div>
+            </div>
+          )}
+          {(modalType === 'standard' ||
+            modalType === 'verification' ||
+            modalType === 'extended' ||
+            modalType === 'mediaPreview') && (
+            <>
+              {children && (
+                <div
+                  ref={handleBodyContainerRef}
+                  className={cx(classes.modalBodyContainer, {
+                    [classes.modalBodyContainerWithTopSeparator]:
+                      modalType === 'extended' || hasTopSeparator,
+                    [classes.modalBodyContainerWithBottomSeparator]:
+                      modalType === 'extended' || hasBottomSeparator,
+                  })}
+                >
+                  <div ref={bodyContentRef}>{children}</div>
+                </div>
+              )}
+              {showModalFooter && renderModalFooter()}
+            </>
+          )}
+          {showDismissButton && (
+            <ClearActions
+              onClick={onClose}
+              className={classes.closeIcon}
+              variant="base"
+            />
+          )}
+        </div>
+      </ModalContainer>
+    </ModalControlContext>
+  );
+}
 
 export default Modal;
