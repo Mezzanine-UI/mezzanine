@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import {
   ControlFieldSlotColumns,
   ControlFieldSlotLayout,
@@ -160,120 +160,121 @@ export interface FormFieldProps
  * @see {@link FormHintText} 表單提示文字元件
  * @see {@link FormControlContext} 表單控制狀態 Context
  */
-const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
-  function FormField(props, ref) {
-    const {
-      children,
-      className,
-      counter,
-      counterColor,
-      controlFieldSlotColumns,
-      controlFieldSlotLayout = ControlFieldSlotLayout.MAIN,
-      density,
-      disabled = false,
-      fullWidth = false,
-      hintText,
-      hintTextIcon,
-      showHintTextIcon,
-      label,
-      labelInformationIcon,
-      labelInformationText,
-      labelOptionalMarker,
-      labelSpacing = FormFieldLabelSpacing.MAIN,
-      layout = FormFieldLayout.HORIZONTAL,
-      name,
-      required = false,
-      severity = 'info',
-      ...rest
-    } = props;
-    const formControl: FormControl = {
-      disabled,
-      fullWidth,
-      required,
-      severity,
-    };
+function FormField({
+  ref,
+  ...props
+}: FormFieldProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    counter,
+    counterColor,
+    controlFieldSlotColumns,
+    controlFieldSlotLayout = ControlFieldSlotLayout.MAIN,
+    density,
+    disabled = false,
+    fullWidth = false,
+    hintText,
+    hintTextIcon,
+    showHintTextIcon,
+    label,
+    labelInformationIcon,
+    labelInformationText,
+    labelOptionalMarker,
+    labelSpacing = FormFieldLabelSpacing.MAIN,
+    layout = FormFieldLayout.HORIZONTAL,
+    name,
+    required = false,
+    severity = 'info',
+    ...rest
+  } = props;
+  const formControl: FormControl = {
+    disabled,
+    fullWidth,
+    required,
+    severity,
+  };
 
-    const shouldApplyDensity = density && layout !== FormFieldLayout.VERTICAL;
-    const densityClass = shouldApplyDensity
-      ? classes.density(density)
-      : undefined;
+  const shouldApplyDensity = density && layout !== FormFieldLayout.VERTICAL;
+  const densityClass = shouldApplyDensity
+    ? classes.density(density)
+    : undefined;
 
-    const shouldApplyLabelSpacing = layout !== FormFieldLayout.VERTICAL;
-    const labelSpacingClass = shouldApplyLabelSpacing
-      ? classes.labelSpacing(labelSpacing)
-      : undefined;
+  const shouldApplyLabelSpacing = layout !== FormFieldLayout.VERTICAL;
+  const labelSpacingClass = shouldApplyLabelSpacing
+    ? classes.labelSpacing(labelSpacing)
+    : undefined;
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          classes.layout(layout),
-          densityClass,
-          {
-            [classes.disabled]: disabled,
-            [classes.fullWidth]: fullWidth,
-          },
-          className,
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        classes.layout(layout),
+        densityClass,
+        {
+          [classes.disabled]: disabled,
+          [classes.fullWidth]: fullWidth,
+        },
+        className,
+      )}
+    >
+      <FormControlContext value={formControl}>
+        {label && (
+          <FormLabel
+            className={cx(classes.labelArea, labelSpacingClass)}
+            htmlFor={name}
+            informationIcon={labelInformationIcon}
+            informationText={labelInformationText}
+            labelText={label}
+            optionalMarker={labelOptionalMarker}
+          />
         )}
-      >
-        <FormControlContext.Provider value={formControl}>
-          {label && (
-            <FormLabel
-              className={cx(classes.labelArea, labelSpacingClass)}
-              htmlFor={name}
-              informationIcon={labelInformationIcon}
-              informationText={labelInformationText}
-              labelText={label}
-              optionalMarker={labelOptionalMarker}
-            />
-          )}
-          <div className={cx(classes.dataEntry)}>
-            <div
-              className={cx(
-                `${classes.controlFieldSlot}--${controlFieldSlotLayout}`,
-                controlFieldSlotColumns
-                  ? classes.controlFieldSlotColumns(controlFieldSlotColumns)
-                  : undefined,
-              )}
-            >
-              {children}
-            </div>
-            {hintText || hintTextIcon || counter ? (
-              <div
-                className={cx(classes.hintTextAndCounterArea, {
-                  [classes.hintTextAndCounterArea + '--align-right']:
-                    !(hintText || hintTextIcon) && counter,
-                })}
-              >
-                {(hintText || hintTextIcon) && (
-                  <FormHintText
-                    hintText={hintText}
-                    hintTextIcon={hintTextIcon}
-                    severity={severity}
-                    showHintTextIcon={showHintTextIcon}
-                  />
-                )}
-                {counter && (
-                  <span
-                    className={cx(
-                      classes.counter,
-                      classes.counterColor(
-                        counterColor || FormFieldCounterColor.INFO,
-                      ),
-                    )}
-                  >
-                    {counter}
-                  </span>
-                )}
-              </div>
-            ) : null}
+        <div className={cx(classes.dataEntry)}>
+          <div
+            className={cx(
+              `${classes.controlFieldSlot}--${controlFieldSlotLayout}`,
+              controlFieldSlotColumns
+                ? classes.controlFieldSlotColumns(controlFieldSlotColumns)
+                : undefined,
+            )}
+          >
+            {children}
           </div>
-        </FormControlContext.Provider>
-      </div>
-    );
-  },
-);
+          {hintText || hintTextIcon || counter ? (
+            <div
+              className={cx(classes.hintTextAndCounterArea, {
+                [classes.hintTextAndCounterArea + '--align-right']:
+                  !(hintText || hintTextIcon) && counter,
+              })}
+            >
+              {(hintText || hintTextIcon) && (
+                <FormHintText
+                  hintText={hintText}
+                  hintTextIcon={hintTextIcon}
+                  severity={severity}
+                  showHintTextIcon={showHintTextIcon}
+                />
+              )}
+              {counter && (
+                <span
+                  className={cx(
+                    classes.counter,
+                    classes.counterColor(
+                      counterColor || FormFieldCounterColor.INFO,
+                    ),
+                  )}
+                >
+                  {counter}
+                </span>
+              )}
+            </div>
+          ) : null}
+        </div>
+      </FormControlContext>
+    </div>
+  );
+}
 
 export default FormField;

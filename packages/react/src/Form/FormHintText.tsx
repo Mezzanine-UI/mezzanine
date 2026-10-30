@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import {
   formFieldClasses as classes,
   formHintIcons,
@@ -37,48 +37,49 @@ export type FormHintTextProps = NativeElementPropsWithoutKeyAndRef<'span'> & {
 /**
  * The React component for `mezzanine` form message.
  */
-const FormHintText = forwardRef<HTMLSpanElement, FormHintTextProps>(
-  function FormHintText(props, ref) {
-    const {
-      className,
-      hintText,
-      hintTextIcon,
-      severity = 'info',
-      showHintTextIcon = true,
-      ...rest
-    } = props;
-    const defaultIcon = severity ? formHintIcons[severity] : null;
+function FormHintText({
+  ref,
+  ...props
+}: FormHintTextProps & RefAttributes<HTMLSpanElement>) {
+  const {
+    className,
+    hintText,
+    hintTextIcon,
+    severity = 'info',
+    showHintTextIcon = true,
+    ...rest
+  } = props;
+  const defaultIcon = severity ? formHintIcons[severity] : null;
 
-    return (
-      <span
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.hintText,
-          severity ? classes.hintTextSeverity(severity) : undefined,
-          className,
-        )}
-      >
-        {showHintTextIcon &&
-          (hintTextIcon ? (
+  return (
+    <span
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.hintText,
+        severity ? classes.hintTextSeverity(severity) : undefined,
+        className,
+      )}
+    >
+      {showHintTextIcon &&
+        (hintTextIcon ? (
+          <Icon
+            className={classes.hintTextIcon}
+            icon={hintTextIcon}
+            color={severity}
+          />
+        ) : (
+          defaultIcon && (
             <Icon
               className={classes.hintTextIcon}
-              icon={hintTextIcon}
+              icon={defaultIcon}
               color={severity}
             />
-          ) : (
-            defaultIcon && (
-              <Icon
-                className={classes.hintTextIcon}
-                icon={defaultIcon}
-                color={severity}
-              />
-            )
-          ))}
-        {hintText}
-      </span>
-    );
-  },
-);
+          )
+        ))}
+      {hintText}
+    </span>
+  );
+}
 
 export default FormHintText;
