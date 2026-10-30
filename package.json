@@ -105,6 +105,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
+    "@compodoc/compodoc": "^2.0.0",
     "@eslint/compat": "^1.2.8",
     "@eslint/js": "^9.38.0",
     "@nx/js": "^21.6.5",

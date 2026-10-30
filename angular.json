@@ -14,7 +14,16 @@
             "configDir": ".storybook-ng",
             "browserTarget": "ng-storybook:build-angular",
             "port": 6007,
-            "compodoc": false
+            "compodoc": true,
+            "compodocArgs": [
+              "-e",
+              "json",
+              "-d",
+              ".storybook-ng",
+              "--disableSourceCode",
+              "--disableGraph",
+              "--silent"
+            ]
           }
         },
         "build-storybook": {
@@ -23,7 +32,16 @@
             "configDir": ".storybook-ng",
             "browserTarget": "ng-storybook:build-angular",
             "outputDir": "storybook-ng-static",
-            "compodoc": false
+            "compodoc": true,
+            "compodocArgs": [
+              "-e",
+              "json",
+              "-d",
+              ".storybook-ng",
+              "--disableSourceCode",
+              "--disableGraph",
+              "--silent"
+            ]
           }
         },
         "build-angular": {
