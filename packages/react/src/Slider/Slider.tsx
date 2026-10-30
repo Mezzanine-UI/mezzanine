@@ -1,7 +1,7 @@
 import {
   ChangeEventHandler,
   FocusEventHandler,
-  forwardRef,
+  type RefAttributes,
   KeyboardEvent as ReactKeyboardEvent,
   KeyboardEventHandler,
   Ref,
@@ -644,12 +644,15 @@ function SliderComponent(props: SliderComponentProps) {
  * The outcome will be base on the type of given value.
  * Notice that slider is a fully controlled component. Property value is always needed.
  */
-const Slider = forwardRef<HTMLDivElement, SliderProps>((props, ref) => {
+const Slider = ({
+  ref,
+  ...props
+}: SliderProps & RefAttributes<HTMLDivElement>) => {
   if (isRangeSlider(props.value)) {
     return <SliderComponent {...(props as RangeSliderProps)} innerRef={ref} />;
   }
 
   return <SliderComponent {...(props as SingleSliderProps)} innerRef={ref} />;
-});
+};
 
 export default Slider;
