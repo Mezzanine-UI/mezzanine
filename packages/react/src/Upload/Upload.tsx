@@ -7,7 +7,7 @@ import {
   type UploadSize,
 } from '@mezzanine-ui/core/upload';
 import {
-  forwardRef,
+  type RefAttributes,
   useCallback,
   useEffect,
   useMemo,
@@ -220,642 +220,628 @@ export interface UploadProps
   onZoomIn?: (fileId: string, file: File) => void;
 }
 
-const Upload = forwardRef<HTMLDivElement, UploadProps>(
-  function Upload(props, ref) {
-    const {
-      accept,
-      className,
-      disabled = false,
-      dropzoneHints,
-      mode = 'list',
-      size = 'main',
-      showFileSize = true,
-      files: controlledFiles = [],
-      onUpload,
-      onDelete,
-      onReload,
-      onDownload,
-      onZoomIn,
-      onChange,
-      id,
-      name,
-      multiple = false,
-      maxFiles,
-      hints,
-      uploaderLabel,
-      uploaderIcon,
-      inputRef,
-      inputProps,
-      onMaxFilesExceeded,
-      errorMessage,
-      errorIcon,
-      ariaLabels,
-      ...rest
-    } = props;
+function Upload({
+  ref,
+  ...props
+}: UploadProps & RefAttributes<HTMLDivElement>) {
+  const {
+    accept,
+    className,
+    disabled = false,
+    dropzoneHints,
+    mode = 'list',
+    size = 'main',
+    showFileSize = true,
+    files: controlledFiles = [],
+    onUpload,
+    onDelete,
+    onReload,
+    onDownload,
+    onZoomIn,
+    onChange,
+    id,
+    name,
+    multiple = false,
+    maxFiles,
+    hints,
+    uploaderLabel,
+    uploaderIcon,
+    inputRef,
+    inputProps,
+    onMaxFilesExceeded,
+    errorMessage,
+    errorIcon,
+    ariaLabels,
+    ...rest
+  } = props;
 
-    const files = controlledFiles;
-    const filesRef = useRef<UploadFile[]>(files);
-    const replaceFileIdRef = useRef<string | null>(null);
-    const replaceInputRef = useRef<HTMLInputElement>(null);
+  const files = controlledFiles;
+  const filesRef = useRef<UploadFile[]>(files);
+  const replaceFileIdRef = useRef<string | null>(null);
+  const replaceInputRef = useRef<HTMLInputElement>(null);
 
-    const [previewFile, setPreviewFile] = useState<UploadFile | null>(null);
-    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewFile, setPreviewFile] = useState<UploadFile | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-    useEffect(() => {
-      filesRef.current = files;
-    }, [files]);
+  useEffect(() => {
+    filesRef.current = files;
+  }, [files]);
 
-    // Default error icon when status is error and no errorIcon is provided
-    const defaultErrorIconElement = useMemo(
-      () =>
-        errorIcon ?? (
-          <Icon icon={DangerousFilledIcon} color="error" size={24} />
-        ),
-      [errorIcon],
-    );
+  // Default error icon when status is error and no errorIcon is provided
+  const defaultErrorIconElement = useMemo(
+    () =>
+      errorIcon ?? <Icon icon={DangerousFilledIcon} color="error" size={24} />,
+    [errorIcon],
+  );
 
-    // Auto-disable when maxFiles is reached
-    const isMaxFilesReached = useMemo(() => {
-      if (maxFiles === undefined) return false;
-      return files.length >= maxFiles;
-    }, [files.length, maxFiles]);
+  // Auto-disable when maxFiles is reached
+  const isMaxFilesReached = useMemo(() => {
+    if (maxFiles === undefined) return false;
+    return files.length >= maxFiles;
+  }, [files.length, maxFiles]);
 
-    const effectiveDisabled = disabled || isMaxFilesReached;
+  const effectiveDisabled = disabled || isMaxFilesReached;
 
-    // Helper function to find file by ID
-    const findFileById = useCallback(
-      (fileId: string): UploadFile | undefined => {
-        return filesRef.current.find((f) => f.id === fileId);
-      },
-      [],
-    );
+  // Helper function to find file by ID
+  const findFileById = useCallback((fileId: string): UploadFile | undefined => {
+    return filesRef.current.find((f) => f.id === fileId);
+  }, []);
 
-    const emitChange = useCallback(
-      (nextFiles: UploadFile[]) => {
-        filesRef.current = nextFiles;
-        onChange?.(nextFiles);
-      },
-      [onChange],
-    );
+  const emitChange = useCallback(
+    (nextFiles: UploadFile[]) => {
+      filesRef.current = nextFiles;
+      onChange?.(nextFiles);
+    },
+    [onChange],
+  );
 
-    const handleUpload = useCallback(
-      async (selectedFiles: File[]) => {
-        if (!selectedFiles.length) return;
+  const handleUpload = useCallback(
+    async (selectedFiles: File[]) => {
+      if (!selectedFiles.length) return;
 
-        // If a replace operation is in progress, remove the old file first
-        if (replaceFileIdRef.current !== null) {
-          const fileIdToReplace = replaceFileIdRef.current;
-          replaceFileIdRef.current = null;
-          filesRef.current = filesRef.current.filter(
-            (f) => f.id !== fileIdToReplace,
-          );
-        }
+      // If a replace operation is in progress, remove the old file first
+      if (replaceFileIdRef.current !== null) {
+        const fileIdToReplace = replaceFileIdRef.current;
+        replaceFileIdRef.current = null;
+        filesRef.current = filesRef.current.filter(
+          (f) => f.id !== fileIdToReplace,
+        );
+      }
 
-        // Check maxFiles limit
-        if (maxFiles !== undefined) {
-          const currentCount = filesRef.current.length;
-          const selectedCount = selectedFiles.length;
-          const totalCount = currentCount + selectedCount;
+      // Check maxFiles limit
+      if (maxFiles !== undefined) {
+        const currentCount = filesRef.current.length;
+        const selectedCount = selectedFiles.length;
+        const totalCount = currentCount + selectedCount;
 
-          if (totalCount > maxFiles) {
-            const allowedCount = Math.max(0, maxFiles - currentCount);
+        if (totalCount > maxFiles) {
+          const allowedCount = Math.max(0, maxFiles - currentCount);
 
-            if (allowedCount <= 0) {
-              // No more files can be added
-              onMaxFilesExceeded?.(maxFiles, selectedCount, currentCount);
-              return;
-            }
-
-            // Only take the allowed number of files
-            selectedFiles = selectedFiles.slice(0, allowedCount);
+          if (allowedCount <= 0) {
+            // No more files can be added
             onMaxFilesExceeded?.(maxFiles, selectedCount, currentCount);
+            return;
           }
+
+          // Only take the allowed number of files
+          selectedFiles = selectedFiles.slice(0, allowedCount);
+          onMaxFilesExceeded?.(maxFiles, selectedCount, currentCount);
         }
+      }
 
-        // Create temporary files with unique temporary IDs
-        // The actual IDs will be provided by the backend via onUpload return value
-        // Use a batch identifier + index to create unique IDs for this batch of files
-        const batchId = Date.now();
-        const tempFiles: UploadFile[] = selectedFiles.map((file, index) => ({
-          file,
-          // Simple ID: batch timestamp + index ensures uniqueness within this upload batch
-          // This is sufficient because:
-          // 1. Each upload batch has a unique timestamp
-          // 2. Index ensures uniqueness within the batch
-          // 3. Backend will replace this with real ID after upload completes
-          id: `temp-${batchId}-${index}`,
-          status: 'loading' as UploadItemStatus,
-          progress: 0,
-        }));
+      // Create temporary files with unique temporary IDs
+      // The actual IDs will be provided by the backend via onUpload return value
+      // Use a batch identifier + index to create unique IDs for this batch of files
+      const batchId = Date.now();
+      const tempFiles: UploadFile[] = selectedFiles.map((file, index) => ({
+        file,
+        // Simple ID: batch timestamp + index ensures uniqueness within this upload batch
+        // This is sufficient because:
+        // 1. Each upload batch has a unique timestamp
+        // 2. Index ensures uniqueness within the batch
+        // 3. Backend will replace this with real ID after upload completes
+        id: `temp-${batchId}-${index}`,
+        status: 'loading' as UploadItemStatus,
+        progress: 0,
+      }));
 
-        const updatedFiles = [...filesRef.current, ...tempFiles];
-        emitChange(updatedFiles);
+      const updatedFiles = [...filesRef.current, ...tempFiles];
+      emitChange(updatedFiles);
 
-        if (onUpload) {
-          // Map to track temporary ID to file index
-          const tempIdToIndex = new Map<string, number>();
-          tempFiles.forEach((tempFile, index) => {
-            tempIdToIndex.set(tempFile.id, index);
-          });
+      if (onUpload) {
+        // Map to track temporary ID to file index
+        const tempIdToIndex = new Map<string, number>();
+        tempFiles.forEach((tempFile, index) => {
+          tempIdToIndex.set(tempFile.id, index);
+        });
 
-          const setProgress = (fileIndex: number, progress: number) => {
-            const targetFile = tempFiles[fileIndex];
-            if (!targetFile) return;
+        const setProgress = (fileIndex: number, progress: number) => {
+          const targetFile = tempFiles[fileIndex];
+          if (!targetFile) return;
 
-            const nextFiles = filesRef.current.map((file) =>
-              file.id === targetFile.id ? { ...file, progress } : file,
-            );
+          const nextFiles = filesRef.current.map((file) =>
+            file.id === targetFile.id ? { ...file, progress } : file,
+          );
 
-            emitChange(nextFiles);
-          };
+          emitChange(nextFiles);
+        };
 
-          try {
-            const result = await Promise.resolve(
-              onUpload(selectedFiles, (fileIndex, progress) =>
-                setProgress(fileIndex, progress),
-              ),
-            );
+        try {
+          const result = await Promise.resolve(
+            onUpload(selectedFiles, (fileIndex, progress) =>
+              setProgress(fileIndex, progress),
+            ),
+          );
 
-            // Check if result is an array (new API) or void (old API for backward compatibility)
-            if (Array.isArray(result) && result.length > 0) {
-              // Check if it's UploadFile[] (full objects) or { id: string }[] (just IDs)
-              const firstItem = result[0];
-              const isFullUploadFile =
-                'file' in firstItem && 'status' in firstItem;
+          // Check if result is an array (new API) or void (old API for backward compatibility)
+          if (Array.isArray(result) && result.length > 0) {
+            // Check if it's UploadFile[] (full objects) or { id: string }[] (just IDs)
+            const firstItem = result[0];
+            const isFullUploadFile =
+              'file' in firstItem && 'status' in firstItem;
 
-              if (isFullUploadFile) {
-                // Full UploadFile[] API: backend returns complete file objects
-                const backendFiles = result as UploadFile[];
+            if (isFullUploadFile) {
+              // Full UploadFile[] API: backend returns complete file objects
+              const backendFiles = result as UploadFile[];
 
-                // Update files with backend-provided IDs and status
-                // Match by index: backendFiles[i] corresponds to selectedFiles[i]
-                const nextFiles = filesRef.current.map((file) => {
-                  const tempIndex = tempIdToIndex.get(file.id);
+              // Update files with backend-provided IDs and status
+              // Match by index: backendFiles[i] corresponds to selectedFiles[i]
+              const nextFiles = filesRef.current.map((file) => {
+                const tempIndex = tempIdToIndex.get(file.id);
 
-                  // If this is a temp file and we have a corresponding backend file
-                  if (
-                    tempIndex !== undefined &&
-                    tempIndex < backendFiles.length
-                  ) {
-                    const backendFile = backendFiles[tempIndex];
-                    // Replace temporary file with backend file (includes real ID and status)
-                    // Apply default error message and icon if status is error and not provided
-                    if (backendFile.status === 'error') {
-                      return {
-                        ...backendFile,
-                        errorMessage:
-                          backendFile.errorMessage ??
-                          errorMessage ??
-                          defaultUploadPictureCardErrorMessage,
-                        errorIcon:
-                          backendFile.errorIcon ?? defaultErrorIconElement,
-                      };
-                    }
-                    return backendFile;
-                  }
-
-                  return file;
-                });
-
-                emitChange(nextFiles);
-              } else {
-                // Simple { id: string }[] API: backend returns just IDs
-                const backendIds = result as Array<{ id: string }>;
-
-                // Update files with backend-provided IDs, set status to 'done'
-                const nextFiles = filesRef.current.map((file) => {
-                  const tempIndex = tempIdToIndex.get(file.id);
-
-                  // If this is a temp file and we have a corresponding backend ID
-                  if (
-                    tempIndex !== undefined &&
-                    tempIndex < backendIds.length
-                  ) {
-                    const backendId = backendIds[tempIndex];
-                    // Replace temporary ID with backend ID, set status to 'done'
+                // If this is a temp file and we have a corresponding backend file
+                if (
+                  tempIndex !== undefined &&
+                  tempIndex < backendFiles.length
+                ) {
+                  const backendFile = backendFiles[tempIndex];
+                  // Replace temporary file with backend file (includes real ID and status)
+                  // Apply default error message and icon if status is error and not provided
+                  if (backendFile.status === 'error') {
                     return {
-                      ...file,
-                      id: backendId.id,
-                      status: 'done' as UploadItemStatus,
-                      progress: 100,
+                      ...backendFile,
+                      errorMessage:
+                        backendFile.errorMessage ??
+                        errorMessage ??
+                        defaultUploadPictureCardErrorMessage,
+                      errorIcon:
+                        backendFile.errorIcon ?? defaultErrorIconElement,
                     };
                   }
+                  return backendFile;
+                }
 
-                  return file;
-                });
+                return file;
+              });
 
-                emitChange(nextFiles);
-              }
+              emitChange(nextFiles);
             } else {
-              // Old API: backward compatibility - no return value, assume success
-              const nextFiles = filesRef.current.map((file) =>
-                tempFiles.some((tf) => tf.id === file.id)
-                  ? {
+              // Simple { id: string }[] API: backend returns just IDs
+              const backendIds = result as Array<{ id: string }>;
+
+              // Update files with backend-provided IDs, set status to 'done'
+              const nextFiles = filesRef.current.map((file) => {
+                const tempIndex = tempIdToIndex.get(file.id);
+
+                // If this is a temp file and we have a corresponding backend ID
+                if (tempIndex !== undefined && tempIndex < backendIds.length) {
+                  const backendId = backendIds[tempIndex];
+                  // Replace temporary ID with backend ID, set status to 'done'
+                  return {
+                    ...file,
+                    id: backendId.id,
+                    status: 'done' as UploadItemStatus,
+                    progress: 100,
+                  };
+                }
+
+                return file;
+              });
+
+              emitChange(nextFiles);
+            }
+          } else {
+            // Old API: backward compatibility - no return value, assume success
+            const nextFiles = filesRef.current.map((file) =>
+              tempFiles.some((tf) => tf.id === file.id)
+                ? {
                     ...file,
                     status: 'done' as UploadItemStatus,
                     progress: 100,
                   }
-                  : file,
-              );
-
-              emitChange(nextFiles);
-            }
-          } catch (error) {
-            console.error('Upload failed:', error);
-            // Update all temp files to error status with default error message and icon
-            const nextFiles = filesRef.current.map((file) => {
-              if (tempFiles.some((tf) => tf.id === file.id)) {
-                return {
-                  ...file,
-                  status: 'error' as UploadItemStatus,
-                  errorMessage:
-                    file.errorMessage ??
-                    errorMessage ??
-                    defaultUploadPictureCardErrorMessage,
-                  errorIcon: file.errorIcon ?? defaultErrorIconElement,
-                };
-              }
-              return file;
-            });
+                : file,
+            );
 
             emitChange(nextFiles);
           }
-        } else {
-          // No onUpload handler - mark as done immediately
-          const nextFiles = filesRef.current.map((file) =>
-            tempFiles.some((tf) => tf.id === file.id)
-              ? { ...file, status: 'done' as UploadItemStatus, progress: 100 }
-              : file,
-          );
+        } catch (error) {
+          console.error('Upload failed:', error);
+          // Update all temp files to error status with default error message and icon
+          const nextFiles = filesRef.current.map((file) => {
+            if (tempFiles.some((tf) => tf.id === file.id)) {
+              return {
+                ...file,
+                status: 'error' as UploadItemStatus,
+                errorMessage:
+                  file.errorMessage ??
+                  errorMessage ??
+                  defaultUploadPictureCardErrorMessage,
+                errorIcon: file.errorIcon ?? defaultErrorIconElement,
+              };
+            }
+            return file;
+          });
 
           emitChange(nextFiles);
         }
-      },
-      [
-        emitChange,
-        maxFiles,
-        onMaxFilesExceeded,
-        onUpload,
-        errorMessage,
-        defaultErrorIconElement,
-      ],
-    );
-
-    const handleDelete = useCallback(
-      (fileId: string) => {
-        const file = findFileById(fileId);
-
-        if (!file) return;
-
-        const updated = filesRef.current.filter((f) => f.id !== fileId);
-
-        emitChange(updated);
-        if (file.file) {
-          onDelete?.(fileId, file.file);
-        }
-      },
-      [emitChange, findFileById, onDelete],
-    );
-
-    const handleReload = useCallback(
-      (fileId: string) => {
-        const file = findFileById(fileId);
-
-        if (!file) return;
-
-        const updated = filesRef.current.map((f) =>
-          f.id === fileId
-            ? { ...f, status: 'loading' as UploadItemStatus, progress: 0 }
-            : f,
+      } else {
+        // No onUpload handler - mark as done immediately
+        const nextFiles = filesRef.current.map((file) =>
+          tempFiles.some((tf) => tf.id === file.id)
+            ? { ...file, status: 'done' as UploadItemStatus, progress: 100 }
+            : file,
         );
 
-        emitChange(updated);
-        if (file.file) {
-          onReload?.(fileId, file.file);
-        }
-      },
-      [emitChange, findFileById, onReload],
-    );
-
-    const handleDownload = useCallback(
-      (fileId: string) => {
-        const file = findFileById(fileId);
-        if (file && file.file) {
-          onDownload?.(fileId, file.file);
-        }
-      },
-      [findFileById, onDownload],
-    );
-
-    const handleZoomIn = useCallback(
-      (fileId: string) => {
-        const file = findFileById(fileId);
-        if (!file) return;
-
-        setPreviewFile(file);
-        setIsPreviewOpen(true);
-
-        if (file.file) {
-          onZoomIn?.(fileId, file.file);
-        }
-      },
-      [findFileById, onZoomIn],
-    );
-
-    const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(null);
-
-    useEffect(() => {
-      if (!previewFile || previewFile.url || !previewFile.file) {
-        setPreviewObjectUrl(null);
-        return;
+        emitChange(nextFiles);
       }
-      if (!isImageFile(previewFile.file, previewFile.url)) {
-        setPreviewObjectUrl(null);
-        return;
+    },
+    [
+      emitChange,
+      maxFiles,
+      onMaxFilesExceeded,
+      onUpload,
+      errorMessage,
+      defaultErrorIconElement,
+    ],
+  );
+
+  const handleDelete = useCallback(
+    (fileId: string) => {
+      const file = findFileById(fileId);
+
+      if (!file) return;
+
+      const updated = filesRef.current.filter((f) => f.id !== fileId);
+
+      emitChange(updated);
+      if (file.file) {
+        onDelete?.(fileId, file.file);
       }
-      const url = URL.createObjectURL(previewFile.file);
-      setPreviewObjectUrl(url);
-      return () => {
-        URL.revokeObjectURL(url);
+    },
+    [emitChange, findFileById, onDelete],
+  );
+
+  const handleReload = useCallback(
+    (fileId: string) => {
+      const file = findFileById(fileId);
+
+      if (!file) return;
+
+      const updated = filesRef.current.map((f) =>
+        f.id === fileId
+          ? { ...f, status: 'loading' as UploadItemStatus, progress: 0 }
+          : f,
+      );
+
+      emitChange(updated);
+      if (file.file) {
+        onReload?.(fileId, file.file);
+      }
+    },
+    [emitChange, findFileById, onReload],
+  );
+
+  const handleDownload = useCallback(
+    (fileId: string) => {
+      const file = findFileById(fileId);
+      if (file && file.file) {
+        onDownload?.(fileId, file.file);
+      }
+    },
+    [findFileById, onDownload],
+  );
+
+  const handleZoomIn = useCallback(
+    (fileId: string) => {
+      const file = findFileById(fileId);
+      if (!file) return;
+
+      setPreviewFile(file);
+      setIsPreviewOpen(true);
+
+      if (file.file) {
+        onZoomIn?.(fileId, file.file);
+      }
+    },
+    [findFileById, onZoomIn],
+  );
+
+  const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!previewFile || previewFile.url || !previewFile.file) {
+      setPreviewObjectUrl(null);
+      return;
+    }
+    if (!isImageFile(previewFile.file, previewFile.url)) {
+      setPreviewObjectUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(previewFile.file);
+    setPreviewObjectUrl(url);
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [previewFile]);
+
+  const previewIsImage = previewFile
+    ? isImageFile(previewFile.file, previewFile.url)
+    : false;
+
+  const previewImageSrc = previewFile?.url ?? previewObjectUrl ?? '';
+
+  const { imageFiles, nonImageFiles } = useMemo(() => {
+    const images: UploadFile[] = [];
+    const nonImages: UploadFile[] = [];
+
+    files.forEach((file) => {
+      // Determine if file is an image using shared utility
+      const isImage = isImageFile(file.file, file.url);
+
+      if (isImage) {
+        images.push(file);
+      } else {
+        nonImages.push(file);
+      }
+    });
+
+    return { imageFiles: images, nonImageFiles: nonImages };
+  }, [files]);
+
+  const uploaderConfig = useMemo(() => {
+    const config: Record<UploadMode, UploaderProps> = {
+      list: {
+        mode: 'dropzone',
+        type: 'base',
+      },
+      'basic-list': {
+        mode: 'basic',
+        type: 'base',
+      },
+      'button-list': {
+        type: 'button',
+      },
+      cards: {
+        mode: 'basic',
+        type: 'base',
+      },
+      'card-wall': {
+        mode: 'basic',
+        type: 'base',
+      },
+    };
+
+    return config[mode];
+  }, [mode]);
+
+  const topUploaderConfig = useMemo(() => {
+    if (mode === 'card-wall') {
+      return {
+        mode: 'dropzone' as const,
+        type: 'base' as const,
       };
-    }, [previewFile]);
+    }
+    return null;
+  }, [mode]);
 
-    const previewIsImage = previewFile
-      ? isImageFile(previewFile.file, previewFile.url)
-      : false;
+  const shouldUsePictureCard = useMemo(() => {
+    return /cards|card-wall/.test(mode);
+  }, [mode]);
 
-    const previewImageSrc = previewFile?.url ?? previewObjectUrl ?? '';
+  const isSingleFileCardMode = shouldUsePictureCard && maxFiles === 1;
 
-    const { imageFiles, nonImageFiles } = useMemo(() => {
-      const images: UploadFile[] = [];
-      const nonImages: UploadFile[] = [];
-
-      files.forEach((file) => {
-        // Determine if file is an image using shared utility
-        const isImage = isImageFile(file.file, file.url);
-
-        if (isImage) {
-          images.push(file);
-        } else {
-          nonImages.push(file);
-        }
-      });
-
-      return { imageFiles: images, nonImageFiles: nonImages };
-    }, [files]);
-
-    const uploaderConfig = useMemo(() => {
-      const config: Record<UploadMode, UploaderProps> = {
-        list: {
-          mode: 'dropzone',
-          type: 'base',
-        },
-        'basic-list': {
-          mode: 'basic',
-          type: 'base',
-        },
-        'button-list': {
-          type: 'button',
-        },
-        cards: {
-          mode: 'basic',
-          type: 'base',
-        },
-        'card-wall': {
-          mode: 'basic',
-          type: 'base',
-        },
-      };
-
-      return config[mode];
-    }, [mode]);
-
-    const topUploaderConfig = useMemo(() => {
-      if (mode === 'card-wall') {
-        return {
-          mode: 'dropzone' as const,
-          type: 'base' as const,
-        };
+  const renderUploadItem = useCallback(
+    (uploadFile: UploadFile) => {
+      // Skip rendering if neither file nor url is provided
+      if (!uploadFile.file && !uploadFile.url) {
+        return null;
       }
-      return null;
-    }, [mode]);
 
-    const shouldUsePictureCard = useMemo(() => {
-      return /cards|card-wall/.test(mode);
-    }, [mode]);
+      // Determine if it's an image using shared utility
+      const isImage = isImageFile(uploadFile.file, uploadFile.url);
 
-    const isSingleFileCardMode = shouldUsePictureCard && maxFiles === 1;
-
-    const renderUploadItem = useCallback(
-      (uploadFile: UploadFile) => {
-        // Skip rendering if neither file nor url is provided
-        if (!uploadFile.file && !uploadFile.url) {
-          return null;
-        }
-
-        // Determine if it's an image using shared utility
-        const isImage = isImageFile(uploadFile.file, uploadFile.url);
-
-        // For images, use 'thumbnail' to show image preview; for non-images, use 'icon' to show file icon
-        const itemType: UploadItemType | undefined = isImage
-          ? 'thumbnail'
-          : 'icon';
-
-        return (
-          <UploadItem
-            key={uploadFile.id}
-            file={uploadFile.file}
-            url={uploadFile.url}
-            id={uploadFile.id}
-            status={uploadFile.status}
-            size={size}
-            type={itemType}
-            showFileSize={showFileSize}
-            disabled={disabled}
-            onDelete={() => handleDelete(uploadFile.id)}
-            onDownload={() => handleDownload(uploadFile.id)}
-            onReload={() => handleReload(uploadFile.id)}
-          />
-        );
-      },
-      [
-        size,
-        showFileSize,
-        disabled,
-        handleDelete,
-        handleDownload,
-        handleReload,
-      ],
-    );
-
-    const uploaderElement = (
-      <Uploader
-        accept={accept}
-        disabled={effectiveDisabled}
-        id={id}
-        name={name}
-        multiple={multiple}
-        label={uploaderLabel}
-        icon={uploaderIcon}
-        inputRef={inputRef}
-        inputProps={inputProps}
-        hints={uploaderConfig.mode === 'dropzone' ? dropzoneHints : undefined}
-        onUpload={handleUpload}
-        {...uploaderConfig}
-      />
-    );
-
-    const topUploaderElement = topUploaderConfig ? (
-      <Uploader
-        accept={accept}
-        disabled={effectiveDisabled}
-        id={id ? `${id}-top` : undefined}
-        name={name}
-        multiple={multiple}
-        label={uploaderLabel}
-        icon={uploaderIcon}
-        inputRef={inputRef}
-        inputProps={inputProps}
-        hints={dropzoneHints}
-        onUpload={handleUpload}
-        {...topUploaderConfig}
-      />
-    ) : null;
-
-    // When a top uploader exists (card-wall mode), the inline card uploader is not needed.
-    const inlineCardUploaderElement = topUploaderElement ? null : uploaderElement;
-
-    const hintsElement = useMemo(() => {
-      if (!hints || hints.length === 0) return null;
-
-      const hintsClassName =
-        mode === 'list' || mode === 'card-wall' || mode === 'cards'
-          ? classes.fillWidthHints
-          : classes.hints;
+      // For images, use 'thumbnail' to show image preview; for non-images, use 'icon' to show file icon
+      const itemType: UploadItemType | undefined = isImage
+        ? 'thumbnail'
+        : 'icon';
 
       return (
-        <ul className={hintsClassName}>
-          {hints.map((hint) => (
-            <li key={hint.label} className={classes.hint(hint.type || 'info')}>
-              <Icon
-                icon={
-                  hint.type === 'info' ? InfoFilledIcon : DangerousFilledIcon
-                }
-                color={hint.type === 'info' ? 'info' : 'error'}
-                size={14}
-              />
-              {hint.label}
-            </li>
-          ))}
-        </ul>
+        <UploadItem
+          key={uploadFile.id}
+          file={uploadFile.file}
+          url={uploadFile.url}
+          id={uploadFile.id}
+          status={uploadFile.status}
+          size={size}
+          type={itemType}
+          showFileSize={showFileSize}
+          disabled={disabled}
+          onDelete={() => handleDelete(uploadFile.id)}
+          onDownload={() => handleDownload(uploadFile.id)}
+          onReload={() => handleReload(uploadFile.id)}
+        />
       );
-    }, [hints, mode]);
+    },
+    [size, showFileSize, disabled, handleDelete, handleDownload, handleReload],
+  );
+
+  const uploaderElement = (
+    <Uploader
+      accept={accept}
+      disabled={effectiveDisabled}
+      id={id}
+      name={name}
+      multiple={multiple}
+      label={uploaderLabel}
+      icon={uploaderIcon}
+      inputRef={inputRef}
+      inputProps={inputProps}
+      hints={uploaderConfig.mode === 'dropzone' ? dropzoneHints : undefined}
+      onUpload={handleUpload}
+      {...uploaderConfig}
+    />
+  );
+
+  const topUploaderElement = topUploaderConfig ? (
+    <Uploader
+      accept={accept}
+      disabled={effectiveDisabled}
+      id={id ? `${id}-top` : undefined}
+      name={name}
+      multiple={multiple}
+      label={uploaderLabel}
+      icon={uploaderIcon}
+      inputRef={inputRef}
+      inputProps={inputProps}
+      hints={dropzoneHints}
+      onUpload={handleUpload}
+      {...topUploaderConfig}
+    />
+  ) : null;
+
+  // When a top uploader exists (card-wall mode), the inline card uploader is not needed.
+  const inlineCardUploaderElement = topUploaderElement ? null : uploaderElement;
+
+  const hintsElement = useMemo(() => {
+    if (!hints || hints.length === 0) return null;
+
+    const hintsClassName =
+      mode === 'list' || mode === 'card-wall' || mode === 'cards'
+        ? classes.fillWidthHints
+        : classes.hints;
 
     return (
-      <div
-        ref={ref}
-        className={cx(
-          classes.host,
-          className,
-          mode === 'cards' && classes.hostCards,
-        )}
-        {...rest}
-      >
-        {topUploaderElement}
-        {mode === 'card-wall' && hintsElement}
-        {!shouldUsePictureCard && (
-          <div className={classes.uploadButtonList}>
-            {uploaderElement}
-            {hintsElement}
-          </div>
-        )}
-        <div
-          className={cx(
-            classes.uploadList,
-            shouldUsePictureCard && classes.uploadListCards,
-          )}
-        >
-          {shouldUsePictureCard && (
-            <>
-              {imageFiles.map((uploadFile) => (
-                <UploadPictureCard
-                  ariaLabels={ariaLabels}
-                  key={uploadFile.id}
-                  file={uploadFile.file}
-                  url={uploadFile.url}
-                  id={uploadFile.id}
-                  status={uploadFile.status}
-                  size={size}
-                  disabled={disabled}
-                  errorMessage={uploadFile.errorMessage}
-                  onDelete={() => handleDelete(uploadFile.id)}
-                  onReload={() => handleReload(uploadFile.id)}
-                  {...(!isSingleFileCardMode && {
-                    onDownload: () => handleDownload(uploadFile.id),
-                    onZoomIn: () => handleZoomIn(uploadFile.id),
-                  })}
-                  {...(isSingleFileCardMode && {
-                    onReplace: (e) => {
-                      e.stopPropagation();
-                      replaceFileIdRef.current = uploadFile.id;
-                      replaceInputRef.current?.click();
-                    },
-                  })}
-                />
-              ))}
-              {nonImageFiles.map((uploadFile) => (
-                <UploadPictureCard
-                  ariaLabels={ariaLabels}
-                  key={uploadFile.id}
-                  file={uploadFile.file}
-                  url={uploadFile.url}
-                  id={uploadFile.id}
-                  status={uploadFile.status}
-                  size={size}
-                  disabled={disabled}
-                  errorMessage={uploadFile.errorMessage}
-                  onDelete={() => handleDelete(uploadFile.id)}
-                  onReload={() => handleReload(uploadFile.id)}
-                  {...(!isSingleFileCardMode && {
-                    onDownload: () => handleDownload(uploadFile.id),
-                  })}
-                />
-              ))}
-              {!isSingleFileCardMode && inlineCardUploaderElement}
-              {isSingleFileCardMode &&
-                imageFiles.length === 0 &&
-                inlineCardUploaderElement}
-              {isSingleFileCardMode && (
-                <input
-                  ref={replaceInputRef}
-                  accept={accept}
-                  style={{ display: 'none' }}
-                  type="file"
-                  onChange={(e) => {
-                    const selectedFiles = Array.from(e.target.files ?? []);
-                    e.target.value = '';
-                    if (selectedFiles.length) handleUpload(selectedFiles);
-                  }}
-                />
-              )}
-            </>
-          )}
-          {!shouldUsePictureCard && nonImageFiles.length > 0 && nonImageFiles.map(renderUploadItem)}
-          {!shouldUsePictureCard &&
-            imageFiles.length > 0 &&
-            imageFiles.map(renderUploadItem)}
-        </div>
-        {mode === 'cards' && hintsElement}
-        {previewFile && previewIsImage && previewImageSrc && (
-          <MediaPreviewModal
-            open={isPreviewOpen}
-            onClose={() => setIsPreviewOpen(false)}
-            mediaItems={[previewImageSrc]}
-          />
-        )}
-      </div>
+      <ul className={hintsClassName}>
+        {hints.map((hint) => (
+          <li key={hint.label} className={classes.hint(hint.type || 'info')}>
+            <Icon
+              icon={hint.type === 'info' ? InfoFilledIcon : DangerousFilledIcon}
+              color={hint.type === 'info' ? 'info' : 'error'}
+              size={14}
+            />
+            {hint.label}
+          </li>
+        ))}
+      </ul>
     );
-  },
-);
+  }, [hints, mode]);
+
+  return (
+    <div
+      ref={ref}
+      className={cx(
+        classes.host,
+        className,
+        mode === 'cards' && classes.hostCards,
+      )}
+      {...rest}
+    >
+      {topUploaderElement}
+      {mode === 'card-wall' && hintsElement}
+      {!shouldUsePictureCard && (
+        <div className={classes.uploadButtonList}>
+          {uploaderElement}
+          {hintsElement}
+        </div>
+      )}
+      <div
+        className={cx(
+          classes.uploadList,
+          shouldUsePictureCard && classes.uploadListCards,
+        )}
+      >
+        {shouldUsePictureCard && (
+          <>
+            {imageFiles.map((uploadFile) => (
+              <UploadPictureCard
+                ariaLabels={ariaLabels}
+                key={uploadFile.id}
+                file={uploadFile.file}
+                url={uploadFile.url}
+                id={uploadFile.id}
+                status={uploadFile.status}
+                size={size}
+                disabled={disabled}
+                errorMessage={uploadFile.errorMessage}
+                onDelete={() => handleDelete(uploadFile.id)}
+                onReload={() => handleReload(uploadFile.id)}
+                {...(!isSingleFileCardMode && {
+                  onDownload: () => handleDownload(uploadFile.id),
+                  onZoomIn: () => handleZoomIn(uploadFile.id),
+                })}
+                {...(isSingleFileCardMode && {
+                  onReplace: (e) => {
+                    e.stopPropagation();
+                    replaceFileIdRef.current = uploadFile.id;
+                    replaceInputRef.current?.click();
+                  },
+                })}
+              />
+            ))}
+            {nonImageFiles.map((uploadFile) => (
+              <UploadPictureCard
+                ariaLabels={ariaLabels}
+                key={uploadFile.id}
+                file={uploadFile.file}
+                url={uploadFile.url}
+                id={uploadFile.id}
+                status={uploadFile.status}
+                size={size}
+                disabled={disabled}
+                errorMessage={uploadFile.errorMessage}
+                onDelete={() => handleDelete(uploadFile.id)}
+                onReload={() => handleReload(uploadFile.id)}
+                {...(!isSingleFileCardMode && {
+                  onDownload: () => handleDownload(uploadFile.id),
+                })}
+              />
+            ))}
+            {!isSingleFileCardMode && inlineCardUploaderElement}
+            {isSingleFileCardMode &&
+              imageFiles.length === 0 &&
+              inlineCardUploaderElement}
+            {isSingleFileCardMode && (
+              <input
+                ref={replaceInputRef}
+                accept={accept}
+                style={{ display: 'none' }}
+                type="file"
+                onChange={(e) => {
+                  const selectedFiles = Array.from(e.target.files ?? []);
+                  e.target.value = '';
+                  if (selectedFiles.length) handleUpload(selectedFiles);
+                }}
+              />
+            )}
+          </>
+        )}
+        {!shouldUsePictureCard &&
+          nonImageFiles.length > 0 &&
+          nonImageFiles.map(renderUploadItem)}
+        {!shouldUsePictureCard &&
+          imageFiles.length > 0 &&
+          imageFiles.map(renderUploadItem)}
+      </div>
+      {mode === 'cards' && hintsElement}
+      {previewFile && previewIsImage && previewImageSrc && (
+        <MediaPreviewModal
+          open={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          mediaItems={[previewImageSrc]}
+        />
+      )}
+    </div>
+  );
+}
 
 export default Upload;
