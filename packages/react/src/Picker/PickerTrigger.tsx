@@ -1,5 +1,10 @@
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
-import { ChangeEventHandler, forwardRef, ReactNode, RefObject } from 'react';
+import {
+  ChangeEventHandler,
+  type RefAttributes,
+  ReactNode,
+  RefObject,
+} from 'react';
 import TextField, { TextFieldProps } from '../TextField';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
@@ -73,73 +78,74 @@ export interface PickerTriggerProps
 /**
  * The react component for `mezzanine` picker trigger.
  */
-const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
-  function PickerTrigger(props, ref) {
-    const {
-      className,
-      clearable = true,
-      disabled,
-      errorMessages,
-      format,
-      hoverValue,
-      inputProps,
-      inputRef,
-      onChange,
-      placeholder,
-      readOnly,
-      required,
-      suffix,
-      validate,
-      value,
-      ...restTextFieldProps
-    } = props;
+function PickerTrigger({
+  ref,
+  ...props
+}: PickerTriggerProps & RefAttributes<HTMLDivElement>) {
+  const {
+    className,
+    clearable = true,
+    disabled,
+    errorMessages,
+    format,
+    hoverValue,
+    inputProps,
+    inputRef,
+    onChange,
+    placeholder,
+    readOnly,
+    required,
+    suffix,
+    validate,
+    value,
+    ...restTextFieldProps
+  } = props;
 
-    // TextField requires disabled and readonly to be mutually exclusive
-    let defaultTextFieldProps = {};
+  // TextField requires disabled and readonly to be mutually exclusive
+  let defaultTextFieldProps = {};
 
-    if (disabled) {
-      defaultTextFieldProps = { disabled: true as const };
-    } else if (readOnly) {
-      defaultTextFieldProps = { readonly: true as const };
-    }
+  if (disabled) {
+    defaultTextFieldProps = { disabled: true as const };
+  } else if (readOnly) {
+    defaultTextFieldProps = { readonly: true as const };
+  }
 
-    return (
-      <TextField
-        role="presentation"
-        {...restTextFieldProps}
-        {...defaultTextFieldProps}
-        ref={ref}
-        className={cx(classes.host, className)}
-        clearable={!readOnly && clearable}
-        suffix={suffix}
-      >
-        <FormattedInput
-          {...inputProps}
-          ref={inputRef}
-          aria-disabled={disabled}
-          aria-multiline={false}
-          aria-readonly={readOnly}
-          aria-required={required}
-          disabled={disabled}
-          errorMessages={errorMessages}
-          format={format}
-          hoverValue={hoverValue}
-          onChange={(formatted, _rawDigits) => {
-            if (onChange) {
-              onChange({
-                target: { value: formatted },
-              } as React.ChangeEvent<HTMLInputElement>);
-            }
-          }}
-          placeholder={placeholder}
-          readOnly={readOnly}
-          required={required}
-          validate={validate}
-          value={value}
-        />
-      </TextField>
-    );
-  },
-);
+  return (
+    <TextField
+      role="presentation"
+      {...restTextFieldProps}
+      {...defaultTextFieldProps}
+      ref={ref}
+      className={cx(classes.host, className)}
+      clearable={!readOnly && clearable}
+      suffix={suffix}
+    >
+      <FormattedInput
+        {...inputProps}
+        ref={inputRef}
+        aria-disabled={disabled}
+        aria-multiline={false}
+        aria-readonly={readOnly}
+        aria-required={required}
+        disabled={disabled}
+        errorMessages={errorMessages}
+        format={format}
+        hoverValue={hoverValue}
+        onChange={(formatted, _rawDigits) => {
+          if (onChange) {
+            onChange({
+              target: { value: formatted },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }
+        }}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        required={required}
+        validate={validate}
+        value={value}
+      />
+    </TextField>
+  );
+}
 
 export default PickerTrigger;

@@ -1,7 +1,7 @@
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import {
   FocusEventHandler,
-  forwardRef,
+  type RefAttributes,
   ReactNode,
   RefObject,
   useCallback,
@@ -174,10 +174,10 @@ export interface PickerTriggerWithSeparatorProps
  * This component contains two FormattedInput fields separated by a vertical line,
  * typically used for date-time pickers where left is date and right is time.
  */
-const PickerTriggerWithSeparator = forwardRef<
-  HTMLDivElement,
-  PickerTriggerWithSeparatorProps
->(function PickerTriggerWithSeparator(props, ref) {
+function PickerTriggerWithSeparator({
+  ref,
+  ...props
+}: PickerTriggerWithSeparatorProps & RefAttributes<HTMLDivElement>) {
   const {
     className,
     clearable = true,
@@ -366,7 +366,7 @@ const PickerTriggerWithSeparator = forwardRef<
       </div>
     </TextField>
   );
-});
+}
 
 export default PickerTriggerWithSeparator;
 
