@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import {
   iconClasses as classes,
@@ -57,7 +57,7 @@ export interface IconProps extends NativeElementPropsWithoutKeyAndRef<'i'> {
  * <Icon icon={SearchIcon} title="搜尋" />
  * ```
  */
-const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
+function Icon({ ref, ...props }: IconProps & RefAttributes<HTMLElement>) {
   const {
     className,
     color,
@@ -101,6 +101,6 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
       </svg>
     </i>
   );
-});
+}
 
 export default Icon;
