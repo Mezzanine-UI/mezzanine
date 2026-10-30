@@ -1,6 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "jsx": "react-jsxdev"
+    "jsx": "react-jsxdev",
+    // Storybook 10 packages expose types only through `exports`, which the
+    // base `node` (node10) resolution ignores. Library builds use
+    // `tsconfig.build.json` (stories excluded), so this only affects
+    // editor / `yarn check` / test type resolution.
+    "moduleResolution": "bundler",
+    "skipLibCheck": true
   }
 }
