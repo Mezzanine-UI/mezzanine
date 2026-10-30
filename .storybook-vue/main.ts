@@ -3,7 +3,7 @@ import type { StorybookConfig } from '@storybook/vue3-vite';
 import vue from '@vitejs/plugin-vue';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'node:url';
-import { mezzanineAliases, scssLoadPaths } from '../packages/vue/vite.alias';
+import { mezzanineAliases, scssLoadPaths } from '../packages/vue/vite.alias.ts';
 
 const require = createRequire(import.meta.url);
 const here = dirname(fileURLToPath(import.meta.url));
