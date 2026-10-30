@@ -1,4 +1,4 @@
-import { Children, forwardRef, isValidElement } from 'react';
+import { Children, type RefAttributes, isValidElement } from 'react';
 import { layoutClasses as classes } from '@mezzanine-ui/core/layout';
 import { cx } from '../utils/cx';
 import Navigation from '../Navigation';
@@ -32,46 +32,47 @@ export interface LayoutProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   navigationClassName?: string;
 }
 
-const Layout = forwardRef<HTMLDivElement, LayoutProps>(
-  function Layout(props, ref) {
-    const { children, contentWrapperClassName, navigationClassName, ...rest } =
-      props;
+function Layout({
+  ref,
+  ...props
+}: LayoutProps & RefAttributes<HTMLDivElement>) {
+  const { children, contentWrapperClassName, navigationClassName, ...rest } =
+    props;
 
-    let navigationNode: React.ReactNode = null;
-    let leftPanelNode: React.ReactNode = null;
-    let mainNode: React.ReactNode = null;
-    let rightPanelNode: React.ReactNode = null;
+  let navigationNode: React.ReactNode = null;
+  let leftPanelNode: React.ReactNode = null;
+  let mainNode: React.ReactNode = null;
+  let rightPanelNode: React.ReactNode = null;
 
-    Children.forEach(children, (child) => {
-      if (!isValidElement(child)) return;
+  Children.forEach(children, (child) => {
+    if (!isValidElement(child)) return;
 
-      if (child.type === Navigation) {
-        navigationNode = child;
-      } else if (child.type === LayoutLeftPanel) {
-        leftPanelNode = child;
-      } else if (child.type === LayoutMain) {
-        mainNode = child;
-      } else if (child.type === LayoutRightPanel) {
-        rightPanelNode = child;
-      }
-    });
+    if (child.type === Navigation) {
+      navigationNode = child;
+    } else if (child.type === LayoutLeftPanel) {
+      leftPanelNode = child;
+    } else if (child.type === LayoutMain) {
+      mainNode = child;
+    } else if (child.type === LayoutRightPanel) {
+      rightPanelNode = child;
+    }
+  });
 
-    return (
-      <LayoutHost {...rest} ref={ref}>
-        {navigationNode && (
-          <div className={cx(classes.navigation, navigationClassName)}>
-            {navigationNode}
-          </div>
-        )}
-        <div className={cx(classes.contentWrapper, contentWrapperClassName)}>
-          {leftPanelNode}
-          {mainNode}
-          {rightPanelNode}
+  return (
+    <LayoutHost {...rest} ref={ref}>
+      {navigationNode && (
+        <div className={cx(classes.navigation, navigationClassName)}>
+          {navigationNode}
         </div>
-      </LayoutHost>
-    );
-  },
-);
+      )}
+      <div className={cx(classes.contentWrapper, contentWrapperClassName)}>
+        {leftPanelNode}
+        {mainNode}
+        {rightPanelNode}
+      </div>
+    </LayoutHost>
+  );
+}
 
 const LayoutWithSubComponents = Object.assign(Layout, {
   LeftPanel: LayoutLeftPanel,

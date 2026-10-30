@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { use } from 'react';
 import { cx } from '../utils/cx';
 import { layoutClasses as classes } from '@mezzanine-ui/core/layout';
 import { LayoutContext } from './LayoutContext';
@@ -21,7 +21,7 @@ export interface LayoutMainProps {
 
 export function LayoutMain(props: LayoutMainProps) {
   const { children, className, scrollbarProps = {} } = props;
-  const context = useContext(LayoutContext);
+  const context = use(LayoutContext);
 
   return (
     <div
