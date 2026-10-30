@@ -1,3 +1,4 @@
+import type { RefAttributes } from 'react';
 import { tagClasses as classes } from '@mezzanine-ui/core/tag';
 import { cleanup, render } from '../../__test-utils__';
 import {
@@ -12,23 +13,21 @@ import TagGroup from './TagGroup';
 const mockOverflowCounterTagRender = jest.fn();
 
 jest.mock('../OverflowTooltip/OverflowCounterTag', () => {
-  const React =
-    jest.requireActual<typeof import('react')>('react');
-
   return {
     __esModule: true,
-    default: React.forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
-      function MockOverflowCounterTag(props, ref) {
-        const { tags = [] } = props;
-        mockOverflowCounterTagRender(tags);
+    default: function MockOverflowCounterTag({
+      ref,
+      ...props
+    }: OverflowCounterTagProps & RefAttributes<HTMLSpanElement>) {
+      const { tags = [] } = props;
+      mockOverflowCounterTagRender(tags);
 
-        return (
-          <span data-testid="overflow-counter-tag" ref={ref}>
-            {tags.join(',')}
-          </span>
-        );
-      },
-    ),
+      return (
+        <span data-testid="overflow-counter-tag" ref={ref}>
+          {tags.join(',')}
+        </span>
+      );
+    },
   };
 });
 
