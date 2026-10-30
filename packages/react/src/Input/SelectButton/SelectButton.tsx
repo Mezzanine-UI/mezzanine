@@ -5,7 +5,7 @@ import {
   InputSize,
 } from '@mezzanine-ui/core/input';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
-import { forwardRef, useCallback, useState } from 'react';
+import { type RefAttributes, useCallback, useState } from 'react';
 import Icon from '../../Icon';
 import Rotate from '../../Transition/Rotate';
 import Dropdown from '../../Dropdown';
@@ -60,85 +60,86 @@ export interface SelectButtonProps
   value?: string;
 }
 
-const SelectButton = forwardRef<HTMLButtonElement, SelectButtonProps>(
-  function SelectButton(props, ref) {
-    const {
-      className,
-      closeOnSelect = true,
-      disabled,
-      dropdownMaxHeight = 114,
-      dropdownPlacement = 'bottom-start',
-      dropdownWidth = 120,
-      onSelect,
-      options = [],
-      size = 'main',
-      value,
-      ...rest
-    } = props;
+function SelectButton({
+  ref,
+  ...props
+}: SelectButtonProps & RefAttributes<HTMLButtonElement>) {
+  const {
+    className,
+    closeOnSelect = true,
+    disabled,
+    dropdownMaxHeight = 114,
+    dropdownPlacement = 'bottom-start',
+    dropdownWidth = 120,
+    onSelect,
+    options = [],
+    size = 'main',
+    value,
+    ...rest
+  } = props;
 
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-    const handleVisibilityChange = useCallback(
-      (next: boolean) => {
-        if (disabled && next) return;
-        setOpen(next);
-      },
-      [disabled],
-    );
+  const handleVisibilityChange = useCallback(
+    (next: boolean) => {
+      if (disabled && next) return;
+      setOpen(next);
+    },
+    [disabled],
+  );
 
-    const handleSelect = useCallback(
-      (option: DropdownOption) => {
-        onSelect?.(option.id);
+  const handleSelect = useCallback(
+    (option: DropdownOption) => {
+      onSelect?.(option.id);
 
-        if (closeOnSelect) {
-          setOpen(false);
-        }
-      },
-      [closeOnSelect, onSelect],
-    );
+      if (closeOnSelect) {
+        setOpen(false);
+      }
+    },
+    [closeOnSelect, onSelect],
+  );
 
-    const dropdownOptions: DropdownOption[] = options.map((option) => ({
-      ...option,
-      ...(option.id === value ? { checkSite: 'suffix' } : {}),
-    }));
+  const dropdownOptions: DropdownOption[] = options.map((option) => ({
+    ...option,
+    ...(option.id === value ? { checkSite: 'suffix' } : {}),
+  }));
 
-    return (
-      <Dropdown
-        customWidth={dropdownWidth}
+  return (
+    <Dropdown
+      customWidth={dropdownWidth}
+      disabled={disabled}
+      maxHeight={dropdownMaxHeight}
+      onSelect={handleSelect}
+      onVisibilityChange={handleVisibilityChange}
+      open={open}
+      options={dropdownOptions}
+      placement={dropdownPlacement}
+      value={value}
+    >
+      <button
+        ref={ref}
+        type="button"
         disabled={disabled}
-        maxHeight={dropdownMaxHeight}
-        onSelect={handleSelect}
-        onVisibilityChange={handleVisibilityChange}
-        open={open}
-        options={dropdownOptions}
-        placement={dropdownPlacement}
-        value={value}
+        className={cx(
+          classes.host,
+          disabled && classes.disabled,
+          size === 'main' ? classes.main : classes.sub,
+          className,
+        )}
+        title={value}
+        {...rest}
       >
-        <button
-          ref={ref}
-          type="button"
-          disabled={disabled}
-          className={cx(
-            classes.host,
-            disabled && classes.disabled,
-            size === 'main' ? classes.main : classes.sub,
-            className,
-          )}
-          title={value}
-          {...rest}
+        <span className={classes.text}>{value}</span>
+        <Rotate
+          in={open}
+          duration={MOTION_DURATION.fast}
+          easing={MOTION_EASING.standard}
         >
-          <span className={classes.text}>{value}</span>
-          <Rotate
-            in={open}
-            duration={MOTION_DURATION.fast}
-            easing={MOTION_EASING.standard}
-          >
-            <Icon className={classes.icon} icon={ChevronDownIcon} size={16} />
-          </Rotate>
-        </button>
-      </Dropdown>
-    );
-  },
-);
+          <Icon className={classes.icon} icon={ChevronDownIcon} size={16} />
+        </Rotate>
+      </button>
+    </Dropdown>
+  );
+}
 
 export default SelectButton;

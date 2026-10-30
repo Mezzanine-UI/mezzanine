@@ -4,7 +4,7 @@ import {
   inputPasswordStrengthIndicatorClasses as classes,
   InputStrength,
 } from '@mezzanine-ui/core/input';
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import FormHintText from '../../Form/FormHintText';
 import type { FormHintTextProps } from '../../Form/FormHintText';
 import { cx } from '../../utils/cx';
@@ -38,10 +38,10 @@ export interface PasswordStrengthIndicatorProps
 /**
  * The react component for `mezzanine` password strength indicator.
  */
-const PasswordStrengthIndicator = forwardRef<
-  HTMLDivElement,
-  PasswordStrengthIndicatorProps
->(function PasswordStrengthIndicator(props, ref) {
+function PasswordStrengthIndicator({
+  ref,
+  ...props
+}: PasswordStrengthIndicatorProps & RefAttributes<HTMLDivElement>) {
   const {
     className,
     strength = 'weak',
@@ -75,6 +75,6 @@ const PasswordStrengthIndicator = forwardRef<
       )}
     </div>
   );
-});
+}
 
 export default PasswordStrengthIndicator;
