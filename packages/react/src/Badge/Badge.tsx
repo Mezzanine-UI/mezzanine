@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import {
   BadgeCountVariant,
   BadgeVariant,
@@ -44,43 +44,41 @@ const isCountVariant = (variant: BadgeVariant): variant is BadgeCountVariant =>
  *
  * @see {@link BadgeContainer} 搭配容器元件使用絕對定位覆疊效果
  */
-const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
-  function Badge(props, ref) {
-    const {
-      children,
-      count,
-      className,
-      overflowCount,
-      size,
-      text,
-      variant,
-      ...rest
-    } = props;
+function Badge({ ref, ...props }: BadgeProps & RefAttributes<HTMLSpanElement>) {
+  const {
+    children,
+    count,
+    className,
+    overflowCount,
+    size,
+    text,
+    variant,
+    ...rest
+  } = props;
 
-    return (
-      <div className={classes.container(!!children)}>
-        {children}
+  return (
+    <div className={classes.container(!!children)}>
+      {children}
 
-        <span
-          {...rest}
-          ref={ref}
-          className={cx(
-            classes.host,
-            classes.variant(variant),
-            { [classes.hide]: isCountVariant(variant) && count === 0 },
-            size && classes.size(size),
-            className,
-          )}
-        >
-          {isCountVariant(variant)
-            ? overflowCount && count > overflowCount
-              ? `${overflowCount}+`
-              : count
-            : text}
-        </span>
-      </div>
-    );
-  },
-);
+      <span
+        {...rest}
+        ref={ref}
+        className={cx(
+          classes.host,
+          classes.variant(variant),
+          { [classes.hide]: isCountVariant(variant) && count === 0 },
+          size && classes.size(size),
+          className,
+        )}
+      >
+        {isCountVariant(variant)
+          ? overflowCount && count > overflowCount
+            ? `${overflowCount}+`
+            : count
+          : text}
+      </span>
+    </div>
+  );
+}
 
 export default Badge;
