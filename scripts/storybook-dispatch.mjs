@@ -55,7 +55,15 @@ if (args[0] === 'build') {
   }
 } else {
   // Forward to Storybook CLI for dev / init / etc.
-  const storybookBin = require.resolve('storybook/bin/index.cjs');
+  // Resolve the CLI through the package's own `bin` field rather than a
+  // hardcoded path: the entry moved between majors (v9 `bin/index.cjs`,
+  // v10 `dist/bin/dispatcher.js`) and is not part of the `exports` map.
+  const storybookPkgPath = require.resolve('storybook/package.json');
+  const { bin } = require(storybookPkgPath);
+  const storybookBin = resolve(
+    dirname(storybookPkgPath),
+    typeof bin === 'string' ? bin : bin.storybook,
+  );
   try {
     await run(process.execPath, [storybookBin, ...args]);
     process.exit(0);
