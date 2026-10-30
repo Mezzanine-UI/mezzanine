@@ -1,4 +1,9 @@
-import { cloneElement, forwardRef, isValidElement, ReactElement } from 'react';
+import {
+  cloneElement,
+  type RefAttributes,
+  isValidElement,
+  ReactElement,
+} from 'react';
 import { breadcrumbClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import { SlashIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
@@ -111,27 +116,28 @@ const renderItems = (
 /**
  * The react component for `mezzanine` breadcrumb.
  */
-const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(
-  function Breadcrumb(props, ref) {
-    const { children, className, condensed, items, ...rest } = props;
+function Breadcrumb({
+  ref,
+  ...props
+}: BreadcrumbProps & RefAttributes<HTMLElement>) {
+  const { children, className, condensed, items, ...rest } = props;
 
-    const flatChildren = flattenChildren(children);
-    const itemFragment = renderItems(
-      items || (flatChildren as ReactElement<BreadcrumbItemProps>[]),
-      condensed,
-    );
+  const flatChildren = flattenChildren(children);
+  const itemFragment = renderItems(
+    items || (flatChildren as ReactElement<BreadcrumbItemProps>[]),
+    condensed,
+  );
 
-    return (
-      <nav
-        {...rest}
-        aria-label="Breadcrumb"
-        className={cx(classes.host, className)}
-        ref={ref}
-      >
-        {itemFragment}
-      </nav>
-    );
-  },
-);
+  return (
+    <nav
+      {...rest}
+      aria-label="Breadcrumb"
+      className={cx(classes.host, className)}
+      ref={ref}
+    >
+      {itemFragment}
+    </nav>
+  );
+}
 
 export default Breadcrumb;
