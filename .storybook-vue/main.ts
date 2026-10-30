@@ -83,6 +83,14 @@ const config: StorybookConfig = {
       },
     };
 
+    // Vite's 500 kB chunk warning targets end-user apps. A Storybook bundles
+    // every story by design, so it only drowns out real build warnings.
+    // Vite has no off switch; an infinite limit is the documented way.
+    config.build = {
+      ...config.build,
+      chunkSizeWarningLimit: Number.POSITIVE_INFINITY,
+    };
+
     return config;
   },
 };

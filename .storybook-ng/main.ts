@@ -40,6 +40,11 @@ const config: StorybookConfig = {
     // @storybook/angular injects STORYBOOK_ANGULAR_OPTIONS via its own
     // DefinePlugin. Removing it causes a runtime ReferenceError.
 
+    // webpack's 244 KiB asset/entrypoint hints target end-user apps. A
+    // Storybook bundles every story by design, so they only drown out real
+    // build warnings.
+    config.performance = { ...config.performance, hints: false };
+
     return config;
   },
 };
