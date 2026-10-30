@@ -6,7 +6,7 @@ import {
 } from '@mezzanine-ui/core/text-field';
 import {
   FormEvent,
-  forwardRef,
+  type RefAttributes,
   MouseEventHandler,
   ReactNode,
   useEffect,
@@ -168,250 +168,250 @@ export type TextFieldProps = TextFieldBaseProps &
  * wrapper claims an ARIA input role it can never name (axe
  * `aria-input-field-name`).
  */
-const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
-  function TextField(props, ref) {
-    const {
-      active = false,
-      children,
-      className,
-      clearable = false,
-      disabled,
-      error = false,
-      forceShowClearable = false,
-      fullWidth = true,
-      hideSuffixWhenClearable = false,
-      onClear,
-      onClick: onClickProps,
-      onInput: onInputProps,
-      onKeyDown: onKeyDownProps,
-      prefix,
-      readonly,
-      role: roleProp,
-      size = 'main',
-      suffix,
-      typing: typingProp,
-      warning,
-      ...rest
-    } = props;
+function TextField({
+  ref,
+  ...props
+}: TextFieldProps & RefAttributes<HTMLDivElement>) {
+  const {
+    active = false,
+    children,
+    className,
+    clearable = false,
+    disabled,
+    error = false,
+    forceShowClearable = false,
+    fullWidth = true,
+    hideSuffixWhenClearable = false,
+    onClear,
+    onClick: onClickProps,
+    onInput: onInputProps,
+    onKeyDown: onKeyDownProps,
+    prefix,
+    readonly,
+    role: roleProp,
+    size = 'main',
+    suffix,
+    typing: typingProp,
+    warning,
+    ...rest
+  } = props;
 
-    const [isTyping, setIsTyping] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-    const [isFocused, setIsFocused] = useState(false);
-    const [hasValue, setHasValue] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const checkValueRef = useRef<(() => void) | null>(null);
-    const hostRef = useComposeRefs([ref, containerRef]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const checkValueRef = useRef<(() => void) | null>(null);
+  const hostRef = useComposeRefs([ref, containerRef]);
 
-    const isTypingDetectable =
-      typingProp === undefined && !disabled && !readonly;
+  const isTypingDetectable = typingProp === undefined && !disabled && !readonly;
 
-    const typing =
-      disabled || readonly
-        ? false
-        : typeof typingProp !== 'undefined'
-          ? typingProp
-          : isTyping;
+  const typing =
+    disabled || readonly
+      ? false
+      : typeof typingProp !== 'undefined'
+        ? typingProp
+        : isTyping;
 
-    useEffect(() => {
-      const container = containerRef.current;
-      if (!container) return;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-      const input = container.querySelector('input, textarea') as
-        | HTMLInputElement
-        | HTMLTextAreaElement
-        | null;
-      if (!input) return;
+    const input = container.querySelector('input, textarea') as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | null;
+    if (!input) return;
 
-      const checkValue = () => {
-        setHasValue(hasNonBlankValue(input.value));
-      };
+    const checkValue = () => {
+      setHasValue(hasNonBlankValue(input.value));
+    };
 
-      // 保存 checkValue 函數到 ref，以便在 onClear 後可以立即調用
-      checkValueRef.current = checkValue;
+    // 保存 checkValue 函數到 ref，以便在 onClear 後可以立即調用
+    checkValueRef.current = checkValue;
 
-      const handleMouseDown = () => {
-        setIsTyping(true);
-        checkValue();
-      };
-
-      const handleFocus = () => {
-        setIsFocused(true);
-        checkValue();
-      };
-
-      const handleBlur = () => {
-        setIsTyping(false);
-        setIsFocused(false);
-        checkValue();
-      };
-
-      const handleMouseEnter = () => {
-        checkValue(); // 在 hover 時也檢查值，確保狀態正確
-        setIsHovered(true);
-      };
-
-      const handleMouseLeave = () => {
-        setIsHovered(false);
-      };
-
-      // 初始化檢查值
+    const handleMouseDown = () => {
+      setIsTyping(true);
       checkValue();
+    };
 
-      // `input` events are handled by React's `onInput` on the host instead of
-      // a native listener: a native listener runs before React dispatches
-      // `onChange`, and its sync re-render can write a stale controlled value
-      // back to the DOM, dropping the keystroke (#485).
+    const handleFocus = () => {
+      setIsFocused(true);
+      checkValue();
+    };
+
+    const handleBlur = () => {
+      setIsTyping(false);
+      setIsFocused(false);
+      checkValue();
+    };
+
+    const handleMouseEnter = () => {
+      checkValue(); // 在 hover 時也檢查值，確保狀態正確
+      setIsHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsHovered(false);
+    };
+
+    // 初始化檢查值
+    checkValue();
+
+    // `input` events are handled by React's `onInput` on the host instead of
+    // a native listener: a native listener runs before React dispatches
+    // `onChange`, and its sync re-render can write a stale controlled value
+    // back to the DOM, dropping the keystroke (#485).
+    if (isTypingDetectable) {
+      input.addEventListener('mousedown', handleMouseDown, false);
+    }
+
+    // 監聽 focus/blur 事件
+    input.addEventListener('focus', handleFocus, false);
+    input.addEventListener('blur', handleBlur, false);
+
+    // 監聽 hover 事件（在容器上）
+    container.addEventListener('mouseenter', handleMouseEnter, false);
+    container.addEventListener('mouseleave', handleMouseLeave, false);
+
+    // 監聽值變化（適用於受控組件）
+    input.addEventListener('change', checkValue, false);
+
+    return () => {
       if (isTypingDetectable) {
-        input.addEventListener('mousedown', handleMouseDown, false);
+        input.removeEventListener('mousedown', handleMouseDown, false);
+      }
+      input.removeEventListener('focus', handleFocus, false);
+      input.removeEventListener('blur', handleBlur, false);
+      container.removeEventListener('mouseenter', handleMouseEnter, false);
+      container.removeEventListener('mouseleave', handleMouseLeave, false);
+      input.removeEventListener('change', checkValue, false);
+      checkValueRef.current = null;
+    };
+  }, [isTypingDetectable]);
+
+  const handleInput = (event: FormEvent<HTMLDivElement>) => {
+    const target = event.target;
+
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement
+    ) {
+      if (isTypingDetectable) {
+        setIsTyping(true);
       }
 
-      // 監聽 focus/blur 事件
-      input.addEventListener('focus', handleFocus, false);
-      input.addEventListener('blur', handleBlur, false);
+      setHasValue(hasNonBlankValue(target.value));
+    }
 
-      // 監聽 hover 事件（在容器上）
-      container.addEventListener('mouseenter', handleMouseEnter, false);
-      container.addEventListener('mouseleave', handleMouseLeave, false);
+    onInputProps?.(event);
+  };
 
-      // 監聽值變化（適用於受控組件）
-      input.addEventListener('change', checkValue, false);
+  const { role, onClick, onKeyDown } = useTextFieldControl({
+    onClick: onClickProps,
+    onKeyDown: onKeyDownProps,
+  });
 
-      return () => {
-        if (isTypingDetectable) {
-          input.removeEventListener('mousedown', handleMouseDown, false);
-        }
-        input.removeEventListener('focus', handleFocus, false);
-        input.removeEventListener('blur', handleBlur, false);
-        container.removeEventListener('mouseenter', handleMouseEnter, false);
-        container.removeEventListener('mouseleave', handleMouseLeave, false);
-        input.removeEventListener('change', checkValue, false);
-        checkValueRef.current = null;
-      };
-    }, [isTypingDetectable]);
+  const isChildrenFunction = typeof children === 'function';
+  const shouldShowClearable =
+    clearable &&
+    (forceShowClearable || hasValue) &&
+    (isHovered || typing || isFocused);
 
-    const handleInput = (event: FormEvent<HTMLDivElement>) => {
-      const target = event.target;
+  const paddingInfo: TextFieldPaddingInfo = {
+    paddingClassName: cx(
+      classes.inputPadding,
+      size === 'main' ? classes.inputPaddingMain : classes.inputPaddingSub,
+    ),
+  };
 
-      if (
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement
-      ) {
-        if (isTypingDetectable) {
-          setIsTyping(true);
-        }
+  const renderedChildren = isChildrenFunction
+    ? children(paddingInfo)
+    : children;
 
-        setHasValue(hasNonBlankValue(target.value));
-      }
+  return (
+    <div
+      {...rest}
+      ref={hostRef}
+      role={roleProp || role}
+      onClick={(evt) => {
+        evt.stopPropagation();
 
-      onInputProps?.(event);
-    };
-
-    const { role, onClick, onKeyDown } = useTextFieldControl({
-      onClick: onClickProps,
-      onKeyDown: onKeyDownProps,
-    });
-
-    const isChildrenFunction = typeof children === 'function';
-    const shouldShowClearable =
-      clearable &&
-      (forceShowClearable || hasValue) &&
-      (isHovered || typing || isFocused);
-
-    const paddingInfo: TextFieldPaddingInfo = {
-      paddingClassName: cx(
-        classes.inputPadding,
-        size === 'main' ? classes.inputPaddingMain : classes.inputPaddingSub,
-      ),
-    };
-
-    const renderedChildren = isChildrenFunction
-      ? children(paddingInfo)
-      : children;
-
-    return (
-      <div
-        {...rest}
-        ref={hostRef}
-        role={roleProp || role}
-        onClick={(evt) => {
-          evt.stopPropagation();
-
-          onClick?.(evt);
-        }}
-        onInput={handleInput}
-        onKeyDown={onKeyDown}
-        className={cx(
-          classes.host,
-          {
-            [classes.slimGap]: (prefix && suffix) || clearable,
-            [classes.main]: size === 'main',
-            [classes.sub]: size === 'sub',
-            [classes.clearable]: clearable,
-            [classes.disabled]: disabled,
-            [classes.error]: error,
-            [classes.fullWidth]: fullWidth,
-            [classes.noPadding]: isChildrenFunction,
-            [classes.readonly]: readonly,
-            [classes.typing]: typing,
-            [classes.active]: active,
-            [classes.clearing]: shouldShowClearable,
-            [classes.warning]: warning,
-          },
-          className,
-        )}
-      >
-        {prefix && <div className={classes.prefix}>{prefix}</div>}
-        {renderedChildren}
-        {clearable && !hideSuffixWhenClearable && (
-          <ClearActions
-            type="clearable"
-            className={classes.clearIcon}
-            onClick={(event) => {
-              if (!disabled && !readonly && onClear) {
-                onClear(event);
-                requestAnimationFrame(() => {
-                  checkValueRef.current?.();
-                });
-              }
-            }}
-            onMouseDown={(event) => event.preventDefault()}
-            tabIndex={-1}
-          />
-        )}
-        {suffix && (
-          <div
-            className={cx(classes.suffix, {
-              [classes.suffixOverlay]: hideSuffixWhenClearable,
-            })}
-          >
-            {hideSuffixWhenClearable ? (
-              <>
-                <div className={classes.suffixContent}>{suffix}</div>
-                {clearable && (
-                  <ClearActions
-                    type="clearable"
-                    className={classes.clearIcon}
-                    onClick={(event) => {
-                      if (!disabled && !readonly && onClear) {
-                        onClear(event);
-                        requestAnimationFrame(() => {
-                          checkValueRef.current?.();
-                        });
-                      }
-                    }}
-                    onMouseDown={(event) => event.preventDefault()}
-                    tabIndex={-1}
-                  />
-                )}
-              </>
-            ) : (
-              suffix
-            )}
-          </div>
-        )}
-      </div>
-    );
-  },
-);
+        onClick?.(evt);
+      }}
+      onInput={handleInput}
+      onKeyDown={onKeyDown}
+      className={cx(
+        classes.host,
+        {
+          [classes.slimGap]: (prefix && suffix) || clearable,
+          [classes.main]: size === 'main',
+          [classes.sub]: size === 'sub',
+          [classes.clearable]: clearable,
+          [classes.disabled]: disabled,
+          [classes.error]: error,
+          [classes.fullWidth]: fullWidth,
+          [classes.noPadding]: isChildrenFunction,
+          [classes.readonly]: readonly,
+          [classes.typing]: typing,
+          [classes.active]: active,
+          [classes.clearing]: shouldShowClearable,
+          [classes.warning]: warning,
+        },
+        className,
+      )}
+    >
+      {prefix && <div className={classes.prefix}>{prefix}</div>}
+      {renderedChildren}
+      {clearable && !hideSuffixWhenClearable && (
+        <ClearActions
+          type="clearable"
+          className={classes.clearIcon}
+          onClick={(event) => {
+            if (!disabled && !readonly && onClear) {
+              onClear(event);
+              requestAnimationFrame(() => {
+                checkValueRef.current?.();
+              });
+            }
+          }}
+          onMouseDown={(event) => event.preventDefault()}
+          tabIndex={-1}
+        />
+      )}
+      {suffix && (
+        <div
+          className={cx(classes.suffix, {
+            [classes.suffixOverlay]: hideSuffixWhenClearable,
+          })}
+        >
+          {hideSuffixWhenClearable ? (
+            <>
+              <div className={classes.suffixContent}>{suffix}</div>
+              {clearable && (
+                <ClearActions
+                  type="clearable"
+                  className={classes.clearIcon}
+                  onClick={(event) => {
+                    if (!disabled && !readonly && onClear) {
+                      onClear(event);
+                      requestAnimationFrame(() => {
+                        checkValueRef.current?.();
+                      });
+                    }
+                  }}
+                  onMouseDown={(event) => event.preventDefault()}
+                  tabIndex={-1}
+                />
+              )}
+            </>
+          ) : (
+            suffix
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default TextField;
