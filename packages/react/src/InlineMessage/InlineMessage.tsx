@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useCallback, useMemo, useState } from 'react';
+import { type RefAttributes, useCallback, useMemo, useState } from 'react';
 
 import {
   inlineMessageClasses as classes,
@@ -66,63 +66,60 @@ export interface InlineMessageProps
  * />
  * ```
  */
-const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
-  function InlineMessage(props, ref) {
-    const { content, className, icon, onClose, severity, ...rest } = props;
-    const [visible, setVisible] = useState(true);
+function InlineMessage({
+  ref,
+  ...props
+}: InlineMessageProps & RefAttributes<HTMLDivElement>) {
+  const { content, className, icon, onClose, severity, ...rest } = props;
+  const [visible, setVisible] = useState(true);
 
-    const handleClose = useCallback(() => {
-      setVisible(false);
+  const handleClose = useCallback(() => {
+    setVisible(false);
 
-      if (onClose) {
-        onClose();
-      }
-    }, [onClose]);
+    if (onClose) {
+      onClose();
+    }
+  }, [onClose]);
 
-    const iconNode = useMemo(() => {
-      if (icon) {
-        return <Icon className={classes.icon} icon={icon} />;
-      }
+  const iconNode = useMemo(() => {
+    if (icon) {
+      return <Icon className={classes.icon} icon={icon} />;
+    }
 
-      const severityIcon = inlineMessageIcons[severity];
+    const severityIcon = inlineMessageIcons[severity];
 
-      return <Icon className={classes.icon} icon={severityIcon} />;
-    }, [icon, severity]);
+    return <Icon className={classes.icon} icon={severityIcon} />;
+  }, [icon, severity]);
 
-    return (
-      <Fade
-        ref={ref}
-        duration={{
-          enter: MOTION_DURATION.fast,
-          exit: MOTION_DURATION.fast,
-        }}
-        easing={{
-          enter: MOTION_EASING.standard,
-          exit: MOTION_EASING.standard,
-        }}
-        in={visible}
+  return (
+    <Fade
+      ref={ref}
+      duration={{
+        enter: MOTION_DURATION.fast,
+        exit: MOTION_DURATION.fast,
+      }}
+      easing={{
+        enter: MOTION_EASING.standard,
+        exit: MOTION_EASING.standard,
+      }}
+      in={visible}
+    >
+      <div
+        aria-live="polite"
+        role="status"
+        {...rest}
+        className={cx(classes.host, classes.severity(severity), className)}
       >
-        <div
-          aria-live="polite"
-          role="status"
-          {...rest}
-          className={cx(classes.host, classes.severity(severity), className)}
-        >
-          <div className={classes.contentContainer}>
-            {iconNode}
-            <span className={classes.content}>{content}</span>
-          </div>
-          {severity === 'info' ? (
-            <ClearActions
-              onClick={handleClose}
-              type="standard"
-              variant="base"
-            />
-          ) : null}
+        <div className={classes.contentContainer}>
+          {iconNode}
+          <span className={classes.content}>{content}</span>
         </div>
-      </Fade>
-    );
-  },
-);
+        {severity === 'info' ? (
+          <ClearActions onClick={handleClose} type="standard" variant="base" />
+        ) : null}
+      </div>
+    </Fade>
+  );
+}
 
 export default InlineMessage;
