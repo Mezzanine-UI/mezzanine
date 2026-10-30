@@ -5,9 +5,9 @@ import {
   KeyboardEvent,
   MouseEvent,
   Ref,
-  forwardRef,
+  type RefAttributes,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useId,
   useMemo,
@@ -56,7 +56,7 @@ type CheckboxInputElementProps = Omit<
 
 export interface CheckboxProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'>,
-  CheckboxPropsBase {
+    CheckboxPropsBase {
   /**
    * Whether to show an editable input when checkbox is checked.
    * When `true`, an Input component will be displayed after the checkbox when checked.
@@ -199,273 +199,278 @@ export interface CheckboxProps
  * @see {@link CheckboxGroup} 管理多個核取方塊的群組元件
  * @see {@link useCheckboxControlValue} 核取方塊受控值的自訂 Hook
  */
-const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
-  function Checkbox(props, ref) {
-    const checkboxGroup = useContext(CheckboxGroupContext);
-    const { disabled: disabledFromGroup, name: nameFromGroup } =
-      checkboxGroup || {};
-    const {
-      checked: checkedProp,
-      className,
-      defaultChecked,
-      description,
-      disabled = disabledFromGroup,
-      editableInput,
-      id,
-      indeterminate = false,
-      inputProps,
-      inputRef: inputRefProp,
-      label,
-      mode = 'default',
-      name = nameFromGroup,
-      onChange: onChangeProp,
-      severity = 'info',
-      size = 'main',
-      value,
-      withEditInput = false,
-      ...rest
-    } = props;
+function Checkbox({
+  ref,
+  ...props
+}: CheckboxProps & RefAttributes<HTMLLabelElement>) {
+  const checkboxGroup = use(CheckboxGroupContext);
+  const { disabled: disabledFromGroup, name: nameFromGroup } =
+    checkboxGroup || {};
+  const {
+    checked: checkedProp,
+    className,
+    defaultChecked,
+    description,
+    disabled = disabledFromGroup,
+    editableInput,
+    id,
+    indeterminate = false,
+    inputProps,
+    inputRef: inputRefProp,
+    label,
+    mode = 'default',
+    name = nameFromGroup,
+    onChange: onChangeProp,
+    severity = 'info',
+    size = 'main',
+    value,
+    withEditInput = false,
+    ...rest
+  } = props;
 
-    const { name: nameFromInputProps, ...restInputProps } = inputProps || {};
+  const { name: nameFromInputProps, ...restInputProps } = inputProps || {};
 
-    // Generate unique id if not provided
-    const generatedId = useId();
-    const finalInputId = id ?? generatedId;
+  // Generate unique id if not provided
+  const generatedId = useId();
+  const finalInputId = id ?? generatedId;
 
-    if (checkboxGroup && value == null) {
-      throw new Error(
-        'Checkbox: `value` is required when the checkbox is used inside a CheckboxGroup.',
+  if (checkboxGroup && value == null) {
+    throw new Error(
+      'Checkbox: `value` is required when the checkbox is used inside a CheckboxGroup.',
+    );
+  }
+
+  const [checked, onChange] = useCheckboxControlValue({
+    checked: checkedProp,
+    defaultChecked,
+    onChange: onChangeProp,
+    checkboxGroup,
+    value,
+  });
+
+  // Warn when checkbox is standalone and missing a name (helpful for form libs)
+  useEffect(() => {
+    if (!checkboxGroup && !name && !nameFromInputProps && label) {
+      console.warn(
+        'Checkbox: The `name` prop is recommended when integrating with react-hook-form. ' +
+          `Checkbox with label "${label}" is missing the \`name\` prop.`,
       );
     }
+  }, [checkboxGroup, name, nameFromInputProps, label]);
 
-    const [checked, onChange] = useCheckboxControlValue({
-      checked: checkedProp,
-      defaultChecked,
-      onChange: onChangeProp,
-      checkboxGroup,
-      value,
-    });
+  const isChecked = checked && !indeterminate;
+  const isIndeterminate = indeterminate;
 
-    // Warn when checkbox is standalone and missing a name (helpful for form libs)
-    useEffect(() => {
-      if (!checkboxGroup && !name && !nameFromInputProps && label) {
-        console.warn(
-          'Checkbox: The `name` prop is recommended when integrating with react-hook-form. ' +
-          `Checkbox with label "${label}" is missing the \`name\` prop.`,
-        );
+  const resolvedName = useMemo(() => {
+    if (name) return name;
+    if (nameFromInputProps) return nameFromInputProps;
+
+    return finalInputId;
+  }, [finalInputId, name, nameFromInputProps]);
+
+  const labelColor: TypographyColor = useMemo(() => {
+    if (mode === 'chip' && disabled) {
+      return 'text-neutral-light';
+    }
+    return 'text-neutral-solid';
+  }, [mode, disabled]);
+
+  const inputElementRef = useRef<HTMLInputElement | null>(null);
+
+  const composedInputRef = useMemo(
+    () => composeRefs([inputRefProp, inputElementRef]),
+    [inputRefProp],
+  );
+
+  useEffect(() => {
+    if (inputElementRef.current) {
+      inputElementRef.current.indeterminate = isIndeterminate;
+    }
+  }, [isIndeterminate]);
+
+  const editableInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Generate default editable input config when withEditInput is true but editableInput is not provided
+  const defaultEditableInput = useMemo(() => {
+    if (!withEditInput) return undefined;
+
+    if (editableInput) {
+      return editableInput;
+    }
+
+    // Default values when editableInput is not provided
+    const defaultName = resolvedName
+      ? `${resolvedName}_input`
+      : `${finalInputId}_input`;
+    const defaultId = `${finalInputId}_input`;
+
+    return {
+      id: defaultId,
+      name: defaultName,
+      placeholder: 'Please enter...',
+    } as Omit<BaseInputProps, 'variant'>;
+  }, [withEditInput, editableInput, resolvedName, finalInputId]);
+
+  const shouldShowEditableInput = withEditInput && defaultEditableInput;
+  const prevIsCheckedRef = useRef(isChecked);
+
+  useEffect(() => {
+    if (
+      isChecked &&
+      !prevIsCheckedRef.current &&
+      shouldShowEditableInput &&
+      editableInputRef.current
+    ) {
+      editableInputRef.current.focus();
+    }
+    prevIsCheckedRef.current = isChecked;
+  }, [isChecked, shouldShowEditableInput]);
+
+  const handleChipHostClick = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (disabled) return;
+      if (e.target === e.currentTarget) {
+        inputElementRef.current?.click();
       }
-    }, [checkboxGroup, name, nameFromInputProps, label]);
+    },
+    [disabled],
+  );
 
-    const isChecked = checked && !indeterminate;
-    const isIndeterminate = indeterminate;
-
-    const resolvedName = useMemo(() => {
-      if (name) return name;
-      if (nameFromInputProps) return nameFromInputProps;
-
-      return finalInputId;
-    }, [finalInputId, name, nameFromInputProps]);
-
-    const labelColor: TypographyColor = useMemo(() => {
-      if (mode === 'chip' && disabled) {
-        return 'text-neutral-light';
+  const handleChipHostKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (disabled) return;
+      if (
+        e.target === e.currentTarget &&
+        (e.key === 'Enter' || e.key === ' ')
+      ) {
+        e.preventDefault();
+        inputElementRef.current?.click();
       }
-      return 'text-neutral-solid';
-    }, [mode, disabled]);
+    },
+    [disabled],
+  );
 
-    const inputElementRef = useRef<HTMLInputElement | null>(null);
-
-    const composedInputRef = useMemo(
-      () => composeRefs([inputRefProp, inputElementRef]),
-      [inputRefProp],
-    );
-
-    useEffect(() => {
-      if (inputElementRef.current) {
-        inputElementRef.current.indeterminate = isIndeterminate;
+  const handleEditableInputMouseDown = useCallback(
+    (event: MouseEvent<HTMLInputElement>) => {
+      defaultEditableInput?.inputProps?.onMouseDown?.(event);
+      if (event.defaultPrevented) {
+        return;
       }
-    }, [isIndeterminate]);
-
-    const editableInputRef = useRef<HTMLInputElement | null>(null);
-
-    // Generate default editable input config when withEditInput is true but editableInput is not provided
-    const defaultEditableInput = useMemo(() => {
-      if (!withEditInput) return undefined;
-
-      if (editableInput) {
-        return editableInput;
+      if (!isChecked && !disabled && inputElementRef.current) {
+        event.preventDefault(); // 阻止原生 focus-on-mousedown，讓 useEffect 統一控制 focus 時機
+        inputElementRef.current.click();
       }
+    },
+    [defaultEditableInput, disabled, isChecked],
+  );
 
-      // Default values when editableInput is not provided
-      const defaultName = resolvedName
-        ? `${resolvedName}_input`
-        : `${finalInputId}_input`;
-      const defaultId = `${finalInputId}_input`;
-
-      return {
-        id: defaultId,
-        name: defaultName,
-        placeholder: 'Please enter...',
-      } as Omit<BaseInputProps, 'variant'>;
-    }, [withEditInput, editableInput, resolvedName, finalInputId]);
-
-    const shouldShowEditableInput = withEditInput && defaultEditableInput;
-    const prevIsCheckedRef = useRef(isChecked);
-
-    useEffect(() => {
-      if (isChecked && !prevIsCheckedRef.current && shouldShowEditableInput && editableInputRef.current) {
-        editableInputRef.current.focus();
-      }
-      prevIsCheckedRef.current = isChecked;
-    }, [isChecked, shouldShowEditableInput]);
-
-    const handleChipHostClick = useCallback(
-      (e: MouseEvent<HTMLDivElement>) => {
-        if (disabled) return;
-        if (e.target === e.currentTarget) {
-          inputElementRef.current?.click();
-        }
-      },
-      [disabled],
-    );
-
-    const handleChipHostKeyDown = useCallback(
-      (e: KeyboardEvent<HTMLDivElement>) => {
-        if (disabled) return;
-        if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault();
-          inputElementRef.current?.click();
-        }
-      },
-      [disabled],
-    );
-
-    const handleEditableInputMouseDown = useCallback(
-      (event: MouseEvent<HTMLInputElement>) => {
-        defaultEditableInput?.inputProps?.onMouseDown?.(event);
-        if (event.defaultPrevented) {
-          return;
-        }
-        if (!isChecked && !disabled && inputElementRef.current) {
-          event.preventDefault(); // 阻止原生 focus-on-mousedown，讓 useEffect 統一控制 focus 時機
-          inputElementRef.current.click();
-        }
-      },
-      [defaultEditableInput, disabled, isChecked],
-    );
-
-    return (
-      <div
-        className={cx(
-          classes.host,
-          className,
-          {
-            [classes.checked]: isChecked,
-            [classes.indeterminate]: isIndeterminate,
-            [classes.disabled]: disabled,
-            [classes.mode(mode)]: mode !== 'default',
-            ...(severity && { [classes.severity(severity)]: true }),
-          },
-          classes.size(size),
-        )}
-        onClick={mode === 'chip' ? handleChipHostClick : undefined}
-        onKeyDown={mode === 'chip' ? handleChipHostKeyDown : undefined}
-      >
-        <label ref={ref} {...rest} className={classes.labelContainer}>
-          <div className={classes.inputContainer}>
-            <div className={classes.inputContent}>
-              <input
-                {...restInputProps}
-                aria-checked={isIndeterminate ? 'mixed' : checked}
-                aria-disabled={disabled}
-                checked={isChecked}
-                className={classes.input}
-                disabled={disabled}
-                id={finalInputId}
-                name={resolvedName}
-                onChange={onChange}
-                ref={composedInputRef}
-                type="checkbox"
-                value={value}
+  return (
+    <div
+      className={cx(
+        classes.host,
+        className,
+        {
+          [classes.checked]: isChecked,
+          [classes.indeterminate]: isIndeterminate,
+          [classes.disabled]: disabled,
+          [classes.mode(mode)]: mode !== 'default',
+          ...(severity && { [classes.severity(severity)]: true }),
+        },
+        classes.size(size),
+      )}
+      onClick={mode === 'chip' ? handleChipHostClick : undefined}
+      onKeyDown={mode === 'chip' ? handleChipHostKeyDown : undefined}
+    >
+      <label ref={ref} {...rest} className={classes.labelContainer}>
+        <div className={classes.inputContainer}>
+          <div className={classes.inputContent}>
+            <input
+              {...restInputProps}
+              aria-checked={isIndeterminate ? 'mixed' : checked}
+              aria-disabled={disabled}
+              checked={isChecked}
+              className={classes.input}
+              disabled={disabled}
+              id={finalInputId}
+              name={resolvedName}
+              onChange={onChange}
+              ref={composedInputRef}
+              type="checkbox"
+              value={value}
+            />
+            {mode === 'chip' && isChecked && (
+              <Icon
+                aria-hidden="true"
+                className={cx(classes.icon, classes.chipIcon)}
+                color="brand"
+                icon={CheckedIcon}
+                size={16}
               />
-              {mode === 'chip' && isChecked && (
-                <Icon
-                  aria-hidden="true"
-                  className={cx(classes.icon, classes.chipIcon)}
-                  color="brand"
-                  icon={CheckedIcon}
-                  size={16}
-                />
-              )}
-              {mode !== 'chip' && isChecked && (
-                <Icon
-                  aria-hidden="true"
-                  className={classes.icon}
-                  color="fixed-light"
-                  icon={CheckedIcon}
-                  size={9}
-                />
-              )}
-              {mode !== 'chip' && isIndeterminate && (
-                <span
-                  aria-hidden="true"
-                  className={classes.indeterminateLine}
-                />
-              )}
-            </div>
+            )}
+            {mode !== 'chip' && isChecked && (
+              <Icon
+                aria-hidden="true"
+                className={classes.icon}
+                color="fixed-light"
+                icon={CheckedIcon}
+                size={9}
+              />
+            )}
+            {mode !== 'chip' && isIndeterminate && (
+              <span aria-hidden="true" className={classes.indeterminateLine} />
+            )}
           </div>
-          {(label || description) && (
-            <span className={classes.textContainer}>
-              {label && (
-                <Typography
-                  className={classes.label}
-                  color={labelColor}
-                  variant="label-primary"
-                >
-                  {label}
-                </Typography>
-              )}
-              {description && mode !== 'chip' && !shouldShowEditableInput && (
-                <Typography
-                  className={classes.description}
-                  color="text-neutral"
-                  variant="caption"
-                >
-                  {description}
-                </Typography>
-              )}
-            </span>
-          )}
-        </label>
-        {shouldShowEditableInput &&
-          defaultEditableInput &&
-          mode !== 'chip' &&
-          !indeterminate && (
-            <label
-              className={classes.editableInputContainer}
-              htmlFor={finalInputId}
-            >
-              <Input
-                {...defaultEditableInput}
-                {...(disabled &&
-                  defaultEditableInput.disabled !== true
-                  ? { disabled: true }
-                  : {})}
-                inputProps={{
-                  ...defaultEditableInput.inputProps,
-                  onMouseDown: handleEditableInputMouseDown,
-                }}
-                inputRef={composeRefs([
-                  defaultEditableInput.inputRef,
-                  editableInputRef,
-                ])}
-                variant="base"
-              />
-            </label>
-          )}
-      </div>
-    );
-  },
-);
+        </div>
+        {(label || description) && (
+          <span className={classes.textContainer}>
+            {label && (
+              <Typography
+                className={classes.label}
+                color={labelColor}
+                variant="label-primary"
+              >
+                {label}
+              </Typography>
+            )}
+            {description && mode !== 'chip' && !shouldShowEditableInput && (
+              <Typography
+                className={classes.description}
+                color="text-neutral"
+                variant="caption"
+              >
+                {description}
+              </Typography>
+            )}
+          </span>
+        )}
+      </label>
+      {shouldShowEditableInput &&
+        defaultEditableInput &&
+        mode !== 'chip' &&
+        !indeterminate && (
+          <label
+            className={classes.editableInputContainer}
+            htmlFor={finalInputId}
+          >
+            <Input
+              {...defaultEditableInput}
+              {...(disabled && defaultEditableInput.disabled !== true
+                ? { disabled: true }
+                : {})}
+              inputProps={{
+                ...defaultEditableInput.inputProps,
+                onMouseDown: handleEditableInputMouseDown,
+              }}
+              inputRef={composeRefs([
+                defaultEditableInput.inputRef,
+                editableInputRef,
+              ])}
+              variant="base"
+            />
+          </label>
+        )}
+    </div>
+  );
+}
 
 export default Checkbox;

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { use, useState } from 'react';
 import { cleanup, fireEvent, render, renderHook } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -8,7 +8,10 @@ import { createWrapper } from '../../__test-utils__/render';
 import CheckAll from './CheckAll';
 import Checkbox from './Checkbox';
 import CheckboxGroup, { CheckboxGroupLevelConfig } from './CheckboxGroup';
-import { CheckboxGroupContext, CheckboxGroupContextValue } from './CheckboxGroupContext';
+import {
+  CheckboxGroupContext,
+  CheckboxGroupContextValue,
+} from './CheckboxGroupContext';
 
 const defaultOptions = [
   { label: 'Option 1', value: '1' },
@@ -210,9 +213,7 @@ describe('<CheckboxGroup />', () => {
         <CheckboxGroup level={level} options={defaultOptions} />,
       );
       const element = getHostHTMLElement();
-      const levelCheckbox = element.querySelector(
-        '.mzn-checkbox:first-child',
-      );
+      const levelCheckbox = element.querySelector('.mzn-checkbox:first-child');
 
       expect(levelCheckbox).toBeTruthy();
       expect(levelCheckbox?.textContent).toContain('Select All');
@@ -297,9 +298,7 @@ describe('<CheckboxGroup />', () => {
         <CheckboxGroup level={level} options={defaultOptions} value={['1']} />,
       );
       const element = getHostHTMLElement();
-      const levelCheckbox = element.querySelector(
-        '.mzn-checkbox:first-child',
-      );
+      const levelCheckbox = element.querySelector('.mzn-checkbox:first-child');
 
       expect(
         levelCheckbox?.classList.contains('mzn-checkbox--indeterminate'),
@@ -336,7 +335,7 @@ describe('<CheckboxGroup />', () => {
         onChange: jest.fn(),
       };
 
-      const { result } = renderHook(() => useContext(CheckboxGroupContext), {
+      const { result } = renderHook(() => use(CheckboxGroupContext), {
         wrapper: createWrapper(CheckboxGroup, expectProps),
       });
 
@@ -457,9 +456,7 @@ describe('<CheckAll />', () => {
       </CheckAll>,
     );
     const element = getHostHTMLElement();
-    const checkAllCheckbox = element.querySelector(
-      '.mzn-checkbox:first-child',
-    );
+    const checkAllCheckbox = element.querySelector('.mzn-checkbox:first-child');
 
     expect(
       checkAllCheckbox?.classList.contains('mzn-checkbox--indeterminate'),
@@ -509,7 +506,9 @@ describe('<CheckAll />', () => {
     const inputs = element.querySelectorAll('input[type="checkbox"]');
     const enabledInputs = Array.from(inputs)
       .slice(1) // Skip check all checkbox
-      .filter((input) => !(input as HTMLInputElement).disabled) as HTMLInputElement[];
+      .filter(
+        (input) => !(input as HTMLInputElement).disabled,
+      ) as HTMLInputElement[];
 
     enabledInputs.forEach((input) => {
       expect(input.checked).toBe(true);
@@ -547,7 +546,9 @@ describe('<CheckAll />', () => {
     const inputs = element.querySelectorAll('input[type="checkbox"]');
     const enabledInputs = Array.from(inputs)
       .slice(1) // Skip check all checkbox
-      .filter((input) => !(input as HTMLInputElement).disabled) as HTMLInputElement[];
+      .filter(
+        (input) => !(input as HTMLInputElement).disabled,
+      ) as HTMLInputElement[];
 
     enabledInputs.forEach((input) => {
       expect(input.checked).toBe(false);
@@ -665,4 +666,3 @@ describe('<CheckAll />', () => {
     expect(checkAllCheckbox.checked).toBe(false);
   });
 });
-
