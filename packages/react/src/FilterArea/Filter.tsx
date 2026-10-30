@@ -1,6 +1,15 @@
 'use client';
 
-import { Children, cloneElement, forwardRef, isValidElement, ReactElement, ReactNode, useContext, useMemo } from 'react';
+import {
+  Children,
+  cloneElement,
+  type RefAttributes,
+  isValidElement,
+  ReactElement,
+  ReactNode,
+  use,
+  useMemo,
+} from 'react';
 
 import {
   filterAreaClasses as classes,
@@ -67,72 +76,74 @@ export interface FilterProps
  * @see {@link FilterLine} 包含 Filter 的行容器
  * @see {@link FilterArea} 管理整個篩選器的容器
  */
-const Filter = forwardRef<HTMLDivElement, FilterProps>(
-  function Filter(props, ref) {
-    const {
-      align = 'stretch',
-      children,
-      className,
-      grow = false,
-      minWidth,
-      span = 2,
-      ...rest
-    } = props;
+function Filter({
+  ref,
+  ...props
+}: FilterProps & RefAttributes<HTMLDivElement>) {
+  const {
+    align = 'stretch',
+    children,
+    className,
+    grow = false,
+    minWidth,
+    span = 2,
+    ...rest
+  } = props;
 
-    const { size } = (useContext(FilterAreaContext) ?? {}) as FilterAreaContextValue;
+  const { size } = (use(FilterAreaContext) ?? {}) as FilterAreaContextValue;
 
-    const filterClassName = useMemo(
-      () =>
-        cx(
-          classes.filter,
-          {
-            [classes.filterGrow]: grow,
-            [classes.filterAlign(align)]: align,
-          },
-          className,
-        ),
-      [align, className, grow],
-    );
+  const filterClassName = useMemo(
+    () =>
+      cx(
+        classes.filter,
+        {
+          [classes.filterGrow]: grow,
+          [classes.filterAlign(align)]: align,
+        },
+        className,
+      ),
+    [align, className, grow],
+  );
 
-    const style = useMemo(
-      () => ({
-        ...(minWidth && { minWidth: typeof minWidth === 'number' ? `${minWidth}px` : minWidth }),
-        ...(!grow && {
-          [`--${filterAreaPrefix}-filter-span`]: span,
-        }),
-        ...rest.style,
+  const style = useMemo(
+    () => ({
+      ...(minWidth && {
+        minWidth: typeof minWidth === 'number' ? `${minWidth}px` : minWidth,
       }),
-      [grow, minWidth, rest.style, span],
-    );
+      ...(!grow && {
+        [`--${filterAreaPrefix}-filter-span`]: span,
+      }),
+      ...rest.style,
+    }),
+    [grow, minWidth, rest.style, span],
+  );
 
-    const sizedChildren = useMemo(() => {
-      if (!size) return children;
-      return Children.map(children, (formField) => {
-        const sizedInputs = Children.map(
-          formField.props.children as ReactNode,
-          (inputChild) => {
-            if (!isValidElement(inputChild)) return inputChild;
-            const { size: ownSize } = inputChild.props as { size?: FilterAreaSize };
-            if (ownSize !== undefined) return inputChild;
-            return cloneElement(inputChild as ReactElement<{ size: FilterAreaSize }>, { size });
-          },
-        );
-        return cloneElement(formField, {}, sizedInputs);
-      });
-    }, [children, size]);
+  const sizedChildren = useMemo(() => {
+    if (!size) return children;
+    return Children.map(children, (formField) => {
+      const sizedInputs = Children.map(
+        formField.props.children as ReactNode,
+        (inputChild) => {
+          if (!isValidElement(inputChild)) return inputChild;
+          const { size: ownSize } = inputChild.props as {
+            size?: FilterAreaSize;
+          };
+          if (ownSize !== undefined) return inputChild;
+          return cloneElement(
+            inputChild as ReactElement<{ size: FilterAreaSize }>,
+            { size },
+          );
+        },
+      );
+      return cloneElement(formField, {}, sizedInputs);
+    });
+  }, [children, size]);
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        className={filterClassName}
-        style={style}
-      >
-        {sizedChildren}
-      </div>
-    );
-  },
-);
+  return (
+    <div {...rest} ref={ref} className={filterClassName} style={style}>
+      {sizedChildren}
+    </div>
+  );
+}
 
 export default Filter;
-
