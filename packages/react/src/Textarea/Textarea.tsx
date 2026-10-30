@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, Ref, useRef } from 'react';
+import { type RefAttributes, Ref, useRef } from 'react';
 import { textareaClasses as classes } from '@mezzanine-ui/core/textarea';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -65,54 +65,55 @@ export type TextareaProps = Omit<
  * @see {@link Input} 單行文字輸入元件
  * @see {@link FormField} 表單欄位容器，可整合 label 與錯誤訊息
  */
-const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
-  function Textarea(props, ref) {
-    const {
-      className,
-      disabled,
-      readOnly,
-      textareaClassName,
-      textareaRef: textareaRefProp,
-      type = 'default',
-      resize = 'none',
-      ...textareaProps
-    } = props;
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const composedTextareaRef = useComposeRefs([textareaRefProp, textareaRef]);
+function Textarea({
+  ref,
+  ...props
+}: TextareaProps & RefAttributes<HTMLDivElement>) {
+  const {
+    className,
+    disabled,
+    readOnly,
+    textareaClassName,
+    textareaRef: textareaRefProp,
+    type = 'default',
+    resize = 'none',
+    ...textareaProps
+  } = props;
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const composedTextareaRef = useComposeRefs([textareaRefProp, textareaRef]);
 
-    const interactiveProps =
-      type === 'default'
-        ? disabled
-          ? ({ disabled: true } as const)
-          : readOnly
-            ? ({ readonly: true } as const)
-            : {}
-        : {};
+  const interactiveProps =
+    type === 'default'
+      ? disabled
+        ? ({ disabled: true } as const)
+        : readOnly
+          ? ({ readonly: true } as const)
+          : {}
+      : {};
 
-    return (
-      <TextField
-        {...interactiveProps}
-        ref={ref}
-        role="presentation"
-        className={cx(classes.host, className)}
-        error={type === 'error'}
-        warning={type === 'warning'}
-      >
-        <textarea
-          {...textareaProps}
-          className={cx(classes.textarea, textareaClassName)}
-          ref={composedTextareaRef}
-          disabled={disabled}
-          readOnly={readOnly}
-          style={{ resize, ...textareaProps.style }}
-        />
+  return (
+    <TextField
+      {...interactiveProps}
+      ref={ref}
+      role="presentation"
+      className={cx(classes.host, className)}
+      error={type === 'error'}
+      warning={type === 'warning'}
+    >
+      <textarea
+        {...textareaProps}
+        className={cx(classes.textarea, textareaClassName)}
+        ref={composedTextareaRef}
+        disabled={disabled}
+        readOnly={readOnly}
+        style={{ resize, ...textareaProps.style }}
+      />
 
-        {resize !== 'none' && (
-          <Icon icon={ResizeHandleIcon} size={16} className={classes.resizer} />
-        )}
-      </TextField>
-    );
-  },
-);
+      {resize !== 'none' && (
+        <Icon icon={ResizeHandleIcon} size={16} className={classes.resizer} />
+      )}
+    </TextField>
+  );
+}
 
 export default Textarea;
