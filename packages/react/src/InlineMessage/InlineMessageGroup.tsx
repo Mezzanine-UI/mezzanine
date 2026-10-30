@@ -1,8 +1,6 @@
+import { inlineMessageGroupClasses as classes } from '@mezzanine-ui/core/inline-message';
 import {
-  inlineMessageGroupClasses as classes,
-} from '@mezzanine-ui/core/inline-message';
-import {
-  forwardRef,
+  type RefAttributes,
   Key,
   ReactElement,
   ReactNode,
@@ -56,37 +54,34 @@ const mapItemsToMessages = (
     />
   ));
 
-const InlineMessageGroup = forwardRef<HTMLDivElement, InlineMessageGroupProps>(
-  function InlineMessageGroup(props, ref) {
-    const {
-      children: childrenProp,
-      className,
-      items,
-      onItemClose,
-      ...rest
-    } = props;
+function InlineMessageGroup({
+  ref,
+  ...props
+}: InlineMessageGroupProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children: childrenProp,
+    className,
+    items,
+    onItemClose,
+    ...rest
+  } = props;
 
-    const children = useMemo(
-      () => childrenProp ?? mapItemsToMessages(items, onItemClose),
-      [childrenProp, items, onItemClose],
-    );
+  const children = useMemo(
+    () => childrenProp ?? mapItemsToMessages(items, onItemClose),
+    [childrenProp, items, onItemClose],
+  );
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          className,
-        )}
-        aria-live="polite"
-        role="region"
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(classes.host, className)}
+      aria-live="polite"
+      role="region"
+    >
+      {children}
+    </div>
+  );
+}
 
 export default InlineMessageGroup;
-

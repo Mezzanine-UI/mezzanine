@@ -1,5 +1,5 @@
 import {
-  forwardRef,
+  type RefAttributes,
   ReactElement,
   FocusEventHandler,
   MouseEventHandler,
@@ -131,173 +131,170 @@ function isFocusVisible(element: Element): boolean {
  *
  * @see {@link Popper} 浮動定位元件
  */
-const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
-  function Tooltip(props, ref) {
-    const {
-      anchor: anchorProp,
-      arrow: showArrow = true,
-      children,
-      className,
-      disablePortal = true,
-      id: idProp,
-      mouseLeaveDelay = 0.1,
-      offsetMainAxis,
-      open = false,
-      options = {},
-      role: roleProp,
-      title,
-      ...rest
-    } = props;
+function Tooltip({
+  ref,
+  ...props
+}: TooltipProps & RefAttributes<HTMLDivElement>) {
+  const {
+    anchor: anchorProp,
+    arrow: showArrow = true,
+    children,
+    className,
+    disablePortal = true,
+    id: idProp,
+    mouseLeaveDelay = 0.1,
+    offsetMainAxis,
+    open = false,
+    options = {},
+    role: roleProp,
+    title,
+    ...rest
+  } = props;
 
-    const { middleware: middlewareProp = [] } = options;
-    const tooltipRef = useRef<HTMLDivElement>(null);
-    const [targetRef, _setTargetRef] = useState<RefObject<HTMLElement | null>>({
-      current: null,
-    });
+  const { middleware: middlewareProp = [] } = options;
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [targetRef, _setTargetRef] = useState<RefObject<HTMLElement | null>>({
+    current: null,
+  });
 
-    const composedRef = useComposeRefs([ref, tooltipRef]);
+  const composedRef = useComposeRefs([ref, tooltipRef]);
 
-    const { onLeave, onPopperEnter, onTargetEnter, visible } =
-      useDelayMouseEnterLeave({ mouseLeaveDelay });
+  const { onLeave, onPopperEnter, onTargetEnter, visible } =
+    useDelayMouseEnterLeave({ mouseLeaveDelay });
 
-    /** keyboard focus opens the tooltip alongside the pointer flow */
-    const [focused, setFocused] = useState(false);
-    /**
-     * Escape hides the tooltip without moving the pointer or the focus
-     * (WCAG 1.4.13). Reset whenever the trigger is entered/focused again so the
-     * tooltip can be brought back.
-     */
-    const [dismissed, setDismissed] = useState(false);
+  /** keyboard focus opens the tooltip alongside the pointer flow */
+  const [focused, setFocused] = useState(false);
+  /**
+   * Escape hides the tooltip without moving the pointer or the focus
+   * (WCAG 1.4.13). Reset whenever the trigger is entered/focused again so the
+   * tooltip can be brought back.
+   */
+  const [dismissed, setDismissed] = useState(false);
 
-    const generatedId = useId();
-    const tooltipId = idProp ?? generatedId;
+  const generatedId = useId();
+  const tooltipId = idProp ?? generatedId;
 
-    /** tooltip shown only when title existed && hovered or focused */
-    const isTriggerVisible =
-      !dismissed && (visible || focused) && Boolean(title);
-    const isTooltipVisible = open || isTriggerVisible;
+  /** tooltip shown only when title existed && hovered or focused */
+  const isTriggerVisible = !dismissed && (visible || focused) && Boolean(title);
+  const isTooltipVisible = open || isTriggerVisible;
 
-    const onTargetFocus = useCallback(
-      (event: React.FocusEvent<HTMLElement>) => {
-        // 只有鍵盤（focus-visible）觸發的 focus 才開啟提示，
-        // 否則滑鼠點一下按鈕就會跳出 tooltip 並黏著不放。
-        if (!isFocusVisible(event.currentTarget)) return;
+  const onTargetFocus = useCallback((event: React.FocusEvent<HTMLElement>) => {
+    // 只有鍵盤（focus-visible）觸發的 focus 才開啟提示，
+    // 否則滑鼠點一下按鈕就會跳出 tooltip 並黏著不放。
+    if (!isFocusVisible(event.currentTarget)) return;
 
-        setDismissed(false);
-        setFocused(true);
-      },
-      [],
-    );
+    setDismissed(false);
+    setFocused(true);
+  }, []);
 
-    const onTargetBlur = useCallback(() => {
-      setFocused(false);
-    }, []);
+  const onTargetBlur = useCallback(() => {
+    setFocused(false);
+  }, []);
 
-    const onTargetMouseEnter = useCallback(
-      (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        setDismissed(false);
-        onTargetEnter(event);
-      },
-      [onTargetEnter],
-    );
+  const onTargetMouseEnter = useCallback(
+    (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      setDismissed(false);
+      onTargetEnter(event);
+    },
+    [onTargetEnter],
+  );
 
-    // Escape only dismisses the hover/focus driven tooltip — a controlled
-    // `open` tooltip stays under the consumer's control.
-    useDocumentEscapeKeyDown(() => {
-      if (!isTriggerVisible) return;
+  // Escape only dismisses the hover/focus driven tooltip — a controlled
+  // `open` tooltip stays under the consumer's control.
+  useDocumentEscapeKeyDown(() => {
+    if (!isTriggerVisible) return;
 
-      return () => setDismissed(true);
-    }, [isTriggerVisible]);
+    return () => setDismissed(true);
+  }, [isTriggerVisible]);
 
-    const offsetValue =
-      offsetMainAxis ??
-      Number(
-        getCSSVariableValue(`--${spacingPrefix}-gap-base`).replace('rem', ''),
-      ) * 16;
+  const offsetValue =
+    offsetMainAxis ??
+    Number(
+      getCSSVariableValue(`--${spacingPrefix}-gap-base`).replace('rem', ''),
+    ) * 16;
 
-    const placement = options.placement || 'top';
-    const isPlacementAtEdge =
-      placement.endsWith('-start') || placement.endsWith('-end');
+  const placement = options.placement || 'top';
+  const isPlacementAtEdge =
+    placement.endsWith('-start') || placement.endsWith('-end');
 
-    // 設置 target element，並重新渲染
-    const setTargetRef = useCallback((element: HTMLElement | null) => {
-      _setTargetRef({ current: element });
-    }, []);
+  // 設置 target element，並重新渲染
+  const setTargetRef = useCallback((element: HTMLElement | null) => {
+    _setTargetRef({ current: element });
+  }, []);
 
-    // middleware (shift, flip 會衝突，所以依照官方推薦設定 https://floating-ui.com/docs/flip#combining-with-shift)
-    const middleware = [offset({ mainAxis: offsetValue })];
-    const flipMiddleware = flip({
-      crossAxis: 'alignment',
-      fallbackAxisSideDirection: 'end',
-    });
-    const shiftMiddleware = shift();
+  // middleware (shift, flip 會衝突，所以依照官方推薦設定 https://floating-ui.com/docs/flip#combining-with-shift)
+  const middleware = [offset({ mainAxis: offsetValue })];
+  const flipMiddleware = flip({
+    crossAxis: 'alignment',
+    fallbackAxisSideDirection: 'end',
+  });
+  const shiftMiddleware = shift();
 
-    if (placement.includes('-')) {
-      middleware.push(flipMiddleware, shiftMiddleware);
-    } else {
-      middleware.push(shiftMiddleware, flipMiddleware);
-    }
+  if (placement.includes('-')) {
+    middleware.push(flipMiddleware, shiftMiddleware);
+  } else {
+    middleware.push(shiftMiddleware, flipMiddleware);
+  }
 
-    return (
-      <>
-        <Fade
-          in={isTooltipVisible}
-          duration={{
-            enter: MOTION_DURATION.fast,
-            exit: MOTION_DURATION.fast,
-          }}
-          easing={{
-            enter: MOTION_EASING.standard,
-            exit: MOTION_EASING.standard,
+  return (
+    <>
+      <Fade
+        in={isTooltipVisible}
+        duration={{
+          enter: MOTION_DURATION.fast,
+          exit: MOTION_DURATION.fast,
+        }}
+        easing={{
+          enter: MOTION_EASING.standard,
+          exit: MOTION_EASING.standard,
+        }}
+      >
+        <Popper
+          {...rest}
+          ref={composedRef}
+          anchor={anchorProp || targetRef.current}
+          arrow={
+            showArrow
+              ? {
+                  className: classes.arrow,
+                  enabled: true,
+                  padding: isPlacementAtEdge
+                    ? Number(
+                        getCSSVariableValue(
+                          `--${spacingPrefix}-padding-horizontal-comfort`,
+                        ).replace('rem', ''),
+                      ) * 16
+                    : 0,
+                }
+              : undefined
+          }
+          className={cx(classes.host, className)}
+          disablePortal={disablePortal}
+          id={tooltipId}
+          onMouseEnter={onPopperEnter}
+          onMouseLeave={onLeave}
+          open={isTooltipVisible}
+          role={roleProp ?? 'tooltip'}
+          options={{
+            ...options,
+            placement,
+            middleware: [...middleware, ...middlewareProp],
           }}
         >
-          <Popper
-            {...rest}
-            ref={composedRef}
-            anchor={anchorProp || targetRef.current}
-            arrow={
-              showArrow
-                ? {
-                    className: classes.arrow,
-                    enabled: true,
-                    padding: isPlacementAtEdge
-                      ? Number(
-                          getCSSVariableValue(
-                            `--${spacingPrefix}-padding-horizontal-comfort`,
-                          ).replace('rem', ''),
-                        ) * 16
-                      : 0,
-                  }
-                : undefined
-            }
-            className={cx(classes.host, className)}
-            disablePortal={disablePortal}
-            id={tooltipId}
-            onMouseEnter={onPopperEnter}
-            onMouseLeave={onLeave}
-            open={isTooltipVisible}
-            role={roleProp ?? 'tooltip'}
-            options={{
-              ...options,
-              placement,
-              middleware: [...middleware, ...middlewareProp],
-            }}
-          >
-            {title}
-          </Popper>
-        </Fade>
-        {typeof children === 'function' &&
-          children({
-            'aria-describedby': isTooltipVisible ? tooltipId : undefined,
-            onBlur: onTargetBlur,
-            onFocus: onTargetFocus,
-            onMouseEnter: onTargetMouseEnter,
-            onMouseLeave: onLeave,
-            ref: setTargetRef,
-          })}
-      </>
-    );
-  },
-);
+          {title}
+        </Popper>
+      </Fade>
+      {typeof children === 'function' &&
+        children({
+          'aria-describedby': isTooltipVisible ? tooltipId : undefined,
+          onBlur: onTargetBlur,
+          onFocus: onTargetFocus,
+          onMouseEnter: onTargetMouseEnter,
+          onMouseLeave: onLeave,
+          ref: setTargetRef,
+        })}
+    </>
+  );
+}
 
 export default Tooltip;

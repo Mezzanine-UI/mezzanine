@@ -1,4 +1,4 @@
-import { forwardRef, ReactElement } from 'react';
+import { type RefAttributes, ReactElement } from 'react';
 import { contentHeaderClasses as classes } from '@mezzanine-ui/core/content-header';
 import Button, { ButtonGroup, ButtonProps } from '../Button';
 import { SearchInputProps } from '../Input';
@@ -154,95 +154,96 @@ export type ContentHeaderProps = Omit<
  *  </ContentHeader>
  * ```
  */
-const ContentHeader = forwardRef<HTMLElement, ContentHeaderProps>(
-  function ContentHeader(props, ref) {
-    const {
-      actions,
-      backButtonLabel = 'Back',
-      children,
-      className,
-      description,
-      filter,
-      onBackClick,
-      size = 'main',
-      title,
-      titleComponent = size === 'main' ? 'h1' : 'h2',
-      utilities,
-      ...rest
-    } = props;
+function ContentHeader({
+  ref,
+  ...props
+}: ContentHeaderProps & RefAttributes<HTMLElement>) {
+  const {
+    actions,
+    backButtonLabel = 'Back',
+    children,
+    className,
+    description,
+    filter,
+    onBackClick,
+    size = 'main',
+    title,
+    titleComponent = size === 'main' ? 'h1' : 'h2',
+    utilities,
+    ...rest
+  } = props;
 
-    const renderFilter = renderFilterProp(filter, size);
-    const renderActions = actions ? renderActionsProp(actions, size) : null;
-    const renderUtilities = utilities
-      ? renderIconButtonsProp(utilities, size)
-      : null;
+  const renderFilter = renderFilterProp(filter, size);
+  const renderActions = actions ? renderActionsProp(actions, size) : null;
+  const renderUtilities = utilities
+    ? renderIconButtonsProp(utilities, size)
+    : null;
 
-    const {
-      backButton,
-      filter: filterFromChildren,
-      actions: actionsFromChildren,
-      utilities: utilitiesFromChildren,
-    } = resolveContentHeaderChild(children, size, backButtonLabel);
+  const {
+    backButton,
+    filter: filterFromChildren,
+    actions: actionsFromChildren,
+    utilities: utilitiesFromChildren,
+  } = resolveContentHeaderChild(children, size, backButtonLabel);
 
-    // prop onBack takes precedence over backButtonOrLink
-    const renderBackButton = onBackClick ? (
-      <Button
-        iconType="icon-only"
-        icon={ChevronLeftIcon}
-        onClick={onBackClick}
-        aria-label={backButtonLabel}
-        type="button"
-        size="sub"
-        variant="base-tertiary"
-      />
-    ) : (
-      backButton
-    );
+  // prop onBack takes precedence over backButtonOrLink
+  const renderBackButton = onBackClick ? (
+    <Button
+      iconType="icon-only"
+      icon={ChevronLeftIcon}
+      onClick={onBackClick}
+      aria-label={backButtonLabel}
+      type="button"
+      size="sub"
+      variant="base-tertiary"
+    />
+  ) : (
+    backButton
+  );
 
-    return (
-      <header
-        {...rest}
-        className={cx(classes.host, classes.size(size), className)}
-        ref={ref}
-      >
-        <span className={classes.titleArea}>
-          {/* title area */}
-          {renderBackButton && size !== 'sub' && (
-            <span className={classes.backButton}>{renderBackButton}</span>
-          )}
+  return (
+    <header
+      {...rest}
+      className={cx(classes.host, classes.size(size), className)}
+      ref={ref}
+    >
+      <span className={classes.titleArea}>
+        {/* title area */}
+        {renderBackButton && size !== 'sub' && (
+          <span className={classes.backButton}>{renderBackButton}</span>
+        )}
 
-          <span className={classes.textGroup}>
-            <Typography
-              component={titleComponent}
-              align="left"
-              color="text-neutral-solid"
-              variant={size === 'main' ? 'h2' : 'h3'}
-            >
-              {title}
+        <span className={classes.textGroup}>
+          <Typography
+            component={titleComponent}
+            align="left"
+            color="text-neutral-solid"
+            variant={size === 'main' ? 'h2' : 'h3'}
+          >
+            {title}
+          </Typography>
+          {description && (
+            <Typography align="left" color="text-neutral" variant="caption">
+              {description}
             </Typography>
-            {description && (
-              <Typography align="left" color="text-neutral" variant="caption">
-                {description}
-              </Typography>
-            )}
-          </span>
+          )}
         </span>
+      </span>
 
-        {/* actions area */}
-        <span className={classes.actionArea}>
-          {renderFilter || filterFromChildren}
-          {(renderActions || actionsFromChildren.length > 0) && (
-            <ButtonGroup>{renderActions || actionsFromChildren}</ButtonGroup>
-          )}
-          {(renderUtilities || utilitiesFromChildren.length > 0) && (
-            <span className={classes.utilities}>
-              {renderUtilities || utilitiesFromChildren}
-            </span>
-          )}
-        </span>
-      </header>
-    );
-  },
-);
+      {/* actions area */}
+      <span className={classes.actionArea}>
+        {renderFilter || filterFromChildren}
+        {(renderActions || actionsFromChildren.length > 0) && (
+          <ButtonGroup>{renderActions || actionsFromChildren}</ButtonGroup>
+        )}
+        {(renderUtilities || utilitiesFromChildren.length > 0) && (
+          <span className={classes.utilities}>
+            {renderUtilities || utilitiesFromChildren}
+          </span>
+        )}
+      </span>
+    </header>
+  );
+}
 
 export default ContentHeader;

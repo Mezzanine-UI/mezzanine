@@ -1,10 +1,10 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 /**
- * 在瀏覽器環境使用 `useLayoutEffect`、在 SSR 環境降級為 `useEffect` 的 Hook。
+ * 在 DOM 繪製前同步執行副作用的 Hook，可安全用於 SSR。
  *
- * 用於需要在 DOM 繪製前同步執行副作用的場景（例如讀取 layout 資訊），
- * 同時避免伺服器端渲染時因 `useLayoutEffect` 產生警告。
+ * React 19 起，伺服器端渲染時呼叫 `useLayoutEffect` 不再產生警告（且同樣不會執行），
+ * 因此此 Hook 直接等同於 `useLayoutEffect`；保留此 export 以維持既有 API 相容。
  *
  * @example
  * ```tsx
@@ -16,9 +16,4 @@ import { useEffect, useLayoutEffect } from 'react';
  * }, [deps]);
  * ```
  */
-export const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' &&
-  window.document &&
-  !!window.document.createElement
-    ? useLayoutEffect
-    : useEffect;
+export const useIsomorphicLayoutEffect = useLayoutEffect;

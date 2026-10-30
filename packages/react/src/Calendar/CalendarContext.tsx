@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useMemo } from 'react';
+import { createContext, ReactNode, use, useMemo } from 'react';
 import {
   CalendarLocale,
   CalendarLocaleValue,
@@ -39,7 +39,7 @@ export const CalendarContext = createContext<CalendarConfigs | undefined>(
 );
 
 export function useCalendarContext() {
-  const configs = useContext(CalendarContext);
+  const configs = use(CalendarContext);
 
   if (!configs) {
     throw new Error(
@@ -73,11 +73,7 @@ function CalendarConfigProvider(props: CalendarConfigProviderProps) {
     [methods, defaultDateFormat, defaultTimeFormat, resolvedLocale],
   );
 
-  return (
-    <CalendarContext.Provider value={context}>
-      {children}
-    </CalendarContext.Provider>
-  );
+  return <CalendarContext value={context}>{children}</CalendarContext>;
 }
 
 export default CalendarConfigProvider;

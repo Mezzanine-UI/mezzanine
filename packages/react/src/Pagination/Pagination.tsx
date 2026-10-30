@@ -1,5 +1,5 @@
 import {
-  forwardRef,
+  type RefAttributes,
   DetailedHTMLProps,
   HTMLAttributes,
   ReactNode,
@@ -150,7 +150,10 @@ export interface PaginationProps
  * @see {@link Table} 搭配 Table 元件的 `pagination` prop 使用
  * @see {@link usePagination} 獨立使用分頁邏輯的 hook
  */
-const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
+const Pagination = ({
+  ref,
+  ...props
+}: PaginationProps & RefAttributes<HTMLElement>) => {
   const {
     boundaryCount = 1,
     buttonText,
@@ -239,6 +242,6 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
       </ul>
     </nav>
   );
-});
+};
 
 export default Pagination;

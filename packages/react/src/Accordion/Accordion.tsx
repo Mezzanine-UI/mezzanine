@@ -1,5 +1,5 @@
 import React, {
-  forwardRef,
+  type RefAttributes,
   useState,
   useCallback,
   useMemo,
@@ -148,87 +148,93 @@ const resolveChildren = (
  *
  * @see {@link AccordionGroup} 管理多個手風琴的群組元件
  */
-const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
-  function Accordion(props, ref) {
-    const {
-      actions,
-      children: childrenProp,
-      className,
-      defaultExpanded = false,
-      disabled = false,
-      expanded: expandedProp,
-      onChange,
-      size = 'main',
-      title,
-      ...rest
-    } = props;
+function Accordion({
+  ref,
+  ...props
+}: AccordionProps & RefAttributes<HTMLDivElement>) {
+  const {
+    actions,
+    children: childrenProp,
+    className,
+    defaultExpanded = false,
+    disabled = false,
+    expanded: expandedProp,
+    onChange,
+    size = 'main',
+    title,
+    ...rest
+  } = props;
 
-    const [expanded, toggleExpanded] = useState<boolean>(
-      defaultExpanded ?? false,
-    );
+  const [expanded, toggleExpanded] = useState<boolean>(
+    defaultExpanded ?? false,
+  );
 
-    const onToggleExpanded = useCallback(
-      (newStatus: boolean) => {
-        if (typeof onChange === 'function') {
-          onChange(newStatus);
-        } else {
-          toggleExpanded(newStatus);
-        }
-      },
-      [onChange],
-    );
+  const onToggleExpanded = useCallback(
+    (newStatus: boolean) => {
+      if (typeof onChange === 'function') {
+        onChange(newStatus);
+      } else {
+        toggleExpanded(newStatus);
+      }
+    },
+    [onChange],
+  );
 
-    const { title: resolvedTitle, content: resolvedContent } = useMemo(
-      () => resolveChildren(childrenProp),
-      [childrenProp],
-    );
+  const { title: resolvedTitle, content: resolvedContent } = useMemo(
+    () => resolveChildren(childrenProp),
+    [childrenProp],
+  );
 
-    const contextValue = useMemo(
-      () => ({
-        contentId:
-          resolvedTitle && (resolvedTitle as ReactElement<any>)?.props?.id
-            ? `${(resolvedTitle as ReactElement<any>).props.id}-content`
-            : undefined,
-        disabled,
-        expanded: expandedProp ?? expanded,
-        titleId:
-          (resolvedTitle && (resolvedTitle as ReactElement<any>)?.props?.id) ??
-          undefined,
-        toggleExpanded: onToggleExpanded,
-      }),
-      [disabled, expandedProp, expanded, onToggleExpanded, resolvedTitle],
-    );
+  const contextValue = useMemo(
+    () => ({
+      contentId:
+        resolvedTitle && (resolvedTitle as ReactElement<any>)?.props?.id
+          ? `${(resolvedTitle as ReactElement<any>).props.id}-content`
+          : undefined,
+      disabled,
+      expanded: expandedProp ?? expanded,
+      titleId:
+        (resolvedTitle && (resolvedTitle as ReactElement<any>)?.props?.id) ??
+        undefined,
+      toggleExpanded: onToggleExpanded,
+    }),
+    [disabled, expandedProp, expanded, onToggleExpanded, resolvedTitle],
+  );
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(classes.host, classes.size(size), { [classes.hostDisabled]: disabled }, className)}
-      >
-        <AccordionControlContext.Provider value={contextValue}>
-          {title ? (
-            <AccordionTitle actions={actions}>{title}</AccordionTitle>
-          ) : (
-            resolvedTitle
-          )}
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        classes.size(size),
+        { [classes.hostDisabled]: disabled },
+        className,
+      )}
+    >
+      <AccordionControlContext value={contextValue}>
+        {title ? (
+          <AccordionTitle actions={actions}>{title}</AccordionTitle>
+        ) : (
+          resolvedTitle
+        )}
 
-          <Fade
-            duration={{
-              enter: MOTION_DURATION.moderate,
-              exit: MOTION_DURATION.moderate,
-            }}
-            easing={{
-              enter: MOTION_EASING.entrance,
-              exit: MOTION_EASING.exit,
-            }}
-            in={expandedProp ?? expanded}
-          >
-            <div>{resolvedContent}</div>
-          </Fade>
-        </AccordionControlContext.Provider>
-      </div>
-    );
-  },
-);
+        <Fade
+          duration={{
+            enter: MOTION_DURATION.moderate,
+            exit: MOTION_DURATION.moderate,
+          }}
+          easing={{
+            enter: MOTION_EASING.entrance,
+            exit: MOTION_EASING.exit,
+          }}
+          in={expandedProp ?? expanded}
+        >
+          <div>{resolvedContent}</div>
+        </Fade>
+      </AccordionControlContext>
+    </div>
+  );
+}
 
 export default Accordion;

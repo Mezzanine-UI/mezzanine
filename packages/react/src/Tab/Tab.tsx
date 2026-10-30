@@ -2,7 +2,7 @@ import {
   Children,
   cloneElement,
   CSSProperties,
-  forwardRef,
+  type RefAttributes,
   Key,
   ReactElement,
   useLayoutEffect,
@@ -88,10 +88,7 @@ export interface TabProps
  *
  * @see {@link TabItem} 頁籤項目元件
  */
-const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
-  props: TabProps,
-  ref,
-) {
+function Tab({ ref, ...props }: TabProps & RefAttributes<HTMLDivElement>) {
   const {
     activeKey: activeKeyProp,
     children,
@@ -182,6 +179,6 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
       <div className={classes.tabActiveBar} style={activeBarStyle} />
     </div>
   );
-});
+}
 
 export default Tab;

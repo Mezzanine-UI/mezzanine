@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, useRef } from 'react';
+import { CSSProperties, type RefAttributes, useRef } from 'react';
 import { iconClasses as classes } from '@mezzanine-ui/core/spin';
 import Backdrop, { BackdropProps } from '../Backdrop';
 import { useComposeRefs } from '../hooks/useComposeRefs';
@@ -50,7 +50,7 @@ export interface SpinProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   backdropProps?: Omit<BackdropProps, 'container' | 'open'>;
 }
 
-const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
+function Spin({ ref, ...props }: SpinProps & RefAttributes<HTMLDivElement>) {
   const hostRef = useRef<HTMLDivElement>(null);
   const {
     children,
@@ -118,6 +118,6 @@ const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
   }
 
   return spinElement;
-});
+}
 
 export default Spin;

@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  forwardRef,
+  type RefAttributes,
   FocusEvent,
   MouseEventHandler,
   useCallback,
@@ -120,396 +120,392 @@ export interface DateRangePickerProps
  * The react component for `mezzanine` date range picker.
  * Notice that any component related to date-range-picker should be used along with `CalendarContext`.
  */
-const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
-  function DateRangePicker(props, ref) {
-    const { getNow, isBetween } = useCalendarContext();
-    const {
-      actions: actionsProp,
-      calendarProps,
-      className,
-      clearable = true,
-      confirmMode = 'immediate',
-      defaultValue,
-      disabledMonthSwitch = false,
-      disableOnDoubleNext,
-      disableOnDoublePrev,
-      disableOnNext,
-      disableOnPrev,
-      disabled = false,
-      disabledYearSwitch = false,
-      displayMonthLocale,
-      displayWeekDayLocale,
-      error = false,
-      errorMessagesFrom,
-      errorMessagesTo,
-      fadeProps,
-      firstCalendarRef,
-      format: formatProp,
-      fullWidth = false,
-      inputFromPlaceholder,
-      inputFromProps,
-      inputToPlaceholder,
-      inputToProps,
-      isDateDisabled,
-      isHalfYearDisabled,
-      isMonthDisabled,
-      isQuarterDisabled,
-      isWeekDisabled,
-      isYearDisabled,
-      mode = 'day',
-      onCalendarToggle: onCalendarToggleProp,
-      onChange: onChangeProp,
-      popperProps,
-      prefix,
-      quickSelect,
-      readOnly,
-      referenceDate: referenceDateProp,
-      renderAnnotations,
-      required = false,
-      secondCalendarRef,
-      size,
-      validateFrom,
-      validateTo,
-      value: valueProp,
-    } = props;
+function DateRangePicker({
+  ref,
+  ...props
+}: DateRangePickerProps & RefAttributes<HTMLDivElement>) {
+  const { getNow, isBetween } = useCalendarContext();
+  const {
+    actions: actionsProp,
+    calendarProps,
+    className,
+    clearable = true,
+    confirmMode = 'immediate',
+    defaultValue,
+    disabledMonthSwitch = false,
+    disableOnDoubleNext,
+    disableOnDoublePrev,
+    disableOnNext,
+    disableOnPrev,
+    disabled = false,
+    disabledYearSwitch = false,
+    displayMonthLocale,
+    displayWeekDayLocale,
+    error = false,
+    errorMessagesFrom,
+    errorMessagesTo,
+    fadeProps,
+    firstCalendarRef,
+    format: formatProp,
+    fullWidth = false,
+    inputFromPlaceholder,
+    inputFromProps,
+    inputToPlaceholder,
+    inputToProps,
+    isDateDisabled,
+    isHalfYearDisabled,
+    isMonthDisabled,
+    isQuarterDisabled,
+    isWeekDisabled,
+    isYearDisabled,
+    mode = 'day',
+    onCalendarToggle: onCalendarToggleProp,
+    onChange: onChangeProp,
+    popperProps,
+    prefix,
+    quickSelect,
+    readOnly,
+    referenceDate: referenceDateProp,
+    renderAnnotations,
+    required = false,
+    secondCalendarRef,
+    size,
+    validateFrom,
+    validateTo,
+    value: valueProp,
+  } = props;
 
-    const format = formatProp || getDefaultModeFormat(mode);
+  const format = formatProp || getDefaultModeFormat(mode);
 
-    const isBetweenRange = useCallback(
-      (
-        valueToCheck: DateType,
-        t1: DateType,
-        t2: DateType,
-        granularity: string,
-      ) =>
-        isBetween(valueToCheck, t1, t2, granularity) ||
-        isBetween(valueToCheck, t2, t1, granularity),
-      [isBetween],
-    );
+  const isBetweenRange = useCallback(
+    (valueToCheck: DateType, t1: DateType, t2: DateType, granularity: string) =>
+      isBetween(valueToCheck, t1, t2, granularity) ||
+      isBetween(valueToCheck, t2, t1, granularity),
+    [isBetween],
+  );
 
-    /** Using internal reference date */
-    const [referenceDate, updateReferenceDate] = useState(
-      referenceDateProp || defaultValue?.[0] || getNow(),
-    );
+  /** Using internal reference date */
+  const [referenceDate, updateReferenceDate] = useState(
+    referenceDateProp || defaultValue?.[0] || getNow(),
+  );
 
-    /** Calendar panel toggle */
-    const [open, setOpen] = useState(false);
-    const preventOpen = readOnly;
-    const onCalendarToggle = useCallback(
-      (currentOpen: boolean) => {
-        if (!preventOpen) {
-          setOpen(currentOpen);
-          onCalendarToggleProp?.(currentOpen);
-        }
-      },
-      [onCalendarToggleProp, preventOpen],
-    );
-
-    /** Values and onChange */
-    const inputToRef = useRef<HTMLInputElement>(null);
-    const inputFromRef = useRef<HTMLInputElement>(null);
-
-    // In manual mode, don't pass onChange to hook - we'll handle it via confirm button
-    const shouldTriggerOnChangeImmediately =
-      confirmMode === 'immediate' && !actionsProp;
-
-    const {
-      calendarValue,
-      committedCalendarValue,
-      hoverValue,
-      hoverFromValue,
-      hoverToValue,
-      inputFromValue,
-      inputToValue,
-      onCalendarChange,
-      onCalendarHover,
-      onChange,
-      onClear,
-      onFromBlur,
-      onFromFocus,
-      onHoverClear,
-      onInputFromChange,
-      onInputToChange,
-      onToBlur,
-      onToFocus,
-      value: internalValue,
-    } = useDateRangePickerValue({
-      format,
-      inputFromRef,
-      inputToRef,
-      mode,
-      onChange: shouldTriggerOnChangeImmediately ? onChangeProp : undefined,
-      value: valueProp,
-    });
-
-    // Update reference date when internal value changes
-    useEffect(() => {
-      const [from, to] = internalValue;
-
-      if (from) {
-        updateReferenceDate(from);
-      } else if (to) {
-        updateReferenceDate(to);
+  /** Calendar panel toggle */
+  const [open, setOpen] = useState(false);
+  const preventOpen = readOnly;
+  const onCalendarToggle = useCallback(
+    (currentOpen: boolean) => {
+      if (!preventOpen) {
+        setOpen(currentOpen);
+        onCalendarToggleProp?.(currentOpen);
       }
-    }, [internalValue]);
+    },
+    [onCalendarToggleProp, preventOpen],
+  );
 
-    /** Bind calendar open control to handlers */
-    const onCalendarChangeWithCloseControl = useCallback(
-      (val: [DateType, DateType | undefined]) => {
-        onCalendarChange(val);
+  /** Values and onChange */
+  const inputToRef = useRef<HTMLInputElement>(null);
+  const inputFromRef = useRef<HTMLInputElement>(null);
 
-        // Close panel when range is complete (only if auto-close is enabled)
-        // Auto-close is disabled when actions are provided or in manual mode
-        if (val[0] && val[1] && shouldTriggerOnChangeImmediately) {
-          onCalendarToggle(false);
-        }
-      },
-      [onCalendarChange, onCalendarToggle, shouldTriggerOnChangeImmediately],
-    );
+  // In manual mode, don't pass onChange to hook - we'll handle it via confirm button
+  const shouldTriggerOnChangeImmediately =
+    confirmMode === 'immediate' && !actionsProp;
 
-    /** Handle confirm action (for manual mode) */
-    const onConfirm = useCallback(() => {
-      const [from, to] = internalValue;
+  const {
+    calendarValue,
+    committedCalendarValue,
+    hoverValue,
+    hoverFromValue,
+    hoverToValue,
+    inputFromValue,
+    inputToValue,
+    onCalendarChange,
+    onCalendarHover,
+    onChange,
+    onClear,
+    onFromBlur,
+    onFromFocus,
+    onHoverClear,
+    onInputFromChange,
+    onInputToChange,
+    onToBlur,
+    onToFocus,
+    value: internalValue,
+  } = useDateRangePickerValue({
+    format,
+    inputFromRef,
+    inputToRef,
+    mode,
+    onChange: shouldTriggerOnChangeImmediately ? onChangeProp : undefined,
+    value: valueProp,
+  });
 
-      if (from && to) {
-        onChangeProp?.([from, to]);
-        // Sync internal state and reset isSelecting
-        onChange([from, to]);
-      }
+  // Update reference date when internal value changes
+  useEffect(() => {
+    const [from, to] = internalValue;
 
-      onCalendarToggle(false);
-    }, [internalValue, onChange, onChangeProp, onCalendarToggle]);
+    if (from) {
+      updateReferenceDate(from);
+    } else if (to) {
+      updateReferenceDate(to);
+    }
+  }, [internalValue]);
 
-    /** Handle cancel action (for manual mode) */
-    const onCancel = useCallback(() => {
-      onChange(valueProp);
-      onCalendarToggle(false);
-    }, [onChange, onCalendarToggle, valueProp]);
+  /** Bind calendar open control to handlers */
+  const onCalendarChangeWithCloseControl = useCallback(
+    (val: [DateType, DateType | undefined]) => {
+      onCalendarChange(val);
 
-    /** Auto-generated actions for manual mode */
-    const actions: CalendarFooterActionsProps['actions'] | undefined =
-      useMemo(() => {
-        // In manual mode, auto-generate actions
-        if (confirmMode === 'manual') {
-          const [from, to] = internalValue;
-          const isRangeComplete = Boolean(from && to);
-
-          return {
-            primaryButtonProps: {
-              children: 'Confirm',
-              disabled: !isRangeComplete,
-              onClick: onConfirm,
-              ...actionsProp?.primaryButtonProps,
-            },
-            secondaryButtonProps: {
-              children: 'Cancel',
-              onClick: onCancel,
-              ...actionsProp?.secondaryButtonProps,
-            },
-          };
-        }
-
-        if (actionsProp) {
-          return actionsProp;
-        }
-
-        return undefined;
-      }, [actionsProp, confirmMode, internalValue, onConfirm, onCancel]);
-
-    /**
-     * Calendar cell in range checker.
-     *
-     * Pure geometry — whether the range covers a disabled unit is decided by
-     * `RangeCalendar`, which is the only place that knows which cells are
-     * actually on screen. Keeping that scan out of here is what makes this
-     * component's render cost independent of how wide the range is.
-     */
-    const [rangeAnchorStart, rangeAnchorEnd] = calendarValue || [];
-    const getIsInRangeHandler = useCallback(
-      (granularity: string) => {
-        if (!rangeAnchorStart || !rangeAnchorEnd) {
-          return undefined;
-        }
-
-        return (date: DateType) =>
-          isBetweenRange(date, rangeAnchorStart, rangeAnchorEnd, granularity);
-      },
-      [isBetweenRange, rangeAnchorEnd, rangeAnchorStart],
-    );
-
-    /** Popper settings */
-    const anchorRef = useRef<HTMLDivElement>(null);
-    const calendarRef = useRef<HTMLDivElement>(null);
-    const triggerComposedRef = useComposeRefs([anchorRef, ref]);
-
-    /** Input focus handlers */
-    const onFromFocusHandler = useCallback(
-      (_event: FocusEvent<HTMLInputElement>) => {
-        onFromFocus();
-        onCalendarToggle(true);
-      },
-      [onCalendarToggle, onFromFocus],
-    );
-
-    const onToFocusHandler = useCallback(
-      (_event: FocusEvent<HTMLInputElement>) => {
-        onToFocus();
-        onCalendarToggle(true);
-      },
-      [onCalendarToggle, onToFocus],
-    );
-
-    /** Blur, click away and key down close */
-    const onClose = useCallback(() => {
-      onChange(valueProp);
-      onCalendarToggle(false);
-    }, [onChange, onCalendarToggle, valueProp]);
-
-    const onChangeClose = useCallback(() => {
-      // In manual mode, always restore to valueProp (don't auto-submit on click-away)
-      if (confirmMode === 'manual') {
-        onChange(valueProp);
+      // Close panel when range is complete (only if auto-close is enabled)
+      // Auto-close is disabled when actions are provided or in manual mode
+      if (val[0] && val[1] && shouldTriggerOnChangeImmediately) {
         onCalendarToggle(false);
-        return;
+      }
+    },
+    [onCalendarChange, onCalendarToggle, shouldTriggerOnChangeImmediately],
+  );
+
+  /** Handle confirm action (for manual mode) */
+  const onConfirm = useCallback(() => {
+    const [from, to] = internalValue;
+
+    if (from && to) {
+      onChangeProp?.([from, to]);
+      // Sync internal state and reset isSelecting
+      onChange([from, to]);
+    }
+
+    onCalendarToggle(false);
+  }, [internalValue, onChange, onChangeProp, onCalendarToggle]);
+
+  /** Handle cancel action (for manual mode) */
+  const onCancel = useCallback(() => {
+    onChange(valueProp);
+    onCalendarToggle(false);
+  }, [onChange, onCalendarToggle, valueProp]);
+
+  /** Auto-generated actions for manual mode */
+  const actions: CalendarFooterActionsProps['actions'] | undefined =
+    useMemo(() => {
+      // In manual mode, auto-generate actions
+      if (confirmMode === 'manual') {
+        const [from, to] = internalValue;
+        const isRangeComplete = Boolean(from && to);
+
+        return {
+          primaryButtonProps: {
+            children: 'Confirm',
+            disabled: !isRangeComplete,
+            onClick: onConfirm,
+            ...actionsProp?.primaryButtonProps,
+          },
+          secondaryButtonProps: {
+            children: 'Cancel',
+            onClick: onCancel,
+            ...actionsProp?.secondaryButtonProps,
+          },
+        };
       }
 
-      const [from, to] = internalValue;
+      if (actionsProp) {
+        return actionsProp;
+      }
 
-      if (from && to) {
-        onChangeProp?.([from, to]);
-      } else {
+      return undefined;
+    }, [actionsProp, confirmMode, internalValue, onConfirm, onCancel]);
+
+  /**
+   * Calendar cell in range checker.
+   *
+   * Pure geometry — whether the range covers a disabled unit is decided by
+   * `RangeCalendar`, which is the only place that knows which cells are
+   * actually on screen. Keeping that scan out of here is what makes this
+   * component's render cost independent of how wide the range is.
+   */
+  const [rangeAnchorStart, rangeAnchorEnd] = calendarValue || [];
+  const getIsInRangeHandler = useCallback(
+    (granularity: string) => {
+      if (!rangeAnchorStart || !rangeAnchorEnd) {
+        return undefined;
+      }
+
+      return (date: DateType) =>
+        isBetweenRange(date, rangeAnchorStart, rangeAnchorEnd, granularity);
+    },
+    [isBetweenRange, rangeAnchorEnd, rangeAnchorStart],
+  );
+
+  /** Popper settings */
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const triggerComposedRef = useComposeRefs([anchorRef, ref]);
+
+  /** Input focus handlers */
+  const onFromFocusHandler = useCallback(
+    (_event: FocusEvent<HTMLInputElement>) => {
+      onFromFocus();
+      onCalendarToggle(true);
+    },
+    [onCalendarToggle, onFromFocus],
+  );
+
+  const onToFocusHandler = useCallback(
+    (_event: FocusEvent<HTMLInputElement>) => {
+      onToFocus();
+      onCalendarToggle(true);
+    },
+    [onCalendarToggle, onToFocus],
+  );
+
+  /** Blur, click away and key down close */
+  const onClose = useCallback(() => {
+    onChange(valueProp);
+    onCalendarToggle(false);
+  }, [onChange, onCalendarToggle, valueProp]);
+
+  const onChangeClose = useCallback(() => {
+    // In manual mode, always restore to valueProp (don't auto-submit on click-away)
+    if (confirmMode === 'manual') {
+      onChange(valueProp);
+      onCalendarToggle(false);
+      return;
+    }
+
+    const [from, to] = internalValue;
+
+    if (from && to) {
+      onChangeProp?.([from, to]);
+    } else {
+      onChange(valueProp);
+    }
+
+    onCalendarToggle(false);
+  }, [
+    confirmMode,
+    internalValue,
+    onChange,
+    onCalendarToggle,
+    onChangeProp,
+    valueProp,
+  ]);
+
+  usePickerDocumentEventClose({
+    anchorRef,
+    lastElementRefInFlow: inputToRef,
+    onChangeClose,
+    onClose,
+    open,
+    popperRef: calendarRef,
+  });
+
+  /** Icon click handler */
+  const onIconClick: MouseEventHandler<HTMLElement> = useCallback(
+    (e) => {
+      e.stopPropagation();
+
+      if (open) {
         onChange(valueProp);
       }
 
-      onCalendarToggle(false);
-    }, [
-      confirmMode,
-      internalValue,
-      onChange,
-      onCalendarToggle,
-      onChangeProp,
-      valueProp,
-    ]);
+      onCalendarToggle(!open);
+    },
+    [onChange, onCalendarToggle, open, valueProp],
+  );
 
-    usePickerDocumentEventClose({
-      anchorRef,
-      lastElementRefInFlow: inputToRef,
-      onChangeClose,
-      onClose,
-      open,
-      popperRef: calendarRef,
-    });
+  const suffixActionIcon = <Icon icon={CalendarIcon} onClick={onIconClick} />;
 
-    /** Icon click handler */
-    const onIconClick: MouseEventHandler<HTMLElement> = useCallback(
-      (e) => {
-        e.stopPropagation();
+  const rangeWidthClass =
+    mode === 'year'
+      ? pickerClasses.hostRangeYear
+      : mode !== 'day'
+        ? pickerClasses.hostRangeSlim
+        : undefined;
 
-        if (open) {
-          onChange(valueProp);
-        }
-
-        onCalendarToggle(!open);
-      },
-      [onChange, onCalendarToggle, open, valueProp],
-    );
-
-    const suffixActionIcon = <Icon icon={CalendarIcon} onClick={onIconClick} />;
-
-    const rangeWidthClass =
-      mode === 'year'
-        ? pickerClasses.hostRangeYear
-        : mode !== 'day'
-          ? pickerClasses.hostRangeSlim
-          : undefined;
-
-    return (
-      <>
-        <RangePickerTrigger
-          className={cx(rangeWidthClass, className)}
-          clearable={clearable}
-          disabled={disabled}
-          forceShowClearable={!!(internalValue[0] || internalValue[1])}
-          hideSuffixWhenClearable={clearable}
-          error={error}
-          errorMessagesFrom={errorMessagesFrom}
-          errorMessagesTo={errorMessagesTo}
-          format={format}
-          fullWidth={fullWidth}
-          hoverFromValue={open ? hoverFromValue : undefined}
-          hoverToValue={open ? hoverToValue : undefined}
-          inputFromPlaceholder={inputFromPlaceholder}
-          inputFromProps={inputFromProps}
-          inputFromRef={inputFromRef}
-          inputFromValue={inputFromValue}
-          inputToPlaceholder={inputToPlaceholder}
-          inputToProps={inputToProps}
-          inputToRef={inputToRef}
-          inputToValue={inputToValue}
-          onClear={onClear}
-          onFromBlur={onFromBlur}
-          onFromFocus={onFromFocusHandler}
-          onInputFromChange={onInputFromChange}
-          onInputToChange={onInputToChange}
-          onToBlur={onToBlur}
-          onToFocus={onToFocusHandler}
-          prefix={prefix}
-          readOnly={readOnly}
-          ref={triggerComposedRef}
-          required={required}
-          size={size}
-          suffixActionIcon={suffixActionIcon}
-          validateFrom={validateFrom}
-          validateTo={validateTo}
-        />
-        <DateRangePickerCalendar
-          actions={actions}
-          anchor={anchorRef}
-          calendarProps={calendarProps}
-          disabledMonthSwitch={disabledMonthSwitch}
-          disabledYearSwitch={disabledYearSwitch}
-          disableOnDoubleNext={disableOnDoubleNext}
-          disableOnDoublePrev={disableOnDoublePrev}
-          disableOnNext={disableOnNext}
-          disableOnPrev={disableOnPrev}
-          displayMonthLocale={displayMonthLocale}
-          displayWeekDayLocale={displayWeekDayLocale}
-          fadeProps={fadeProps}
-          firstCalendarRef={firstCalendarRef}
-          isDateDisabled={isDateDisabled}
-          isDateInRange={getIsInRangeHandler('date')}
-          isHalfYearDisabled={isHalfYearDisabled}
-          isHalfYearInRange={getIsInRangeHandler('half-year')}
-          isMonthDisabled={isMonthDisabled}
-          isMonthInRange={getIsInRangeHandler('month')}
-          isQuarterDisabled={isQuarterDisabled}
-          isQuarterInRange={getIsInRangeHandler('quarter')}
-          isWeekDisabled={isWeekDisabled}
-          isWeekInRange={getIsInRangeHandler('week')}
-          isYearDisabled={isYearDisabled}
-          isYearInRange={getIsInRangeHandler('year')}
-          mode={mode}
-          onChange={onCalendarChangeWithCloseControl}
-          onDateHover={onCalendarHover}
-          onHalfYearHover={onCalendarHover}
-          onLeave={onHoverClear}
-          onMonthHover={onCalendarHover}
-          onQuarterHover={onCalendarHover}
-          onWeekHover={onCalendarHover}
-          onYearHover={onCalendarHover}
-          open={open}
-          popperProps={popperProps}
-          previewValue={hoverValue}
-          quickSelect={quickSelect}
-          ref={calendarRef}
-          referenceDate={referenceDate}
-          renderAnnotations={renderAnnotations}
-          secondCalendarRef={secondCalendarRef}
-          value={committedCalendarValue}
-        />
-      </>
-    );
-  },
-);
+  return (
+    <>
+      <RangePickerTrigger
+        className={cx(rangeWidthClass, className)}
+        clearable={clearable}
+        disabled={disabled}
+        forceShowClearable={!!(internalValue[0] || internalValue[1])}
+        hideSuffixWhenClearable={clearable}
+        error={error}
+        errorMessagesFrom={errorMessagesFrom}
+        errorMessagesTo={errorMessagesTo}
+        format={format}
+        fullWidth={fullWidth}
+        hoverFromValue={open ? hoverFromValue : undefined}
+        hoverToValue={open ? hoverToValue : undefined}
+        inputFromPlaceholder={inputFromPlaceholder}
+        inputFromProps={inputFromProps}
+        inputFromRef={inputFromRef}
+        inputFromValue={inputFromValue}
+        inputToPlaceholder={inputToPlaceholder}
+        inputToProps={inputToProps}
+        inputToRef={inputToRef}
+        inputToValue={inputToValue}
+        onClear={onClear}
+        onFromBlur={onFromBlur}
+        onFromFocus={onFromFocusHandler}
+        onInputFromChange={onInputFromChange}
+        onInputToChange={onInputToChange}
+        onToBlur={onToBlur}
+        onToFocus={onToFocusHandler}
+        prefix={prefix}
+        readOnly={readOnly}
+        ref={triggerComposedRef}
+        required={required}
+        size={size}
+        suffixActionIcon={suffixActionIcon}
+        validateFrom={validateFrom}
+        validateTo={validateTo}
+      />
+      <DateRangePickerCalendar
+        actions={actions}
+        anchor={anchorRef}
+        calendarProps={calendarProps}
+        disabledMonthSwitch={disabledMonthSwitch}
+        disabledYearSwitch={disabledYearSwitch}
+        disableOnDoubleNext={disableOnDoubleNext}
+        disableOnDoublePrev={disableOnDoublePrev}
+        disableOnNext={disableOnNext}
+        disableOnPrev={disableOnPrev}
+        displayMonthLocale={displayMonthLocale}
+        displayWeekDayLocale={displayWeekDayLocale}
+        fadeProps={fadeProps}
+        firstCalendarRef={firstCalendarRef}
+        isDateDisabled={isDateDisabled}
+        isDateInRange={getIsInRangeHandler('date')}
+        isHalfYearDisabled={isHalfYearDisabled}
+        isHalfYearInRange={getIsInRangeHandler('half-year')}
+        isMonthDisabled={isMonthDisabled}
+        isMonthInRange={getIsInRangeHandler('month')}
+        isQuarterDisabled={isQuarterDisabled}
+        isQuarterInRange={getIsInRangeHandler('quarter')}
+        isWeekDisabled={isWeekDisabled}
+        isWeekInRange={getIsInRangeHandler('week')}
+        isYearDisabled={isYearDisabled}
+        isYearInRange={getIsInRangeHandler('year')}
+        mode={mode}
+        onChange={onCalendarChangeWithCloseControl}
+        onDateHover={onCalendarHover}
+        onHalfYearHover={onCalendarHover}
+        onLeave={onHoverClear}
+        onMonthHover={onCalendarHover}
+        onQuarterHover={onCalendarHover}
+        onWeekHover={onCalendarHover}
+        onYearHover={onCalendarHover}
+        open={open}
+        popperProps={popperProps}
+        previewValue={hoverValue}
+        quickSelect={quickSelect}
+        ref={calendarRef}
+        referenceDate={referenceDate}
+        renderAnnotations={renderAnnotations}
+        secondCalendarRef={secondCalendarRef}
+        value={committedCalendarValue}
+      />
+    </>
+  );
+}
 
 export default DateRangePicker;

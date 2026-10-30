@@ -1,6 +1,6 @@
 import {
   cloneElement,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   PropsWithChildren,
   ReactElement,
@@ -68,53 +68,54 @@ function isTabElement(
 /**
  * The react component for `mezzanine` section.
  */
-const Section = forwardRef<HTMLDivElement, PropsWithChildren<SectionProps>>(
-  function Section(props, ref) {
-    const { children, className, contentHeader, filterArea, tab } = props;
+function Section({
+  ref,
+  ...props
+}: PropsWithChildren<SectionProps> & RefAttributes<HTMLDivElement>) {
+  const { children, className, contentHeader, filterArea, tab } = props;
 
-    let renderedContentHeader: ReactElement<ContentHeaderProps> | null = null;
-    let renderedFilterArea: ReactElement<FilterAreaProps> | null = null;
-    let renderedTab: ReactElement<TabProps> | null = null;
+  let renderedContentHeader: ReactElement<ContentHeaderProps> | null = null;
+  let renderedFilterArea: ReactElement<FilterAreaProps> | null = null;
+  let renderedTab: ReactElement<TabProps> | null = null;
 
-    if (contentHeader) {
-      if (isContentHeaderElement(contentHeader)) {
-        renderedContentHeader = cloneElement(contentHeader, { size: 'sub' });
-      } else if (isValidElement(contentHeader)) {
-        console.warn(
-          `[Section] Invalid contentHeader type: <${getDisplayName(contentHeader)}>. Only <ContentHeader /> component from @mezzanine-ui/react is allowed.`,
-        );
-      }
+  if (contentHeader) {
+    if (isContentHeaderElement(contentHeader)) {
+      renderedContentHeader = cloneElement(contentHeader, { size: 'sub' });
+    } else if (isValidElement(contentHeader)) {
+      console.warn(
+        `[Section] Invalid contentHeader type: <${getDisplayName(contentHeader)}>. Only <ContentHeader /> component from @mezzanine-ui/react is allowed.`,
+      );
     }
+  }
 
-    if (filterArea) {
-      if (isFilterAreaElement(filterArea)) {
-        renderedFilterArea = cloneElement(filterArea, { size: 'sub' });
-      } else if (isValidElement(filterArea)) {
-        console.warn(
-          `[Section] Invalid filterArea type: <${getDisplayName(filterArea)}>. Only <FilterArea /> component from @mezzanine-ui/react is allowed.`,
-        );
-      }
+  if (filterArea) {
+    if (isFilterAreaElement(filterArea)) {
+      renderedFilterArea = cloneElement(filterArea, { size: 'sub' });
+    } else if (isValidElement(filterArea)) {
+      console.warn(
+        `[Section] Invalid filterArea type: <${getDisplayName(filterArea)}>. Only <FilterArea /> component from @mezzanine-ui/react is allowed.`,
+      );
     }
+  }
 
-    if (tab) {
-      if (isTabElement(tab)) {
-        renderedTab = tab;
-      } else if (isValidElement(tab)) {
-        console.warn(
-          `[Section] Invalid tab type: <${getDisplayName(tab)}>. Only <Tab /> component from @mezzanine-ui/react is allowed.`,
-        );
-      }
+  if (tab) {
+    if (isTabElement(tab)) {
+      renderedTab = tab;
+    } else if (isValidElement(tab)) {
+      console.warn(
+        `[Section] Invalid tab type: <${getDisplayName(tab)}>. Only <Tab /> component from @mezzanine-ui/react is allowed.`,
+      );
     }
+  }
 
-    return (
-      <div ref={ref} className={cx(classes.host, className)}>
-        {renderedContentHeader}
-        {renderedFilterArea}
-        {renderedTab}
-        <div className={classes.hostContent}>{children}</div>
-      </div>
-    );
-  },
-);
+  return (
+    <div ref={ref} className={cx(classes.host, className)}>
+      {renderedContentHeader}
+      {renderedFilterArea}
+      {renderedTab}
+      <div className={classes.hostContent}>{children}</div>
+    </div>
+  );
+}
 
 export default Section;

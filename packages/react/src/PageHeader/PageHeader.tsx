@@ -1,4 +1,9 @@
-import { cloneElement, forwardRef, isValidElement, ReactElement } from 'react';
+import {
+  cloneElement,
+  type RefAttributes,
+  isValidElement,
+  ReactElement,
+} from 'react';
 import { pageHeaderClasses as classes } from '@mezzanine-ui/core/page-header';
 import Breadcrumb, { BreadcrumbProps } from '../Breadcrumb';
 import ContentHeader, { ContentHeaderProps } from '../ContentHeader';
@@ -110,19 +115,20 @@ const getBreadcrumbAndToolbar = (
  * </PageHeader>
  * ```
  */
-const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
-  function PageHeader(props, ref) {
-    const { children, className, ...rest } = props;
+function PageHeader({
+  ref,
+  ...props
+}: PageHeaderProps & RefAttributes<HTMLElement>) {
+  const { children, className, ...rest } = props;
 
-    const { breadcrumb, contentHeader } = getBreadcrumbAndToolbar(children);
+  const { breadcrumb, contentHeader } = getBreadcrumbAndToolbar(children);
 
-    return (
-      <header {...rest} className={cx(classes.host, className)} ref={ref}>
-        {breadcrumb}
-        {contentHeader}
-      </header>
-    );
-  },
-);
+  return (
+    <header {...rest} className={cx(classes.host, className)} ref={ref}>
+      {breadcrumb}
+      {contentHeader}
+    </header>
+  );
+}
 
 export default PageHeader;

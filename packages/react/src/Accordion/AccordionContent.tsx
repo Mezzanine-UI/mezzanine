@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useContext, useMemo } from 'react';
+import { type RefAttributes, use, useMemo } from 'react';
 import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -15,41 +15,42 @@ export interface AccordionContentProps
   expanded?: boolean;
 }
 
-const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
-  function AccordionContent(props, ref) {
-    const { className, children, expanded: expandedProp, ...rest } = props;
+function AccordionContent({
+  ref,
+  ...props
+}: AccordionContentProps & RefAttributes<HTMLDivElement>) {
+  const { className, children, expanded: expandedProp, ...rest } = props;
 
-    const {
-      contentId: detailsId,
-      expanded,
-      titleId: summaryId,
-    } = useContext(AccordionControlContext) || {};
+  const {
+    contentId: detailsId,
+    expanded,
+    titleId: summaryId,
+  } = use(AccordionControlContext) || {};
 
-    const ariaProps = useMemo(() => {
-      if (summaryId && detailsId) {
-        return {
-          'aria-labelledby': summaryId,
-          id: detailsId,
-        };
-      }
+  const ariaProps = useMemo(() => {
+    if (summaryId && detailsId) {
+      return {
+        'aria-labelledby': summaryId,
+        id: detailsId,
+      };
+    }
 
-      return {};
-    }, [summaryId, detailsId]);
+    return {};
+  }, [summaryId, detailsId]);
 
-    return (
-      <Collapse style={{ width: '100%' }} in={expandedProp || expanded}>
-        <div
-          {...rest}
-          {...ariaProps}
-          ref={ref}
-          className={cx(classes.content, className)}
-          role="region"
-        >
-          {children}
-        </div>
-      </Collapse>
-    );
-  },
-);
+  return (
+    <Collapse style={{ width: '100%' }} in={expandedProp || expanded}>
+      <div
+        {...rest}
+        {...ariaProps}
+        ref={ref}
+        className={cx(classes.content, className)}
+        role="region"
+      >
+        {children}
+      </div>
+    </Collapse>
+  );
+}
 
 export default AccordionContent;

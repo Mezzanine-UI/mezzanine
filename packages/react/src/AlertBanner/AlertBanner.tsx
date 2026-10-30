@@ -1,7 +1,13 @@
 'use client';
 
 import type { Key, MouseEvent, ReactElement } from 'react';
-import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type RefAttributes,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   alertBannerGroupClasses,
@@ -189,10 +195,10 @@ export type AlertBannerType = ((
  * @see {@link InlineMessage} 行內訊息元件
  * @see {@link Message} 全域提示訊息元件
  */
-export const AlertBannerComponent = forwardRef<
-  HTMLDivElement,
-  AlertBannerProps
->(function AlertBanner(props, ref) {
+export const AlertBannerComponent = function AlertBanner({
+  ref,
+  ...props
+}: AlertBannerProps & RefAttributes<HTMLDivElement>) {
   const {
     actions,
     className,
@@ -309,11 +315,7 @@ export const AlertBannerComponent = forwardRef<
         {...restProps}
         ref={composedRef}
         aria-live="polite"
-        className={cx(
-          classes.host,
-          classes.severity(severity),
-          className,
-        )}
+        className={cx(classes.host, classes.severity(severity), className)}
         role="status"
       >
         <div className={classes.body}>
@@ -334,7 +336,7 @@ export const AlertBannerComponent = forwardRef<
   }
 
   return <Portal layer="alert">{content}</Portal>;
-});
+};
 
 const AlertBanner: AlertBannerType = ((props) => {
   const {

@@ -71,13 +71,13 @@ const renderWithContext = (
   dataContextValue: any = defaultDataContextValue,
 ) => {
   return render(
-    <TableContext.Provider value={contextValue}>
-      <TableDataContext.Provider value={dataContextValue}>
+    <TableContext value={contextValue}>
+      <TableDataContext value={dataContextValue}>
         <table>
           <TableBody />
         </table>
-      </TableDataContext.Provider>
-    </TableContext.Provider>,
+      </TableDataContext>
+    </TableContext>,
   );
 };
 

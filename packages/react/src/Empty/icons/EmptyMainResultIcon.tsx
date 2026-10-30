@@ -1,14 +1,14 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 
 export interface EmptyMainResultIconProps
   extends React.SVGProps<SVGSVGElement> {
   size?: number;
 }
 
-export const EmptyMainResultIcon = forwardRef<
-  SVGSVGElement,
-  EmptyMainResultIconProps
->(function EmptyResultIcon(props, ref) {
+export const EmptyMainResultIcon = function EmptyResultIcon({
+  ref,
+  ...props
+}: EmptyMainResultIconProps & RefAttributes<SVGSVGElement>) {
   const { className, size = 64, ...rest } = props;
 
   return (
@@ -61,4 +61,4 @@ export const EmptyMainResultIcon = forwardRef<
       </g>
     </svg>
   );
-});
+};

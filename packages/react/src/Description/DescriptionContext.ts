@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 import { DescriptionSize } from '@mezzanine-ui/core/description';
 
 export interface DescriptionContextValue {
@@ -11,4 +11,4 @@ export const DescriptionContext = createContext<DescriptionContextValue>({
   size: 'main',
 });
 
-export const useDescriptionContext = () => useContext(DescriptionContext);
+export const useDescriptionContext = () => use(DescriptionContext);

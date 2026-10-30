@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useCallback } from 'react';
+import { memo, type RefAttributes, useCallback } from 'react';
 import {
   getRowKey,
   tableClasses as classes,
@@ -35,10 +35,10 @@ export interface TableDragOrPinHandleCellProps<
 
 function TableDragOrPinHandleCellInner<
   T extends TableDataSource = TableDataSource,
->(
-  props: TableDragOrPinHandleCellProps<T>,
-  ref: React.ForwardedRef<HTMLTableCellElement>,
-) {
+>({
+  ref,
+  ...props
+}: TableDragOrPinHandleCellProps<T> & RefAttributes<HTMLTableCellElement>) {
   const { loading, pinnable } = useTableContext();
   const {
     className,
@@ -140,14 +140,6 @@ function TableDragOrPinHandleCellInner<
   );
 }
 
-const ForwardedTableDragOrPinHandleCell = forwardRef(
-  TableDragOrPinHandleCellInner,
-) as <T extends TableDataSource = TableDataSource>(
-  props: TableDragOrPinHandleCellProps<T> & {
-    ref?: React.ForwardedRef<HTMLTableCellElement>;
-  },
-) => React.ReactElement;
-
 export const TableDragOrPinHandleCell = memo(
-  ForwardedTableDragOrPinHandleCell,
-) as typeof ForwardedTableDragOrPinHandleCell;
+  TableDragOrPinHandleCellInner,
+) as typeof TableDragOrPinHandleCellInner;

@@ -1,5 +1,10 @@
 import { InputCheckSize } from '@mezzanine-ui/core/_internal/input-check';
-import { ChangeEventHandler, forwardRef, ReactNode, useMemo } from 'react';
+import {
+  ChangeEventHandler,
+  type RefAttributes,
+  ReactNode,
+  useMemo,
+} from 'react';
 import InputCheckGroup, {
   InputCheckGroupProps,
 } from '../_internal/InputCheck/InputCheckGroup';
@@ -92,66 +97,67 @@ export type RadioGroupProps = RadioGroupNormalProps | RadioGroupSegmentProps;
 /**
  * The react component for `mezzanine` radio group.
  */
-const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
-  function RadioGroup(props, ref) {
-    const {
-      children: childrenProp,
-      defaultValue,
+function RadioGroup({
+  ref,
+  ...props
+}: RadioGroupProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children: childrenProp,
+    defaultValue,
+    disabled,
+    name,
+    options = [],
+    onChange: onChangeProp,
+    size,
+    type,
+    value: valueProp,
+    ...rest
+  } = props;
+  const [value, onChange] = useInputControlValue({
+    defaultValue,
+    onChange: onChangeProp,
+    value: valueProp,
+  });
+  const context: RadioGroupContextValue = useMemo(
+    () => ({
       disabled,
       name,
-      options = [],
-      onChange: onChangeProp,
+      onChange,
       size,
       type,
-      value: valueProp,
-      ...rest
-    } = props;
-    const [value, onChange] = useInputControlValue({
-      defaultValue,
-      onChange: onChangeProp,
-      value: valueProp,
-    });
-    const context: RadioGroupContextValue = useMemo(
-      () => ({
-        disabled,
-        name,
-        onChange,
-        size,
-        type,
-        value,
-      }),
-      [disabled, name, onChange, size, type, value],
-    );
+      value,
+    }),
+    [disabled, name, onChange, size, type, value],
+  );
 
-    const children =
-      childrenProp ||
-      options.map((option) => (
-        <Radio
-          key={option.id}
-          disabled={option.disabled}
-          error={option.error}
-          hint={option.hint}
-          value={option.id}
-          withInputConfig={option.withInputConfig}
-        >
-          {option.name}
-        </Radio>
-      ));
+  const children =
+    childrenProp ||
+    options.map((option) => (
+      <Radio
+        key={option.id}
+        disabled={option.disabled}
+        error={option.error}
+        hint={option.hint}
+        value={option.id}
+        withInputConfig={option.withInputConfig}
+      >
+        {option.name}
+      </Radio>
+    ));
 
-    return (
-      <RadioGroupContext.Provider value={context}>
-        <InputCheckGroup
-          {...rest}
-          ref={ref}
-          role="radiogroup"
-          segmentedStyle={type === 'segment'}
-          size={size}
-        >
-          {children}
-        </InputCheckGroup>
-      </RadioGroupContext.Provider>
-    );
-  },
-);
+  return (
+    <RadioGroupContext value={context}>
+      <InputCheckGroup
+        {...rest}
+        ref={ref}
+        role="radiogroup"
+        segmentedStyle={type === 'segment'}
+        size={size}
+      >
+        {children}
+      </InputCheckGroup>
+    </RadioGroupContext>
+  );
+}
 
 export default RadioGroup;

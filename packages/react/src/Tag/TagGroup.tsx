@@ -1,6 +1,6 @@
 import {
   Children,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactElement,
   ReactNode,
@@ -56,10 +56,13 @@ export type TagGroupProps = Omit<
   transition?: 'fade' | 'none';
 };
 
-const TagGroup = forwardRef<HTMLDivElement, TagGroupProps>(function TagGroup(
-  { className, children, transition = 'none', ...rest },
+function TagGroup({
   ref,
-) {
+  className,
+  children,
+  transition = 'none',
+  ...rest
+}: TagGroupProps & RefAttributes<HTMLDivElement>) {
   const hasInvalidChild = Children.toArray(children).some((child) => {
     if (!isTagElement(child) && !isOverflowCounterElement(child)) {
       console.error('<TagGroup> only accepts <Tag> or <OverflowCounterTag>');
@@ -91,6 +94,6 @@ const TagGroup = forwardRef<HTMLDivElement, TagGroupProps>(function TagGroup(
       )}
     </div>
   );
-});
+}
 
 export default TagGroup;

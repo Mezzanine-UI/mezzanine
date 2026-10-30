@@ -2,7 +2,7 @@
 
 import {
   FocusEvent,
-  forwardRef,
+  type RefAttributes,
   MouseEventHandler,
   useCallback,
   useMemo,
@@ -83,313 +83,314 @@ export interface TimeRangePickerProps
  * The react component for `mezzanine` time range picker.
  * Notice that any component related to time-range-picker should be used along with `CalendarContext`.
  */
-const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
-  function TimeRangePicker(props, ref) {
-    const {
-      defaultTimeFormat,
-      getNow,
-      getHour,
-      getMinute,
-      getSecond,
-      setHour,
-      setMinute,
-      setSecond,
-    } = useCalendarContext();
-    const {
-      className,
-      clearable = true,
-      disabled = false,
-      error = false,
-      errorMessagesFrom,
-      errorMessagesTo,
-      fadeProps,
-      format: formatProp,
-      fullWidth = false,
-      hideHour,
-      hideMinute,
-      hideSecond,
-      hourStep,
-      inputFromPlaceholder,
-      inputFromProps,
-      inputToPlaceholder,
-      inputToProps,
-      minuteStep,
-      onChange: onChangeProp,
-      onPanelToggle: onPanelToggleProp,
-      popperProps,
-      prefix,
-      readOnly,
-      required = false,
-      secondStep,
-      size,
-      validateFrom,
-      validateTo,
-      value: valueProp,
-    } = props;
+function TimeRangePicker({
+  ref,
+  ...props
+}: TimeRangePickerProps & RefAttributes<HTMLDivElement>) {
+  const {
+    defaultTimeFormat,
+    getNow,
+    getHour,
+    getMinute,
+    getSecond,
+    setHour,
+    setMinute,
+    setSecond,
+  } = useCalendarContext();
+  const {
+    className,
+    clearable = true,
+    disabled = false,
+    error = false,
+    errorMessagesFrom,
+    errorMessagesTo,
+    fadeProps,
+    format: formatProp,
+    fullWidth = false,
+    hideHour,
+    hideMinute,
+    hideSecond,
+    hourStep,
+    inputFromPlaceholder,
+    inputFromProps,
+    inputToPlaceholder,
+    inputToProps,
+    minuteStep,
+    onChange: onChangeProp,
+    onPanelToggle: onPanelToggleProp,
+    popperProps,
+    prefix,
+    readOnly,
+    required = false,
+    secondStep,
+    size,
+    validateFrom,
+    validateTo,
+    value: valueProp,
+  } = props;
 
-    // Determine default format based on hideSecond
-    const resolvedFormat =
-      formatProp ?? (hideSecond ? 'HH:mm' : defaultTimeFormat);
+  // Determine default format based on hideSecond
+  const resolvedFormat =
+    formatProp ?? (hideSecond ? 'HH:mm' : defaultTimeFormat);
 
-    // Compute rounded current time respecting step and hide settings
-    const computeCurrentTime = useCallback((): DateType => {
-      const now = getNow();
-      const h = getHour(now);
-      const m = getMinute(now);
-      const s = getSecond(now);
+  // Compute rounded current time respecting step and hide settings
+  const computeCurrentTime = useCallback((): DateType => {
+    const now = getNow();
+    const h = getHour(now);
+    const m = getMinute(now);
+    const s = getSecond(now);
 
-      let result = now;
+    let result = now;
 
-      if (!hideHour) {
-        result = setHour(
-          result,
-          Math.min(Math.round(h / (hourStep ?? 1)) * (hourStep ?? 1), 23),
-        );
+    if (!hideHour) {
+      result = setHour(
+        result,
+        Math.min(Math.round(h / (hourStep ?? 1)) * (hourStep ?? 1), 23),
+      );
+    }
+
+    if (!hideMinute) {
+      result = setMinute(
+        result,
+        Math.min(Math.round(m / (minuteStep ?? 1)) * (minuteStep ?? 1), 59),
+      );
+    }
+
+    if (!hideSecond) {
+      result = setSecond(
+        result,
+        Math.min(Math.round(s / (secondStep ?? 1)) * (secondStep ?? 1), 59),
+      );
+    }
+
+    return result;
+  }, [
+    getNow,
+    getHour,
+    getMinute,
+    getSecond,
+    setHour,
+    setMinute,
+    setSecond,
+    hideHour,
+    hideMinute,
+    hideSecond,
+    hourStep,
+    minuteStep,
+    secondStep,
+  ]);
+
+  /** Panel open control */
+  const [open, setOpen] = useState(false);
+  const preventOpen = readOnly;
+
+  const onPanelToggle = useCallback(
+    (nextOpen: boolean) => {
+      if (!preventOpen) {
+        setOpen(nextOpen);
+        onPanelToggleProp?.(nextOpen);
       }
+    },
+    [onPanelToggleProp, preventOpen],
+  );
 
-      if (!hideMinute) {
-        result = setMinute(
-          result,
-          Math.min(Math.round(m / (minuteStep ?? 1)) * (minuteStep ?? 1), 59),
-        );
-      }
+  /** Values and onChange */
+  const inputToRef = useRef<HTMLInputElement>(null);
+  const inputFromRef = useRef<HTMLInputElement>(null);
 
-      if (!hideSecond) {
-        result = setSecond(
-          result,
-          Math.min(Math.round(s / (secondStep ?? 1)) * (secondStep ?? 1), 59),
-        );
-      }
+  const {
+    focusedInput,
+    inputFromValue,
+    inputToValue,
+    onChange,
+    onClear,
+    onFromFocus,
+    onInputFromChange,
+    onInputToChange,
+    onPanelChange,
+    onPanelCancel,
+    onPanelConfirm,
+    onToFocus,
+    panelValue,
+    value: internalValue,
+  } = useTimeRangePickerValue({
+    format: resolvedFormat,
+    onChange: onChangeProp,
+    value: valueProp,
+  });
 
-      return result;
-    }, [
-      getNow,
-      getHour,
-      getMinute,
-      getSecond,
-      setHour,
-      setMinute,
-      setSecond,
-      hideHour,
-      hideMinute,
-      hideSecond,
-      hourStep,
-      minuteStep,
-      secondStep,
-    ]);
+  /** Popper settings */
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerComposedRef = useComposeRefs([anchorRef, ref]);
 
-    /** Panel open control */
-    const [open, setOpen] = useState(false);
-    const preventOpen = readOnly;
-
-    const onPanelToggle = useCallback(
-      (nextOpen: boolean) => {
-        if (!preventOpen) {
-          setOpen(nextOpen);
-          onPanelToggleProp?.(nextOpen);
-        }
-      },
-      [onPanelToggleProp, preventOpen],
-    );
-
-    /** Values and onChange */
-    const inputToRef = useRef<HTMLInputElement>(null);
-    const inputFromRef = useRef<HTMLInputElement>(null);
-
-    const {
-      focusedInput,
-      inputFromValue,
-      inputToValue,
-      onChange,
-      onClear,
-      onFromFocus,
-      onInputFromChange,
-      onInputToChange,
-      onPanelChange,
-      onPanelCancel,
-      onPanelConfirm,
-      onToFocus,
-      panelValue,
-      value: internalValue,
-    } = useTimeRangePickerValue({
-      format: resolvedFormat,
-      onChange: onChangeProp,
-      value: valueProp,
-    });
-
-    /** Popper settings */
-    const anchorRef = useRef<HTMLDivElement>(null);
-    const panelRef = useRef<HTMLDivElement>(null);
-    const triggerComposedRef = useComposeRefs([anchorRef, ref]);
-
-    /** Dynamic anchor for panel - follows the focused input */
-    const panelAnchor = useMemo(() => {
-      if (focusedInput === 'from') {
-        return inputFromRef;
-      }
-
-      if (focusedInput === 'to') {
-        return inputToRef;
-      }
-
+  /** Dynamic anchor for panel - follows the focused input */
+  const panelAnchor = useMemo(() => {
+    if (focusedInput === 'from') {
       return inputFromRef;
-    }, [focusedInput]);
+    }
 
-    /** Input focus handlers — initialize panel to current value or current time */
-    const onFromFocusHandler = useCallback(
-      (_event: FocusEvent<HTMLInputElement>) => {
-        onFromFocus();
+    if (focusedInput === 'to') {
+      return inputToRef;
+    }
 
-        const currentFrom = valueProp?.[0] ?? internalValue[0];
+    return inputFromRef;
+  }, [focusedInput]);
 
-        if (!currentFrom) {
-          onPanelChange(computeCurrentTime());
-        }
+  /** Input focus handlers — initialize panel to current value or current time */
+  const onFromFocusHandler = useCallback(
+    (_event: FocusEvent<HTMLInputElement>) => {
+      onFromFocus();
 
+      const currentFrom = valueProp?.[0] ?? internalValue[0];
+
+      if (!currentFrom) {
+        onPanelChange(computeCurrentTime());
+      }
+
+      onPanelToggle(true);
+    },
+    [
+      computeCurrentTime,
+      internalValue,
+      onFromFocus,
+      onPanelChange,
+      onPanelToggle,
+      valueProp,
+    ],
+  );
+
+  const onToFocusHandler = useCallback(
+    (_event: FocusEvent<HTMLInputElement>) => {
+      onToFocus();
+
+      const currentTo = valueProp?.[1] ?? internalValue[1];
+
+      if (!currentTo) {
+        onPanelChange(computeCurrentTime());
+      }
+
+      onPanelToggle(true);
+    },
+    [
+      computeCurrentTime,
+      internalValue,
+      onPanelChange,
+      onPanelToggle,
+      onToFocus,
+      valueProp,
+    ],
+  );
+
+  /** Ok: commit pending value + close */
+  const onConfirm = useCallback(() => {
+    onPanelConfirm();
+    onPanelToggle(false);
+  }, [onPanelConfirm, onPanelToggle]);
+
+  /** Cancel / click away: revert pending value + close */
+  const onCancel = useCallback(() => {
+    onPanelCancel();
+    onChange(valueProp);
+    onPanelToggle(false);
+  }, [onChange, onPanelCancel, onPanelToggle, valueProp]);
+
+  /** Clear handler */
+  const onClearHandler = useCallback<
+    MouseEventHandler<HTMLInputElement>
+  >(() => {
+    onClear();
+  }, [onClear]);
+
+  /** Icon click handler */
+  const onIconClick: MouseEventHandler<HTMLElement> = useCallback(
+    (e) => {
+      e.stopPropagation();
+
+      if (open) {
+        onCancel();
+      } else {
         onPanelToggle(true);
-      },
-      [
-        computeCurrentTime,
-        internalValue,
-        onFromFocus,
-        onPanelChange,
-        onPanelToggle,
-        valueProp,
-      ],
-    );
+      }
+    },
+    [open, onCancel, onPanelToggle],
+  );
 
-    const onToFocusHandler = useCallback(
-      (_event: FocusEvent<HTMLInputElement>) => {
-        onToFocus();
+  usePickerDocumentEventClose({
+    anchorRef,
+    lastElementRefInFlow: inputToRef,
+    onChangeClose: onCancel,
+    onClose: onCancel,
+    open,
+    popperRef: panelRef,
+  });
 
-        const currentTo = valueProp?.[1] ?? internalValue[1];
+  /** Suffix icon */
+  const suffixIcon = (
+    <Icon
+      aria-label="Open time picker"
+      icon={ClockIcon}
+      onClick={readOnly ? undefined : onIconClick}
+    />
+  );
 
-        if (!currentTo) {
-          onPanelChange(computeCurrentTime());
-        }
-
-        onPanelToggle(true);
-      },
-      [
-        computeCurrentTime,
-        internalValue,
-        onPanelChange,
-        onPanelToggle,
-        onToFocus,
-        valueProp,
-      ],
-    );
-
-    /** Ok: commit pending value + close */
-    const onConfirm = useCallback(() => {
-      onPanelConfirm();
-      onPanelToggle(false);
-    }, [onPanelConfirm, onPanelToggle]);
-
-    /** Cancel / click away: revert pending value + close */
-    const onCancel = useCallback(() => {
-      onPanelCancel();
-      onChange(valueProp);
-      onPanelToggle(false);
-    }, [onChange, onPanelCancel, onPanelToggle, valueProp]);
-
-    /** Clear handler */
-    const onClearHandler = useCallback<
-      MouseEventHandler<HTMLInputElement>
-    >(() => {
-      onClear();
-    }, [onClear]);
-
-    /** Icon click handler */
-    const onIconClick: MouseEventHandler<HTMLElement> = useCallback(
-      (e) => {
-        e.stopPropagation();
-
-        if (open) {
-          onCancel();
-        } else {
-          onPanelToggle(true);
-        }
-      },
-      [open, onCancel, onPanelToggle],
-    );
-
-    usePickerDocumentEventClose({
-      anchorRef,
-      lastElementRefInFlow: inputToRef,
-      onChangeClose: onCancel,
-      onClose: onCancel,
-      open,
-      popperRef: panelRef,
-    });
-
-    /** Suffix icon */
-    const suffixIcon = (
-      <Icon
-        aria-label="Open time picker"
-        icon={ClockIcon}
-        onClick={readOnly ? undefined : onIconClick}
+  return (
+    <>
+      <RangePickerTrigger
+        className={className}
+        clearable={clearable}
+        disabled={disabled}
+        error={error}
+        errorMessagesFrom={errorMessagesFrom}
+        errorMessagesTo={errorMessagesTo}
+        forceShowClearable={internalValue.some(Boolean)}
+        format={resolvedFormat}
+        fullWidth={fullWidth}
+        hideSuffixWhenClearable={clearable}
+        inputFromPlaceholder={inputFromPlaceholder}
+        inputFromProps={inputFromProps}
+        inputFromRef={inputFromRef}
+        inputFromValue={inputFromValue}
+        inputToPlaceholder={inputToPlaceholder}
+        inputToProps={inputToProps}
+        inputToRef={inputToRef}
+        inputToValue={inputToValue}
+        onClear={onClearHandler}
+        onFromFocus={onFromFocusHandler}
+        onIconClick={onIconClick}
+        onInputFromChange={onInputFromChange}
+        onInputToChange={onInputToChange}
+        onToFocus={onToFocusHandler}
+        prefix={prefix}
+        readOnly={readOnly}
+        ref={triggerComposedRef}
+        required={required}
+        size={size}
+        suffixActionIcon={suffixIcon}
+        validateFrom={validateFrom}
+        validateTo={validateTo}
       />
-    );
-
-    return (
-      <>
-        <RangePickerTrigger
-          className={className}
-          clearable={clearable}
-          disabled={disabled}
-          error={error}
-          errorMessagesFrom={errorMessagesFrom}
-          errorMessagesTo={errorMessagesTo}
-          forceShowClearable={internalValue.some(Boolean)}
-          format={resolvedFormat}
-          fullWidth={fullWidth}
-          hideSuffixWhenClearable={clearable}
-          inputFromPlaceholder={inputFromPlaceholder}
-          inputFromProps={inputFromProps}
-          inputFromRef={inputFromRef}
-          inputFromValue={inputFromValue}
-          inputToPlaceholder={inputToPlaceholder}
-          inputToProps={inputToProps}
-          inputToRef={inputToRef}
-          inputToValue={inputToValue}
-          onClear={onClearHandler}
-          onFromFocus={onFromFocusHandler}
-          onIconClick={onIconClick}
-          onInputFromChange={onInputFromChange}
-          onInputToChange={onInputToChange}
-          onToFocus={onToFocusHandler}
-          prefix={prefix}
-          readOnly={readOnly}
-          ref={triggerComposedRef}
-          required={required}
-          size={size}
-          suffixActionIcon={suffixIcon}
-          validateFrom={validateFrom}
-          validateTo={validateTo}
+      {focusedInput && (
+        <TimePickerPanel
+          anchor={panelAnchor}
+          fadeProps={fadeProps}
+          hideHour={hideHour}
+          hideMinute={hideMinute}
+          hideSecond={hideSecond}
+          hourStep={hourStep}
+          minuteStep={minuteStep}
+          onChange={onPanelChange}
+          onCancel={onCancel}
+          onConfirm={onConfirm}
+          open={open}
+          popperProps={popperProps}
+          ref={panelRef}
+          secondStep={secondStep}
+          value={panelValue}
         />
-        {focusedInput && (
-          <TimePickerPanel
-            anchor={panelAnchor}
-            fadeProps={fadeProps}
-            hideHour={hideHour}
-            hideMinute={hideMinute}
-            hideSecond={hideSecond}
-            hourStep={hourStep}
-            minuteStep={minuteStep}
-            onChange={onPanelChange}
-            onCancel={onCancel}
-            onConfirm={onConfirm}
-            open={open}
-            popperProps={popperProps}
-            ref={panelRef}
-            secondStep={secondStep}
-            value={panelValue}
-          />
-        )}
-      </>
-    );
-  },
-);
+      )}
+    </>
+  );
+}
 
 export default TimeRangePicker;

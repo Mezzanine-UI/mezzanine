@@ -3,14 +3,14 @@
 import {
   ChangeEventHandler,
   DragEventHandler,
-  forwardRef,
+  type RefAttributes,
   MouseEvent,
   ReactNode,
   Ref,
   useId,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 
 import {
@@ -18,9 +18,14 @@ import {
   type UploaderHintType,
   type UploaderMode,
   type UploadPictureControl,
-  type UploadType
+  type UploadType,
 } from '@mezzanine-ui/core/upload';
-import { DangerousFilledIcon, InfoFilledIcon, UploadIcon as UploadIconIcon, type IconDefinition } from '@mezzanine-ui/icons';
+import {
+  DangerousFilledIcon,
+  InfoFilledIcon,
+  UploadIcon as UploadIconIcon,
+  type IconDefinition,
+} from '@mezzanine-ui/icons';
 
 import Button from '../Button';
 import Icon from '../Icon';
@@ -199,10 +204,10 @@ export interface UploaderProps
 /**
  * The react component for `mezzanine` uploader.
  */
-const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
-  props,
+function Uploader({
   ref,
-) {
+  ...props
+}: UploaderProps & RefAttributes<HTMLLabelElement>) {
   const {
     accept,
     className,
@@ -297,12 +302,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
     const x = event.clientX;
     const y = event.clientY;
 
-    if (
-      x < rect.left ||
-      x > rect.right ||
-      y < rect.top ||
-      y > rect.bottom
-    ) {
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
       setIsDragging(false);
     }
   };
@@ -377,56 +377,47 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
         {...rest}
       >
         <>
-          {
-            type === 'base'
-            && isDropzone
-            && <div className={classes.uploadContent}>
+          {type === 'base' && isDropzone && (
+            <div className={classes.uploadContent}>
               {uploadIcon}
               <Typography className={classes.uploadLabel}>
-                {uploadLabel && <>{uploadLabel}{' '}</>}
+                {uploadLabel && <>{uploadLabel} </>}
                 <span className={classes.clickToUpload}>
                   {clickToUploadLabel}
                 </span>
               </Typography>
-              {
-                hints?.map((hint, index) => (
-                  <Typography key={index} className={classes.fillWidthHints}>
-                    {hint.label}
-                  </Typography>
-                ))
-              }
+              {hints?.map((hint, index) => (
+                <Typography key={index} className={classes.fillWidthHints}>
+                  {hint.label}
+                </Typography>
+              ))}
             </div>
-          }
-          {
-            type === 'base'
-            && !isDropzone
-            && <div className={classes.uploadContent}>
+          )}
+          {type === 'base' && !isDropzone && (
+            <div className={classes.uploadContent}>
               {uploadIcon}
               <Typography className={classes.uploadLabel}>
                 {uploadLabel}
               </Typography>
             </div>
-          }
-          {
-            type === 'button'
-            && (
-              <Button
-                disabled={disabled}
-                iconType="leading"
-                icon={UploadIconIcon}
-                onClick={handleClickToUpload}
+          )}
+          {type === 'button' && (
+            <Button
+              disabled={disabled}
+              iconType="leading"
+              icon={UploadIconIcon}
+              onClick={handleClickToUpload}
+            >
+              <Typography
+                align="center"
+                color="text-fixed-light"
+                variant="button-highlight"
+                className={classes.uploadButtonText}
               >
-                <Typography
-                  align="center"
-                  color="text-fixed-light"
-                  variant="button-highlight"
-                  className={classes.uploadButtonText}
-                >
-                  {uploadLabel}
-                </Typography>
-              </Button>
-            )
-          }
+                {uploadLabel}
+              </Typography>
+            </Button>
+          )}
           <input
             {...restInputProps}
             accept={accept}
@@ -445,9 +436,14 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
       {externalHints && externalHints.length > 0 && (
         <ul className={classes.externalHints}>
           {externalHints.map((hint) => (
-            <li key={hint.label} className={classes.externalHint(hint.type || 'info')}>
+            <li
+              key={hint.label}
+              className={classes.externalHint(hint.type || 'info')}
+            >
               <Icon
-                icon={hint.type === 'info' ? InfoFilledIcon : DangerousFilledIcon}
+                icon={
+                  hint.type === 'info' ? InfoFilledIcon : DangerousFilledIcon
+                }
                 color={hint.type === 'info' ? 'info' : 'error'}
                 size={14}
               />
@@ -458,7 +454,6 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
       )}
     </>
   );
-});
+}
 
 export default Uploader;
-

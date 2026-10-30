@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { skeletonClasses as classes } from '@mezzanine-ui/core/skeleton';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -30,54 +30,55 @@ export interface SkeletonProps
 /**
  * The react component for `mezzanine` Skeleton.
  */
-const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
-  function Skeleton(props, ref) {
-    const {
-      circle,
-      className,
-      height: skeletonHeight,
-      style: skeletonStyle,
-      variant,
-      width: skeletonWidth,
-      ...rest
-    } = props;
+function Skeleton({
+  ref,
+  ...props
+}: SkeletonProps & RefAttributes<HTMLDivElement>) {
+  const {
+    circle,
+    className,
+    height: skeletonHeight,
+    style: skeletonStyle,
+    variant,
+    width: skeletonWidth,
+    ...rest
+  } = props;
 
-    // strip type
-    if (!skeletonHeight && !circle && variant) {
-      return (
-        <div
-          {...rest}
-          ref={ref}
-          className={cx(classes.host, classes.type(variant), className)}
-          style={{
-            width: skeletonWidth,
-            ...skeletonStyle,
-          }}
-        >
-          <span className={classes.bg} />
-        </div>
-      );
-    }
-
-    // circle / square type
+  // strip type
+  if (!skeletonHeight && !circle && variant) {
     return (
       <div
         {...rest}
         ref={ref}
-        className={cx(
-          classes.host,
-          classes.bg,
-          circle && classes.circle,
-          className,
-        )}
+        className={cx(classes.host, classes.type(variant), className)}
         style={{
-          height: skeletonHeight,
           width: skeletonWidth,
           ...skeletonStyle,
         }}
-      />
+      >
+        <span className={classes.bg} />
+      </div>
     );
-  },
-);
+  }
+
+  // circle / square type
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        classes.bg,
+        circle && classes.circle,
+        className,
+      )}
+      style={{
+        height: skeletonHeight,
+        width: skeletonWidth,
+        ...skeletonStyle,
+      }}
+    />
+  );
+}
 
 export default Skeleton;

@@ -1,14 +1,14 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 
 export interface EmptyMainNotificationIconProps
   extends React.SVGProps<SVGSVGElement> {
   size?: number;
 }
 
-export const EmptyMainNotificationIcon = forwardRef<
-  SVGSVGElement,
-  EmptyMainNotificationIconProps
->(function EmptyMainNotificationIcon(props, ref) {
+export function EmptyMainNotificationIcon({
+  ref,
+  ...props
+}: EmptyMainNotificationIconProps & RefAttributes<SVGSVGElement>) {
   const { className, size = 64, ...rest } = props;
 
   return (
@@ -32,7 +32,10 @@ export const EmptyMainNotificationIcon = forwardRef<
           y2="46.8785"
         >
           <stop stopColor="var(--mzn-color-background-neutral)" />
-          <stop offset="1" stopColor="var(--mzn-color-background-neutral-subtle)" />
+          <stop
+            offset="1"
+            stopColor="var(--mzn-color-background-neutral-subtle)"
+          />
         </linearGradient>
         <linearGradient
           gradientUnits="userSpaceOnUse"
@@ -53,4 +56,4 @@ export const EmptyMainNotificationIcon = forwardRef<
       />
     </svg>
   );
-});
+}

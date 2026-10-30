@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useMemo } from 'react';
+import { type RefAttributes, memo, useMemo } from 'react';
 import {
   getCellAlignClass,
   tableClasses as classes,
@@ -43,10 +43,10 @@ export interface TableActionsCellProps<
   width?: number;
 }
 
-const TableActionsCellInner = forwardRef<
-  HTMLTableCellElement,
-  TableActionsCellProps
->(function TableActionsCell(props, ref) {
+const TableActionsCellInner = function TableActionsCell({
+  ref,
+  ...props
+}: TableActionsCellProps & RefAttributes<HTMLTableCellElement>) {
   const {
     actions,
     className,
@@ -228,7 +228,7 @@ const TableActionsCellInner = forwardRef<
       </div>
     </td>
   );
-});
+};
 
 export const TableActionsCell = memo(
   TableActionsCellInner,

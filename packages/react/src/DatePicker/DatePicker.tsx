@@ -9,7 +9,7 @@ import {
   MouseEventHandler,
   KeyboardEventHandler,
   FocusEventHandler,
-  forwardRef,
+  type RefAttributes,
 } from 'react';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import { pickerClasses } from '@mezzanine-ui/core/picker';
@@ -124,317 +124,318 @@ export interface DatePickerProps
  * @see {@link DateTimePicker} 日期時間選擇器元件
  * @see {@link Calendar} 日曆元件
  */
-const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
-  function DatePicker(props, ref) {
-    const { formatToString, getNow, locale } = useCalendarContext();
-    const {
-      calendarProps,
-      className,
-      clearable = true,
-      defaultValue,
-      disabledMonthSwitch = false,
-      disableOnNext,
-      disableOnPrev,
-      disableOnDoubleNext,
-      disableOnDoublePrev,
-      disabledYearSwitch = false,
-      disabled = false,
-      displayMonthLocale,
-      error = false,
-      errorMessages,
-      fadeProps,
-      format: formatProp,
-      fullWidth = false,
-      inputProps,
+function DatePicker({
+  ref,
+  ...props
+}: DatePickerProps & RefAttributes<HTMLDivElement>) {
+  const { formatToString, getNow, locale } = useCalendarContext();
+  const {
+    calendarProps,
+    className,
+    clearable = true,
+    defaultValue,
+    disabledMonthSwitch = false,
+    disableOnNext,
+    disableOnPrev,
+    disableOnDoubleNext,
+    disableOnDoublePrev,
+    disabledYearSwitch = false,
+    disabled = false,
+    displayMonthLocale,
+    error = false,
+    errorMessages,
+    fadeProps,
+    format: formatProp,
+    fullWidth = false,
+    inputProps,
+    isDateDisabled,
+    isMonthDisabled,
+    isWeekDisabled,
+    isYearDisabled,
+    isQuarterDisabled,
+    isHalfYearDisabled,
+    mode = 'day',
+    onCalendarToggle: onCalendarToggleProp,
+    onChange: onChangeProp,
+    placeholder,
+    popperProps,
+    prefix,
+    readOnly,
+    referenceDate: referenceDateProp,
+    required = false,
+    size,
+    value: valueProp,
+    ...restTriggerProps
+  } = props;
+  const format = formatProp || getDefaultModeFormat(mode);
+  const {
+    onBlur: onBlurProp,
+    onKeyDown: onKeyDownProp,
+    onFocus: onFocusProp,
+    size: inputSize = format.length + 2,
+    ...restInputProp
+  } = inputProps || {};
+
+  /**
+   * Validate date value against disabled constraints based on mode.
+   * Returns true if valid, false if the date is disabled.
+   */
+  const validateDate = useCallback(
+    (isoDate: string): boolean => {
+      switch (mode) {
+        case 'day':
+          return !isDateDisabled?.(isoDate);
+        case 'week':
+          return !isWeekDisabled?.(isoDate);
+        case 'month':
+          return !isMonthDisabled?.(isoDate);
+        case 'quarter':
+          return !isQuarterDisabled?.(isoDate);
+        case 'year':
+          return !isYearDisabled?.(isoDate);
+        case 'half-year':
+          return !isHalfYearDisabled?.(isoDate);
+        default:
+          return true;
+      }
+    },
+    [
       isDateDisabled,
+      isHalfYearDisabled,
       isMonthDisabled,
+      isQuarterDisabled,
       isWeekDisabled,
       isYearDisabled,
-      isQuarterDisabled,
-      isHalfYearDisabled,
-      mode = 'day',
-      onCalendarToggle: onCalendarToggleProp,
-      onChange: onChangeProp,
-      placeholder,
-      popperProps,
-      prefix,
-      readOnly,
-      referenceDate: referenceDateProp,
-      required = false,
-      size,
-      value: valueProp,
-      ...restTriggerProps
-    } = props;
-    const format = formatProp || getDefaultModeFormat(mode);
-    const {
-      onBlur: onBlurProp,
-      onKeyDown: onKeyDownProp,
-      onFocus: onFocusProp,
-      size: inputSize = format.length + 2,
-      ...restInputProp
-    } = inputProps || {};
+      mode,
+    ],
+  );
 
-    /**
-     * Validate date value against disabled constraints based on mode.
-     * Returns true if valid, false if the date is disabled.
-     */
-    const validateDate = useCallback(
-      (isoDate: string): boolean => {
-        switch (mode) {
-          case 'day':
-            return !isDateDisabled?.(isoDate);
-          case 'week':
-            return !isWeekDisabled?.(isoDate);
-          case 'month':
-            return !isMonthDisabled?.(isoDate);
-          case 'quarter':
-            return !isQuarterDisabled?.(isoDate);
-          case 'year':
-            return !isYearDisabled?.(isoDate);
-          case 'half-year':
-            return !isHalfYearDisabled?.(isoDate);
-          default:
-            return true;
+  /** Calender display control */
+  const [open, setOpen] = useState(false);
+  const preventOpen = readOnly;
+  const onCalendarToggle = useCallback(
+    (currentOpen: boolean) => {
+      if (!preventOpen) {
+        if (onCalendarToggleProp) {
+          onCalendarToggleProp(currentOpen);
         }
-      },
-      [
-        isDateDisabled,
-        isHalfYearDisabled,
-        isMonthDisabled,
-        isQuarterDisabled,
-        isWeekDisabled,
-        isYearDisabled,
-        mode,
-      ],
-    );
 
-    /** Calender display control */
-    const [open, setOpen] = useState(false);
-    const preventOpen = readOnly;
-    const onCalendarToggle = useCallback(
-      (currentOpen: boolean) => {
-        if (!preventOpen) {
-          if (onCalendarToggleProp) {
-            onCalendarToggleProp(currentOpen);
-          }
+        setOpen(currentOpen);
+      }
+    },
+    [onCalendarToggleProp, preventOpen],
+  );
 
-          setOpen(currentOpen);
-        }
-      },
-      [onCalendarToggleProp, preventOpen],
-    );
+  const onFocus = useMemo<
+    FocusEventHandler<HTMLInputElement> | undefined
+  >(() => {
+    if (readOnly) {
+      return undefined;
+    }
 
-    const onFocus = useMemo<
-      FocusEventHandler<HTMLInputElement> | undefined
-    >(() => {
-      if (readOnly) {
-        return undefined;
+    return (event) => {
+      if (onFocusProp) {
+        onFocusProp(event);
       }
 
-      return (event) => {
-        if (onFocusProp) {
-          onFocusProp(event);
-        }
-
-        onCalendarToggle(true);
-      };
-    }, [onCalendarToggle, onFocusProp, readOnly]);
-
-    /** Value and change handlers */
-    const inputRef = useRef<HTMLInputElement>(null);
-    const {
-      inputValue,
-      onBlur,
-      onChange,
-      onInputChange,
-      onKeyDown,
-      value: internalValue,
-    } = usePickerValue({
-      defaultValue,
-      format,
-      inputRef,
-      value: valueProp,
-    });
-
-    /** Bind close control to handlers */
-    const onCalendarChange = (val: DateType) => {
-      onChange(val);
-      onChangeProp?.(val);
-      onCalendarToggle(false);
+      onCalendarToggle(true);
     };
+  }, [onCalendarToggle, onFocusProp, readOnly]);
 
-    const onKeyDownWithCloseControl = useCallback<
-      KeyboardEventHandler<HTMLInputElement>
-    >(
-      (event) => {
-        onKeyDown(event);
+  /** Value and change handlers */
+  const inputRef = useRef<HTMLInputElement>(null);
+  const {
+    inputValue,
+    onBlur,
+    onChange,
+    onInputChange,
+    onKeyDown,
+    value: internalValue,
+  } = usePickerValue({
+    defaultValue,
+    format,
+    inputRef,
+    value: valueProp,
+  });
 
-        if (onKeyDownProp) {
-          onKeyDownProp(event);
-        }
+  /** Bind close control to handlers */
+  const onCalendarChange = (val: DateType) => {
+    onChange(val);
+    onChangeProp?.(val);
+    onCalendarToggle(false);
+  };
 
-        if (event.key === 'Enter' && !isImeComposing(event)) {
-          onChangeProp?.(internalValue);
-          onCalendarToggle(false);
-        }
-      },
-      [internalValue, onCalendarToggle, onChangeProp, onKeyDown, onKeyDownProp],
-    );
+  const onKeyDownWithCloseControl = useCallback<
+    KeyboardEventHandler<HTMLInputElement>
+  >(
+    (event) => {
+      onKeyDown(event);
 
-    /** Hover preview value for calendar */
-    const [hoverDate, setHoverDate] = useState<DateType | undefined>(undefined);
-
-    /** using internal reference date */
-    const [referenceDate, setReferenceDate] = useState(
-      referenceDateProp || defaultValue || getNow(),
-    );
-
-    useEffect(() => {
-      if (internalValue) {
-        setReferenceDate(internalValue);
+      if (onKeyDownProp) {
+        onKeyDownProp(event);
       }
-    }, [internalValue]);
 
-    /** Resolve input props */
-    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
-      (event) => {
-        if (onBlurProp) {
-          onBlurProp(event);
-        }
+      if (event.key === 'Enter' && !isImeComposing(event)) {
+        onChangeProp?.(internalValue);
+        onCalendarToggle(false);
+      }
+    },
+    [internalValue, onCalendarToggle, onChangeProp, onKeyDown, onKeyDownProp],
+  );
 
-        onBlur(event);
-      },
-      [onBlur, onBlurProp],
-    );
+  /** Hover preview value for calendar */
+  const [hoverDate, setHoverDate] = useState<DateType | undefined>(undefined);
 
-    const resolvedInputProps = {
-      ...restInputProp,
-      size: inputSize,
-      onFocus,
-      onKeyDown: onKeyDownWithCloseControl,
-      onBlur: onResolvedBlur,
-    };
+  /** using internal reference date */
+  const [referenceDate, setReferenceDate] = useState(
+    referenceDateProp || defaultValue || getNow(),
+  );
 
-    /** Popper positioning */
-    const anchorRef = useRef<HTMLDivElement>(null);
-    const triggerComposedRef = useComposeRefs([ref, anchorRef]);
-    const calendarRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (internalValue) {
+      setReferenceDate(internalValue);
+    }
+  }, [internalValue]);
 
-    /** Clear handler */
-    const onClear = useCallback<MouseEventHandler<HTMLInputElement>>(() => {
-      onChange(undefined);
-      onChangeProp?.(undefined);
-    }, [onChange, onChangeProp]);
+  /** Resolve input props */
+  const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
+    (event) => {
+      if (onBlurProp) {
+        onBlurProp(event);
+      }
 
-    /** Blur, click away and key down close */
-    const onClose = () => {
+      onBlur(event);
+    },
+    [onBlur, onBlurProp],
+  );
+
+  const resolvedInputProps = {
+    ...restInputProp,
+    size: inputSize,
+    onFocus,
+    onKeyDown: onKeyDownWithCloseControl,
+    onBlur: onResolvedBlur,
+  };
+
+  /** Popper positioning */
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const triggerComposedRef = useComposeRefs([ref, anchorRef]);
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  /** Clear handler */
+  const onClear = useCallback<MouseEventHandler<HTMLInputElement>>(() => {
+    onChange(undefined);
+    onChangeProp?.(undefined);
+  }, [onChange, onChangeProp]);
+
+  /** Blur, click away and key down close */
+  const onClose = () => {
+    onChange(valueProp);
+
+    onCalendarToggle(false);
+  };
+
+  const onChangeClose = () => {
+    onChangeProp?.(internalValue);
+
+    onCalendarToggle(false);
+  };
+
+  usePickerDocumentEventClose({
+    open,
+    anchorRef,
+    popperRef: calendarRef,
+    lastElementRefInFlow: inputRef,
+    onClose,
+    onChangeClose,
+  });
+
+  /** Icon */
+  const onIconClick: MouseEventHandler<HTMLElement> = (e) => {
+    e.stopPropagation();
+
+    if (open) {
       onChange(valueProp);
+    }
 
-      onCalendarToggle(false);
-    };
+    onCalendarToggle(!open);
+  };
 
-    const onChangeClose = () => {
-      onChangeProp?.(internalValue);
+  const suffixActionIcon = (
+    <Icon
+      aria-label="Open calendar"
+      icon={CalendarIcon}
+      onClick={readOnly ? undefined : onIconClick}
+    />
+  );
 
-      onCalendarToggle(false);
-    };
+  const hoverDisplayValue =
+    open && !inputValue && hoverDate
+      ? (formatToString(locale, hoverDate, format) ?? undefined)
+      : undefined;
 
-    usePickerDocumentEventClose({
-      open,
-      anchorRef,
-      popperRef: calendarRef,
-      lastElementRefInFlow: inputRef,
-      onClose,
-      onChangeClose,
-    });
-
-    /** Icon */
-    const onIconClick: MouseEventHandler<HTMLElement> = (e) => {
-      e.stopPropagation();
-
-      if (open) {
-        onChange(valueProp);
-      }
-
-      onCalendarToggle(!open);
-    };
-
-    const suffixActionIcon = (
-      <Icon
-        aria-label="Open calendar"
-        icon={CalendarIcon}
-        onClick={readOnly ? undefined : onIconClick}
+  return (
+    <>
+      <PickerTrigger
+        {...restTriggerProps}
+        ref={triggerComposedRef}
+        className={cx(pickerClasses.hostDate, className)}
+        clearable={clearable}
+        disabled={disabled}
+        error={error}
+        forceShowClearable={!!internalValue}
+        hideSuffixWhenClearable={clearable}
+        errorMessages={errorMessages}
+        format={format}
+        fullWidth={fullWidth}
+        hoverValue={hoverDisplayValue}
+        inputProps={resolvedInputProps}
+        inputRef={inputRef}
+        onChange={(e) => {
+          onInputChange(e);
+          onCalendarChange(e.target.value);
+          onCalendarToggle(true);
+        }}
+        onClear={onClear}
+        onFocus={() => onCalendarToggle(true)}
+        placeholder={placeholder}
+        prefix={prefix}
+        readOnly={readOnly}
+        required={required}
+        size={size}
+        suffix={suffixActionIcon}
+        validate={validateDate}
+        value={inputValue}
       />
-    );
-
-    const hoverDisplayValue =
-      open && !inputValue && hoverDate
-        ? (formatToString(locale, hoverDate, format) ?? undefined)
-        : undefined;
-
-    return (
-      <>
-        <PickerTrigger
-          {...restTriggerProps}
-          ref={triggerComposedRef}
-          className={cx(pickerClasses.hostDate, className)}
-          clearable={clearable}
-          disabled={disabled}
-          error={error}
-          forceShowClearable={!!internalValue}
-          hideSuffixWhenClearable={clearable}
-          errorMessages={errorMessages}
-          format={format}
-          fullWidth={fullWidth}
-          hoverValue={hoverDisplayValue}
-          inputProps={resolvedInputProps}
-          inputRef={inputRef}
-          onChange={(e) => {
-            onInputChange(e);
-            onCalendarChange(e.target.value);
-            onCalendarToggle(true);
-          }}
-          onClear={onClear}
-          onFocus={() => onCalendarToggle(true)}
-          placeholder={placeholder}
-          prefix={prefix}
-          readOnly={readOnly}
-          required={required}
-          size={size}
-          suffix={suffixActionIcon}
-          validate={validateDate}
-          value={inputValue}
-        />
-        <DatePickerCalendar
-          ref={calendarRef}
-          anchor={anchorRef}
-          calendarProps={calendarProps}
-          disabledMonthSwitch={disabledMonthSwitch}
-          disableOnNext={disableOnNext}
-          disableOnPrev={disableOnPrev}
-          disableOnDoubleNext={disableOnDoubleNext}
-          disableOnDoublePrev={disableOnDoublePrev}
-          disabledYearSwitch={disabledYearSwitch}
-          displayMonthLocale={displayMonthLocale}
-          fadeProps={fadeProps}
-          isDateDisabled={isDateDisabled}
-          isMonthDisabled={isMonthDisabled}
-          isWeekDisabled={isWeekDisabled}
-          isQuarterDisabled={isQuarterDisabled}
-          isYearDisabled={isYearDisabled}
-          isHalfYearDisabled={isHalfYearDisabled}
-          mode={mode}
-          onChange={onCalendarChange}
-          onHover={setHoverDate}
-          onLeave={() => setHoverDate(undefined)}
-          open={open}
-          popperProps={popperProps}
-          referenceDate={referenceDate}
-          value={internalValue}
-        />
-      </>
-    );
-  },
-);
+      <DatePickerCalendar
+        ref={calendarRef}
+        anchor={anchorRef}
+        calendarProps={calendarProps}
+        disabledMonthSwitch={disabledMonthSwitch}
+        disableOnNext={disableOnNext}
+        disableOnPrev={disableOnPrev}
+        disableOnDoubleNext={disableOnDoubleNext}
+        disableOnDoublePrev={disableOnDoublePrev}
+        disabledYearSwitch={disabledYearSwitch}
+        displayMonthLocale={displayMonthLocale}
+        fadeProps={fadeProps}
+        isDateDisabled={isDateDisabled}
+        isMonthDisabled={isMonthDisabled}
+        isWeekDisabled={isWeekDisabled}
+        isQuarterDisabled={isQuarterDisabled}
+        isYearDisabled={isYearDisabled}
+        isHalfYearDisabled={isHalfYearDisabled}
+        mode={mode}
+        onChange={onCalendarChange}
+        onHover={setHoverDate}
+        onLeave={() => setHoverDate(undefined)}
+        open={open}
+        popperProps={popperProps}
+        referenceDate={referenceDate}
+        value={internalValue}
+      />
+    </>
+  );
+}
 
 export default DatePicker;

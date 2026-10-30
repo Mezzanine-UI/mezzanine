@@ -2,7 +2,7 @@
 
 import {
   Children,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactNode,
   useCallback,
@@ -18,10 +18,10 @@ export interface NavigationOptionCategoryProps
   title: string;
 }
 
-const NavigationOptionCategory = forwardRef<
-  HTMLLIElement,
-  NavigationOptionCategoryProps
->((props, ref) => {
+const NavigationOptionCategory = ({
+  ref,
+  ...props
+}: NavigationOptionCategoryProps & RefAttributes<HTMLLIElement>) => {
   const { children, className, title, ...rest } = props;
   const titleId = useId();
 
@@ -57,6 +57,6 @@ const NavigationOptionCategory = forwardRef<
       <ul aria-labelledby={titleId}>{renderItemChildren(children)}</ul>
     </li>
   );
-});
+};
 
 export default NavigationOptionCategory;

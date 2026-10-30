@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React, { createRef, type RefAttributes } from 'react';
 import { overflowTooltipClasses as tooltipClasses } from '@mezzanine-ui/core/overflow-tooltip';
 import { tagClasses } from '@mezzanine-ui/core/tag';
 import type { OverflowCounterTagProps } from './OverflowCounterTag';
@@ -17,13 +17,14 @@ jest.mock('./OverflowTooltip', () => {
   return {
     __esModule: true,
     ...actual,
-    default: React.forwardRef<HTMLDivElement, OverflowTooltipProps>(
-      (props, ref) => {
-        overflowTooltipRenderArgs.push(props);
+    default: ({
+      ref,
+      ...props
+    }: OverflowTooltipProps & RefAttributes<HTMLDivElement>) => {
+      overflowTooltipRenderArgs.push(props);
 
-        return <OverflowTooltipComponent {...props} ref={ref} />;
-      },
-    ),
+      return <OverflowTooltipComponent {...props} ref={ref} />;
+    },
   };
 });
 

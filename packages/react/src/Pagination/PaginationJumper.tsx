@@ -1,5 +1,5 @@
 import {
-  forwardRef,
+  type RefAttributes,
   DetailedHTMLProps,
   HTMLAttributes,
   useState,
@@ -50,84 +50,85 @@ export interface PaginationJumperProps
   total?: number;
 }
 
-const PaginationJumper = forwardRef<HTMLDivElement, PaginationJumperProps>(
-  (props, ref) => {
-    const {
-      buttonText,
-      className,
-      disabled,
-      hintText,
-      inputPlaceholder,
-      onChange: handleChange,
-      pageSize = 5,
-      total = 0,
-      ...rest
-    } = props;
+const PaginationJumper = ({
+  ref,
+  ...props
+}: PaginationJumperProps & RefAttributes<HTMLDivElement>) => {
+  const {
+    buttonText,
+    className,
+    disabled,
+    hintText,
+    inputPlaceholder,
+    onChange: handleChange,
+    pageSize = 5,
+    total = 0,
+    ...rest
+  } = props;
 
-    const [value, setValue] = useState('');
-    const [error, setError] = useState(false);
+  const [value, setValue] = useState('');
+  const [error, setError] = useState(false);
 
-    const totalPages = total ? Math.ceil(total / pageSize) : 1;
+  const totalPages = total ? Math.ceil(total / pageSize) : 1;
 
-    const valueValidator = () => {
-      const stringToNumber = +value;
-      const validNumber = !!stringToNumber;
+  const valueValidator = () => {
+    const stringToNumber = +value;
+    const validNumber = !!stringToNumber;
 
-      if (validNumber) {
-        return !(stringToNumber > totalPages || stringToNumber < 1);
-      }
+    if (validNumber) {
+      return !(stringToNumber > totalPages || stringToNumber < 1);
+    }
 
-      return false;
-    };
+    return false;
+  };
 
-    const handleClick = () => {
-      const valid = valueValidator();
+  const handleClick = () => {
+    const valid = valueValidator();
 
-      if (valid) {
-        setError(false);
+    if (valid) {
+      setError(false);
 
-        if (handleChange) {
-          handleChange(+value);
-          setValue('');
-        }
-      } else {
-        setError(true);
+      if (handleChange) {
+        handleChange(+value);
         setValue('');
       }
-    };
+    } else {
+      setError(true);
+      setValue('');
+    }
+  };
 
-    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && !isImeComposing(e)) {
-        handleClick();
-      }
-    };
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !isImeComposing(e)) {
+      handleClick();
+    }
+  };
 
-    return (
-      <div {...rest} ref={ref} className={cx(classes.host, className)}>
-        <Typography component="div" ellipsis variant="label-primary">
-          {hintText}
-        </Typography>
-        <Input
-          size="sub"
-          disabled={disabled}
-          error={error}
-          variant="number"
-          className={classes.input}
-          onChange={(e) => {
-            setValue(e.target.value);
-          }}
-          placeholder={inputPlaceholder}
-          inputProps={{
-            onKeyDown: handleKeyDown,
-          }}
-          value={value}
-        />
-        <Button size="sub" disabled={disabled} onClick={handleClick}>
-          {buttonText}
-        </Button>
-      </div>
-    );
-  },
-);
+  return (
+    <div {...rest} ref={ref} className={cx(classes.host, className)}>
+      <Typography component="div" ellipsis variant="label-primary">
+        {hintText}
+      </Typography>
+      <Input
+        size="sub"
+        disabled={disabled}
+        error={error}
+        variant="number"
+        className={classes.input}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+        placeholder={inputPlaceholder}
+        inputProps={{
+          onKeyDown: handleKeyDown,
+        }}
+        value={value}
+      />
+      <Button size="sub" disabled={disabled} onClick={handleClick}>
+        {buttonText}
+      </Button>
+    </div>
+  );
+};
 
 export default PaginationJumper;

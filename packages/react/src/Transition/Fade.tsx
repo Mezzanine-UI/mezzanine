@@ -1,5 +1,5 @@
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
+import { cloneElement, CSSProperties, type RefAttributes, useRef } from 'react';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Transition, {
   TransitionState,
@@ -38,10 +38,7 @@ export type FadeProps = TransitionImplementationProps;
 /**
  * The react component for `mezzanine` transition fade.
  */
-const Fade = forwardRef<HTMLElement, FadeProps>(function Fade(
-  props: FadeProps,
-  ref,
-) {
+function Fade({ ref, ...props }: FadeProps & RefAttributes<HTMLElement>) {
   const {
     children,
     in: inProp = false,
@@ -115,6 +112,6 @@ const Fade = forwardRef<HTMLElement, FadeProps>(function Fade(
           }))}
     </Transition>
   );
-});
+}
 
 export default Fade;
