@@ -12,8 +12,8 @@ npm install @mezzanine-ui/react @mezzanine-ui/core @mezzanine-ui/icons @mezzanin
 
 | Package     | Version |
 | ----------- | ------- |
-| `react`     | `>= 18` |
-| `react-dom` | `>= 18` |
+| `react`     | `>= 19` |
+| `react-dom` | `>= 19` |
 | `lodash`    | `>= 4`  |
 
 ## Quick Start
