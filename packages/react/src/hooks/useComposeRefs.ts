@@ -5,7 +5,7 @@ import { ComposableRef, ComposedRef, composeRefs } from '../utils/composeRefs';
  * 將多個 React ref 合併成單一 callback ref 的 Hook。
  *
  * 回傳一個穩定的 callback ref（依賴陣列永遠為空），
- * 每次渲染時仍能正確呼叫最新的 ref 集合，適用於需要同時傳遞 forwardRef 與內部 ref 的情境。
+ * 每次渲染時仍能正確呼叫最新的 ref 集合，適用於需要同時傳遞外部 `ref` prop 與內部 ref 的情境。
  *
  * @example
  * ```tsx
