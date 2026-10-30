@@ -2,7 +2,7 @@
 
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import TextField, { TextFieldInteractiveStateProps } from '../TextField';
 import { cx } from '../utils/cx';
 import {
@@ -168,37 +168,38 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   );
 }
 
-const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>(
-  (props, ref) => {
-    if (props.mode === 'multiple') {
-      const { mode: _mode, value, ...multipleModeProps } = props;
-
-      return (
-        <SelectTriggerComponent
-          {...multipleModeProps}
-          innerRef={ref}
-          mode="multiple"
-          value={Array.isArray(value) ? value : undefined}
-        />
-      );
-    }
-
-    const {
-      mode: _mode,
-      overflowStrategy: _overflowStrategy,
-      value,
-      ...singleModeProps
-    } = props;
+const SelectTrigger = ({
+  ref,
+  ...props
+}: SelectTriggerProps & RefAttributes<HTMLDivElement>) => {
+  if (props.mode === 'multiple') {
+    const { mode: _mode, value, ...multipleModeProps } = props;
 
     return (
       <SelectTriggerComponent
-        {...singleModeProps}
+        {...multipleModeProps}
         innerRef={ref}
-        mode="single"
-        value={Array.isArray(value) ? undefined : value}
+        mode="multiple"
+        value={Array.isArray(value) ? value : undefined}
       />
     );
-  },
-);
+  }
+
+  const {
+    mode: _mode,
+    overflowStrategy: _overflowStrategy,
+    value,
+    ...singleModeProps
+  } = props;
+
+  return (
+    <SelectTriggerComponent
+      {...singleModeProps}
+      innerRef={ref}
+      mode="single"
+      value={Array.isArray(value) ? undefined : value}
+    />
+  );
+};
 
 export default SelectTrigger;
