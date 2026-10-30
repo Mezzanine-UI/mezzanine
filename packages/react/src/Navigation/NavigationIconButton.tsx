@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { navigationIconButtonClasses as classes } from '@mezzanine-ui/core/navigation';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
@@ -29,10 +29,10 @@ export type NavigationIconButtonProps = Omit<
   'aria-label'?: string;
 };
 
-const NavigationIconButton = forwardRef<
-  HTMLButtonElement,
-  NavigationIconButtonProps
->((props, ref) => {
+const NavigationIconButton = ({
+  ref,
+  ...props
+}: NavigationIconButtonProps & RefAttributes<HTMLButtonElement>) => {
   const { active, className, icon, ...rest } = props;
 
   return (
@@ -45,6 +45,6 @@ const NavigationIconButton = forwardRef<
       <Icon icon={icon} size={16} />
     </button>
   );
-});
+};
 
 export default NavigationIconButton;
