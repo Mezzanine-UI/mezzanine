@@ -1,4 +1,9 @@
-import { DetailedHTMLProps, forwardRef, HTMLAttributes, Ref } from 'react';
+import {
+  DetailedHTMLProps,
+  type RefAttributes,
+  HTMLAttributes,
+  Ref,
+} from 'react';
 import {
   PaginationItemType,
   paginationItemClasses as classes,
@@ -48,63 +53,64 @@ export interface PaginationItemProps
   type?: PaginationItemType;
 }
 
-const PaginationItem = forwardRef<PaginationItemElement, PaginationItemProps>(
-  (props, ref) => {
-    const {
-      active = false,
-      className,
-      disabled = false,
-      page = 1,
-      type = 'page',
-      ...rest
-    } = props;
+const PaginationItem = ({
+  ref,
+  ...props
+}: PaginationItemProps & RefAttributes<PaginationItemElement>) => {
+  const {
+    active = false,
+    className,
+    disabled = false,
+    page = 1,
+    type = 'page',
+    ...rest
+  } = props;
 
-    const icons: { [index: string]: IconDefinition } = {
-      next: ChevronRightIcon,
-      previous: ChevronLeftIcon,
-    };
+  const icons: { [index: string]: IconDefinition } = {
+    next: ChevronRightIcon,
+    previous: ChevronLeftIcon,
+  };
 
-    const ButtonIcon = icons[type];
+  const ButtonIcon = icons[type];
 
-    return type === 'ellipsis' ? (
-      <div
-        {...rest}
-        ref={ref as Ref<HTMLDivElement>}
-        className={cx(
-          classes.host,
-          classes.ellipsis,
-          {
-            [classes.disabled]: disabled,
-          },
-          className,
-        )}
-      >
-        <Icon icon={DotHorizontalIcon} />
-      </div>
-    ) : (
-      <button
-        {...rest}
-        ref={ref as Ref<HTMLButtonElement>}
-        key={page}
-        disabled={disabled}
-        className={cx(
-          classes.host,
-          classes.button,
-          {
-            [classes.active]: active,
-            [classes.disabled]: disabled,
-          },
-          className,
-        )}
-        type="button"
-      >
-        {ButtonIcon && <Icon icon={ButtonIcon} />}
-        {type === 'page' && (
-          <Typography variant="label-primary">{page}</Typography>
-        )}
-      </button>
-    );
-  },
-);
+  return type === 'ellipsis' ? (
+    <div
+      {...rest}
+      ref={ref as Ref<HTMLDivElement>}
+      className={cx(
+        classes.host,
+        classes.ellipsis,
+        {
+          [classes.disabled]: disabled,
+        },
+        className,
+      )}
+    >
+      <Icon icon={DotHorizontalIcon} />
+    </div>
+  ) : (
+    <button
+      {...rest}
+      ref={ref as Ref<HTMLButtonElement>}
+      key={page}
+      disabled={disabled}
+      className={cx(
+        classes.host,
+        classes.button,
+        {
+          [classes.active]: active,
+          [classes.disabled]: disabled,
+        },
+        className,
+      )}
+      type="button"
+    >
+      {ButtonIcon && <Icon icon={ButtonIcon} />}
+      {type === 'page' && (
+        <Typography variant="label-primary">{page}</Typography>
+      )}
+    </button>
+  );
+};
 
 export default PaginationItem;
