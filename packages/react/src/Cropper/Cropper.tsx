@@ -2,7 +2,7 @@
 
 import { cropperClasses as classes } from '@mezzanine-ui/core/cropper';
 import type { ReactElement } from 'react';
-import { Key, forwardRef, useCallback, useRef, useState } from 'react';
+import { Key, type RefAttributes, useCallback, useRef, useState } from 'react';
 import type { ModalHeaderLayoutProps, ModalProps } from '../Modal';
 import Modal from '../Modal';
 import { createNotifier } from '../Notifier';
@@ -90,145 +90,147 @@ export type CropperProps<C extends CropperComponent = 'div'> =
 /**
  * The react component for `mezzanine` cropper.
  */
-const Cropper = forwardRef<HTMLDivElement, CropperProps>(
-  function Cropper(props, ref) {
-    const {
-      children,
-      className,
-      component: Component = 'div',
-      size = 'main',
-      ...rest
-    } = props;
+function Cropper({
+  ref,
+  ...props
+}: CropperProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    component: Component = 'div',
+    size = 'main',
+    ...rest
+  } = props;
 
-    return (
-      <Component
-        {...rest}
-        ref={ref}
-        className={cx(classes.host, classes.size(size), className)}
-      >
-        {children}
-      </Component>
-    );
-  },
-);
+  return (
+    <Component
+      {...rest}
+      ref={ref}
+      className={cx(classes.host, classes.size(size), className)}
+    >
+      {children}
+    </Component>
+  );
+}
 
 /**
  * The react component for `mezzanine` cropper with modal wrapper.
  */
-const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
-  function CropperModal(props, ref) {
-    const {
-      cropperProps,
-      onConfirm,
-      onClose,
-      showModalFooter = true,
-      showModalHeader = true,
-      title = '圖片裁切',
-      size = 'wide',
-      confirmText = '確認',
-      cancelText = '取消',
-      onCancel,
-      open = false,
-      cropperContentClassName,
-      ...restModalProps
-    } = props;
-    const {
-      aspectRatio,
-      imageSrc,
-      initialCropArea,
-      minHeight,
-      minWidth,
-      onCropChange,
-      onCropDragEnd,
-      onImageDragEnd,
-      onScaleChange,
-      onImageLoad,
-      onImageError,
-      size: cropperSize = 'main',
-    } = cropperProps ?? {};
-    const [currentCropArea, setCurrentCropArea] = useState<CropArea | null>(
-      initialCropArea ?? null,
-    );
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+const CropperModalComponent = function CropperModal({
+  ref,
+  ...props
+}: CropperModalProps & RefAttributes<HTMLDivElement>) {
+  const {
+    cropperProps,
+    onConfirm,
+    onClose,
+    showModalFooter = true,
+    showModalHeader = true,
+    title = '圖片裁切',
+    size = 'wide',
+    confirmText = '確認',
+    cancelText = '取消',
+    onCancel,
+    open = false,
+    cropperContentClassName,
+    ...restModalProps
+  } = props;
+  const {
+    aspectRatio,
+    imageSrc,
+    initialCropArea,
+    minHeight,
+    minWidth,
+    onCropChange,
+    onCropDragEnd,
+    onImageDragEnd,
+    onScaleChange,
+    onImageLoad,
+    onImageError,
+    size: cropperSize = 'main',
+  } = cropperProps ?? {};
+  const [currentCropArea, setCurrentCropArea] = useState<CropArea | null>(
+    initialCropArea ?? null,
+  );
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const handleCropChange = useCallback(
-      (area: CropArea) => {
-        setCurrentCropArea(area);
-        onCropChange?.(area);
-      },
-      [onCropChange],
-    );
+  const handleCropChange = useCallback(
+    (area: CropArea) => {
+      setCurrentCropArea(area);
+      onCropChange?.(area);
+    },
+    [onCropChange],
+  );
 
-    const handleCancel = useCallback(() => {
-      onCancel?.();
+  const handleCancel = useCallback(() => {
+    onCancel?.();
+    onClose?.();
+  }, [onCancel, onClose]);
+
+  const handleConfirm = useCallback(async () => {
+    try {
+      await onConfirm?.({
+        canvas: canvasRef.current,
+        cropArea: currentCropArea,
+        imageSrc,
+      });
       onClose?.();
-    }, [onCancel, onClose]);
+    } catch (error) {
+      console.error('CropperModal onConfirm failed:', error);
+    }
+  }, [currentCropArea, imageSrc, onClose, onConfirm]);
 
-    const handleConfirm = useCallback(async () => {
-      try {
-        await onConfirm?.({
-          canvas: canvasRef.current,
-          cropArea: currentCropArea,
-          imageSrc,
-        });
-        onClose?.();
-      } catch (error) {
-        console.error('CropperModal onConfirm failed:', error);
+  const modalFooterProps = showModalFooter
+    ? {
+        showModalFooter: true as const,
+        confirmText,
+        cancelText,
+        onCancel: handleCancel,
+        onConfirm: handleConfirm,
       }
-    }, [currentCropArea, imageSrc, onClose, onConfirm]);
+    : {
+        showModalFooter: false as const,
+      };
 
-    const modalFooterProps = showModalFooter
-      ? {
-          showModalFooter: true as const,
-          confirmText,
-          cancelText,
-          onCancel: handleCancel,
-          onConfirm: handleConfirm,
-        }
-      : {
-          showModalFooter: false as const,
-        };
+  const modalHeaderProps = showModalHeader
+    ? {
+        showModalHeader: true as const,
+        title,
+      }
+    : {
+        showModalHeader: false as const,
+      };
 
-    const modalHeaderProps = showModalHeader
-      ? {
-          showModalHeader: true as const,
-          title,
-        }
-      : {
-          showModalHeader: false as const,
-        };
-
-    return (
-      <Modal
-        modalType="standard"
-        onClose={onClose}
-        open={open}
-        ref={ref}
-        size={size}
-        {...restModalProps}
-        {...modalHeaderProps}
-        {...modalFooterProps}
-      >
-        <CropperElement
-          className={cx(classes.content, cropperContentClassName)}
-          aspectRatio={aspectRatio}
-          imageSrc={imageSrc}
-          initialCropArea={initialCropArea}
-          minHeight={minHeight}
-          minWidth={minWidth}
-          onCropChange={handleCropChange}
-          onCropDragEnd={onCropDragEnd}
-          onImageDragEnd={onImageDragEnd}
-          onScaleChange={onScaleChange}
-          onImageLoad={onImageLoad}
-          onImageError={onImageError}
-          ref={canvasRef}
-          size={cropperSize}
-        />
-      </Modal>
-    );
-  },
-);
+  return (
+    <Modal
+      modalType="standard"
+      onClose={onClose}
+      open={open}
+      ref={ref}
+      size={size}
+      {...restModalProps}
+      {...modalHeaderProps}
+      {...modalFooterProps}
+    >
+      <CropperElement
+        className={cx(classes.content, cropperContentClassName)}
+        aspectRatio={aspectRatio}
+        imageSrc={imageSrc}
+        initialCropArea={initialCropArea}
+        minHeight={minHeight}
+        minWidth={minWidth}
+        onCropChange={handleCropChange}
+        onCropDragEnd={onCropDragEnd}
+        onImageDragEnd={onImageDragEnd}
+        onScaleChange={onScaleChange}
+        onImageLoad={onImageLoad}
+        onImageError={onImageError}
+        ref={canvasRef}
+        size={cropperSize}
+      />
+    </Modal>
+  );
+};
 
 export type CropperModalType = ((
   props: CropperModalProps,
