@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * Formats a number or numeric string with commas according to the specified locale.
  */

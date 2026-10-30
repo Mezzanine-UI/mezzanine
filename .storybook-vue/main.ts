@@ -3,7 +3,7 @@ import type { StorybookConfig } from '@storybook/vue3-vite';
 import vue from '@vitejs/plugin-vue';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'node:url';
-import { mezzanineAliases, scssLoadPaths } from '../packages/vue/vite.alias';
+import { mezzanineAliases, scssLoadPaths } from '../packages/vue/vite.alias.ts';
 
 const require = createRequire(import.meta.url);
 const here = dirname(fileURLToPath(import.meta.url));
@@ -30,7 +30,18 @@ const config: StorybookConfig = {
 
   addons: [getAbsolutePath('@storybook/addon-docs')],
 
-  framework: getAbsolutePath('@storybook/vue3-vite'),
+  framework: {
+    name: getAbsolutePath('@storybook/vue3-vite'),
+    options: {
+      // `vue-docgen-api`, the default, is deprecated in Storybook 10 and
+      // removed in 11. `vue-component-meta` reads props through Volar's type
+      // checker, so it needs the tsconfig that sees `packages/vue`.
+      docgen: {
+        plugin: 'vue-component-meta',
+        tsconfig: 'packages/vue/tsconfig.json',
+      },
+    },
+  },
 
   viteFinal: (config) => {
     // `@storybook/vue3-vite` does not depend on, or inject, `@vitejs/plugin-vue`
@@ -70,6 +81,14 @@ const config: StorybookConfig = {
         ...config.css.preprocessorOptions?.scss,
         loadPaths: scssLoadPaths,
       },
+    };
+
+    // Vite's 500 kB chunk warning targets end-user apps. A Storybook bundles
+    // every story by design, so it only drowns out real build warnings.
+    // Vite has no off switch; an infinite limit is the documented way.
+    config.build = {
+      ...config.build,
+      chunkSizeWarningLimit: Number.POSITIVE_INFINITY,
     };
 
     return config;
