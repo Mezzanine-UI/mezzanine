@@ -213,11 +213,17 @@ export const SNAPSHOT_SOURCE = `
 
   var root = document.querySelector('#storybook-root') || document.body;
   if (!root) return null;
-  // Skip framework wrappers (e.g. Angular's <storybook-root>) to align both sides.
+  // Skip framework wrappers to align both sides. Angular's bootstrapped story
+  // host is the wrapper: Storybook 9 named it <storybook-root>, Storybook 10
+  // names it after the story id (<foundation-button--as-link>), so it is
+  // detected by the \`ng-version\` attribute Angular stamps on every app root.
   var WRAPPER_TAGS = new Set(['storybook-root']);
+  function isWrapper(el) {
+    return WRAPPER_TAGS.has(el.tagName.toLowerCase()) || el.hasAttribute('ng-version');
+  }
   var container = root;
   var first = container.firstElementChild;
-  while (first && WRAPPER_TAGS.has(first.tagName.toLowerCase()) && first.firstElementChild) {
+  while (first && isWrapper(first) && first.firstElementChild) {
     container = first;
     first = first.firstElementChild;
   }

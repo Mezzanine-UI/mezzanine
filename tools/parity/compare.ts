@@ -122,10 +122,16 @@ async function snapshotStory(
     () => {
       const root = document.querySelector('#storybook-root');
       if (!root) return false;
-      // Skip Angular's <storybook-root> wrapper if present.
+      // Skip Angular's story host wrapper if present: <storybook-root> in
+      // Storybook 9, a story-id-named element in Storybook 10. Both carry the
+      // `ng-version` attribute Angular stamps on every bootstrapped root.
       let host: Element = root;
       const first = host.firstElementChild;
-      if (first && first.tagName.toLowerCase() === 'storybook-root')
+      if (
+        first &&
+        (first.tagName.toLowerCase() === 'storybook-root' ||
+          first.hasAttribute('ng-version'))
+      )
         host = first;
       return !!host.firstElementChild;
     },
