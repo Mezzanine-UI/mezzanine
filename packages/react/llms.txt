@@ -127,7 +127,7 @@ import { CalendarConfigProviderMoment, CalendarLocale } from '@mezzanine-ui/reac
 import { CalendarConfigProviderLuxon, CalendarLocale } from '@mezzanine-ui/react/luxon';
 ```
 
-**forwardRef** — all components forward their ref to the underlying DOM element.
+**ref as a prop** — React 19+ only. Every component accepts `ref` as a regular prop (no `forwardRef`) and forwards it to the underlying DOM element.
 
 **React Hook Form integration** — the recommended pattern is a `BaseField` wrapper that combines `FormField` with RHF's `formState.errors` for automatic error display. `ControlFieldSlotLayout.SUB` aligns the hint/error message with the input:
 ```tsx
