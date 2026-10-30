@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -24,10 +24,10 @@ export interface SingleThumbnailCardSkeletonProps
  * Skeleton placeholder for SingleThumbnailCard component.
  * Renders a skeleton that mimics the SingleThumbnailCard layout.
  */
-const SingleThumbnailCardSkeleton = forwardRef<
-  HTMLDivElement,
-  SingleThumbnailCardSkeletonProps
->(function SingleThumbnailCardSkeleton(props, ref) {
+function SingleThumbnailCardSkeleton({
+  ref,
+  ...props
+}: SingleThumbnailCardSkeletonProps & RefAttributes<HTMLDivElement>) {
   const {
     className,
     thumbnailAspectRatio = '16/9',
@@ -57,7 +57,7 @@ const SingleThumbnailCardSkeleton = forwardRef<
       </div>
     </div>
   );
-});
+}
 
 SingleThumbnailCardSkeleton.displayName = 'SingleThumbnailCardSkeleton';
 

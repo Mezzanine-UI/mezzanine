@@ -1,6 +1,11 @@
 'use client';
 
-import { Children, forwardRef, isValidElement, MouseEvent } from 'react';
+import {
+  Children,
+  type RefAttributes,
+  isValidElement,
+  MouseEvent,
+} from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
@@ -31,10 +36,10 @@ const MAX_THUMBNAILS = 4;
  * Children must be Thumbnail components. If less than 4 are provided, empty slots will be rendered.
  * If more than 4 are provided, only the first 4 will be used (with a console warning in development).
  */
-const FourThumbnailCard = forwardRef<
-  HTMLDivElement,
-  FourThumbnailCardComponentProps
->(function FourThumbnailCard(props, ref) {
+function FourThumbnailCard({
+  ref,
+  ...props
+}: FourThumbnailCardComponentProps & RefAttributes<HTMLDivElement>) {
   const {
     children,
     className,
@@ -169,7 +174,7 @@ const FourThumbnailCard = forwardRef<
       />
     </Component>
   );
-});
+}
 
 FourThumbnailCard.displayName = 'FourThumbnailCard';
 

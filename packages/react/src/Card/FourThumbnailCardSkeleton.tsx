@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -19,10 +19,10 @@ export interface FourThumbnailCardSkeletonProps
  * Skeleton placeholder for FourThumbnailCard component.
  * Renders a skeleton that mimics the FourThumbnailCard layout.
  */
-const FourThumbnailCardSkeleton = forwardRef<
-  HTMLDivElement,
-  FourThumbnailCardSkeletonProps
->(function FourThumbnailCardSkeleton(props, ref) {
+function FourThumbnailCardSkeleton({
+  ref,
+  ...props
+}: FourThumbnailCardSkeletonProps & RefAttributes<HTMLDivElement>) {
   const { className, thumbnailWidth = 200, ...rest } = props;
 
   return (
@@ -51,7 +51,7 @@ const FourThumbnailCardSkeleton = forwardRef<
       </div>
     </div>
   );
-});
+}
 
 FourThumbnailCardSkeleton.displayName = 'FourThumbnailCardSkeleton';
 

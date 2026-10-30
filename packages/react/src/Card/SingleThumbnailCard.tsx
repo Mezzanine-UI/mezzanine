@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, forwardRef, MouseEvent } from 'react';
+import { Children, type RefAttributes, MouseEvent } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
@@ -27,10 +27,10 @@ export type SingleThumbnailCardComponentProps<
  *
  * The card width is determined by the image child element.
  */
-const SingleThumbnailCard = forwardRef<
-  HTMLDivElement,
-  SingleThumbnailCardComponentProps
->(function SingleThumbnailCard(props, ref) {
+function SingleThumbnailCard({
+  ref,
+  ...props
+}: SingleThumbnailCardComponentProps & RefAttributes<HTMLDivElement>) {
   const {
     children,
     className,
@@ -118,7 +118,7 @@ const SingleThumbnailCard = forwardRef<
       />
     </Component>
   );
-});
+}
 
 SingleThumbnailCard.displayName = 'SingleThumbnailCard';
 
