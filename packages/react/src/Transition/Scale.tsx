@@ -1,4 +1,4 @@
-import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
+import { cloneElement, CSSProperties, type RefAttributes, useRef } from 'react';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Transition, {
@@ -57,10 +57,7 @@ export interface ScaleProps extends TransitionImplementationProps {
 /**
  * The react component for `mezzanine` transition scale.
  */
-const Scale = forwardRef<HTMLElement, ScaleProps>(function Scale(
-  props: ScaleProps,
-  ref,
-) {
+function Scale({ ref, ...props }: ScaleProps & RefAttributes<HTMLElement>) {
   const {
     appear,
     children,
@@ -167,6 +164,6 @@ const Scale = forwardRef<HTMLElement, ScaleProps>(function Scale(
           }))}
     </Transition>
   );
-});
+}
 
 export default Scale;

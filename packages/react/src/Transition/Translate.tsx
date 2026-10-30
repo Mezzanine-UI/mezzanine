@@ -1,5 +1,5 @@
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
+import { cloneElement, CSSProperties, type RefAttributes, useRef } from 'react';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Transition, {
   TransitionState,
@@ -61,10 +61,10 @@ export interface TranslateProps extends TransitionImplementationProps {
 /**
  * The react component for `mezzanine` transition translate in/out.
  */
-const Translate = forwardRef<HTMLElement, TranslateProps>(function Translate(
-  props: TranslateProps,
+function Translate({
   ref,
-) {
+  ...props
+}: TranslateProps & RefAttributes<HTMLElement>) {
   const {
     children,
     delay = 0,
@@ -139,6 +139,6 @@ const Translate = forwardRef<HTMLElement, TranslateProps>(function Translate(
           }))}
     </Transition>
   );
-});
+}
 
 export default Translate;
