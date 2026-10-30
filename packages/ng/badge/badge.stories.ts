@@ -6,6 +6,7 @@ import { NotificationIcon } from '@mezzanine-ui/icons';
 
 export default {
   title: 'Data Display/Badge',
+  component: MznBadge,
   decorators: [
     moduleMetadata({
       imports: [MznBadge, MznIcon, MznTypography],
