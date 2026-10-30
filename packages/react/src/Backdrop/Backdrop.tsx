@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, MouseEventHandler } from 'react';
+import { type RefAttributes, MouseEventHandler } from 'react';
 import {
   backdropClasses as classes,
   BackdropVariant,
@@ -80,80 +80,74 @@ export interface BackdropProps
  * @see {@link Modal} 對話框元件
  * @see {@link Drawer} 抽屜面板元件
  */
-const Backdrop = forwardRef<HTMLDivElement, BackdropProps>(
-  function Backdrop(props, ref) {
-    const {
-      children,
-      className,
-      container,
-      disableCloseOnBackdropClick = false,
-      disablePortal,
-      disableScrollLock = false,
-      onBackdropClick,
-      onClose,
-      open = false,
-      variant = 'dark',
-      ...rest
-    } = props;
+function Backdrop({
+  ref,
+  ...props
+}: BackdropProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    container,
+    disableCloseOnBackdropClick = false,
+    disablePortal,
+    disableScrollLock = false,
+    onBackdropClick,
+    onClose,
+    open = false,
+    variant = 'dark',
+    ...rest
+  } = props;
 
-    // Lock body scroll when backdrop is open
-    useScrollLock({ enabled: open && !disableScrollLock });
+  // Lock body scroll when backdrop is open
+  useScrollLock({ enabled: open && !disableScrollLock });
 
-    return (
-      <Portal
-        container={container}
-        disablePortal={disablePortal}
-        layer="default"
+  return (
+    <Portal container={container} disablePortal={disablePortal} layer="default">
+      <div
+        {...rest}
+        ref={ref}
+        aria-hidden={!open}
+        className={cx(
+          classes.host,
+          classes.hostAbsolute,
+          {
+            [classes.hostOpen]: open,
+          },
+          className,
+        )}
+        role="presentation"
       >
-        <div
-          {...rest}
-          ref={ref}
-          aria-hidden={!open}
-          className={cx(
-            classes.host,
-            classes.hostAbsolute,
-            {
-              [classes.hostOpen]: open,
-            },
-            className,
-          )}
-          role="presentation"
-        >
-          <div className={classes.main}>
-            <Fade
-              in={open}
-              duration={{
-                enter: MOTION_DURATION.fast,
-                exit: MOTION_DURATION.fast,
-              }}
-              easing={{
-                enter: MOTION_EASING.standard,
-                exit: MOTION_EASING.standard,
-              }}
-            >
-              <div
-                aria-hidden="true"
-                className={cx(
-                  classes.backdrop,
-                  classes.backdropVariant(variant),
-                )}
-                onClick={(event) => {
-                  if (!disableCloseOnBackdropClick && onClose) {
-                    onClose();
-                  }
+        <div className={classes.main}>
+          <Fade
+            in={open}
+            duration={{
+              enter: MOTION_DURATION.fast,
+              exit: MOTION_DURATION.fast,
+            }}
+            easing={{
+              enter: MOTION_EASING.standard,
+              exit: MOTION_EASING.standard,
+            }}
+          >
+            <div
+              aria-hidden="true"
+              className={cx(classes.backdrop, classes.backdropVariant(variant))}
+              onClick={(event) => {
+                if (!disableCloseOnBackdropClick && onClose) {
+                  onClose();
+                }
 
-                  if (onBackdropClick) {
-                    onBackdropClick(event);
-                  }
-                }}
-              />
-            </Fade>
-            <div className={classes.content}>{children}</div>
-          </div>
+                if (onBackdropClick) {
+                  onBackdropClick(event);
+                }
+              }}
+            />
+          </Fade>
+          <div className={classes.content}>{children}</div>
         </div>
-      </Portal>
-    );
-  },
-);
+      </div>
+    </Portal>
+  );
+}
 
 export default Backdrop;
