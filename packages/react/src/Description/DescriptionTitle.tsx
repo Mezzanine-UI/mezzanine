@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { cx } from '../utils/cx';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import {
@@ -64,64 +64,65 @@ export type DescriptionTitleProps =
   | (DescriptionTitleBaseProps & DescriptionTitleWithTooltip)
   | (DescriptionTitleBaseProps & DescriptionTitleWithoutTooltip);
 
-const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
-  function DescriptionTitle(props, ref) {
-    const {
-      badge,
-      className,
-      children,
-      icon,
-      size,
-      tooltip,
-      tooltipPlacement,
-      widthType = 'stretch',
-    } = props;
+function DescriptionTitle({
+  ref,
+  ...props
+}: DescriptionTitleProps & RefAttributes<HTMLDivElement>) {
+  const {
+    badge,
+    className,
+    children,
+    icon,
+    size,
+    tooltip,
+    tooltipPlacement,
+    widthType = 'stretch',
+  } = props;
 
-    return (
-      <div
-        className={cx(
-          classes.titleHost,
-          classes.titleWidth(widthType),
-          size && classes.titleSize(size),
-          className,
-        )}
-        ref={ref}
-      >
-        {badge ? (
-          <Badge
-            variant={badge}
-            text={children}
-            size={size}
-            className={classes.titleText}
-          />
+  return (
+    <div
+      className={cx(
+        classes.titleHost,
+        classes.titleWidth(widthType),
+        size && classes.titleSize(size),
+        className,
+      )}
+      ref={ref}
+    >
+      {badge ? (
+        <Badge
+          variant={badge}
+          text={children}
+          size={size}
+          className={classes.titleText}
+        />
+      ) : (
+        <span className={classes.titleText}>{children}</span>
+      )}
+      {icon ? (
+        tooltip ? (
+          <Tooltip
+            title={tooltip}
+            options={{
+              placement: tooltipPlacement ?? 'top',
+            }}
+          >
+            {({ onMouseEnter, onMouseLeave, ref }) => (
+              <Icon
+                ref={ref}
+                icon={icon}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                size={16}
+              />
+            )}
+          </Tooltip>
         ) : (
-          <span className={classes.titleText}>{children}</span>
-        )}
-        {icon ? (
-          tooltip ? (
-            <Tooltip
-              title={tooltip}
-              options={{
-                placement: tooltipPlacement ?? 'top',
-              }}
-            >
-              {({ onMouseEnter, onMouseLeave, ref }) => (
-                <Icon
-                  ref={ref}
-                  icon={icon}
-                  onMouseEnter={onMouseEnter}
-                  onMouseLeave={onMouseLeave}
-                  size={16}
-                />
-              )}
-            </Tooltip>
-          ) : (
-            <Icon icon={icon} size={16} />
-          )
-        ) : null}
-      </div>
-    );
-  },
-);
+          <Icon icon={icon} size={16} />
+        )
+      ) : null}
+    </div>
+  );
+}
 
 export default DescriptionTitle;

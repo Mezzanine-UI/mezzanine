@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import {
   IconDefinition,
   CaretUpIcon,
@@ -66,56 +66,53 @@ export type DescriptionContentProps =
   | DescriptionContentBaseProps
   | DescriptionContentWithClickableIcon;
 
-const DescriptionContent = forwardRef<HTMLSpanElement, DescriptionContentProps>(
-  function DescriptionContent(props, ref) {
-    const {
-      className,
-      children,
-      icon,
-      onClickIcon,
-      size: sizeProp,
-      variant = 'normal',
-    } = props;
+function DescriptionContent({
+  ref,
+  ...props
+}: DescriptionContentProps & RefAttributes<HTMLSpanElement>) {
+  const {
+    className,
+    children,
+    icon,
+    onClickIcon,
+    size: sizeProp,
+    variant = 'normal',
+  } = props;
 
-    const { size: contextSize } = useDescriptionContext();
-    const size = sizeProp ?? contextSize;
+  const { size: contextSize } = useDescriptionContext();
+  const size = sizeProp ?? contextSize;
 
-    return (
-      <span
-        className={cx(
-          classes.contentHost,
-          classes.contentVariant(variant),
-          classes.contentSize(size),
-          className,
-        )}
-        ref={ref}
-      >
-        {variant === 'trend-up' && (
-          <Icon
-            className={classes.contentTrendUp}
-            icon={CaretUpIcon}
-            size={16}
-          />
-        )}
-        {variant === 'trend-down' && (
-          <Icon
-            className={classes.contentTrendDown}
-            icon={CaretDownIcon}
-            size={16}
-          />
-        )}
-        {children}
-        {variant === 'with-icon' && icon && (
-          <Icon
-            className={classes.contentIcon}
-            icon={icon}
-            size={16}
-            onClick={onClickIcon}
-          />
-        )}
-      </span>
-    );
-  },
-);
+  return (
+    <span
+      className={cx(
+        classes.contentHost,
+        classes.contentVariant(variant),
+        classes.contentSize(size),
+        className,
+      )}
+      ref={ref}
+    >
+      {variant === 'trend-up' && (
+        <Icon className={classes.contentTrendUp} icon={CaretUpIcon} size={16} />
+      )}
+      {variant === 'trend-down' && (
+        <Icon
+          className={classes.contentTrendDown}
+          icon={CaretDownIcon}
+          size={16}
+        />
+      )}
+      {children}
+      {variant === 'with-icon' && icon && (
+        <Icon
+          className={classes.contentIcon}
+          icon={icon}
+          size={16}
+          onClick={onClickIcon}
+        />
+      )}
+    </span>
+  );
+}
 
 export default DescriptionContent;
