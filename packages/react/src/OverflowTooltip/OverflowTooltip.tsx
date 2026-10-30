@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { type RefAttributes, useEffect, useRef, useState } from 'react';
 import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
 import Popper, { PopperProps } from '../Popper';
 import Tag, { TagProps } from '../Tag';
@@ -41,149 +41,150 @@ export type OverflowTooltipProps = {
 /**
  * The react component for `mezzanine` overflow-tooltip.
  */
-const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
-  function OverflowTooltip(props, ref) {
-    const {
-      anchor,
-      className,
-      onTagDismiss,
-      open,
-      placement = 'top-start',
-      readOnly,
-      tags,
-      tagSize,
-    } = props;
+function OverflowTooltip({
+  ref,
+  ...props
+}: OverflowTooltipProps & RefAttributes<HTMLDivElement>) {
+  const {
+    anchor,
+    className,
+    onTagDismiss,
+    open,
+    placement = 'top-start',
+    readOnly,
+    tags,
+    tagSize,
+  } = props;
 
-    const offsetValue = getNumericCSSVariablePixelValue(
-      `--${spacingPrefix}-gap-base`,
-    );
-    const arrowHeight = getNumericCSSVariablePixelValue(
-      `--${spacingPrefix}-size-element-tight`,
-    );
-    const arrowPadding = getNumericCSSVariablePixelValue(
-      `--${spacingPrefix}-padding-horizontal-comfort`,
-    );
+  const offsetValue = getNumericCSSVariablePixelValue(
+    `--${spacingPrefix}-gap-base`,
+  );
+  const arrowHeight = getNumericCSSVariablePixelValue(
+    `--${spacingPrefix}-size-element-tight`,
+  );
+  const arrowPadding = getNumericCSSVariablePixelValue(
+    `--${spacingPrefix}-padding-horizontal-comfort`,
+  );
 
-    const middleware = [offset({ mainAxis: offsetValue + arrowHeight })];
-    const flipMiddleware = flip({
-      crossAxis: 'alignment',
-      fallbackAxisSideDirection: 'end',
-    });
-    const shiftMiddleware = shift();
+  const middleware = [offset({ mainAxis: offsetValue + arrowHeight })];
+  const flipMiddleware = flip({
+    crossAxis: 'alignment',
+    fallbackAxisSideDirection: 'end',
+  });
+  const shiftMiddleware = shift();
 
-    if (placement.includes('-')) {
-      middleware.push(flipMiddleware, shiftMiddleware);
-    } else {
-      middleware.push(shiftMiddleware, flipMiddleware);
+  if (placement.includes('-')) {
+    middleware.push(flipMiddleware, shiftMiddleware);
+  } else {
+    middleware.push(shiftMiddleware, flipMiddleware);
+  }
+
+  const [popperOpen, setPopperOpen] = useState(false);
+  useEffect(() => {
+    if (open) {
+      setPopperOpen(true);
     }
+  }, [open]);
 
-    const [popperOpen, setPopperOpen] = useState(false);
-    useEffect(() => {
-      if (open) {
-        setPopperOpen(true);
-      }
-    }, [open]);
+  const contentRef = useRef<HTMLElement>(null);
 
-    const contentRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!popperOpen) return;
 
-    useEffect(() => {
-      if (!popperOpen) return;
+    const rafId = requestAnimationFrame(() => {
+      const content = contentRef.current;
+      if (!content) return;
 
-      const rafId = requestAnimationFrame(() => {
-        const content = contentRef.current;
-        if (!content) return;
+      content.style.width = '';
 
-        content.style.width = '';
+      const children = Array.from(content.children) as HTMLElement[];
+      if (!children.length) return;
 
-        const children = Array.from(content.children) as HTMLElement[];
-        if (!children.length) return;
+      const rows = new Map<number, HTMLElement[]>();
+      children.forEach((child) => {
+        const top = Math.round(child.getBoundingClientRect().top);
+        if (!rows.has(top)) rows.set(top, []);
 
-        const rows = new Map<number, HTMLElement[]>();
-        children.forEach((child) => {
-          const top = Math.round(child.getBoundingClientRect().top);
-          if (!rows.has(top)) rows.set(top, []);
+        const arr = rows.get(top);
 
-          const arr = rows.get(top);
-
-          if (arr) {
-            arr.push(child);
-          }
-        });
-
-        const style = getComputedStyle(content);
-        const paddingLeft = parseFloat(style.paddingLeft);
-        const paddingRight = parseFloat(style.paddingRight);
-        const contentLeft = content.getBoundingClientRect().left;
-
-        let maxRowWidth = 0;
-        rows.forEach((rowItems) => {
-          const lastItem = rowItems[rowItems.length - 1];
-          const rowWidth =
-            lastItem.getBoundingClientRect().right - contentLeft - paddingLeft;
-          maxRowWidth = Math.max(maxRowWidth, rowWidth);
-        });
-
-        content.style.width = `${maxRowWidth + paddingLeft + paddingRight}px`;
+        if (arr) {
+          arr.push(child);
+        }
       });
 
-      return () => cancelAnimationFrame(rafId);
-    }, [tags, popperOpen, tagSize, readOnly]);
+      const style = getComputedStyle(content);
+      const paddingLeft = parseFloat(style.paddingLeft);
+      const paddingRight = parseFloat(style.paddingRight);
+      const contentLeft = content.getBoundingClientRect().left;
 
-    return (
-      <Popper
-        ref={ref}
-        anchor={anchor}
-        open={popperOpen}
-        arrow={{
-          enabled: true,
-          className: classes.arrow,
-          padding: arrowPadding,
+      let maxRowWidth = 0;
+      rows.forEach((rowItems) => {
+        const lastItem = rowItems[rowItems.length - 1];
+        const rowWidth =
+          lastItem.getBoundingClientRect().right - contentLeft - paddingLeft;
+        maxRowWidth = Math.max(maxRowWidth, rowWidth);
+      });
+
+      content.style.width = `${maxRowWidth + paddingLeft + paddingRight}px`;
+    });
+
+    return () => cancelAnimationFrame(rafId);
+  }, [tags, popperOpen, tagSize, readOnly]);
+
+  return (
+    <Popper
+      ref={ref}
+      anchor={anchor}
+      open={popperOpen}
+      arrow={{
+        enabled: true,
+        className: classes.arrow,
+        padding: arrowPadding,
+      }}
+      className={cx(classes.host, className)}
+      options={{ placement, middleware }}
+    >
+      <Fade
+        ref={contentRef}
+        in={open}
+        duration={{
+          enter: MOTION_DURATION.fast,
+          exit: MOTION_DURATION.fast,
         }}
-        className={cx(classes.host, className)}
-        options={{ placement, middleware }}
+        easing={{
+          enter: MOTION_EASING.standard,
+          exit: MOTION_EASING.standard,
+        }}
+        onExited={() => setPopperOpen(false)}
       >
-        <Fade
-          ref={contentRef}
-          in={open}
-          duration={{
-            enter: MOTION_DURATION.fast,
-            exit: MOTION_DURATION.fast,
-          }}
-          easing={{
-            enter: MOTION_EASING.standard,
-            exit: MOTION_EASING.standard,
-          }}
-          onExited={() => setPopperOpen(false)}
-        >
-          <div className={classes.content}>
-            {tags.map((tag, index) => {
-              if (readOnly) {
-                return (
-                  <Tag
-                    key={`static-${index}`}
-                    type="static"
-                    label={tag}
-                    readOnly
-                    size={tagSize}
-                  />
-                );
-              }
-
+        <div className={classes.content}>
+          {tags.map((tag, index) => {
+            if (readOnly) {
               return (
                 <Tag
-                  key={`dismissable-${index}`}
-                  type="dismissable"
+                  key={`static-${index}`}
+                  type="static"
                   label={tag}
-                  onClose={() => onTagDismiss(index)}
+                  readOnly
                   size={tagSize}
                 />
               );
-            })}
-          </div>
-        </Fade>
-      </Popper>
-    );
-  },
-);
+            }
+
+            return (
+              <Tag
+                key={`dismissable-${index}`}
+                type="dismissable"
+                label={tag}
+                onClose={() => onTagDismiss(index)}
+                size={tagSize}
+              />
+            );
+          })}
+        </div>
+      </Fade>
+    </Popper>
+  );
+}
 
 export default OverflowTooltip;
