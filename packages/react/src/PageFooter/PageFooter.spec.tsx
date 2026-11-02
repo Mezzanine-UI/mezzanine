@@ -193,6 +193,37 @@ describe('<PageFooter />', () => {
         ).toBeTruthy();
       });
 
+      it('should name the icon-only trigger (#495)', () => {
+        const { getByRole, rerender } = render(
+          <PageFooter
+            type="overflow"
+            actions={{
+              primaryButton: { children: 'Confirm' },
+            }}
+            dropdownProps={{
+              options: [{ id: '1', name: 'Option 1' }],
+            }}
+          />,
+        );
+
+        expect(getByRole('button', { name: 'More actions' })).toBeTruthy();
+
+        rerender(
+          <PageFooter
+            type="overflow"
+            actions={{
+              primaryButton: { children: 'Confirm' },
+            }}
+            dropdownProps={{
+              options: [{ id: '1', name: 'Option 1' }],
+            }}
+            dropdownTriggerAriaLabel="Export options"
+          />,
+        );
+
+        expect(getByRole('button', { name: 'Export options' })).toBeTruthy();
+      });
+
       it('should use custom supportingActionIcon', () => {
         const { getHostHTMLElement } = render(
           <PageFooter
