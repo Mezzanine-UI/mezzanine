@@ -43,6 +43,7 @@ const props = withDefaults(defineProps<PageFooterProps>(), {
   annotation: undefined,
   annotationClassName: undefined,
   dropdownProps: undefined,
+  dropdownTriggerAriaLabel: 'More actions',
   supportingActionIcon: undefined,
   supportingActionName: undefined,
   supportingActionOnClick: undefined,
@@ -102,6 +103,7 @@ const messageClass = classes.message;
         <template #default="triggerProps">
           <MznButton
             v-bind="triggerProps"
+            :aria-label="dropdownTriggerAriaLabel"
             type="button"
             icon-type="icon-only"
             :icon="supportingActionIcon || DotHorizontalIcon"

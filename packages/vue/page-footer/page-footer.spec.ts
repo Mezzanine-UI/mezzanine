@@ -77,6 +77,27 @@ describe('<MznPageFooter />', () => {
       );
     });
 
+    it('should name the icon-only trigger (#495)', () => {
+      const dropdownProps = { options: [{ id: '1', name: 'Option 1' }] };
+      const button = (wrapper: ReturnType<typeof render>) =>
+        wrapper.get(`.${classes.annotation} button`);
+
+      expect(
+        button(render({ dropdownProps, type: 'overflow' })).attributes(
+          'aria-label',
+        ),
+      ).toBe('More actions');
+      expect(
+        button(
+          render({
+            dropdownProps,
+            dropdownTriggerAriaLabel: 'Export options',
+            type: 'overflow',
+          }),
+        ).attributes('aria-label'),
+      ).toBe('Export options');
+    });
+
     it('should render nothing without dropdownProps', () => {
       const wrapper = render({ type: 'overflow' });
 

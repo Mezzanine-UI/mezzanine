@@ -112,6 +112,11 @@ export interface PageFooterProps {
    */
   dropdownProps?: PageFooterDropdownProps;
   /**
+   * Accessible name of the icon-only overflow trigger button.
+   * @default 'More actions'
+   */
+  dropdownTriggerAriaLabel?: string;
+  /**
    * Overflow type: Icon for the icon-only button.
    * @default DotHorizontalIcon
    */
