@@ -12,6 +12,7 @@ import {
 import { createRef } from 'react';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import Modal, { ModalProps, ModalStatusType } from '.';
+import ModalHeader from './ModalHeader';
 import { createWrapper } from '../../__test-utils__/render';
 
 function getOverlayElement(container: HTMLElement = document.body) {
@@ -66,7 +67,7 @@ describe('<Modal />', () => {
       wrapper: createWrapper(Modal, props),
     });
 
-    expect(result.current).toEqual(modalControl);
+    expect(result.current).toMatchObject(modalControl);
   });
 
   it('should render children', () => {
@@ -938,6 +939,65 @@ describe('<Modal />', () => {
       fireEvent.keyDown(document, { key: 'Tab' });
 
       expect(document.activeElement?.textContent).toBe('in-legend');
+    });
+  });
+
+  describe('accessible name (#497)', () => {
+    it('should label the dialog by the title of a composed ModalHeader', () => {
+      render(
+        <Modal modalType="standard" onClose={() => {}} open>
+          <ModalHeader title="Confirm" />
+          <p>Body text.</p>
+        </Modal>,
+      );
+
+      const modalElement = getModalElement()!;
+      const titleId = modalElement.getAttribute('aria-labelledby');
+
+      expect(titleId).toBeTruthy();
+      expect(document.getElementById(titleId!)?.textContent).toBe('Confirm');
+    });
+
+    it('should label the dialog by the title when showModalHeader=true', () => {
+      render(
+        <Modal open modalType="standard" showModalHeader title="Test Title" />,
+      );
+
+      const modalElement = getModalElement()!;
+      const titleId = modalElement.getAttribute('aria-labelledby');
+
+      expect(document.getElementById(titleId!)?.textContent).toBe('Test Title');
+    });
+
+    it('should not set aria-labelledby without a title', () => {
+      render(<Modal open modalType="standard" />);
+
+      expect(getModalElement()!.hasAttribute('aria-labelledby')).toBe(false);
+    });
+
+    it('should let caller aria-label take precedence', () => {
+      render(
+        <Modal aria-label="Custom name" modalType="standard" open>
+          <ModalHeader title="Confirm" />
+        </Modal>,
+      );
+
+      const modalElement = getModalElement()!;
+
+      expect(modalElement.getAttribute('aria-label')).toBe('Custom name');
+      expect(modalElement.hasAttribute('aria-labelledby')).toBe(false);
+    });
+
+    it('should let caller aria-labelledby take precedence', () => {
+      render(
+        <Modal aria-labelledby="external" modalType="standard" open>
+          <ModalHeader title="Confirm" />
+        </Modal>,
+      );
+
+      expect(getModalElement()!.getAttribute('aria-labelledby')).toBe(
+        'external',
+      );
     });
   });
 });

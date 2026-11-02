@@ -1114,4 +1114,28 @@ describe('<Input variant="password" />', () => {
     const inputElement = container.querySelector('input');
     expect(inputElement?.value).toBe('password');
   });
+
+  describe('aria forwarding (#504)', () => {
+    it('should forward aria-label to the native input', () => {
+      const { getByRole } = render(<Input aria-label="Email" />);
+
+      expect(getByRole('textbox', { name: 'Email' }).tagName).toBe('INPUT');
+    });
+
+    it('should let inputProps override Input-level aria-*', () => {
+      const { container } = render(
+        <Input aria-label="Outer" inputProps={{ 'aria-label': 'Inner' }} />,
+      );
+
+      expect(container.querySelector('input')?.getAttribute('aria-label')).toBe(
+        'Inner',
+      );
+    });
+
+    it('should not put aria-label on the wrapper', () => {
+      const { container } = render(<Input aria-label="Email" />);
+
+      expect(container.querySelectorAll('[aria-label]')).toHaveLength(1);
+    });
+  });
 });

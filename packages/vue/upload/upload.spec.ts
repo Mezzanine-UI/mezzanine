@@ -291,18 +291,18 @@ describe('<MznUploadPictureCard />', () => {
     expect(wrapper.get('button').attributes('aria-label')).toBe('刪除檔案');
   });
 
-  it('should keep its own close label on the cancel action', () => {
+  it('should name the cancel action by its cancelUpload label', () => {
     const wrapper = mount(MznUploadPictureCard, {
       props: { file: imageFile(), status: 'loading' },
     });
 
-    // React writes the clear action's own label after the spread, so the
-    // caller's `cancelUpload` label never reaches the DOM.
+    // ClearActions lets the caller's aria-label override its default "Close"
+    // (#498), so the `cancelUpload` label reaches the DOM.
     expect(
       wrapper
         .get(`.${uploadPictureCardClasses.clearActionsIcon}`)
         .attributes('aria-label'),
-    ).toBe('Close');
+    ).toBe('Cancel upload');
   });
 
   it('should fall back to the file name as the error message', () => {

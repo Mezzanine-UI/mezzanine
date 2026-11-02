@@ -1224,4 +1224,30 @@ describe('MznInput', () => {
       expect(fixture.componentInstance.control.touched).toBe(true);
     });
   });
+
+  describe('aria forwarding (#504)', () => {
+    @Component({
+      standalone: true,
+      imports: [MznInput],
+      template: `
+        <div mznInput aria-label="Email" aria-describedby="hint"></div>
+      `,
+    })
+    class AriaHostComponent {}
+
+    it('should forward aria-label to the native input, not the host', () => {
+      TestBed.configureTestingModule({ imports: [AriaHostComponent] });
+
+      const fixture = TestBed.createComponent(AriaHostComponent);
+
+      fixture.detectChanges();
+
+      const host = fixture.nativeElement.querySelector('[mznInput]');
+      const inputEl = host.querySelector('input') as HTMLInputElement;
+
+      expect(inputEl.getAttribute('aria-label')).toBe('Email');
+      expect(inputEl.getAttribute('aria-describedby')).toBe('hint');
+      expect(host.hasAttribute('aria-label')).toBe(false);
+    });
+  });
 });

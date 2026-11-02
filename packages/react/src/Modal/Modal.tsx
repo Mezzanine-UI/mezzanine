@@ -6,6 +6,7 @@ import {
 import {
   type RefAttributes,
   useCallback,
+  useId,
   useRef,
   useState,
   useMemo,
@@ -351,13 +352,28 @@ function Modal({ ref, ...props }: ModalProps & RefAttributes<HTMLDivElement>) {
     };
   }, []);
 
+  const titleId = useId();
+  const [titleCount, setTitleCount] = useState(0);
+
+  const registerTitle = useCallback(() => {
+    setTitleCount((count) => count + 1);
+
+    return () => setTitleCount((count) => count - 1);
+  }, []);
+
   const modalControl: ModalControl = useMemo(
     () => ({
       loading,
       modalStatusType: modalStatusType,
+      registerTitle,
+      titleId,
     }),
-    [loading, modalStatusType],
+    [loading, modalStatusType, registerTitle, titleId],
   );
+
+  // A caller-provided aria-label / aria-labelledby always wins over the title.
+  const ariaLabelledBy =
+    rest['aria-label'] || titleCount === 0 ? undefined : titleId;
 
   const { Container: ModalContainer } = useModalContainer();
 
@@ -405,6 +421,7 @@ function Modal({ ref, ...props }: ModalProps & RefAttributes<HTMLDivElement>) {
         ref={ref}
       >
         <div
+          aria-labelledby={ariaLabelledBy}
           aria-modal={open ? true : undefined}
           {...rest}
           className={cx(

@@ -5,6 +5,7 @@ import { inputClasses as classes } from '@mezzanine-ui/core/input';
 import { textFieldClasses } from '@mezzanine-ui/core/text-field';
 import { EyeIcon, EyeInvisibleIcon, SearchIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
+import { splitAriaAttrs } from '../_internal/split-aria-attrs';
 import { formatNumberWithCommas } from '../_internal/format-number-with-commas';
 import { parseNumberWithCommas } from '../_internal/parse-number-with-commas';
 import { useInputWithClearControlValue } from '../_internal/use-input-with-clear-control-value';
@@ -363,11 +364,19 @@ const indicatorClasses = computed((): string =>
   clsx(classes.indicatorContainer),
 );
 
-const forwardedAttrs = computed(() => {
+/**
+ * aria-* / role name and describe the native input (mirrors React); every
+ * other fallthrough attr stays on the container.
+ */
+const splitAttrs = computed(() => {
   const { class: _class, ...rest } = attrs;
 
-  return rest;
+  return splitAriaAttrs(rest);
 });
+
+const forwardedAttrs = computed(() => splitAttrs.value[1]);
+
+const inputAriaAttrs = computed(() => splitAttrs.value[0]);
 
 const hasPrefixSlot = computed((): boolean =>
   Boolean(slots.prefix && (props.variant === 'affix' || isMeasure.value)),
@@ -441,7 +450,7 @@ const spinnersClass = classes.spinners;
         </template>
         <input
           ref="input"
-          v-bind="{ ...defaultInputProps, ...inputProps }"
+          v-bind="{ ...inputAriaAttrs, ...defaultInputProps, ...inputProps }"
           :aria-disabled="disabled"
           :aria-multiline="false"
           :aria-readonly="readonly"

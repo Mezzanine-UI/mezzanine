@@ -9,6 +9,7 @@ import {
   ButtonGroupOrientation,
   ButtonSize,
   ButtonVariant,
+  getButtonGroupAriaOrientation,
 } from '@mezzanine-ui/core/button';
 import clsx from 'clsx';
 import { MZN_BUTTON_GROUP, MznButtonGroupContext } from './button-group.token';
@@ -52,9 +53,9 @@ import { MZN_BUTTON_GROUP, MznButtonGroupContext } from './button-group.token';
     },
   ],
   host: {
-    role: 'group',
+    '[attr.role]': 'role()',
     '[class]': 'hostClasses()',
-    '[attr.aria-orientation]': 'orientation()',
+    '[attr.aria-orientation]': 'ariaOrientation()',
     '[attr.variant]': 'null',
     '[attr.size]': 'null',
     '[attr.disabled]': 'null',
@@ -93,6 +94,18 @@ export class MznButtonGroup {
    * @default 'horizontal'
    */
   readonly orientation = input<ButtonGroupOrientation>('horizontal');
+
+  /**
+   * ARIA role of the group. `aria-orientation` is only emitted for roles that
+   * support it (e.g. `toolbar`).
+   * @default 'group'
+   */
+  readonly role = input<string>('group');
+
+  protected readonly ariaOrientation = computed(
+    (): ButtonGroupOrientation | undefined =>
+      getButtonGroupAriaOrientation(this.role(), this.orientation()),
+  );
 
   protected readonly hostClasses = computed((): string =>
     clsx(classes.host, classes.orientation(this.orientation()), {

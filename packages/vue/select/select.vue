@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, provide, ref } from 'vue';
+import { computed, inject, provide, ref, useAttrs } from 'vue';
 import type {
   DropdownOption,
   DropdownStatus,
@@ -9,6 +9,7 @@ import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import clsx from 'clsx';
 import isArray from 'lodash/isArray';
 import { formControlKey } from '../_internal/form-control';
+import { splitAriaAttrs } from '../_internal/split-aria-attrs';
 import { useSelectValueControl } from '../_internal/use-select-value-control';
 import MznDropdown from '../dropdown/dropdown.vue';
 import type { DropdownTriggerProps } from '../dropdown/dropdown.types';
@@ -331,8 +332,22 @@ function handleVisibilityChange(isOpen: boolean): void {
   else onClose();
 }
 
+/**
+ * Select-level aria-* (e.g. `aria-label`) name the combobox input (mirrors
+ * React); every other fallthrough attr stays on the host div.
+ */
+defineOptions({ inheritAttrs: false });
+
+const attrs = useAttrs();
+
+const splitAttrs = computed(() => splitAriaAttrs(attrs));
+
 const resolvedInputProps = computed(
-  (): SelectTriggerInputProps => ({ ...props.inputProps, role: 'combobox' }),
+  (): SelectTriggerInputProps => ({
+    ...splitAttrs.value[0],
+    ...props.inputProps,
+    role: 'combobox',
+  }),
 );
 
 provide(
@@ -394,7 +409,7 @@ const triggerRenderValue = computed((): SelectTriggerProps['renderValue'] =>
 </script>
 
 <template>
-  <div :class="hostClasses">
+  <div v-bind="splitAttrs[1]" :class="hostClasses">
     <MznDropdown
       :disabled="readOnly || disabled"
       :flip="flip"

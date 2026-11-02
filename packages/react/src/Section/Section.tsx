@@ -9,9 +9,11 @@ import ContentHeader, { ContentHeaderProps } from '../ContentHeader';
 import { FilterArea, FilterAreaProps } from '../FilterArea';
 import Tab, { TabProps } from '../Tab';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { sectionClasses as classes } from '@mezzanine-ui/core/section';
 
-export interface SectionProps {
+export interface SectionProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Additional style for the section container.
    */
@@ -72,7 +74,8 @@ function Section({
   ref,
   ...props
 }: PropsWithChildren<SectionProps> & RefAttributes<HTMLDivElement>) {
-  const { children, className, contentHeader, filterArea, tab } = props;
+  const { children, className, contentHeader, filterArea, tab, ...rest } =
+    props;
 
   let renderedContentHeader: ReactElement<ContentHeaderProps> | null = null;
   let renderedFilterArea: ReactElement<FilterAreaProps> | null = null;
@@ -109,7 +112,7 @@ function Section({
   }
 
   return (
-    <div ref={ref} className={cx(classes.host, className)}>
+    <div {...rest} ref={ref} className={cx(classes.host, className)}>
       {renderedContentHeader}
       {renderedFilterArea}
       {renderedTab}

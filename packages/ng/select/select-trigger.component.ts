@@ -47,11 +47,10 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
   host: {
     '[class]': 'hostClasses()',
     '(click)': 'onTriggerClick()',
-    // ARIA — 鏡像 React SelectTrigger（TextField host div）的組合框語意。
-    '[attr.role]': '"combobox"',
-    '[attr.aria-expanded]': 'active()',
-    '[attr.aria-haspopup]': '"listbox"',
-    '[attr.aria-controls]': 'listboxId() ?? null',
+    // The native <input> is the combobox (mirrors React); the host wrapper
+    // stays presentational so there is only one combobox.
+    '[attr.role]': '"presentation"',
+    '[attr.ariaLabel]': 'null',
     '[attr.active]': 'null',
     '[attr.clearable]': 'null',
     '[attr.disabled]': 'null',
@@ -77,6 +76,9 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
       aria-autocomplete="list"
       aria-haspopup="listbox"
       autocomplete="off"
+      [attr.aria-controls]="listboxId() ?? null"
+      [attr.aria-expanded]="active()"
+      [attr.aria-label]="ariaLabel() ?? null"
       [class]="triggerInputClass"
       [disabled]="disabled()"
       [value]="hasValue() && mode() !== 'multiple' ? displayText() : ''"
@@ -123,6 +125,9 @@ export class MznSelectTrigger {
    * 關聯的 listbox 元素 id,設於 host 的 `aria-controls`,鏡像 React combobox 語意。
    */
   readonly listboxId = input<string>();
+
+  /** Accessible name forwarded to the native combobox `<input>`. */
+  readonly ariaLabel = input<string>();
 
   /**
    * 是否顯示清除按鈕。清除按鈕僅在有值時才顯示。

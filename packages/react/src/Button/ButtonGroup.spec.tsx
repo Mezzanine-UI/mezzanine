@@ -189,17 +189,9 @@ describe('<ButtonGroup />', () => {
   });
 
   describe('prop: orientation', () => {
-    function testOrientation(
-      element: HTMLElement,
-      orientation: ButtonGroupOrientation,
-    ) {
-      expect(element.getAttribute('aria-orientation')).toBe(orientation);
-      expect(
-        element.classList.contains(`mzn-button-group--${orientation}`),
-      ).toBeTruthy();
-    }
+    const orientations: ButtonGroupOrientation[] = ['horizontal', 'vertical'];
 
-    it('should render orientation="horizontal" by default', () => {
+    it('should render orientation="horizontal" class by default', () => {
       const { getHostHTMLElement } = render(
         <ButtonGroup>
           <button>Button</button>
@@ -207,27 +199,49 @@ describe('<ButtonGroup />', () => {
       );
       const element = getHostHTMLElement();
 
-      testOrientation(element, 'horizontal');
+      expect(
+        element.classList.contains('mzn-button-group--horizontal'),
+      ).toBeTruthy();
     });
 
-    const orientations: ButtonGroupOrientation[] = ['horizontal', 'vertical'];
+    it('should not emit aria-orientation on role="group" (#502)', () => {
+      const { getHostHTMLElement } = render(
+        <ButtonGroup aria-orientation="vertical" orientation="vertical">
+          <button>Button</button>
+        </ButtonGroup>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('role')).toBe('group');
+      expect(element.hasAttribute('aria-orientation')).toBe(false);
+      expect(
+        element.classList.contains('mzn-button-group--vertical'),
+      ).toBeTruthy();
+    });
 
     orientations.forEach((orientation) => {
-      it(`should add 'aria-orientation' attribute and class if orientation=${orientation}`, () => {
+      it(`should add 'aria-orientation' if role supports it and orientation=${orientation}`, () => {
         const { getHostHTMLElement } = render(
-          <ButtonGroup orientation={orientation}>
+          <ButtonGroup orientation={orientation} role="toolbar">
             <button>Button</button>
           </ButtonGroup>,
         );
         const element = getHostHTMLElement();
 
-        testOrientation(element, orientation);
+        expect(element.getAttribute('aria-orientation')).toBe(orientation);
+        expect(
+          element.classList.contains(`mzn-button-group--${orientation}`),
+        ).toBeTruthy();
       });
     });
 
     it('aria-orientation from props should not override', () => {
       const { getHostHTMLElement } = render(
-        <ButtonGroup aria-orientation="vertical" orientation="horizontal">
+        <ButtonGroup
+          aria-orientation="vertical"
+          orientation="horizontal"
+          role="toolbar"
+        >
           <button>Button</button>
         </ButtonGroup>,
       );
@@ -331,7 +345,7 @@ describe('<ButtonGroup />', () => {
       expect(
         element.classList.contains('mzn-button-group--vertical'),
       ).toBeTruthy();
-      expect(element.getAttribute('aria-orientation')).toBe('vertical');
+      expect(element.hasAttribute('aria-orientation')).toBe(false);
       expect(element.getAttribute('role')).toBe('group');
     });
   });

@@ -273,14 +273,26 @@ describe('<Section />', () => {
           <div>Content</div>
         </Section>,
       );
-      const children = Array.from(
-        container.firstElementChild?.children ?? [],
-      );
+      const children = Array.from(container.firstElementChild?.children ?? []);
 
       expect(children[0]).toHaveClass('mzn-content-header');
       expect(children[1]).toHaveClass('mzn-filter-area');
       expect(children[2]).toHaveClass('mzn-tab');
       expect(children[3]).toHaveClass('mzn-section__content');
+    });
+  });
+
+  describe('native attributes', () => {
+    it('should forward aria-* and role to the root (#501)', () => {
+      const { getByRole } = render(
+        <Section aria-label="Emergency rollback" role="region">
+          <p>Section content.</p>
+        </Section>,
+      );
+
+      expect(getByRole('region', { name: 'Emergency rollback' })).toHaveClass(
+        'mzn-section',
+      );
     });
   });
 });

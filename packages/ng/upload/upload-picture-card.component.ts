@@ -118,7 +118,7 @@ export interface UploadPictureCardAriaLabels {
             type="embedded"
             variant="contrast"
             [class]="clearActionsIconClass"
-            [attr.aria-label]="resolvedAriaLabels().cancelUpload"
+            [aria-label]="resolvedAriaLabels().cancelUpload"
             (clicked)="onDelete($event)"
           ></button>
           <div

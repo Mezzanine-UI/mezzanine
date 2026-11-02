@@ -284,3 +284,43 @@ describe('MznDropdown shift', () => {
     expect(left).toBe(ANCHOR_X);
   });
 });
+
+/** Inline dropdown whose header trigger is a native <button>. */
+@Component({
+  standalone: true,
+  imports: [MznDropdown],
+  template: `
+    <div mznDropdown inputPosition="inside" [open]="false" [options]="options">
+      <div mznDropdownHeader>
+        <button aria-label="More" type="button"></button>
+      </div>
+    </div>
+  `,
+})
+class InlineButtonTriggerHost {
+  readonly options = MOCK_OPTIONS;
+}
+
+describe('MznDropdown inline trigger ARIA', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [NoopAnimationsModule, InlineButtonTriggerHost],
+    });
+  });
+
+  it('should keep button semantics on a native button trigger (#503)', async () => {
+    const fixture = TestBed.createComponent(InlineButtonTriggerHost);
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await Promise.resolve();
+
+    const trigger = fixture.nativeElement.querySelector(
+      'button[aria-label="More"]',
+    ) as HTMLButtonElement;
+
+    expect(trigger.getAttribute('aria-haspopup')).toBe('listbox');
+    expect(trigger.hasAttribute('role')).toBe(false);
+    expect(trigger.hasAttribute('aria-autocomplete')).toBe(false);
+  });
+});

@@ -77,4 +77,12 @@ describe('MznClearActions', () => {
     expect(emitted).toHaveLength(1);
     expect(emitted?.[0][0]).toBeInstanceOf(MouseEvent);
   });
+
+  it('should let the caller override the default aria-label (#498)', () => {
+    const wrapper = mount(MznClearActions, {
+      attrs: { 'aria-label': 'Dismiss the banner' },
+    });
+
+    expect(wrapper.attributes('aria-label')).toBe('Dismiss the banner');
+  });
 });

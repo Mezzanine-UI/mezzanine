@@ -268,7 +268,9 @@ const followText = computed((): string | undefined => {
 
   const child = triggerVNode();
 
-  if (!child || child.type === MznButton) return undefined;
+  if (!child || child.type === MznButton || child.type === 'button') {
+    return undefined;
+  }
   if (!props.isMatchInputValue) return undefined;
 
   // Try to get value from the trigger's props
@@ -497,7 +499,8 @@ const setAnchor = (element: Element | ComponentPublicInstance | null): void => {
 
 /** The aria and event props the trigger has to carry. */
 function triggerProps(): DropdownTriggerProps {
-  const isButtonTrigger = triggerType === MznButton;
+  // Native button triggers keep button semantics, same as MznButton.
+  const isButtonTrigger = triggerType === MznButton || triggerType === 'button';
   const combobox = isButtonTrigger
     ? {
         // Button trigger: expose listbox ARIA so screen readers can navigate

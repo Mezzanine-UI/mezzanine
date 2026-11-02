@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   input,
 } from '@angular/core';
@@ -66,6 +67,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
         variant="h2"
         color="text-neutral-solid"
         [class]="titleClasses()"
+        [attr.id]="modalContext?.titleId ?? null"
         [title]="title()"
         >{{ title() }}</h2
       >
@@ -82,9 +84,17 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
   `,
 })
 export class MznModalHeader {
-  private readonly modalContext = inject<ModalContextValue>(MZN_MODAL_CONTEXT, {
-    optional: true,
-  });
+  protected readonly modalContext = inject<ModalContextValue>(
+    MZN_MODAL_CONTEXT,
+    { optional: true },
+  );
+
+  constructor() {
+    // Name the parent dialog by this header's title (aria-labelledby).
+    const unregister = this.modalContext?.registerTitle();
+
+    if (unregister) inject(DestroyRef).onDestroy(unregister);
+  }
 
   /** 標題文字。 */
   readonly title = input.required<string>();

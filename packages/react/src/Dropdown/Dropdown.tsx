@@ -515,13 +515,17 @@ export default function Dropdown(props: DropdownProps) {
     [],
   );
 
+  // Native <button> triggers keep button semantics, same as the Mezzanine Button.
+  const isButtonTrigger =
+    children.type === Button || children.type === 'button';
+
   const followText = useMemo(() => {
     // If followText is explicitly provided, use it
     if (followTextProp !== undefined) {
       return followTextProp != null ? String(followTextProp) : undefined;
     }
     // Otherwise, auto-extract from children props
-    if (children.type === Button) {
+    if (isButtonTrigger) {
       return undefined;
     }
     if (!isMatchInputValue) {
@@ -534,7 +538,7 @@ export default function Dropdown(props: DropdownProps) {
       '';
     // Ensure the value is a string or undefined
     return inputValue != null ? String(inputValue) : undefined;
-  }, [children, isMatchInputValue, followTextProp]);
+  }, [children, isButtonTrigger, isMatchInputValue, followTextProp]);
 
   const popoverPlacement: PopperPlacement = useMemo(() => {
     if (inputPosition === 'outside') {
@@ -690,10 +694,9 @@ export default function Dropdown(props: DropdownProps) {
 
   // Extract combobox props logic to avoid duplication
   const getComboboxProps = useMemo(() => {
-    const isInput = (children as { type: unknown }).type !== Button;
-
-    if (!isInput) {
-      // Button trigger: expose listbox ARIA so screen readers can navigate
+    if (isButtonTrigger) {
+      // Button trigger (Mezzanine or native): keep button semantics and expose
+      // listbox ARIA so screen readers can navigate
       return {
         'aria-haspopup': 'listbox' as const,
         'aria-expanded': isOpen,
@@ -710,7 +713,13 @@ export default function Dropdown(props: DropdownProps) {
       'aria-autocomplete': isMatchInputValue ? ('list' as const) : undefined,
       'aria-activedescendant': ariaActivedescendant,
     };
-  }, [children, listboxId, isOpen, isMatchInputValue, ariaActivedescendant]);
+  }, [
+    isButtonTrigger,
+    listboxId,
+    isOpen,
+    isMatchInputValue,
+    ariaActivedescendant,
+  ]);
 
   const handleItemHover = useCallback(
     (index: number) => {

@@ -901,4 +901,63 @@ describe('<Select />', () => {
       });
     });
   });
+
+  describe('combobox ARIA (#506)', () => {
+    const letterOptions: DropdownOption[] = [
+      { id: 'a', name: 'Alpha' },
+      { id: 'b', name: 'Beta' },
+    ];
+
+    it('should expose aria-expanded / aria-controls on the input', async () => {
+      const { getHostHTMLElement } = render(<Select options={letterOptions} />);
+      const element = getHostHTMLElement();
+      const inputElement = getSelectInputElement(element);
+
+      expect(inputElement.getAttribute('role')).toBe('combobox');
+      expect(inputElement.getAttribute('aria-expanded')).toBe('false');
+
+      const listboxId = inputElement.getAttribute('aria-controls');
+
+      expect(listboxId).toBeTruthy();
+
+      fireEvent.click(element.querySelector('.mzn-select-trigger')!);
+
+      await waitFor(() => {
+        expect(inputElement.getAttribute('aria-expanded')).toBe('true');
+        expect(document.getElementById(listboxId!)).toBeTruthy();
+      });
+    });
+
+    it('should keep only one combobox (wrapper stays presentational)', () => {
+      const { getHostHTMLElement } = render(<Select options={letterOptions} />);
+      const element = getHostHTMLElement();
+
+      expect(element.querySelectorAll('[role="combobox"]')).toHaveLength(1);
+      expect(
+        element.querySelector('.mzn-select-trigger')?.getAttribute('role'),
+      ).toBe('presentation');
+    });
+
+    it('should forward Select-level aria-label to the input', () => {
+      const { getHostHTMLElement } = render(
+        <Select aria-label="Pick a letter" options={letterOptions} />,
+      );
+      const inputElement = getSelectInputElement(getHostHTMLElement());
+
+      expect(inputElement.getAttribute('aria-label')).toBe('Pick a letter');
+    });
+
+    it('should let inputProps aria-label take precedence', () => {
+      const { getHostHTMLElement } = render(
+        <Select
+          aria-label="Outer"
+          inputProps={{ 'aria-label': 'Inner' }}
+          options={letterOptions}
+        />,
+      );
+      const inputElement = getSelectInputElement(getHostHTMLElement());
+
+      expect(inputElement.getAttribute('aria-label')).toBe('Inner');
+    });
+  });
 });

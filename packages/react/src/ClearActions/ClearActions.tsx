@@ -67,9 +67,16 @@ function ClearActions({
   ref,
   ...props
 }: ClearActionsProps & RefAttributes<HTMLButtonElement>) {
-  const { className, onClick, type = 'standard', ...rest } = props;
-
-  const variant = 'variant' in props ? props.variant : undefined;
+  const {
+    className,
+    onClick,
+    type = 'standard',
+    ...rest
+  } = props as ClearActionsCommonProps & {
+    type?: ClearActionsProps['type'];
+    variant?: ClearActionsVariant;
+  };
+  const { variant, ...buttonProps } = rest;
   const resolvedVariant: ClearActionsVariant =
     type === 'clearable'
       ? 'default'
@@ -77,9 +84,9 @@ function ClearActions({
 
   return (
     <button
-      {...rest}
-      ref={ref}
       aria-label="Close"
+      {...buttonProps}
+      ref={ref}
       className={cx(
         classes.host,
         classes.type(type),

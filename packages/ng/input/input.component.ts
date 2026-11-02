@@ -80,6 +80,9 @@ export type InputVariant =
   host: {
     '[class]': 'containerClasses()',
     '[style.display]': '"block"',
+    '[attr.aria-describedby]': 'null',
+    '[attr.aria-label]': 'null',
+    '[attr.aria-labelledby]': 'null',
     '[attr.externalValue]': 'null',
     '[attr.active]': 'null',
     '[attr.actionButton]': 'null',
@@ -170,6 +173,9 @@ export type InputVariant =
         }
         <input
           #inputEl
+          [attr.aria-describedby]="ariaDescribedby() ?? null"
+          [attr.aria-label]="ariaLabel() ?? null"
+          [attr.aria-labelledby]="ariaLabelledby() ?? null"
           [attr.id]="inputId()"
           [attr.name]="inputName()"
           [attr.placeholder]="placeholder()"
@@ -407,6 +413,22 @@ export class MznInput implements ControlValueAccessor, OnInit {
    * 數值格式化函式，將內部值轉換為顯示文字（measure / number 變體用）。
    */
   readonly formatter = input<(value: string) => string>();
+
+  /**
+   * Forwarded to the native `<input>` (the host is only a container), so the
+   * field is named / described correctly.
+   */
+  readonly ariaDescribedby = input<string>(undefined, {
+    alias: 'aria-describedby',
+  });
+
+  /** Accessible name forwarded to the native `<input>`. */
+  readonly ariaLabel = input<string>(undefined, { alias: 'aria-label' });
+
+  /** Id reference(s) naming the native `<input>`. */
+  readonly ariaLabelledby = input<string>(undefined, {
+    alias: 'aria-labelledby',
+  });
 
   /** input 的 id 屬性。 */
   readonly inputId = input<string>();

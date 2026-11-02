@@ -87,6 +87,11 @@ type PageFooterOverflowProps = PageFooterBaseProps & {
    * Dropdown props for the supporting action button.
    */
   dropdownProps: Partial<DropdownProps>;
+  /**
+   * Accessible name of the icon-only overflow trigger button.
+   * @default 'More actions'
+   */
+  dropdownTriggerAriaLabel?: string;
 };
 
 type PageFooterInformationProps = PageFooterBaseProps & {
@@ -110,6 +115,7 @@ type _PageFooterFlatProps = PageFooterBaseProps & {
   type?: PageFooterType;
   annotation?: string;
   dropdownProps?: Partial<DropdownProps>;
+  dropdownTriggerAriaLabel?: string;
   supportingActionIcon?: ButtonProps['icon'];
   supportingActionName?: ButtonProps['children'];
   supportingActionOnClick?: ButtonProps['onClick'];
@@ -127,6 +133,7 @@ function PageFooter({
     annotation,
     className,
     dropdownProps,
+    dropdownTriggerAriaLabel = 'More actions',
     supportingActionIcon,
     supportingActionName,
     supportingActionOnClick,
@@ -167,6 +174,7 @@ function PageFooter({
             placement={dropdownProps.placement || 'top'}
           >
             <Button
+              aria-label={dropdownTriggerAriaLabel}
               type="button"
               iconType="icon-only"
               icon={supportingActionIcon || DotHorizontalIcon}

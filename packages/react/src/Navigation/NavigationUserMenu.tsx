@@ -97,11 +97,17 @@ const NavigationUserMenu = ({
         /**
          * When the navigation is collapsed the user name is hidden, leaving the
          * button with only an avatar and a chevron — and so no accessible name.
-         * Derive one from `children` when it is plain text; an explicit
-         * `aria-label` from the caller still wins.
+         * Derive one from `children` when it is plain text, and fall back to
+         * a generic label when there are no children at all (avatar or icon
+         * only); an explicit `aria-label` from the caller still wins.
          */
         aria-label={
-          ariaLabel ?? (typeof children === 'string' ? children : undefined)
+          ariaLabel ??
+          (typeof children === 'string'
+            ? children
+            : children
+              ? undefined
+              : 'User menu')
         }
         className={cx(classes.host, open && classes.open, className)}
         ref={ref}

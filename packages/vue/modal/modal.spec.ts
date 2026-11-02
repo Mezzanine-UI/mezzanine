@@ -4,6 +4,7 @@ import { backdropClasses } from '@mezzanine-ui/core/backdrop';
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import { resetPortals } from '../portal/portal-registry';
 import MznModal from './modal.vue';
+import MznModalHeader from './modal-header.vue';
 import type { ModalProps } from './modal.types';
 
 const host = (): HTMLElement | null =>
@@ -452,6 +453,51 @@ describe('<MznModal />', () => {
       await flushPromises();
 
       expect(document.activeElement).toBe(input);
+    });
+  });
+
+  describe('accessible name (#497)', () => {
+    const labelledTitle = (): string | null | undefined => {
+      const titleId = host()?.getAttribute('aria-labelledby');
+
+      return titleId ? document.getElementById(titleId)?.textContent : null;
+    };
+
+    it('should label the dialog by a composed MznModalHeader title', async () => {
+      await renderModal(
+        {},
+        { default: () => [h(MznModalHeader, { title: 'Confirm' })] },
+      );
+
+      expect(labelledTitle()?.trim()).toBe('Confirm');
+    });
+
+    it('should label the dialog by the title when showModalHeader', async () => {
+      await renderModal({ showModalHeader: true, title: 'Test Title' });
+
+      expect(labelledTitle()?.trim()).toBe('Test Title');
+    });
+
+    it('should not set aria-labelledby without a title', async () => {
+      await renderModal();
+
+      expect(host()?.hasAttribute('aria-labelledby')).toBe(false);
+    });
+
+    it('should let a caller aria-label take precedence', async () => {
+      const wrapper = mount(MznModal, {
+        attachTo: document.body,
+        attrs: { 'aria-label': 'Custom name' },
+        props: { open: true } as ModalProps,
+        slots: { default: () => [h(MznModalHeader, { title: 'Confirm' })] },
+      });
+
+      await flushPromises();
+
+      expect(host()?.getAttribute('aria-label')).toBe('Custom name');
+      expect(host()?.hasAttribute('aria-labelledby')).toBe(false);
+
+      wrapper.unmount();
     });
   });
 });

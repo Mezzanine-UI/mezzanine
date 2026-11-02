@@ -93,6 +93,7 @@ interface FlatOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
+    '[attr.aria-label]': 'null',
     '[attr.className]': 'null',
     '[attr.mode]': 'null',
     '[attr.placeholder]': 'null',
@@ -131,6 +132,7 @@ interface FlatOption {
       <div
         mznSelectTrigger
         [active]="isOpen()"
+        [ariaLabel]="ariaLabel()"
         [listboxId]="listboxId"
         [clearable]="clearable()"
         [disabled]="disabled()"
@@ -238,6 +240,9 @@ export class MznSelect implements ControlValueAccessor {
 
   /** 佔位文字。 */
   readonly placeholder = input('');
+
+  /** Accessible name forwarded to the combobox `<input>`. */
+  readonly ariaLabel = input<string>(undefined, { alias: 'aria-label' });
 
   /** 選項列表。 */
   readonly options = input<ReadonlyArray<DropdownOption>>([]);

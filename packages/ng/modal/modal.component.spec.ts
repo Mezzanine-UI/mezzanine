@@ -208,6 +208,32 @@ describe('MznModal', () => {
       expect(dialog.getAttribute('aria-modal')).toBe('true');
     });
 
+    it('should label the dialog by the header title (#497)', () => {
+      const { fixture, host } = createFixture(TestHostComponent);
+
+      host.open = true;
+      fixture.changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+
+      const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+      const titleId = dialog.getAttribute('aria-labelledby');
+
+      expect(titleId).toBeTruthy();
+      expect(document.getElementById(titleId!)?.textContent?.trim()).toBe(
+        'Test Title',
+      );
+    });
+
+    it('should not set aria-labelledby without a header', () => {
+      const { fixture } = createFixture(TestMinimalComponent);
+
+      fixture.detectChanges();
+
+      const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+
+      expect(dialog.hasAttribute('aria-labelledby')).toBe(false);
+    });
+
     it('should not render a dialog at all while closed', () => {
       createFixture(TestHostComponent);
 

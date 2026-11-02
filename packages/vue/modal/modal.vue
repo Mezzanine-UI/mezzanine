@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref, useAttrs, useId } from 'vue';
 import type { ComponentPublicInstance, VNodeArrayChildren } from 'vue';
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import clsx from 'clsx';
@@ -119,10 +119,28 @@ const attrs = useAttrs();
 
 const { Container: MznModalContainer } = useModalContainer();
 
+const titleId = useId();
+const titleCount = ref(0);
+
+const registerTitle = (): (() => void) => {
+  titleCount.value += 1;
+
+  return () => {
+    titleCount.value -= 1;
+  };
+};
+
 provideModalControl(() => ({
   loading: props.loading,
   modalStatusType: props.modalStatusType,
+  registerTitle,
+  titleId,
 }));
+
+/** A caller-provided aria-label / aria-labelledby always wins over the title. */
+const ariaLabelledBy = computed((): string | undefined =>
+  attrs['aria-label'] || titleCount.value === 0 ? undefined : titleId,
+);
 
 const bodyContent = ref<HTMLDivElement | null>(null);
 const hasTopSeparator = ref(false);
@@ -277,6 +295,7 @@ const extendedSplitRightClass = classes.modalBodyContainerExtendedSplitRight;
     @close="emit('close')"
   >
     <div
+      :aria-labelledby="ariaLabelledBy"
       :aria-modal="open ? true : undefined"
       v-bind="forwardedAttrs"
       :class="hostClasses"
