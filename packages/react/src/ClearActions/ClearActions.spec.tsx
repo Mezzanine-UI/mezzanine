@@ -101,7 +101,9 @@ describe('<ClearActions />', () => {
       const iconElement = element.querySelector('.mzn-clear-actions__icon');
 
       expect(iconElement).toBeTruthy();
-      expect(iconElement?.getAttribute('data-icon-name')).toBe('dangerous-filled');
+      expect(iconElement?.getAttribute('data-icon-name')).toBe(
+        'dangerous-filled',
+      );
     });
   });
 
@@ -132,9 +134,7 @@ describe('<ClearActions />', () => {
   describe('prop: onClick', () => {
     it('should call onClick when button is clicked', () => {
       const onClick = jest.fn();
-      const { getHostHTMLElement } = render(
-        <ClearActions onClick={onClick} />,
-      );
+      const { getHostHTMLElement } = render(<ClearActions onClick={onClick} />);
       const element = getHostHTMLElement();
 
       fireEvent.click(element);
@@ -149,5 +149,30 @@ describe('<ClearActions />', () => {
       expect(() => fireEvent.click(element)).not.toThrow();
     });
   });
-});
 
+  describe('aria-label', () => {
+    it('should default to "Close"', () => {
+      const { getHostHTMLElement } = render(<ClearActions />);
+
+      expect(getHostHTMLElement().getAttribute('aria-label')).toBe('Close');
+    });
+
+    it('should let the caller override it (#498)', () => {
+      const { getHostHTMLElement } = render(
+        <ClearActions aria-label="Dismiss the banner" />,
+      );
+
+      expect(getHostHTMLElement().getAttribute('aria-label')).toBe(
+        'Dismiss the banner',
+      );
+    });
+
+    it('should not leak variant to the DOM', () => {
+      const { getHostHTMLElement } = render(
+        <ClearActions type="embedded" variant="contrast" />,
+      );
+
+      expect(getHostHTMLElement().hasAttribute('variant')).toBe(false);
+    });
+  });
+});
