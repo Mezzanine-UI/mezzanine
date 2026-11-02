@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { cloneVNode, computed, useAttrs, useSlots } from 'vue';
 import type { FunctionalComponent } from 'vue';
-import { buttonGroupClasses as classes } from '@mezzanine-ui/core/button';
+import {
+  buttonGroupClasses as classes,
+  getButtonGroupAriaOrientation,
+} from '@mezzanine-ui/core/button';
+import type { ButtonGroupOrientation } from '@mezzanine-ui/core/button';
 import clsx from 'clsx';
 import { flattenChildren } from '../_internal/flatten-children';
 import type { ButtonGroupProps } from './button-group.types';
@@ -54,6 +58,11 @@ const hostClasses = computed((): string =>
 
 const role = computed((): string => (attrs.role as string) ?? 'group');
 
+/** `aria-orientation` is only valid on roles that support it (not `group`). */
+const ariaOrientation = computed((): ButtonGroupOrientation | undefined =>
+  getButtonGroupAriaOrientation(role.value, props.orientation),
+);
+
 /**
  * Each child is cloned with the group's values filling in whatever it did not
  * set itself, mirroring React's `cloneElement`. `disabled` uses `??` and the
@@ -76,7 +85,7 @@ const GroupChildren: FunctionalComponent = () => {
 </script>
 
 <template>
-  <div :aria-orientation="orientation" :class="hostClasses" :role="role">
+  <div :aria-orientation="ariaOrientation" :class="hostClasses" :role="role">
     <GroupChildren />
   </div>
 </template>

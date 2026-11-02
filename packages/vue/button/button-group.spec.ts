@@ -27,7 +27,8 @@ describe('MznButtonGroup', () => {
 
     expect(wrapper.classes()).toContain(classes.host);
     expect(wrapper.attributes('role')).toBe('group');
-    expect(wrapper.attributes('aria-orientation')).toBe('horizontal');
+    // role="group" does not support aria-orientation (#502).
+    expect(wrapper.attributes('aria-orientation')).toBeUndefined();
     expect(buttons(wrapper)).toHaveLength(2);
   });
 
@@ -38,6 +39,7 @@ describe('MznButtonGroup', () => {
     });
 
     expect(wrapper.attributes('role')).toBe('toolbar');
+    expect(wrapper.attributes('aria-orientation')).toBe('horizontal');
   });
 
   describe('prop: orientation', () => {
@@ -47,7 +49,15 @@ describe('MznButtonGroup', () => {
         const wrapper = renderGroup({ orientation });
 
         expect(wrapper.classes()).toContain(classes.orientation(orientation));
-        expect(wrapper.attributes('aria-orientation')).toBe(orientation);
+        expect(wrapper.attributes('aria-orientation')).toBeUndefined();
+
+        const toolbar = mount(MznButtonGroup, {
+          attrs: { role: 'toolbar' },
+          props: { orientation },
+          slots: { default: () => h(MznButton, null, () => 'one') },
+        });
+
+        expect(toolbar.attributes('aria-orientation')).toBe(orientation);
       },
     );
   });
