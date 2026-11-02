@@ -46,6 +46,14 @@ const selectedRows = computed((): TableDataSource[] =>
   ),
 );
 
+const mainActions = computed(() => props.bulkActions.mainActions ?? []);
+
+const hasMainActions = computed((): boolean => mainActions.value.length > 0);
+
+const hasActionBeforeOverflow = computed(
+  (): boolean => hasMainActions.value || !!props.bulkActions.destructiveAction,
+);
+
 const label = computed((): VNodeChild => {
   const { renderSelectionSummary } = props.bulkActions;
 
@@ -92,7 +100,7 @@ function handleOverflowSelect(option: DropdownOption): void {
     <div :class="classes.bulkActionsActionArea">
       <!-- Main Actions -->
       <MznButton
-        v-for="(action, index) in bulkActions.mainActions"
+        v-for="(action, index) in mainActions"
         :key="`main-action-${index}`"
         icon-type="leading"
         :icon="action.icon"
@@ -106,7 +114,7 @@ function handleOverflowSelect(option: DropdownOption): void {
 
       <!-- Destructive Action -->
       <template v-if="bulkActions.destructiveAction">
-        <div :class="classes.bulkActionsSeparator" />
+        <div v-if="hasMainActions" :class="classes.bulkActionsSeparator" />
         <MznButton
           icon-type="leading"
           :icon="bulkActions.destructiveAction.icon"
@@ -123,7 +131,10 @@ function handleOverflowSelect(option: DropdownOption): void {
 
       <!-- Overflow Action -->
       <template v-if="bulkActions.overflowAction">
-        <div :class="classes.bulkActionsSeparator" />
+        <div
+          v-if="hasActionBeforeOverflow"
+          :class="classes.bulkActionsSeparator"
+        />
         <MznDropdown
           :max-height="bulkActions.overflowAction.maxHeight"
           :options="bulkActions.overflowAction.options"

@@ -1030,6 +1030,53 @@ export const WithBulkActions: Story = {
   },
 };
 
+export const WithDestructiveOnlyBulkActions: Story = {
+  render: function WithDestructiveOnlyBulkActionsStory() {
+    // mainActions omitted: the destructive action is the only bulk action
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>(['1']);
+
+    const dataSource: DataType[] = useMemo(
+      () =>
+        Array.from({ length: 5 }, (_, i) => ({
+          address: `Address ${i + 1}`,
+          age: 20 + i,
+          key: `${i + 1}`,
+          name: `User ${i + 1}`,
+        })),
+      [],
+    );
+
+    const rowSelection: TableRowSelectionCheckbox<DataType> = useMemo(
+      () => ({
+        mode: 'checkbox' as const,
+        bulkActions: {
+          destructiveAction: {
+            icon: TrashIcon,
+            label: 'Remove',
+            onClick: () => {},
+          },
+          renderSelectionSummary: (count: number) => `已選擇 ${count} 筆資料`,
+        },
+        onChange: (keys) => setSelectedRowKeys(keys),
+        selectedRowKeys,
+      }),
+      [selectedRowKeys],
+    );
+
+    return (
+      <Table<DataType>
+        columns={[
+          { dataIndex: 'name', key: 'name', title: 'Name' },
+          { dataIndex: 'age', key: 'age', title: 'Age' },
+          { dataIndex: 'address', key: 'address', title: 'Address' },
+        ]}
+        dataSource={dataSource}
+        rowSelection={rowSelection}
+      />
+    );
+  },
+};
+
 export const WithPagination: Story = {
   render: function WithPaginationStory() {
     const [currentPage, setCurrentPage] = useState(1);

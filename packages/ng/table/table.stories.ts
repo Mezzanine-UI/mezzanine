@@ -1204,6 +1204,68 @@ export const WithBulkActions: Story = {
   }),
 };
 
+@Component({
+  selector: 'story-table-destructive-only-bulk-actions',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MznTable],
+  template: `
+    <div
+      mznTable
+      [columns]="columns"
+      [dataSource]="dataSource"
+      [rowSelection]="checkboxSelection()"
+    ></div>
+  `,
+})
+class WithDestructiveOnlyBulkActionsStoryComponent {
+  readonly columns: TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name' },
+    { key: 'age', title: 'Age', dataIndex: 'age' },
+    { key: 'address', title: 'Address', dataIndex: 'address' },
+  ];
+
+  readonly dataSource: readonly TableDataSource[] = Array.from(
+    { length: 5 },
+    (_, i) => ({
+      key: String(i + 1),
+      name: `User ${i + 1}`,
+      age: 20 + i,
+      address: `Address ${i + 1}`,
+    }),
+  );
+
+  readonly selectedRowKeys = signal<readonly string[]>(['1']);
+
+  // mainActions omitted: the destructive action is the only bulk action
+  readonly checkboxSelection = computed(
+    (): TableRowSelectionCheckbox => ({
+      mode: 'checkbox',
+      selectedRowKeys: this.selectedRowKeys(),
+      bulkActions: {
+        destructiveAction: {
+          icon: TrashIcon,
+          label: 'Remove',
+          onClick: (): void => {},
+        },
+        renderSelectionSummary: (count) => `已選擇 ${count} 筆資料`,
+      },
+      onChange: (keys) => this.selectedRowKeys.set(keys),
+    }),
+  );
+}
+
+export const WithDestructiveOnlyBulkActions: Story = {
+  name: 'With Destructive Only Bulk Actions',
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [WithDestructiveOnlyBulkActionsStoryComponent] }),
+  ],
+  render: () => ({
+    template: `<story-table-destructive-only-bulk-actions />`,
+  }),
+};
+
 interface PaginationRowType extends TableDataSource {
   readonly key: string;
   readonly name: string;

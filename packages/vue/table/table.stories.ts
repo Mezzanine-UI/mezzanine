@@ -1080,6 +1080,55 @@ export const WithBulkActions: Story = {
   render: () => ({ render: () => h(WithBulkActionsStory) }),
 };
 
+const WithDestructiveOnlyBulkActionsStory = defineComponent({
+  setup() {
+    // mainActions omitted: the destructive action is the only bulk action
+    const selectedRowKeys = shallowRef<string[]>(['1']);
+
+    const dataSource: DataType[] = Array.from({ length: 5 }, (_, i) => ({
+      address: `Address ${i + 1}`,
+      age: 20 + i,
+      key: `${i + 1}`,
+      name: `User ${i + 1}`,
+    }));
+
+    const columns: TableColumn<DataType>[] = [
+      { dataIndex: 'name', key: 'name', title: 'Name' },
+      { dataIndex: 'age', key: 'age', title: 'Age' },
+      { dataIndex: 'address', key: 'address', title: 'Address' },
+    ];
+
+    const rowSelection = computed(
+      (): TableRowSelectionCheckbox<DataType> => ({
+        mode: 'checkbox' as const,
+        bulkActions: {
+          destructiveAction: {
+            icon: TrashIcon,
+            label: 'Remove',
+            onClick: () => {},
+          },
+          renderSelectionSummary: (count: number) => `已選擇 ${count} 筆資料`,
+        },
+        onChange: (keys: string[]) => {
+          selectedRowKeys.value = keys;
+        },
+        selectedRowKeys: selectedRowKeys.value,
+      }),
+    );
+
+    return () =>
+      table({
+        columns,
+        dataSource,
+        rowSelection: rowSelection.value,
+      });
+  },
+});
+
+export const WithDestructiveOnlyBulkActions: Story = {
+  render: () => ({ render: () => h(WithDestructiveOnlyBulkActionsStory) }),
+};
+
 const WithPaginationStory = defineComponent({
   setup() {
     const currentPage = ref(1);

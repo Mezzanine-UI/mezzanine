@@ -303,11 +303,21 @@ export interface TableBulkOverflowAction<
  * Bulk actions configuration for row selection
  */
 export interface TableBulkActions<T extends TableDataSource = TableDataSource> {
-  /** Destructive action (optional, single action with separator) */
+  /**
+   * Destructive action (optional, single action).
+   * A separator is rendered before it only when main actions precede it.
+   */
   destructiveAction?: TableBulkGeneralAction<T>;
-  /** Main actions (required, at least one action) */
-  mainActions: [TableBulkGeneralAction<T>, ...TableBulkGeneralAction<T>[]];
-  /** Overflow action with dropdown menu (optional, with separator) */
+  /**
+   * Main actions rendered first, before the destructive and overflow actions.
+   * Can be omitted or empty, e.g. when the only bulk action is destructive.
+   * @default []
+   */
+  mainActions?: TableBulkGeneralAction<T>[];
+  /**
+   * Overflow action with dropdown menu (optional).
+   * A separator is rendered before it only when another action group precedes it.
+   */
   overflowAction?: TableBulkOverflowAction<T>;
   /**
    * Label for selection summary

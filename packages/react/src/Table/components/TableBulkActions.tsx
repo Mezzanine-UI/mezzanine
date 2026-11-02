@@ -30,7 +30,7 @@ function TableBulkActions(props: TableBulkActionsProps) {
   const { dataSource } = useTableDataContext();
   const {
     destructiveAction,
-    mainActions,
+    mainActions = [],
     overflowAction,
     renderSelectionSummary,
   } = bulkActions;
@@ -42,6 +42,9 @@ function TableBulkActions(props: TableBulkActionsProps) {
   const selectedRows = dataSource.filter((data) =>
     selectedRowKeys.includes(getRowKey(data)),
   );
+
+  const hasMainActions = mainActions.length > 0;
+  const hasActionBeforeOverflow = hasMainActions || !!destructiveAction;
 
   const label = renderSelectionSummary
     ? renderSelectionSummary(
@@ -88,7 +91,7 @@ function TableBulkActions(props: TableBulkActionsProps) {
         {/* Destructive Action */}
         {destructiveAction && (
           <>
-            <div className={classes.bulkActionsSeparator} />
+            {hasMainActions && <div className={classes.bulkActionsSeparator} />}
             <Button
               iconType="leading"
               icon={destructiveAction.icon}
@@ -107,7 +110,9 @@ function TableBulkActions(props: TableBulkActionsProps) {
         {/* Overflow Action */}
         {overflowAction && (
           <>
-            <div className={classes.bulkActionsSeparator} />
+            {hasActionBeforeOverflow && (
+              <div className={classes.bulkActionsSeparator} />
+            )}
             <Dropdown
               maxHeight={overflowAction.maxHeight}
               onSelect={(option) =>
