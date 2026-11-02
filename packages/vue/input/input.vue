@@ -365,7 +365,7 @@ const indicatorClasses = computed((): string =>
 );
 
 /**
- * aria-* / role name and describe the native <input> (mirrors React); every
+ * aria-* / role name and describe the native input (mirrors React); every
  * other fallthrough attr stays on the container.
  */
 const splitAttrs = computed(() => {

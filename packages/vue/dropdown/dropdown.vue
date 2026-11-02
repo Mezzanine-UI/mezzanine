@@ -499,7 +499,7 @@ const setAnchor = (element: Element | ComponentPublicInstance | null): void => {
 
 /** The aria and event props the trigger has to carry. */
 function triggerProps(): DropdownTriggerProps {
-  // Native <button> triggers keep button semantics, same as MznButton.
+  // Native button triggers keep button semantics, same as MznButton.
   const isButtonTrigger = triggerType === MznButton || triggerType === 'button';
   const combobox = isButtonTrigger
     ? {

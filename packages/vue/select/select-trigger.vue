@@ -168,7 +168,7 @@ const triggerClasses = computed((): unknown[] => [
 ]);
 
 /**
- * The native <input> is the combobox (mirrors React): aria-* / role — from
+ * The native input is the combobox (mirrors React): aria-* / role — from
  * the caller or injected by the Dropdown (`aria-expanded`, `aria-controls`) —
  * go onto it, while the TextField root is forced to `role="presentation"`.
  *
