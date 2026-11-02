@@ -11,6 +11,7 @@ import {
   ButtonGroupOrientation,
   ButtonSize,
   ButtonVariant,
+  getButtonGroupAriaOrientation,
 } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { flattenChildren } from '../utils/flatten-children';
@@ -79,7 +80,7 @@ function ButtonGroup({
     <div
       ref={ref}
       {...rest}
-      aria-orientation={orientation}
+      aria-orientation={getButtonGroupAriaOrientation(role, orientation)}
       className={cx(
         classes.host,
         classes.orientation(orientation),
