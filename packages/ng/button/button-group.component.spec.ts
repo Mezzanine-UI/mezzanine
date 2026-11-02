@@ -19,6 +19,7 @@ import { MznButtonGroup } from './button-group.component';
       [disabled]="disabled"
       [fullWidth]="fullWidth"
       [orientation]="orientation"
+      [role]="role"
     >
       <button mznButton>Button 1</button>
       <button mznButton>Button 2</button>
@@ -32,6 +33,7 @@ class TestHostComponent {
   disabled = false;
   fullWidth = false;
   orientation: ButtonGroupOrientation = 'horizontal';
+  role = 'group';
 }
 
 function createFixture(overrides: Partial<TestHostComponent> = {}): {
@@ -179,15 +181,25 @@ describe('MznButtonGroup', () => {
     const orientations: ButtonGroupOrientation[] = ['horizontal', 'vertical'];
 
     orientations.forEach((orientation) => {
-      it(`should add class and aria-orientation for ${orientation}`, () => {
+      it(`should add class for ${orientation}`, () => {
         const { getGroup } = createFixture({ orientation });
-        const el = getGroup();
 
-        expect(el.getAttribute('aria-orientation')).toBe(orientation);
-        expect(el.classList.contains(`mzn-button-group--${orientation}`)).toBe(
-          true,
-        );
+        expect(
+          getGroup().classList.contains(`mzn-button-group--${orientation}`),
+        ).toBe(true);
       });
+
+      it(`should add aria-orientation=${orientation} when role supports it`, () => {
+        const { getGroup } = createFixture({ orientation, role: 'toolbar' });
+
+        expect(getGroup().getAttribute('aria-orientation')).toBe(orientation);
+      });
+    });
+
+    it('should not emit aria-orientation on role="group" (#502)', () => {
+      const { getGroup } = createFixture({ orientation: 'vertical' });
+
+      expect(getGroup().hasAttribute('aria-orientation')).toBe(false);
     });
   });
 
@@ -213,7 +225,7 @@ describe('MznButtonGroup', () => {
       expect(el.classList.contains('mzn-button-group')).toBe(true);
       expect(el.classList.contains('mzn-button-group--full-width')).toBe(true);
       expect(el.classList.contains('mzn-button-group--vertical')).toBe(true);
-      expect(el.getAttribute('aria-orientation')).toBe('vertical');
+      expect(el.hasAttribute('aria-orientation')).toBe(false);
       expect(el.getAttribute('role')).toBe('group');
     });
   });
