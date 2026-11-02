@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import {
@@ -534,6 +535,49 @@ describe('<NavigationFooter />', () => {
       const userMenu = element.querySelector('.mzn-navigation-user-menu');
 
       expect(userMenu).toBeTruthy();
+    });
+
+    it('should name an image-only trigger (#505)', () => {
+      const { getByRole } = render(
+        <Navigation>
+          <NavigationFooter>
+            <NavigationUserMenu
+              imgSrc="https://example.com/avatar.png"
+              options={[]}
+            />
+          </NavigationFooter>
+        </Navigation>,
+      );
+      const trigger = getByRole('button', { name: 'User menu' });
+
+      expect(trigger).not.toHaveAttribute('role');
+      expect(trigger).toHaveAttribute('aria-haspopup', 'listbox');
+    });
+
+    it('should name the trigger from aria-label', () => {
+      const { getByRole } = render(
+        <Navigation>
+          <NavigationFooter>
+            <NavigationUserMenu aria-label="Account" options={[]}>
+              Jane
+            </NavigationUserMenu>
+          </NavigationFooter>
+        </Navigation>,
+      );
+
+      expect(getByRole('button', { name: 'Account' })).toBeTruthy();
+    });
+
+    it('should name the trigger from string children', () => {
+      const { getByRole } = render(
+        <Navigation>
+          <NavigationFooter>
+            <NavigationUserMenu options={[]}>John</NavigationUserMenu>
+          </NavigationFooter>
+        </Navigation>,
+      );
+
+      expect(getByRole('button', { name: 'John' })).toBeTruthy();
     });
 
     it('should render fallback icon when imgSrc is not provided', () => {
