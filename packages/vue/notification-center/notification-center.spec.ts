@@ -168,6 +168,85 @@ describe('<MznNotificationCenter />', () => {
 
     expect(wrapper.get(`.${classes.timeStamp}`).text()).toBe('not a date');
   });
+
+  describe('relative timestamp', () => {
+    const renderDrawer = (props: NotificationData = {}) =>
+      render({
+        timeStamp: Date.now(),
+        title: 'Title',
+        type: 'drawer',
+        ...props,
+      });
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date(2026, 10, 2, 12, 0, 0));
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should render localized text instead of a hard-coded "now" within one minute', () => {
+      const wrapper = renderDrawer({ timeStampLocale: 'zh-TW' });
+
+      expect(wrapper.get(`.${classes.timeStamp}`).text()).toBe('現在');
+    });
+
+    it('should follow timeStampLocale within one minute', () => {
+      const wrapper = renderDrawer({ timeStampLocale: 'en-US' });
+
+      expect(wrapper.get(`.${classes.timeStamp}`).text()).toBe('now');
+    });
+
+    it('should refresh the relative text as time passes without prop changes', async () => {
+      const wrapper = renderDrawer({ timeStampLocale: 'zh-TW' });
+
+      vi.advanceTimersByTime(3 * 60 * 1000);
+      await nextTick();
+
+      expect(wrapper.get(`.${classes.timeStamp}`).text()).toBe('3 分鐘前');
+    });
+
+    it('should switch to the date format after crossing midnight', async () => {
+      vi.setSystemTime(new Date(2026, 10, 2, 23, 59, 30));
+
+      const wrapper = renderDrawer({ timeStampLocale: 'zh-TW' });
+
+      vi.advanceTimersByTime(60 * 1000);
+      await nextTick();
+
+      expect(wrapper.get(`.${classes.timeStamp}`).text()).toBe('2026-11-02');
+    });
+
+    it('should not start the refresh timer outside the drawer form', () => {
+      const setIntervalSpy = vi.spyOn(window, 'setInterval');
+
+      render({ timeStamp: Date.now(), title: 'Title', type: 'notification' });
+
+      expect(setIntervalSpy).not.toHaveBeenCalled();
+
+      setIntervalSpy.mockRestore();
+    });
+
+    it('should clear the refresh timer on unmount', () => {
+      const setIntervalSpy = vi.spyOn(window, 'setInterval');
+      const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
+
+      const wrapper = renderDrawer();
+
+      expect(setIntervalSpy).toHaveBeenCalledTimes(1);
+
+      const intervalId = setIntervalSpy.mock.results[0].value;
+
+      wrapper.unmount();
+
+      expect(clearIntervalSpy).toHaveBeenCalledWith(intervalId);
+
+      setIntervalSpy.mockRestore();
+      clearIntervalSpy.mockRestore();
+    });
+  });
 });
 
 describe('<MznNotificationCenterDrawer />', () => {
