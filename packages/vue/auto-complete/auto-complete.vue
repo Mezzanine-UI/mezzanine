@@ -410,13 +410,24 @@ watch(
   { flush: 'post' },
 );
 
-// In single mode, show searchText when focused, otherwise show selected value
+/**
+ * Single mode only: whether the input shows the search text (user is
+ * searching) or the committed selection. Kept apart from `focused`, which
+ * mirrors DOM focus — selecting an option keeps DOM focus on the input.
+ */
+const isSearching = ref(false);
+
+const showSearchText = computed(
+  (): boolean => focused.value && isSearching.value,
+);
+
+// In single mode, show searchText while searching, otherwise show selected value
 // In multiple mode, always return empty string to avoid displaying "0"
 const renderValue = computed(
   (): ((value?: SelectValue | null) => string) | undefined => {
     if (
       isSingle.value &&
-      (focused.value ||
+      (showSearchText.value ||
         (!shouldClearSearchTextOnBlur.value &&
           !value.value &&
           searchText.value))
@@ -433,11 +444,11 @@ const renderValue = computed(
 const insideInputValue = computed((): string => {
   // Inside trigger is a plain Input, so we must decide what to display.
   // - multiple: always show current search text
-  // - single: show search text when focused (or when clear-on-blur is disabled)
+  // - single: show search text while searching (or when clear-on-blur is disabled)
   if (isMultiple.value) return searchText.value;
 
   if (
-    focused.value ||
+    showSearchText.value ||
     (!shouldClearSearchTextOnBlur.value && !value.value && searchText.value)
   ) {
     return searchText.value;
@@ -451,7 +462,7 @@ const insideInputValue = computed((): string => {
 const resolvedPlaceholder = computed((): string => {
   if (
     isSingle.value &&
-    focused.value &&
+    showSearchText.value &&
     value.value &&
     !Array.isArray(value.value)
   ) {
@@ -461,9 +472,23 @@ const resolvedPlaceholder = computed((): string => {
   return props.placeholder;
 });
 
+/**
+ * Single mode: leave the "showing selection" state after a select and resume
+ * searching, without waiting for a focus event that never comes because the
+ * input kept DOM focus.
+ */
+function enterSearchMode(): void {
+  if (!isSingle.value || isSearching.value) return;
+
+  isSearching.value = true;
+
+  if (!open.value) toggleOpen(true);
+}
+
 /** Trigger input props */
 function onSearchInputChange(event: Event): void {
   clearPendingOptionsReset();
+  enterSearchMode();
 
   const nextSearch = (event.target as HTMLInputElement).value;
 
@@ -494,6 +519,7 @@ function onSearchInputFocus(event: FocusEvent): void {
   if (!open.value) toggleOpen(true);
 
   onFocus(true);
+  isSearching.value = true;
   props.inputProps?.onFocus?.(event);
 }
 
@@ -502,6 +528,8 @@ function onSearchInputBlur(event: FocusEvent): void {
   // visibility change: an intermediate blur from a dropdown interaction is not
   // the user leaving.
   const shouldDeferMultipleBlurReset = isMultiple.value && open.value;
+
+  isSearching.value = false;
 
   if (props.inputPosition === 'inside') {
     // When open is controlled, the controlled state is the source of truth, so
@@ -526,6 +554,7 @@ function handleClear(event: MouseEvent): void {
 
   onClear(event);
   resetSearchInputs();
+  isSearching.value = true;
 }
 
 function onClickSuffixActionIcon(): void {
@@ -650,12 +679,15 @@ function handleDropdownSelect(option: DropdownOption): void {
   if (!selectedValue) return;
 
   if (props.mode === 'single') {
-    // Update searchText first to prevent showing old value
-    searchText.value = selectedValue.name;
-    setInsertText(selectedValue.name);
+    // Reset search text so the option name never leaks into the next search.
+    // The input keeps DOM focus (listbox prevents mousedown default), so only
+    // leave search mode; the selected value shows until the user clicks or
+    // types again.
+    searchText.value = '';
+    setInsertText('');
+    isSearching.value = false;
     wrappedOnChange(selectedValue);
     toggleOpen(false);
-    onFocus(false);
 
     return;
   }
@@ -725,7 +757,6 @@ const { handleInputKeyDown } = useAutoCompleteKeyboard({
   inputRef: inputElement,
   keyboardActiveIndex,
   mode: () => props.mode ?? 'single',
-  onFocus,
   open: () => open.value,
   processBulkCreate,
   searchText: () => searchText.value,
@@ -743,6 +774,15 @@ const { handleInputKeyDown } = useAutoCompleteKeyboard({
 
 function onSearchInputKeyDown(event: KeyboardEvent): void {
   if (isImeComposing(event)) return;
+
+  if (
+    event.key.length === 1 &&
+    !event.altKey &&
+    !event.ctrlKey &&
+    !event.metaKey
+  ) {
+    enterSearchMode();
+  }
 
   if (event.key === 'Escape') {
     event.preventDefault();
@@ -800,6 +840,15 @@ function handleVisibilityChange(newOpen: boolean): void {
   }
 }
 
+function handleCompositionStart(event: CompositionEvent): void {
+  enterSearchMode();
+  (
+    props.inputProps?.onCompositionstart as
+      | ((event: CompositionEvent) => void)
+      | undefined
+  )?.(event);
+}
+
 function handlePasteWithFallback(event: ClipboardEvent): void {
   handlePaste(event);
   props.inputProps?.onPaste?.(event);
@@ -816,6 +865,7 @@ const resolvedInputProps = computed(
     name: props.name ?? props.inputProps?.name,
     onBlur: onSearchInputBlur,
     onChange: onSearchInputChange,
+    onCompositionstart: handleCompositionStart,
     onFocus: onSearchInputFocus,
     onKeydown: onSearchInputKeyDown,
     onPaste: handlePasteWithFallback,
@@ -827,10 +877,12 @@ const resolvedInputProps = computed(
 const insideInputProps = computed(
   (): SelectTriggerInputProps => ({
     ...resolvedInputProps.value,
-    onClick: (event: MouseEvent) =>
+    onClick: (event: MouseEvent) => {
+      enterSearchMode();
       (
         props.inputProps?.onClick as ((event: MouseEvent) => void) | undefined
-      )?.(event),
+      )?.(event);
+    },
   }),
 );
 
@@ -843,6 +895,7 @@ const outsideInputProps = computed((): SelectTriggerInputProps => {
       // Only rendered when `inputPosition !== 'inside'`, where the click must
       // not reach the Dropdown as well.
       event.stopPropagation();
+      enterSearchMode();
       (
         props.inputProps?.onClick as ((event: MouseEvent) => void) | undefined
       )?.(event);

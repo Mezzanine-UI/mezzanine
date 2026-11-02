@@ -139,6 +139,106 @@ describe('<MznAutoComplete />', () => {
     });
   });
 
+  // Selecting an option keeps DOM focus on the input (the listbox prevents
+  // mousedown default), so the component must not treat the field as blurred.
+  // The user should be able to search again right away (#489).
+  describe('regression: single mode re-search after select (#489)', () => {
+    async function mountAndSelect(
+      props: Record<string, unknown> = {},
+      via: 'mouse' | 'keyboard' = 'mouse',
+    ): Promise<VueWrapper> {
+      const wrapper = mountAutoComplete(props);
+
+      await wrapper.get('input').trigger('focus');
+      await type(wrapper, 'Ban');
+
+      if (via === 'mouse') {
+        items()[0].click();
+      } else {
+        await wrapper.get('input').trigger('keydown', { key: 'Enter' });
+      }
+
+      await nextTick();
+
+      expect(wrapper.emitted('change')?.at(-1)).toEqual([options[1]]);
+      expect(wrapper.get('input').element.value).toBe('Banana');
+
+      return wrapper;
+    }
+
+    /** Mirrors the browser: keydown first, then the char lands in the input. */
+    async function pressChar(wrapper: VueWrapper, char: string): Promise<void> {
+      const input = wrapper.get('input');
+
+      await input.trigger('keydown', { key: char });
+      await nextTick();
+      input.element.value += char;
+      await input.trigger('input');
+      await nextTick();
+    }
+
+    it('should reopen in search mode when the input is clicked again', async () => {
+      const wrapper = await mountAndSelect();
+      const input = wrapper.get('input');
+
+      await input.trigger('click');
+      await nextTick();
+
+      expect(input.attributes('aria-expanded')).toBe('true');
+      expect(input.element.value).toBe('');
+      expect(input.attributes('placeholder')).toBe('Banana');
+      expect(itemNames()).toEqual(['Apple', 'Banana', 'Cherry']);
+    });
+
+    it('should start a fresh search when typing straight after select', async () => {
+      const wrapper = await mountAndSelect();
+
+      await pressChar(wrapper, 'c');
+
+      expect(wrapper.get('input').element.value).toBe('c');
+      expect(wrapper.emitted('searchTextChange')?.at(-1)).toEqual(['c']);
+      expect(itemNames()).toEqual(['Cherry']);
+    });
+
+    it('should start a fresh search when typing after selecting with Enter', async () => {
+      const wrapper = await mountAndSelect({}, 'keyboard');
+
+      await pressChar(wrapper, 'c');
+
+      expect(wrapper.get('input').element.value).toBe('c');
+      expect(wrapper.emitted('searchTextChange')?.at(-1)).toEqual(['c']);
+    });
+
+    it('should not keep the option name as search text when clearSearchText is false', async () => {
+      const wrapper = await mountAndSelect({ clearSearchText: false });
+      const input = wrapper.get('input');
+
+      await input.trigger('blur');
+      await nextTick();
+
+      expect(input.element.value).toBe('Banana');
+
+      await input.trigger('focus');
+      await nextTick();
+
+      expect(input.element.value).toBe('');
+
+      await pressChar(wrapper, 'c');
+
+      expect(wrapper.emitted('searchTextChange')?.at(-1)).toEqual(['c']);
+    });
+
+    it('should not reopen the dropdown on Enter right after select', async () => {
+      const wrapper = await mountAndSelect();
+
+      await wrapper.get('input').trigger('keydown', { key: 'Enter' });
+      await nextTick();
+
+      expect(wrapper.get('input').attributes('aria-expanded')).toBe('false');
+      expect(wrapper.get('input').element.value).toBe('Banana');
+    });
+  });
+
   describe('multiple mode', () => {
     it('should add and remove the picked options', async () => {
       const wrapper = mountAutoComplete({ mode: 'multiple' });

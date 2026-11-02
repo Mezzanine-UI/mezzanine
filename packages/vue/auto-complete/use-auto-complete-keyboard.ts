@@ -16,7 +16,6 @@ export interface UseAutoCompleteKeyboardOptions {
   inputRef: Ref<HTMLInputElement | null>;
   keyboardActiveIndex: Ref<number | null>;
   mode: () => 'multiple' | 'single';
-  onFocus: (focus: boolean) => void;
   open: () => boolean;
   processBulkCreate: (text: string) => string[];
   searchText: () => string;
@@ -72,7 +71,6 @@ export function useAutoCompleteKeyboard(
     inputRef,
     keyboardActiveIndex,
     mode,
-    onFocus,
     open,
     processBulkCreate,
     searchText,
@@ -89,14 +87,7 @@ export function useAutoCompleteKeyboard(
   const handleKeyDown = createDropdownKeydownHandler({
     activeIndex,
     keyboardActiveIndex,
-    onEnterSelect: (option) => {
-      handleDropdownSelect(option);
-
-      if (mode() === 'single') {
-        toggleOpen(false);
-        onFocus(false);
-      }
-    },
+    onEnterSelect: handleDropdownSelect,
     onEscape: () => {
       toggleOpen(false);
       activeIndex.value = null;
@@ -168,11 +159,6 @@ export function useAutoCompleteKeyboard(
 
       if (optionToSelect) {
         handleDropdownSelect(optionToSelect);
-
-        if (mode() === 'single') {
-          toggleOpen(false);
-          onFocus(false);
-        }
       }
 
       return true;

@@ -490,6 +490,168 @@ describe('<AutoComplete />', () => {
     });
   });
 
+  describe('regression: single mode re-search after select (#489)', () => {
+    // Selecting an option keeps DOM focus on the input (the listbox prevents
+    // mousedown default), so the component must not treat the field as
+    // blurred. The user should be able to search again right away.
+    async function renderAndSelect(
+      props: Partial<Parameters<typeof AutoComplete>[0]> = {},
+      via: 'mouse' | 'keyboard' = 'mouse',
+    ) {
+      const user = userEvent.setup();
+      const inputRef = createRef<HTMLInputElement>();
+      const onSearch = jest.fn();
+
+      const utils = render(
+        <AutoComplete
+          inputRef={inputRef}
+          mode="single"
+          onSearch={onSearch}
+          options={defaultOptions}
+          searchDebounceTime={0}
+          {...(props as object)}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(inputRef.current).toBeInTheDocument();
+      });
+
+      // inputPosition="inside" remounts the input when the list opens/closes
+      // (and the stale ref is nulled), so always query the current node.
+      const getInput = () =>
+        utils.container.querySelector<HTMLInputElement>(
+          'input[role="combobox"]',
+        )!;
+
+      await user.click(getInput());
+      await user.keyboard('item');
+
+      await waitFor(() => {
+        expect(getDropdownOptions()).toHaveLength(1);
+      });
+
+      if (via === 'mouse') {
+        await user.click(getDropdownOptions()[0]);
+      } else {
+        await user.keyboard('{ArrowDown}{Enter}');
+      }
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).not.toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(getInput()).toHaveValue('item1');
+      });
+      onSearch.mockClear();
+
+      return { ...utils, getInput, input: getInput(), onSearch, user };
+    }
+
+    it('should keep DOM focus and reopen the dropdown when the input is clicked again', async () => {
+      const { input, user } = await renderAndSelect();
+
+      expect(document.activeElement).toBe(input);
+
+      await user.click(input);
+
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+      expect(input).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    it('should search the new keyword after select-all and typing', async () => {
+      const { input, onSearch, user } = await renderAndSelect();
+
+      input.setSelectionRange(0, input.value.length);
+      await user.keyboard('foo');
+
+      expect(input).toHaveValue('foo');
+      await waitFor(() => {
+        expect(onSearch).toHaveBeenLastCalledWith('foo');
+      });
+      await waitFor(() => {
+        expect(getDropdownListbox()).toBeInTheDocument();
+      });
+    });
+
+    it('should start a fresh search when typing straight after select', async () => {
+      const { input, onSearch, user } = await renderAndSelect();
+
+      await user.keyboard('b');
+
+      expect(input).toHaveValue('b');
+      await waitFor(() => {
+        expect(onSearch).toHaveBeenLastCalledWith('b');
+      });
+    });
+
+    it('should start a fresh search when typing after selecting with Enter', async () => {
+      const { input, onSearch, user } = await renderAndSelect({}, 'keyboard');
+
+      expect(document.activeElement).toBe(input);
+
+      await user.keyboard('b');
+
+      expect(input).toHaveValue('b');
+      await waitFor(() => {
+        expect(onSearch).toHaveBeenLastCalledWith('b');
+      });
+    });
+
+    it('should not keep the option name as search text when clearSearchText is false', async () => {
+      const { input, onSearch, user } = await renderAndSelect({
+        clearSearchText: false,
+      });
+
+      await user.tab();
+      expect(input).not.toHaveFocus();
+      expect(input).toHaveValue('item1');
+
+      await user.click(input);
+      await user.keyboard('b');
+
+      expect(input).toHaveValue('b');
+      await waitFor(() => {
+        expect(onSearch).toHaveBeenLastCalledWith('b');
+      });
+    });
+
+    it('should show typed text after clearing the selection', async () => {
+      const { container, input, user } = await renderAndSelect();
+
+      await user.click(getClearIcon(container));
+      await user.type(input, 'b');
+
+      expect(input).toHaveValue('b');
+    });
+
+    it('should not reopen the dropdown on Enter right after select', async () => {
+      const { input, user } = await renderAndSelect();
+
+      await user.keyboard('{Enter}');
+
+      expect(getDropdownListbox()).not.toBeInTheDocument();
+      expect(input).toHaveValue('item1');
+    });
+
+    it('should reopen in search mode after select when inputPosition is inside', async () => {
+      const { getInput, user } = await renderAndSelect({
+        inputPosition: 'inside',
+      });
+
+      await user.click(getInput());
+
+      await waitFor(() => {
+        expect(getInput()).toHaveAttribute('aria-expanded', 'true');
+      });
+      expect(getInput()).toHaveValue('');
+      expect(getInput()).toHaveAttribute('placeholder', 'item1');
+    });
+  });
+
   describe('prop: inputProps', () => {
     it('should trigger inputProps.onBlur when input blur', async () => {
       jest.useFakeTimers();
