@@ -91,6 +91,21 @@ const SLIDE_FADE_EASING = {
   exit: MOTION_EASING.exit,
 };
 
+/**
+ * Refresh interval of the relative time stamp on drawer items.
+ * Relative values are rounded, so 30s is the longest interval that still
+ * crosses each minute boundary on time.
+ */
+const NOTIFICATION_TIMESTAMP_REFRESH_INTERVAL = 30 * 1000;
+
+function getStartOfDay(date: Date): number {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  ).getTime();
+}
+
 const targetIcon = computed(() => notificationIcons[props.severity]);
 
 const open = ref(true);
@@ -104,25 +119,36 @@ function setTimeStamp(element: Element | ComponentPublicInstance | null): void {
 
 const easing = computed(() => props.easing ?? SLIDE_FADE_EASING);
 
+// Ticks so relative time stamps (and the "today" check) stay current without prop changes
+const now = ref(Date.now());
+
+watch(
+  [
+    (): NotificationData['type'] => props.type,
+    (): NotificationData['timeStamp'] => props.timeStamp,
+  ],
+  ([type, timeStamp], _, onCleanup) => {
+    if (type !== 'drawer' || Number.isNaN(new Date(timeStamp ?? '').getTime()))
+      return;
+
+    now.value = Date.now();
+
+    const refreshTimer = window.setInterval(() => {
+      now.value = Date.now();
+    }, NOTIFICATION_TIMESTAMP_REFRESH_INTERVAL);
+
+    onCleanup(() => window.clearInterval(refreshTimer));
+  },
+  { immediate: true },
+);
+
 const isToday = computed((): boolean => {
   try {
     const timestampDate = new Date(props.timeStamp);
 
     if (Number.isNaN(timestampDate.getTime())) return false;
 
-    const now = new Date();
-    const nowStartOfDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-    );
-    const timestampStartOfDay = new Date(
-      timestampDate.getFullYear(),
-      timestampDate.getMonth(),
-      timestampDate.getDate(),
-    );
-
-    return timestampStartOfDay.getTime() === nowStartOfDay.getTime();
+    return getStartOfDay(timestampDate) === getStartOfDay(new Date(now.value));
   } catch {
     return false;
   }
@@ -138,22 +164,11 @@ const formattedTimeStamp = computed((): string => {
 
     if (Number.isNaN(timestampDate.getTime())) return timeStampText;
 
-    const now = Date.now();
-    const nowDate = new Date(now);
-    const nowStartOfDay = new Date(
-      nowDate.getFullYear(),
-      nowDate.getMonth(),
-      nowDate.getDate(),
-    );
-    const timestampStartOfDay = new Date(
-      timestampDate.getFullYear(),
-      timestampDate.getMonth(),
-      timestampDate.getDate(),
-    );
-
     // Only show relative time if the timestamp is today
-    if (nowStartOfDay.getTime() === timestampStartOfDay.getTime()) {
-      const diffInSeconds = Math.round((timestampDate.getTime() - now) / 1000);
+    if (isToday.value) {
+      const diffInSeconds = Math.round(
+        (timestampDate.getTime() - now.value) / 1000,
+      );
       const rtf = new Intl.RelativeTimeFormat(timeStampLocale, {
         numeric: 'always',
       });
@@ -172,7 +187,10 @@ const formattedTimeStamp = computed((): string => {
         if (Math.abs(value) >= 1) return rtf.format(value, unit);
       }
 
-      return 'now';
+      // Under one minute: let the locale decide (e.g. 'now' / '現在')
+      return new Intl.RelativeTimeFormat(timeStampLocale, {
+        numeric: 'auto',
+      }).format(0, 'second');
     }
 
     const hasTimeComponent =
