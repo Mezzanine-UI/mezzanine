@@ -191,6 +191,21 @@ const NOTIFICATION_SLIDE_FADE_EASING = {
   exit: MOTION_EASING.exit,
 };
 
+/**
+ * Refresh interval of the relative time stamp on drawer items.
+ * Relative values are rounded, so 30s is the longest interval that still
+ * crosses each minute boundary on time.
+ */
+const NOTIFICATION_TIMESTAMP_REFRESH_INTERVAL = 30 * 1000;
+
+function getStartOfDay(date: Date): number {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  ).getTime();
+}
+
 function getNotificationSlideFadeStyle(
   state: TransitionState,
   inProp: boolean,
@@ -390,6 +405,25 @@ const NotificationCenterFC: FC<PropsWithChildren<NotificationData>> = (
     notificationSlideFadeNodeRef,
   ]);
 
+  // Ticks so relative time stamps (and the "today" check) stay current without prop changes
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (type !== 'drawer' || Number.isNaN(new Date(timeStamp).getTime())) {
+      return;
+    }
+
+    setNow(Date.now());
+
+    const timer = window.setInterval(() => {
+      setNow(Date.now());
+    }, NOTIFICATION_TIMESTAMP_REFRESH_INTERVAL);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [timeStamp, type]);
+
   const isToday = useMemo(() => {
     try {
       const timestampDate = new Date(timeStamp);
@@ -399,23 +433,11 @@ const NotificationCenterFC: FC<PropsWithChildren<NotificationData>> = (
         return false;
       }
 
-      const now = new Date();
-      const nowStartOfDay = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-      );
-      const timestampStartOfDay = new Date(
-        timestampDate.getFullYear(),
-        timestampDate.getMonth(),
-        timestampDate.getDate(),
-      );
-
-      return timestampStartOfDay.getTime() === nowStartOfDay.getTime();
+      return getStartOfDay(timestampDate) === getStartOfDay(new Date(now));
     } catch {
       return false;
     }
-  }, [timeStamp]);
+  }, [now, timeStamp]);
 
   const formattedTimeStamp = useMemo(() => {
     try {
@@ -427,20 +449,6 @@ const NotificationCenterFC: FC<PropsWithChildren<NotificationData>> = (
       if (Number.isNaN(timestampDate.getTime())) {
         return timeStampText;
       }
-
-      const now = Date.now();
-      const nowDate = new Date(now);
-      const nowStartOfDay = new Date(
-        nowDate.getFullYear(),
-        nowDate.getMonth(),
-        nowDate.getDate(),
-      );
-      const timestampStartOfDay = new Date(
-        timestampDate.getFullYear(),
-        timestampDate.getMonth(),
-        timestampDate.getDate(),
-      );
-      const isToday = nowStartOfDay.getTime() === timestampStartOfDay.getTime();
 
       // Only show relative time if the timestamp is today
       if (isToday) {
@@ -465,7 +473,10 @@ const NotificationCenterFC: FC<PropsWithChildren<NotificationData>> = (
           }
         }
 
-        return 'now';
+        // Under one minute: let the locale decide (e.g. 'now' / '現在')
+        return new Intl.RelativeTimeFormat(timeStampLocale, {
+          numeric: 'auto',
+        }).format(0, 'second');
       }
 
       const hasTimeComponent =
@@ -492,7 +503,7 @@ const NotificationCenterFC: FC<PropsWithChildren<NotificationData>> = (
     } catch {
       return typeof timeStamp === 'string' ? timeStamp : String(timeStamp);
     }
-  }, [timeStamp, timeStampLocale]);
+  }, [isToday, now, timeStamp, timeStampLocale]);
 
   useEffect(() => {
     if (open && duration) {

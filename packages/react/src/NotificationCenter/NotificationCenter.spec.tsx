@@ -20,7 +20,9 @@ describe('<NotificationCenter />', () => {
   afterEach(cleanup);
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<NotificationCenter reference="test" />);
+    const { getHostHTMLElement } = render(
+      <NotificationCenter reference="test" />,
+    );
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-notification-center')).toBeTruthy();
@@ -28,17 +30,23 @@ describe('<NotificationCenter />', () => {
 
   it('should render description under content element', () => {
     const description = 'foo';
-    const { getByText } = render(<NotificationCenter reference="test" description={description} />);
+    const { getByText } = render(
+      <NotificationCenter reference="test" description={description} />,
+    );
     const contentElement = getByText(description);
 
     expect(contentElement.textContent).toBe('foo');
-    expect(contentElement.classList.contains('mzn-notification-center__content')).toBeTruthy();
+    expect(
+      contentElement.classList.contains('mzn-notification-center__content'),
+    ).toBeTruthy();
   });
 
   it('should auto close if duration is provided', () => {
     jest.useFakeTimers();
 
-    const { container } = render(<NotificationCenter reference="test" duration={3000} />);
+    const { container } = render(
+      <NotificationCenter reference="test" duration={3000} />,
+    );
 
     act(() => {
       jest.runAllTimers();
@@ -55,7 +63,12 @@ describe('<NotificationCenter />', () => {
     it('should render cancel button with text under action element', () => {
       const cancelButtonText = 'foo';
       const { getByText } = render(
-        <NotificationCenter reference="test" cancelButtonText={cancelButtonText} onConfirm={() => {}} onClose={() => {}} />,
+        <NotificationCenter
+          reference="test"
+          cancelButtonText={cancelButtonText}
+          onConfirm={() => {}}
+          onClose={() => {}}
+        />,
       );
       const textElement = getByText(cancelButtonText);
       const buttonElement = textElement.closest('.mzn-button');
@@ -69,7 +82,11 @@ describe('<NotificationCenter />', () => {
     it('should render confirm button with text under action element', () => {
       const confirmButtonText = 'foo';
       const { getByText } = render(
-        <NotificationCenter reference="test" confirmButtonText={confirmButtonText} onConfirm={() => {}} />,
+        <NotificationCenter
+          reference="test"
+          confirmButtonText={confirmButtonText}
+          onConfirm={() => {}}
+        />,
       );
       const textElement = getByText(confirmButtonText);
       const buttonElement = textElement.closest('.mzn-button');
@@ -128,7 +145,12 @@ describe('<NotificationCenter />', () => {
       const cancelButtonText = 'foo';
       const closeSpy = jest.spyOn(NotificationCenter, 'remove');
       const { getByText } = render(
-        <NotificationCenter reference="test" onConfirm={() => {}} cancelButtonText={cancelButtonText} onCancel={() => {}} />,
+        <NotificationCenter
+          reference="test"
+          onConfirm={() => {}}
+          cancelButtonText={cancelButtonText}
+          onCancel={() => {}}
+        />,
       );
 
       const buttonElement = getByText(cancelButtonText).closest('button');
@@ -152,7 +174,9 @@ describe('<NotificationCenter />', () => {
       );
 
       const element = getHostHTMLElement();
-      const actionElement = element.querySelector('.mzn-notification-center__action');
+      const actionElement = element.querySelector(
+        '.mzn-notification-center__action',
+      );
 
       expect(actionElement).toBeInstanceOf(Element);
     });
@@ -161,7 +185,11 @@ describe('<NotificationCenter />', () => {
       const confirmButtonText = 'foo';
       const onConfirm = jest.fn();
       const { getByText } = render(
-        <NotificationCenter reference="test" onConfirm={onConfirm} confirmButtonText={confirmButtonText} />,
+        <NotificationCenter
+          reference="test"
+          onConfirm={onConfirm}
+          confirmButtonText={confirmButtonText}
+        />,
       );
 
       const buttonElement = getByText(confirmButtonText).closest('button');
@@ -284,13 +312,134 @@ describe('<NotificationCenter />', () => {
   describe('prop: title', () => {
     it('should render title under title element', () => {
       const title = 'foo';
-      const { getHostHTMLElement } = render(<NotificationCenter reference="test" title={title} />);
+      const { getHostHTMLElement } = render(
+        <NotificationCenter reference="test" title={title} />,
+      );
 
       const element = getHostHTMLElement();
-      const titleElement = element.querySelector('.mzn-notification-center__title');
+      const titleElement = element.querySelector(
+        '.mzn-notification-center__title',
+      );
 
       expect(titleElement).toBeInstanceOf(Element);
       expect(titleElement?.textContent).toBe(title);
+    });
+  });
+
+  describe('prop: timeStamp', () => {
+    const getTimeStampText = (element: HTMLElement) =>
+      element.querySelector('.mzn-notification-center__time-stamp')
+        ?.textContent;
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2026, 10, 2, 12, 0, 0));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should render localized text instead of hard-coded "now" within one minute', () => {
+      const { getHostHTMLElement } = render(
+        <NotificationCenter
+          reference="test"
+          timeStamp={Date.now()}
+          timeStampLocale="zh-TW"
+          type="drawer"
+        />,
+      );
+
+      expect(getTimeStampText(getHostHTMLElement())).toBe('現在');
+    });
+
+    it('should follow timeStampLocale within one minute', () => {
+      const { getHostHTMLElement } = render(
+        <NotificationCenter
+          reference="test"
+          timeStamp={Date.now()}
+          timeStampLocale="en-US"
+          type="drawer"
+        />,
+      );
+
+      expect(getTimeStampText(getHostHTMLElement())).toBe('now');
+    });
+
+    it('should refresh relative text as time passes without re-render', () => {
+      const { getHostHTMLElement } = render(
+        <NotificationCenter
+          reference="test"
+          timeStamp={Date.now()}
+          timeStampLocale="zh-TW"
+          type="drawer"
+        />,
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(3 * 60 * 1000);
+      });
+
+      expect(getTimeStampText(getHostHTMLElement())).toBe('3 分鐘前');
+    });
+
+    it('should switch to date format after crossing midnight', () => {
+      jest.setSystemTime(new Date(2026, 10, 2, 23, 59, 30));
+
+      const { getHostHTMLElement } = render(
+        <NotificationCenter
+          reference="test"
+          timeStamp={Date.now()}
+          timeStampLocale="zh-TW"
+          type="drawer"
+        />,
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(60 * 1000);
+      });
+
+      expect(getTimeStampText(getHostHTMLElement())).toBe('2026-11-02');
+    });
+
+    it('should not start refresh timer when type is not drawer', () => {
+      const setIntervalSpy = jest.spyOn(window, 'setInterval');
+
+      render(
+        <NotificationCenter
+          reference="test"
+          timeStamp={Date.now()}
+          type="notification"
+        />,
+      );
+
+      expect(setIntervalSpy).not.toHaveBeenCalled();
+
+      setIntervalSpy.mockRestore();
+    });
+
+    it('should clear refresh timer on unmount', () => {
+      const setIntervalSpy = jest.spyOn(window, 'setInterval');
+      const clearIntervalSpy = jest.spyOn(window, 'clearInterval');
+
+      const { unmount } = render(
+        <NotificationCenter
+          reference="test"
+          timeStamp={Date.now()}
+          type="drawer"
+        />,
+      );
+
+      expect(setIntervalSpy).toHaveBeenCalledTimes(1);
+
+      const intervalId = setIntervalSpy.mock.results[0].value;
+
+      unmount();
+
+      expect(clearIntervalSpy).toHaveBeenCalledWith(intervalId);
+
+      setIntervalSpy.mockRestore();
+      clearIntervalSpy.mockRestore();
     });
   });
 });
@@ -320,7 +469,9 @@ describe('NotificationCenter API', () => {
 
         const { lastElementChild: rootElement } = document.body;
 
-        expect(rootElement?.classList.contains('mzn-notification-center-root')).toBeTruthy();
+        expect(
+          rootElement?.classList.contains('mzn-notification-center-root'),
+        ).toBeTruthy();
       });
 
       it(`should find ${severity} message and be able to remove it`, () => {
@@ -337,7 +488,9 @@ describe('NotificationCenter API', () => {
         const notificationElement = rootElement?.firstElementChild;
 
         expect(
-          notificationElement?.classList.contains(`mzn-notification-center--${severity}`),
+          notificationElement?.classList.contains(
+            `mzn-notification-center--${severity}`,
+          ),
         ).toBeTruthy();
         expect(notificationElement?.textContent).toContain(children);
 
