@@ -45,6 +45,27 @@ describe('<MznDropdown />', () => {
     document.body.innerHTML = '';
   });
 
+  it('should keep button semantics on a native button trigger (#503)', () => {
+    const wrapper = mount(MznDropdown, {
+      attachTo: document.body,
+      props: { options },
+      slots: {
+        default: (triggerProps: DropdownTriggerProps) =>
+          h('button', {
+            ...triggerProps,
+            'aria-label': 'More',
+            type: 'button',
+          }),
+      },
+    });
+    const trigger = wrapper.get('button');
+
+    expect(trigger.attributes('role')).toBeUndefined();
+    expect(trigger.attributes('aria-autocomplete')).toBeUndefined();
+    expect(trigger.attributes('aria-haspopup')).toBe('listbox');
+    expect(trigger.attributes('aria-controls')).toBeTruthy();
+  });
+
   it('should render the trigger and keep the list closed', () => {
     const wrapper = mountDropdown();
 
