@@ -5,6 +5,10 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "target": "es2022",
+    // Storybook 10 packages expose types only through `exports`, which the
+    // base `node` (node10) resolution ignores.
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
     "paths": {
       "@mezzanine-ui/icons": ["../icons/src"],
       "@mezzanine-ui/system/*": ["../system/src/*"],

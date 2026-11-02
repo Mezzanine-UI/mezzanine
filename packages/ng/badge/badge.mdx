@@ -1,8 +1,13 @@
-import { Meta, ArgTypes } from '@storybook/addon-docs/blocks';
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import { MznBadge } from './badge.component';
 import * as BadgeStories from './badge.stories';
 
 <Meta of={BadgeStories} />
 
 # Badge
 
-<ArgTypes of={BadgeStories.Playground} />
+<Description of={MznBadge} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/ng/badge/badge.component.ts)
+
+<ArgTypes of={BadgeStories} />

@@ -1,10 +1,12 @@
 import { createRequire } from 'node:module';
 import type { StorybookConfig } from '@storybook/react-webpack5';
 import { resolve, dirname, join } from 'path';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
+const here = dirname(fileURLToPath(import.meta.url));
 
-const ROOT_PATH = resolve(__dirname, '../');
+const ROOT_PATH = resolve(here, '../');
 const PACKAGES_PATH = resolve(ROOT_PATH, 'packages');
 const SYSTEM_PATH = resolve(PACKAGES_PATH, 'system');
 const CORE_PATH = resolve(PACKAGES_PATH, 'core');

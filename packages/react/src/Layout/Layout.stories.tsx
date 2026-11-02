@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { HomeIcon, FileIcon, UserIcon } from '@mezzanine-ui/icons';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import Navigation, {
