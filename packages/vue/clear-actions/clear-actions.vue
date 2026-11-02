@@ -66,9 +66,10 @@ const icon = computed(() =>
 );
 
 /**
- * React writes its own `aria-label` and `type` after the rest spread, so they
- * win over anything a caller passes; Vue merges fallthrough attributes last, so
- * they have to be bound ahead of the component's own to keep that order.
+ * React writes `aria-label="Close"` before the rest spread (a default the
+ * caller can override) and `type` after it (fixed). With `inheritAttrs: false`
+ * the binding order below mirrors that: the default label comes before
+ * `$attrs`, and `type` after it.
  */
 defineOptions({ inheritAttrs: false });
 
@@ -77,8 +78,8 @@ const iconClass = classes.icon;
 
 <template>
   <button
-    v-bind="$attrs"
     aria-label="Close"
+    v-bind="$attrs"
     :class="hostClasses"
     type="button"
     @click="emit('click', $event)"
