@@ -298,7 +298,9 @@ export function getFullParsedList(
             [readOnly]="readOnly()"
             [name]="name() ?? null"
             [required]="required()"
-            [value]="searchText()"
+            [value]="displayValue()"
+            (blur)="onInputBlur()"
+            (compositionstart)="onInputCompositionStart()"
             (input)="onSearchInput($event)"
             (focus)="onInputFocus()"
             (keydown)="onInputKeydown($event)"
@@ -368,7 +370,8 @@ export function getFullParsedList(
               type="text"
               [placeholder]="placeholder()"
               [disabled]="disabled() || isEffectiveLoading()"
-              [value]="searchText()"
+              [value]="displayValue()"
+              (compositionstart)="onInputCompositionStart()"
               (input)="onSearchInput($event)"
               (keydown)="onInputKeydown($event)"
               (paste)="onPaste($event)"
@@ -701,6 +704,12 @@ export class MznAutocomplete
   protected readonly isOpenInternal = signal(false);
   protected readonly searchText = signal('');
   protected readonly internalValue = signal<ReadonlyArray<string>>([]);
+  /**
+   * Single mode only: whether the input shows the search text (user is
+   * searching) or the committed selection. Mirrors React's `isSearching`, so
+   * the selected option's name never leaks into `searchText` (#489).
+   */
+  protected readonly isSearching = signal(false);
 
   // ────────────────────────────────────────────
   //  Computed
@@ -757,15 +766,31 @@ export class MznAutocomplete
     },
   );
 
+  /** Single mode: name of the selected option, or `''` when none. */
+  private readonly selectedName = computed((): string => {
+    if (this.mode() !== 'single') return '';
+
+    const id = this.internalValue()[0];
+
+    return id ? (this.options().find((o) => o.id === id)?.name ?? '') : '';
+  });
+
+  /**
+   * Text bound to the search input: the search text while searching (and
+   * always in multiple mode), otherwise the selected option's name.
+   */
+  protected readonly displayValue = computed((): string =>
+    this.mode() === 'single' && !this.isSearching() && this.hasValue()
+      ? this.selectedName()
+      : this.searchText(),
+  );
+
   protected readonly inputPlaceholder = computed((): string => {
     if (this.mode() === 'multiple' && this.hasValue()) return '';
 
-    // 單選 focused 時若已有值，用選中項名稱作為 placeholder
-    if (this.mode() === 'single' && this.isOpen() && this.hasValue()) {
-      const id = this.internalValue()[0];
-      const opt = this.options().find((o) => o.id === id);
-
-      return opt?.name ?? this.placeholder();
+    // Single mode while searching with a value: show the selected name as placeholder
+    if (this.mode() === 'single' && this.isSearching() && this.hasValue()) {
+      return this.selectedName() || this.placeholder();
     }
 
     return this.placeholder();
@@ -998,14 +1023,6 @@ export class MznAutocomplete
     } else {
       this.internalValue.set(value);
     }
-
-    // 單選時設定 searchText 為選中項名稱
-    if (this.mode() === 'single') {
-      const v = typeof value === 'string' ? value : (value?.[0] ?? '');
-      const opt = this.options().find((o) => o.id === v);
-
-      this.searchText.set(opt?.name ?? '');
-    }
   }
 
   registerOnChange(fn: (value: ReadonlyArray<string> | string) => void): void {
@@ -1175,6 +1192,7 @@ export class MznAutocomplete
   protected onTriggerClick(): void {
     if (this.disabled() || this.readOnly()) return;
 
+    this.enterSearchMode();
     this.isOpenInternal.set(true);
     this.visibilityChange.emit(true);
   }
@@ -1183,13 +1201,32 @@ export class MznAutocomplete
     this.onTouched();
 
     if (!this.disabled() && !this.readOnly()) {
+      this.enterSearchMode();
       this.isOpenInternal.set(true);
       this.visibilityChange.emit(true);
     }
   }
 
+  /** Leaving the field shows the selected name again, as React does on blur. */
+  protected onInputBlur(): void {
+    this.isSearching.set(false);
+  }
+
+  protected onInputCompositionStart(): void {
+    this.enterSearchMode();
+  }
+
   protected onInputKeydown(event: KeyboardEvent): void {
     if (isImeComposing(event)) return;
+
+    if (
+      event.key.length === 1 &&
+      !event.altKey &&
+      !event.ctrlKey &&
+      !event.metaKey
+    ) {
+      this.enterSearchMode();
+    }
 
     // Enter key: handle creation
     if (event.key === 'Enter' && this.handleEnterKey()) {
@@ -1224,6 +1261,7 @@ export class MznAutocomplete
   protected onSearchInput(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
 
+    if (this.mode() === 'single') this.isSearching.set(true);
     this.searchText.set(val);
     this.insertText.set(val);
 
@@ -1260,7 +1298,11 @@ export class MznAutocomplete
   protected onOptionClick(option: DropdownOption): void {
     if (this.mode() === 'single') {
       this.internalValue.set([option.id]);
-      this.searchText.set(option.name);
+      // Reset search text so the option name never leaks into the next
+      // search; the input shows the selection until the user searches again.
+      this.searchText.set('');
+      this.insertText.set('');
+      this.isSearching.set(false);
       this.onChange(option.id);
       this.selectionChange.emit(option);
       this.isOpenInternal.set(false);
@@ -1316,6 +1358,7 @@ export class MznAutocomplete
     this.internalValue.set([]);
     this.searchText.set('');
     this.insertText.set('');
+    this.isSearching.set(this.mode() === 'single');
     this.onChange(this.mode() === 'single' ? '' : []);
     this.cleared.emit();
   }
@@ -1378,18 +1421,11 @@ export class MznAutocomplete
   protected handleClose(): void {
     this.isOpenInternal.set(false);
     this.visibilityChange.emit(false);
+    // Single mode falls back to showing the selected name via `displayValue`
+    this.isSearching.set(false);
 
     if (this.clearSearchText()) {
-      // 恢復搜尋文字為選中項目名稱（單選）或清空（多選）
-      if (this.mode() === 'single') {
-        const id = this.internalValue()[0];
-        const opt = id ? this.options().find((o) => o.id === id) : undefined;
-
-        this.searchText.set(opt?.name ?? '');
-      } else {
-        this.searchText.set('');
-      }
-
+      this.searchText.set('');
       this.insertText.set('');
     }
 
@@ -1607,6 +1643,18 @@ export class MznAutocomplete
     }
 
     return false;
+  }
+
+  /**
+   * Single mode: leave the "showing selection" state and resume searching.
+   * The native value is synced right away so a keystroke that triggered this
+   * lands in the search text instead of being appended to the selected name.
+   */
+  private enterSearchMode(): void {
+    if (this.mode() !== 'single' || this.isSearching()) return;
+
+    this.isSearching.set(true);
+    this.setNativeInputValue(this.searchText());
   }
 
   private resetCreationInputs(): void {

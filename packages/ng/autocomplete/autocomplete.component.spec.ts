@@ -39,6 +39,25 @@ class TestHostComponent {
   template: `
     <div
       mznAutocomplete
+      [clearSearchText]="clearSearchText"
+      [options]="options"
+      [(ngModel)]="selected"
+      placeholder="Search fruits"
+    ></div>
+  `,
+})
+class ClearSearchTextHostComponent {
+  options = MOCK_OPTIONS;
+  selected = '';
+  clearSearchText = true;
+}
+
+@Component({
+  standalone: true,
+  imports: [MznAutocomplete, FormsModule],
+  template: `
+    <div
+      mznAutocomplete
       [caseSensitive]="caseSensitive"
       [options]="options"
       [(ngModel)]="selected"
@@ -307,5 +326,120 @@ describe('MznAutocomplete', () => {
     fixture.detectChanges();
 
     expect(host.selected).toBe('');
+  });
+
+  // After a select the search text must not keep the option name, so the user
+  // can search again right away instead of filtering by "<name><char>" (#489).
+  describe('regression: single mode re-search after select (#489)', () => {
+    type Fixture = ReturnType<
+      typeof TestBed.createComponent<ClearSearchTextHostComponent>
+    >;
+
+    const optionNames = (): string[] =>
+      Array.from(document.querySelectorAll('[role="option"]')).map(
+        (el) => el.textContent?.trim() ?? '',
+      );
+
+    async function renderAndSelect(clearSearchText = true): Promise<{
+      fixture: Fixture;
+      host: ClearSearchTextHostComponent;
+      input: HTMLInputElement;
+    }> {
+      const { fixture, host } = createFixture(ClearSearchTextHostComponent, {
+        clearSearchText,
+      });
+
+      await fixture.whenStable();
+
+      const input = fixture.nativeElement.querySelector(
+        'input',
+      ) as HTMLInputElement;
+
+      input.dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+      input.value = 'ban';
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      fixture.detectChanges();
+
+      document.querySelector<HTMLElement>('[role="option"]')!.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(host.selected).toBe('banana');
+      expect(input.value).toBe('Banana');
+
+      return { fixture, host, input };
+    }
+
+    /** Mirrors the browser: keydown first, then the char lands in the input. */
+    function pressChar(
+      fixture: Fixture,
+      input: HTMLInputElement,
+      char: string,
+    ): void {
+      input.dispatchEvent(
+        new KeyboardEvent('keydown', { bubbles: true, key: char }),
+      );
+      input.value += char;
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      fixture.detectChanges();
+    }
+
+    it('should reopen with an empty search and the full list when clicked again', async () => {
+      const { fixture, input } = await renderAndSelect();
+
+      input.dispatchEvent(new Event('focus'));
+      input.click();
+      fixture.detectChanges();
+      fixture.detectChanges();
+
+      expect(input.value).toBe('');
+      expect(input.placeholder).toBe('Banana');
+      expect(optionNames()).toEqual(['Apple', 'Banana', 'Cherry']);
+    });
+
+    it('should start a fresh search when typing straight after select', async () => {
+      const { fixture, input } = await renderAndSelect();
+
+      pressChar(fixture, input, 'c');
+
+      expect(input.value).toBe('c');
+      expect(optionNames()).toEqual(['Cherry']);
+    });
+
+    it('should show the selected name again when leaving the field while searching', async () => {
+      const { fixture, input } = await renderAndSelect();
+
+      input.dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      expect(input.value).toBe('');
+
+      input.dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+
+      expect(input.value).toBe('Banana');
+    });
+
+    it('should not keep the option name as search text when clearSearchText is false', async () => {
+      const { fixture, input } = await renderAndSelect(false);
+
+      document.body.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(input.value).toBe('Banana');
+
+      input.dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      expect(input.value).toBe('');
+
+      pressChar(fixture, input, 'c');
+
+      expect(optionNames()).toEqual(['Cherry']);
+    });
   });
 });
