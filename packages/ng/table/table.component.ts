@@ -916,7 +916,7 @@ function throttleRaf(
           </div>
           <div [class]="bulkActionsActionAreaClass">
             @for (
-              action of cfg.mainActions;
+              action of cfg.mainActions ?? [];
               track action.label;
               let i = $index
             ) {
@@ -935,7 +935,9 @@ function throttleRaf(
               </button>
             }
             @if (cfg.destructiveAction; as da) {
-              <div [class]="bulkActionsSeparatorClass"></div>
+              @if (hasBulkMainActions(cfg)) {
+                <div [class]="bulkActionsSeparatorClass"></div>
+              }
               <button
                 mznButton
                 type="button"
@@ -951,7 +953,9 @@ function throttleRaf(
               </button>
             }
             @if (cfg.overflowAction; as oa) {
-              <div [class]="bulkActionsSeparatorClass"></div>
+              @if (hasBulkMainActions(cfg) || cfg.destructiveAction) {
+                <div [class]="bulkActionsSeparatorClass"></div>
+              }
               <button
                 #bulkOverflowAnchor
                 mznButton
@@ -2297,6 +2301,11 @@ export class MznTable {
     }
 
     return `${keys.length} item${keys.length > 1 ? 's' : ''} selected`;
+  }
+
+  /** Whether the bulk actions bar has at least one main action. */
+  protected hasBulkMainActions(cfg: TableBulkActions): boolean {
+    return (cfg.mainActions?.length ?? 0) > 0;
   }
 
   /** Click handler for main / destructive actions. */

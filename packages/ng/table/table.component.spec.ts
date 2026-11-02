@@ -2,7 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, signal } from '@angular/core';
 import { OverlayScrollbars, type PartialOptions } from 'overlayscrollbars';
 import { MznTable } from './table.component';
-import type { TableColumn, TableDataSource, TableSize } from './table-types';
+import type {
+  TableBulkActions,
+  TableColumn,
+  TableDataSource,
+  TableRowSelection,
+  TableSize,
+} from './table-types';
 
 @Component({
   standalone: true,
@@ -466,5 +472,92 @@ describe('MznTable scroll containment', () => {
     } finally {
       globalThis.ResizeObserver = OriginalResizeObserver;
     }
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [MznTable],
+  template: `
+    <div
+      mznTable
+      [columns]="columns"
+      [dataSource]="dataSource"
+      [rowSelection]="rowSelection()"
+    ></div>
+  `,
+})
+class BulkActionsHostComponent {
+  readonly columns: readonly TableColumn[] = [
+    { key: 'name', title: 'Name', dataIndex: 'name' },
+  ];
+
+  readonly dataSource: readonly TableDataSource[] = [
+    { key: '1', name: 'Alice' },
+  ];
+
+  readonly bulkActions = signal<TableBulkActions>({});
+
+  readonly rowSelection = (): TableRowSelection => ({
+    bulkActions: this.bulkActions(),
+    mode: 'checkbox',
+    onChange: jest.fn(),
+    selectedRowKeys: ['1'],
+  });
+}
+
+describe('MznTable bulk actions separators', () => {
+  const separatorSelector = '.mzn-table__bulk-actions__separator';
+  const overflowAction = {
+    label: 'More',
+    onSelect: jest.fn(),
+    options: [{ id: 'archive', name: 'Archive' }],
+  };
+
+  function renderBulkActions(bulkActions: TableBulkActions): HTMLElement {
+    const fixture = TestBed.createComponent(BulkActionsHostComponent);
+
+    fixture.componentInstance.bulkActions.set(bulkActions);
+    fixture.detectChanges();
+
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [BulkActionsHostComponent] });
+  });
+
+  it('should render destructive action without separator when mainActions is omitted', () => {
+    const el = renderBulkActions({
+      destructiveAction: { label: 'Remove', onClick: jest.fn() },
+    });
+
+    expect(el.textContent).toContain('Remove');
+    expect(el.querySelectorAll(separatorSelector)).toHaveLength(0);
+  });
+
+  it('should not render separator when only overflow action is provided', () => {
+    const el = renderBulkActions({ mainActions: [], overflowAction });
+
+    expect(el.querySelectorAll(separatorSelector)).toHaveLength(0);
+  });
+
+  it('should render one separator between destructive and overflow actions without main actions', () => {
+    const el = renderBulkActions({
+      destructiveAction: { label: 'Remove', onClick: jest.fn() },
+      overflowAction,
+    });
+
+    expect(el.querySelectorAll(separatorSelector)).toHaveLength(1);
+  });
+
+  it('should render two separators when all action groups are provided', () => {
+    const el = renderBulkActions({
+      destructiveAction: { label: 'Remove', onClick: jest.fn() },
+      mainActions: [{ label: 'Edit', onClick: jest.fn() }],
+      overflowAction,
+    });
+
+    expect(el.querySelectorAll(separatorSelector)).toHaveLength(2);
   });
 });

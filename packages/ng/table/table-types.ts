@@ -342,14 +342,14 @@ export interface TableBulkOverflowAction {
  * 以分隔線分組。
  */
 export interface TableBulkActions {
-  /** 破壞性動作（例如刪除），最多一個，會有分隔線。 */
+  /** 破壞性動作（例如刪除），最多一個；前方有主要動作時才會畫分隔線。 */
   readonly destructiveAction?: TableBulkGeneralAction;
-  /** 主要動作，至少一個，依序排列於左。 */
-  readonly mainActions: readonly [
-    TableBulkGeneralAction,
-    ...TableBulkGeneralAction[],
-  ];
-  /** 溢出 dropdown 動作，最多一個，與前方以分隔線分組。 */
+  /**
+   * 主要動作，依序排列於左。可省略或為空陣列（例如唯一的批次動作是破壞性動作時）。
+   * @default []
+   */
+  readonly mainActions?: readonly TableBulkGeneralAction[];
+  /** 溢出 dropdown 動作，最多一個；前方有其他動作群組時才會以分隔線分組。 */
   readonly overflowAction?: TableBulkOverflowAction;
   /**
    * 依目前選取數量生成摘要文字。
