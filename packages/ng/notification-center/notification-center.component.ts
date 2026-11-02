@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   input,
@@ -28,6 +29,21 @@ import { MznDropdown } from '@mezzanine-ui/ng/dropdown';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import { MznTypography } from '@mezzanine-ui/ng/typography';
 import { buildTransitionString, reflow } from '@mezzanine-ui/ng/transition';
+
+/**
+ * Refresh interval of the relative time stamp on drawer items.
+ * Relative values are rounded, so 30s is the longest interval that still
+ * crosses each minute boundary on time.
+ */
+const NOTIFICATION_TIMESTAMP_REFRESH_INTERVAL = 30 * 1000;
+
+function getStartOfDay(date: Date): number {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  ).getTime();
+}
 
 /**
  * 單項通知元件，對齊 React `<NotificationCenter />` 的 per-item render。
@@ -328,15 +344,27 @@ export class MznNotificationCenter implements OnInit {
     return Number.isNaN(d.getTime()) ? null : d;
   });
 
+  // Ticks so relative time stamps (and the "today" check) stay current without input changes
+  private readonly now = signal(Date.now());
+
+  constructor() {
+    effect((onCleanup) => {
+      if (this.type() !== 'drawer' || !this.parsedTimeStamp()) return;
+
+      this.now.set(Date.now());
+
+      const timer = setInterval(
+        () => this.now.set(Date.now()),
+        NOTIFICATION_TIMESTAMP_REFRESH_INTERVAL,
+      );
+      onCleanup(() => clearInterval(timer));
+    });
+  }
+
   protected readonly isToday = computed((): boolean => {
     const d = this.parsedTimeStamp();
     if (!d) return false;
-    const now = new Date();
-    return (
-      d.getFullYear() === now.getFullYear() &&
-      d.getMonth() === now.getMonth() &&
-      d.getDate() === now.getDate()
-    );
+    return getStartOfDay(d) === getStartOfDay(new Date(this.now()));
   });
 
   protected readonly rawTimeStamp = computed((): string => {
@@ -355,18 +383,8 @@ export class MznNotificationCenter implements OnInit {
 
     if (!d) return tsText;
 
-    const now = Date.now();
-    const nowDate = new Date(now);
-    const nowStartOfDay = new Date(
-      nowDate.getFullYear(),
-      nowDate.getMonth(),
-      nowDate.getDate(),
-    );
-    const tsStartOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-    const isToday = nowStartOfDay.getTime() === tsStartOfDay.getTime();
-
-    if (isToday) {
-      const diffInMs = d.getTime() - now;
+    if (this.isToday()) {
+      const diffInMs = d.getTime() - this.now();
       const diffInSeconds = Math.round(diffInMs / 1000);
       const rtf = new Intl.RelativeTimeFormat(this.timeStampLocale(), {
         numeric: 'always',
@@ -382,7 +400,10 @@ export class MznNotificationCenter implements OnInit {
         const value = Math.round(diffInSeconds / seconds);
         if (Math.abs(value) >= 1) return rtf.format(value, unit);
       }
-      return 'now';
+      // Under one minute: let the locale decide (e.g. 'now' / '現在')
+      return new Intl.RelativeTimeFormat(this.timeStampLocale(), {
+        numeric: 'auto',
+      }).format(0, 'second');
     }
 
     const hasTimeComponent =
