@@ -201,6 +201,69 @@ describe('<TableBulkActions />', () => {
     });
   });
 
+  describe('Separators', () => {
+    const separatorSelector = '.mzn-table__bulk-actions__separator';
+    const overflowAction = {
+      label: 'More',
+      onSelect: jest.fn(),
+      options: [{ id: 'archive', name: 'Archive' }],
+    };
+
+    it('should render destructive action without separator when mainActions is omitted', () => {
+      const { getHostHTMLElement } = renderWithContext({
+        destructiveAction: { label: 'Remove', onClick: jest.fn() },
+      });
+
+      expect(screen.getByText('Remove')).toBeInTheDocument();
+      expect(
+        getHostHTMLElement().querySelectorAll(separatorSelector),
+      ).toHaveLength(0);
+    });
+
+    it('should not render separator when mainActions is empty', () => {
+      const { getHostHTMLElement } = renderWithContext({
+        destructiveAction: { label: 'Remove', onClick: jest.fn() },
+        mainActions: [],
+      });
+
+      expect(
+        getHostHTMLElement().querySelectorAll(separatorSelector),
+      ).toHaveLength(0);
+    });
+
+    it('should not render separator when only overflow action is provided', () => {
+      const { getHostHTMLElement } = renderWithContext({ overflowAction });
+
+      expect(screen.getByText('More')).toBeInTheDocument();
+      expect(
+        getHostHTMLElement().querySelectorAll(separatorSelector),
+      ).toHaveLength(0);
+    });
+
+    it('should render one separator between destructive and overflow actions without main actions', () => {
+      const { getHostHTMLElement } = renderWithContext({
+        destructiveAction: { label: 'Remove', onClick: jest.fn() },
+        overflowAction,
+      });
+
+      expect(
+        getHostHTMLElement().querySelectorAll(separatorSelector),
+      ).toHaveLength(1);
+    });
+
+    it('should render two separators when all action groups are provided', () => {
+      const { getHostHTMLElement } = renderWithContext({
+        destructiveAction: { label: 'Remove', onClick: jest.fn() },
+        mainActions: [{ label: 'Edit', onClick: jest.fn() }],
+        overflowAction,
+      });
+
+      expect(
+        getHostHTMLElement().querySelectorAll(separatorSelector),
+      ).toHaveLength(2);
+    });
+  });
+
   describe('Fixed positioning', () => {
     it('should apply fixed class when isFixed is true', () => {
       const { getHostHTMLElement } = render(
