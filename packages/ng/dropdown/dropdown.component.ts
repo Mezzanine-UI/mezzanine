@@ -330,11 +330,11 @@ export class MznDropdown {
    * 是否啟用 floating-ui `shift` middleware。設為 `true` 時，選單會沿交叉軸
    * 推移以留在視窗內；`flip` 只在主軸翻面，因此 anchor 貼近視窗邊緣時（例如
    * 表格最右欄的列動作）選單仍會被裁切。
-   * 預設關閉以維持既有消費端的定位行為。
+   * 預設開啟讓浮層選單留在視窗內；傳入 `false` 可保留原始定位。
    * 鏡像 React `Dropdown` 的 `shift` prop。
-   * @default false
+   * @default true
    */
-  readonly shift = input(false);
+  readonly shift = input(true);
 
   /**
    * 搜尋高亮關鍵字。若明確指定,會覆蓋 `isMatchInputValue` 從 header input

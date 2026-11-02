@@ -91,7 +91,7 @@ const props = withDefaults(defineProps<DropdownProps>(), {
   scrollbarDisabled: undefined,
   scrollbarMaxWidth: undefined,
   scrollbarOptions: undefined,
-  shift: false,
+  shift: true,
   showActionShowTopBar: undefined,
   showDropdownActions: false,
   status: undefined,

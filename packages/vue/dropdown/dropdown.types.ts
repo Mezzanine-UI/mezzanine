@@ -182,7 +182,9 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * Whether to enable floating-ui `shift` middleware.
    * When `true`, the dropdown slides along the cross axis to stay inside the
    * viewport instead of being clipped.
-   * @default false
+   * On by default so overlay menus stay inside the viewport; pass `false` to
+   * keep the raw placement.
+   * @default true
    */
   shift?: boolean;
   /**

@@ -1,5 +1,5 @@
 import { h, nextTick } from 'vue';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import type { VueWrapper } from '@vue/test-utils';
 import { dropdownClasses } from '@mezzanine-ui/core/dropdown/dropdown';
 import type { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
@@ -200,6 +200,138 @@ describe('<MznDropdown />', () => {
 
     expect(items()).toHaveLength(0);
     expect(listbox()?.textContent).toContain('Loading…');
+  });
+
+  describe('prop: shift', () => {
+    const VIEWPORT_WIDTH = 1024;
+    const MENU_WIDTH = 200;
+    const MENU_HEIGHT = 100;
+    /** anchor sits near the right edge — the menu would run past it */
+    const ANCHOR_X = 880;
+
+    const isPopper = (element: Element) =>
+      element.hasAttribute('data-popper-placement');
+
+    let offsetWidthDescriptor: PropertyDescriptor | undefined;
+    let offsetHeightDescriptor: PropertyDescriptor | undefined;
+
+    function domRect(x: number, y: number, width: number, height: number) {
+      return {
+        x,
+        y,
+        width,
+        height,
+        top: y,
+        left: x,
+        right: x + width,
+        bottom: y + height,
+        toJSON: () => {},
+      } as DOMRect;
+    }
+
+    beforeEach(() => {
+      // jsdom has no layout, so give floating-ui the geometry it needs:
+      // a fixed viewport, an anchor near its right edge and a sized menu.
+      Object.defineProperty(document.documentElement, 'clientWidth', {
+        configurable: true,
+        value: VIEWPORT_WIDTH,
+      });
+      Object.defineProperty(document.documentElement, 'clientHeight', {
+        configurable: true,
+        value: 768,
+      });
+
+      vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(
+        function mockRect(this: Element) {
+          if (this.tagName === 'BUTTON') return domRect(ANCHOR_X, 200, 32, 32);
+          if (isPopper(this)) return domRect(0, 0, MENU_WIDTH, MENU_HEIGHT);
+
+          return domRect(0, 0, 0, 0);
+        },
+      );
+
+      offsetWidthDescriptor = Object.getOwnPropertyDescriptor(
+        HTMLElement.prototype,
+        'offsetWidth',
+      );
+      offsetHeightDescriptor = Object.getOwnPropertyDescriptor(
+        HTMLElement.prototype,
+        'offsetHeight',
+      );
+
+      Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+        configurable: true,
+        get(this: HTMLElement) {
+          return isPopper(this) ? MENU_WIDTH : 0;
+        },
+      });
+      Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+        configurable: true,
+        get(this: HTMLElement) {
+          return isPopper(this) ? MENU_HEIGHT : 0;
+        },
+      });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+
+      if (offsetWidthDescriptor) {
+        Object.defineProperty(
+          HTMLElement.prototype,
+          'offsetWidth',
+          offsetWidthDescriptor,
+        );
+      }
+
+      if (offsetHeightDescriptor) {
+        Object.defineProperty(
+          HTMLElement.prototype,
+          'offsetHeight',
+          offsetHeightDescriptor,
+        );
+      }
+    });
+
+    // `undefined` leaves the prop unset so the component default applies.
+    async function openAndReadMenuLeft(shift?: boolean): Promise<number> {
+      const wrapper = mountDropdown({
+        placement: 'bottom-start',
+        ...(shift === undefined ? {} : { shift }),
+      });
+
+      await wrapper.get('button').trigger('click');
+      await flushPromises();
+
+      const popper = document.body.querySelector<HTMLElement>(
+        '[data-popper-placement]',
+      );
+
+      expect(popper).not.toBeNull();
+
+      const [, x] = /translate\((-?[\d.]+)px/.exec(popper!.style.transform)!;
+
+      return Number(x);
+    }
+
+    it('should keep the menu inside the viewport by default', async () => {
+      const left = await openAndReadMenuLeft();
+
+      expect(left + MENU_WIDTH).toBeLessThanOrEqual(VIEWPORT_WIDTH);
+    });
+
+    it('should keep the menu inside the viewport when shift is enabled', async () => {
+      const left = await openAndReadMenuLeft(true);
+
+      expect(left + MENU_WIDTH).toBeLessThanOrEqual(VIEWPORT_WIDTH);
+    });
+
+    it('should leave placement untouched when shift is explicitly disabled', async () => {
+      const left = await openAndReadMenuLeft(false);
+
+      expect(left).toBe(ANCHOR_X);
+      expect(left + MENU_WIDTH).toBeGreaterThan(VIEWPORT_WIDTH);
+    });
   });
 });
 

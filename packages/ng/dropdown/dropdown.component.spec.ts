@@ -168,6 +168,26 @@ class ShiftHostComponent {
   readonly shift = signal(false);
 }
 
+/** Leaves `[shift]` unbound so the input default applies. */
+@Component({
+  standalone: true,
+  imports: [MznDropdown],
+  template: `
+    <button #anchor>Toggle</button>
+    <div
+      mznDropdown
+      [anchor]="anchorRef()"
+      [open]="true"
+      [options]="options"
+      placement="bottom-start"
+    ></div>
+  `,
+})
+class DefaultShiftHostComponent {
+  readonly anchorRef = viewChild.required<ElementRef<HTMLElement>>('anchor');
+  readonly options = MOCK_OPTIONS;
+}
+
 describe('MznDropdown shift', () => {
   const VIEWPORT_WIDTH = 1024;
   const MENU_WIDTH = 200;
@@ -213,13 +233,25 @@ describe('MznDropdown shift', () => {
       });
 
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, ShiftHostComponent],
+      imports: [
+        NoopAnimationsModule,
+        ShiftHostComponent,
+        DefaultShiftHostComponent,
+      ],
     });
   });
 
   afterEach(() => {
     rectSpy.mockRestore();
   });
+
+  function readPaneLeft(): number {
+    const pane = document.querySelector<HTMLElement>('.cdk-overlay-pane')!;
+
+    expect(pane).toBeTruthy();
+
+    return parseFloat(pane.style.left || '0');
+  }
 
   function openAndReadPaneLeft(shift: boolean): number {
     const fixture = TestBed.createComponent(ShiftHostComponent);
@@ -228,12 +260,17 @@ describe('MznDropdown shift', () => {
     fixture.detectChanges();
     fixture.detectChanges();
 
-    const pane = document.querySelector<HTMLElement>('.cdk-overlay-pane')!;
-
-    expect(pane).toBeTruthy();
-
-    return parseFloat(pane.style.left || '0');
+    return readPaneLeft();
   }
+
+  it('should push the menu back inside the viewport by default', () => {
+    const fixture = TestBed.createComponent(DefaultShiftHostComponent);
+
+    fixture.detectChanges();
+    fixture.detectChanges();
+
+    expect(readPaneLeft() + MENU_WIDTH).toBeLessThanOrEqual(VIEWPORT_WIDTH);
+  });
 
   it('should push the menu back inside the viewport when shift is enabled', () => {
     const left = openAndReadPaneLeft(true);
@@ -241,7 +278,7 @@ describe('MznDropdown shift', () => {
     expect(left + MENU_WIDTH).toBeLessThanOrEqual(VIEWPORT_WIDTH);
   });
 
-  it('should leave the menu at the anchor when shift is off', () => {
+  it('should leave the menu at the anchor when shift is explicitly disabled', () => {
     const left = openAndReadPaneLeft(false);
 
     expect(left).toBe(ANCHOR_X);
