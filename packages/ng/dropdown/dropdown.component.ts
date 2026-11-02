@@ -775,12 +775,19 @@ export class MznDropdown {
 
         if (!(trigger instanceof HTMLElement)) return;
 
-        trigger.setAttribute('role', 'combobox');
+        // A native <button> trigger keeps button semantics (mirrors React);
+        // only text-field triggers become a combobox.
+        const isButtonTrigger = trigger.tagName === 'BUTTON';
+
+        if (!isButtonTrigger) {
+          trigger.setAttribute('role', 'combobox');
+        }
+
         trigger.setAttribute('aria-haspopup', 'listbox');
         trigger.setAttribute('aria-expanded', String(isOpen));
         trigger.setAttribute('aria-controls', controls);
 
-        if (isMatch) {
+        if (isMatch && !isButtonTrigger) {
           trigger.setAttribute('aria-autocomplete', 'list');
         }
       });
