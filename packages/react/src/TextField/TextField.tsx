@@ -5,6 +5,7 @@ import {
   TextFieldSize,
 } from '@mezzanine-ui/core/text-field';
 import {
+  FormEvent,
   forwardRef,
   MouseEventHandler,
   ReactNode,
@@ -17,6 +18,13 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useTextFieldControl } from './useTextFieldControl';
+
+/**
+ * Whether the value contains anything other than whitespace.
+ */
+function hasNonBlankValue(value: string): boolean {
+  return value.trim().length > 0;
+}
 
 /**
  * Padding info provided to children function
@@ -174,6 +182,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       hideSuffixWhenClearable = false,
       onClear,
       onClick: onClickProps,
+      onInput: onInputProps,
       onKeyDown: onKeyDownProps,
       prefix,
       readonly,
@@ -193,6 +202,9 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
     const checkValueRef = useRef<(() => void) | null>(null);
     const hostRef = useComposeRefs([ref, containerRef]);
 
+    const isTypingDetectable =
+      typingProp === undefined && !disabled && !readonly;
+
     const typing =
       disabled || readonly
         ? false
@@ -211,15 +223,13 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       if (!input) return;
 
       const checkValue = () => {
-        // 檢查值是否為空（包括空字符串和只有空白字符）
-        const value = (input.value || '').trim();
-        setHasValue(value.length > 0);
+        setHasValue(hasNonBlankValue(input.value));
       };
 
       // 保存 checkValue 函數到 ref，以便在 onClear 後可以立即調用
       checkValueRef.current = checkValue;
 
-      const handleInput = () => {
+      const handleMouseDown = () => {
         setIsTyping(true);
         checkValue();
       };
@@ -247,10 +257,12 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       // 初始化檢查值
       checkValue();
 
-      // 監聽輸入框事件（用於 typing 狀態）
-      if (typingProp === undefined && !disabled && !readonly) {
-        input.addEventListener('input', handleInput, false);
-        input.addEventListener('mousedown', handleInput, false);
+      // `input` events are handled by React's `onInput` on the host instead of
+      // a native listener: a native listener runs before React dispatches
+      // `onChange`, and its sync re-render can write a stale controlled value
+      // back to the DOM, dropping the keystroke (#485).
+      if (isTypingDetectable) {
+        input.addEventListener('mousedown', handleMouseDown, false);
       }
 
       // 監聽 focus/blur 事件
@@ -262,23 +274,37 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       container.addEventListener('mouseleave', handleMouseLeave, false);
 
       // 監聽值變化（適用於受控組件）
-      input.addEventListener('input', checkValue, false);
       input.addEventListener('change', checkValue, false);
 
       return () => {
-        if (typingProp === undefined && !disabled && !readonly) {
-          input.removeEventListener('input', handleInput, false);
-          input.removeEventListener('mousedown', handleInput, false);
+        if (isTypingDetectable) {
+          input.removeEventListener('mousedown', handleMouseDown, false);
         }
         input.removeEventListener('focus', handleFocus, false);
         input.removeEventListener('blur', handleBlur, false);
         container.removeEventListener('mouseenter', handleMouseEnter, false);
         container.removeEventListener('mouseleave', handleMouseLeave, false);
-        input.removeEventListener('input', checkValue, false);
         input.removeEventListener('change', checkValue, false);
         checkValueRef.current = null;
       };
-    }, [typingProp, disabled, readonly]);
+    }, [isTypingDetectable]);
+
+    const handleInput = (event: FormEvent<HTMLDivElement>) => {
+      const target = event.target;
+
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement
+      ) {
+        if (isTypingDetectable) {
+          setIsTyping(true);
+        }
+
+        setHasValue(hasNonBlankValue(target.value));
+      }
+
+      onInputProps?.(event);
+    };
 
     const { role, onClick, onKeyDown } = useTextFieldControl({
       onClick: onClickProps,
@@ -312,6 +338,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
 
           onClick?.(evt);
         }}
+        onInput={handleInput}
         onKeyDown={onKeyDown}
         className={cx(
           classes.host,
