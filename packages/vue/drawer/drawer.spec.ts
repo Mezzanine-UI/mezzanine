@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
-import { defineComponent, nextTick } from 'vue';
+import { flushPromises, mount } from '@vue/test-utils';
+import { defineComponent, h, nextTick } from 'vue';
 import { drawerClasses as classes } from '@mezzanine-ui/core/drawer';
 import { radioClasses } from '@mezzanine-ui/core/radio';
 import { CloseIcon } from '@mezzanine-ui/icons';
@@ -366,6 +366,121 @@ describe('<MznDrawer />', () => {
       await wrapper.setProps({ open: true });
 
       expect(mounts).toBeGreaterThan(before);
+    });
+  });
+
+  describe('focus model', () => {
+    const twoButtons = () => [
+      h('button', { type: 'button' }, 'first'),
+      h('button', { type: 'button' }, 'second'),
+    ];
+
+    const panelButtons = (): HTMLButtonElement[] =>
+      Array.from(
+        query(`.${classes.host}`)!.querySelectorAll<HTMLButtonElement>(
+          'button',
+        ),
+      );
+
+    it('should expose dialog semantics on the panel while open', async () => {
+      render({}, twoButtons());
+      await flushPromises();
+
+      const host = query(`.${classes.host}`)!;
+
+      expect(host.getAttribute('role')).toBe('dialog');
+      expect(host.getAttribute('aria-modal')).toBe('true');
+      expect(host.getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('should move focus into the drawer when it opens', async () => {
+      const outside = document.createElement('button');
+
+      outside.textContent = 'outside';
+      document.body.appendChild(outside);
+      outside.focus();
+
+      const wrapper = render({ open: false }, twoButtons());
+
+      await wrapper.setProps({ open: true });
+      await flushPromises();
+
+      expect(document.activeElement?.textContent).toBe('first');
+    });
+
+    it('should focus the header close control first when the header is displayed', async () => {
+      render({ headerTitle: 'Title', isHeaderDisplay: true }, twoButtons());
+      await flushPromises();
+
+      expect(document.activeElement).toBe(query(`.${classes.header} button`));
+    });
+
+    it('should fall back to the panel itself when nothing inside is focusable', async () => {
+      render({}, h('p', 'Plain text'));
+      await flushPromises();
+
+      expect(document.activeElement).toBe(query(`.${classes.host}`));
+    });
+
+    it('should restore focus to the previously focused element on close', async () => {
+      const trigger = document.createElement('button');
+
+      trigger.textContent = 'trigger';
+      document.body.appendChild(trigger);
+      trigger.focus();
+
+      const wrapper = render({ open: false }, twoButtons());
+
+      await wrapper.setProps({ open: true });
+      await flushPromises();
+
+      expect(document.activeElement?.textContent).toBe('first');
+
+      await wrapper.setProps({ open: false });
+      await flushPromises();
+
+      expect(document.activeElement).toBe(trigger);
+    });
+
+    it('should cycle Tab from the last focusable back to the first', async () => {
+      render({}, twoButtons());
+      await flushPromises();
+
+      const buttons = panelButtons();
+
+      buttons[buttons.length - 1].focus();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }));
+
+      expect(document.activeElement).toBe(buttons[0]);
+    });
+
+    it('should cycle Shift+Tab from the first focusable back to the last', async () => {
+      render({}, twoButtons());
+      await flushPromises();
+
+      const buttons = panelButtons();
+
+      buttons[0].focus();
+      document.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true }),
+      );
+
+      expect(document.activeElement).toBe(buttons[buttons.length - 1]);
+    });
+
+    it('should not let focus escape to an element outside the drawer', async () => {
+      const outside = document.createElement('button');
+
+      outside.textContent = 'outside';
+      document.body.appendChild(outside);
+
+      render({}, twoButtons());
+      await flushPromises();
+
+      outside.focus();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }));
+
+      expect(document.activeElement?.textContent).toBe('first');
     });
   });
 });

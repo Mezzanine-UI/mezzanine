@@ -4,11 +4,13 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   input,
   output,
   signal,
   untracked,
+  viewChild,
 } from '@angular/core';
 import {
   ButtonIconType,
@@ -30,7 +32,11 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { FormsModule } from '@angular/forms';
 import { MznRadio, MznRadioGroup } from '@mezzanine-ui/ng/radio';
 import { MznSlide } from '@mezzanine-ui/ng/transition';
-import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
+import {
+  EscapeKeyService,
+  FocusTrapService,
+  TopStackService,
+} from '@mezzanine-ui/ng/services';
 
 /**
  * 從螢幕右側滑入的抽屜面板元件。
@@ -38,6 +44,8 @@ import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
  * 使用 `MznBackdrop` 作為遮罩層，並以 slide-right 動畫過渡。
  * 支援標題列、篩選區域、底部操作按鈕等皆為 flat props，嚴格對齊 React。
  * 當多個 Drawer 同時開啟時，Escape 鍵只會關閉最上層的 Drawer。
+ * 面板以 `role="dialog"` 呈現：開啟時焦點移入面板、Tab 在面板內環繞，
+ * 關閉後焦點還原給開啟前的元素；巢狀時只有最上層困住 Tab。
  *
  * @example
  * ```html
@@ -132,7 +140,16 @@ import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
       (closed)="closed.emit()"
       (backdropClick)="backdropClick.emit()"
     >
-      <div mznSlide [in]="open()" from="right" [class]="hostClasses()">
+      <div
+        #panel
+        mznSlide
+        [in]="open()"
+        from="right"
+        [class]="hostClasses()"
+        role="dialog"
+        [attr.aria-modal]="open() ? 'true' : null"
+        tabindex="-1"
+      >
         @if (isHeaderDisplay()) {
           <div [class]="headerClass">
             {{ headerTitle() }}
@@ -312,7 +329,11 @@ import { EscapeKeyService, TopStackService } from '@mezzanine-ui/ng/services';
 })
 export class MznDrawer {
   private readonly escapeKey = inject(EscapeKeyService);
+  private readonly focusTrap = inject(FocusTrapService);
   private readonly topStack = inject(TopStackService);
+
+  /** 焦點陷阱的容器；開啟後才存在，故以 signal viewChild 取得。 */
+  private readonly panel = viewChild<ElementRef<HTMLElement>>('panel');
 
   // ─── Bottom ghost action flat props ──────────────────────────────────────
 
@@ -621,7 +642,8 @@ export class MznDrawer {
       }
     });
 
-    // Top-stack + Escape handling; only the top drawer responds to Escape.
+    // Top-stack, Escape and the dialog focus model; only the top drawer
+    // responds to Escape or traps Tab.
     effect((onCleanup) => {
       const isOpen = this.open();
 
@@ -634,7 +656,18 @@ export class MznDrawer {
           }
         });
 
+        /**
+         * Focus moves into the panel, Tab cycles inside it and focus returns
+         * to the previously focused element on close. Reuses the same stack
+         * entry as the escape handler to decide which overlay owns Tab.
+         */
+        const releaseFocusTrap = this.focusTrap.trap({
+          container: () => this.panel()?.nativeElement,
+          isTop: entry.isTop,
+        });
+
         onCleanup(() => {
+          releaseFocusTrap();
           escapeCleanup();
           entry.unregister();
         });

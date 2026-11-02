@@ -14,6 +14,7 @@ import {
   type RefAttributes,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ChangeEventHandler,
 } from 'react';
@@ -24,7 +25,9 @@ import Dropdown from '../Dropdown';
 import Radio from '../Radio/Radio';
 import RadioGroup from '../Radio/RadioGroup';
 import { Slide } from '../Transition';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import useTopStack from '../hooks/useTopStack';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -237,6 +240,8 @@ export interface DrawerProps
  * 使用 `Backdrop` 作為遮罩層，並以 `Slide` 動畫過渡效果呈現開關狀態。
  * 支援標題列、篩選區域（含分頁 Radio）、底部操作按鈕區域，以及按下 Escape 鍵關閉。
  * 當多個 Drawer 同時開啟時，Escape 鍵只會關閉最上層的 Drawer。
+ * 面板以 `role="dialog"` 呈現：開啟時焦點移入面板、Tab 在面板內環繞，
+ * 關閉後焦點還原給開啟前的元素；巢狀時只有最上層困住 Tab。
  *
  * @example
  * ```tsx
@@ -345,6 +350,20 @@ const Drawer = ({
    * Escape keydown close: escape will only close the top drawer
    */
   const checkIsOnTheTop = useTopStack(open);
+
+  /**
+   * Dialog focus model: focus moves into the panel on open, Tab cycles inside
+   * it, and the previously focused element gets focus back on close. Nested
+   * overlays share `useTopStack`, so only the top one traps Tab.
+   */
+  const panelRef = useRef<HTMLDivElement>(null);
+  const composedPanelRef = useComposeRefs([ref, panelRef]);
+
+  const { focusFirst } = useFocusTrap({
+    containerRef: panelRef,
+    enabled: Boolean(open),
+    isTopStack: checkIsOnTheTop,
+  });
 
   const renderFilterArea = useMemo(() => {
     if (!filterAreaShow) {
@@ -490,11 +509,29 @@ const Drawer = ({
           exit: MOTION_EASING.exit,
         }}
         in={open}
-        onEntered={() => setExited(false)}
+        onEntered={() => {
+          setExited(false);
+          // The panel is portalled and slid in, so it can be moved after
+          // mount — which drops focus back to <body>. Re-assert it once the
+          // enter transition has finished, but leave it alone if something
+          // inside the drawer already took focus meanwhile.
+          if (!panelRef.current?.contains(document.activeElement)) {
+            focusFirst();
+          }
+        }}
         onExited={() => setExited(true)}
-        ref={ref}
+        /**
+         * Slide clones its child to inject its own ref, so a ref placed on the
+         * div below would be dropped. Slide composes whatever ref it is given
+         * into that clone, which is how both the forwarded ref and the focus
+         * trap's container ref reach the panel element.
+         */
+        ref={composedPanelRef}
       >
         <div
+          aria-modal={open ? true : undefined}
+          role="dialog"
+          tabIndex={-1}
           {...rest}
           className={cx(
             classes.host,
