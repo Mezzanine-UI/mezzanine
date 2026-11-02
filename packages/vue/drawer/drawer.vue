@@ -5,6 +5,7 @@ import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import clsx from 'clsx';
 import { useDocumentEscapeKeyDown } from '../_internal/use-document-escape-key-down';
+import { useFocusTrap } from '../_internal/use-focus-trap';
 import { useTopStack } from '../_internal/use-top-stack';
 import MznBackdrop from '../backdrop/backdrop.vue';
 import MznButton from '../button/button.vue';
@@ -20,7 +21,8 @@ import type { DrawerProps } from './drawer.types';
  *
  * 以 MznBackdrop 當遮罩、MznSlide 做進出場。可以帶標題列、篩選區（分頁 radio 或
  * 下拉）與底部操作列。多個抽屜同時開著時，Escape 只關最上面那一個。內容區在重新
- * 開啟時會自動重掛，也可以用 `contentKey` 自己控制。
+ * 開啟時會自動重掛，也可以用 `contentKey` 自己控制。面板以 `role="dialog"` 呈現：
+ * 開啟時焦點移入、Tab 在面板內環繞、關閉後焦點還原，巢狀時只有最上層困住 Tab。
  *
  * @example
  * ```vue
@@ -114,6 +116,29 @@ watch(
 
 /** Escape closes only the drawer on top. */
 const checkIsOnTheTop = useTopStack(() => Boolean(props.open));
+
+/**
+ * Dialog focus model: focus moves into the panel on open, Tab cycles inside it,
+ * and the previously focused element gets focus back on close.
+ */
+const panel = ref<HTMLDivElement | null>(null);
+
+const { focusFirst } = useFocusTrap({
+  containerRef: panel,
+  enabled: () => Boolean(props.open),
+  isTopStack: checkIsOnTheTop,
+});
+
+function onEntered(): void {
+  exited.value = false;
+  // The panel is portalled and slid in, so it can be moved after mount — which
+  // drops focus back to the body. Re-assert it once the enter transition has
+  // finished, but leave it alone if something inside the drawer already took
+  // focus meanwhile.
+  if (!panel.value?.contains(document.activeElement)) {
+    focusFirst();
+  }
+}
 
 useDocumentEscapeKeyDown(() => {
   if (!props.open || props.disableCloseOnEscapeKeyDown) return undefined;
@@ -234,10 +259,16 @@ const SLIDE_EASING = {
       :duration="SLIDE_DURATION"
       :easing="SLIDE_EASING"
       :in="open"
-      @entered="exited = false"
+      @entered="onEntered"
       @exited="exited = true"
     >
-      <div :class="hostClasses">
+      <div
+        ref="panel"
+        :aria-modal="open ? true : undefined"
+        :class="hostClasses"
+        role="dialog"
+        tabindex="-1"
+      >
         <div v-if="isHeaderDisplay" :class="classes.header">
           {{ headerTitle }}
           <MznClearActions @click="emit('close')" />
