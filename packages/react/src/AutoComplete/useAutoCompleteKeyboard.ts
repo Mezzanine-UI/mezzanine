@@ -25,7 +25,6 @@ type UseAutoCompleteKeyboardParams = {
   inputPropsOnKeyDown?: KeyboardEventHandler<HTMLInputElement>;
   isMultiple: boolean;
   mode: 'single' | 'multiple';
-  onFocus: (focus: boolean) => void;
   open: boolean;
   processBulkCreate: (text: string) => string[];
   searchText: string;
@@ -60,7 +59,6 @@ export function useAutoCompleteKeyboard({
   inputPropsOnKeyDown,
   inputRef,
   mode,
-  onFocus,
   open,
   processBulkCreate,
   searchText,
@@ -79,13 +77,7 @@ export function useAutoCompleteKeyboard({
     (e: KeyboardEvent<HTMLInputElement>) =>
       createDropdownKeydownHandler({
         activeIndex,
-        onEnterSelect: (option) => {
-          handleDropdownSelect(option);
-          if (mode === 'single') {
-            toggleOpen(false);
-            onFocus(false);
-          }
-        },
+        onEnterSelect: handleDropdownSelect,
         onEscape: () => {
           toggleOpen(false);
           setActiveIndex(null);
@@ -113,8 +105,6 @@ export function useAutoCompleteKeyboard({
       dropdownOptions,
       handleDropdownSelect,
       inputRef,
-      mode,
-      onFocus,
       open,
       setActiveIndex,
       setKeyboardActiveIndex,
@@ -168,10 +158,6 @@ export function useAutoCompleteKeyboard({
           const optionToSelect = dropdownOptions[0];
           if (optionToSelect) {
             handleDropdownSelect(optionToSelect);
-            if (mode === 'single') {
-              toggleOpen(false);
-              onFocus(false);
-            }
           }
           return true;
         }
@@ -188,7 +174,6 @@ export function useAutoCompleteKeyboard({
       handleBulkCreate,
       handleDropdownSelect,
       mode,
-      onFocus,
       open,
       processBulkCreate,
       searchText,
@@ -196,7 +181,6 @@ export function useAutoCompleteKeyboard({
       setInsertText,
       setSearchText,
       stepByStepBulkCreate,
-      toggleOpen,
     ],
   );
 

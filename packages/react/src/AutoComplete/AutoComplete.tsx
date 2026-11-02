@@ -3,6 +3,7 @@
 import {
   ChangeEventHandler,
   ClipboardEvent,
+  CompositionEvent,
   Dispatch,
   FocusEventHandler,
   type RefAttributes,
@@ -485,6 +486,12 @@ function AutoComplete({
   const shouldClearSearchTextOnBlur = clearSearchText;
 
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  /**
+   * Single mode only: whether the input shows the search text (user is
+   * searching) or the committed selection. Kept apart from `focused`, which
+   * mirrors DOM focus — selecting an option keeps DOM focus on the input.
+   */
+  const [isSearching, setIsSearching] = useState(false);
   const isMultiple = mode === 'multiple';
   const isSingle = !isMultiple;
   const isOpenControlled = openProp !== undefined;
@@ -747,12 +754,14 @@ function AutoComplete({
     hiddenTriggerInput.dispatchEvent(new Event('change', { bubbles: true }));
   }, [inputPosition, isMultiple, searchText, value]);
 
-  // In single mode, show searchText when focused, otherwise show selected value
+  const showSearchText = focused && isSearching;
+
+  // In single mode, show searchText while searching, otherwise show selected value
   // In multiple mode, always return empty string to avoid displaying "0"
   const renderValue = useMemo(() => {
     if (
       isSingle &&
-      (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
+      (showSearchText || (!shouldClearSearchTextOnBlur && !value && searchText))
     ) {
       return () => searchText;
     }
@@ -761,23 +770,23 @@ function AutoComplete({
     }
     return undefined;
   }, [
-    focused,
     isMultiple,
     isSingle,
     searchText,
     shouldClearSearchTextOnBlur,
+    showSearchText,
     value,
   ]);
 
   const insideInputValue = useMemo(() => {
     // Inside trigger is a plain Input, so we must decide what to display.
     // - multiple: always show current search text
-    // - single: show search text when focused (or when clear-on-blur is disabled)
+    // - single: show search text while searching (or when clear-on-blur is disabled)
     if (isMultiple) return searchText;
 
     if (
       isSingle &&
-      (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
+      (showSearchText || (!shouldClearSearchTextOnBlur && !value && searchText))
     ) {
       return searchText;
     }
@@ -785,25 +794,41 @@ function AutoComplete({
     if (isSingleValue(value)) return value.name;
     return '';
   }, [
-    focused,
     isMultiple,
     isSingle,
     searchText,
     shouldClearSearchTextOnBlur,
+    showSearchText,
     value,
   ]);
 
   function getPlaceholder() {
-    if (isSingle && focused && isSingleValue(value)) {
+    if (isSingle && showSearchText && isSingleValue(value)) {
       return value.name;
     }
 
     return placeholder;
   }
 
+  /**
+   * Single mode: leave the "showing selection" state after a select and
+   * resume searching, without waiting for a focus event that never comes
+   * because the input kept DOM focus.
+   */
+  const enterSearchMode = useCallback(() => {
+    if (!isSingle || isSearching) return;
+
+    setIsSearching(true);
+
+    if (!open) {
+      toggleOpen(true);
+    }
+  }, [isSearching, isSingle, open, toggleOpen]);
+
   /** Trigger input props */
   const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     clearPendingOptionsReset();
+    enterSearchMode();
     const nextSearch = e.target.value;
     /** should sync both search input and value */
     setSearchText(nextSearch);
@@ -834,6 +859,7 @@ function AutoComplete({
       toggleOpen(true);
     }
     onFocus(true);
+    setIsSearching(true);
 
     inputProps?.onFocus?.(e);
   };
@@ -842,6 +868,8 @@ function AutoComplete({
     // In multiple mode while dropdown is open, defer clearing to visibility change.
     // This prevents clearing on intermediate blur triggered by dropdown interactions.
     const shouldDeferMultipleBlurReset = isMultiple && open;
+
+    setIsSearching(false);
 
     // When inputPosition is inside, we need special handling
     if (inputPosition === 'inside') {
@@ -887,6 +915,7 @@ function AutoComplete({
       }
       onClear(e);
       resetSearchInputs();
+      setIsSearching(true);
     },
     [isSingle, markUnselected, onClear, resetSearchInputs, value],
   );
@@ -989,13 +1018,15 @@ function AutoComplete({
       if (selectedValue) {
         // Close dropdown after selection in single mode
         if (mode === 'single') {
-          // Update searchText first to prevent showing old value
-          setSearchText(selectedValue.name);
-          setInsertText(selectedValue.name);
-          // Then update value and focus state
+          // Reset search text so the option name never leaks into the next search.
+          // The input keeps DOM focus (listbox prevents mousedown default), so
+          // only leave search mode; the selected value shows until the user
+          // clicks or types again.
+          setSearchText('');
+          setInsertText('');
+          setIsSearching(false);
           wrappedOnChange(selectedValue);
           toggleOpen(false);
-          onFocus(false);
         } else {
           skipNextMultipleCloseResetRef.current = true;
           wrappedOnChange(selectedValue);
@@ -1004,15 +1035,7 @@ function AutoComplete({
         }
       }
     },
-    [
-      mode,
-      onFocus,
-      options,
-      setSearchText,
-      setInsertText,
-      toggleOpen,
-      wrappedOnChange,
-    ],
+    [mode, options, setSearchText, setInsertText, toggleOpen, wrappedOnChange],
   );
 
   // Active index for dropdown keyboard navigation
@@ -1075,7 +1098,6 @@ function AutoComplete({
     inputRef: inputElementRef,
     isMultiple,
     mode,
-    onFocus,
     open,
     processBulkCreate,
     searchText,
@@ -1095,6 +1117,10 @@ function AutoComplete({
     useCallback(
       (e) => {
         if (isImeComposing(e)) return;
+
+        if (e.key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey) {
+          enterSearchMode();
+        }
 
         if (e.key === 'Escape') {
           e.preventDefault();
@@ -1117,6 +1143,7 @@ function AutoComplete({
       },
       [
         cleanupUnselectedCreated,
+        enterSearchMode,
         handleInputKeyDown,
         inputProps,
         isMultiple,
@@ -1182,6 +1209,14 @@ function AutoComplete({
     ],
   );
 
+  const handleCompositionStart = useCallback(
+    (e: CompositionEvent<HTMLInputElement>) => {
+      enterSearchMode();
+      inputProps?.onCompositionStart?.(e);
+    },
+    [enterSearchMode, inputProps],
+  );
+
   const handlePasteWithFallback = useCallback(
     (e: ClipboardEvent<HTMLInputElement>) => {
       handlePaste(e);
@@ -1200,6 +1235,7 @@ function AutoComplete({
     name: name ?? inputProps?.name,
     onBlur: onSearchInputBlur,
     onChange: onSearchInputChange,
+    onCompositionStart: handleCompositionStart,
     onFocus: onSearchInputFocus,
     onKeyDown: onSearchInputKeyDown,
     onPaste: handlePasteWithFallback,
@@ -1277,6 +1313,7 @@ function AutoComplete({
               resolvedInputProps={{
                 ...resolvedInputProps,
                 onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
+                  enterSearchMode();
                   resolvedInputProps.onClick?.(e);
                 },
               }}
@@ -1311,6 +1348,7 @@ function AutoComplete({
                   // Otherwise, stop propagation to prevent conflicts
                   // This branch is only rendered when `inputPosition !== 'inside'`.
                   e.stopPropagation();
+                  enterSearchMode();
                   resolvedInputProps.onClick?.(e);
                 },
               }}
