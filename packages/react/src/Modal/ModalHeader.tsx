@@ -1,6 +1,7 @@
 'use client';
 
 import { type RefAttributes, use } from 'react';
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import {
   modalClasses as classes,
   ModalStatusType,
@@ -109,7 +110,14 @@ function ModalHeader({
     titleAlign = 'left',
     ...rest
   } = props;
-  const { modalStatusType } = use(ModalControlContext);
+  const { modalStatusType, registerTitle, titleId } = use(ModalControlContext);
+  const hasTitle = Boolean(title);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!hasTitle) return undefined;
+
+    return registerTitle?.();
+  }, [hasTitle, registerTitle]);
 
   const iconColor = (type: ModalStatusType) => {
     switch (type) {
@@ -164,6 +172,7 @@ function ModalHeader({
           variant="h2"
           color="text-neutral-solid"
           className={cx(classes.modalHeaderTitle)}
+          id={titleId}
           title={typeof title === 'string' ? title : undefined}
         >
           {title}
