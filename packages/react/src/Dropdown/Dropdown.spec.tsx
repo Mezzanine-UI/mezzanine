@@ -866,7 +866,8 @@ describe('<Dropdown />', () => {
       }
     });
 
-    async function openAndReadMenuLeft(shift: boolean) {
+    // `undefined` leaves the prop unset so the component default applies.
+    async function openAndReadMenuLeft(shift?: boolean) {
       const user = userEvent.setup();
 
       render(
@@ -902,11 +903,17 @@ describe('<Dropdown />', () => {
       expect(left + MENU_WIDTH).toBeLessThanOrEqual(VIEWPORT_WIDTH);
     });
 
-    it('should leave placement untouched when shift is off', async () => {
+    it('should keep the menu inside the viewport by default', async () => {
+      const left = await openAndReadMenuLeft();
+
+      expect(left + MENU_WIDTH).toBeLessThanOrEqual(VIEWPORT_WIDTH);
+    });
+
+    it('should leave placement untouched when shift is explicitly disabled', async () => {
       const left = await openAndReadMenuLeft(false);
 
-      // Documents the default: `flip` only swaps sides on the main axis and
-      // nothing corrects the cross axis, so the menu overflows the viewport.
+      // Opting out: `flip` only swaps sides on the main axis and nothing
+      // corrects the cross axis, so the menu overflows the viewport.
       expect(left).toBe(ANCHOR_X);
       expect(left + MENU_WIDTH).toBeGreaterThan(VIEWPORT_WIDTH);
     });

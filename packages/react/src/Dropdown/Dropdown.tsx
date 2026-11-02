@@ -209,8 +209,9 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * column, for instance) otherwise loses part of its menu. When both `flip`
    * and `shift` are on, the two are ordered per the floating-ui guidance the
    * Tooltip already follows.
-   * Off by default to preserve existing placement behavior across consumers.
-   * @default false
+   * On by default so overlay menus stay inside the viewport; pass `false` to
+   * keep the raw placement.
+   * @default true
    */
   shift?: boolean;
   /**
@@ -379,7 +380,7 @@ export default function Dropdown(props: DropdownProps) {
     customWidth,
     sameWidth = false,
     flip = false,
-    shift = false,
+    shift = true,
     listboxId: listboxIdProp,
     listboxLabel,
     onClose,
