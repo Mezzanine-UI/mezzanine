@@ -204,9 +204,9 @@ export class MznDropdownPopper {
    * `flip` 只在主軸翻面，不處理左右溢出，因此 anchor 靠近視窗右緣（例如表格
    * 最右欄的列動作）時選單仍會被裁切。對齊 React `Dropdown` 的 `shift` prop
    * （floating-ui shift；CDK 的等價實作為 `withPush`）。
-   * @default false
+   * @default true
    */
-  readonly shift = input(false);
+  readonly shift = input(true);
 
   /** z-index 覆蓋值；未設定時以內部遞增序號計算。 */
   readonly zIndex = input<number | string>();
