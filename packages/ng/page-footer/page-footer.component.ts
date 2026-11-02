@@ -66,6 +66,7 @@ export type PageFooterType = 'standard' | 'overflow' | 'information';
   host: {
     '[class]': 'hostClasses()',
     '[attr.annotation]': 'null',
+    '[attr.dropdownTriggerAriaLabel]': 'null',
     '[attr.hostClass]': 'null',
     '[attr.supportingActionIcon]': 'null',
     '[attr.supportingActionName]': 'null',
@@ -100,6 +101,7 @@ export type PageFooterType = 'standard' | 'overflow' | 'information';
             iconType="icon-only"
             variant="base-ghost"
             size="main"
+            [attr.aria-label]="dropdownTriggerAriaLabel()"
           >
             <i mznIcon [icon]="resolvedSupportingActionIcon()"></i>
           </button>
@@ -131,6 +133,12 @@ export class MznPageFooter {
 
   /** 額外 CSS class。 */
   readonly hostClass = input('');
+
+  /**
+   * Accessible name of the icon-only overflow trigger button.
+   * @default 'More actions'
+   */
+  readonly dropdownTriggerAriaLabel = input<string>('More actions');
 
   /**
    * 下拉選單按鈕的圖示（僅在 `type="overflow"` 時生效）。

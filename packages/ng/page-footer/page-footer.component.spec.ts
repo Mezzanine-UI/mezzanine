@@ -128,6 +128,14 @@ describe('MznPageFooter', () => {
       fixture.detectChanges();
     });
 
+    it('should name the icon-only trigger (#495)', () => {
+      const btn = fixture.nativeElement.querySelector(
+        '.mzn-page-footer__annotation button[mznButton]',
+      );
+
+      expect(btn.getAttribute('aria-label')).toBe('More actions');
+    });
+
     it('should render icon-only button in annotation area', () => {
       const annotationDiv = fixture.nativeElement.querySelector(
         '.mzn-page-footer__annotation',
