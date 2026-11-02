@@ -39,6 +39,33 @@ describe('<Dropdown />', () => {
       const input = screen.getByPlaceholderText('Search');
       expect(input).toBeInTheDocument();
     });
+
+    it('should keep button semantics on a native button trigger (#503)', () => {
+      render(
+        <Dropdown options={mockOptions}>
+          <button aria-label="More" type="button" />
+        </Dropdown>,
+      );
+      const trigger = screen.getByRole('button', { name: 'More' });
+
+      expect(trigger).not.toHaveAttribute('role');
+      expect(trigger).not.toHaveAttribute('aria-autocomplete');
+      expect(trigger).toHaveAttribute('aria-haspopup', 'listbox');
+      expect(trigger).toHaveAttribute('aria-expanded', 'false');
+      expect(trigger).toHaveAttribute('aria-controls');
+    });
+
+    it('should still give input triggers role="combobox"', () => {
+      render(
+        <Dropdown options={mockOptions}>
+          <TextField>
+            <input placeholder="Search" />
+          </TextField>
+        </Dropdown>,
+      );
+
+      expect(screen.getByRole('combobox')).toBeInTheDocument();
+    });
   });
 
   describe('prop: inputPosition', () => {
