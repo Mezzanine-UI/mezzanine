@@ -262,4 +262,25 @@ describe('<MznInput />', () => {
       expect(wrapper.emitted('select')?.[0]).toEqual(['.tw']);
     });
   });
+
+  describe('aria forwarding (#504)', () => {
+    it('should forward aria-label to the native input, not the container', () => {
+      const wrapper = mount(MznInput, {
+        attrs: { 'aria-label': 'Email', 'data-testid': 'field' },
+      });
+
+      expect(wrapper.get('input').attributes('aria-label')).toBe('Email');
+      expect(wrapper.attributes('aria-label')).toBeUndefined();
+      expect(wrapper.attributes('data-testid')).toBe('field');
+    });
+
+    it('should let inputProps override attrs-level aria-*', () => {
+      const wrapper = mount(MznInput, {
+        attrs: { 'aria-label': 'Outer' },
+        props: { inputProps: { 'aria-label': 'Inner' } },
+      });
+
+      expect(wrapper.get('input').attributes('aria-label')).toBe('Inner');
+    });
+  });
 });
