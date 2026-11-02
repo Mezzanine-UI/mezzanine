@@ -102,14 +102,15 @@ const renderButtonOrElement = (
   button: ButtonProps | ButtonGroupChild | undefined,
   size: ButtonProps['size'],
   variant: 'base-primary' | 'base-secondary',
+  key?: string,
 ) => {
   if (!button) return null;
 
   if (isValidElement(button)) {
-    return cloneElement(button, { size, variant });
+    return cloneElement(button, { key, size, variant });
   }
 
-  return <Button {...button} size={size} variant={variant} />;
+  return <Button {...button} key={key} size={size} variant={variant} />;
 };
 
 function ResultState({
@@ -130,19 +131,28 @@ function ResultState({
   const icon = useMemo(() => iconMap[type], [type]);
 
   const flatChildren = flattenChildren(children);
-  const fragmentButtons: ButtonGroupChild =
-    actions &&
-    ('secondaryButton' in actions ? (
-      <>
-        {renderButtonOrElement(actions.secondaryButton, size, 'base-secondary')}
-        {renderButtonOrElement(actions.primaryButton, size, 'base-primary')}
-      </>
-    ) : (
-      renderButtonOrElement(actions, size, 'base-secondary')
-    ));
+  // A keyed array, not a Fragment: ButtonGroup clones every child with button props.
+  const actionButtons: ButtonGroupChild[] | null = actions
+    ? 'secondaryButton' in actions
+      ? [
+          renderButtonOrElement(
+            actions.secondaryButton,
+            size,
+            'base-secondary',
+            'secondary',
+          ),
+          renderButtonOrElement(
+            actions.primaryButton,
+            size,
+            'base-primary',
+            'primary',
+          ),
+        ]
+      : [renderButtonOrElement(actions, size, 'base-secondary', 'secondary')]
+    : null;
 
   const renderChildren =
-    !fragmentButtons &&
+    !actionButtons &&
     flatChildren.length > 0 &&
     flatChildren.map((child, index) => {
       if (!isValidElement(child)) {
@@ -193,7 +203,7 @@ function ResultState({
         {description && <p className={classes.description}>{description}</p>}
         {actions || children ? (
           <ButtonGroup className={classes.actions}>
-            {fragmentButtons || renderChildren}
+            {actionButtons || renderChildren}
           </ButtonGroup>
         ) : null}
       </div>
