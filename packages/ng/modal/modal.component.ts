@@ -25,6 +25,12 @@ import { TopStackService } from '@mezzanine-ui/ng/services';
 import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
 
 /**
+ * Shared sequence for the default modal title id (`aria-labelledby` target).
+ * @internal
+ */
+let modalTitleSeq = 0;
+
+/**
  * 對話框元件，以 Backdrop 遮罩呈現需要使用者互動或確認的浮動視窗。
  *
  * 使用 content projection 組合 `mzn-modal-header` 與 `mzn-modal-footer`，
@@ -80,11 +86,19 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
         const statusType = signal<ModalStatusType>('info');
         const loading = signal(false);
         const modalType = signal<ModalType>('standard');
+        const titleCount = signal(0);
 
         return {
           modalStatusType: statusType.asReadonly(),
           loading: loading.asReadonly(),
           modalType: modalType.asReadonly(),
+          titleId: `mzn-modal-title-${(modalTitleSeq += 1)}`,
+          titleCount: titleCount.asReadonly(),
+          registerTitle: (): (() => void) => {
+            titleCount.update((count) => count + 1);
+
+            return (): void => titleCount.update((count) => count - 1);
+          },
           _setStatusType: statusType.set.bind(statusType),
           _setLoading: loading.set.bind(loading),
           _setModalType: modalType.set.bind(modalType),
@@ -117,6 +131,7 @@ import { MZN_MODAL_CONTEXT, ModalContextValue } from './modal-context';
           [class]="hostClasses()"
           [style]="dialogStyle() ?? null"
           role="dialog"
+          [attr.aria-labelledby]="ariaLabelledBy()"
           [attr.aria-modal]="open() ? 'true' : null"
         >
           @if (showModalHeader()) {
@@ -196,6 +211,17 @@ export class MznModal {
    * 例如 `{ width: '640px', maxWidth: '640px' }`。
    */
   readonly dialogStyle = input<Record<string, string>>();
+
+  /**
+   * Points the dialog at the header title once one is rendered. Projected
+   * headers are instantiated even when the header slot is hidden, so the
+   * slot must be shown too.
+   */
+  protected readonly ariaLabelledBy = computed((): string | null =>
+    this.showModalHeader() && this.modalContext.titleCount() > 0
+      ? this.modalContext.titleId
+      : null,
+  );
 
   /** 遮罩點擊事件。 */
   readonly backdropClick = output<void>();
