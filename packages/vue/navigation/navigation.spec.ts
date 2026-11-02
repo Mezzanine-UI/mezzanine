@@ -20,6 +20,7 @@ import MznNavigationIconButton from './navigation-icon-button.vue';
 import MznNavigationOptionCategory from './navigation-option-category.vue';
 import MznNavigationOption from './navigation-option.vue';
 import MznNavigation from './navigation.vue';
+import MznNavigationUserMenu from './navigation-user-menu.vue';
 import type { NavigationProps } from './navigation.types';
 
 const option = (title: string, props: Record<string, unknown> = {}) =>
@@ -52,6 +53,22 @@ describe('<MznNavigation />', () => {
     expect(wrapper.classes()).toContain(classes.expand);
     expect(wrapper.classes()).not.toContain(classes.collapsed);
     expect(wrapper.get(`.${classes.list}`).text()).toContain('首頁');
+  });
+
+  it('should name collapsed icon-only options by their title (#496)', () => {
+    const wrapper = render({ collapsed: true }, [
+      option('Home', { href: '#home', icon: HomeIcon }),
+    ]);
+
+    expect(wrapper.get('a').attributes('aria-label')).toBe('Home');
+  });
+
+  it('should not set aria-label on expanded options', () => {
+    const wrapper = render({}, [
+      option('Home', { href: '#home', icon: HomeIcon }),
+    ]);
+
+    expect(wrapper.get('a').attributes('aria-label')).toBeUndefined();
   });
 
   it('should render collapsed when told to', () => {
@@ -461,5 +478,50 @@ describe('<MznNavigationIconButton />', () => {
     expect(wrapper.attributes('aria-label')).toBe('說明');
     expect(wrapper.attributes('type')).toBe('button');
     expect(wrapper.classes()).toContain(iconButtonClasses.active);
+  });
+});
+
+describe('<MznNavigationUserMenu /> accessible name (#505)', () => {
+  beforeEach(() => {
+    resetPortals();
+    document.body.innerHTML = '';
+    initializePortals();
+  });
+
+  afterEach(() => {
+    resetPortals();
+    document.body.innerHTML = '';
+  });
+
+  const mountMenu = (
+    props: Record<string, unknown> = {},
+    slots?: Record<string, () => unknown>,
+  ) =>
+    mount(MznNavigationUserMenu, {
+      attachTo: document.body,
+      props: { options: [], ...props },
+      slots,
+    });
+
+  it('should name an image-only trigger and keep button semantics', () => {
+    const trigger = mountMenu({ imgSrc: 'https://example.com/avatar.png' }).get(
+      'button',
+    );
+
+    expect(trigger.attributes('aria-label')).toBe('User menu');
+    expect(trigger.attributes('role')).toBeUndefined();
+    expect(trigger.attributes('aria-haspopup')).toBe('listbox');
+  });
+
+  it('should name the trigger from plain-text content', () => {
+    const trigger = mountMenu({}, { default: () => 'John' }).get('button');
+
+    expect(trigger.attributes('aria-label')).toBe('John');
+  });
+
+  it('should let an explicit aria-label win', () => {
+    const trigger = mountMenu({ ariaLabel: 'Account' }).get('button');
+
+    expect(trigger.attributes('aria-label')).toBe('Account');
   });
 });

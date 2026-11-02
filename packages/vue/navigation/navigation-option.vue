@@ -276,6 +276,7 @@ const SubOptions: FunctionalComponent = () => resolved.value.items;
           :is="OptionComponent"
           :ref="tooltip.ref"
           :aria-expanded="hasSubOptions ? open : undefined"
+          :aria-label="collapsed ? title : undefined"
           :class="[classes.content, classes.level(currentLevel)]"
           :href="isDiv ? undefined : href"
           :role="isDiv ? 'button' : undefined"
