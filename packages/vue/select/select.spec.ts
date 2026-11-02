@@ -307,4 +307,52 @@ describe('<MznSelect />', () => {
 
     expect(listbox()?.textContent).toContain('載入中');
   });
+
+  describe('combobox ARIA (#506)', () => {
+    it('should expose aria-expanded / aria-controls on the input', async () => {
+      const wrapper = mountSelect();
+      const input = wrapper.get('input');
+
+      expect(input.attributes('role')).toBe('combobox');
+      expect(input.attributes('aria-expanded')).toBe('false');
+      expect(input.attributes('aria-controls')).toBeTruthy();
+
+      await wrapper.get(`.${selectClasses.trigger}`).trigger('click');
+      await nextTick();
+
+      expect(input.attributes('aria-expanded')).toBe('true');
+    });
+
+    it('should keep only one combobox', () => {
+      const wrapper = mountSelect();
+
+      expect(wrapper.findAll('[role="combobox"]')).toHaveLength(1);
+      expect(wrapper.get(`.${selectClasses.trigger}`).attributes('role')).toBe(
+        'presentation',
+      );
+    });
+
+    it('should forward Select-level aria-label to the input', () => {
+      const wrapper = mount(MznSelect, {
+        attachTo: document.body,
+        attrs: { 'aria-label': 'Pick a letter' },
+        props: { options },
+      });
+
+      expect(wrapper.get('input').attributes('aria-label')).toBe(
+        'Pick a letter',
+      );
+      expect(wrapper.attributes('aria-label')).toBeUndefined();
+    });
+
+    it('should let inputProps aria-label take precedence', () => {
+      const wrapper = mount(MznSelect, {
+        attachTo: document.body,
+        attrs: { 'aria-label': 'Outer' },
+        props: { inputProps: { 'aria-label': 'Inner' }, options },
+      });
+
+      expect(wrapper.get('input').attributes('aria-label')).toBe('Inner');
+    });
+  });
 });

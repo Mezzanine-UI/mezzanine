@@ -4,6 +4,7 @@ import type { VNodeChild } from 'vue';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import clsx from 'clsx';
+import { splitAriaAttrs } from '../_internal/split-aria-attrs';
 import MznIcon from '../icon/icon.vue';
 import MznTextField from '../text-field/text-field.vue';
 import type { SelectValue } from './select.types';
@@ -167,21 +168,24 @@ const triggerClasses = computed((): unknown[] => [
 ]);
 
 /**
- * `role` is written before the fallthrough bind on purpose: React spreads the
- * props it was handed *after* its own `role="presentation"`, so the
- * `role="combobox"` the Dropdown injects into the trigger wins. Vue merges in
- * template order, so the same thing has to be written the same way round.
+ * The native <input> is the combobox (mirrors React): aria-* / role — from
+ * the caller or injected by the Dropdown (`aria-expanded`, `aria-controls`) —
+ * go onto it, while the TextField root is forced to `role="presentation"`.
  *
- * `value` is bound for the same reason: React never pulls it out of the props
- * it forwards, so the selection lands on the trigger's root `div` as a
+ * `value` is bound on purpose: React never pulls it out of the props it
+ * forwards, so the selection lands on the trigger's root `div` as a
  * stringified `value` attribute. It is a leak rather than a feature — Angular
  * took a deviation for it — but Vue can reproduce it, and the diff is the spec.
  */
-const forwardedAttrs = computed(() => {
+const splitAttrs = computed(() => {
   const { class: _class, ...rest } = attrs;
 
-  return rest;
+  return splitAriaAttrs(rest);
 });
+
+const forwardedAttrs = computed(() => splitAttrs.value[1]);
+
+const triggerAriaAttrs = computed(() => splitAttrs.value[0]);
 
 const inputClasses = computed((): unknown[] => [
   classes.triggerInput,
@@ -197,8 +201,8 @@ const inputAttrs = computed(() => {
 
 <template>
   <MznTextField
-    role="presentation"
     v-bind="{ ...forwardedAttrs, ...interactiveProps }"
+    role="presentation"
     :active="active"
     :class="triggerClasses"
     :clearable="shouldEnableClearable"
@@ -217,7 +221,7 @@ const inputAttrs = computed(() => {
     </template>
     <input
       ref="input"
-      v-bind="inputAttrs"
+      v-bind="{ ...triggerAriaAttrs, ...inputAttrs }"
       aria-autocomplete="list"
       aria-haspopup="listbox"
       autocomplete="off"
