@@ -29,6 +29,7 @@ import { cx } from '../utils/cx';
 import { formatNumberWithCommas } from '../utils/format-number-with-commas';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { parseNumberWithCommas } from '../utils/parse-number-with-commas';
+import { pickAriaProps } from '../utils/pick-aria-props';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 import PasswordStrengthIndicator, {
   PasswordStrengthIndicatorProps,
@@ -337,7 +338,12 @@ function Input({ ref, ...props }: InputProps & RefAttributes<HTMLDivElement>) {
     typing,
     variant = 'base',
     value: valueProp,
+    ...rest
   } = props;
+
+  // aria-* / role passed to Input (or cloned in by a Dropdown) name and
+  // describe the native <input>; the TextField wrapper is presentational.
+  const ariaProps = pickAriaProps(rest);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -736,6 +742,7 @@ function Input({ ref, ...props }: InputProps & RefAttributes<HTMLDivElement>) {
           {...interactiveProps}
         >
           <input
+            {...ariaProps}
             {...defaultInputProps}
             {...inputProps}
             id={id}
