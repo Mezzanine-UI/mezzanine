@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  Children,
   cloneElement,
+  isValidElement,
   type RefAttributes,
   ReactElement,
 } from 'react';
@@ -13,6 +13,7 @@ import {
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
+import { flattenChildren } from '../utils/flatten-children';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { ButtonProps } from './Button';
 
@@ -89,10 +90,9 @@ function ButtonGroup({
       )}
       role={role}
     >
-      {Children.map(children, (unknownChild) => {
-        const child = unknownChild as ButtonGroupChild;
-
-        if (!child) {
+      {/* Fragments are unwrapped so group props reach the buttons inside them. */}
+      {flattenChildren(children).map((child) => {
+        if (!isValidElement<ButtonProps>(child)) {
           return null;
         }
 
