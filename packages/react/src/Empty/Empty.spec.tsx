@@ -333,4 +333,35 @@ describe('<Empty />', () => {
       expect(button).toBeInstanceOf(HTMLButtonElement);
     });
   });
+
+  describe('re-render with two actions', () => {
+    it('should not warn about invalid fragment props', () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      const actions = {
+        secondaryButton: { children: 'Cancel' },
+        primaryButton: { children: 'Retry' },
+      };
+
+      const { getByText, rerender } = render(
+        <Empty actions={actions} title="Failed" />,
+      );
+
+      rerender(<Empty actions={actions} title="Failed again" />);
+
+      expect(consoleError).not.toHaveBeenCalledWith(
+        expect.stringContaining('React.Fragment'),
+        expect.anything(),
+      );
+      expect(
+        getByText('Cancel').classList.contains('mzn-button--base-secondary'),
+      ).toBeTruthy();
+      expect(
+        getByText('Retry').classList.contains('mzn-button--base-primary'),
+      ).toBeTruthy();
+
+      consoleError.mockRestore();
+    });
+  });
 });
