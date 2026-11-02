@@ -137,4 +137,33 @@ describe('MznClearActions', () => {
       true,
     );
   });
+
+  describe('aria-label (#498)', () => {
+    @Component({
+      standalone: true,
+      imports: [MznClearActions],
+      template: `
+        <button mznClearActions aria-label="Dismiss the banner"></button>
+        <button mznClearActions [aria-label]="dynamicLabel"></button>
+      `,
+    })
+    class AriaLabelHostComponent {
+      dynamicLabel = 'Remove tag';
+    }
+
+    it('should let the caller override the default Close', () => {
+      const fixture = TestBed.createComponent(AriaLabelHostComponent);
+
+      fixture.detectChanges();
+
+      const [staticButton, boundButton] = Array.from(
+        fixture.nativeElement.querySelectorAll('button'),
+      ) as HTMLButtonElement[];
+
+      expect(staticButton.getAttribute('aria-label')).toBe(
+        'Dismiss the banner',
+      );
+      expect(boundButton.getAttribute('aria-label')).toBe('Remove tag');
+    });
+  });
 });

@@ -37,7 +37,7 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
   selector: 'button[mznClearActions]',
   host: {
     '[attr.type]': "'button'",
-    '[attr.aria-label]': "'Close'",
+    '[attr.aria-label]': 'ariaLabel()',
     '[attr.variant]': 'null',
     '[class]': 'hostClasses()',
     '(click)': 'clicked.emit($event)',
@@ -68,6 +68,12 @@ export class MznClearActions {
    * @default 'standard'
    */
   readonly type = input<ClearActionsType>('standard');
+
+  /**
+   * Accessible name of the button; callers may override it.
+   * @default 'Close'
+   */
+  readonly ariaLabel = input<string>('Close', { alias: 'aria-label' });
 
   /**
    * 視覺變體，依 type 而定。
