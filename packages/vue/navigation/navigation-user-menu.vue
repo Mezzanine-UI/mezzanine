@@ -118,7 +118,9 @@ onBeforeUnmount(() => resizeObserver?.disconnect());
 
 /**
  * The content is the only accessible name the collapsed button could have, so
- * it is read off the slot when it is plain text. An explicit label still wins.
+ * it is read off the slot when it is plain text, and falls back to a generic
+ * label when there is no content at all (avatar or icon only). An explicit
+ * label still wins.
  */
 const ariaLabel = computed((): string | undefined => {
   // Vue camelises a declared prop's name, so `aria-label` arrives as `ariaLabel`.
@@ -127,6 +129,11 @@ const ariaLabel = computed((): string | undefined => {
   if (given) return given;
 
   const children = slots.default?.();
+
+  if (!slots.default || (Array.isArray(children) && children.length === 0)) {
+    return 'User menu';
+  }
+
   const first = Array.isArray(children) ? children[0] : children;
   const text = (first as { children?: unknown } | undefined)?.children;
 
