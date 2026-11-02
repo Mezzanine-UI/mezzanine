@@ -147,4 +147,58 @@ describe('MznSelect', () => {
 
     expect(input.value).toBe('Apple');
   });
+
+  describe('combobox ARIA (#506)', () => {
+    @Component({
+      standalone: true,
+      imports: [MznSelect],
+      template: `
+        <div mznSelect aria-label="Pick a fruit" [options]="options"></div>
+      `,
+    })
+    class AriaHostComponent {
+      options = MOCK_OPTIONS;
+    }
+
+    const getInput = (root: HTMLElement): HTMLInputElement =>
+      root.querySelector('.mzn-select-trigger__input') as HTMLInputElement;
+
+    it('should expose aria-expanded / aria-controls on the input', () => {
+      const { fixture } = createFixture(TestHostComponent);
+      const root = fixture.nativeElement as HTMLElement;
+      const input = getInput(root);
+
+      expect(input.getAttribute('role')).toBe('combobox');
+      expect(input.getAttribute('aria-expanded')).toBe('false');
+      expect(input.getAttribute('aria-controls')).toBeTruthy();
+
+      (root.querySelector('.mzn-select-trigger') as HTMLElement).click();
+      fixture.detectChanges();
+      fixture.detectChanges();
+
+      expect(input.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('should keep only one combobox', () => {
+      const { fixture } = createFixture(TestHostComponent);
+      const root = fixture.nativeElement as HTMLElement;
+
+      expect(root.querySelectorAll('[role="combobox"]')).toHaveLength(1);
+      expect(
+        root.querySelector('.mzn-select-trigger')?.getAttribute('role'),
+      ).toBe('presentation');
+    });
+
+    it('should forward Select-level aria-label to the input', () => {
+      TestBed.configureTestingModule({ imports: [AriaHostComponent] });
+
+      const { fixture } = createFixture(AriaHostComponent);
+      const root = fixture.nativeElement as HTMLElement;
+
+      expect(getInput(root).getAttribute('aria-label')).toBe('Pick a fruit');
+      expect(
+        root.querySelector('[mznSelect]')?.hasAttribute('aria-label'),
+      ).toBe(false);
+    });
+  });
 });
