@@ -2,7 +2,10 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { OverlayScrollbars } from 'overlayscrollbars';
 import { h } from 'vue';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';
-import type { TableRowSelectionCheckbox } from '@mezzanine-ui/core/table';
+import type {
+  TableBulkActions,
+  TableRowSelectionCheckbox,
+} from '@mezzanine-ui/core/table';
 import MznTable from './table.vue';
 import type { TableCollectable, TableColumn, TableProps } from './table.types';
 
@@ -274,6 +277,69 @@ describe('<MznTable />', () => {
 
       expect(wrapper.find('thead input').exists()).toBe(false);
       expect(wrapper.findAll('tbody input[type="radio"]')).toHaveLength(3);
+    });
+  });
+
+  describe('bulk actions separators', () => {
+    const overflowAction = {
+      label: 'More',
+      onSelect: vi.fn(),
+      options: [{ id: 'archive', name: 'Archive' }],
+    };
+
+    const renderBulkActions = (bulkActions: TableBulkActions<Row>) =>
+      render({
+        rowSelection: {
+          bulkActions,
+          mode: 'checkbox',
+          onChange: vi.fn(),
+          selectedRowKeys: ['1'],
+        },
+      });
+
+    const separators = (wrapper: ReturnType<typeof render>) =>
+      wrapper.findAll(`.${classes.bulkActionsSeparator}`);
+
+    it('should render destructive action without separator when mainActions is omitted', () => {
+      const wrapper = renderBulkActions({
+        destructiveAction: { label: 'Remove', onClick: vi.fn() },
+      });
+
+      expect(wrapper.text()).toContain('Remove');
+      expect(separators(wrapper)).toHaveLength(0);
+
+      wrapper.unmount();
+    });
+
+    it('should not render separator when only overflow action is provided', () => {
+      const wrapper = renderBulkActions({ mainActions: [], overflowAction });
+
+      expect(separators(wrapper)).toHaveLength(0);
+
+      wrapper.unmount();
+    });
+
+    it('should render one separator between destructive and overflow actions without main actions', () => {
+      const wrapper = renderBulkActions({
+        destructiveAction: { label: 'Remove', onClick: vi.fn() },
+        overflowAction,
+      });
+
+      expect(separators(wrapper)).toHaveLength(1);
+
+      wrapper.unmount();
+    });
+
+    it('should render two separators when all action groups are provided', () => {
+      const wrapper = renderBulkActions({
+        destructiveAction: { label: 'Remove', onClick: vi.fn() },
+        mainActions: [{ label: 'Edit', onClick: vi.fn() }],
+        overflowAction,
+      });
+
+      expect(separators(wrapper)).toHaveLength(2);
+
+      wrapper.unmount();
     });
   });
 
