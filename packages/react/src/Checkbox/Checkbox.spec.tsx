@@ -1,13 +1,14 @@
 import { CheckboxMode } from '@mezzanine-ui/core/checkbox';
-import { createRef, useContext } from 'react';
+import { createRef, use } from 'react';
 import { cleanup, fireEvent, render, renderHook } from '../../__test-utils__';
-import {
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
+import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
 import { createWrapper } from '../../__test-utils__/render';
 import Checkbox from './Checkbox';
 import CheckboxGroup from './CheckboxGroup';
-import { CheckboxGroupContext, CheckboxGroupContextValue } from './CheckboxGroupContext';
+import {
+  CheckboxGroupContext,
+  CheckboxGroupContextValue,
+} from './CheckboxGroupContext';
 
 describe('<Checkbox />', () => {
   afterEach(cleanup);
@@ -27,7 +28,9 @@ describe('<Checkbox />', () => {
   );
 
   it('should render the label text', () => {
-    const { getHostHTMLElement } = render(<Checkbox label="Hello" name="test" />);
+    const { getHostHTMLElement } = render(
+      <Checkbox label="Hello" name="test" />,
+    );
     const element = getHostHTMLElement();
 
     expect(element.textContent).toContain('Hello');
@@ -74,7 +77,12 @@ describe('<Checkbox />', () => {
 
     it('should not render description when mode="chip"', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox mode="chip" label="Chip" name="test" description="Description" />,
+        <Checkbox
+          mode="chip"
+          label="Chip"
+          name="test"
+          description="Description"
+        />,
       );
       const element = getHostHTMLElement();
 
@@ -94,7 +102,9 @@ describe('<Checkbox />', () => {
       const sizes: Array<'main' | 'sub'> = ['main', 'sub'];
 
       sizes.forEach((size) => {
-        const { getHostHTMLElement } = render(<Checkbox mode="default" size={size} />);
+        const { getHostHTMLElement } = render(
+          <Checkbox mode="default" size={size} />,
+        );
         const element = getHostHTMLElement();
 
         expect(
@@ -107,7 +117,9 @@ describe('<Checkbox />', () => {
       const sizes: Array<'main' | 'sub' | 'minor'> = ['main', 'sub', 'minor'];
 
       sizes.forEach((size) => {
-        const { getHostHTMLElement } = render(<Checkbox mode="chip" size={size} />);
+        const { getHostHTMLElement } = render(
+          <Checkbox mode="chip" size={size} />,
+        );
         const element = getHostHTMLElement();
 
         expect(
@@ -242,7 +254,9 @@ describe('<Checkbox />', () => {
     });
 
     it('should update when clicked', () => {
-      const { getHostHTMLElement } = render(<Checkbox defaultChecked={false} />);
+      const { getHostHTMLElement } = render(
+        <Checkbox defaultChecked={false} />,
+      );
       const element = getHostHTMLElement();
       const input = element.querySelector('input') as HTMLInputElement;
 
@@ -280,9 +294,9 @@ describe('<Checkbox />', () => {
       };
 
       const { getHostHTMLElement } = render(
-        <CheckboxGroupContext.Provider value={contextValue}>
+        <CheckboxGroupContext value={contextValue}>
           <Checkbox value="option1" />
-        </CheckboxGroupContext.Provider>,
+        </CheckboxGroupContext>,
       );
       const element = getHostHTMLElement();
       const input = element.querySelector('input') as HTMLInputElement;
@@ -300,9 +314,9 @@ describe('<Checkbox />', () => {
       };
 
       const { getHostHTMLElement } = render(
-        <CheckboxGroupContext.Provider value={contextValue}>
+        <CheckboxGroupContext value={contextValue}>
           <Checkbox value="option1" />
-        </CheckboxGroupContext.Provider>,
+        </CheckboxGroupContext>,
       );
       const element = getHostHTMLElement();
       const input = element.querySelector('input') as HTMLInputElement;
@@ -319,9 +333,9 @@ describe('<Checkbox />', () => {
       };
 
       const { getHostHTMLElement } = render(
-        <CheckboxGroupContext.Provider value={contextValue}>
+        <CheckboxGroupContext value={contextValue}>
           <Checkbox value="option1" />
-        </CheckboxGroupContext.Provider>,
+        </CheckboxGroupContext>,
       );
       const element = getHostHTMLElement();
       const input = element.querySelector('input') as HTMLInputElement;
@@ -340,9 +354,9 @@ describe('<Checkbox />', () => {
       };
 
       const { getHostHTMLElement } = render(
-        <CheckboxGroupContext.Provider value={contextValue}>
+        <CheckboxGroupContext value={contextValue}>
           <Checkbox value="option1" />
-        </CheckboxGroupContext.Provider>,
+        </CheckboxGroupContext>,
       );
       const element = getHostHTMLElement();
       const input = element.querySelector('input') as HTMLInputElement;
@@ -360,7 +374,7 @@ describe('<Checkbox />', () => {
         onChange: jest.fn(),
       };
 
-      const { result } = renderHook(() => useContext(CheckboxGroupContext), {
+      const { result } = renderHook(() => use(CheckboxGroupContext), {
         wrapper: createWrapper(CheckboxGroup, expectProps),
       });
 
@@ -416,18 +430,15 @@ describe('<Checkbox />', () => {
   describe('prop: withEditInput and editableInput', () => {
     it('should render editable input when checkbox is checked and withEditInput=true', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox
-          checked
-          withEditInput
-          label="Other"
-          name="test"
-        />,
+        <Checkbox checked withEditInput label="Other" name="test" />,
       );
       const element = getHostHTMLElement();
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       );
-      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+      const input = editableInputContainer?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(editableInputContainer).toBeTruthy();
       expect(input).toBeTruthy();
@@ -436,18 +447,15 @@ describe('<Checkbox />', () => {
 
     it('should render editable input as enabled when checkbox is unchecked', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox
-          checked={false}
-          withEditInput
-          label="Other"
-          name="test"
-        />,
+        <Checkbox checked={false} withEditInput label="Other" name="test" />,
       );
       const element = getHostHTMLElement();
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       );
-      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+      const input = editableInputContainer?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       // Editable input should be rendered and enabled even when unchecked
       expect(editableInputContainer).toBeTruthy();
@@ -457,18 +465,15 @@ describe('<Checkbox />', () => {
 
     it('should use default placeholder when editableInput is not provided', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox
-          checked
-          withEditInput
-          label="Other"
-          name="test"
-        />,
+        <Checkbox checked withEditInput label="Other" name="test" />,
       );
       const element = getHostHTMLElement();
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       );
-      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+      const input = editableInputContainer?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(input).toBeTruthy();
       expect(input.getAttribute('placeholder')).toBe('Please enter...');
@@ -492,7 +497,9 @@ describe('<Checkbox />', () => {
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       );
-      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+      const input = editableInputContainer?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(input).toBeTruthy();
       expect(input.getAttribute('placeholder')).toBe('Custom placeholder');
@@ -502,19 +509,15 @@ describe('<Checkbox />', () => {
 
     it('should disable editable input when checkbox is disabled', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox
-          checked
-          disabled
-          withEditInput
-          label="Other"
-          name="test"
-        />,
+        <Checkbox checked disabled withEditInput label="Other" name="test" />,
       );
       const element = getHostHTMLElement();
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       );
-      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+      const input = editableInputContainer?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(input).toBeTruthy();
       expect(input.disabled).toBe(true);
@@ -522,13 +525,7 @@ describe('<Checkbox />', () => {
 
     it('should not render editable input in chip mode', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox
-          checked
-          mode="chip"
-          withEditInput
-          label="Chip"
-          name="test"
-        />,
+        <Checkbox checked mode="chip" withEditInput label="Chip" name="test" />,
       );
       const element = getHostHTMLElement();
       const editableInputContainer = element.querySelector(
@@ -582,11 +579,15 @@ describe('<Checkbox />', () => {
         />,
       );
       const element = getHostHTMLElement();
-      const checkboxInput = element.querySelector('.mzn-checkbox__input') as HTMLInputElement;
+      const checkboxInput = element.querySelector(
+        '.mzn-checkbox__input',
+      ) as HTMLInputElement;
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       ) as HTMLElement;
-      const editableInput = editableInputContainer.querySelector('input') as HTMLInputElement;
+      const editableInput = editableInputContainer.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       fireEvent.click(checkboxInput);
 
@@ -603,7 +604,9 @@ describe('<Checkbox />', () => {
         />,
       );
       const element = getHostHTMLElement();
-      const checkboxInput = element.querySelector('.mzn-checkbox__input') as HTMLInputElement;
+      const checkboxInput = element.querySelector(
+        '.mzn-checkbox__input',
+      ) as HTMLInputElement;
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       ) as HTMLElement;
@@ -617,15 +620,12 @@ describe('<Checkbox />', () => {
 
     it('should not toggle the checkbox when mousedown fires on the editable input container while already checked', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox
-          defaultChecked
-          withEditInput
-          label="Other"
-          name="test"
-        />,
+        <Checkbox defaultChecked withEditInput label="Other" name="test" />,
       );
       const element = getHostHTMLElement();
-      const checkboxInput = element.querySelector('.mzn-checkbox__input') as HTMLInputElement;
+      const checkboxInput = element.querySelector(
+        '.mzn-checkbox__input',
+      ) as HTMLInputElement;
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       ) as HTMLElement;
@@ -651,7 +651,9 @@ describe('<Checkbox />', () => {
       const editableInputContainer = element.querySelector(
         '.mzn-checkbox__editable-input-container',
       );
-      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+      const input = editableInputContainer?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(input).toBeTruthy();
       expect(input.getAttribute('id')).toBe('checkbox-id_input');

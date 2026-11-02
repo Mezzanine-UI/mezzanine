@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { use, useState } from 'react';
 import { cleanup, fireEvent, render, renderHook } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -45,7 +45,7 @@ describe('<RadioGroup />', () => {
       size: 'main',
       value: 'bar',
     };
-    const { result } = renderHook(() => useContext(RadioGroupContext), {
+    const { result } = renderHook(() => use(RadioGroupContext), {
       wrapper: createWrapper(RadioGroup, expectProps),
     });
 

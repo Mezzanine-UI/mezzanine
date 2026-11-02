@@ -1,6 +1,11 @@
 'use client';
 
-import { cloneElement, forwardRef, isValidElement, ReactElement } from 'react';
+import {
+  cloneElement,
+  type RefAttributes,
+  isValidElement,
+  ReactElement,
+} from 'react';
 import { cx } from '../utils/cx';
 import {
   DescriptionOrientation,
@@ -52,39 +57,42 @@ export type DescriptionProps = DistributiveOmit<
   title: string;
 };
 
-const Description = forwardRef<HTMLDivElement, DescriptionProps>(
-  function Description(props, ref) {
-    const {
-      children,
-      className,
-      orientation = 'horizontal',
-      size = 'main',
-      title,
-      ...rest
-    } = props;
+function Description({
+  ref,
+  ...props
+}: DescriptionProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    orientation = 'horizontal',
+    size = 'main',
+    title,
+    ...rest
+  } = props;
 
-    const injectedChildren = isValidElement(children)
-      ? cloneElement(children as ReactElement<{ size?: DescriptionSize }>, {
-          size: (children.props as { size?: DescriptionSize }).size ?? size,
-        })
-      : children;
+  const injectedChildren = isValidElement(children)
+    ? cloneElement(children as ReactElement<{ size?: DescriptionSize }>, {
+        size: (children.props as { size?: DescriptionSize }).size ?? size,
+      })
+    : children;
 
-    return (
-      <DescriptionContext.Provider value={{ size }}>
-        <div
-          className={cx(
-            classes.host,
-            classes.orientation(orientation),
-            className,
-          )}
-          ref={ref}
-        >
-          <DescriptionTitle {...rest} size={size}>{title}</DescriptionTitle>
-          {injectedChildren}
-        </div>
-      </DescriptionContext.Provider>
-    );
-  },
-);
+  return (
+    <DescriptionContext value={{ size }}>
+      <div
+        className={cx(
+          classes.host,
+          classes.orientation(orientation),
+          className,
+        )}
+        ref={ref}
+      >
+        <DescriptionTitle {...rest} size={size}>
+          {title}
+        </DescriptionTitle>
+        {injectedChildren}
+      </div>
+    </DescriptionContext>
+  );
+}
 
 export default Description;

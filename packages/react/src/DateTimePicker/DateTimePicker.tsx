@@ -5,7 +5,7 @@ import { pickerClasses } from '@mezzanine-ui/core/picker';
 import { CalendarTimeIcon } from '@mezzanine-ui/icons';
 import {
   FocusEventHandler,
-  forwardRef,
+  type RefAttributes,
   MouseEventHandler,
   useCallback,
   useEffect,
@@ -98,500 +98,500 @@ export interface DateTimePickerProps
  * with independent calendar and time panels shown based on focus.
  * Notice that any component related to date-time picker should be used along with `CalendarContext`.
  */
-const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
-  function DateTimePicker(props, ref) {
-    const {
-      defaultDateFormat,
-      defaultTimeFormat,
-      formatToString,
-      getNow,
-      getHour,
-      getMinute,
-      getSecond,
-      isValid,
-      setHour,
-      setMinute,
-      setSecond,
-      startOf,
-      locale,
-    } = useCalendarContext();
+function DateTimePicker({
+  ref,
+  ...props
+}: DateTimePickerProps & RefAttributes<HTMLDivElement>) {
+  const {
+    defaultDateFormat,
+    defaultTimeFormat,
+    formatToString,
+    getNow,
+    getHour,
+    getMinute,
+    getSecond,
+    isValid,
+    setHour,
+    setMinute,
+    setSecond,
+    startOf,
+    locale,
+  } = useCalendarContext();
 
-    const {
-      // Calendar props
-      calendarProps,
-      calendarRef,
-      disabledMonthSwitch = false,
-      disableOnDoubleNext,
-      disableOnDoublePrev,
-      disableOnNext,
-      disableOnPrev,
-      disabledYearSwitch = false,
-      displayMonthLocale,
-      isDateDisabled,
-      isHalfYearDisabled,
-      isMonthDisabled,
-      isQuarterDisabled,
-      isWeekDisabled,
-      isYearDisabled,
-      mode = 'day',
-      // Time panel props
-      hideHour,
-      hideMinute,
-      hideSecond,
-      hourStep,
-      minuteStep,
-      secondStep,
-      // DateTimePicker specific props
-      className,
-      clearable = true,
-      defaultValue,
-      disabled = false,
-      error = false,
-      fadeProps,
-      formatDate = defaultDateFormat,
-      formatTime = hideSecond ? 'HH:mm' : defaultTimeFormat,
-      fullWidth = false,
-      onClear: onClearProp,
-      onChange: onChangeProp,
-      onPanelToggle: onPanelToggleProp,
-      placeholderLeft = formatDate,
-      placeholderRight = formatTime,
-      popperProps,
-      popperPropsTime,
-      prefix,
-      readOnly,
-      referenceDate: referenceDateProp,
-      required = false,
-      size,
-      value: valueProp,
-      ...restTriggerProps
-    } = props;
+  const {
+    // Calendar props
+    calendarProps,
+    calendarRef,
+    disabledMonthSwitch = false,
+    disableOnDoubleNext,
+    disableOnDoublePrev,
+    disableOnNext,
+    disableOnPrev,
+    disabledYearSwitch = false,
+    displayMonthLocale,
+    isDateDisabled,
+    isHalfYearDisabled,
+    isMonthDisabled,
+    isQuarterDisabled,
+    isWeekDisabled,
+    isYearDisabled,
+    mode = 'day',
+    // Time panel props
+    hideHour,
+    hideMinute,
+    hideSecond,
+    hourStep,
+    minuteStep,
+    secondStep,
+    // DateTimePicker specific props
+    className,
+    clearable = true,
+    defaultValue,
+    disabled = false,
+    error = false,
+    fadeProps,
+    formatDate = defaultDateFormat,
+    formatTime = hideSecond ? 'HH:mm' : defaultTimeFormat,
+    fullWidth = false,
+    onClear: onClearProp,
+    onChange: onChangeProp,
+    onPanelToggle: onPanelToggleProp,
+    placeholderLeft = formatDate,
+    placeholderRight = formatTime,
+    popperProps,
+    popperPropsTime,
+    prefix,
+    readOnly,
+    referenceDate: referenceDateProp,
+    required = false,
+    size,
+    value: valueProp,
+    ...restTriggerProps
+  } = props;
 
-    // Internal state
-    const [focusedInput, setFocusedInput] = useState<FocusedInput>(null);
-    const [dateValue, setDateValue] = useState<DateType | undefined>(
-      defaultValue ?? valueProp,
-    );
-    const [timeValue, setTimeValue] = useState<DateType | undefined>(
-      defaultValue ?? valueProp,
-    );
-    const [hoverDate, setHoverDate] = useState<DateType | undefined>(undefined);
+  // Internal state
+  const [focusedInput, setFocusedInput] = useState<FocusedInput>(null);
+  const [dateValue, setDateValue] = useState<DateType | undefined>(
+    defaultValue ?? valueProp,
+  );
+  const [timeValue, setTimeValue] = useState<DateType | undefined>(
+    defaultValue ?? valueProp,
+  );
+  const [hoverDate, setHoverDate] = useState<DateType | undefined>(undefined);
 
-    // Pending time value: adjusted in the panel before user confirms
-    const [pendingTimeValue, setPendingTimeValue] = useState<
-      DateType | undefined
-    >(undefined);
+  // Pending time value: adjusted in the panel before user confirms
+  const [pendingTimeValue, setPendingTimeValue] = useState<
+    DateType | undefined
+  >(undefined);
 
-    // Compute rounded current time respecting step and hide settings
-    const computeCurrentTime = useCallback((): DateType => {
-      const now = getNow();
-      const h = getHour(now);
-      const m = getMinute(now);
-      const s = getSecond(now);
+  // Compute rounded current time respecting step and hide settings
+  const computeCurrentTime = useCallback((): DateType => {
+    const now = getNow();
+    const h = getHour(now);
+    const m = getMinute(now);
+    const s = getSecond(now);
 
-      let result = now;
+    let result = now;
 
-      if (!hideHour) {
-        result = setHour(
-          result,
-          Math.min(Math.round(h / (hourStep ?? 1)) * (hourStep ?? 1), 23),
-        );
+    if (!hideHour) {
+      result = setHour(
+        result,
+        Math.min(Math.round(h / (hourStep ?? 1)) * (hourStep ?? 1), 23),
+      );
+    }
+
+    if (!hideMinute) {
+      result = setMinute(
+        result,
+        Math.min(Math.round(m / (minuteStep ?? 1)) * (minuteStep ?? 1), 59),
+      );
+    }
+
+    if (!hideSecond) {
+      result = setSecond(
+        result,
+        Math.min(Math.round(s / (secondStep ?? 1)) * (secondStep ?? 1), 59),
+      );
+    }
+
+    return result;
+  }, [
+    getNow,
+    getHour,
+    getMinute,
+    getSecond,
+    setHour,
+    setMinute,
+    setSecond,
+    hideHour,
+    hideMinute,
+    hideSecond,
+    hourStep,
+    minuteStep,
+    secondStep,
+  ]);
+
+  // Refs
+  const inputLeftRef = useRef<HTMLInputElement>(null);
+  const inputRightRef = useRef<HTMLInputElement>(null);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const calendarPanelRef = useRef<HTMLDivElement>(null);
+  const timePanelRef = useRef<HTMLDivElement>(null);
+  const triggerComposedRef = useComposeRefs([anchorRef, ref]);
+
+  // Reference date for calendar
+  const [referenceDate, setReferenceDate] = useState<DateType>(
+    startOf(referenceDateProp || defaultValue || getNow(), 'day'),
+  );
+
+  // Sync external value
+  useEffect(() => {
+    if (valueProp !== undefined) {
+      setDateValue(valueProp);
+      setTimeValue(valueProp);
+
+      if (valueProp) {
+        setReferenceDate(startOf(valueProp, 'day'));
       }
+    }
+  }, [valueProp, startOf]);
 
-      if (!hideMinute) {
-        result = setMinute(
-          result,
-          Math.min(Math.round(m / (minuteStep ?? 1)) * (minuteStep ?? 1), 59),
-        );
-      }
+  // Open state based on focused input
+  const openCalendar = focusedInput === 'left' && !readOnly;
+  const openTimePanel = focusedInput === 'right' && !readOnly;
 
-      if (!hideSecond) {
-        result = setSecond(
-          result,
-          Math.min(Math.round(s / (secondStep ?? 1)) * (secondStep ?? 1), 59),
-        );
+  // Format values for display
+  const displayDateValue = useMemo(() => {
+    if (!dateValue) return '';
+
+    return formatToString(locale, dateValue, formatDate) || '';
+  }, [dateValue, formatDate, formatToString, locale]);
+
+  const displayTimeValue = useMemo(() => {
+    if (!timeValue) return '';
+
+    return formatToString(locale, timeValue, formatTime) || '';
+  }, [timeValue, formatTime, formatToString, locale]);
+
+  // Panel toggle handler
+  const onPanelToggle = useCallback(
+    (open: boolean, input: FocusedInput) => {
+      if (onPanelToggleProp) {
+        onPanelToggleProp(open, input);
       }
+    },
+    [onPanelToggleProp],
+  );
+
+  // Focus handlers
+  const onFocusLeft: FocusEventHandler<HTMLInputElement> = useCallback(() => {
+    if (!readOnly) {
+      setFocusedInput('left');
+      onPanelToggle(true, 'left');
+    }
+  }, [onPanelToggle, readOnly]);
+
+  const onFocusRight: FocusEventHandler<HTMLInputElement> = useCallback(() => {
+    if (!readOnly) {
+      setFocusedInput('right');
+      setPendingTimeValue(timeValue ?? computeCurrentTime());
+      onPanelToggle(true, 'right');
+    }
+  }, [computeCurrentTime, onPanelToggle, readOnly, timeValue]);
+
+  // Combine date and time into a single value
+  const combineDateTime = useCallback(
+    (
+      date: DateType | undefined,
+      time: DateType | undefined,
+    ): DateType | undefined => {
+      if (!date) return undefined;
+
+      const timeSource = time || getNow();
+
+      const result = setHour(
+        setMinute(
+          setSecond(date, getSecond(timeSource)),
+          getMinute(timeSource),
+        ),
+        getHour(timeSource),
+      );
 
       return result;
-    }, [
-      getNow,
-      getHour,
-      getMinute,
-      getSecond,
-      setHour,
-      setMinute,
-      setSecond,
-      hideHour,
-      hideMinute,
-      hideSecond,
-      hourStep,
-      minuteStep,
-      secondStep,
-    ]);
+    },
+    [getNow, getHour, getMinute, getSecond, setHour, setMinute, setSecond],
+  );
 
-    // Refs
-    const inputLeftRef = useRef<HTMLInputElement>(null);
-    const inputRightRef = useRef<HTMLInputElement>(null);
-    const anchorRef = useRef<HTMLDivElement>(null);
-    const calendarPanelRef = useRef<HTMLDivElement>(null);
-    const timePanelRef = useRef<HTMLDivElement>(null);
-    const triggerComposedRef = useComposeRefs([anchorRef, ref]);
+  // Close handler
+  const onClose = useCallback(() => {
+    setFocusedInput(null);
+    onPanelToggle(false, null);
+  }, [onPanelToggle]);
 
-    // Reference date for calendar
-    const [referenceDate, setReferenceDate] = useState<DateType>(
-      startOf(referenceDateProp || defaultValue || getNow(), 'day'),
-    );
+  // Trigger onChange when both date and time are set
+  const notifyChange = useCallback(
+    (date: DateType | undefined, time: DateType | undefined) => {
+      if (!onChangeProp) return;
 
-    // Sync external value
-    useEffect(() => {
-      if (valueProp !== undefined) {
-        setDateValue(valueProp);
-        setTimeValue(valueProp);
+      if (date && time) {
+        const combined = combineDateTime(date, time);
 
-        if (valueProp) {
-          setReferenceDate(startOf(valueProp, 'day'));
-        }
+        onChangeProp(combined);
       }
-    }, [valueProp, startOf]);
+    },
+    [combineDateTime, onChangeProp],
+  );
 
-    // Open state based on focused input
-    const openCalendar = focusedInput === 'left' && !readOnly;
-    const openTimePanel = focusedInput === 'right' && !readOnly;
+  // Handle left complete
+  const onLeftComplete = useCallback(() => {
+    if (timeValue) {
+      onClose();
+    } else {
+      setTimeout(() => {
+        inputRightRef.current?.focus();
+      }, 0);
+    }
+  }, [timeValue, onClose]);
 
-    // Format values for display
-    const displayDateValue = useMemo(() => {
-      if (!dateValue) return '';
+  // Handle right complete
+  const onRightComplete = useCallback(() => {
+    if (dateValue) {
+      /** Don't close the time panel */
+      setTimeout(() => {
+        inputRightRef.current?.focus();
+      }, 0);
+    } else {
+      setTimeout(() => {
+        inputLeftRef.current?.focus();
+      }, 0);
+    }
+  }, [dateValue]);
 
-      return formatToString(locale, dateValue, formatDate) || '';
-    }, [dateValue, formatDate, formatToString, locale]);
+  // Handle date change from input
+  const onChangeLeft = useCallback(
+    (isoValue: string) => {
+      if (!isoValue) {
+        setDateValue(undefined);
 
-    const displayTimeValue = useMemo(() => {
-      if (!timeValue) return '';
-
-      return formatToString(locale, timeValue, formatTime) || '';
-    }, [timeValue, formatTime, formatToString, locale]);
-
-    // Panel toggle handler
-    const onPanelToggle = useCallback(
-      (open: boolean, input: FocusedInput) => {
-        if (onPanelToggleProp) {
-          onPanelToggleProp(open, input);
-        }
-      },
-      [onPanelToggleProp],
-    );
-
-    // Focus handlers
-    const onFocusLeft: FocusEventHandler<HTMLInputElement> = useCallback(() => {
-      if (!readOnly) {
-        setFocusedInput('left');
-        onPanelToggle(true, 'left');
+        return;
       }
-    }, [onPanelToggle, readOnly]);
 
-    const onFocusRight: FocusEventHandler<HTMLInputElement> =
-      useCallback(() => {
-        if (!readOnly) {
-          setFocusedInput('right');
-          setPendingTimeValue(timeValue ?? computeCurrentTime());
-          onPanelToggle(true, 'right');
-        }
-      }, [computeCurrentTime, onPanelToggle, readOnly, timeValue]);
+      if (isValid(isoValue)) {
+        setDateValue(isoValue);
+        setReferenceDate(startOf(isoValue, 'day'));
+        notifyChange(isoValue, timeValue);
+      }
+    },
+    [isValid, notifyChange, startOf, timeValue],
+  );
 
-    // Combine date and time into a single value
-    const combineDateTime = useCallback(
-      (
-        date: DateType | undefined,
-        time: DateType | undefined,
-      ): DateType | undefined => {
-        if (!date) return undefined;
+  const onChangeRight = useCallback(
+    (isoValue: string) => {
+      if (!isoValue) {
+        setTimeValue(undefined);
 
-        const timeSource = time || getNow();
+        return;
+      }
 
-        const result = setHour(
-          setMinute(
-            setSecond(date, getSecond(timeSource)),
-            getMinute(timeSource),
-          ),
-          getHour(timeSource),
-        );
+      if (isValid(isoValue)) {
+        setTimeValue(isoValue);
+        notifyChange(dateValue, isoValue);
+      }
+    },
+    [dateValue, isValid, notifyChange],
+  );
 
-        return result;
-      },
-      [getNow, getHour, getMinute, getSecond, setHour, setMinute, setSecond],
-    );
+  const onPasteIsoValueLeft = useCallback(
+    (isoValue: string) => {
+      if (!timeValue && isValid(isoValue)) {
+        // Time is empty, update it from pasted value
+        setTimeValue(isoValue);
+      }
+    },
+    [isValid, timeValue],
+  );
 
-    // Close handler
-    const onClose = useCallback(() => {
+  const onPasteIsoValueRight = useCallback(
+    (isoValue: string) => {
+      if (!dateValue && isValid(isoValue)) {
+        // Date is empty, update it from pasted value
+        setDateValue(isoValue);
+        setReferenceDate(startOf(isoValue, 'day'));
+      }
+    },
+    [dateValue, isValid, startOf],
+  );
+
+  const onCalendarChange = useCallback(
+    (target: DateType) => {
+      setDateValue(target);
+      setReferenceDate(startOf(target, 'day'));
+      notifyChange(target, timeValue);
+      onLeftComplete();
+    },
+    [notifyChange, startOf, timeValue, onLeftComplete],
+  );
+
+  // Handle time change from panel (pending only — not committed until onTimeConfirm)
+  const onTimePanelChange = useCallback((target?: DateType) => {
+    if (target) setPendingTimeValue(target);
+  }, []);
+
+  // Confirm: commit pendingTimeValue and close time panel
+  const onTimeConfirm = useCallback(() => {
+    if (pendingTimeValue) {
+      setTimeValue(pendingTimeValue);
+      notifyChange(dateValue, pendingTimeValue);
+    }
+
+    setPendingTimeValue(undefined);
+    onClose();
+  }, [pendingTimeValue, dateValue, notifyChange, onClose]);
+
+  // Cancel: discard pendingTimeValue and close time panel
+  const onTimeCancel = useCallback(() => {
+    setPendingTimeValue(undefined);
+    onClose();
+  }, [onClose]);
+
+  // Document event close for calendar
+  usePickerDocumentEventClose({
+    anchorRef,
+    lastElementRefInFlow: inputLeftRef,
+    onChangeClose: onClose,
+    onClose,
+    open: openCalendar,
+    popperRef: calendarPanelRef,
+  });
+
+  // Document event close for time panel — clicking away = cancel
+  usePickerDocumentEventClose({
+    anchorRef,
+    lastElementRefInFlow: inputRightRef,
+    onChangeClose: onTimeCancel,
+    onClose: onTimeCancel,
+    open: openTimePanel,
+    popperRef: timePanelRef,
+  });
+
+  const onClear: MouseEventHandler = useCallback(
+    (evt) => {
+      setDateValue(undefined);
+      setTimeValue(undefined);
+      onChangeProp?.(undefined);
+      onClearProp?.(evt);
+    },
+    [onChangeProp, onClearProp],
+  );
+
+  const onCalendarIconClick = useCallback(() => {
+    if (readOnly || disabled) return;
+
+    if (focusedInput) {
       setFocusedInput(null);
       onPanelToggle(false, null);
-    }, [onPanelToggle]);
+    } else {
+      inputLeftRef.current?.focus();
+    }
+  }, [disabled, focusedInput, onPanelToggle, readOnly]);
 
-    // Trigger onChange when both date and time are set
-    const notifyChange = useCallback(
-      (date: DateType | undefined, time: DateType | undefined) => {
-        if (!onChangeProp) return;
+  const suffix = (
+    <Icon
+      aria-label="Open calendar"
+      icon={CalendarTimeIcon}
+      onClick={onCalendarIconClick}
+    />
+  );
 
-        if (date && time) {
-          const combined = combineDateTime(date, time);
-
-          onChangeProp(combined);
+  return (
+    <>
+      <PickerTriggerWithSeparator
+        {...restTriggerProps}
+        ref={triggerComposedRef}
+        className={cx(pickerClasses.hostDatetime, className)}
+        clearable={clearable}
+        disabled={disabled}
+        forceShowClearable={!!(dateValue || timeValue)}
+        hideSuffixWhenClearable={clearable}
+        error={error}
+        formatLeft={formatDate}
+        formatRight={formatTime}
+        fullWidth={fullWidth}
+        hoverValueLeft={
+          openCalendar && !displayDateValue && hoverDate
+            ? (formatToString(locale, hoverDate, formatDate) ?? undefined)
+            : undefined
         }
-      },
-      [combineDateTime, onChangeProp],
-    );
-
-    // Handle left complete
-    const onLeftComplete = useCallback(() => {
-      if (timeValue) {
-        onClose();
-      } else {
-        setTimeout(() => {
-          inputRightRef.current?.focus();
-        }, 0);
-      }
-    }, [timeValue, onClose]);
-
-    // Handle right complete
-    const onRightComplete = useCallback(() => {
-      if (dateValue) {
-        /** Don't close the time panel */
-        setTimeout(() => {
-          inputRightRef.current?.focus();
-        }, 0);
-      } else {
-        setTimeout(() => {
-          inputLeftRef.current?.focus();
-        }, 0);
-      }
-    }, [dateValue]);
-
-    // Handle date change from input
-    const onChangeLeft = useCallback(
-      (isoValue: string) => {
-        if (!isoValue) {
-          setDateValue(undefined);
-
-          return;
-        }
-
-        if (isValid(isoValue)) {
-          setDateValue(isoValue);
-          setReferenceDate(startOf(isoValue, 'day'));
-          notifyChange(isoValue, timeValue);
-        }
-      },
-      [isValid, notifyChange, startOf, timeValue],
-    );
-
-    const onChangeRight = useCallback(
-      (isoValue: string) => {
-        if (!isoValue) {
-          setTimeValue(undefined);
-
-          return;
-        }
-
-        if (isValid(isoValue)) {
-          setTimeValue(isoValue);
-          notifyChange(dateValue, isoValue);
-        }
-      },
-      [dateValue, isValid, notifyChange],
-    );
-
-    const onPasteIsoValueLeft = useCallback(
-      (isoValue: string) => {
-        if (!timeValue && isValid(isoValue)) {
-          // Time is empty, update it from pasted value
-          setTimeValue(isoValue);
-        }
-      },
-      [isValid, timeValue],
-    );
-
-    const onPasteIsoValueRight = useCallback(
-      (isoValue: string) => {
-        if (!dateValue && isValid(isoValue)) {
-          // Date is empty, update it from pasted value
-          setDateValue(isoValue);
-          setReferenceDate(startOf(isoValue, 'day'));
-        }
-      },
-      [dateValue, isValid, startOf],
-    );
-
-    const onCalendarChange = useCallback(
-      (target: DateType) => {
-        setDateValue(target);
-        setReferenceDate(startOf(target, 'day'));
-        notifyChange(target, timeValue);
-        onLeftComplete();
-      },
-      [notifyChange, startOf, timeValue, onLeftComplete],
-    );
-
-    // Handle time change from panel (pending only — not committed until onTimeConfirm)
-    const onTimePanelChange = useCallback((target?: DateType) => {
-      if (target) setPendingTimeValue(target);
-    }, []);
-
-    // Confirm: commit pendingTimeValue and close time panel
-    const onTimeConfirm = useCallback(() => {
-      if (pendingTimeValue) {
-        setTimeValue(pendingTimeValue);
-        notifyChange(dateValue, pendingTimeValue);
-      }
-
-      setPendingTimeValue(undefined);
-      onClose();
-    }, [pendingTimeValue, dateValue, notifyChange, onClose]);
-
-    // Cancel: discard pendingTimeValue and close time panel
-    const onTimeCancel = useCallback(() => {
-      setPendingTimeValue(undefined);
-      onClose();
-    }, [onClose]);
-
-    // Document event close for calendar
-    usePickerDocumentEventClose({
-      anchorRef,
-      lastElementRefInFlow: inputLeftRef,
-      onChangeClose: onClose,
-      onClose,
-      open: openCalendar,
-      popperRef: calendarPanelRef,
-    });
-
-    // Document event close for time panel — clicking away = cancel
-    usePickerDocumentEventClose({
-      anchorRef,
-      lastElementRefInFlow: inputRightRef,
-      onChangeClose: onTimeCancel,
-      onClose: onTimeCancel,
-      open: openTimePanel,
-      popperRef: timePanelRef,
-    });
-
-    const onClear: MouseEventHandler = useCallback(
-      (evt) => {
-        setDateValue(undefined);
-        setTimeValue(undefined);
-        onChangeProp?.(undefined);
-        onClearProp?.(evt);
-      },
-      [onChangeProp, onClearProp],
-    );
-
-    const onCalendarIconClick = useCallback(() => {
-      if (readOnly || disabled) return;
-
-      if (focusedInput) {
-        setFocusedInput(null);
-        onPanelToggle(false, null);
-      } else {
-        inputLeftRef.current?.focus();
-      }
-    }, [disabled, focusedInput, onPanelToggle, readOnly]);
-
-    const suffix = (
-      <Icon
-        aria-label="Open calendar"
-        icon={CalendarTimeIcon}
-        onClick={onCalendarIconClick}
+        inputLeftRef={inputLeftRef}
+        inputRightRef={inputRightRef}
+        onBlurLeft={() => {}}
+        onBlurRight={() => {}}
+        onChangeLeft={onChangeLeft}
+        onChangeRight={onChangeRight}
+        onClear={onClear}
+        onFocusLeft={onFocusLeft}
+        onFocusRight={onFocusRight}
+        onLeftComplete={onLeftComplete}
+        onPasteIsoValueLeft={onPasteIsoValueLeft}
+        onPasteIsoValueRight={onPasteIsoValueRight}
+        onRightComplete={onRightComplete}
+        placeholderLeft={placeholderLeft}
+        placeholderRight={placeholderRight}
+        prefix={prefix}
+        readOnly={readOnly}
+        required={required}
+        size={size}
+        suffix={suffix}
+        valueLeft={displayDateValue}
+        valueRight={displayTimeValue}
       />
-    );
-
-    return (
-      <>
-        <PickerTriggerWithSeparator
-          {...restTriggerProps}
-          ref={triggerComposedRef}
-          className={cx(pickerClasses.hostDatetime, className)}
-          clearable={clearable}
-          disabled={disabled}
-          forceShowClearable={!!(dateValue || timeValue)}
-          hideSuffixWhenClearable={clearable}
-          error={error}
-          formatLeft={formatDate}
-          formatRight={formatTime}
-          fullWidth={fullWidth}
-          hoverValueLeft={
-            openCalendar && !displayDateValue && hoverDate
-              ? (formatToString(locale, hoverDate, formatDate) ?? undefined)
-              : undefined
-          }
-          inputLeftRef={inputLeftRef}
-          inputRightRef={inputRightRef}
-          onBlurLeft={() => {}}
-          onBlurRight={() => {}}
-          onChangeLeft={onChangeLeft}
-          onChangeRight={onChangeRight}
-          onClear={onClear}
-          onFocusLeft={onFocusLeft}
-          onFocusRight={onFocusRight}
-          onLeftComplete={onLeftComplete}
-          onPasteIsoValueLeft={onPasteIsoValueLeft}
-          onPasteIsoValueRight={onPasteIsoValueRight}
-          onRightComplete={onRightComplete}
-          placeholderLeft={placeholderLeft}
-          placeholderRight={placeholderRight}
-          prefix={prefix}
-          readOnly={readOnly}
-          required={required}
-          size={size}
-          suffix={suffix}
-          valueLeft={displayDateValue}
-          valueRight={displayTimeValue}
-        />
-        <DatePickerCalendar
-          ref={calendarPanelRef}
-          anchor={anchorRef}
-          calendarProps={calendarProps}
-          calendarRef={calendarRef}
-          disabledMonthSwitch={disabledMonthSwitch}
-          disableOnDoubleNext={disableOnDoubleNext}
-          disableOnDoublePrev={disableOnDoublePrev}
-          disableOnNext={disableOnNext}
-          disableOnPrev={disableOnPrev}
-          disabledYearSwitch={disabledYearSwitch}
-          displayMonthLocale={displayMonthLocale}
-          fadeProps={fadeProps}
-          isDateDisabled={isDateDisabled}
-          isHalfYearDisabled={isHalfYearDisabled}
-          isMonthDisabled={isMonthDisabled}
-          isQuarterDisabled={isQuarterDisabled}
-          isWeekDisabled={isWeekDisabled}
-          isYearDisabled={isYearDisabled}
-          mode={mode}
-          onChange={onCalendarChange}
-          onHover={setHoverDate}
-          onLeave={() => setHoverDate(undefined)}
-          open={openCalendar}
-          popperProps={popperProps}
-          referenceDate={referenceDate}
-          value={dateValue}
-        />
-        <TimePickerPanel
-          ref={timePanelRef}
-          anchor={anchorRef}
-          fadeProps={fadeProps}
-          hideHour={hideHour}
-          hideMinute={hideMinute}
-          hideSecond={hideSecond}
-          hourStep={hourStep}
-          minuteStep={minuteStep}
-          onChange={onTimePanelChange}
-          onCancel={onTimeCancel}
-          onConfirm={onTimeConfirm}
-          open={openTimePanel}
-          popperProps={popperPropsTime}
-          secondStep={secondStep}
-          value={pendingTimeValue}
-        />
-      </>
-    );
-  },
-);
+      <DatePickerCalendar
+        ref={calendarPanelRef}
+        anchor={anchorRef}
+        calendarProps={calendarProps}
+        calendarRef={calendarRef}
+        disabledMonthSwitch={disabledMonthSwitch}
+        disableOnDoubleNext={disableOnDoubleNext}
+        disableOnDoublePrev={disableOnDoublePrev}
+        disableOnNext={disableOnNext}
+        disableOnPrev={disableOnPrev}
+        disabledYearSwitch={disabledYearSwitch}
+        displayMonthLocale={displayMonthLocale}
+        fadeProps={fadeProps}
+        isDateDisabled={isDateDisabled}
+        isHalfYearDisabled={isHalfYearDisabled}
+        isMonthDisabled={isMonthDisabled}
+        isQuarterDisabled={isQuarterDisabled}
+        isWeekDisabled={isWeekDisabled}
+        isYearDisabled={isYearDisabled}
+        mode={mode}
+        onChange={onCalendarChange}
+        onHover={setHoverDate}
+        onLeave={() => setHoverDate(undefined)}
+        open={openCalendar}
+        popperProps={popperProps}
+        referenceDate={referenceDate}
+        value={dateValue}
+      />
+      <TimePickerPanel
+        ref={timePanelRef}
+        anchor={anchorRef}
+        fadeProps={fadeProps}
+        hideHour={hideHour}
+        hideMinute={hideMinute}
+        hideSecond={hideSecond}
+        hourStep={hourStep}
+        minuteStep={minuteStep}
+        onChange={onTimePanelChange}
+        onCancel={onTimeCancel}
+        onConfirm={onTimeConfirm}
+        open={openTimePanel}
+        popperProps={popperPropsTime}
+        secondStep={secondStep}
+        value={pendingTimeValue}
+      />
+    </>
+  );
+}
 
 export default DateTimePicker;

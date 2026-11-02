@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, useRef } from 'react';
+import { CSSProperties, type RefAttributes, useRef } from 'react';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useComposeRefs } from '../hooks/useComposeRefs';
@@ -52,130 +52,131 @@ export interface CollapseProps
  * @deprecated 設計師未定義，暫時標記為 deprecated.
  * 目前 NavigationOption 與 Accordion 正在使用此元件.
  */
-const Collapse = forwardRef<HTMLElement, CollapseProps>(
-  function Collapse(props, ref) {
-    const {
-      appear,
-      children,
-      collapsedHeight: collapsedHeightProp = 0,
-      delay = 0,
-      duration = 'auto',
-      easing = defaultEasing,
-      in: inProp = false,
-      lazyMount,
-      keepMount,
-      onEnter,
-      onEntered,
-      onEntering,
-      onExit,
-      onExiting,
-      onExited,
-      style,
-      ...rest
-    } = props;
-    const { autoTransitionDurationRef, addEndListener } =
-      useAutoTransitionDuration(duration);
-    const nodeRef = useRef<HTMLElement>(null);
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const collapsedHeight =
-      typeof collapsedHeightProp === 'number'
-        ? `${collapsedHeightProp}px`
-        : collapsedHeightProp;
-    const getWrapperHeight = () => wrapperRef.current?.clientHeight || 0;
-    const [setNodeTransition, resetNodeTransition] = useSetNodeTransition(
-      {
-        delay,
-        duration,
-        easing,
-        properties: ['height'],
-        resolveAutoDuration: () => {
-          const autoSizeDuration = getAutoSizeDuration(getWrapperHeight());
-
-          autoTransitionDurationRef.current = autoSizeDuration;
-
-          return autoSizeDuration;
-        },
-      },
-      style,
-    );
-    const composedNodeRef = useComposeRefs([ref, nodeRef]);
-    const transitionProps: TransitionProps = {
-      addEndListener,
-      appear,
+function Collapse({
+  ref,
+  ...props
+}: CollapseProps & RefAttributes<HTMLElement>) {
+  const {
+    appear,
+    children,
+    collapsedHeight: collapsedHeightProp = 0,
+    delay = 0,
+    duration = 'auto',
+    easing = defaultEasing,
+    in: inProp = false,
+    lazyMount,
+    keepMount,
+    onEnter,
+    onEntered,
+    onEntering,
+    onExit,
+    onExiting,
+    onExited,
+    style,
+    ...rest
+  } = props;
+  const { autoTransitionDurationRef, addEndListener } =
+    useAutoTransitionDuration(duration);
+  const nodeRef = useRef<HTMLElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const collapsedHeight =
+    typeof collapsedHeightProp === 'number'
+      ? `${collapsedHeightProp}px`
+      : collapsedHeightProp;
+  const getWrapperHeight = () => wrapperRef.current?.clientHeight || 0;
+  const [setNodeTransition, resetNodeTransition] = useSetNodeTransition(
+    {
+      delay,
       duration,
-      in: inProp,
-      lazyMount,
-      keepMount: collapsedHeight !== '0px' ? true : keepMount,
-      nodeRef,
+      easing,
+      properties: ['height'],
+      resolveAutoDuration: () => {
+        const autoSizeDuration = getAutoSizeDuration(getWrapperHeight());
 
-      onEnter(node, isAppearing) {
-        node.style.height = collapsedHeight;
-        reflow(node);
+        autoTransitionDurationRef.current = autoSizeDuration;
 
-        if (onEnter) {
-          onEnter(node, isAppearing);
-        }
+        return autoSizeDuration;
       },
-      onEntering(node, isAppearing) {
-        setNodeTransition(node, 'enter');
+    },
+    style,
+  );
+  const composedNodeRef = useComposeRefs([ref, nodeRef]);
+  const transitionProps: TransitionProps = {
+    addEndListener,
+    appear,
+    duration,
+    in: inProp,
+    lazyMount,
+    keepMount: collapsedHeight !== '0px' ? true : keepMount,
+    nodeRef,
 
-        node.style.height = `${getWrapperHeight()}px`;
+    onEnter(node, isAppearing) {
+      node.style.height = collapsedHeight;
+      reflow(node);
 
-        if (onEntering) {
-          onEntering(node, isAppearing);
-        }
-      },
-      onEntered(node, isAppearing) {
-        node.style.height = 'auto';
+      if (onEnter) {
+        onEnter(node, isAppearing);
+      }
+    },
+    onEntering(node, isAppearing) {
+      setNodeTransition(node, 'enter');
 
-        resetNodeTransition(node);
+      node.style.height = `${getWrapperHeight()}px`;
 
-        if (onEntered) {
-          onEntered(node, isAppearing);
-        }
-      },
-      onExit(node) {
-        node.style.height = `${getWrapperHeight()}px`;
+      if (onEntering) {
+        onEntering(node, isAppearing);
+      }
+    },
+    onEntered(node, isAppearing) {
+      node.style.height = 'auto';
 
-        reflow(node);
+      resetNodeTransition(node);
 
-        if (onExit) {
-          onExit(node);
-        }
-      },
-      onExiting(node) {
-        setNodeTransition(node, 'exit');
-        node.style.height = collapsedHeight;
+      if (onEntered) {
+        onEntered(node, isAppearing);
+      }
+    },
+    onExit(node) {
+      node.style.height = `${getWrapperHeight()}px`;
 
-        if (onExiting) {
-          onExiting(node);
-        }
-      },
-      onExited(node) {
-        resetNodeTransition(node);
+      reflow(node);
 
-        if (onExited) {
-          onExited(node);
-        }
-      },
-    };
+      if (onExit) {
+        onExit(node);
+      }
+    },
+    onExiting(node) {
+      setNodeTransition(node, 'exit');
+      node.style.height = collapsedHeight;
 
-    return (
-      <Transition {...transitionProps}>
-        {(state) => (
-          <div
-            {...rest}
-            ref={composedNodeRef}
-            style={{ ...getStyle(state, inProp, collapsedHeight), ...style }}
-          >
-            <div ref={wrapperRef} style={{ display: 'flex', width: '100%' }}>
-              <div style={{ width: '100%' }}>{children}</div>
-            </div>
+      if (onExiting) {
+        onExiting(node);
+      }
+    },
+    onExited(node) {
+      resetNodeTransition(node);
+
+      if (onExited) {
+        onExited(node);
+      }
+    },
+  };
+
+  return (
+    <Transition {...transitionProps}>
+      {(state) => (
+        <div
+          {...rest}
+          ref={composedNodeRef}
+          style={{ ...getStyle(state, inProp, collapsedHeight), ...style }}
+        >
+          <div ref={wrapperRef} style={{ display: 'flex', width: '100%' }}>
+            <div style={{ width: '100%' }}>{children}</div>
           </div>
-        )}
-      </Transition>
-    );
-  },
-);
+        </div>
+      )}
+    </Transition>
+  );
+}
 
 export default Collapse;

@@ -5,13 +5,13 @@ import {
   ClipboardEvent,
   Dispatch,
   FocusEventHandler,
-  forwardRef,
+  type RefAttributes,
   KeyboardEventHandler,
   MouseEvent as ReactMouseEvent,
   RefObject,
   SetStateAction,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useId,
   useImperativeHandle,
@@ -425,452 +425,432 @@ function isSingleValue(
  * @see {@link Input} 純文字輸入欄位
  * @see {@link useAutoCompleteValueControl} 管理 AutoComplete 內部值狀態的 hook
  */
-const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
-  function AutoComplete(props, ref) {
-    const {
-      disabled: disabledFromFormControl,
-      required: requiredFromFormControl,
-      severity,
-    } = useContext(FormControlContext) || {};
-    const {
-      addable = false,
-      asyncData = false,
-      caseSensitive = false,
-      className,
-      clearSearchText = true,
-      createSeparators = [',', '+', '\n'],
-      defaultValue,
-      disabled = disabledFromFormControl || false,
-      disabledOptionsFilter = false,
-      emptyText = '沒有符合的項目',
-      error = severity === 'error' || false,
-      id,
-      inputPosition = 'outside',
-      inputProps,
-      inputRef,
-      loading = false,
-      loadingText = '載入中...',
-      loadingPosition = 'bottom',
-      menuMaxHeight,
-      mode = 'single',
-      name,
-      onClear: onClearProp,
-      onChange: onChangeProp,
-      onInsert,
-      onSearch,
-      onSearchTextChange,
-      onVisibilityChange,
-      open: openProp,
-      options: optionsProp,
-      overflowStrategy,
-      placeholder = '',
-      prefix,
-      required = requiredFromFormControl || false,
-      searchDebounceTime = 300,
-      searchTextControlRef,
-      size,
-      stepByStepBulkCreate = false,
-      trimOnCreate = true,
-      value: valueProp,
-      createActionText,
-      createActionTextTemplate = '建立 "{text}"',
-      dropdownZIndex,
-      globalPortal = true,
-      onReachBottom,
-      onLeaveBottom,
-      onRemoveCreated,
-    } = props;
-    const shouldClearSearchTextOnBlur = clearSearchText;
+function AutoComplete({
+  ref,
+  ...props
+}: AutoCompleteProps & RefAttributes<HTMLDivElement>) {
+  const {
+    disabled: disabledFromFormControl,
+    required: requiredFromFormControl,
+    severity,
+  } = use(FormControlContext) || {};
+  const {
+    addable = false,
+    asyncData = false,
+    caseSensitive = false,
+    className,
+    clearSearchText = true,
+    createSeparators = [',', '+', '\n'],
+    defaultValue,
+    disabled = disabledFromFormControl || false,
+    disabledOptionsFilter = false,
+    emptyText = '沒有符合的項目',
+    error = severity === 'error' || false,
+    id,
+    inputPosition = 'outside',
+    inputProps,
+    inputRef,
+    loading = false,
+    loadingText = '載入中...',
+    loadingPosition = 'bottom',
+    menuMaxHeight,
+    mode = 'single',
+    name,
+    onClear: onClearProp,
+    onChange: onChangeProp,
+    onInsert,
+    onSearch,
+    onSearchTextChange,
+    onVisibilityChange,
+    open: openProp,
+    options: optionsProp,
+    overflowStrategy,
+    placeholder = '',
+    prefix,
+    required = requiredFromFormControl || false,
+    searchDebounceTime = 300,
+    searchTextControlRef,
+    size,
+    stepByStepBulkCreate = false,
+    trimOnCreate = true,
+    value: valueProp,
+    createActionText,
+    createActionTextTemplate = '建立 "{text}"',
+    dropdownZIndex,
+    globalPortal = true,
+    onReachBottom,
+    onLeaveBottom,
+    onRemoveCreated,
+  } = props;
+  const shouldClearSearchTextOnBlur = clearSearchText;
 
-    const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
-    const isMultiple = mode === 'multiple';
-    const isSingle = !isMultiple;
-    const isOpenControlled = openProp !== undefined;
-    const open = isOpenControlled ? openProp : uncontrolledOpen;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isMultiple = mode === 'multiple';
+  const isSingle = !isMultiple;
+  const isOpenControlled = openProp !== undefined;
+  const open = isOpenControlled ? openProp : uncontrolledOpen;
 
-    const toggleOpen = useCallback(
-      (newOpen: boolean | ((prev: boolean) => boolean)) => {
-        const nextValue =
-          typeof newOpen === 'function' ? newOpen(open) : newOpen;
+  const toggleOpen = useCallback(
+    (newOpen: boolean | ((prev: boolean) => boolean)) => {
+      const nextValue = typeof newOpen === 'function' ? newOpen(open) : newOpen;
 
-        if (!isOpenControlled) {
-          setUncontrolledOpen(nextValue);
+      if (!isOpenControlled) {
+        setUncontrolledOpen(nextValue);
+      }
+
+      onVisibilityChange?.(nextValue);
+    },
+    [isOpenControlled, open, onVisibilityChange],
+  );
+  const {
+    focused,
+    onFocus,
+    onChange,
+    onClear,
+    options,
+    searchText,
+    setSearchText,
+    value,
+  } = useAutoCompleteValueControl(
+    isMultiple
+      ? {
+          caseSensitive,
+          defaultValue: isMultipleValue(defaultValue)
+            ? defaultValue
+            : undefined,
+          disabledOptionsFilter,
+          getOptionsFilterQuery:
+            stepByStepBulkCreate && addable && onInsert
+              ? (st) => {
+                  const full = getFullParsedList(
+                    st,
+                    createSeparators,
+                    trimOnCreate,
+                  );
+                  return full.length > 1 ? (full[0] ?? undefined) : undefined;
+                }
+              : undefined,
+          mode: 'multiple',
+          onChange: onChangeProp as
+            | ((newOptions: SelectValue[]) => void)
+            | undefined,
+          onClear: onClearProp,
+          onClose: () => toggleOpen(false),
+          onSearch,
+          options: optionsProp,
+          value: isMultipleValue(valueProp) ? valueProp : undefined,
         }
-
-        onVisibilityChange?.(nextValue);
-      },
-      [isOpenControlled, open, onVisibilityChange],
-    );
-    const {
-      focused,
-      onFocus,
-      onChange,
-      onClear,
-      options,
-      searchText,
-      setSearchText,
-      value,
-    } = useAutoCompleteValueControl(
-      isMultiple
-        ? {
-            caseSensitive,
-            defaultValue: isMultipleValue(defaultValue)
-              ? defaultValue
+      : {
+          caseSensitive,
+          defaultValue: isSingleValue(defaultValue) ? defaultValue : undefined,
+          disabledOptionsFilter,
+          mode: 'single',
+          onChange: onChangeProp as
+            | ((newOption: SelectValue | null) => void)
+            | undefined,
+          onClear: onClearProp,
+          onClose: () => toggleOpen(false),
+          onSearch,
+          options: optionsProp,
+          value:
+            isSingleValue(valueProp) || valueProp === null
+              ? valueProp
               : undefined,
-            disabledOptionsFilter,
-            getOptionsFilterQuery:
-              stepByStepBulkCreate && addable && onInsert
-                ? (st) => {
-                    const full = getFullParsedList(
-                      st,
-                      createSeparators,
-                      trimOnCreate,
-                    );
-                    return full.length > 1 ? (full[0] ?? undefined) : undefined;
-                  }
-                : undefined,
-            mode: 'multiple',
-            onChange: onChangeProp as
-              | ((newOptions: SelectValue[]) => void)
-              | undefined,
-            onClear: onClearProp,
-            onClose: () => toggleOpen(false),
-            onSearch,
-            options: optionsProp,
-            value: isMultipleValue(valueProp) ? valueProp : undefined,
-          }
-        : {
-            caseSensitive,
-            defaultValue: isSingleValue(defaultValue)
-              ? defaultValue
-              : undefined,
-            disabledOptionsFilter,
-            mode: 'single',
-            onChange: onChangeProp as
-              | ((newOption: SelectValue | null) => void)
-              | undefined,
-            onClear: onClearProp,
-            onClose: () => toggleOpen(false),
-            onSearch,
-            options: optionsProp,
-            value:
-              isSingleValue(valueProp) || valueProp === null
-                ? valueProp
-                : undefined,
-          },
-    );
+        },
+  );
 
-    /** export set search text action to props (allow user to customize search text) */
-    useImperativeHandle(searchTextControlRef, () => ({
-      reset: resetSearchInputsAndOptions,
-      setSearchText,
-    }));
+  /** export set search text action to props (allow user to customize search text) */
+  useImperativeHandle(searchTextControlRef, () => ({
+    reset: resetSearchInputsAndOptions,
+    setSearchText,
+  }));
 
-    /** Track created items (new, unselected, all) */
-    const {
-      clearUnselected,
-      filterUnselected,
-      isCreated,
-      markCreated,
-      clearNewlyCreated,
-      markUnselected,
-    } = useCreationTracker();
+  /** Track created items (new, unselected, all) */
+  const {
+    clearUnselected,
+    filterUnselected,
+    isCreated,
+    markCreated,
+    clearNewlyCreated,
+    markUnselected,
+  } = useCreationTracker();
 
-    const creationEnabled = addable && typeof onInsert === 'function';
-    useEffect(() => {
-      if (addable && !onInsert) {
-        console.warn(
-          '[AutoComplete] `addable` 已開啟但未提供 `onInsert`，已停用建立功能。',
+  const creationEnabled = addable && typeof onInsert === 'function';
+  useEffect(() => {
+    if (addable && !onInsert) {
+      console.warn(
+        '[AutoComplete] `addable` 已開啟但未提供 `onInsert`，已停用建立功能。',
+      );
+    }
+  }, [addable, onInsert]);
+
+  const idSeed = useId();
+  const menuId = useMemo(() => `${MENU_ID_PREFIX}-${idSeed}`, [idSeed]);
+
+  const inputElementRef = useRef<HTMLInputElement>(null);
+  const onSetInputDisplay = useCallback((text: string) => {
+    if (inputElementRef.current) {
+      inputElementRef.current.value = text;
+    }
+  }, []);
+
+  const {
+    getPendingCreateList,
+    handleActionCustom: handleActionCustomBase,
+    handleBulkCreate,
+    handlePaste,
+    insertText,
+    processBulkCreate,
+    resetCreationInputs,
+    setInsertText,
+  } = useAutoCompleteCreation({
+    addable: creationEnabled,
+    caseSensitive,
+    clearUnselected,
+    createSeparators,
+    filterUnselected,
+    isMultiple,
+    isSingle,
+    markCreated,
+    clearNewlyCreated,
+    markUnselected,
+    onChangeMultiple: isMultiple
+      ? (onChangeProp as ((newOptions: SelectValue[]) => void) | undefined)
+      : undefined,
+    onInsert,
+    onSetInputDisplay,
+    options: optionsProp,
+    setSearchText,
+    stepByStepBulkCreate,
+    toggleOpen,
+    trimOnCreate,
+    value,
+    wrappedOnChange: (chooseOption) => wrappedOnChange(chooseOption),
+  });
+
+  const handleActionCustom = useCallback(() => {
+    suppressNextCloseRef.current = true;
+    handleActionCustomBase();
+    window.setTimeout(() => {
+      suppressNextCloseRef.current = false;
+    }, 0);
+  }, [handleActionCustomBase]);
+
+  const { cancelSearch, isLoading, runSearch } = useAutoCompleteSearch({
+    asyncData,
+    loading,
+    onSearch,
+    searchDebounceTime,
+  });
+
+  // Wrap onChange to track unselected created items
+  const wrappedOnChange = useCallback(
+    (chooseOption: SelectValue | null) => {
+      const result = onChange(chooseOption);
+      if (chooseOption) {
+        clearNewlyCreated([chooseOption.id]);
+      }
+
+      // In multiple mode, check if any created items were unselected
+      if (isMultiple && isMultipleValue(value) && isMultipleValue(result)) {
+        // Find items that were in value but not in result (unselected)
+        const unselectedItems = value.filter(
+          (v) => !result.some((r) => r.id === v.id),
         );
+
+        // If any unselected item was created via onInsert, track it
+        markUnselected(unselectedItems.map((item) => item.id));
+      } else if (isSingle && isSingleValue(value) && !result) {
+        // In single mode, if value was cleared and it was a created item, track it
+        markUnselected([value.id]);
       }
-    }, [addable, onInsert]);
 
-    const idSeed = useId();
-    const menuId = useMemo(() => `${MENU_ID_PREFIX}-${idSeed}`, [idSeed]);
+      return result;
+    },
+    [clearNewlyCreated, isMultiple, isSingle, markUnselected, onChange, value],
+  );
 
-    const inputElementRef = useRef<HTMLInputElement>(null);
-    const onSetInputDisplay = useCallback((text: string) => {
-      if (inputElementRef.current) {
-        inputElementRef.current.value = text;
-      }
-    }, []);
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const controlRef = useRef<HTMLElement>(null);
+  const resetOptionsTimeoutRef = useRef<number | null>(null);
+  const skipNextMultipleCloseResetRef = useRef(false);
+  const suppressNextCloseRef = useRef(false);
+  const composedRef = useComposeRefs([ref, controlRef]);
+  const composedInputRef = useComposeRefs([inputRef, inputElementRef]);
+  const clearPendingOptionsReset = useCallback(() => {
+    if (resetOptionsTimeoutRef.current !== null) {
+      window.clearTimeout(resetOptionsTimeoutRef.current);
+      resetOptionsTimeoutRef.current = null;
+    }
+  }, []);
+  const clearSearchInputDisplay = useCallback(() => {
+    if (inputElementRef.current) {
+      inputElementRef.current.value = '';
+    }
+  }, []);
+  const resetSearchInputs = useCallback(() => {
+    resetCreationInputs();
+    clearSearchInputDisplay();
+  }, [clearSearchInputDisplay, resetCreationInputs]);
 
-    const {
-      getPendingCreateList,
-      handleActionCustom: handleActionCustomBase,
-      handleBulkCreate,
-      handlePaste,
-      insertText,
-      processBulkCreate,
-      resetCreationInputs,
-      setInsertText,
-    } = useAutoCompleteCreation({
-      addable: creationEnabled,
-      caseSensitive,
-      clearUnselected,
-      createSeparators,
-      filterUnselected,
-      isMultiple,
-      isSingle,
-      markCreated,
-      clearNewlyCreated,
-      markUnselected,
-      onChangeMultiple: isMultiple
-        ? (onChangeProp as ((newOptions: SelectValue[]) => void) | undefined)
-        : undefined,
-      onInsert,
-      onSetInputDisplay,
-      options: optionsProp,
-      setSearchText,
-      stepByStepBulkCreate,
-      toggleOpen,
-      trimOnCreate,
-      value,
-      wrappedOnChange: (chooseOption) => wrappedOnChange(chooseOption),
-    });
+  const resetSearchInputsAndOptions = useCallback(() => {
+    resetSearchInputs();
+    clearPendingOptionsReset();
+    cancelSearch();
+    resetOptionsTimeoutRef.current = window.setTimeout(() => {
+      runSearch('', { immediate: true });
+      resetOptionsTimeoutRef.current = null;
+    }, BLUR_RESET_OPTIONS_DELAY);
+  }, [cancelSearch, clearPendingOptionsReset, resetSearchInputs, runSearch]);
 
-    const handleActionCustom = useCallback(() => {
-      suppressNextCloseRef.current = true;
-      handleActionCustomBase();
-      window.setTimeout(() => {
-        suppressNextCloseRef.current = false;
-      }, 0);
-    }, [handleActionCustomBase]);
+  const cleanupUnselectedCreated = useCallback(() => {
+    if (!creationEnabled || typeof onRemoveCreated !== 'function') return;
 
-    const { cancelSearch, isLoading, runSearch } = useAutoCompleteSearch({
-      asyncData,
-      loading,
-      onSearch,
-      searchDebounceTime,
-    });
+    const cleanedOptions = filterUnselected(optionsProp);
+    if (cleanedOptions.length === optionsProp.length) return;
 
-    // Wrap onChange to track unselected created items
-    const wrappedOnChange = useCallback(
-      (chooseOption: SelectValue | null) => {
-        const result = onChange(chooseOption);
-        if (chooseOption) {
-          clearNewlyCreated([chooseOption.id]);
-        }
+    clearUnselected();
+    onRemoveCreated(cleanedOptions);
+  }, [
+    clearUnselected,
+    creationEnabled,
+    filterUnselected,
+    onRemoveCreated,
+    optionsProp,
+  ]);
 
-        // In multiple mode, check if any created items were unselected
-        if (isMultiple && isMultipleValue(value) && isMultipleValue(result)) {
-          // Find items that were in value but not in result (unselected)
-          const unselectedItems = value.filter(
-            (v) => !result.some((r) => r.id === v.id),
-          );
-
-          // If any unselected item was created via onInsert, track it
-          markUnselected(unselectedItems.map((item) => item.id));
-        } else if (isSingle && isSingleValue(value) && !result) {
-          // In single mode, if value was cleared and it was a created item, track it
-          markUnselected([value.id]);
-        }
-
-        return result;
-      },
-      [
-        clearNewlyCreated,
-        isMultiple,
-        isSingle,
-        markUnselected,
-        onChange,
-        value,
-      ],
-    );
-
-    const nodeRef = useRef<HTMLDivElement>(null);
-    const controlRef = useRef<HTMLElement>(null);
-    const resetOptionsTimeoutRef = useRef<number | null>(null);
-    const skipNextMultipleCloseResetRef = useRef(false);
-    const suppressNextCloseRef = useRef(false);
-    const composedRef = useComposeRefs([ref, controlRef]);
-    const composedInputRef = useComposeRefs([inputRef, inputElementRef]);
-    const clearPendingOptionsReset = useCallback(() => {
-      if (resetOptionsTimeoutRef.current !== null) {
-        window.clearTimeout(resetOptionsTimeoutRef.current);
-        resetOptionsTimeoutRef.current = null;
-      }
-    }, []);
-    const clearSearchInputDisplay = useCallback(() => {
-      if (inputElementRef.current) {
-        inputElementRef.current.value = '';
-      }
-    }, []);
-    const resetSearchInputs = useCallback(() => {
-      resetCreationInputs();
-      clearSearchInputDisplay();
-    }, [clearSearchInputDisplay, resetCreationInputs]);
-
-    const resetSearchInputsAndOptions = useCallback(() => {
-      resetSearchInputs();
+  useEffect(
+    () => () => {
       clearPendingOptionsReset();
-      cancelSearch();
-      resetOptionsTimeoutRef.current = window.setTimeout(() => {
-        runSearch('', { immediate: true });
-        resetOptionsTimeoutRef.current = null;
-      }, BLUR_RESET_OPTIONS_DELAY);
-    }, [cancelSearch, clearPendingOptionsReset, resetSearchInputs, runSearch]);
+    },
+    [clearPendingOptionsReset],
+  );
 
-    const cleanupUnselectedCreated = useCallback(() => {
-      if (!creationEnabled || typeof onRemoveCreated !== 'function') return;
+  useEffect(() => {
+    // Multiple mode bridge only applies to SelectTrigger (tags) rendering.
+    // In `inputPosition="inside"` we render a plain Input trigger, so the hidden
+    // SelectTrigger input bridge is not needed.
+    if (!isMultiple || inputPosition === 'inside') return;
 
-      const cleanedOptions = filterUnselected(optionsProp);
-      if (cleanedOptions.length === optionsProp.length) return;
-
-      clearUnselected();
-      onRemoveCreated(cleanedOptions);
-    }, [
-      clearUnselected,
-      creationEnabled,
-      filterUnselected,
-      onRemoveCreated,
-      optionsProp,
-    ]);
-
-    useEffect(
-      () => () => {
-        clearPendingOptionsReset();
-      },
-      [clearPendingOptionsReset],
+    const hiddenTriggerInput = nodeRef.current?.querySelector<HTMLInputElement>(
+      `.${selectTriggerClasses.triggerInput}`,
     );
 
-    useEffect(() => {
-      // Multiple mode bridge only applies to SelectTrigger (tags) rendering.
-      // In `inputPosition="inside"` we render a plain Input trigger, so the hidden
-      // SelectTrigger input bridge is not needed.
-      if (!isMultiple || inputPosition === 'inside') return;
+    if (!hiddenTriggerInput) return;
 
-      const hiddenTriggerInput =
-        nodeRef.current?.querySelector<HTMLInputElement>(
-          `.${selectTriggerClasses.triggerInput}`,
-        );
+    const hasSelectedValue = isMultipleValue(value) && value.length > 0;
+    const bridgeValue = searchText || (hasSelectedValue ? '\u200B' : '');
 
-      if (!hiddenTriggerInput) return;
+    if (hiddenTriggerInput.value === bridgeValue) return;
 
-      const hasSelectedValue = isMultipleValue(value) && value.length > 0;
-      const bridgeValue = searchText || (hasSelectedValue ? '\u200B' : '');
+    hiddenTriggerInput.value = bridgeValue;
+    hiddenTriggerInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }, [inputPosition, isMultiple, searchText, value]);
 
-      if (hiddenTriggerInput.value === bridgeValue) return;
+  // In single mode, show searchText when focused, otherwise show selected value
+  // In multiple mode, always return empty string to avoid displaying "0"
+  const renderValue = useMemo(() => {
+    if (
+      isSingle &&
+      (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
+    ) {
+      return () => searchText;
+    }
+    if (isMultiple) {
+      return () => '';
+    }
+    return undefined;
+  }, [
+    focused,
+    isMultiple,
+    isSingle,
+    searchText,
+    shouldClearSearchTextOnBlur,
+    value,
+  ]);
 
-      hiddenTriggerInput.value = bridgeValue;
-      hiddenTriggerInput.dispatchEvent(new Event('change', { bubbles: true }));
-    }, [inputPosition, isMultiple, searchText, value]);
+  const insideInputValue = useMemo(() => {
+    // Inside trigger is a plain Input, so we must decide what to display.
+    // - multiple: always show current search text
+    // - single: show search text when focused (or when clear-on-blur is disabled)
+    if (isMultiple) return searchText;
 
-    // In single mode, show searchText when focused, otherwise show selected value
-    // In multiple mode, always return empty string to avoid displaying "0"
-    const renderValue = useMemo(() => {
-      if (
-        isSingle &&
-        (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
-      ) {
-        return () => searchText;
-      }
-      if (isMultiple) {
-        return () => '';
-      }
-      return undefined;
-    }, [
-      focused,
-      isMultiple,
-      isSingle,
-      searchText,
-      shouldClearSearchTextOnBlur,
-      value,
-    ]);
-
-    const insideInputValue = useMemo(() => {
-      // Inside trigger is a plain Input, so we must decide what to display.
-      // - multiple: always show current search text
-      // - single: show search text when focused (or when clear-on-blur is disabled)
-      if (isMultiple) return searchText;
-
-      if (
-        isSingle &&
-        (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
-      ) {
-        return searchText;
-      }
-
-      if (isSingleValue(value)) return value.name;
-      return '';
-    }, [
-      focused,
-      isMultiple,
-      isSingle,
-      searchText,
-      shouldClearSearchTextOnBlur,
-      value,
-    ]);
-
-    function getPlaceholder() {
-      if (isSingle && focused && isSingleValue(value)) {
-        return value.name;
-      }
-
-      return placeholder;
+    if (
+      isSingle &&
+      (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
+    ) {
+      return searchText;
     }
 
-    /** Trigger input props */
-    const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-      clearPendingOptionsReset();
-      const nextSearch = e.target.value;
-      /** should sync both search input and value */
-      setSearchText(nextSearch);
-      setInsertText(nextSearch);
-      onSearchTextChange?.(nextSearch);
+    if (isSingleValue(value)) return value.name;
+    return '';
+  }, [
+    focused,
+    isMultiple,
+    isSingle,
+    searchText,
+    shouldClearSearchTextOnBlur,
+    value,
+  ]);
 
-      if (!nextSearch) {
-        cancelSearch();
-        runSearch(nextSearch, { immediate: true });
-        return;
-      }
+  function getPlaceholder() {
+    if (isSingle && focused && isSingleValue(value)) {
+      return value.name;
+    }
 
-      runSearch(nextSearch);
-    };
+    return placeholder;
+  }
 
-    const onSearchInputFocus: FocusEventHandler<HTMLInputElement> = (e) => {
-      skipNextMultipleCloseResetRef.current = false;
-      clearPendingOptionsReset();
-      // When inputPosition is inside, let Dropdown handle the focus event
-      // Otherwise, stop propagation to prevent conflicts
-      if (inputPosition !== 'inside') {
-        e.stopPropagation();
-      }
+  /** Trigger input props */
+  const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    clearPendingOptionsReset();
+    const nextSearch = e.target.value;
+    /** should sync both search input and value */
+    setSearchText(nextSearch);
+    setInsertText(nextSearch);
+    onSearchTextChange?.(nextSearch);
 
-      // Only open if not already open to avoid flickering
-      // Ensure inside/uncontrolled can open from the native input focus.
-      if (!open) {
-        toggleOpen(true);
-      }
-      onFocus(true);
+    if (!nextSearch) {
+      cancelSearch();
+      runSearch(nextSearch, { immediate: true });
+      return;
+    }
 
-      inputProps?.onFocus?.(e);
-    };
+    runSearch(nextSearch);
+  };
 
-    const onSearchInputBlur: FocusEventHandler<HTMLInputElement> = (e) => {
-      // In multiple mode while dropdown is open, defer clearing to visibility change.
-      // This prevents clearing on intermediate blur triggered by dropdown interactions.
-      const shouldDeferMultipleBlurReset = isMultiple && open;
+  const onSearchInputFocus: FocusEventHandler<HTMLInputElement> = (e) => {
+    skipNextMultipleCloseResetRef.current = false;
+    clearPendingOptionsReset();
+    // When inputPosition is inside, let Dropdown handle the focus event
+    // Otherwise, stop propagation to prevent conflicts
+    if (inputPosition !== 'inside') {
+      e.stopPropagation();
+    }
 
-      // When inputPosition is inside, we need special handling
-      if (inputPosition === 'inside') {
-        // When open is controlled, prevent default blur behavior to avoid conflicts
-        // The controlled open state should be the source of truth
-        if (isOpenControlled) {
-          // Don't let Dropdown's onBlur close the dropdown when controlled
-          // Only call onFocus(false) to update internal state
-          onFocus(false);
-          // Clear search text and insert text when blur clear behavior is enabled
-          if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
-            resetSearchInputsAndOptions();
-            cleanupUnselectedCreated();
-          }
-          inputProps?.onBlur?.(e);
-          return;
-        }
+    // Only open if not already open to avoid flickering
+    // Ensure inside/uncontrolled can open from the native input focus.
+    if (!open) {
+      toggleOpen(true);
+    }
+    onFocus(true);
 
-        // For uncontrolled mode, let Dropdown handle it normally
-        // Dropdown's inlineTriggerElement will handle the blur and close logic
+    inputProps?.onFocus?.(e);
+  };
+
+  const onSearchInputBlur: FocusEventHandler<HTMLInputElement> = (e) => {
+    // In multiple mode while dropdown is open, defer clearing to visibility change.
+    // This prevents clearing on intermediate blur triggered by dropdown interactions.
+    const shouldDeferMultipleBlurReset = isMultiple && open;
+
+    // When inputPosition is inside, we need special handling
+    if (inputPosition === 'inside') {
+      // When open is controlled, prevent default blur behavior to avoid conflicts
+      // The controlled open state should be the source of truth
+      if (isOpenControlled) {
+        // Don't let Dropdown's onBlur close the dropdown when controlled
+        // Only call onFocus(false) to update internal state
+        onFocus(false);
         // Clear search text and insert text when blur clear behavior is enabled
         if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
           resetSearchInputsAndOptions();
@@ -880,468 +860,478 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         return;
       }
 
-      onFocus(false);
+      // For uncontrolled mode, let Dropdown handle it normally
+      // Dropdown's inlineTriggerElement will handle the blur and close logic
       // Clear search text and insert text when blur clear behavior is enabled
       if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
         resetSearchInputsAndOptions();
         cleanupUnselectedCreated();
       }
       inputProps?.onBlur?.(e);
-    };
+      return;
+    }
 
-    const handleClear = useCallback(
-      (e: ReactMouseEvent<Element>) => {
-        if (isSingle && isSingleValue(value)) {
-          markUnselected([value.id]);
-        }
-        onClear(e);
-        resetSearchInputs();
-      },
-      [isSingle, markUnselected, onClear, resetSearchInputs, value],
+    onFocus(false);
+    // Clear search text and insert text when blur clear behavior is enabled
+    if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
+      resetSearchInputsAndOptions();
+      cleanupUnselectedCreated();
+    }
+    inputProps?.onBlur?.(e);
+  };
+
+  const handleClear = useCallback(
+    (e: ReactMouseEvent<Element>) => {
+      if (isSingle && isSingleValue(value)) {
+        markUnselected([value.id]);
+      }
+      onClear(e);
+      resetSearchInputs();
+    },
+    [isSingle, markUnselected, onClear, resetSearchInputs, value],
+  );
+
+  const onClickSuffixActionIcon = () => {
+    toggleOpen((prev) => !prev);
+  };
+
+  const hasStepByStepBulkSeparator =
+    stepByStepBulkCreate &&
+    createSeparators.some((sep) => insertText.includes(sep));
+  const firstPendingText = hasStepByStepBulkSeparator
+    ? getPendingCreateList(insertText)[0]
+    : undefined;
+
+  const searchTextExistWithoutOption: boolean = !!(firstPendingText
+    ? firstPendingText &&
+      options.find((option) =>
+        isSameOptionName(option.name, firstPendingText, caseSensitive),
+      ) === undefined
+    : searchText &&
+      options.find((option) =>
+        isSameOptionName(option.name, searchText, caseSensitive),
+      ) === undefined);
+
+  const shouldShowCreateAction = !!(
+    searchTextExistWithoutOption &&
+    creationEnabled &&
+    (firstPendingText ?? insertText)
+  );
+
+  const createActionDisplayText =
+    firstPendingText !== undefined && firstPendingText !== ''
+      ? firstPendingText
+      : insertText;
+
+  const context = useMemo(
+    () => ({ onChange: wrappedOnChange, value }),
+    [wrappedOnChange, value],
+  );
+
+  // Convert SelectValue[] to DropdownOption[] (created options first)
+  const dropdownOptions: DropdownOption[] = useMemo(() => {
+    const sortedOptions = [...options].sort(
+      (a, b) => (isCreated(b.id) ? 1 : 0) - (isCreated(a.id) ? 1 : 0),
     );
+    return sortedOptions.map((option) => {
+      const created = isCreated(option.id);
+      const result: DropdownOption = {
+        id: option.id,
+        name: option.name,
+      };
 
-    const onClickSuffixActionIcon = () => {
-      toggleOpen((prev) => !prev);
-    };
-
-    const hasStepByStepBulkSeparator =
-      stepByStepBulkCreate &&
-      createSeparators.some((sep) => insertText.includes(sep));
-    const firstPendingText = hasStepByStepBulkSeparator
-      ? getPendingCreateList(insertText)[0]
-      : undefined;
-
-    const searchTextExistWithoutOption: boolean = !!(firstPendingText
-      ? firstPendingText &&
-        options.find((option) =>
-          isSameOptionName(option.name, firstPendingText, caseSensitive),
-        ) === undefined
-      : searchText &&
-        options.find((option) =>
-          isSameOptionName(option.name, searchText, caseSensitive),
-        ) === undefined);
-
-    const shouldShowCreateAction = !!(
-      searchTextExistWithoutOption &&
-      creationEnabled &&
-      (firstPendingText ?? insertText)
-    );
-
-    const createActionDisplayText =
-      firstPendingText !== undefined && firstPendingText !== ''
-        ? firstPendingText
-        : insertText;
-
-    const context = useMemo(
-      () => ({ onChange: wrappedOnChange, value }),
-      [wrappedOnChange, value],
-    );
-
-    // Convert SelectValue[] to DropdownOption[] (created options first)
-    const dropdownOptions: DropdownOption[] = useMemo(() => {
-      const sortedOptions = [...options].sort(
-        (a, b) => (isCreated(b.id) ? 1 : 0) - (isCreated(a.id) ? 1 : 0),
-      );
-      return sortedOptions.map((option) => {
-        const created = isCreated(option.id);
-        const result: DropdownOption = {
-          id: option.id,
-          name: option.name,
-        };
-
-        // Set checkSite based on mode and input position.
-        // - inside + multiple: keep multiple behavior, but render single-like checked icon
-        //   at suffix to match product visual expectation.
-        // - outside + multiple: render checkbox at prefix.
-        // - single: render checked icon at suffix.
-        if (mode === 'multiple') {
-          result.checkSite = inputPosition === 'inside' ? 'suffix' : 'prefix';
-        } else {
-          result.checkSite = 'suffix';
-        }
-
-        // Set shortcutText to "New" for created items (persists even after selection)
-        if (created) {
-          result.shortcutText = 'New';
-        }
-
-        return result;
-      });
-    }, [inputPosition, isCreated, mode, options]);
-
-    // Get selected value for dropdown
-    const dropdownValue = useMemo(() => {
+      // Set checkSite based on mode and input position.
+      // - inside + multiple: keep multiple behavior, but render single-like checked icon
+      //   at suffix to match product visual expectation.
+      // - outside + multiple: render checkbox at prefix.
+      // - single: render checked icon at suffix.
       if (mode === 'multiple') {
-        return isMultipleValue(value) ? value.map((v) => v.id) : [];
+        result.checkSite = inputPosition === 'inside' ? 'suffix' : 'prefix';
+      } else {
+        result.checkSite = 'suffix';
       }
-      return isSingleValue(value) ? value.id : undefined;
-    }, [mode, value]);
 
-    // Disable input when loading
-    const isInputDisabled = disabled || (!asyncData && isLoading);
+      // Set shortcutText to "New" for created items (persists even after selection)
+      if (created) {
+        result.shortcutText = 'New';
+      }
 
-    const dropdownStatus: DropdownStatusType | undefined = isLoading
-      ? 'loading'
-      : dropdownOptions.length === 0
-        ? 'empty'
-        : undefined;
-    const shouldForceClearable = isMultiple
-      ? (isMultipleValue(value) && value.length > 0) ||
-        searchText.trim().length > 0
-      : isSingleValue(value) ||
-        (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
+      return result;
+    });
+  }, [inputPosition, isCreated, mode, options]);
 
-    // Handle dropdown option selection
-    const handleDropdownSelect = useCallback(
-      (option: DropdownOption) => {
-        const selectedValue = options.find((opt) => opt.id === option.id);
-        if (selectedValue) {
-          // Close dropdown after selection in single mode
-          if (mode === 'single') {
-            // Update searchText first to prevent showing old value
-            setSearchText(selectedValue.name);
-            setInsertText(selectedValue.name);
-            // Then update value and focus state
-            wrappedOnChange(selectedValue);
-            toggleOpen(false);
-            onFocus(false);
-          } else {
-            skipNextMultipleCloseResetRef.current = true;
-            wrappedOnChange(selectedValue);
-            // In multiple mode, keep current filter text after selecting an item.
-            // Search text is cleared only when blur/close actually leaves the scope.
-          }
+  // Get selected value for dropdown
+  const dropdownValue = useMemo(() => {
+    if (mode === 'multiple') {
+      return isMultipleValue(value) ? value.map((v) => v.id) : [];
+    }
+    return isSingleValue(value) ? value.id : undefined;
+  }, [mode, value]);
+
+  // Disable input when loading
+  const isInputDisabled = disabled || (!asyncData && isLoading);
+
+  const dropdownStatus: DropdownStatusType | undefined = isLoading
+    ? 'loading'
+    : dropdownOptions.length === 0
+      ? 'empty'
+      : undefined;
+  const shouldForceClearable = isMultiple
+    ? (isMultipleValue(value) && value.length > 0) ||
+      searchText.trim().length > 0
+    : isSingleValue(value) ||
+      (!shouldClearSearchTextOnBlur && searchText.trim().length > 0);
+
+  // Handle dropdown option selection
+  const handleDropdownSelect = useCallback(
+    (option: DropdownOption) => {
+      const selectedValue = options.find((opt) => opt.id === option.id);
+      if (selectedValue) {
+        // Close dropdown after selection in single mode
+        if (mode === 'single') {
+          // Update searchText first to prevent showing old value
+          setSearchText(selectedValue.name);
+          setInsertText(selectedValue.name);
+          // Then update value and focus state
+          wrappedOnChange(selectedValue);
+          toggleOpen(false);
+          onFocus(false);
+        } else {
+          skipNextMultipleCloseResetRef.current = true;
+          wrappedOnChange(selectedValue);
+          // In multiple mode, keep current filter text after selecting an item.
+          // Search text is cleared only when blur/close actually leaves the scope.
         }
-      },
-      [
-        mode,
-        onFocus,
-        options,
-        setSearchText,
-        setInsertText,
-        toggleOpen,
-        wrappedOnChange,
-      ],
-    );
-
-    // Active index for dropdown keyboard navigation
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
-    // Keyboard-only active index: only set by arrow key navigation, not mouse hover.
-    // Drives the focus ring (--keyboard-active CSS class) separately from hover highlight.
-    const [keyboardActiveIndex, setKeyboardActiveIndex] = useState<
-      number | null
-    >(null);
-    const setListboxHasVisualFocus = useCallback((_focus: boolean) => {}, []);
-
-    // Reset activeIndex and keyboardActiveIndex when options change
-    useEffect(() => {
-      if (!dropdownOptions.length) {
-        setActiveIndex(null);
-        setKeyboardActiveIndex(null);
-        return;
       }
-
-      setActiveIndex((prev) => {
-        if (prev === null) return null;
-        return Math.min(prev, dropdownOptions.length - 1);
-      });
-      setKeyboardActiveIndex((prev) => {
-        if (prev === null) return null;
-        return Math.min(prev, dropdownOptions.length - 1);
-      });
-    }, [dropdownOptions.length]);
-
-    // Scroll to active option when activeIndex changes
-    useEffect(() => {
-      if (!open || activeIndex === null) return;
-
-      requestAnimationFrame(() => {
-        const activeOption = document.getElementById(
-          `${menuId}-option-${activeIndex}`,
-        );
-
-        activeOption?.scrollIntoView({ block: 'nearest' });
-      });
-    }, [activeIndex, menuId, open]);
-
-    // Compute aria-activedescendant
-    const ariaActivedescendant = useMemo(() => {
-      if (activeIndex !== null && dropdownOptions[activeIndex]) {
-        return `${menuId}-option-${activeIndex}`;
-      }
-      return undefined;
-    }, [activeIndex, dropdownOptions, menuId]);
-
-    const { handleInputKeyDown } = useAutoCompleteKeyboard({
-      activeIndex,
-      addable: creationEnabled,
-      createSeparators,
-      dropdownOptions,
-      handleActionCustom,
-      handleBulkCreate,
-      handleDropdownSelect,
-      inputPropsOnKeyDown: inputProps?.onKeyDown,
-      inputRef: inputElementRef,
-      isMultiple,
+    },
+    [
       mode,
       onFocus,
-      open,
-      processBulkCreate,
-      searchText,
-      searchTextExistWithoutOption,
-      setActiveIndex,
-      setKeyboardActiveIndex,
-      setInsertText,
-      setListboxHasVisualFocus,
+      options,
       setSearchText,
-      stepByStepBulkCreate,
+      setInsertText,
       toggleOpen,
-      value,
       wrappedOnChange,
+    ],
+  );
+
+  // Active index for dropdown keyboard navigation
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  // Keyboard-only active index: only set by arrow key navigation, not mouse hover.
+  // Drives the focus ring (--keyboard-active CSS class) separately from hover highlight.
+  const [keyboardActiveIndex, setKeyboardActiveIndex] = useState<number | null>(
+    null,
+  );
+  const setListboxHasVisualFocus = useCallback((_focus: boolean) => {}, []);
+
+  // Reset activeIndex and keyboardActiveIndex when options change
+  useEffect(() => {
+    if (!dropdownOptions.length) {
+      setActiveIndex(null);
+      setKeyboardActiveIndex(null);
+      return;
+    }
+
+    setActiveIndex((prev) => {
+      if (prev === null) return null;
+      return Math.min(prev, dropdownOptions.length - 1);
     });
+    setKeyboardActiveIndex((prev) => {
+      if (prev === null) return null;
+      return Math.min(prev, dropdownOptions.length - 1);
+    });
+  }, [dropdownOptions.length]);
 
-    const onSearchInputKeyDown: KeyboardEventHandler<HTMLInputElement> =
-      useCallback(
-        (e) => {
-          if (isImeComposing(e)) return;
+  // Scroll to active option when activeIndex changes
+  useEffect(() => {
+    if (!open || activeIndex === null) return;
 
-          if (e.key === 'Escape') {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleOpen(false);
-            setActiveIndex(null);
-            setKeyboardActiveIndex(null);
-            setListboxHasVisualFocus(false);
-            onFocus(false);
-            if (isMultiple && shouldClearSearchTextOnBlur) {
-              resetSearchInputsAndOptions();
-              cleanupUnselectedCreated();
-            }
-            inputElementRef.current?.blur();
-            inputProps?.onKeyDown?.(e);
-            return;
-          }
-
-          handleInputKeyDown(e);
-        },
-        [
-          cleanupUnselectedCreated,
-          handleInputKeyDown,
-          inputProps,
-          isMultiple,
-          onFocus,
-          resetSearchInputsAndOptions,
-          setActiveIndex,
-          setKeyboardActiveIndex,
-          setListboxHasVisualFocus,
-          shouldClearSearchTextOnBlur,
-          toggleOpen,
-        ],
+    requestAnimationFrame(() => {
+      const activeOption = document.getElementById(
+        `${menuId}-option-${activeIndex}`,
       );
 
-    // Handle visibility change from Dropdown to prevent flickering
-    const handleVisibilityChange = useCallback(
-      (newOpen: boolean) => {
-        // Suppress spurious closes triggered immediately after create action
-        if (!newOpen && suppressNextCloseRef.current) {
-          suppressNextCloseRef.current = false;
+      activeOption?.scrollIntoView({ block: 'nearest' });
+    });
+  }, [activeIndex, menuId, open]);
+
+  // Compute aria-activedescendant
+  const ariaActivedescendant = useMemo(() => {
+    if (activeIndex !== null && dropdownOptions[activeIndex]) {
+      return `${menuId}-option-${activeIndex}`;
+    }
+    return undefined;
+  }, [activeIndex, dropdownOptions, menuId]);
+
+  const { handleInputKeyDown } = useAutoCompleteKeyboard({
+    activeIndex,
+    addable: creationEnabled,
+    createSeparators,
+    dropdownOptions,
+    handleActionCustom,
+    handleBulkCreate,
+    handleDropdownSelect,
+    inputPropsOnKeyDown: inputProps?.onKeyDown,
+    inputRef: inputElementRef,
+    isMultiple,
+    mode,
+    onFocus,
+    open,
+    processBulkCreate,
+    searchText,
+    searchTextExistWithoutOption,
+    setActiveIndex,
+    setKeyboardActiveIndex,
+    setInsertText,
+    setListboxHasVisualFocus,
+    setSearchText,
+    stepByStepBulkCreate,
+    toggleOpen,
+    value,
+    wrappedOnChange,
+  });
+
+  const onSearchInputKeyDown: KeyboardEventHandler<HTMLInputElement> =
+    useCallback(
+      (e) => {
+        if (isImeComposing(e)) return;
+
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleOpen(false);
+          setActiveIndex(null);
+          setKeyboardActiveIndex(null);
+          setListboxHasVisualFocus(false);
+          onFocus(false);
+          if (isMultiple && shouldClearSearchTextOnBlur) {
+            resetSearchInputsAndOptions();
+            cleanupUnselectedCreated();
+          }
+          inputElementRef.current?.blur();
+          inputProps?.onKeyDown?.(e);
           return;
         }
 
-        // Only update if state actually changed to prevent flickering
-        if (newOpen !== open) {
-          toggleOpen(newOpen);
-        }
-
-        // In multiple mode, blur/close can be driven by Dropdown visibility updates.
-        // Keep input text cleanup consistent even when native input blur is not triggered.
-        if (!newOpen) {
-          setKeyboardActiveIndex(null);
-        }
-
-        if (!newOpen && isMultiple && shouldClearSearchTextOnBlur) {
-          if (skipNextMultipleCloseResetRef.current) {
-            const menuElement = document.getElementById(menuId);
-            const activeElement = document.activeElement;
-            const activeWithinHost = !!(
-              activeElement &&
-              (nodeRef.current?.contains(activeElement) ||
-                (menuElement && menuElement.contains(activeElement)))
-            );
-
-            skipNextMultipleCloseResetRef.current = false;
-            if (activeWithinHost) {
-              return;
-            }
-          }
-
-          resetSearchInputsAndOptions();
-          cleanupUnselectedCreated();
-        }
+        handleInputKeyDown(e);
       },
       [
         cleanupUnselectedCreated,
+        handleInputKeyDown,
+        inputProps,
         isMultiple,
-        menuId,
-        open,
+        onFocus,
         resetSearchInputsAndOptions,
+        setActiveIndex,
         setKeyboardActiveIndex,
+        setListboxHasVisualFocus,
         shouldClearSearchTextOnBlur,
         toggleOpen,
       ],
     );
 
-    const handlePasteWithFallback = useCallback(
-      (e: ClipboardEvent<HTMLInputElement>) => {
-        handlePaste(e);
-        inputProps?.onPaste?.(e);
-      },
-      [handlePaste, inputProps],
-    );
+  // Handle visibility change from Dropdown to prevent flickering
+  const handleVisibilityChange = useCallback(
+    (newOpen: boolean) => {
+      // Suppress spurious closes triggered immediately after create action
+      if (!newOpen && suppressNextCloseRef.current) {
+        suppressNextCloseRef.current = false;
+        return;
+      }
 
-    const resolvedInputProps: SelectTriggerInputProps = {
-      ...inputProps,
-      'aria-activedescendant': ariaActivedescendant,
-      'aria-controls': menuId,
-      'aria-expanded': open,
-      'aria-owns': menuId,
-      id: id ?? inputProps?.id,
-      name: name ?? inputProps?.name,
-      onBlur: onSearchInputBlur,
-      onChange: onSearchInputChange,
-      onFocus: onSearchInputFocus,
-      onKeyDown: onSearchInputKeyDown,
-      onPaste: handlePasteWithFallback,
-      readOnly: false,
-      role: 'combobox',
-    };
+      // Only update if state actually changed to prevent flickering
+      if (newOpen !== open) {
+        toggleOpen(newOpen);
+      }
 
-    return (
-      <SelectControlContext.Provider value={context}>
-        <div
-          ref={nodeRef}
-          className={cx(classes.host, {
-            [classes.hostInsideClosed]: inputPosition === 'inside' && !open,
-            [classes.hostMode(mode)]: mode,
-          })}
+      // In multiple mode, blur/close can be driven by Dropdown visibility updates.
+      // Keep input text cleanup consistent even when native input blur is not triggered.
+      if (!newOpen) {
+        setKeyboardActiveIndex(null);
+      }
+
+      if (!newOpen && isMultiple && shouldClearSearchTextOnBlur) {
+        if (skipNextMultipleCloseResetRef.current) {
+          const menuElement = document.getElementById(menuId);
+          const activeElement = document.activeElement;
+          const activeWithinHost = !!(
+            activeElement &&
+            (nodeRef.current?.contains(activeElement) ||
+              (menuElement && menuElement.contains(activeElement)))
+          );
+
+          skipNextMultipleCloseResetRef.current = false;
+          if (activeWithinHost) {
+            return;
+          }
+        }
+
+        resetSearchInputsAndOptions();
+        cleanupUnselectedCreated();
+      }
+    },
+    [
+      cleanupUnselectedCreated,
+      isMultiple,
+      menuId,
+      open,
+      resetSearchInputsAndOptions,
+      setKeyboardActiveIndex,
+      shouldClearSearchTextOnBlur,
+      toggleOpen,
+    ],
+  );
+
+  const handlePasteWithFallback = useCallback(
+    (e: ClipboardEvent<HTMLInputElement>) => {
+      handlePaste(e);
+      inputProps?.onPaste?.(e);
+    },
+    [handlePaste, inputProps],
+  );
+
+  const resolvedInputProps: SelectTriggerInputProps = {
+    ...inputProps,
+    'aria-activedescendant': ariaActivedescendant,
+    'aria-controls': menuId,
+    'aria-expanded': open,
+    'aria-owns': menuId,
+    id: id ?? inputProps?.id,
+    name: name ?? inputProps?.name,
+    onBlur: onSearchInputBlur,
+    onChange: onSearchInputChange,
+    onFocus: onSearchInputFocus,
+    onKeyDown: onSearchInputKeyDown,
+    onPaste: handlePasteWithFallback,
+    readOnly: false,
+    role: 'combobox',
+  };
+
+  return (
+    <SelectControlContext value={context}>
+      <div
+        ref={nodeRef}
+        className={cx(classes.host, {
+          [classes.hostInsideClosed]: inputPosition === 'inside' && !open,
+          [classes.hostMode(mode)]: mode,
+        })}
+      >
+        <Dropdown
+          actionText={
+            shouldShowCreateAction
+              ? createActionText
+                ? createActionText(createActionDisplayText)
+                : createActionTextTemplate.replace(
+                    '{text}',
+                    createActionDisplayText,
+                  )
+              : undefined
+          }
+          activeIndex={activeIndex}
+          keyboardActiveIndex={keyboardActiveIndex}
+          disabled={isInputDisabled}
+          emptyText={emptyText}
+          followText={searchText}
+          inputPosition={inputPosition}
+          isMatchInputValue
+          listboxId={menuId}
+          loadingText={loadingText}
+          loadingPosition={loadingPosition}
+          maxHeight={menuMaxHeight}
+          mode={mode}
+          onActionCustom={
+            shouldShowCreateAction ? handleActionCustom : undefined
+          }
+          onItemHover={setActiveIndex}
+          onSelect={handleDropdownSelect}
+          onVisibilityChange={handleVisibilityChange}
+          open={open}
+          options={asyncData && isLoading ? [] : dropdownOptions}
+          placement="bottom"
+          sameWidth
+          showDropdownActions={shouldShowCreateAction}
+          showActionShowTopBar={shouldShowCreateAction}
+          status={dropdownStatus}
+          toggleCheckedOnClick={
+            inputPosition === 'inside' && mode === 'multiple'
+              ? false
+              : undefined
+          }
+          type="default"
+          value={dropdownValue}
+          zIndex={dropdownZIndex}
+          globalPortal={globalPortal}
+          onReachBottom={onReachBottom}
+          onLeaveBottom={onLeaveBottom}
         >
-          <Dropdown
-            actionText={
-              shouldShowCreateAction
-                ? createActionText
-                  ? createActionText(createActionDisplayText)
-                  : createActionTextTemplate.replace(
-                      '{text}',
-                      createActionDisplayText,
-                    )
-                : undefined
-            }
-            activeIndex={activeIndex}
-            keyboardActiveIndex={keyboardActiveIndex}
-            disabled={isInputDisabled}
-            emptyText={emptyText}
-            followText={searchText}
-            inputPosition={inputPosition}
-            isMatchInputValue
-            listboxId={menuId}
-            loadingText={loadingText}
-            loadingPosition={loadingPosition}
-            maxHeight={menuMaxHeight}
-            mode={mode}
-            onActionCustom={
-              shouldShowCreateAction ? handleActionCustom : undefined
-            }
-            onItemHover={setActiveIndex}
-            onSelect={handleDropdownSelect}
-            onVisibilityChange={handleVisibilityChange}
-            open={open}
-            options={asyncData && isLoading ? [] : dropdownOptions}
-            placement="bottom"
-            sameWidth
-            showDropdownActions={shouldShowCreateAction}
-            showActionShowTopBar={shouldShowCreateAction}
-            status={dropdownStatus}
-            toggleCheckedOnClick={
-              inputPosition === 'inside' && mode === 'multiple'
-                ? false
-                : undefined
-            }
-            type="default"
-            value={dropdownValue}
-            zIndex={dropdownZIndex}
-            globalPortal={globalPortal}
-            onReachBottom={onReachBottom}
-            onLeaveBottom={onLeaveBottom}
-          >
-            {inputPosition === 'inside' ? (
-              <AutoCompleteInsideTrigger
-                active={open}
-                className={className}
-                clearable={shouldForceClearable}
-                disabled={isInputDisabled}
-                error={error}
-                inputRef={composedInputRef}
-                onClear={handleClear}
-                placeholder={getPlaceholder()}
-                resolvedInputProps={{
-                  ...resolvedInputProps,
-                  onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
-                    resolvedInputProps.onClick?.(e);
-                  },
-                }}
-                size={size}
-                value={insideInputValue}
-              />
-            ) : (
-              <SelectTrigger
-                ref={composedRef}
-                active={open}
-                className={className}
-                clearable
-                disabled={isInputDisabled}
-                fullWidth
-                isForceClearable={shouldForceClearable}
-                inputRef={composedInputRef}
-                mode={mode}
-                onTagClose={wrappedOnChange}
-                onClear={handleClear}
-                overflowStrategy={
-                  isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy
-                }
-                placeholder={getPlaceholder()}
-                prefix={prefix}
-                readOnly={false}
-                required={required}
-                type={error ? 'error' : 'default'}
-                inputProps={{
-                  ...resolvedInputProps,
-                  onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
-                    // When inputPosition is inside, let Dropdown handle the click event
-                    // Otherwise, stop propagation to prevent conflicts
-                    // This branch is only rendered when `inputPosition !== 'inside'`.
-                    e.stopPropagation();
-                    resolvedInputProps.onClick?.(e);
-                  },
-                }}
-                searchText={searchText}
-                size={size}
-                showTextInputAfterTags
-                suffixAction={onClickSuffixActionIcon}
-                value={
-                  mode === 'multiple' &&
-                  isMultipleValue(value) &&
-                  value.length === 0
-                    ? undefined
-                    : (value ?? undefined)
-                }
-                {...(mode === 'single' && renderValue ? { renderValue } : {})}
-              />
-            )}
-          </Dropdown>
-        </div>
-      </SelectControlContext.Provider>
-    );
-  },
-);
+          {inputPosition === 'inside' ? (
+            <AutoCompleteInsideTrigger
+              active={open}
+              className={className}
+              clearable={shouldForceClearable}
+              disabled={isInputDisabled}
+              error={error}
+              inputRef={composedInputRef}
+              onClear={handleClear}
+              placeholder={getPlaceholder()}
+              resolvedInputProps={{
+                ...resolvedInputProps,
+                onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
+                  resolvedInputProps.onClick?.(e);
+                },
+              }}
+              size={size}
+              value={insideInputValue}
+            />
+          ) : (
+            <SelectTrigger
+              ref={composedRef}
+              active={open}
+              className={className}
+              clearable
+              disabled={isInputDisabled}
+              fullWidth
+              isForceClearable={shouldForceClearable}
+              inputRef={composedInputRef}
+              mode={mode}
+              onTagClose={wrappedOnChange}
+              onClear={handleClear}
+              overflowStrategy={
+                isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy
+              }
+              placeholder={getPlaceholder()}
+              prefix={prefix}
+              readOnly={false}
+              required={required}
+              type={error ? 'error' : 'default'}
+              inputProps={{
+                ...resolvedInputProps,
+                onClick: (e: ReactMouseEvent<HTMLInputElement>) => {
+                  // When inputPosition is inside, let Dropdown handle the click event
+                  // Otherwise, stop propagation to prevent conflicts
+                  // This branch is only rendered when `inputPosition !== 'inside'`.
+                  e.stopPropagation();
+                  resolvedInputProps.onClick?.(e);
+                },
+              }}
+              searchText={searchText}
+              size={size}
+              showTextInputAfterTags
+              suffixAction={onClickSuffixActionIcon}
+              value={
+                mode === 'multiple' &&
+                isMultipleValue(value) &&
+                value.length === 0
+                  ? undefined
+                  : (value ?? undefined)
+              }
+              {...(mode === 'single' && renderValue ? { renderValue } : {})}
+            />
+          )}
+        </Dropdown>
+      </div>
+    </SelectControlContext>
+  );
+}
 
 export default AutoComplete;

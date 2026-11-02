@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useCallback } from 'react';
+import { memo, type RefAttributes, useCallback } from 'react';
 import {
   getRowKey,
   tableClasses as classes,
@@ -24,10 +24,10 @@ export interface TableToggleableCellProps<
   width?: number;
 }
 
-function TableToggleableCellInner<T extends TableDataSource = TableDataSource>(
-  props: TableToggleableCellProps<T>,
-  ref: React.ForwardedRef<HTMLTableCellElement>,
-) {
+function TableToggleableCellInner<T extends TableDataSource = TableDataSource>({
+  ref,
+  ...props
+}: TableToggleableCellProps<T> & RefAttributes<HTMLTableCellElement>) {
   const { loading, toggleable } = useTableContext();
   const {
     className,
@@ -99,14 +99,6 @@ function TableToggleableCellInner<T extends TableDataSource = TableDataSource>(
   );
 }
 
-const ForwardedTableToggleableCell = forwardRef(TableToggleableCellInner) as <
-  T extends TableDataSource = TableDataSource,
->(
-  props: TableToggleableCellProps<T> & {
-    ref?: React.ForwardedRef<HTMLTableCellElement>;
-  },
-) => React.ReactElement;
-
 export const TableToggleableCell = memo(
-  ForwardedTableToggleableCell,
-) as typeof ForwardedTableToggleableCell;
+  TableToggleableCellInner,
+) as typeof TableToggleableCellInner;

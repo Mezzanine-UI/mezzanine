@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ReactElement, useMemo } from 'react';
+import { type RefAttributes, ReactElement, useMemo } from 'react';
 
 import { filterAreaClasses as classes } from '@mezzanine-ui/core/filter-area';
 
@@ -36,22 +36,19 @@ export interface FilterLineProps
  * @see {@link FilterArea} 管理多個 FilterLine 的容器元件
  * @see {@link Filter} 包裝單一篩選欄位的元件
  */
-const FilterLine = forwardRef<HTMLDivElement, FilterLineProps>(
-  function FilterLine(props, ref) {
-    const { className, children, ...rest } = props;
+function FilterLine({
+  ref,
+  ...props
+}: FilterLineProps & RefAttributes<HTMLDivElement>) {
+  const { className, children, ...rest } = props;
 
-    const lineClassName = useMemo(
-      () => cx(classes.line, className),
-      [className],
-    );
+  const lineClassName = useMemo(() => cx(classes.line, className), [className]);
 
-    return (
-      <div {...rest} ref={ref} className={lineClassName}>
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div {...rest} ref={ref} className={lineClassName}>
+      {children}
+    </div>
+  );
+}
 
 export default FilterLine;
-

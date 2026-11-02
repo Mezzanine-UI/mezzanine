@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEventHandler, forwardRef, useContext } from 'react';
+import { ChangeEventHandler, type RefAttributes, use } from 'react';
 import {
   toggleClasses as classes,
   ToggleSize,
@@ -97,71 +97,71 @@ export interface ToggleProps
  * @see {@link useSwitchControlValue} 管理 Toggle 受控／非受控值狀態的 hook
  * @see {@link Checkbox} 多選框元件，適用於多選場景
  */
-const Toggle = forwardRef<HTMLDivElement, ToggleProps>(
-  function Toggle(props, ref) {
-    const { disabled: disabledFromFormControl } =
-      useContext(FormControlContext) || {};
-    const {
-      checked: checkedProp,
-      className,
-      defaultChecked,
-      disabled = disabledFromFormControl,
-      inputProps,
-      label,
-      onChange: onChangeProp,
-      size = 'main',
-      supportingText,
-      ...rest
-    } = props;
-    const [checked, onChange] = useSwitchControlValue({
-      checked: checkedProp,
-      defaultChecked,
-      onChange: onChangeProp,
-    });
+function Toggle({
+  ref,
+  ...props
+}: ToggleProps & RefAttributes<HTMLDivElement>) {
+  const { disabled: disabledFromFormControl } = use(FormControlContext) || {};
+  const {
+    checked: checkedProp,
+    className,
+    defaultChecked,
+    disabled = disabledFromFormControl,
+    inputProps,
+    label,
+    onChange: onChangeProp,
+    size = 'main',
+    supportingText,
+    ...rest
+  } = props;
+  const [checked, onChange] = useSwitchControlValue({
+    checked: checkedProp,
+    defaultChecked,
+    onChange: onChangeProp,
+  });
 
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        className={cx(
-          classes.host,
-          {
-            [classes.checked]: checked,
-            [classes.disabled]: disabled,
-            [classes.main]: size === 'main',
-            [classes.sub]: size === 'sub',
-          },
-          className,
-        )}
-      >
-        <div className={classes.inputContainer}>
-          <span className={classes.knob} />
-          <input
-            {...inputProps}
-            aria-checked={checked}
-            aria-disabled={disabled}
-            checked={checked}
-            className={classes.input}
-            disabled={disabled}
-            onChange={onChange}
-            type="checkbox"
-          />
-        </div>
-        {label && (
-          <div className={classes.textContainer}>
-            <Typography color="text-neutral-solid" variant="label-primary">
-              {label}
-            </Typography>
-            {supportingText && (
-              <Typography color="text-neutral" variant="caption">
-                {supportingText}
-              </Typography>
-            )}
-          </div>
-        )}
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className={cx(
+        classes.host,
+        {
+          [classes.checked]: checked,
+          [classes.disabled]: disabled,
+          [classes.main]: size === 'main',
+          [classes.sub]: size === 'sub',
+        },
+        className,
+      )}
+    >
+      <div className={classes.inputContainer}>
+        <span className={classes.knob} />
+        <input
+          {...inputProps}
+          aria-checked={checked}
+          aria-disabled={disabled}
+          checked={checked}
+          className={classes.input}
+          disabled={disabled}
+          onChange={onChange}
+          type="checkbox"
+        />
       </div>
-    );
-  },
-);
+      {label && (
+        <div className={classes.textContainer}>
+          <Typography color="text-neutral-solid" variant="label-primary">
+            {label}
+          </Typography>
+          {supportingText && (
+            <Typography color="text-neutral" variant="caption">
+              {supportingText}
+            </Typography>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default Toggle;

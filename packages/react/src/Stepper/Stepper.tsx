@@ -1,5 +1,5 @@
 import {
-  forwardRef,
+  type RefAttributes,
   ReactElement,
   cloneElement,
   Children,
@@ -49,100 +49,101 @@ import { useStepDistance } from './useStepDistance';
  *
  * @see {@link useStepper} 管理步驟狀態的 hook
  */
-const Stepper = forwardRef<HTMLDivElement, StepperProps>(
-  function Stepper(props, ref) {
-    const {
-      children,
-      className,
-      currentStep = 0,
-      onStepChange,
-      orientation = 'horizontal',
-      type = 'number',
-      ...rest
-    } = props;
+function Stepper({
+  ref,
+  ...props
+}: StepperProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    currentStep = 0,
+    onStepChange,
+    orientation = 'horizontal',
+    type = 'number',
+    ...rest
+  } = props;
 
-    const childrenArray = Children.toArray(children);
+  const childrenArray = Children.toArray(children);
 
-    const stepperRef = useRef<HTMLDivElement>(null);
-    const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const stepperRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    const mergedRef = useCallback(
-      (element: HTMLDivElement | null) => {
-        stepperRef.current = element;
-        if (ref) {
-          if (typeof ref === 'function') {
-            ref(element);
-          } else {
-            ref.current = element;
-          }
+  const mergedRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      stepperRef.current = element;
+      if (ref) {
+        if (typeof ref === 'function') {
+          ref(element);
+        } else {
+          ref.current = element;
         }
-      },
-      [ref],
-    );
-
-    const stepPositions = useStepDistance(
-      orientation,
-      stepperRef,
-      stepRefs,
-      type,
-      childrenArray,
-    );
-
-    const getStepStatus = (
-      index: number,
-      processingIndex: number,
-    ): StepProps['status'] => {
-      if (index === processingIndex) return 'processing';
-      if (index < processingIndex) return 'succeeded';
-      return 'pending';
-    };
-
-    const stepsWithState = childrenArray.map((element, index) => {
-      const step = element as ReactElement<StepProps>;
-
-      return cloneElement(step as ReactElement<any>, {
-        ...step.props,
-        index,
-        orientation,
-        ref: (el: HTMLDivElement | null) => {
-          stepRefs.current[index] = el;
-        },
-        status: getStepStatus(index, currentStep),
-        style: {
-          '--connect-line-distance': stepPositions?.distances?.[index]
-            ? `${stepPositions.distances[index]}px`
-            : undefined,
-          ...step.props.style,
-        } as CSSProperties,
-        type,
-      });
-    });
-
-    useEffect(() => {
-      if (typeof onStepChange === 'function') {
-        onStepChange(currentStep);
       }
-    }, [currentStep, onStepChange]);
+    },
+    [ref],
+  );
 
-    return (
-      <div
-        {...rest}
-        className={cx(
-          classes.host,
-          {
-            [classes.horizontal]: orientation === 'horizontal',
-            [classes.vertical]: orientation === 'vertical',
-            [classes.dot]: type === 'dot',
-            [classes.number]: type === 'number',
-          },
-          className,
-        )}
-        ref={mergedRef}
-      >
-        {stepsWithState}
-      </div>
-    );
-  },
-);
+  const stepPositions = useStepDistance(
+    orientation,
+    stepperRef,
+    stepRefs,
+    type,
+    childrenArray,
+  );
+
+  const getStepStatus = (
+    index: number,
+    processingIndex: number,
+  ): StepProps['status'] => {
+    if (index === processingIndex) return 'processing';
+    if (index < processingIndex) return 'succeeded';
+    return 'pending';
+  };
+
+  const stepsWithState = childrenArray.map((element, index) => {
+    const step = element as ReactElement<StepProps>;
+
+    return cloneElement(step as ReactElement<any>, {
+      ...step.props,
+      index,
+      orientation,
+      ref: (el: HTMLDivElement | null) => {
+        stepRefs.current[index] = el;
+      },
+      status: getStepStatus(index, currentStep),
+      style: {
+        '--connect-line-distance': stepPositions?.distances?.[index]
+          ? `${stepPositions.distances[index]}px`
+          : undefined,
+        ...step.props.style,
+      } as CSSProperties,
+      type,
+    });
+  });
+
+  useEffect(() => {
+    if (typeof onStepChange === 'function') {
+      onStepChange(currentStep);
+    }
+  }, [currentStep, onStepChange]);
+
+  return (
+    <div
+      {...rest}
+      className={cx(
+        classes.host,
+        {
+          [classes.horizontal]: orientation === 'horizontal',
+          [classes.vertical]: orientation === 'vertical',
+          [classes.dot]: type === 'dot',
+          [classes.number]: type === 'number',
+        },
+        className,
+      )}
+      ref={mergedRef}
+    >
+      {stepsWithState}
+    </div>
+  );
+}
 
 export default Stepper;

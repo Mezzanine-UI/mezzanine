@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { type RefAttributes, ReactNode } from 'react';
 import {
   inputCheckGroupClasses as classes,
   InputCheckGroupOrientation,
@@ -32,36 +32,37 @@ export interface InputCheckGroupProps
 /**
  * The react component for `mezzanine` input check group.
  */
-const InputCheckGroup = forwardRef<HTMLDivElement, InputCheckGroupProps>(
-  function InputCheckGroup(props, ref) {
-    const {
-      children,
-      className,
-      orientation = 'horizontal',
-      segmentedStyle = false,
-      size = 'main',
-      ...rest
-    } = props;
+function InputCheckGroup({
+  ref,
+  ...props
+}: InputCheckGroupProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    orientation = 'horizontal',
+    segmentedStyle = false,
+    size = 'main',
+    ...rest
+  } = props;
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        aria-orientation={orientation}
-        className={cx(
-          classes.host,
-          classes.orientation(orientation),
-          classes.size(size),
-          {
-            [classes.segmented]: segmentedStyle,
-          },
-          className,
-        )}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      aria-orientation={orientation}
+      className={cx(
+        classes.host,
+        classes.orientation(orientation),
+        classes.size(size),
+        {
+          [classes.segmented]: segmentedStyle,
+        },
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default InputCheckGroup;

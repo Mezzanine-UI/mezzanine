@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ReactElement } from 'react';
+import { type RefAttributes, ReactElement } from 'react';
 import { cx } from '../utils/cx';
 import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
 
@@ -15,16 +15,17 @@ export interface DescriptionGroupProps {
   children: ReactElement[];
 }
 
-const DescriptionGroup = forwardRef<HTMLDivElement, DescriptionGroupProps>(
-  function DescriptionGroup(props, ref) {
-    const { className, children } = props;
+function DescriptionGroup({
+  ref,
+  ...props
+}: DescriptionGroupProps & RefAttributes<HTMLDivElement>) {
+  const { className, children } = props;
 
-    return (
-      <div className={cx(classes.groupHost, className)} ref={ref}>
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div className={cx(classes.groupHost, className)} ref={ref}>
+      {children}
+    </div>
+  );
+}
 
 export default DescriptionGroup;

@@ -6,7 +6,7 @@ import { textFieldClasses } from '@mezzanine-ui/core/text-field';
 import { EyeIcon, EyeInvisibleIcon, SearchIcon } from '@mezzanine-ui/icons';
 import {
   ChangeEventHandler,
-  forwardRef,
+  type RefAttributes,
   KeyboardEventHandler,
   MouseEventHandler,
   ReactNode,
@@ -315,461 +315,457 @@ export type InputProps =
  * @see {@link FormField} 用於包裹 Input 並提供標籤與錯誤訊息
  * @see {@link TextField} Input 底層使用的文字框容器元件
  */
-const Input = forwardRef<HTMLDivElement, InputProps>(
-  function Input(props, ref) {
-    const {
-      active,
-      className,
-      defaultValue,
-      disabled = false,
-      error = false,
-      formatter: formatterProp,
-      fullWidth = true,
-      id,
-      inputProps,
-      inputType,
-      inputRef: inputRefProp,
-      name,
-      onChange: onChangeProp,
-      parser: parserProp,
-      placeholder,
-      readonly,
-      size = 'main',
-      typing,
-      variant = 'base',
-      value: valueProp,
-    } = props;
+function Input({ ref, ...props }: InputProps & RefAttributes<HTMLDivElement>) {
+  const {
+    active,
+    className,
+    defaultValue,
+    disabled = false,
+    error = false,
+    formatter: formatterProp,
+    fullWidth = true,
+    id,
+    inputProps,
+    inputType,
+    inputRef: inputRefProp,
+    name,
+    onChange: onChangeProp,
+    parser: parserProp,
+    placeholder,
+    readonly,
+    size = 'main',
+    typing,
+    variant = 'base',
+    value: valueProp,
+  } = props;
 
-    const inputRef = useRef<HTMLInputElement>(null);
-    const [showPassword, setShowPassword] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const [value, onChange, onClearFromHook] = useInputWithClearControlValue({
-      defaultValue,
-      onChange: onChangeProp,
-      ref: inputRef,
-      value: valueProp,
-    });
+  const [value, onChange, onClearFromHook] = useInputWithClearControlValue({
+    defaultValue,
+    onChange: onChangeProp,
+    ref: inputRef,
+    value: valueProp,
+  });
 
-    // Handle formatter/parser logic
-    const formatter = useMemo(() => {
-      if (formatterProp) return formatterProp;
+  // Handle formatter/parser logic
+  const formatter = useMemo(() => {
+    if (formatterProp) return formatterProp;
 
-      if (variant === 'measure') {
-        return (value: string) => formatNumberWithCommas(value);
+    if (variant === 'measure') {
+      return (value: string) => formatNumberWithCommas(value);
+    }
+
+    return undefined;
+  }, [formatterProp, variant]);
+
+  const parser = useMemo(() => {
+    if (parserProp) return parserProp;
+
+    if (variant === 'measure') {
+      return (value: string) => parseNumberWithCommas(value)?.toString() ?? '';
+    }
+
+    return undefined;
+  }, [parserProp, variant]);
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      let newValue = event.target.value;
+
+      // Parse the formatted value back to raw value if parser is provided
+      if (parser) {
+        newValue = parser(newValue);
       }
 
-      return undefined;
-    }, [formatterProp, variant]);
+      // Create a new event with parsed value for onChange callback
+      const syntheticEvent = {
+        ...event,
+        target: {
+          ...event.target,
+          value: newValue,
+        },
+      } as React.ChangeEvent<HTMLInputElement>;
 
-    const parser = useMemo(() => {
-      if (parserProp) return parserProp;
+      onChange(syntheticEvent);
+    },
+    [parser, onChange],
+  );
 
-      if (variant === 'measure') {
-        return (value: string) =>
-          parseNumberWithCommas(value)?.toString() ?? '';
+  // Format the display value
+  const displayValue = formatter ? formatter(value) : value;
+
+  const composedInputRef = useComposeRefs([inputRefProp, inputRef]);
+
+  // Determine input type and props based on variant
+  let defaultInputType: string = 'text';
+  let prefix: ReactNode = undefined;
+  let suffix: ReactNode = undefined;
+  let clearable = false;
+  let onClear: MouseEventHandler | undefined = undefined;
+  let inputStyle: React.CSSProperties = {};
+  let defaultInputProps: Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    | 'type'
+    | 'style'
+    | 'onChange'
+    | 'value'
+    | 'placeholder'
+    | 'disabled'
+    | 'readOnly'
+  > = {};
+  let prefixExternalButton: ReactNode = undefined;
+  let suffixExternalButton: ReactNode = undefined;
+  let showPasswordStrengthIndicator: boolean = false;
+  let passwordStrengthIndicatorProps:
+    | PasswordStrengthIndicatorProps
+    | undefined = undefined;
+  let hasSpinner: boolean = false;
+
+  // Handle different input types with type narrowing
+  switch (variant) {
+    case 'base': {
+      const baseProps = props as BaseInputProps;
+
+      if (baseProps.clearable) {
+        clearable = baseProps.clearable;
+        onClear = baseProps.onClear || onClearFromHook;
       }
 
-      return undefined;
-    }, [parserProp, variant]);
+      break;
+    }
+    case 'affix': {
+      const affixProps = props as WithAffixInputProps;
 
-    const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-      (event) => {
-        let newValue = event.target.value;
-
-        // Parse the formatted value back to raw value if parser is provided
-        if (parser) {
-          newValue = parser(newValue);
-        }
-
-        // Create a new event with parsed value for onChange callback
-        const syntheticEvent = {
-          ...event,
-          target: {
-            ...event.target,
-            value: newValue,
-          },
-        } as React.ChangeEvent<HTMLInputElement>;
-
-        onChange(syntheticEvent);
-      },
-      [parser, onChange],
-    );
-
-    // Format the display value
-    const displayValue = formatter ? formatter(value) : value;
-
-    const composedInputRef = useComposeRefs([inputRefProp, inputRef]);
-
-    // Determine input type and props based on variant
-    let defaultInputType: string = 'text';
-    let prefix: ReactNode = undefined;
-    let suffix: ReactNode = undefined;
-    let clearable = false;
-    let onClear: MouseEventHandler | undefined = undefined;
-    let inputStyle: React.CSSProperties = {};
-    let defaultInputProps: Omit<
-      React.InputHTMLAttributes<HTMLInputElement>,
-      | 'type'
-      | 'style'
-      | 'onChange'
-      | 'value'
-      | 'placeholder'
-      | 'disabled'
-      | 'readOnly'
-    > = {};
-    let prefixExternalButton: ReactNode = undefined;
-    let suffixExternalButton: ReactNode = undefined;
-    let showPasswordStrengthIndicator: boolean = false;
-    let passwordStrengthIndicatorProps:
-      | PasswordStrengthIndicatorProps
-      | undefined = undefined;
-    let hasSpinner: boolean = false;
-
-    // Handle different input types with type narrowing
-    switch (variant) {
-      case 'base': {
-        const baseProps = props as BaseInputProps;
-
-        if (baseProps.clearable) {
-          clearable = baseProps.clearable;
-          onClear = baseProps.onClear || onClearFromHook;
-        }
-
-        break;
+      if (affixProps.clearable) {
+        clearable = affixProps.clearable;
+        onClear = affixProps.onClear || onClearFromHook;
       }
-      case 'affix': {
-        const affixProps = props as WithAffixInputProps;
 
-        if (affixProps.clearable) {
-          clearable = affixProps.clearable;
-          onClear = affixProps.onClear || onClearFromHook;
-        }
+      prefix = affixProps.prefix;
+      suffix = affixProps.suffix;
 
-        prefix = affixProps.prefix;
-        suffix = affixProps.suffix;
+      break;
+    }
+    case 'search': {
+      const searchProps = props as SearchInputProps;
 
-        break;
+      // 預設為可清除
+      clearable =
+        typeof searchProps.clearable !== 'undefined'
+          ? searchProps.clearable
+          : true;
+
+      if (clearable) {
+        onClear = searchProps.onClear || onClearFromHook;
       }
-      case 'search': {
-        const searchProps = props as SearchInputProps;
 
-        // 預設為可清除
-        clearable =
-          typeof searchProps.clearable !== 'undefined'
-            ? searchProps.clearable
-            : true;
+      // 預設有 search icon 在前綴
+      prefix = <Icon icon={SearchIcon} />;
 
-        if (clearable) {
-          onClear = searchProps.onClear || onClearFromHook;
-        }
+      break;
+    }
+    case 'number': {
+      const numberProps = props as NumberInputProps;
+      const { step = 1, max, min } = numberProps;
 
-        // 預設有 search icon 在前綴
-        prefix = <Icon icon={SearchIcon} />;
+      // Input type 應是 number
+      defaultInputType = 'number';
+      // 額外的屬性
+      defaultInputProps = {
+        min: min,
+        max: max,
+        step: step,
+      };
 
-        break;
-      }
-      case 'number': {
-        const numberProps = props as NumberInputProps;
-        const { step = 1, max, min } = numberProps;
+      break;
+    }
+    case 'measure': {
+      // 需注意 input type 不應是 number，因為要允許輸入格式化後的字串（例如 1,000）
+      const measureProps = props as MeasureInputProps;
+      const { step = 1, max, min, onSpinUp, onSpinDown } = measureProps;
 
-        // Input type 應是 number
-        defaultInputType = 'number';
-        // 額外的屬性
-        defaultInputProps = {
-          min: min,
-          max: max,
-          step: step,
-        };
+      // 預設置右對齊
+      inputStyle = { textAlign: 'right' };
+      // 允許填入 prefix/suffix
+      prefix = measureProps.prefix;
+      suffix = measureProps.suffix;
 
-        break;
-      }
-      case 'measure': {
-        // 需注意 input type 不應是 number，因為要允許輸入格式化後的字串（例如 1,000）
-        const measureProps = props as MeasureInputProps;
-        const { step = 1, max, min, onSpinUp, onSpinDown } = measureProps;
+      defaultInputProps = {
+        min: min,
+        max: max,
+        step: step,
+      };
 
-        // 預設置右對齊
-        inputStyle = { textAlign: 'right' };
-        // 允許填入 prefix/suffix
-        prefix = measureProps.prefix;
-        suffix = measureProps.suffix;
+      if (measureProps.showSpinner) {
+        hasSpinner = true;
 
-        defaultInputProps = {
-          min: min,
-          max: max,
-          step: step,
-        };
+        const handleSpinUp = () => {
+          const currentValue = parseFloat(value || '0');
+          const newValue = currentValue + step;
 
-        if (measureProps.showSpinner) {
-          hasSpinner = true;
-
-          const handleSpinUp = () => {
-            const currentValue = parseFloat(value || '0');
-            const newValue = currentValue + step;
-
-            if (typeof max === 'undefined' || newValue <= max) {
-              onChange({
-                target: { value: String(newValue) },
-              } as React.ChangeEvent<HTMLInputElement>);
-            }
-
-            onSpinUp?.();
-          };
-
-          const handleSpinDown = () => {
-            const currentValue = parseFloat(value || '0');
-            const newValue = currentValue - step;
-
-            if (typeof min === 'undefined' || newValue >= min) {
-              onChange({
-                target: { value: String(newValue) },
-              } as React.ChangeEvent<HTMLInputElement>);
-            }
-
-            onSpinDown?.();
-          };
-
-          suffix = (
-            <>
-              {measureProps.suffix}
-              <div className={classes.spinners}>
-                <SpinnerButton
-                  type="up"
-                  size={size}
-                  disabled={disabled}
-                  onClick={handleSpinUp}
-                />
-                <SpinnerButton
-                  type="down"
-                  size={size}
-                  disabled={disabled}
-                  onClick={handleSpinDown}
-                />
-              </div>
-            </>
-          );
-        } else {
-          hasSpinner = false;
-        }
-
-        break;
-      }
-      case 'action': {
-        const actionProps = props as ActionInputProps;
-        const { actionButton } = actionProps;
-
-        if (actionButton.position === 'prefix') {
-          const { ...restActionButtonProps } = actionButton;
-
-          const actionDisabled =
-            typeof restActionButtonProps.disabled === 'boolean'
-              ? restActionButtonProps.disabled
-              : disabled || readonly;
-
-          prefixExternalButton = (
-            <ActionButton
-              {...restActionButtonProps}
-              disabled={actionDisabled}
-              size={size}
-            />
-          );
-        }
-
-        if (actionButton.position === 'suffix') {
-          const { ...restActionButtonProps } = actionButton;
-
-          const actionDisabled =
-            typeof restActionButtonProps.disabled === 'boolean'
-              ? restActionButtonProps.disabled
-              : disabled || readonly;
-
-          suffixExternalButton = (
-            <ActionButton
-              {...restActionButtonProps}
-              disabled={actionDisabled}
-              size={size}
-            />
-          );
-        }
-
-        break;
-      }
-      case 'select': {
-        const selectProps = props as SelectInputProps;
-        const {
-          selectButton,
-          options,
-          dropdownWidth = 120,
-          dropdownMaxHeight = 114,
-          dropdownPlacement = 'bottom-start',
-        } = selectProps;
-
-        if (
-          selectButton.position === 'both' ||
-          selectButton.position === 'prefix'
-        ) {
-          const { ...restSelectButtonProps } = selectButton;
-
-          prefixExternalButton = (
-            <SelectButton
-              {...restSelectButtonProps}
-              disabled={restSelectButtonProps.disabled || disabled}
-              dropdownMaxHeight={dropdownMaxHeight}
-              dropdownPlacement={dropdownPlacement}
-              dropdownWidth={dropdownWidth}
-              onSelect={selectProps.onSelect}
-              options={options}
-              size={size}
-            />
-          );
-        }
-
-        if (
-          selectButton.position === 'both' ||
-          selectButton.position === 'suffix'
-        ) {
-          const { ...restSelectButtonProps } = selectButton;
-
-          suffixExternalButton = (
-            <SelectButton
-              {...restSelectButtonProps}
-              disabled={restSelectButtonProps.disabled || disabled}
-              dropdownMaxHeight={dropdownMaxHeight}
-              dropdownPlacement={dropdownPlacement}
-              dropdownWidth={dropdownWidth}
-              onSelect={selectProps.onSelect}
-              options={options}
-              size={size}
-            />
-          );
-        }
-
-        break;
-      }
-      case 'password': {
-        const passwordProps = props as PasswordInputProps;
-        defaultInputType = showPassword ? 'text' : 'password';
-
-        if (passwordProps.clearable) {
-          onClear = passwordProps.onClear || onClearFromHook;
-        }
-
-        const handlePasswordToggle: KeyboardEventHandler<HTMLElement> = (
-          event,
-        ) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            setShowPassword((prev) => !prev);
+          if (typeof max === 'undefined' || newValue <= max) {
+            onChange({
+              target: { value: String(newValue) },
+            } as React.ChangeEvent<HTMLInputElement>);
           }
+
+          onSpinUp?.();
+        };
+
+        const handleSpinDown = () => {
+          const currentValue = parseFloat(value || '0');
+          const newValue = currentValue - step;
+
+          if (typeof min === 'undefined' || newValue >= min) {
+            onChange({
+              target: { value: String(newValue) },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }
+
+          onSpinDown?.();
         };
 
         suffix = (
-          <Icon
-            icon={showPassword ? EyeIcon : EyeInvisibleIcon}
-            onClick={() => setShowPassword((prev) => !prev)}
-            role="button"
-            tabIndex={0}
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
-            onKeyDown={handlePasswordToggle}
+          <>
+            {measureProps.suffix}
+            <div className={classes.spinners}>
+              <SpinnerButton
+                type="up"
+                size={size}
+                disabled={disabled}
+                onClick={handleSpinUp}
+              />
+              <SpinnerButton
+                type="down"
+                size={size}
+                disabled={disabled}
+                onClick={handleSpinDown}
+              />
+            </div>
+          </>
+        );
+      } else {
+        hasSpinner = false;
+      }
+
+      break;
+    }
+    case 'action': {
+      const actionProps = props as ActionInputProps;
+      const { actionButton } = actionProps;
+
+      if (actionButton.position === 'prefix') {
+        const { ...restActionButtonProps } = actionButton;
+
+        const actionDisabled =
+          typeof restActionButtonProps.disabled === 'boolean'
+            ? restActionButtonProps.disabled
+            : disabled || readonly;
+
+        prefixExternalButton = (
+          <ActionButton
+            {...restActionButtonProps}
+            disabled={actionDisabled}
+            size={size}
           />
         );
-
-        if (passwordProps.showPasswordStrengthIndicator) {
-          showPasswordStrengthIndicator = true;
-          passwordStrengthIndicatorProps =
-            passwordProps.passwordStrengthIndicator;
-        }
-
-        break;
       }
 
-      default:
-        break;
+      if (actionButton.position === 'suffix') {
+        const { ...restActionButtonProps } = actionButton;
+
+        const actionDisabled =
+          typeof restActionButtonProps.disabled === 'boolean'
+            ? restActionButtonProps.disabled
+            : disabled || readonly;
+
+        suffixExternalButton = (
+          <ActionButton
+            {...restActionButtonProps}
+            disabled={actionDisabled}
+            size={size}
+          />
+        );
+      }
+
+      break;
+    }
+    case 'select': {
+      const selectProps = props as SelectInputProps;
+      const {
+        selectButton,
+        options,
+        dropdownWidth = 120,
+        dropdownMaxHeight = 114,
+        dropdownPlacement = 'bottom-start',
+      } = selectProps;
+
+      if (
+        selectButton.position === 'both' ||
+        selectButton.position === 'prefix'
+      ) {
+        const { ...restSelectButtonProps } = selectButton;
+
+        prefixExternalButton = (
+          <SelectButton
+            {...restSelectButtonProps}
+            disabled={restSelectButtonProps.disabled || disabled}
+            dropdownMaxHeight={dropdownMaxHeight}
+            dropdownPlacement={dropdownPlacement}
+            dropdownWidth={dropdownWidth}
+            onSelect={selectProps.onSelect}
+            options={options}
+            size={size}
+          />
+        );
+      }
+
+      if (
+        selectButton.position === 'both' ||
+        selectButton.position === 'suffix'
+      ) {
+        const { ...restSelectButtonProps } = selectButton;
+
+        suffixExternalButton = (
+          <SelectButton
+            {...restSelectButtonProps}
+            disabled={restSelectButtonProps.disabled || disabled}
+            dropdownMaxHeight={dropdownMaxHeight}
+            dropdownPlacement={dropdownPlacement}
+            dropdownWidth={dropdownWidth}
+            onSelect={selectProps.onSelect}
+            options={options}
+            size={size}
+          />
+        );
+      }
+
+      break;
+    }
+    case 'password': {
+      const passwordProps = props as PasswordInputProps;
+      defaultInputType = showPassword ? 'text' : 'password';
+
+      if (passwordProps.clearable) {
+        onClear = passwordProps.onClear || onClearFromHook;
+      }
+
+      const handlePasswordToggle: KeyboardEventHandler<HTMLElement> = (
+        event,
+      ) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setShowPassword((prev) => !prev);
+        }
+      };
+
+      suffix = (
+        <Icon
+          icon={showPassword ? EyeIcon : EyeInvisibleIcon}
+          onClick={() => setShowPassword((prev) => !prev)}
+          role="button"
+          tabIndex={0}
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+          onKeyDown={handlePasswordToggle}
+        />
+      );
+
+      if (passwordProps.showPasswordStrengthIndicator) {
+        showPasswordStrengthIndicator = true;
+        passwordStrengthIndicatorProps =
+          passwordProps.passwordStrengthIndicator;
+      }
+
+      break;
     }
 
-    const interactiveProps: TextFieldInteractiveStateProps = (() => {
-      if (disabled) {
-        return { disabled: true };
-      }
-      if (readonly) {
-        return { readonly: true };
-      }
-      if (typing) {
-        return { typing: true };
-      }
-      return {};
-    })();
+    default:
+      break;
+  }
 
-    return (
-      <div ref={ref} className={cx(classes.container, className)}>
-        <div
-          className={cx(classes.host, {
-            [classes.number]: variant === 'number',
-            [classes.passwordInput]: variant === 'password',
-            [classes.withPrefixExternalAction]:
-              prefixExternalButton !== undefined,
-            [classes.withSuffixExternalAction]:
-              suffixExternalButton !== undefined,
-            [classes.searchInput]: variant === 'search',
-            [classes.measureWithSpinner]: variant === 'measure' && hasSpinner,
-            [classes.measureWithoutSpinner]:
-              variant === 'measure' && !hasSpinner,
-          })}
+  const interactiveProps: TextFieldInteractiveStateProps = (() => {
+    if (disabled) {
+      return { disabled: true };
+    }
+    if (readonly) {
+      return { readonly: true };
+    }
+    if (typing) {
+      return { typing: true };
+    }
+    return {};
+  })();
+
+  return (
+    <div ref={ref} className={cx(classes.container, className)}>
+      <div
+        className={cx(classes.host, {
+          [classes.number]: variant === 'number',
+          [classes.passwordInput]: variant === 'password',
+          [classes.withPrefixExternalAction]:
+            prefixExternalButton !== undefined,
+          [classes.withSuffixExternalAction]:
+            suffixExternalButton !== undefined,
+          [classes.searchInput]: variant === 'search',
+          [classes.measureWithSpinner]: variant === 'measure' && hasSpinner,
+          [classes.measureWithoutSpinner]: variant === 'measure' && !hasSpinner,
+        })}
+      >
+        {prefixExternalButton}
+        <TextField
+          role="presentation"
+          active={active}
+          className={cx(
+            classes.field,
+            {
+              [classes.number]: variant === 'number',
+              [textFieldClasses.monoInput]: variant === 'measure',
+              [textFieldClasses.tinyGap]: variant === 'measure' && hasSpinner,
+            },
+            classes.size(size),
+          )}
+          clearable={clearable}
+          error={error}
+          fullWidth={fullWidth}
+          onClear={onClear}
+          size={size}
+          prefix={prefix}
+          suffix={suffix}
+          {...interactiveProps}
         >
-          {prefixExternalButton}
-          <TextField
-            role="presentation"
-            active={active}
-            className={cx(
-              classes.field,
-              {
-                [classes.number]: variant === 'number',
-                [textFieldClasses.monoInput]: variant === 'measure',
-                [textFieldClasses.tinyGap]: variant === 'measure' && hasSpinner,
-              },
-              classes.size(size),
-            )}
-            clearable={clearable}
-            error={error}
-            fullWidth={fullWidth}
-            onClear={onClear}
-            size={size}
-            prefix={prefix}
-            suffix={suffix}
-            {...interactiveProps}
-          >
-            <input
-              {...defaultInputProps}
-              {...inputProps}
-              id={id}
-              name={name}
-              aria-disabled={disabled}
-              aria-multiline={false}
-              aria-readonly={readonly}
-              disabled={disabled}
-              onChange={formatter || parser ? handleChange : onChange}
-              placeholder={placeholder}
-              readOnly={readonly}
-              ref={composedInputRef}
-              style={{ ...inputStyle, ...inputProps?.style }}
-              type={inputType ?? defaultInputType}
-              value={displayValue}
-            />
-          </TextField>
-          {suffixExternalButton}
-        </div>
-        {variant === 'password' && showPasswordStrengthIndicator ? (
-          <PasswordStrengthIndicator
-            {...(passwordStrengthIndicatorProps || {})}
-            className={cx(
-              classes.indicatorContainer,
-              passwordStrengthIndicatorProps?.className,
-            )}
+          <input
+            {...defaultInputProps}
+            {...inputProps}
+            id={id}
+            name={name}
+            aria-disabled={disabled}
+            aria-multiline={false}
+            aria-readonly={readonly}
+            disabled={disabled}
+            onChange={formatter || parser ? handleChange : onChange}
+            placeholder={placeholder}
+            readOnly={readonly}
+            ref={composedInputRef}
+            style={{ ...inputStyle, ...inputProps?.style }}
+            type={inputType ?? defaultInputType}
+            value={displayValue}
           />
-        ) : null}
+        </TextField>
+        {suffixExternalButton}
       </div>
-    );
-  },
-);
+      {variant === 'password' && showPasswordStrengthIndicator ? (
+        <PasswordStrengthIndicator
+          {...(passwordStrengthIndicatorProps || {})}
+          className={cx(
+            classes.indicatorContainer,
+            passwordStrengthIndicatorProps?.className,
+          )}
+        />
+      ) : null}
+    </div>
+  );
+}
 
 export default Input;

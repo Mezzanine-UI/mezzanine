@@ -1,5 +1,10 @@
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { cloneElement, CSSProperties, forwardRef, ReactElement } from 'react';
+import {
+  cloneElement,
+  CSSProperties,
+  type RefAttributes,
+  ReactElement,
+} from 'react';
 
 export interface RotateProps {
   /**
@@ -41,10 +46,7 @@ export interface RotateProps {
  *
  * Common use case: arrow indicators that rotate to indicate expand/collapse state.
  */
-const Rotate = forwardRef<HTMLElement, RotateProps>(function Rotate(
-  props: RotateProps,
-  ref,
-) {
+function Rotate({ ref, ...props }: RotateProps & RefAttributes<HTMLElement>) {
   const {
     children,
     degrees = 180,
@@ -68,6 +70,6 @@ const Rotate = forwardRef<HTMLElement, RotateProps>(function Rotate(
     ref,
     style,
   } as any);
-});
+}
 
 export default Rotate;

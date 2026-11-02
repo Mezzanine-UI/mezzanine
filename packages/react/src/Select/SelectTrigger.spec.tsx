@@ -1,3 +1,4 @@
+import type { RefAttributes } from 'react';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { cleanup, render, fireEvent } from '../../__test-utils__';
 import {
@@ -11,17 +12,16 @@ import type { SelectValue } from './typings';
 const mockSelectTriggerTags = jest.fn();
 
 jest.mock('./SelectTriggerTags', () => {
-  const React = jest.requireActual<typeof import('react')>('react');
-
   return {
     __esModule: true,
-    default: React.forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
-      (props, ref) => {
-        mockSelectTriggerTags(props);
+    default: ({
+      ref,
+      ...props
+    }: SelectTriggerTagsProps & RefAttributes<HTMLDivElement>) => {
+      mockSelectTriggerTags(props);
 
-        return <div data-testid="select-trigger-tags" ref={ref} />;
-      },
-    ),
+      return <div data-testid="select-trigger-tags" ref={ref} />;
+    },
   };
 });
 

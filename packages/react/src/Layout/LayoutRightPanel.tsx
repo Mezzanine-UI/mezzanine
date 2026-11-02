@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, use, useEffect, useRef, useState } from 'react';
 import { layoutClasses as classes } from '@mezzanine-ui/core/layout';
 import { cx } from '../utils/cx';
 import { useDocumentEvents } from '../hooks/useDocumentEvents';
@@ -34,7 +34,7 @@ export function LayoutRightPanel({
   open = false,
   scrollbarProps = {},
 }: LayoutRightPanelProps) {
-  const context = useContext(LayoutContext);
+  const context = use(LayoutContext);
 
   const [isDragging, setIsDragging] = useState(false);
   const [width, setWidth] = useState(() =>

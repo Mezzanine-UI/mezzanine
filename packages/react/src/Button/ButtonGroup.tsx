@@ -1,6 +1,11 @@
 'use client';
 
-import { Children, cloneElement, forwardRef, ReactElement } from 'react';
+import {
+  Children,
+  cloneElement,
+  type RefAttributes,
+  ReactElement,
+} from 'react';
 import {
   buttonGroupClasses as classes,
   ButtonGroupOrientation,
@@ -53,51 +58,52 @@ export interface ButtonGroupProps
 /**
  * The react component for `mezzanine` button group.
  */
-const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
-  function ButtonGroup(props, ref) {
-    const {
-      children,
-      className,
-      disabled = false,
-      fullWidth = false,
-      orientation = 'horizontal',
-      role = 'group',
-      size = 'main',
-      variant = 'base-primary',
-      ...rest
-    } = props;
+function ButtonGroup({
+  ref,
+  ...props
+}: ButtonGroupProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    disabled = false,
+    fullWidth = false,
+    orientation = 'horizontal',
+    role = 'group',
+    size = 'main',
+    variant = 'base-primary',
+    ...rest
+  } = props;
 
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        aria-orientation={orientation}
-        className={cx(
-          classes.host,
-          classes.orientation(orientation),
-          {
-            [classes.fullWidth]: fullWidth,
-          },
-          className,
-        )}
-        role={role}
-      >
-        {Children.map(children, (unknownChild) => {
-          const child = unknownChild as ButtonGroupChild;
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      aria-orientation={orientation}
+      className={cx(
+        classes.host,
+        classes.orientation(orientation),
+        {
+          [classes.fullWidth]: fullWidth,
+        },
+        className,
+      )}
+      role={role}
+    >
+      {Children.map(children, (unknownChild) => {
+        const child = unknownChild as ButtonGroupChild;
 
-          if (!child) {
-            return null;
-          }
+        if (!child) {
+          return null;
+        }
 
-          return cloneElement(child, {
-            disabled: child.props.disabled ?? disabled,
-            size: child.props.size || size,
-            variant: child.props.variant || variant,
-          });
-        })}
-      </div>
-    );
-  },
-);
+        return cloneElement(child, {
+          disabled: child.props.disabled ?? disabled,
+          size: child.props.size || size,
+          variant: child.props.variant || variant,
+        });
+      })}
+    </div>
+  );
+}
 
 export default ButtonGroup;

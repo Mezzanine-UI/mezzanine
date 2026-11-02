@@ -3,7 +3,7 @@
 import {
   Children,
   ComponentPropsWithoutRef,
-  forwardRef,
+  type RefAttributes,
   ReactElement,
   useCallback,
   useMemo,
@@ -140,120 +140,121 @@ export interface FilterAreaProps
  * @see {@link FilterLine} 用於組成 FilterArea 的單行條件列
  * @see {@link Filter} 包裝單一篩選欄位的元件
  */
-const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
-  function FilterArea(props, ref) {
-    const {
-      actionsAlign = 'end',
-      children,
-      className,
-      isDirty = true,
-      loading,
-      onReset,
-      onSubmit,
-      resetButtonProps,
-      resetText = 'Reset',
-      rowAlign = 'center',
-      size = 'main',
-      submitButtonProps,
-      submitText = 'Search',
-      resetButtonType = 'button',
-      submitButtonType = 'button',
-      ...rest
-    } = props;
+function FilterArea({
+  ref,
+  ...props
+}: FilterAreaProps & RefAttributes<HTMLDivElement>) {
+  const {
+    actionsAlign = 'end',
+    children,
+    className,
+    isDirty = true,
+    loading,
+    onReset,
+    onSubmit,
+    resetButtonProps,
+    resetText = 'Reset',
+    rowAlign = 'center',
+    size = 'main',
+    submitButtonProps,
+    submitText = 'Search',
+    resetButtonType = 'button',
+    submitButtonType = 'button',
+    ...rest
+  } = props;
 
-    const filterLines = useMemo(
-      () => Children.toArray(children) as ReactElement<FilterLineProps>[],
-      [children],
-    );
-    const contextValue = useMemo(() => ({ size }), [size]);
-    const hasMultipleLines = filterLines.length > 1;
-    const [expanded, setExpanded] = useState(false);
+  const filterLines = useMemo(
+    () => Children.toArray(children) as ReactElement<FilterLineProps>[],
+    [children],
+  );
+  const contextValue = useMemo(() => ({ size }), [size]);
+  const hasMultipleLines = filterLines.length > 1;
+  const [expanded, setExpanded] = useState(false);
 
-    const handleToggleExpanded = useCallback(() => {
-      setExpanded((prev) => !prev);
-    }, []);
+  const handleToggleExpanded = useCallback(() => {
+    setExpanded((prev) => !prev);
+  }, []);
 
-    const handleSubmit = useCallback(() => {
-      if (onSubmit) {
-        onSubmit();
-      }
-    }, [onSubmit]);
+  const handleSubmit = useCallback(() => {
+    if (onSubmit) {
+      onSubmit();
+    }
+  }, [onSubmit]);
 
-    const renderAction = () => {
-      return (
-        <div
-          className={cx(classes.actions, classes.actionsAlign(actionsAlign), {
-            [classes.actionsExpanded]: expanded,
-          })}
-        >
-          <Button
-            {...submitButtonProps}
-            loading={loading ?? submitButtonProps?.loading}
-            onClick={handleSubmit}
-            size={size}
-            type={submitButtonType}
-          >
-            {submitText}
-          </Button>
-          <Button
-            variant="base-secondary"
-            {...resetButtonProps}
-            disabled={!isDirty || resetButtonProps?.disabled}
-            onClick={onReset}
-            size={size}
-            type={resetButtonType}
-          >
-            {resetText}
-          </Button>
-          {hasMultipleLines && (
-            <Button
-              aria-expanded={expanded}
-              aria-label={expanded ? 'Collapse filters' : 'Expand filters'}
-              icon={expanded ? ChevronUpIcon : ChevronDownIcon}
-              iconType="icon-only"
-              onClick={handleToggleExpanded}
-              size={size}
-              title={expanded ? 'Collapse filters' : 'Expand filters'}
-              type="button"
-              variant="base-ghost"
-            />
-          )}
-        </div>
-      );
-    };
-
-    const firstLine = filterLines[0];
-
+  const renderAction = () => {
     return (
-      <FilterAreaContext.Provider value={contextValue}>
-        <div
-          {...rest}
-          ref={ref}
-          className={cx(classes.host, className, {
-            [classes.size(size)]: size,
-          })}
+      <div
+        className={cx(classes.actions, classes.actionsAlign(actionsAlign), {
+          [classes.actionsExpanded]: expanded,
+        })}
+      >
+        <Button
+          {...submitButtonProps}
+          loading={loading ?? submitButtonProps?.loading}
+          onClick={handleSubmit}
+          size={size}
+          type={submitButtonType}
         >
-          {expanded ? (
-            <>
-              {filterLines}
+          {submitText}
+        </Button>
+        <Button
+          variant="base-secondary"
+          {...resetButtonProps}
+          disabled={!isDirty || resetButtonProps?.disabled}
+          onClick={onReset}
+          size={size}
+          type={resetButtonType}
+        >
+          {resetText}
+        </Button>
+        {hasMultipleLines && (
+          <Button
+            aria-expanded={expanded}
+            aria-label={expanded ? 'Collapse filters' : 'Expand filters'}
+            icon={expanded ? ChevronUpIcon : ChevronDownIcon}
+            iconType="icon-only"
+            onClick={handleToggleExpanded}
+            size={size}
+            title={expanded ? 'Collapse filters' : 'Expand filters'}
+            type="button"
+            variant="base-ghost"
+          />
+        )}
+      </div>
+    );
+  };
+
+  const firstLine = filterLines[0];
+
+  return (
+    <FilterAreaContext value={contextValue}>
+      <div
+        {...rest}
+        ref={ref}
+        className={cx(classes.host, className, {
+          [classes.size(size)]: size,
+        })}
+      >
+        {expanded ? (
+          <>
+            {filterLines}
+            <div className={cx(classes.row, classes.rowAlign(rowAlign))}>
+              {renderAction()}
+            </div>
+          </>
+        ) : (
+          <>
+            {firstLine && (
               <div className={cx(classes.row, classes.rowAlign(rowAlign))}>
+                {firstLine}
                 {renderAction()}
               </div>
-            </>
-          ) : (
-            <>
-              {firstLine && (
-                <div className={cx(classes.row, classes.rowAlign(rowAlign))}>
-                  {firstLine}
-                  {renderAction()}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </FilterAreaContext.Provider>
-    );
-  },
-);
+            )}
+          </>
+        )}
+      </div>
+    </FilterAreaContext>
+  );
+}
 
 export default FilterArea;

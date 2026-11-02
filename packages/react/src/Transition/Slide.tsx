@@ -1,5 +1,5 @@
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
+import { cloneElement, CSSProperties, type RefAttributes, useRef } from 'react';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Transition, {
   TransitionState,
@@ -57,10 +57,7 @@ export interface SlideProps extends TransitionImplementationProps {
 /**
  * The react component for `mezzanine` transition slide in/out.
  */
-const Slide = forwardRef<HTMLElement, SlideProps>(function Slide(
-  props: SlideProps,
-  ref,
-) {
+function Slide({ ref, ...props }: SlideProps & RefAttributes<HTMLElement>) {
   const {
     children,
     delay = 0,
@@ -135,6 +132,6 @@ const Slide = forwardRef<HTMLElement, SlideProps>(function Slide(
           }))}
     </Transition>
   );
-});
+}
 
 export default Slide;

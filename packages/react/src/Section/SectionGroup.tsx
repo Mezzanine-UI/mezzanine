@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react';
+import { type RefAttributes, HTMLAttributes, PropsWithChildren } from 'react';
 import { sectionGroupClasses as classes } from '@mezzanine-ui/core/section';
 import { cx } from '../utils/cx';
 
@@ -20,24 +20,25 @@ export interface SectionGroupProps extends HTMLAttributes<HTMLDivElement> {
  * The react component for `mezzanine` section group.
  * Use this to compose multiple sections with consistent gap.
  */
-const SectionGroup = forwardRef<HTMLDivElement, PropsWithChildren<SectionGroupProps>>(
-  function SectionGroup(props, ref) {
-    const { children, className, direction = 'vertical', ...rest } = props;
+function SectionGroup({
+  ref,
+  ...props
+}: PropsWithChildren<SectionGroupProps> & RefAttributes<HTMLDivElement>) {
+  const { children, className, direction = 'vertical', ...rest } = props;
 
-    return (
-      <div
-        className={cx(
-          classes.host,
-          direction === 'horizontal' && classes.hostHorizontal,
-          className,
-        )}
-        ref={ref}
-        {...rest}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      className={cx(
+        classes.host,
+        direction === 'horizontal' && classes.hostHorizontal,
+        className,
+      )}
+      ref={ref}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default SectionGroup;

@@ -1,6 +1,6 @@
 import 'overlayscrollbars/overlayscrollbars.css';
 
-import { forwardRef, useCallback, useEffect, useMemo } from 'react';
+import { type RefAttributes, useCallback, useEffect, useMemo } from 'react';
 import {
   ClickScrollPlugin,
   OverlayScrollbars,
@@ -19,10 +19,10 @@ import type { ScrollbarProps } from './typings';
  * The react component for `mezzanine` scrollbar.
  * A customizable scrollbar container that provides consistent styling across all browsers
  */
-const Scrollbar = forwardRef<
-  OverlayScrollbarsComponentRef<'div'>,
-  ScrollbarProps
->(function Scrollbar(props, ref) {
+function Scrollbar({
+  ref,
+  ...props
+}: ScrollbarProps & RefAttributes<OverlayScrollbarsComponentRef<'div'>>) {
   const {
     children,
     className,
@@ -141,6 +141,6 @@ const Scrollbar = forwardRef<
       {children}
     </OverlayScrollbarsComponent>
   );
-});
+}
 
 export default Scrollbar;

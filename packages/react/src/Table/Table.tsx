@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  forwardRef,
+  type RefAttributes,
   useCallback,
   useEffect,
   useMemo,
@@ -56,10 +56,75 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 import Scrollbar from '../Scrollbar';
 import type { TableProps, TableNonVirtualizedProps } from './typings';
 
-function TableInner<T extends TableDataSource = TableDataSource>(
-  props: TableProps<T>,
-  ref: React.ForwardedRef<HTMLDivElement>,
-) {
+/**
+ * 資料表格元件，支援排序、選取、展開、虛擬捲動與拖曳排序等功能。
+ *
+ * 透過 `columns` 定義欄位結構，`dataSource` 傳入資料列；可搭配 `rowSelection`
+ * 啟用勾選功能、`expandable` 展開子列、`scroll.virtualized` 開啟虛擬捲動以渲染大量資料。
+ * `draggable` 與 `pinnable` 為互斥選項，無法同時啟用。
+ *
+ * @example
+ * ```tsx
+ * import Table from '@mezzanine-ui/react/Table';
+ *
+ * // 基本用法
+ * <Table
+ *   columns={[
+ *     { key: 'name', title: '名稱', dataIndex: 'name', width: 200 },
+ *     { key: 'age', title: '年齡', dataIndex: 'age', width: 100 },
+ *   ]}
+ *   dataSource={[
+ *     { key: '1', name: 'Alice', age: 30 },
+ *     { key: '2', name: 'Bob', age: 25 },
+ *   ]}
+ * />
+ *
+ * // 啟用虛擬捲動（大資料量）
+ * <Table
+ *   columns={columns}
+ *   dataSource={largeData}
+ *   scroll={{ y: 400, virtualized: true }}
+ * />
+ *
+ * // 勾選列 + 批次操作
+ * <Table
+ *   columns={columns}
+ *   dataSource={data}
+ *   rowSelection={{
+ *     mode: 'checkbox',
+ *     selectedRowKeys,
+ *     onChange: setSelectedRowKeys,
+ *   }}
+ * />
+ *
+ * // 可展開子列
+ * <Table
+ *   columns={columns}
+ *   dataSource={data}
+ *   expandable={{
+ *     expandedRowRender: (row) => <div>{row.detail}</div>,
+ *   }}
+ * />
+ *
+ * // Resizable columns with persisted widths (controlled; pass `{}` to reset to column.width)
+ * <Table
+ *   columnWidths={columnWidths}
+ *   columns={columns}
+ *   dataSource={data}
+ *   onColumnWidthsChange={(widths) => {
+ *     setColumnWidths(widths);
+ *     localStorage.setItem('table-widths', JSON.stringify(widths));
+ *   }}
+ *   resizable
+ * />
+ * ```
+ *
+ * @see {@link Pagination} 搭配 `pagination` prop 使用分頁元件
+ */
+export function Table<T extends TableDataSource = TableDataSource>({
+  ref,
+  ...props
+}: TableProps<T> & RefAttributes<HTMLDivElement>) {
   const {
     actions,
     className,
@@ -660,8 +725,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     }
 
     return (
-      <TableContext.Provider value={contextValue}>
-        <TableDataContext.Provider value={dataContextValue}>
+      <TableContext value={contextValue}>
+        <TableDataContext value={dataContextValue}>
           <div
             className={cx(classes.host, className)}
             ref={composedHostRef}
@@ -717,8 +782,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
               />
             ) : null}
           </div>
-        </TableDataContext.Provider>
-      </TableContext.Provider>
+        </TableDataContext>
+      </TableContext>
     );
   };
 
@@ -730,84 +795,13 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="mzn-table-dnd">
         {(provided) => (
-          <TableSuperContext.Provider value={superContextValue}>
+          <TableSuperContext value={superContextValue}>
             {renderMainTable(provided)}
-          </TableSuperContext.Provider>
+          </TableSuperContext>
         )}
       </Droppable>
     </DragDropContext>
   );
 }
-
-/**
- * 資料表格元件，支援排序、選取、展開、虛擬捲動與拖曳排序等功能。
- *
- * 透過 `columns` 定義欄位結構，`dataSource` 傳入資料列；可搭配 `rowSelection`
- * 啟用勾選功能、`expandable` 展開子列、`scroll.virtualized` 開啟虛擬捲動以渲染大量資料。
- * `draggable` 與 `pinnable` 為互斥選項，無法同時啟用。
- *
- * @example
- * ```tsx
- * import Table from '@mezzanine-ui/react/Table';
- *
- * // 基本用法
- * <Table
- *   columns={[
- *     { key: 'name', title: '名稱', dataIndex: 'name', width: 200 },
- *     { key: 'age', title: '年齡', dataIndex: 'age', width: 100 },
- *   ]}
- *   dataSource={[
- *     { key: '1', name: 'Alice', age: 30 },
- *     { key: '2', name: 'Bob', age: 25 },
- *   ]}
- * />
- *
- * // 啟用虛擬捲動（大資料量）
- * <Table
- *   columns={columns}
- *   dataSource={largeData}
- *   scroll={{ y: 400, virtualized: true }}
- * />
- *
- * // 勾選列 + 批次操作
- * <Table
- *   columns={columns}
- *   dataSource={data}
- *   rowSelection={{
- *     mode: 'checkbox',
- *     selectedRowKeys,
- *     onChange: setSelectedRowKeys,
- *   }}
- * />
- *
- * // 可展開子列
- * <Table
- *   columns={columns}
- *   dataSource={data}
- *   expandable={{
- *     expandedRowRender: (row) => <div>{row.detail}</div>,
- *   }}
- * />
- *
- * // Resizable columns with persisted widths (controlled; pass `{}` to reset to column.width)
- * <Table
- *   columnWidths={columnWidths}
- *   columns={columns}
- *   dataSource={data}
- *   onColumnWidthsChange={(widths) => {
- *     setColumnWidths(widths);
- *     localStorage.setItem('table-widths', JSON.stringify(widths));
- *   }}
- *   resizable
- * />
- * ```
- *
- * @see {@link Pagination} 搭配 `pagination` prop 使用分頁元件
- */
-export const Table = forwardRef(
-  TableInner as Parameters<typeof forwardRef>[0],
-) as <T extends TableDataSource = TableDataSource>(
-  props: TableProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> },
-) => React.ReactElement;
 
 export default Table;

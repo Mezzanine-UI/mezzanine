@@ -1,7 +1,7 @@
 import {
   Children,
   CSSProperties,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   use,
   useEffect,
@@ -38,52 +38,53 @@ const resolveChildren = (children: React.ReactNode) => {
   return { userMenu, otherChildren };
 };
 
-const NavigationFooter = forwardRef<HTMLElement, NavigationFooterProps>(
-  (props, ref) => {
-    const { children, className, ...rest } = props;
+const NavigationFooter = ({
+  ref,
+  ...props
+}: NavigationFooterProps & RefAttributes<HTMLElement>) => {
+  const { children, className, ...rest } = props;
 
-    const { collapsed } = use(NavigationActivatedContext);
+  const { collapsed } = use(NavigationActivatedContext);
 
-    const { userMenu, otherChildren } = resolveChildren(children);
+  const { userMenu, otherChildren } = resolveChildren(children);
 
-    const iconsRef = useRef<HTMLSpanElement>(null);
+  const iconsRef = useRef<HTMLSpanElement>(null);
 
-    const [iconsWidth, setIconsWidth] = useState(0);
+  const [iconsWidth, setIconsWidth] = useState(0);
 
-    useEffect(() => {
-      if (!iconsRef.current) return;
+  useEffect(() => {
+    if (!iconsRef.current) return;
 
-      const resizeObserver = new ResizeObserver(() => {
-        if (iconsRef.current) {
-          setIconsWidth(iconsRef.current.offsetWidth);
-        }
-      });
+    const resizeObserver = new ResizeObserver(() => {
+      if (iconsRef.current) {
+        setIconsWidth(iconsRef.current.offsetWidth);
+      }
+    });
 
-      resizeObserver.observe(iconsRef.current);
+    resizeObserver.observe(iconsRef.current);
 
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }, []);
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
-    return (
-      <footer
-        {...rest}
-        ref={ref}
-        className={cx(classes.host, collapsed && classes.collapsed, className)}
-        style={
-          {
-            ['--icons-width']: `${iconsWidth}px`,
-          } as CSSProperties
-        }
-      >
-        {userMenu}
-        <span ref={iconsRef} className={classes.icons}>
-          {otherChildren}
-        </span>
-      </footer>
-    );
-  },
-);
+  return (
+    <footer
+      {...rest}
+      ref={ref}
+      className={cx(classes.host, collapsed && classes.collapsed, className)}
+      style={
+        {
+          ['--icons-width']: `${iconsWidth}px`,
+        } as CSSProperties
+      }
+    >
+      {userMenu}
+      <span ref={iconsRef} className={classes.icons}>
+        {otherChildren}
+      </span>
+    </footer>
+  );
+};
 
 export default NavigationFooter;

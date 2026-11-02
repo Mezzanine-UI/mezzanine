@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo } from 'react';
+import { type RefAttributes, memo } from 'react';
 import {
   DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_KEY,
@@ -31,251 +31,249 @@ import TableColumnTitleMenu from './TableColumnTitleMenu';
 
 export type TableHeaderProps = unknown;
 
-const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
-  function TableHeader(_, ref) {
-    const {
-      draggable,
-      expansion,
-      fixedOffsets,
-      pinnable,
-      resizable,
-      selection,
-      sorting,
-    } = useTableContext();
-    const { columns } = useTableDataContext();
+const TableHeaderInner = function TableHeader({
+  ref,
+}: TableHeaderProps & RefAttributes<HTMLTableSectionElement>) {
+  const {
+    draggable,
+    expansion,
+    fixedOffsets,
+    pinnable,
+    resizable,
+    selection,
+    sorting,
+  } = useTableContext();
+  const { columns } = useTableDataContext();
 
-    const { containerWidth, scrollLeft } = useTableSuperContext();
+  const { containerWidth, scrollLeft } = useTableSuperContext();
 
-    const parseFixed = (
-      fixed: FixedType | undefined,
-    ): 'end' | 'start' | null => {
-      if (fixed === true || fixed === 'start') return 'start';
-      if (fixed === 'end') return 'end';
+  const parseFixed = (fixed: FixedType | undefined): 'end' | 'start' | null => {
+    if (fixed === true || fixed === 'start') return 'start';
+    if (fixed === 'end') return 'end';
 
-      return null;
-    };
+    return null;
+  };
 
-    const renderDragOrPinHandleHeader = () => {
-      const hasDragOrPinHandle = draggable?.enabled || pinnable?.enabled;
+  const renderDragOrPinHandleHeader = () => {
+    const hasDragOrPinHandle = draggable?.enabled || pinnable?.enabled;
 
-      if (!hasDragOrPinHandle) return null;
+    if (!hasDragOrPinHandle) return null;
 
-      const offsetInfo = fixedOffsets?.getDragOrPinHandleOffset();
-      const isFixed = !!draggable?.fixed || !!pinnable?.fixed;
-      const showShadow =
-        isFixed &&
-        fixedOffsets?.shouldShowShadow(
-          DRAG_OR_PIN_HANDLE_KEY,
-          scrollLeft ?? 0,
-          containerWidth ?? 0,
-        );
-
-      const mode = draggable?.enabled ? 'drag' : 'pin';
-
-      return (
-        <TableDragOrPinHandleCell
-          fixed={isFixed}
-          fixedOffset={offsetInfo?.offset ?? 0}
-          isHeader
-          mode={mode}
-          showShadow={showShadow ?? false}
-        />
+    const offsetInfo = fixedOffsets?.getDragOrPinHandleOffset();
+    const isFixed = !!draggable?.fixed || !!pinnable?.fixed;
+    const showShadow =
+      isFixed &&
+      fixedOffsets?.shouldShowShadow(
+        DRAG_OR_PIN_HANDLE_KEY,
+        scrollLeft ?? 0,
+        containerWidth ?? 0,
       );
-    };
 
-    const renderSelectionHeader = () => {
-      if (!selection) return null;
-
-      const offsetInfo = fixedOffsets?.getSelectionOffset();
-      const isFixed = !!selection.config?.fixed;
-      const showShadow =
-        isFixed &&
-        fixedOffsets?.shouldShowShadow(
-          SELECTION_KEY,
-          scrollLeft ?? 0,
-          containerWidth ?? 0,
-        );
-
-      // In radio mode, hide the header selection (no select all)
-      const isRadioMode = selection.mode === 'radio';
-
-      return (
-        <TableSelectionCell
-          fixed={isFixed}
-          fixedOffset={offsetInfo?.offset ?? 0}
-          hidden={isRadioMode || selection.config?.hideSelectAll}
-          indeterminate={selection.isIndeterminate}
-          isHeader
-          mode={selection.mode}
-          onChange={selection.toggleAll}
-          selected={selection.isAllSelected}
-          showShadow={showShadow ?? false}
-        />
-      );
-    };
-
-    const renderExpandHeader = () => {
-      if (!expansion) return null;
-
-      const offsetInfo = fixedOffsets?.getExpansionOffset();
-      const isFixed = !!expansion.config?.fixed;
-      const showShadow =
-        isFixed &&
-        fixedOffsets?.shouldShowShadow(
-          EXPANSION_KEY,
-          scrollLeft ?? 0,
-          containerWidth ?? 0,
-        );
-
-      return (
-        <TableExpandCell
-          expanded={false}
-          fixed={isFixed}
-          fixedOffset={offsetInfo?.offset ?? 0}
-          isHeader
-          showShadow={showShadow ?? false}
-        />
-      );
-    };
-
-    const renderHelpIcon = (column: TableColumn) => {
-      if (!column.titleHelp) return null;
-
-      return (
-        <Tooltip title={column.titleHelp} disablePortal={false}>
-          {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
-            <Icon
-              size={16}
-              icon={QuestionOutlineIcon}
-              onMouseEnter={onMouseEnter}
-              onMouseLeave={onMouseLeave}
-              className={classes.headerCellIcon}
-              tabIndex={0}
-              ref={tooltipRef}
-            />
-          )}
-        </Tooltip>
-      );
-    };
-
-    const renderSortIcon = (column: TableColumn) => {
-      if (!column.onSort || !sorting) return null;
-
-      const direction = column.sortOrder;
-
-      return (
-        <button
-          className={classes.sortIcons}
-          type="button"
-          onClick={(evt) => {
-            evt.stopPropagation();
-            sorting.onSort(column.key);
-          }}
-          onKeyDown={(evt) => {
-            evt.stopPropagation();
-            if (evt.key === 'Enter' || evt.key === ' ') {
-              evt.preventDefault();
-              sorting.onSort(column.key);
-            }
-          }}
-        >
-          <Icon
-            className={cx(classes.sortIcon, {
-              [classes.sortIconActive]: direction === 'ascend',
-            })}
-            icon={CaretUpIcon}
-            size={8}
-          />
-          <Icon
-            className={cx(classes.sortIcon, {
-              [classes.sortIconActive]: direction === 'descend',
-            })}
-            icon={CaretDownIcon}
-            size={8}
-          />
-        </button>
-      );
-    };
-
-    const renderHeaderCells = () => {
-      return columns.map((column, columnIndex) => {
-        const fixedPos = parseFixed(column.fixed);
-        const alignClass = getCellAlignClass(column.align);
-        const offsetInfo = fixedOffsets?.getColumnOffset(column.key);
-        const offset = offsetInfo?.offset ?? 0;
-
-        const cellStyle: React.CSSProperties = {};
-
-        if (fixedPos === 'start') {
-          (cellStyle as Record<string, string>)['--fixed-start-offset'] =
-            `${offset}px`;
-        } else if (fixedPos === 'end') {
-          (cellStyle as Record<string, string>)['--fixed-end-offset'] =
-            `${offset}px`;
-        }
-
-        // Show shadow based on scroll position and sticky state
-        const showShadow =
-          !!fixedPos &&
-          fixedOffsets?.shouldShowShadow(
-            column.key,
-            scrollLeft ?? 0,
-            containerWidth ?? 0,
-          );
-
-        const ariaSort = (() => {
-          if (column.sortOrder === 'ascend') return 'ascending';
-          if (column.sortOrder === 'descend') return 'descending';
-
-          return undefined;
-        })();
-
-        return (
-          <th
-            aria-sort={ariaSort}
-            className={cx(
-              classes.headerCell,
-              {
-                [classes.cellFixed]: !!fixedPos,
-                [classes.cellFixedEnd]: fixedPos === 'end',
-                [classes.cellFixedShadow]: showShadow,
-                [classes.cellFixedStart]: fixedPos === 'start',
-                [classes.headerCellFixed]: !!fixedPos,
-              },
-              column.className,
-              column.headerClassName,
-            )}
-            key={column.key}
-            scope="col"
-            style={cellStyle}
-          >
-            <div className={classes.headerCellContent}>
-              <div className={cx(classes.headerCellActions, alignClass)}>
-                <span className={classes.headerCellTitle}>{column.title}</span>
-                {renderHelpIcon(column)}
-                {renderSortIcon(column)}
-              </div>
-              <TableColumnTitleMenu column={column} />
-            </div>
-            {resizable && (
-              <TableResizeHandle column={column} columnIndex={columnIndex} />
-            )}
-          </th>
-        );
-      });
-    };
+    const mode = draggable?.enabled ? 'drag' : 'pin';
 
     return (
-      <thead className={cx(classes.header)} ref={ref}>
-        <tr>
-          {renderDragOrPinHandleHeader()}
-          {renderExpandHeader()}
-          {renderSelectionHeader()}
-          {renderHeaderCells()}
-        </tr>
-      </thead>
+      <TableDragOrPinHandleCell
+        fixed={isFixed}
+        fixedOffset={offsetInfo?.offset ?? 0}
+        isHeader
+        mode={mode}
+        showShadow={showShadow ?? false}
+      />
     );
-  },
-);
+  };
+
+  const renderSelectionHeader = () => {
+    if (!selection) return null;
+
+    const offsetInfo = fixedOffsets?.getSelectionOffset();
+    const isFixed = !!selection.config?.fixed;
+    const showShadow =
+      isFixed &&
+      fixedOffsets?.shouldShowShadow(
+        SELECTION_KEY,
+        scrollLeft ?? 0,
+        containerWidth ?? 0,
+      );
+
+    // In radio mode, hide the header selection (no select all)
+    const isRadioMode = selection.mode === 'radio';
+
+    return (
+      <TableSelectionCell
+        fixed={isFixed}
+        fixedOffset={offsetInfo?.offset ?? 0}
+        hidden={isRadioMode || selection.config?.hideSelectAll}
+        indeterminate={selection.isIndeterminate}
+        isHeader
+        mode={selection.mode}
+        onChange={selection.toggleAll}
+        selected={selection.isAllSelected}
+        showShadow={showShadow ?? false}
+      />
+    );
+  };
+
+  const renderExpandHeader = () => {
+    if (!expansion) return null;
+
+    const offsetInfo = fixedOffsets?.getExpansionOffset();
+    const isFixed = !!expansion.config?.fixed;
+    const showShadow =
+      isFixed &&
+      fixedOffsets?.shouldShowShadow(
+        EXPANSION_KEY,
+        scrollLeft ?? 0,
+        containerWidth ?? 0,
+      );
+
+    return (
+      <TableExpandCell
+        expanded={false}
+        fixed={isFixed}
+        fixedOffset={offsetInfo?.offset ?? 0}
+        isHeader
+        showShadow={showShadow ?? false}
+      />
+    );
+  };
+
+  const renderHelpIcon = (column: TableColumn) => {
+    if (!column.titleHelp) return null;
+
+    return (
+      <Tooltip title={column.titleHelp} disablePortal={false}>
+        {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
+          <Icon
+            size={16}
+            icon={QuestionOutlineIcon}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            className={classes.headerCellIcon}
+            tabIndex={0}
+            ref={tooltipRef}
+          />
+        )}
+      </Tooltip>
+    );
+  };
+
+  const renderSortIcon = (column: TableColumn) => {
+    if (!column.onSort || !sorting) return null;
+
+    const direction = column.sortOrder;
+
+    return (
+      <button
+        className={classes.sortIcons}
+        type="button"
+        onClick={(evt) => {
+          evt.stopPropagation();
+          sorting.onSort(column.key);
+        }}
+        onKeyDown={(evt) => {
+          evt.stopPropagation();
+          if (evt.key === 'Enter' || evt.key === ' ') {
+            evt.preventDefault();
+            sorting.onSort(column.key);
+          }
+        }}
+      >
+        <Icon
+          className={cx(classes.sortIcon, {
+            [classes.sortIconActive]: direction === 'ascend',
+          })}
+          icon={CaretUpIcon}
+          size={8}
+        />
+        <Icon
+          className={cx(classes.sortIcon, {
+            [classes.sortIconActive]: direction === 'descend',
+          })}
+          icon={CaretDownIcon}
+          size={8}
+        />
+      </button>
+    );
+  };
+
+  const renderHeaderCells = () => {
+    return columns.map((column, columnIndex) => {
+      const fixedPos = parseFixed(column.fixed);
+      const alignClass = getCellAlignClass(column.align);
+      const offsetInfo = fixedOffsets?.getColumnOffset(column.key);
+      const offset = offsetInfo?.offset ?? 0;
+
+      const cellStyle: React.CSSProperties = {};
+
+      if (fixedPos === 'start') {
+        (cellStyle as Record<string, string>)['--fixed-start-offset'] =
+          `${offset}px`;
+      } else if (fixedPos === 'end') {
+        (cellStyle as Record<string, string>)['--fixed-end-offset'] =
+          `${offset}px`;
+      }
+
+      // Show shadow based on scroll position and sticky state
+      const showShadow =
+        !!fixedPos &&
+        fixedOffsets?.shouldShowShadow(
+          column.key,
+          scrollLeft ?? 0,
+          containerWidth ?? 0,
+        );
+
+      const ariaSort = (() => {
+        if (column.sortOrder === 'ascend') return 'ascending';
+        if (column.sortOrder === 'descend') return 'descending';
+
+        return undefined;
+      })();
+
+      return (
+        <th
+          aria-sort={ariaSort}
+          className={cx(
+            classes.headerCell,
+            {
+              [classes.cellFixed]: !!fixedPos,
+              [classes.cellFixedEnd]: fixedPos === 'end',
+              [classes.cellFixedShadow]: showShadow,
+              [classes.cellFixedStart]: fixedPos === 'start',
+              [classes.headerCellFixed]: !!fixedPos,
+            },
+            column.className,
+            column.headerClassName,
+          )}
+          key={column.key}
+          scope="col"
+          style={cellStyle}
+        >
+          <div className={classes.headerCellContent}>
+            <div className={cx(classes.headerCellActions, alignClass)}>
+              <span className={classes.headerCellTitle}>{column.title}</span>
+              {renderHelpIcon(column)}
+              {renderSortIcon(column)}
+            </div>
+            <TableColumnTitleMenu column={column} />
+          </div>
+          {resizable && (
+            <TableResizeHandle column={column} columnIndex={columnIndex} />
+          )}
+        </th>
+      );
+    });
+  };
+
+  return (
+    <thead className={cx(classes.header)} ref={ref}>
+      <tr>
+        {renderDragOrPinHandleHeader()}
+        {renderExpandHeader()}
+        {renderSelectionHeader()}
+        {renderHeaderCells()}
+      </tr>
+    </thead>
+  );
+};
 
 export const TableHeader = memo(TableHeaderInner);

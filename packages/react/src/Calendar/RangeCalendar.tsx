@@ -6,7 +6,7 @@ import {
   DateType,
 } from '@mezzanine-ui/core/calendar';
 import castArray from 'lodash/castArray';
-import { forwardRef, RefObject, useCallback, useMemo } from 'react';
+import { type RefAttributes, RefObject, useCallback, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Calendar, { CalendarProps } from './Calendar';
@@ -129,14 +129,203 @@ export interface RangeCalendarProps
  * Displays two calendars side by side for range selection.
  * Notice that any component related to calendar should be used along with `CalendarContext`.
  */
-const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
-  function RangeCalendar(props, ref) {
-    const {
-      locale,
-      getMonth,
-      getYear,
-      setMonth,
-      setYear,
+function RangeCalendar({
+  ref,
+  ...props
+}: RangeCalendarProps & RefAttributes<HTMLDivElement>) {
+  const {
+    locale,
+    getMonth,
+    getYear,
+    setMonth,
+    setYear,
+    getCurrentWeekFirstDate,
+    getCurrentMonthFirstDate,
+    getCurrentYearFirstDate,
+    getCurrentQuarterFirstDate,
+    getCurrentHalfYearFirstDate,
+    addSecond,
+    addDay,
+    addMonth,
+    addYear,
+    setHour,
+    setMinute,
+    setSecond,
+    setMillisecond,
+    isBefore,
+  } = useCalendarContext();
+
+  const {
+    actions,
+    renderAnnotations,
+    calendarProps,
+    className,
+    disabledMonthSwitch,
+    disabledYearSwitch,
+    disableOnNext,
+    disableOnPrev,
+    disableOnDoubleNext,
+    disableOnDoublePrev,
+    displayMonthLocale = locale,
+    displayWeekDayLocale = locale,
+    firstCalendarRef,
+    isDateDisabled,
+    isDateInRange,
+    isMonthDisabled,
+    isMonthInRange,
+    isWeekDisabled,
+    isWeekInRange,
+    isYearDisabled,
+    isYearInRange,
+    isQuarterDisabled,
+    isQuarterInRange,
+    isHalfYearDisabled,
+    isHalfYearInRange,
+    mode = 'day',
+    onChange: onChangeProp,
+    onDateHover,
+    onMonthHover,
+    onWeekHover,
+    onYearHover,
+    onQuarterHover,
+    onHalfYearHover,
+    previewValue,
+    quickSelect,
+    referenceDate: referenceDateProp,
+    secondCalendarRef,
+    value: valueProp,
+    ...restProps
+  } = props;
+
+  const value = valueProp ? castArray(valueProp) : undefined;
+
+  /**
+   * What the calendars paint: the committed anchors plus the hover preview
+   * while a range is still half-finished. `value` itself stays untouched so
+   * the click handler keeps seeing only what the user has committed.
+   */
+  const displayValue = (() => {
+    if (!previewValue) return value;
+    if (!value?.length) return [previewValue];
+    if (value.length === 1) return [value[0], previewValue];
+
+    return value;
+  })();
+
+  const {
+    currentMode,
+    onMonthControlClick,
+    onFirstPrev,
+    onFirstDoublePrev,
+    onSecondNext,
+    onSecondDoubleNext,
+    onYearControlClick,
+    popModeStack,
+    referenceDates,
+    updateFirstReferenceDate,
+    updateSecondReferenceDate,
+  } = useRangeCalendarControls(referenceDateProp, mode);
+
+  const normalizeRangeStart = useCallback(
+    (date: DateType): DateType => {
+      switch (mode) {
+        case 'day':
+          return setMillisecond(
+            setSecond(setMinute(setHour(date, 0), 0), 0),
+            0,
+          );
+        case 'week':
+          return getCurrentWeekFirstDate(date, displayWeekDayLocale);
+        case 'month':
+          return getCurrentMonthFirstDate(date);
+        case 'year':
+          return getCurrentYearFirstDate(date);
+        case 'quarter':
+          return getCurrentQuarterFirstDate(date);
+        case 'half-year':
+          return getCurrentHalfYearFirstDate(date);
+        default:
+          return date;
+      }
+    },
+    [
+      displayWeekDayLocale,
+      mode,
+      getCurrentWeekFirstDate,
+      getCurrentMonthFirstDate,
+      getCurrentYearFirstDate,
+      getCurrentQuarterFirstDate,
+      getCurrentHalfYearFirstDate,
+      setHour,
+      setMinute,
+      setSecond,
+      setMillisecond,
+    ],
+  );
+
+  const normalizeRangeEnd = useCallback(
+    (date: DateType): DateType => {
+      switch (mode) {
+        case 'day':
+          return setMillisecond(
+            setSecond(setMinute(setHour(date, 23), 59), 59),
+            999,
+          );
+        case 'week': {
+          const weekStart = getCurrentWeekFirstDate(date, displayWeekDayLocale);
+          const weekEnd = addSecond(addDay(weekStart, 7), -1);
+          return setMillisecond(
+            setSecond(setMinute(setHour(weekEnd, 23), 59), 59),
+            999,
+          );
+        }
+        case 'month': {
+          const nextMonth = addSecond(
+            addMonth(getCurrentMonthFirstDate(date), 1),
+            -1,
+          );
+          return setMillisecond(
+            setSecond(setMinute(setHour(nextMonth, 23), 59), 59),
+            999,
+          );
+        }
+        case 'year': {
+          const nextYear = addSecond(
+            addYear(getCurrentYearFirstDate(date), 1),
+            -1,
+          );
+          return setMillisecond(
+            setSecond(setMinute(setHour(nextYear, 23), 59), 59),
+            999,
+          );
+        }
+        case 'quarter': {
+          const nextQuarter = addSecond(
+            addMonth(getCurrentQuarterFirstDate(date), 3),
+            -1,
+          );
+          return setMillisecond(
+            setSecond(setMinute(setHour(nextQuarter, 23), 59), 59),
+            999,
+          );
+        }
+        case 'half-year': {
+          const nextHalfYear = addSecond(
+            addMonth(getCurrentHalfYearFirstDate(date), 6),
+            -1,
+          );
+          return setMillisecond(
+            setSecond(setMinute(setHour(nextHalfYear, 23), 59), 59),
+            999,
+          );
+        }
+        default:
+          return date;
+      }
+    },
+    [
+      displayWeekDayLocale,
+      mode,
       getCurrentWeekFirstDate,
       getCurrentMonthFirstDate,
       getCurrentYearFirstDate,
@@ -150,457 +339,266 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       setMinute,
       setSecond,
       setMillisecond,
+    ],
+  );
+
+  const scanRange = useRangeScan({
+    displayWeekDayLocale,
+    isDateDisabled,
+    isHalfYearDisabled,
+    isMonthDisabled,
+    isQuarterDisabled,
+    isWeekDisabled,
+    isYearDisabled,
+    mode,
+  });
+
+  /**
+   * A disabled or incompletely checked range is not selectable, so it is not
+   * painted as one. This asks the same question `handleRangeSelection` asks
+   * before committing a selection, so the preview never invites a click that
+   * would then be rejected. Memoised because the six granularity handlers
+   * below all need the answer and the scan must run once, not once each.
+   */
+  const [rangeAnchorStart, rangeAnchorEnd] = displayValue ?? [];
+  const shouldSuppressInRange = useMemo(
+    () =>
+      Boolean(
+        rangeAnchorStart &&
+          rangeAnchorEnd &&
+          scanRange(rangeAnchorStart, rangeAnchorEnd) !== 'clear',
+      ),
+    // Memoize by anchor values, including when callers recreate the array.
+    [scanRange, rangeAnchorEnd, rangeAnchorStart],
+  );
+
+  const resolvedIsDateInRange = shouldSuppressInRange
+    ? undefined
+    : isDateInRange;
+  const resolvedIsHalfYearInRange = shouldSuppressInRange
+    ? undefined
+    : isHalfYearInRange;
+  const resolvedIsMonthInRange = shouldSuppressInRange
+    ? undefined
+    : isMonthInRange;
+  const resolvedIsQuarterInRange = shouldSuppressInRange
+    ? undefined
+    : isQuarterInRange;
+  const resolvedIsWeekInRange = shouldSuppressInRange
+    ? undefined
+    : isWeekInRange;
+  const resolvedIsYearInRange = shouldSuppressInRange
+    ? undefined
+    : isYearInRange;
+
+  const handleRangeSelection = useCallback(
+    (target: DateType) => {
+      if (!onChangeProp) return;
+
+      const [existingStart, existingEnd] = value || [];
+
+      if (!existingStart || (existingStart && existingEnd)) {
+        // 未選取起始日期，或已完成區間選取，重新開始選取
+        onChangeProp([target, undefined]);
+      } else {
+        const rawStart = existingStart;
+        const rawEnd = target;
+
+        // 檢查是否有不可選日期
+        if (scanRange(rawStart, rawEnd) !== 'clear') {
+          onChangeProp([target, undefined]);
+          return;
+        }
+
+        const isEndBeforeStart = isBefore(rawEnd, rawStart);
+        const [start, end] = isEndBeforeStart
+          ? [rawEnd, rawStart]
+          : [rawStart, rawEnd];
+
+        const normalizedStart = normalizeRangeStart(start);
+        const normalizedEnd = normalizeRangeEnd(end);
+
+        onChangeProp([normalizedStart, normalizedEnd]);
+      }
+    },
+    [
+      value,
+      onChangeProp,
       isBefore,
-    } = useCalendarContext();
+      normalizeRangeStart,
+      normalizeRangeEnd,
+      scanRange,
+    ],
+  );
 
-    const {
-      actions,
-      renderAnnotations,
-      calendarProps,
-      className,
-      disabledMonthSwitch,
-      disabledYearSwitch,
-      disableOnNext,
-      disableOnPrev,
-      disableOnDoubleNext,
-      disableOnDoublePrev,
-      displayMonthLocale = locale,
-      displayWeekDayLocale = locale,
-      firstCalendarRef,
-      isDateDisabled,
-      isDateInRange,
-      isMonthDisabled,
-      isMonthInRange,
-      isWeekDisabled,
-      isWeekInRange,
-      isYearDisabled,
-      isYearInRange,
-      isQuarterDisabled,
-      isQuarterInRange,
-      isHalfYearDisabled,
-      isHalfYearInRange,
-      mode = 'day',
-      onChange: onChangeProp,
-      onDateHover,
-      onMonthHover,
-      onWeekHover,
-      onYearHover,
-      onQuarterHover,
-      onHalfYearHover,
-      previewValue,
-      quickSelect,
-      referenceDate: referenceDateProp,
-      secondCalendarRef,
-      value: valueProp,
-      ...restProps
-    } = props;
+  const getTargetValue = useCallback(
+    (target: DateType, targetDate: DateType): DateType => {
+      if (currentMode === mode) {
+        return target;
+      }
 
-    const value = valueProp ? castArray(valueProp) : undefined;
+      if (currentMode === 'month') {
+        return setMonth(targetDate, getMonth(target));
+      }
+      if (currentMode === 'year') {
+        return setYear(targetDate, getYear(target));
+      }
 
-    /**
-     * What the calendars paint: the committed anchors plus the hover preview
-     * while a range is still half-finished. `value` itself stays untouched so
-     * the click handler keeps seeing only what the user has committed.
-     */
-    const displayValue = (() => {
-      if (!previewValue) return value;
-      if (!value?.length) return [previewValue];
-      if (value.length === 1) return [value[0], previewValue];
+      return target;
+    },
+    [currentMode, mode, getMonth, getYear, setMonth, setYear],
+  );
 
-      return value;
-    })();
+  const onChangeFactory = useCallback(
+    (calendar: 0 | 1) => {
+      const targetDate = referenceDates[calendar];
+      const updateReferenceDate = calendar
+        ? updateSecondReferenceDate
+        : updateFirstReferenceDate;
 
-    const {
+      return (target: DateType) => {
+        if (currentMode === mode) {
+          const resultValue = getTargetValue(target, targetDate);
+          handleRangeSelection(resultValue);
+        } else {
+          const resultValue = getTargetValue(target, targetDate);
+          updateReferenceDate(resultValue);
+          popModeStack();
+        }
+      };
+    },
+    [
       currentMode,
-      onMonthControlClick,
-      onFirstPrev,
-      onFirstDoublePrev,
-      onSecondNext,
-      onSecondDoubleNext,
-      onYearControlClick,
-      popModeStack,
+      mode,
       referenceDates,
       updateFirstReferenceDate,
       updateSecondReferenceDate,
-    } = useRangeCalendarControls(referenceDateProp, mode);
+      popModeStack,
+      getTargetValue,
+      handleRangeSelection,
+    ],
+  );
 
-    const normalizeRangeStart = useCallback(
-      (date: DateType): DateType => {
-        switch (mode) {
-          case 'day':
-            return setMillisecond(
-              setSecond(setMinute(setHour(date, 0), 0), 0),
-              0,
-            );
-          case 'week':
-            return getCurrentWeekFirstDate(date, displayWeekDayLocale);
-          case 'month':
-            return getCurrentMonthFirstDate(date);
-          case 'year':
-            return getCurrentYearFirstDate(date);
-          case 'quarter':
-            return getCurrentQuarterFirstDate(date);
-          case 'half-year':
-            return getCurrentHalfYearFirstDate(date);
-          default:
-            return date;
-        }
-      },
-      [
-        displayWeekDayLocale,
-        mode,
-        getCurrentWeekFirstDate,
-        getCurrentMonthFirstDate,
-        getCurrentYearFirstDate,
-        getCurrentQuarterFirstDate,
-        getCurrentHalfYearFirstDate,
-        setHour,
-        setMinute,
-        setSecond,
-        setMillisecond,
-      ],
-    );
-
-    const normalizeRangeEnd = useCallback(
-      (date: DateType): DateType => {
-        switch (mode) {
-          case 'day':
-            return setMillisecond(
-              setSecond(setMinute(setHour(date, 23), 59), 59),
-              999,
-            );
-          case 'week': {
-            const weekStart = getCurrentWeekFirstDate(
-              date,
-              displayWeekDayLocale,
-            );
-            const weekEnd = addSecond(addDay(weekStart, 7), -1);
-            return setMillisecond(
-              setSecond(setMinute(setHour(weekEnd, 23), 59), 59),
-              999,
-            );
-          }
-          case 'month': {
-            const nextMonth = addSecond(
-              addMonth(getCurrentMonthFirstDate(date), 1),
-              -1,
-            );
-            return setMillisecond(
-              setSecond(setMinute(setHour(nextMonth, 23), 59), 59),
-              999,
-            );
-          }
-          case 'year': {
-            const nextYear = addSecond(
-              addYear(getCurrentYearFirstDate(date), 1),
-              -1,
-            );
-            return setMillisecond(
-              setSecond(setMinute(setHour(nextYear, 23), 59), 59),
-              999,
-            );
-          }
-          case 'quarter': {
-            const nextQuarter = addSecond(
-              addMonth(getCurrentQuarterFirstDate(date), 3),
-              -1,
-            );
-            return setMillisecond(
-              setSecond(setMinute(setHour(nextQuarter, 23), 59), 59),
-              999,
-            );
-          }
-          case 'half-year': {
-            const nextHalfYear = addSecond(
-              addMonth(getCurrentHalfYearFirstDate(date), 6),
-              -1,
-            );
-            return setMillisecond(
-              setSecond(setMinute(setHour(nextHalfYear, 23), 59), 59),
-              999,
-            );
-          }
-          default:
-            return date;
-        }
-      },
-      [
-        displayWeekDayLocale,
-        mode,
-        getCurrentWeekFirstDate,
-        getCurrentMonthFirstDate,
-        getCurrentYearFirstDate,
-        getCurrentQuarterFirstDate,
-        getCurrentHalfYearFirstDate,
-        addSecond,
-        addDay,
-        addMonth,
-        addYear,
-        setHour,
-        setMinute,
-        setSecond,
-        setMillisecond,
-      ],
-    );
-
-    const scanRange = useRangeScan({
-      displayWeekDayLocale,
-      isDateDisabled,
-      isHalfYearDisabled,
-      isMonthDisabled,
-      isQuarterDisabled,
-      isWeekDisabled,
-      isYearDisabled,
-      mode,
-    });
-
-    /**
-     * A disabled or incompletely checked range is not selectable, so it is not
-     * painted as one. This asks the same question `handleRangeSelection` asks
-     * before committing a selection, so the preview never invites a click that
-     * would then be rejected. Memoised because the six granularity handlers
-     * below all need the answer and the scan must run once, not once each.
-     */
-    const [rangeAnchorStart, rangeAnchorEnd] = displayValue ?? [];
-    const shouldSuppressInRange = useMemo(
-      () =>
-        Boolean(
-          rangeAnchorStart &&
-            rangeAnchorEnd &&
-            scanRange(rangeAnchorStart, rangeAnchorEnd) !== 'clear',
-        ),
-      // Memoize by anchor values, including when callers recreate the array.
-      [scanRange, rangeAnchorEnd, rangeAnchorStart],
-    );
-
-    const resolvedIsDateInRange = shouldSuppressInRange
-      ? undefined
-      : isDateInRange;
-    const resolvedIsHalfYearInRange = shouldSuppressInRange
-      ? undefined
-      : isHalfYearInRange;
-    const resolvedIsMonthInRange = shouldSuppressInRange
-      ? undefined
-      : isMonthInRange;
-    const resolvedIsQuarterInRange = shouldSuppressInRange
-      ? undefined
-      : isQuarterInRange;
-    const resolvedIsWeekInRange = shouldSuppressInRange
-      ? undefined
-      : isWeekInRange;
-    const resolvedIsYearInRange = shouldSuppressInRange
-      ? undefined
-      : isYearInRange;
-
-    const handleRangeSelection = useCallback(
-      (target: DateType) => {
-        if (!onChangeProp) return;
-
-        const [existingStart, existingEnd] = value || [];
-
-        if (!existingStart || (existingStart && existingEnd)) {
-          // 未選取起始日期，或已完成區間選取，重新開始選取
-          onChangeProp([target, undefined]);
-        } else {
-          const rawStart = existingStart;
-          const rawEnd = target;
-
-          // 檢查是否有不可選日期
-          if (scanRange(rawStart, rawEnd) !== 'clear') {
-            onChangeProp([target, undefined]);
-            return;
-          }
-
-          const isEndBeforeStart = isBefore(rawEnd, rawStart);
-          const [start, end] = isEndBeforeStart
-            ? [rawEnd, rawStart]
-            : [rawStart, rawEnd];
-
-          const normalizedStart = normalizeRangeStart(start);
-          const normalizedEnd = normalizeRangeEnd(end);
-
-          onChangeProp([normalizedStart, normalizedEnd]);
-        }
-      },
-      [
-        value,
-        onChangeProp,
-        isBefore,
-        normalizeRangeStart,
-        normalizeRangeEnd,
-        scanRange,
-      ],
-    );
-
-    const getTargetValue = useCallback(
-      (target: DateType, targetDate: DateType): DateType => {
-        if (currentMode === mode) {
-          return target;
-        }
-
-        if (currentMode === 'month') {
-          return setMonth(targetDate, getMonth(target));
-        }
-        if (currentMode === 'year') {
-          return setYear(targetDate, getYear(target));
-        }
-
-        return target;
-      },
-      [currentMode, mode, getMonth, getYear, setMonth, setYear],
-    );
-
-    const onChangeFactory = useCallback(
-      (calendar: 0 | 1) => {
-        const targetDate = referenceDates[calendar];
-        const updateReferenceDate = calendar
-          ? updateSecondReferenceDate
-          : updateFirstReferenceDate;
-
-        return (target: DateType) => {
-          if (currentMode === mode) {
-            const resultValue = getTargetValue(target, targetDate);
-            handleRangeSelection(resultValue);
-          } else {
-            const resultValue = getTargetValue(target, targetDate);
-            updateReferenceDate(resultValue);
-            popModeStack();
-          }
-        };
-      },
-      [
-        currentMode,
-        mode,
-        referenceDates,
-        updateFirstReferenceDate,
-        updateSecondReferenceDate,
-        popModeStack,
-        getTargetValue,
-        handleRangeSelection,
-      ],
-    );
-
-    return (
-      <div
-        {...restProps}
-        ref={ref}
-        role="application"
-        aria-label={`Range calendar, ${mode} view`}
-        className={cx(calendarClasses.host, className)}
-      >
-        {quickSelect && (
-          <CalendarQuickSelect
-            activeId={quickSelect.activeId}
-            options={quickSelect.options}
+  return (
+    <div
+      {...restProps}
+      ref={ref}
+      role="application"
+      aria-label={`Range calendar, ${mode} view`}
+      className={cx(calendarClasses.host, className)}
+    >
+      {quickSelect && (
+        <CalendarQuickSelect
+          activeId={quickSelect.activeId}
+          options={quickSelect.options}
+        />
+      )}
+      <div className={calendarClasses.mainWithFooter}>
+        <div className={calendarClasses.mainRangeCalendarWrapper}>
+          <Calendar
+            {...calendarProps}
+            renderAnnotations={renderAnnotations}
+            className={cx(
+              calendarClasses.noShadowHost,
+              calendarProps?.className,
+            )}
+            ref={firstCalendarRef}
+            mode={currentMode}
+            value={displayValue}
+            onChange={onChangeFactory(0)}
+            referenceDate={referenceDates[0]}
+            onPrev={onFirstPrev}
+            onDoublePrev={onFirstDoublePrev}
+            onMonthControlClick={onMonthControlClick}
+            onYearControlClick={onYearControlClick}
+            disabledFooterControl
+            disabledMonthSwitch={disabledMonthSwitch}
+            disabledYearSwitch={disabledYearSwitch}
+            disableOnPrev={disableOnPrev}
+            disableOnDoublePrev={disableOnDoublePrev}
+            displayMonthLocale={displayMonthLocale}
+            displayWeekDayLocale={displayWeekDayLocale}
+            isDateDisabled={isDateDisabled}
+            isDateInRange={resolvedIsDateInRange}
+            onDateHover={onDateHover}
+            isMonthDisabled={isMonthDisabled}
+            isMonthInRange={resolvedIsMonthInRange}
+            onMonthHover={onMonthHover}
+            isWeekDisabled={isWeekDisabled}
+            isWeekInRange={resolvedIsWeekInRange}
+            onWeekHover={onWeekHover}
+            isYearDisabled={isYearDisabled}
+            isYearInRange={resolvedIsYearInRange}
+            onYearHover={onYearHover}
+            isQuarterDisabled={isQuarterDisabled}
+            isQuarterInRange={resolvedIsQuarterInRange}
+            onQuarterHover={onQuarterHover}
+            isHalfYearDisabled={isHalfYearDisabled}
+            isHalfYearInRange={resolvedIsHalfYearInRange}
+            onHalfYearHover={onHalfYearHover}
+          />
+          <Calendar
+            {...calendarProps}
+            renderAnnotations={renderAnnotations}
+            className={cx(
+              calendarClasses.noShadowHost,
+              calendarProps?.className,
+            )}
+            ref={secondCalendarRef}
+            mode={currentMode}
+            value={displayValue}
+            onChange={onChangeFactory(1)}
+            referenceDate={referenceDates[1]}
+            onNext={onSecondNext}
+            onDoubleNext={onSecondDoubleNext}
+            onMonthControlClick={onMonthControlClick}
+            onYearControlClick={onYearControlClick}
+            disabledFooterControl
+            disabledMonthSwitch={disabledMonthSwitch}
+            disabledYearSwitch={disabledYearSwitch}
+            disableOnNext={disableOnNext}
+            disableOnDoubleNext={disableOnDoubleNext}
+            displayMonthLocale={displayMonthLocale}
+            displayWeekDayLocale={displayWeekDayLocale}
+            isDateDisabled={isDateDisabled}
+            isDateInRange={resolvedIsDateInRange}
+            onDateHover={onDateHover}
+            isMonthDisabled={isMonthDisabled}
+            isMonthInRange={resolvedIsMonthInRange}
+            onMonthHover={onMonthHover}
+            isWeekDisabled={isWeekDisabled}
+            isWeekInRange={resolvedIsWeekInRange}
+            onWeekHover={onWeekHover}
+            isYearDisabled={isYearDisabled}
+            isYearInRange={resolvedIsYearInRange}
+            onYearHover={onYearHover}
+            isQuarterDisabled={isQuarterDisabled}
+            isQuarterInRange={resolvedIsQuarterInRange}
+            onQuarterHover={onQuarterHover}
+            isHalfYearDisabled={isHalfYearDisabled}
+            isHalfYearInRange={resolvedIsHalfYearInRange}
+            onHalfYearHover={onHalfYearHover}
+          />
+        </div>
+        {actions && (
+          <CalendarFooterActions
+            actions={{
+              secondaryButtonProps: {
+                children: 'Cancel',
+                disabled: false,
+                ...actions?.secondaryButtonProps,
+              },
+              primaryButtonProps: {
+                children: 'Ok',
+                disabled: false,
+                ...actions?.primaryButtonProps,
+              },
+            }}
           />
         )}
-        <div className={calendarClasses.mainWithFooter}>
-          <div className={calendarClasses.mainRangeCalendarWrapper}>
-            <Calendar
-              {...calendarProps}
-              renderAnnotations={renderAnnotations}
-              className={cx(
-                calendarClasses.noShadowHost,
-                calendarProps?.className,
-              )}
-              ref={firstCalendarRef}
-              mode={currentMode}
-              value={displayValue}
-              onChange={onChangeFactory(0)}
-              referenceDate={referenceDates[0]}
-              onPrev={onFirstPrev}
-              onDoublePrev={onFirstDoublePrev}
-              onMonthControlClick={onMonthControlClick}
-              onYearControlClick={onYearControlClick}
-              disabledFooterControl
-              disabledMonthSwitch={disabledMonthSwitch}
-              disabledYearSwitch={disabledYearSwitch}
-              disableOnPrev={disableOnPrev}
-              disableOnDoublePrev={disableOnDoublePrev}
-              displayMonthLocale={displayMonthLocale}
-              displayWeekDayLocale={displayWeekDayLocale}
-              isDateDisabled={isDateDisabled}
-              isDateInRange={resolvedIsDateInRange}
-              onDateHover={onDateHover}
-              isMonthDisabled={isMonthDisabled}
-              isMonthInRange={resolvedIsMonthInRange}
-              onMonthHover={onMonthHover}
-              isWeekDisabled={isWeekDisabled}
-              isWeekInRange={resolvedIsWeekInRange}
-              onWeekHover={onWeekHover}
-              isYearDisabled={isYearDisabled}
-              isYearInRange={resolvedIsYearInRange}
-              onYearHover={onYearHover}
-              isQuarterDisabled={isQuarterDisabled}
-              isQuarterInRange={resolvedIsQuarterInRange}
-              onQuarterHover={onQuarterHover}
-              isHalfYearDisabled={isHalfYearDisabled}
-              isHalfYearInRange={resolvedIsHalfYearInRange}
-              onHalfYearHover={onHalfYearHover}
-            />
-            <Calendar
-              {...calendarProps}
-              renderAnnotations={renderAnnotations}
-              className={cx(
-                calendarClasses.noShadowHost,
-                calendarProps?.className,
-              )}
-              ref={secondCalendarRef}
-              mode={currentMode}
-              value={displayValue}
-              onChange={onChangeFactory(1)}
-              referenceDate={referenceDates[1]}
-              onNext={onSecondNext}
-              onDoubleNext={onSecondDoubleNext}
-              onMonthControlClick={onMonthControlClick}
-              onYearControlClick={onYearControlClick}
-              disabledFooterControl
-              disabledMonthSwitch={disabledMonthSwitch}
-              disabledYearSwitch={disabledYearSwitch}
-              disableOnNext={disableOnNext}
-              disableOnDoubleNext={disableOnDoubleNext}
-              displayMonthLocale={displayMonthLocale}
-              displayWeekDayLocale={displayWeekDayLocale}
-              isDateDisabled={isDateDisabled}
-              isDateInRange={resolvedIsDateInRange}
-              onDateHover={onDateHover}
-              isMonthDisabled={isMonthDisabled}
-              isMonthInRange={resolvedIsMonthInRange}
-              onMonthHover={onMonthHover}
-              isWeekDisabled={isWeekDisabled}
-              isWeekInRange={resolvedIsWeekInRange}
-              onWeekHover={onWeekHover}
-              isYearDisabled={isYearDisabled}
-              isYearInRange={resolvedIsYearInRange}
-              onYearHover={onYearHover}
-              isQuarterDisabled={isQuarterDisabled}
-              isQuarterInRange={resolvedIsQuarterInRange}
-              onQuarterHover={onQuarterHover}
-              isHalfYearDisabled={isHalfYearDisabled}
-              isHalfYearInRange={resolvedIsHalfYearInRange}
-              onHalfYearHover={onHalfYearHover}
-            />
-          </div>
-          {actions && (
-            <CalendarFooterActions
-              actions={{
-                secondaryButtonProps: {
-                  children: 'Cancel',
-                  disabled: false,
-                  ...actions?.secondaryButtonProps,
-                },
-                primaryButtonProps: {
-                  children: 'Ok',
-                  disabled: false,
-                  ...actions?.primaryButtonProps,
-                },
-              }}
-            />
-          )}
-        </div>
       </div>
-    );
-  },
-);
+    </div>
+  );
+}
 
 export default RangeCalendar;

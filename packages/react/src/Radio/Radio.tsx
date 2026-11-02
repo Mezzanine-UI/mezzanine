@@ -2,9 +2,9 @@
 
 import {
   ChangeEventHandler,
-  forwardRef,
+  type RefAttributes,
   useCallback,
-  useContext,
+  use,
   useRef,
 } from 'react';
 import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
@@ -140,124 +140,122 @@ export type RadioProps = RadioNormalProps | RadioSegmentProps;
  * @see {@link RadioGroup} 管理多個單選按鈕的群組元件
  * @see {@link useRadioControlValue} 單選按鈕受控值的自訂 Hook
  */
-const Radio = forwardRef<HTMLDivElement, RadioProps>(
-  function Radio(props, ref) {
-    const radioGroup = useContext(RadioGroupContext);
-    const {
-      disabled: disabledFromGroup,
-      name: nameFromGroup,
-      size: sizeFromGroup,
-      type: typeFromGroup,
-    } = radioGroup || {};
-    const {
-      checked: checkedProp,
-      className,
-      children,
-      defaultChecked,
-      disabled = disabledFromGroup || false,
-      error = false,
-      icon,
-      hint,
-      inputProps,
-      onChange: onChangeProp,
-      size: sizeProp,
-      type = typeFromGroup || 'radio',
-      value,
-      withInputConfig,
-      ...rest
-    } = props;
-    const {
-      id: inputId,
-      name = nameFromGroup,
-      ...restInputProps
-    } = inputProps || {};
-    const [checked, onChange] = useRadioControlValue({
-      checked: checkedProp,
-      defaultChecked,
-      onChange: onChangeProp,
-      radioGroup,
-      value,
-    });
-    const size: InputCheckSize = sizeProp ?? sizeFromGroup ?? 'main';
+function Radio({ ref, ...props }: RadioProps & RefAttributes<HTMLDivElement>) {
+  const radioGroup = use(RadioGroupContext);
+  const {
+    disabled: disabledFromGroup,
+    name: nameFromGroup,
+    size: sizeFromGroup,
+    type: typeFromGroup,
+  } = radioGroup || {};
+  const {
+    checked: checkedProp,
+    className,
+    children,
+    defaultChecked,
+    disabled = disabledFromGroup || false,
+    error = false,
+    icon,
+    hint,
+    inputProps,
+    onChange: onChangeProp,
+    size: sizeProp,
+    type = typeFromGroup || 'radio',
+    value,
+    withInputConfig,
+    ...rest
+  } = props;
+  const {
+    id: inputId,
+    name = nameFromGroup,
+    ...restInputProps
+  } = inputProps || {};
+  const [checked, onChange] = useRadioControlValue({
+    checked: checkedProp,
+    defaultChecked,
+    onChange: onChangeProp,
+    radioGroup,
+    value,
+  });
+  const size: InputCheckSize = sizeProp ?? sizeFromGroup ?? 'main';
 
-    const radioInputRef = useRef<HTMLInputElement>(null);
-    const textInputRef = useRef<HTMLInputElement>(null);
+  const radioInputRef = useRef<HTMLInputElement>(null);
+  const textInputRef = useRef<HTMLInputElement>(null);
 
-    const handleRadioChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-      (event) => {
-        onChange(event);
-        if (withInputConfig && !withInputConfig.disabled) {
-          textInputRef.current?.focus();
-        }
-      },
-      [onChange, withInputConfig],
-    );
+  const handleRadioChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      onChange(event);
+      if (withInputConfig && !withInputConfig.disabled) {
+        textInputRef.current?.focus();
+      }
+    },
+    [onChange, withInputConfig],
+  );
 
-    return (
-      <div ref={ref} className={cx(classes.wrapper, className)}>
-        <InputCheck
-          {...rest}
-          control={
-            <span
-              className={cx(classes.host, classes.size(size), {
-                [classes.segmented]: type === 'segment',
-                [classes.checked]: checked,
-                [classes.error]: error,
-              })}
-            >
-              {type === 'segment' && (
-                <span
-                  className={cx(classes.segmentedContainer, {
-                    [classes.segmentedContainerWithIconText]:
-                      !!children && !!icon,
-                  })}
-                >
-                  {icon && <Icon icon={icon} size={16} />}
-                  {children}
-                </span>
-              )}
-              <input
-                {...restInputProps}
-                aria-checked={checked}
-                aria-disabled={disabled}
-                checked={checked}
-                disabled={disabled}
-                id={inputId}
-                onChange={handleRadioChange}
-                name={name}
-                ref={radioInputRef}
-                type="radio"
-                value={value}
-              />
-            </span>
-          }
-          disabled={disabled}
-          error={error}
-          hint={hint}
-          htmlFor={inputId}
-          segmentedStyle={type === 'segment'}
-          size={size}
-        >
-          {type === 'radio' && children}
-        </InputCheck>
-        {type === 'radio' && withInputConfig && (
-          <div style={{ width: withInputConfig.width ?? 120 }}>
-            <Input
-              {...withInputConfig}
-              inputRef={textInputRef}
-              inputProps={{
-                onClick: () => {
-                  radioInputRef.current?.click();
-                },
-              }}
-              variant="base"
-              placeholder={withInputConfig.placeholder ?? 'Placeholder'}
+  return (
+    <div ref={ref} className={cx(classes.wrapper, className)}>
+      <InputCheck
+        {...rest}
+        control={
+          <span
+            className={cx(classes.host, classes.size(size), {
+              [classes.segmented]: type === 'segment',
+              [classes.checked]: checked,
+              [classes.error]: error,
+            })}
+          >
+            {type === 'segment' && (
+              <span
+                className={cx(classes.segmentedContainer, {
+                  [classes.segmentedContainerWithIconText]:
+                    !!children && !!icon,
+                })}
+              >
+                {icon && <Icon icon={icon} size={16} />}
+                {children}
+              </span>
+            )}
+            <input
+              {...restInputProps}
+              aria-checked={checked}
+              aria-disabled={disabled}
+              checked={checked}
+              disabled={disabled}
+              id={inputId}
+              onChange={handleRadioChange}
+              name={name}
+              ref={radioInputRef}
+              type="radio"
+              value={value}
             />
-          </div>
-        )}
-      </div>
-    );
-  },
-);
+          </span>
+        }
+        disabled={disabled}
+        error={error}
+        hint={hint}
+        htmlFor={inputId}
+        segmentedStyle={type === 'segment'}
+        size={size}
+      >
+        {type === 'radio' && children}
+      </InputCheck>
+      {type === 'radio' && withInputConfig && (
+        <div style={{ width: withInputConfig.width ?? 120 }}>
+          <Input
+            {...withInputConfig}
+            inputRef={textInputRef}
+            inputProps={{
+              onClick: () => {
+                radioInputRef.current?.click();
+              },
+            }}
+            variant="base"
+            placeholder={withInputConfig.placeholder ?? 'Placeholder'}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default Radio;

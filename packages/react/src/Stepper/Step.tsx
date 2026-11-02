@@ -1,4 +1,4 @@
-import { forwardRef, KeyboardEvent } from 'react';
+import { type RefAttributes, KeyboardEvent } from 'react';
 import { stepClasses as classes } from '@mezzanine-ui/core/stepper';
 import {
   CheckedOutlineIcon,
@@ -68,7 +68,7 @@ const DotStatusIndicator = () => (
 /**
  * The react component for `mezzanine` step.
  */
-const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
+function Step({ ref, ...props }: StepProps & RefAttributes<HTMLDivElement>) {
   const {
     className,
     description,
@@ -142,6 +142,6 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
       </div>
     </div>
   );
-});
+}
 
 export default Step;

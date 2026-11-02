@@ -11,7 +11,7 @@ import {
   ChangeEventHandler,
   Children,
   ComponentProps,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactNode,
   useCallback,
@@ -236,322 +236,321 @@ const equalityFn = (a: string[], b: string[]) => {
  *
  * @see {@link Checkbox} 單一核取方塊元件
  */
-const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
-  function CheckboxGroup(props, ref) {
-    const {
-      children: childrenProp,
-      className,
-      defaultValue,
-      disabled,
-      layout = 'horizontal',
-      level,
-      mode,
-      name,
-      options,
-      onChange: onChangeProp,
-      role = 'group',
-      value: valueProp,
-      ...rest
-    } = props;
+function CheckboxGroup({
+  ref,
+  ...props
+}: CheckboxGroupProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children: childrenProp,
+    className,
+    defaultValue,
+    disabled,
+    layout = 'horizontal',
+    level,
+    mode,
+    name,
+    options,
+    onChange: onChangeProp,
+    role = 'group',
+    value: valueProp,
+    ...rest
+  } = props;
 
-    const generatedName = useId();
-    const resolvedName = name ?? generatedName;
+  const generatedName = useId();
+  const resolvedName = name ?? generatedName;
 
-    const normalizedOptions = useMemo(() => options ?? [], [options]);
+  const normalizedOptions = useMemo(() => options ?? [], [options]);
 
-    const [value, setValue] = useControlValueState<string[]>({
-      defaultValue: defaultValue ?? [],
-      equalityFn,
-      value: valueProp,
-    });
+  const [value, setValue] = useControlValueState<string[]>({
+    defaultValue: defaultValue ?? [],
+    equalityFn,
+    value: valueProp,
+  });
 
-    const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
-      (event) => {
-        const checkboxValue = event.target.value;
-        const isChecked = event.target.checked;
-        const currentValue = value || [];
-        const newValue = isChecked
-          ? [...currentValue, checkboxValue]
-          : currentValue.filter((v) => v !== checkboxValue);
+  const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      const checkboxValue = event.target.value;
+      const isChecked = event.target.checked;
+      const currentValue = value || [];
+      const newValue = isChecked
+        ? [...currentValue, checkboxValue]
+        : currentValue.filter((v) => v !== checkboxValue);
 
-        setValue(newValue);
+      setValue(newValue);
 
-        if (onChangeProp) {
-          const syntheticEvent = assignCheckboxGroupValuesToEvent(
-            event,
-            newValue,
-            resolvedName,
-          );
-          onChangeProp(syntheticEvent);
-        }
-      },
-      [onChangeProp, resolvedName, setValue, value],
-    );
-
-    const context: CheckboxGroupContextValue = useMemo(
-      () => ({
-        disabled,
-        name: resolvedName,
-        onChange: handleChange,
-        value: value || [],
-      }),
-      [disabled, resolvedName, handleChange, value],
-    );
-
-    const hasChildrenInput = typeof childrenProp !== 'undefined';
-    const hasOptionsInput = Array.isArray(options);
-
-    // Validate input props and warn about missing props
-    useEffect(() => {
-      if (hasChildrenInput && hasOptionsInput) {
-        console.error(
-          'CheckboxGroup: Please provide either `children` or `options`, but not both.',
+      if (onChangeProp) {
+        const syntheticEvent = assignCheckboxGroupValuesToEvent(
+          event,
+          newValue,
+          resolvedName,
         );
-      } else if (!hasChildrenInput && !hasOptionsInput) {
-        console.error(
-          'CheckboxGroup: Please provide one of `children` or `options`.',
-        );
+        onChangeProp(syntheticEvent);
       }
+    },
+    [onChangeProp, resolvedName, setValue, value],
+  );
 
-      // Warn if name is not provided (important for react-hook-form integration)
-      if (!name) {
-        console.warn(
-          'CheckboxGroup: The `name` prop is recommended, especially when integrating with react-hook-form. ' +
+  const context: CheckboxGroupContextValue = useMemo(
+    () => ({
+      disabled,
+      name: resolvedName,
+      onChange: handleChange,
+      value: value || [],
+    }),
+    [disabled, resolvedName, handleChange, value],
+  );
+
+  const hasChildrenInput = typeof childrenProp !== 'undefined';
+  const hasOptionsInput = Array.isArray(options);
+
+  // Validate input props and warn about missing props
+  useEffect(() => {
+    if (hasChildrenInput && hasOptionsInput) {
+      console.error(
+        'CheckboxGroup: Please provide either `children` or `options`, but not both.',
+      );
+    } else if (!hasChildrenInput && !hasOptionsInput) {
+      console.error(
+        'CheckboxGroup: Please provide one of `children` or `options`.',
+      );
+    }
+
+    // Warn if name is not provided (important for react-hook-form integration)
+    if (!name) {
+      console.warn(
+        'CheckboxGroup: The `name` prop is recommended, especially when integrating with react-hook-form. ' +
           'All checkboxes in the group should share the same `name` attribute.',
-        );
-      }
+      );
+    }
 
-      // Validate that all children have value prop
-      if (hasChildrenInput) {
-        Children.forEach(childrenProp, (child, index) => {
-          if (isValidElement(child) && child.type === Checkbox) {
-            const checkboxProps = child.props as CheckboxProps;
-            if (!checkboxProps.value) {
-              console.warn(
-                `CheckboxGroup: Each Checkbox child should have a \`value\` prop. ` +
-                `Checkbox at index ${index} is missing the \`value\` prop.`,
-              );
-            }
-          }
-        });
-      }
-    }, [hasChildrenInput, hasOptionsInput, name, childrenProp]);
-
-    // Validate that all children are Checkbox components
-    useEffect(() => {
-      if (hasChildrenInput) {
-        Children.forEach(childrenProp, (child) => {
-          if (isValidElement(child) && child.type !== Checkbox) {
+    // Validate that all children have value prop
+    if (hasChildrenInput) {
+      Children.forEach(childrenProp, (child, index) => {
+        if (isValidElement(child) && child.type === Checkbox) {
+          const checkboxProps = child.props as CheckboxProps;
+          if (!checkboxProps.value) {
             console.warn(
-              'CheckboxGroup: When using ReactNode (children) input, only Checkbox components are supported. ' +
-              `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
+              `CheckboxGroup: Each Checkbox child should have a \`value\` prop. ` +
+                `Checkbox at index ${index} is missing the \`value\` prop.`,
             );
           }
-        });
-      }
-    }, [hasChildrenInput, childrenProp]);
+        }
+      });
+    }
+  }, [hasChildrenInput, hasOptionsInput, name, childrenProp]);
 
-    // Render priority: ReactNode (children) first, then options
-    // If using ReactNode, only Checkbox components are supported, other components are not supported
-    const children = useMemo(() => {
-      // Render ReactNode (children) if provided
-      if (hasChildrenInput) {
-        return childrenProp;
-      }
+  // Validate that all children are Checkbox components
+  useEffect(() => {
+    if (hasChildrenInput) {
+      Children.forEach(childrenProp, (child) => {
+        if (isValidElement(child) && child.type !== Checkbox) {
+          console.warn(
+            'CheckboxGroup: When using ReactNode (children) input, only Checkbox components are supported. ' +
+              `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
+          );
+        }
+      });
+    }
+  }, [hasChildrenInput, childrenProp]);
 
-      if (hasOptionsInput && normalizedOptions.length > 0) {
-        return normalizedOptions.map(
-          ({
-            label,
-            value: optionValue,
-            disabled: optionDisabled,
-            id: optionId,
-            inputProps: optionInputProps,
-            inputRef: optionInputRef,
-            ...optionRest
-          }) => {
-            // Generate unique id if not provided
-            // Format: {name}-{value} or fallback to checkbox-{value}
-            const generatedId = resolvedName
-              ? `${resolvedName}-${optionValue}`
-              : `checkbox-${optionValue}`;
-            const finalId = optionId ?? generatedId;
+  // Render priority: ReactNode (children) first, then options
+  // If using ReactNode, only Checkbox components are supported, other components are not supported
+  const children = useMemo(() => {
+    // Render ReactNode (children) if provided
+    if (hasChildrenInput) {
+      return childrenProp;
+    }
 
-            return (
-              <Checkbox
-                key={optionValue}
-                disabled={optionDisabled ?? disabled}
-                id={finalId}
-                inputProps={optionInputProps}
-                inputRef={optionInputRef}
-                label={typeof label === 'string' ? label : String(label)}
-                mode={mode}
-                value={optionValue}
-                {...optionRest}
-              />
-            );
-          },
-        );
-      }
+    if (hasOptionsInput && normalizedOptions.length > 0) {
+      return normalizedOptions.map(
+        ({
+          label,
+          value: optionValue,
+          disabled: optionDisabled,
+          id: optionId,
+          inputProps: optionInputProps,
+          inputRef: optionInputRef,
+          ...optionRest
+        }) => {
+          // Generate unique id if not provided
+          // Format: {name}-{value} or fallback to checkbox-{value}
+          const generatedId = resolvedName
+            ? `${resolvedName}-${optionValue}`
+            : `checkbox-${optionValue}`;
+          const finalId = optionId ?? generatedId;
 
-      return null;
-    }, [
-      childrenProp,
-      disabled,
-      hasChildrenInput,
-      hasOptionsInput,
-      mode,
-      normalizedOptions,
-      resolvedName,
-    ]);
+          return (
+            <Checkbox
+              key={optionValue}
+              disabled={optionDisabled ?? disabled}
+              id={finalId}
+              inputProps={optionInputProps}
+              inputRef={optionInputRef}
+              label={typeof label === 'string' ? label : String(label)}
+              mode={mode}
+              value={optionValue}
+              {...optionRest}
+            />
+          );
+        },
+      );
+    }
 
-    const isLevelActive = level?.active ?? false;
-    const isChipMode = mode === 'chip';
-    const isHorizontalLayout = layout === 'horizontal';
-    const shouldRenderLevelInsideContent = isLevelActive && isChipMode;
-    const ariaOrientation = isLevelActive ? 'vertical' : layout;
+    return null;
+  }, [
+    childrenProp,
+    disabled,
+    hasChildrenInput,
+    hasOptionsInput,
+    mode,
+    normalizedOptions,
+    resolvedName,
+  ]);
 
-    const canRenderLevelControl = isLevelActive && normalizedOptions.length > 0;
+  const isLevelActive = level?.active ?? false;
+  const isChipMode = mode === 'chip';
+  const isHorizontalLayout = layout === 'horizontal';
+  const shouldRenderLevelInsideContent = isLevelActive && isChipMode;
+  const ariaOrientation = isLevelActive ? 'vertical' : layout;
 
-    useEffect(() => {
-      if (isLevelActive && !hasOptionsInput) {
-        console.warn(
-          'CheckboxGroup: `level.active=true` currently supports only the `options` input approach.',
-        );
-      }
-    }, [hasOptionsInput, isLevelActive]);
+  const canRenderLevelControl = isLevelActive && normalizedOptions.length > 0;
 
-    const { levelChecked, levelIndeterminate } = useMemo(() => {
+  useEffect(() => {
+    if (isLevelActive && !hasOptionsInput) {
+      console.warn(
+        'CheckboxGroup: `level.active=true` currently supports only the `options` input approach.',
+      );
+    }
+  }, [hasOptionsInput, isLevelActive]);
+
+  const { levelChecked, levelIndeterminate } = useMemo(() => {
+    if (!canRenderLevelControl) {
+      return { levelChecked: false, levelIndeterminate: false };
+    }
+
+    const enabledOptions = normalizedOptions.filter((opt) => !opt.disabled);
+    const enabledValues = enabledOptions.map((opt) => opt.value);
+    const selectedEnabledValues = (value || []).filter((v) =>
+      enabledValues.includes(v),
+    );
+
+    if (selectedEnabledValues.length === 0) {
+      return { levelChecked: false, levelIndeterminate: false };
+    }
+
+    if (selectedEnabledValues.length === enabledValues.length) {
+      return { levelChecked: true, levelIndeterminate: false };
+    }
+
+    return { levelChecked: false, levelIndeterminate: true };
+  }, [canRenderLevelControl, normalizedOptions, value]);
+
+  const handleLevelControlChange = useCallback<
+    ChangeEventHandler<HTMLInputElement>
+  >(
+    (event) => {
       if (!canRenderLevelControl) {
-        return { levelChecked: false, levelIndeterminate: false };
+        return;
       }
 
+      // Use custom onChange if provided
+      if (level?.onChange) {
+        level.onChange(event);
+        return;
+      }
+
+      // Default behavior: select/deselect all
+      const isChecked = event.target.checked;
+      const currentValue = value || [];
       const enabledOptions = normalizedOptions.filter((opt) => !opt.disabled);
       const enabledValues = enabledOptions.map((opt) => opt.value);
-      const selectedEnabledValues = (value || []).filter((v) =>
-        enabledValues.includes(v),
+      const disabledOptions = normalizedOptions.filter((opt) => opt.disabled);
+      const disabledValues = disabledOptions.map((opt) => opt.value);
+      const selectedDisabledValues = currentValue.filter((v) =>
+        disabledValues.includes(v),
       );
 
-      if (selectedEnabledValues.length === 0) {
-        return { levelChecked: false, levelIndeterminate: false };
-      }
+      const newValue = isChecked
+        ? [...enabledValues, ...selectedDisabledValues]
+        : selectedDisabledValues;
 
-      if (selectedEnabledValues.length === enabledValues.length) {
-        return { levelChecked: true, levelIndeterminate: false };
-      }
+      setValue(newValue);
 
-      return { levelChecked: false, levelIndeterminate: true };
-    }, [canRenderLevelControl, normalizedOptions, value]);
-
-    const handleLevelControlChange = useCallback<
-      ChangeEventHandler<HTMLInputElement>
-    >(
-      (event) => {
-        if (!canRenderLevelControl) {
-          return;
-        }
-
-        // Use custom onChange if provided
-        if (level?.onChange) {
-          level.onChange(event);
-          return;
-        }
-
-        // Default behavior: select/deselect all
-        const isChecked = event.target.checked;
-        const currentValue = value || [];
-        const enabledOptions = normalizedOptions.filter((opt) => !opt.disabled);
-        const enabledValues = enabledOptions.map((opt) => opt.value);
-        const disabledOptions = normalizedOptions.filter((opt) => opt.disabled);
-        const disabledValues = disabledOptions.map((opt) => opt.value);
-        const selectedDisabledValues = currentValue.filter((v) =>
-          disabledValues.includes(v),
+      if (onChangeProp) {
+        const syntheticEvent = assignCheckboxGroupValuesToEvent(
+          event,
+          newValue,
+          resolvedName,
         );
 
-        const newValue = isChecked
-          ? [...enabledValues, ...selectedDisabledValues]
-          : selectedDisabledValues;
+        onChangeProp(syntheticEvent);
+      }
+    },
+    [
+      canRenderLevelControl,
+      level,
+      onChangeProp,
+      normalizedOptions,
+      resolvedName,
+      setValue,
+      value,
+    ],
+  );
 
-        setValue(newValue);
-
-        if (onChangeProp) {
-          const syntheticEvent = assignCheckboxGroupValuesToEvent(
-            event,
-            newValue,
-            resolvedName,
-          );
-
-          onChangeProp(syntheticEvent);
-        }
-      },
-      [
-        canRenderLevelControl,
-        level,
-        onChangeProp,
-        normalizedOptions,
-        resolvedName,
-        setValue,
-        value,
-      ],
-    );
-
-    return (
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      aria-orientation={ariaOrientation}
+      className={cx(
+        classes.host,
+        {
+          [classes.nested]: isLevelActive,
+        },
+        className,
+      )}
+      role={role}
+    >
+      {canRenderLevelControl && !shouldRenderLevelInsideContent && (
+        <Checkbox
+          checked={levelChecked}
+          disabled={disabled || level?.disabled}
+          id={`${resolvedName}-level-control`}
+          indeterminate={levelIndeterminate}
+          label={level?.label ?? ''}
+          mode={level?.mode ?? 'default'}
+          name={`${resolvedName}-level-control`}
+          onChange={handleLevelControlChange}
+        />
+      )}
       <div
-        {...rest}
-        ref={ref}
-        aria-orientation={ariaOrientation}
         className={cx(
-          classes.host,
-          {
-            [classes.nested]: isLevelActive,
-          },
-          className,
+          classes.contentWrapper,
+          classes.layout(layout),
+          mode && classes.mode(mode),
         )}
-        role={role}
       >
-        {canRenderLevelControl && !shouldRenderLevelInsideContent && (
-          <Checkbox
-            checked={levelChecked}
-            disabled={disabled || level?.disabled}
-            id={`${resolvedName}-level-control`}
-            indeterminate={levelIndeterminate}
-            label={level?.label ?? ''}
-            mode={level?.mode ?? 'default'}
-            name={`${resolvedName}-level-control`}
-            onChange={handleLevelControlChange}
-          />
+        {canRenderLevelControl && shouldRenderLevelInsideContent && (
+          <>
+            <Checkbox
+              checked={levelChecked}
+              disabled={disabled || level?.disabled}
+              id={`${resolvedName}-level-control`}
+              indeterminate={levelIndeterminate}
+              label={level?.label ?? ''}
+              mode={level?.mode ?? 'default'}
+              name={`${resolvedName}-level-control`}
+              onChange={handleLevelControlChange}
+            />
+            {isHorizontalLayout && (
+              <i className={classes.levelControlSeparator} />
+            )}
+          </>
         )}
-        <div
-          className={cx(
-            classes.contentWrapper,
-            classes.layout(layout),
-            mode && classes.mode(mode),
-          )}
-        >
-          {canRenderLevelControl && shouldRenderLevelInsideContent && (
-            <>
-              <Checkbox
-                checked={levelChecked}
-                disabled={disabled || level?.disabled}
-                id={`${resolvedName}-level-control`}
-                indeterminate={levelIndeterminate}
-                label={level?.label ?? ''}
-                mode={level?.mode ?? 'default'}
-                name={`${resolvedName}-level-control`}
-                onChange={handleLevelControlChange}
-              />
-              {isHorizontalLayout && (
-                <i className={classes.levelControlSeparator} />
-              )}
-            </>
-          )}
-          <CheckboxGroupContext.Provider value={context}>
-            {children}
-          </CheckboxGroupContext.Provider>
-        </div>
+        <CheckboxGroupContext value={context}>{children}</CheckboxGroupContext>
       </div>
-    );
-  },
-);
+    </div>
+  );
+}
 
 export default CheckboxGroup;

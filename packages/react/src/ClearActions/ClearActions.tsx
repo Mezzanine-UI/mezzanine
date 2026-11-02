@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 
 import { CloseIcon, DangerousFilledIcon } from '@mezzanine-ui/icons';
 
@@ -63,38 +63,39 @@ export type ClearActionsProps =
 /**
  * Mezzanine clear actions button.
  */
-const ClearActions = forwardRef<HTMLButtonElement, ClearActionsProps>(
-  function ClearActions(props, ref) {
-    const { className, onClick, type = 'standard', ...rest } = props;
+function ClearActions({
+  ref,
+  ...props
+}: ClearActionsProps & RefAttributes<HTMLButtonElement>) {
+  const { className, onClick, type = 'standard', ...rest } = props;
 
-    const variant =
-      'variant' in props ? props.variant : undefined;
-    const resolvedVariant: ClearActionsVariant =
-      type === 'clearable'
-        ? 'default'
-        : variant ?? (type === 'standard' ? 'base' : 'contrast');
+  const variant = 'variant' in props ? props.variant : undefined;
+  const resolvedVariant: ClearActionsVariant =
+    type === 'clearable'
+      ? 'default'
+      : (variant ?? (type === 'standard' ? 'base' : 'contrast'));
 
-    return (
-      <button
-        {...rest}
-        ref={ref}
-        aria-label="Close"
-        className={cx(
-          classes.host,
-          classes.type(type),
-          classes.variant(resolvedVariant),
-          className,
-        )}
-        onClick={onClick}
-        type="button"
-      >
-        {type === 'clearable'
-          ? <Icon className={classes.icon} icon={DangerousFilledIcon} />
-          : <Icon className={classes.icon} icon={CloseIcon} />}
-      </button>
-    );
-  },
-);
+  return (
+    <button
+      {...rest}
+      ref={ref}
+      aria-label="Close"
+      className={cx(
+        classes.host,
+        classes.type(type),
+        classes.variant(resolvedVariant),
+        className,
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      {type === 'clearable' ? (
+        <Icon className={classes.icon} icon={DangerousFilledIcon} />
+      ) : (
+        <Icon className={classes.icon} icon={CloseIcon} />
+      )}
+    </button>
+  );
+}
 
 export default ClearActions;
-

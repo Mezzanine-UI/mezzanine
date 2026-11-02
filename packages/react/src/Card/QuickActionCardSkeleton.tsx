@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -19,10 +19,10 @@ export interface QuickActionCardSkeletonProps
  * Skeleton placeholder for QuickActionCard component.
  * Renders a skeleton that mimics the QuickActionCard layout.
  */
-const QuickActionCardSkeleton = forwardRef<
-  HTMLDivElement,
-  QuickActionCardSkeletonProps
->(function QuickActionCardSkeleton(props, ref) {
+function QuickActionCardSkeleton({
+  ref,
+  ...props
+}: QuickActionCardSkeletonProps & RefAttributes<HTMLDivElement>) {
   const { className, mode = 'horizontal', ...rest } = props;
 
   return (
@@ -43,7 +43,7 @@ const QuickActionCardSkeleton = forwardRef<
       </div>
     </div>
   );
-});
+}
 
 QuickActionCardSkeleton.displayName = 'QuickActionCardSkeleton';
 

@@ -1,14 +1,14 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 
 export interface EmptyMainSystemIconProps
   extends React.SVGProps<SVGSVGElement> {
   size?: number;
 }
 
-export const EmptyMainSystemIcon = forwardRef<
-  SVGSVGElement,
-  EmptyMainSystemIconProps
->(function EmptySystemIcon(props, ref) {
+export const EmptyMainSystemIcon = function EmptySystemIcon({
+  ref,
+  ...props
+}: EmptyMainSystemIconProps & RefAttributes<SVGSVGElement>) {
   const { className, size = 64, ...rest } = props;
 
   return (
@@ -56,4 +56,4 @@ export const EmptyMainSystemIcon = forwardRef<
       />
     </svg>
   );
-});
+};

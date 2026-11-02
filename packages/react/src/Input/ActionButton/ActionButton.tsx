@@ -4,7 +4,7 @@ import {
   inputActionButtonClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import Icon from '../../Icon';
 import { cx } from '../../utils/cx';
 import { CopyIcon } from '@mezzanine-ui/icons';
@@ -37,36 +37,37 @@ export interface ActionButtonProps
   size?: InputSize;
 }
 
-const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
-  function ActionButton(props, ref) {
-    const {
-      className,
-      disabled,
-      icon = CopyIcon,
-      label = 'Copy',
-      size = 'main',
-      ...rest
-    } = props;
+function ActionButton({
+  ref,
+  ...props
+}: ActionButtonProps & RefAttributes<HTMLButtonElement>) {
+  const {
+    className,
+    disabled,
+    icon = CopyIcon,
+    label = 'Copy',
+    size = 'main',
+    ...rest
+  } = props;
 
-    return (
-      <button
-        ref={ref}
-        type="button"
-        disabled={disabled}
-        className={cx(
-          classes.host,
-          disabled && classes.disabled,
-          size === 'main' ? classes.main : classes.sub,
-          className,
-        )}
-        title={label}
-        {...rest}
-      >
-        <Icon className={classes.icon} icon={icon} size={16} />
-        <span className={classes.text}>{label}</span>
-      </button>
-    );
-  },
-);
+  return (
+    <button
+      ref={ref}
+      type="button"
+      disabled={disabled}
+      className={cx(
+        classes.host,
+        disabled && classes.disabled,
+        size === 'main' ? classes.main : classes.sub,
+        className,
+      )}
+      title={label}
+      {...rest}
+    >
+      <Icon className={classes.icon} icon={icon} size={16} />
+      <span className={classes.text}>{label}</span>
+    </button>
+  );
+}
 
 export default ActionButton;

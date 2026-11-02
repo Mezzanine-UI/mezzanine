@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { DateType } from '@mezzanine-ui/core/calendar';
 import TimePanel, { TimePanelProps } from '../TimePanel';
 import InputTriggerPopper, {
@@ -46,52 +46,53 @@ export interface TimePickerPanelProps
 /**
  * The react component for `mezzanine` time picker panel.
  */
-const TimePickerPanel = forwardRef<HTMLDivElement, TimePickerPanelProps>(
-  function TimePickerPanel(props, ref) {
-    const {
-      anchor,
-      className,
-      fadeProps,
-      hideHour,
-      hideMinute,
-      hideSecond,
-      hourStep,
-      minuteStep,
-      onChange,
-      onCancel,
-      onConfirm,
-      open,
-      popperProps,
-      secondStep,
-      style,
-      value,
-    } = props;
+function TimePickerPanel({
+  ref,
+  ...props
+}: TimePickerPanelProps & RefAttributes<HTMLDivElement>) {
+  const {
+    anchor,
+    className,
+    fadeProps,
+    hideHour,
+    hideMinute,
+    hideSecond,
+    hourStep,
+    minuteStep,
+    onChange,
+    onCancel,
+    onConfirm,
+    open,
+    popperProps,
+    secondStep,
+    style,
+    value,
+  } = props;
 
-    return (
-      <InputTriggerPopper
-        {...popperProps}
-        ref={ref}
-        anchor={anchor}
-        open={open}
-        fadeProps={fadeProps}
-      >
-        <TimePanel
-          className={className}
-          hideHour={hideHour}
-          hideMinute={hideMinute}
-          hideSecond={hideSecond}
-          hourStep={hourStep}
-          minuteStep={minuteStep}
-          onChange={onChange}
-          onCancel={onCancel}
-          onConfirm={onConfirm}
-          secondStep={secondStep}
-          style={style}
-          value={value}
-        />
-      </InputTriggerPopper>
-    );
-  },
-);
+  return (
+    <InputTriggerPopper
+      {...popperProps}
+      ref={ref}
+      anchor={anchor}
+      open={open}
+      fadeProps={fadeProps}
+    >
+      <TimePanel
+        className={className}
+        hideHour={hideHour}
+        hideMinute={hideMinute}
+        hideSecond={hideSecond}
+        hourStep={hourStep}
+        minuteStep={minuteStep}
+        onChange={onChange}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        secondStep={secondStep}
+        style={style}
+        value={value}
+      />
+    </InputTriggerPopper>
+  );
+}
 
 export default TimePickerPanel;

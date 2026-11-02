@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
@@ -20,10 +20,10 @@ export type QuickActionCardComponentProps<
  * It displays an icon with a title and optional subtitle.
  * Either icon or title must be provided.
  */
-const QuickActionCard = forwardRef<
-  HTMLButtonElement,
-  QuickActionCardComponentProps
->(function QuickActionCard(props, ref) {
+function QuickActionCard({
+  ref,
+  ...props
+}: QuickActionCardComponentProps & RefAttributes<HTMLButtonElement>) {
   const {
     className,
     component: Component = 'button',
@@ -65,7 +65,7 @@ const QuickActionCard = forwardRef<
       ) : null}
     </Component>
   );
-});
+}
 
 QuickActionCard.displayName = 'QuickActionCard';
 

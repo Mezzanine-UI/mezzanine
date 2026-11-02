@@ -28,11 +28,11 @@ export interface AccordionActionsProps
   children?: AccordionActionsChild | AccordionActionsChild[];
 }
 
-const AccordionActions: React.FC<AccordionActionsProps> = ({
+function AccordionActions({
   children,
   className,
   ...rest
-}) => {
+}: AccordionActionsProps) {
   const filteredChildren = flattenChildren(children).map((child) => {
     if (
       isValidElement(child) &&
@@ -57,6 +57,6 @@ const AccordionActions: React.FC<AccordionActionsProps> = ({
       {filteredChildren}
     </ButtonGroup>
   );
-};
+}
 
 export default AccordionActions;

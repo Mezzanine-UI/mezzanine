@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useCallback } from 'react';
+import { memo, type RefAttributes, useCallback } from 'react';
 import {
   getRowKey,
   tableClasses as classes,
@@ -26,10 +26,12 @@ export interface TableCollectableCellProps<
   width?: number;
 }
 
-function TableCollectableCellInner<T extends TableDataSource = TableDataSource>(
-  props: TableCollectableCellProps<T>,
-  ref: React.ForwardedRef<HTMLTableCellElement>,
-) {
+function TableCollectableCellInner<
+  T extends TableDataSource = TableDataSource,
+>({
+  ref,
+  ...props
+}: TableCollectableCellProps<T> & RefAttributes<HTMLTableCellElement>) {
   const { collectable, loading } = useTableContext();
   const {
     className,
@@ -113,14 +115,6 @@ function TableCollectableCellInner<T extends TableDataSource = TableDataSource>(
   );
 }
 
-const ForwardedTableCollectableCell = forwardRef(TableCollectableCellInner) as <
-  T extends TableDataSource = TableDataSource,
->(
-  props: TableCollectableCellProps<T> & {
-    ref?: React.ForwardedRef<HTMLTableCellElement>;
-  },
-) => React.ReactElement;
-
 export const TableCollectableCell = memo(
-  ForwardedTableCollectableCell,
-) as typeof ForwardedTableCollectableCell;
+  TableCollectableCellInner,
+) as typeof TableCollectableCellInner;

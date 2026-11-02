@@ -12,11 +12,11 @@ import {
 } from '@mezzanine-ui/core/select';
 import isArray from 'lodash/isArray';
 import {
-  forwardRef,
+  type RefAttributes,
   KeyboardEvent,
   MouseEvent,
   useCallback,
-  useContext,
+  use,
   useMemo,
   useRef,
   useState,
@@ -235,398 +235,394 @@ export type SelectProps = SelectMultipleProps | SelectSingleProps;
  * @see {@link Dropdown} Select 底層使用的下拉清單容器元件
  * @see {@link useSelectValueControl} 用於在受控模式下管理選取值的 Hook
  */
-const Select = forwardRef<HTMLDivElement, SelectProps>(
-  function Select(props, ref) {
-    const {
-      disabled: disabledFromFormControl,
-      fullWidth: fullWidthFromFormControl,
-      required: requiredFromFormControl,
-      severity,
-    } = useContext(FormControlContext) || {};
-    const {
-      className,
-      clearable = false,
-      defaultValue,
-      disabled = disabledFromFormControl || false,
-      error = severity === 'error' || false,
-      fullWidth = fullWidthFromFormControl || false,
-      inputProps,
-      inputRef,
-      isForceClearable,
-      loading = false,
-      loadingPosition = 'bottom',
-      loadingText,
-      menuMaxHeight,
-      mode = 'single',
-      onBlur,
-      onChange: onChangeProp,
-      onClear: onClearProp,
-      onFocus,
-      onLeaveBottom,
-      onReachBottom,
-      onScroll,
-      options: optionsProp,
-      placeholder = '',
-      prefix,
-      readOnly = false,
-      renderValue,
-      required = requiredFromFormControl || false,
-      overflowStrategy,
-      size,
-      suffixActionIcon,
-      type = 'default',
-      value: valueProp,
-      dropdownZIndex,
-      flip = false,
-      globalPortal = true,
-    } = props;
+function Select({
+  ref,
+  ...props
+}: SelectProps & RefAttributes<HTMLDivElement>) {
+  const {
+    disabled: disabledFromFormControl,
+    fullWidth: fullWidthFromFormControl,
+    required: requiredFromFormControl,
+    severity,
+  } = use(FormControlContext) || {};
+  const {
+    className,
+    clearable = false,
+    defaultValue,
+    disabled = disabledFromFormControl || false,
+    error = severity === 'error' || false,
+    fullWidth = fullWidthFromFormControl || false,
+    inputProps,
+    inputRef,
+    isForceClearable,
+    loading = false,
+    loadingPosition = 'bottom',
+    loadingText,
+    menuMaxHeight,
+    mode = 'single',
+    onBlur,
+    onChange: onChangeProp,
+    onClear: onClearProp,
+    onFocus,
+    onLeaveBottom,
+    onReachBottom,
+    onScroll,
+    options: optionsProp,
+    placeholder = '',
+    prefix,
+    readOnly = false,
+    renderValue,
+    required = requiredFromFormControl || false,
+    overflowStrategy,
+    size,
+    suffixActionIcon,
+    type = 'default',
+    value: valueProp,
+    dropdownZIndex,
+    flip = false,
+    globalPortal = true,
+  } = props;
 
-    const dropdownStatus: DropdownStatusType | undefined = loading
-      ? 'loading'
-      : undefined;
+  const dropdownStatus: DropdownStatusType | undefined = loading
+    ? 'loading'
+    : undefined;
 
-    const [open, toggleOpen] = useState(false);
-    const onOpen = useCallback(() => {
-      // Prevent opening when readOnly is true
-      if (readOnly) {
-        return;
-      }
-
-      onFocus?.();
-      toggleOpen(true);
-    }, [onFocus, readOnly]);
-
-    const onClose = useCallback(() => {
-      onBlur?.();
-      toggleOpen(false);
-    }, [onBlur]);
-
-    const {
-      onChange,
-      onClear: onClearFromControl,
-      value,
-    } = useSelectValueControl({
-      defaultValue,
-      mode,
-      onChange: onChangeProp,
-      onClear: onClearProp,
-      onClose,
-      value: valueProp,
-    } as UseSelectMultipleValueControl | UseSelectSingleValueControl);
-
-    // Wrap onClear and delegate to control hook
-    const onClear = useCallback(
-      (e: MouseEvent<Element>) => {
-        onClearFromControl(e);
-      },
-      [onClearFromControl],
-    );
-
-    const nodeRef = useRef<HTMLDivElement>(null);
-    const composedRef = useComposeRefs([ref, nodeRef]);
-
-    // Helper function to recursively add checkbox to all options in tree structure
-    const addCheckboxToTreeOptions = useCallback(
-      (opts: DropdownOption[]): DropdownOption[] => {
-        return opts.map((opt) => ({
-          ...opt,
-          showCheckbox: true,
-          checkSite: 'prefix' as const,
-          children: opt.children
-            ? addCheckboxToTreeOptions(opt.children)
-            : undefined,
-        }));
-      },
-      [],
-    );
-
-    const getLeafDescendantIds = useCallback(
-      (option: DropdownOption): string[] => {
-        const ids = new Set<string>();
-
-        const collect = (opt: DropdownOption) => {
-          if (!opt.children || opt.children.length === 0) {
-            ids.add(String(opt.id));
-          } else {
-            opt.children.forEach(collect);
-          }
-        };
-
-        collect(option);
-
-        return Array.from(ids);
-      },
-      [],
-    );
-
-    const findOptionById = useCallback(
-      (id: string, opts: DropdownOption[]): DropdownOption | null => {
-        for (const opt of opts) {
-          if (String(opt.id) === id) {
-            return opt;
-          }
-          if (opt.children) {
-            const found = findOptionById(id, opt.children);
-            if (found) {
-              return found;
-            }
-          }
-        }
-        return null;
-      },
-      [],
-    );
-
-    // Use provided options directly
-    const options = useMemo<DropdownOption[]>(() => {
-      if (!optionsProp) return [];
-
-      // In tree mode (multiple mode with tree structure), ensure all options have checkbox
-      if (mode === 'multiple') {
-        const hasTreeStructure = optionsProp.some(
-          (opt) => opt.children && opt.children.length > 0,
-        );
-        if (hasTreeStructure) {
-          return addCheckboxToTreeOptions(optionsProp);
-        }
-      }
-      return optionsProp;
-    }, [mode, optionsProp, addCheckboxToTreeOptions]);
-
-    // Determine dropdown type based on options structure and mode
-    // Tree mode is only available in multiple mode
-    const dropdownType = useMemo<DropdownType>(() => {
-      if (optionsProp && mode === 'multiple') {
-        // If options prop is provided and mode is multiple, check if it has tree structure
-        const hasTreeStructure = optionsProp.some(
-          (opt) => opt.children && opt.children.length > 0,
-        );
-        return hasTreeStructure ? 'tree' : type;
-      }
-      return type;
-    }, [optionsProp, type, mode]);
-
-    const dropdownValue = useMemo<string | string[] | undefined>(() => {
-      if (!value) return undefined;
-
-      if (Array.isArray(value)) {
-        return value.map((v) => String(v.id));
-      }
-
-      return String(value.id);
-    }, [value]);
-
-    function getPlaceholder() {
-      if (typeof renderValue === 'function') {
-        return renderValue(value);
-      }
-
-      if (value && !isArray(value)) {
-        return (value as SelectValue).name;
-      }
-
-      return placeholder;
+  const [open, toggleOpen] = useState(false);
+  const onOpen = useCallback(() => {
+    // Prevent opening when readOnly is true
+    if (readOnly) {
+      return;
     }
 
-    /**
-     * keyboard events for a11y
-     * (@todo keyboard event map into option selection when menu is opened)
-     */
-    const onKeyDownTextField = (evt: KeyboardEvent<Element>) => {
-      // Prevent keyboard events from opening when readOnly is true
-      if (readOnly) {
+    onFocus?.();
+    toggleOpen(true);
+  }, [onFocus, readOnly]);
+
+  const onClose = useCallback(() => {
+    onBlur?.();
+    toggleOpen(false);
+  }, [onBlur]);
+
+  const {
+    onChange,
+    onClear: onClearFromControl,
+    value,
+  } = useSelectValueControl({
+    defaultValue,
+    mode,
+    onChange: onChangeProp,
+    onClear: onClearProp,
+    onClose,
+    value: valueProp,
+  } as UseSelectMultipleValueControl | UseSelectSingleValueControl);
+
+  // Wrap onClear and delegate to control hook
+  const onClear = useCallback(
+    (e: MouseEvent<Element>) => {
+      onClearFromControl(e);
+    },
+    [onClearFromControl],
+  );
+
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const composedRef = useComposeRefs([ref, nodeRef]);
+
+  // Helper function to recursively add checkbox to all options in tree structure
+  const addCheckboxToTreeOptions = useCallback(
+    (opts: DropdownOption[]): DropdownOption[] => {
+      return opts.map((opt) => ({
+        ...opt,
+        showCheckbox: true,
+        checkSite: 'prefix' as const,
+        children: opt.children
+          ? addCheckboxToTreeOptions(opt.children)
+          : undefined,
+      }));
+    },
+    [],
+  );
+
+  const getLeafDescendantIds = useCallback(
+    (option: DropdownOption): string[] => {
+      const ids = new Set<string>();
+
+      const collect = (opt: DropdownOption) => {
+        if (!opt.children || opt.children.length === 0) {
+          ids.add(String(opt.id));
+        } else {
+          opt.children.forEach(collect);
+        }
+      };
+
+      collect(option);
+
+      return Array.from(ids);
+    },
+    [],
+  );
+
+  const findOptionById = useCallback(
+    (id: string, opts: DropdownOption[]): DropdownOption | null => {
+      for (const opt of opts) {
+        if (String(opt.id) === id) {
+          return opt;
+        }
+        if (opt.children) {
+          const found = findOptionById(id, opt.children);
+          if (found) {
+            return found;
+          }
+        }
+      }
+      return null;
+    },
+    [],
+  );
+
+  // Use provided options directly
+  const options = useMemo<DropdownOption[]>(() => {
+    if (!optionsProp) return [];
+
+    // In tree mode (multiple mode with tree structure), ensure all options have checkbox
+    if (mode === 'multiple') {
+      const hasTreeStructure = optionsProp.some(
+        (opt) => opt.children && opt.children.length > 0,
+      );
+      if (hasTreeStructure) {
+        return addCheckboxToTreeOptions(optionsProp);
+      }
+    }
+    return optionsProp;
+  }, [mode, optionsProp, addCheckboxToTreeOptions]);
+
+  // Determine dropdown type based on options structure and mode
+  // Tree mode is only available in multiple mode
+  const dropdownType = useMemo<DropdownType>(() => {
+    if (optionsProp && mode === 'multiple') {
+      // If options prop is provided and mode is multiple, check if it has tree structure
+      const hasTreeStructure = optionsProp.some(
+        (opt) => opt.children && opt.children.length > 0,
+      );
+      return hasTreeStructure ? 'tree' : type;
+    }
+    return type;
+  }, [optionsProp, type, mode]);
+
+  const dropdownValue = useMemo<string | string[] | undefined>(() => {
+    if (!value) return undefined;
+
+    if (Array.isArray(value)) {
+      return value.map((v) => String(v.id));
+    }
+
+    return String(value.id);
+  }, [value]);
+
+  function getPlaceholder() {
+    if (typeof renderValue === 'function') {
+      return renderValue(value);
+    }
+
+    if (value && !isArray(value)) {
+      return (value as SelectValue).name;
+    }
+
+    return placeholder;
+  }
+
+  /**
+   * keyboard events for a11y
+   * (@todo keyboard event map into option selection when menu is opened)
+   */
+  const onKeyDownTextField = (evt: KeyboardEvent<Element>) => {
+    // Prevent keyboard events from opening when readOnly is true
+    if (readOnly) {
+      return;
+    }
+
+    /** for a11y to open menu via keyboard */
+    switch (evt.code) {
+      case 'Enter':
+        onClose();
+
+        break;
+      case 'ArrowUp':
+      case 'ArrowRight':
+      case 'ArrowLeft':
+      case 'ArrowDown': {
+        if (!open) {
+          onOpen();
+        }
+
+        break;
+      }
+      case 'Tab': {
+        if (open) {
+          onClose();
+        }
+
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
+
+  const handleDropdownSelect = useCallback(
+    (option: DropdownOption) => {
+      if (mode === 'multiple' && dropdownType === 'tree') {
+        const onChangeMultiple =
+          onChange as SelectMultipleValueControl['onChange'];
+        const currentValues = Array.isArray(value) ? value : [];
+        const leafDescendantIds = getLeafDescendantIds(option);
+        const leafDescendantValues: SelectValue[] = leafDescendantIds.map(
+          (id) => {
+            const foundOption = findOptionById(id, options);
+
+            return {
+              id,
+              name: foundOption?.name || id,
+            };
+          },
+        );
+
+        const selectedLeafIds = leafDescendantIds.filter((id) =>
+          currentValues.some((v) => String(v.id) === id),
+        );
+        const allSelected = selectedLeafIds.length === leafDescendantIds.length;
+
+        if (allSelected) {
+          // Deselect all leaf descendants in a single update
+          const leafIdSet = new Set(leafDescendantIds.map((id) => String(id)));
+          const nextValues = currentValues.filter(
+            (v) => !leafIdSet.has(String(v.id)),
+          );
+          onChangeMultiple(nextValues);
+        } else {
+          // Select all leaf descendants that are not yet selected in a single update
+          const existingIdSet = new Set(currentValues.map((v) => String(v.id)));
+          const valuesToAdd = leafDescendantValues.filter(
+            (descValue) => !existingIdSet.has(String(descValue.id)),
+          );
+          const nextValues = [...currentValues, ...valuesToAdd];
+          onChangeMultiple(nextValues);
+        }
+      } else {
+        // Normal selection logic for non-tree mode
+        const selectValue: SelectValue = {
+          id: String(option.id),
+          name: String(option.name),
+        };
+
+        if (mode === 'multiple') {
+          onChange(selectValue);
+        } else {
+          onChange(selectValue);
+          onClose();
+        }
+      }
+    },
+    [
+      mode,
+      onChange,
+      onClose,
+      value,
+      dropdownType,
+      getLeafDescendantIds,
+      findOptionById,
+      options,
+    ],
+  );
+
+  const handleVisibilityChange = useCallback(
+    (isOpen: boolean) => {
+      if (isOpen && readOnly) {
         return;
       }
 
-      /** for a11y to open menu via keyboard */
-      switch (evt.code) {
-        case 'Enter':
-          onClose();
-
-          break;
-        case 'ArrowUp':
-        case 'ArrowRight':
-        case 'ArrowLeft':
-        case 'ArrowDown': {
-          if (!open) {
-            onOpen();
-          }
-
-          break;
-        }
-        case 'Tab': {
-          if (open) {
-            onClose();
-          }
-
-          break;
-        }
-
-        default:
-          break;
+      if (isOpen) {
+        onOpen();
+      } else {
+        onClose();
       }
-    };
+    },
+    [onOpen, onClose, readOnly],
+  );
 
-    const handleDropdownSelect = useCallback(
-      (option: DropdownOption) => {
-        if (mode === 'multiple' && dropdownType === 'tree') {
-          const onChangeMultiple =
-            onChange as SelectMultipleValueControl['onChange'];
-          const currentValues = Array.isArray(value) ? value : [];
-          const leafDescendantIds = getLeafDescendantIds(option);
-          const leafDescendantValues: SelectValue[] = leafDescendantIds.map(
-            (id) => {
-              const foundOption = findOptionById(id, options);
+  const resolvedInputProps: SelectTriggerInputProps = {
+    ...inputProps,
+    role: 'combobox',
+  };
 
-              return {
-                id,
-                name: foundOption?.name || id,
-              };
-            },
-          );
+  const context = useMemo(
+    () => ({
+      onChange,
+      value,
+    }),
+    [onChange, value],
+  );
 
-          const selectedLeafIds = leafDescendantIds.filter((id) =>
-            currentValues.some((v) => String(v.id) === id),
-          );
-          const allSelected =
-            selectedLeafIds.length === leafDescendantIds.length;
-
-          if (allSelected) {
-            // Deselect all leaf descendants in a single update
-            const leafIdSet = new Set(
-              leafDescendantIds.map((id) => String(id)),
-            );
-            const nextValues = currentValues.filter(
-              (v) => !leafIdSet.has(String(v.id)),
-            );
-            onChangeMultiple(nextValues);
-          } else {
-            // Select all leaf descendants that are not yet selected in a single update
-            const existingIdSet = new Set(
-              currentValues.map((v) => String(v.id)),
-            );
-            const valuesToAdd = leafDescendantValues.filter(
-              (descValue) => !existingIdSet.has(String(descValue.id)),
-            );
-            const nextValues = [...currentValues, ...valuesToAdd];
-            onChangeMultiple(nextValues);
-          }
-        } else {
-          // Normal selection logic for non-tree mode
-          const selectValue: SelectValue = {
-            id: String(option.id),
-            name: String(option.name),
-          };
-
-          if (mode === 'multiple') {
-            onChange(selectValue);
-          } else {
-            onChange(selectValue);
-            onClose();
-          }
-        }
-      },
-      [
-        mode,
-        onChange,
-        onClose,
-        value,
-        dropdownType,
-        getLeafDescendantIds,
-        findOptionById,
-        options,
-      ],
-    );
-
-    const handleVisibilityChange = useCallback(
-      (isOpen: boolean) => {
-        if (isOpen && readOnly) {
-          return;
-        }
-
-        if (isOpen) {
-          onOpen();
-        } else {
-          onClose();
-        }
-      },
-      [onOpen, onClose, readOnly],
-    );
-
-    const resolvedInputProps: SelectTriggerInputProps = {
-      ...inputProps,
-      role: 'combobox',
-    };
-
-    const context = useMemo(
-      () => ({
-        onChange,
-        value,
-      }),
-      [onChange, value],
-    );
-
-    return (
-      <SelectControlContext.Provider value={context}>
-        <div
-          ref={nodeRef}
-          className={cx(
-            classes.host,
-            fullWidth && classes.hostFullWidth,
-            mode && classes.hostMode(mode),
-          )}
+  return (
+    <SelectControlContext value={context}>
+      <div
+        ref={nodeRef}
+        className={cx(
+          classes.host,
+          fullWidth && classes.hostFullWidth,
+          mode && classes.hostMode(mode),
+        )}
+      >
+        <Dropdown
+          disabled={readOnly || disabled}
+          flip={flip}
+          globalPortal={globalPortal}
+          loadingPosition={loadingPosition}
+          loadingText={loadingText}
+          maxHeight={menuMaxHeight}
+          mode={mode}
+          onLeaveBottom={onLeaveBottom}
+          onReachBottom={onReachBottom}
+          onScroll={onScroll}
+          onSelect={handleDropdownSelect}
+          onVisibilityChange={handleVisibilityChange}
+          open={readOnly ? false : open}
+          options={options}
+          sameWidth
+          status={dropdownStatus}
+          type={dropdownType}
+          value={dropdownValue}
+          zIndex={dropdownZIndex}
         >
-          <Dropdown
-            disabled={readOnly || disabled}
-            flip={flip}
-            globalPortal={globalPortal}
-            loadingPosition={loadingPosition}
-            loadingText={loadingText}
-            maxHeight={menuMaxHeight}
+          <SelectTrigger
+            ref={composedRef}
+            active={!readOnly && open}
+            className={className}
+            clearable={clearable}
+            disabled={disabled}
+            error={error}
+            fullWidth={fullWidth}
+            inputRef={inputRef}
+            isForceClearable={isForceClearable}
             mode={mode}
-            onLeaveBottom={onLeaveBottom}
-            onReachBottom={onReachBottom}
-            onScroll={onScroll}
-            onSelect={handleDropdownSelect}
-            onVisibilityChange={handleVisibilityChange}
-            open={readOnly ? false : open}
-            options={options}
-            sameWidth
-            status={dropdownStatus}
-            type={dropdownType}
-            value={dropdownValue}
-            zIndex={dropdownZIndex}
-          >
-            <SelectTrigger
-              ref={composedRef}
-              active={!readOnly && open}
-              className={className}
-              clearable={clearable}
-              disabled={disabled}
-              error={error}
-              fullWidth={fullWidth}
-              inputRef={inputRef}
-              isForceClearable={isForceClearable}
-              mode={mode}
-              onTagClose={onChange}
-              onClear={onClear}
-              onKeyDown={onKeyDownTextField}
-              prefix={prefix}
-              readOnly={readOnly}
-              {...(mode === 'single' && renderValue ? { renderValue } : {})}
-              required={required}
-              inputProps={resolvedInputProps}
-              overflowStrategy={overflowStrategy}
-              size={size}
-              suffixActionIcon={suffixActionIcon}
-              value={value === null ? undefined : value}
-              placeholder={getPlaceholder()}
-            />
-          </Dropdown>
-        </div>
-      </SelectControlContext.Provider>
-    );
-  },
-);
+            onTagClose={onChange}
+            onClear={onClear}
+            onKeyDown={onKeyDownTextField}
+            prefix={prefix}
+            readOnly={readOnly}
+            {...(mode === 'single' && renderValue ? { renderValue } : {})}
+            required={required}
+            inputProps={resolvedInputProps}
+            overflowStrategy={overflowStrategy}
+            size={size}
+            suffixActionIcon={suffixActionIcon}
+            value={value === null ? undefined : value}
+            placeholder={getPlaceholder()}
+          />
+        </Dropdown>
+      </div>
+    </SelectControlContext>
+  );
+}
 
 export default Select;

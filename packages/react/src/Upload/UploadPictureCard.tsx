@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  forwardRef,
+  type RefAttributes,
   MouseEventHandler,
   useCallback,
   useEffect,
@@ -157,286 +157,292 @@ export interface UploadPictureCardProps
 /**
  * The react component for `mezzanine` upload picture card.
  */
-const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
-  function UploadPictureCard(props, ref) {
-    const {
-      ariaLabels,
-      className,
-      file,
-      url,
-      status = 'loading',
-      imageFit = 'cover',
-      size = 'main',
-      disabled = false,
-      errorMessage,
-      errorIcon,
-      readable = false,
-      onDelete,
-      onDownload,
-      onReload,
-      onReplace,
-      onZoomIn,
-      ...rest
-    } = props;
+function UploadPictureCard({
+  ref,
+  ...props
+}: UploadPictureCardProps & RefAttributes<HTMLDivElement>) {
+  const {
+    ariaLabels,
+    className,
+    file,
+    url,
+    status = 'loading',
+    imageFit = 'cover',
+    size = 'main',
+    disabled = false,
+    errorMessage,
+    errorIcon,
+    readable = false,
+    onDelete,
+    onDownload,
+    onReload,
+    onReplace,
+    onZoomIn,
+    ...rest
+  } = props;
 
-    const defaultAriaLabels: Required<UploadPictureCardAriaLabels> = {
-      cancelUpload: 'Cancel upload',
-      clickToReplace: 'Click to Replace',
-      delete: 'Delete file',
-      download: 'Download file',
-      reload: 'Retry upload',
-      uploading: 'Uploading',
-      zoomIn: 'Zoom in image',
-    };
+  const defaultAriaLabels: Required<UploadPictureCardAriaLabels> = {
+    cancelUpload: 'Cancel upload',
+    clickToReplace: 'Click to Replace',
+    delete: 'Delete file',
+    download: 'Download file',
+    reload: 'Retry upload',
+    uploading: 'Uploading',
+    zoomIn: 'Zoom in image',
+  };
 
-    const labels = { ...defaultAriaLabels, ...ariaLabels };
+  const labels = { ...defaultAriaLabels, ...ariaLabels };
 
-    const handleDelete = useCallback<MouseEventHandler>(
-      (e) => { e.stopPropagation(); onDelete?.(e); },
-      [onDelete],
-    );
+  const handleDelete = useCallback<MouseEventHandler>(
+    (e) => {
+      e.stopPropagation();
+      onDelete?.(e);
+    },
+    [onDelete],
+  );
 
-    const handleDownload = useCallback<MouseEventHandler>(
-      (e) => { e.stopPropagation(); onDownload?.(e); },
-      [onDownload],
-    );
+  const handleDownload = useCallback<MouseEventHandler>(
+    (e) => {
+      e.stopPropagation();
+      onDownload?.(e);
+    },
+    [onDownload],
+  );
 
-    const handleZoomIn = useCallback<MouseEventHandler>(
-      (e) => { e.stopPropagation(); onZoomIn?.(e); },
-      [onZoomIn],
-    );
+  const handleZoomIn = useCallback<MouseEventHandler>(
+    (e) => {
+      e.stopPropagation();
+      onZoomIn?.(e);
+    },
+    [onZoomIn],
+  );
 
-    const isImage = useMemo(() => {
-      return isImageFile(file, url);
-    }, [file, url]);
+  const isImage = useMemo(() => {
+    return isImageFile(file, url);
+  }, [file, url]);
 
-    const fileName = useMemo(() => {
-      if (props.file?.name && !props.url) return props.file.name;
-      if (props.url) {
-        try {
-          const url = new URL(props.url);
-          const pathname = url.pathname;
-          const filename = pathname.split('/').pop() || '';
-          return filename;
-        } catch {
-          const urlWithoutQuery = props.url.split('?')[0].split('#')[0];
-          return urlWithoutQuery.split('/').pop() || '';
-        }
+  const fileName = useMemo(() => {
+    if (props.file?.name && !props.url) return props.file.name;
+    if (props.url) {
+      try {
+        const url = new URL(props.url);
+        const pathname = url.pathname;
+        const filename = pathname.split('/').pop() || '';
+        return filename;
+      } catch {
+        const urlWithoutQuery = props.url.split('?')[0].split('#')[0];
+        return urlWithoutQuery.split('/').pop() || '';
       }
-      return '';
-    }, [props.file?.name, props.url]);
+    }
+    return '';
+  }, [props.file?.name, props.url]);
 
-    const [imageUrl, setImageUrl] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string>('');
 
-    const errorIconContent = useMemo(() => {
-      if (errorIcon) {
-        return errorIcon;
-      }
-
-      return isImage ? ImageIcon : FileIcon;
-    }, [isImage, errorIcon]);
-
-    const errorMessageContent = useMemo(() => {
-      if (errorMessage) {
-        return errorMessage;
-      }
-
-      return fileName ? fileName : 'Upload error';
-    }, [fileName, errorMessage]);
-
-    // Warn if both file and url are missing
-    useEffect(() => {
-      if (!file && !url) {
-        console.warn(
-          'UploadPictureCard: Both `file` and `url` props are missing. At least one should be provided to display the upload picture card.',
-        );
-      }
-    }, [file, url]);
-
-    useEffect(() => {
-      if (url && isImage) {
-        setImageUrl(url);
-        return undefined;
-      }
-
-      if (file && isImage) {
-        try {
-          const blobUrl = URL.createObjectURL(file);
-          setImageUrl(blobUrl);
-
-          return () => {
-            URL.revokeObjectURL(blobUrl);
-          };
-        } catch (error) {
-          console.error('Failed to create object URL for image:', error);
-          setImageUrl('');
-        }
-      } else {
-        setImageUrl('');
-      }
-
-      return undefined;
-    }, [file, url, isImage]);
-
-    if (!isImage && size === 'minor') {
-      console.warn(
-        'UploadPictureCard: minor size is not supported for non-image files',
-      );
-
-      return null;
+  const errorIconContent = useMemo(() => {
+    if (errorIcon) {
+      return errorIcon;
     }
 
-    return (
-      <div
-        aria-disabled={disabled}
-        className={cx(
-          classes.host,
-          classes.size(size),
-          disabled && classes.disabled,
-          readable && classes.readable,
-          !readable && onReplace && status === 'done' && classes.replaceMode,
-          className,
-        )}
-        onClick={
-          !readable && onReplace && status === 'done' ? onReplace : undefined
-        }
-        onKeyDown={
-          !readable && onReplace && status === 'done'
-            ? (e) => {
+    return isImage ? ImageIcon : FileIcon;
+  }, [isImage, errorIcon]);
+
+  const errorMessageContent = useMemo(() => {
+    if (errorMessage) {
+      return errorMessage;
+    }
+
+    return fileName ? fileName : 'Upload error';
+  }, [fileName, errorMessage]);
+
+  // Warn if both file and url are missing
+  useEffect(() => {
+    if (!file && !url) {
+      console.warn(
+        'UploadPictureCard: Both `file` and `url` props are missing. At least one should be provided to display the upload picture card.',
+      );
+    }
+  }, [file, url]);
+
+  useEffect(() => {
+    if (url && isImage) {
+      setImageUrl(url);
+      return undefined;
+    }
+
+    if (file && isImage) {
+      try {
+        const blobUrl = URL.createObjectURL(file);
+        setImageUrl(blobUrl);
+
+        return () => {
+          URL.revokeObjectURL(blobUrl);
+        };
+      } catch (error) {
+        console.error('Failed to create object URL for image:', error);
+        setImageUrl('');
+      }
+    } else {
+      setImageUrl('');
+    }
+
+    return undefined;
+  }, [file, url, isImage]);
+
+  if (!isImage && size === 'minor') {
+    console.warn(
+      'UploadPictureCard: minor size is not supported for non-image files',
+    );
+
+    return null;
+  }
+
+  return (
+    <div
+      aria-disabled={disabled}
+      className={cx(
+        classes.host,
+        classes.size(size),
+        disabled && classes.disabled,
+        readable && classes.readable,
+        !readable && onReplace && status === 'done' && classes.replaceMode,
+        className,
+      )}
+      onClick={
+        !readable && onReplace && status === 'done' ? onReplace : undefined
+      }
+      onKeyDown={
+        !readable && onReplace && status === 'done'
+          ? (e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 e.currentTarget.click();
               }
             }
-            : undefined
-        }
-        ref={ref}
-        role="group"
-        tabIndex={disabled || readable ? -1 : 0}
-        {...rest}
-      >
-        <div className={classes.container}>
-          {isImage && imageUrl && status !== 'error' && (
-            <img
-              alt={fileName}
-              src={imageUrl}
-              style={{
-                objectFit: imageFit,
-                objectPosition: 'center',
-              }}
-            />
-          )}
-          {status === 'done' && size !== 'minor' && !isImage && (
-            <div className={classes.content}>
-              <Icon icon={FileIcon} color="brand" size={16} />
-              <Typography className={classes.name} ellipsis>
-                {fileName}
-              </Typography>
-            </div>
-          )}
-          {status === 'error' && size !== 'minor' && (
-            <div
-              className={classes.errorMessage}
-              role="alert"
-              aria-live="polite"
-            >
-              <Icon icon={errorIconContent} color="error" size={16} />
-              <Typography className={classes.errorMessageText}>
-                {errorMessageContent}
-              </Typography>
-            </div>
-          )}
-          <div className={cx(classes.actions, classes.actionsStatus(status))}>
-            {status === 'loading' && size !== 'minor' && !readable && (
-              <>
-                <ClearActions
-                  type="embedded"
-                  variant="contrast"
-                  onClick={onDelete}
-                  className={classes.clearActionsIcon}
-                  aria-label={labels.cancelUpload}
-                />
-                <div
-                  className={classes.loadingIcon}
-                  aria-label={labels.uploading}
-                >
-                  <Spin loading size="sub" />
-                </div>
-              </>
-            )}
-            {status === 'done' && size !== 'minor' && !readable && (
-              <>
-                <div className={classes.tools}>
-                  <div className={classes.toolsContent}>
-                    {onZoomIn && (
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={ZoomInIcon}
-                        iconType="icon-only"
-                        onClick={handleZoomIn}
-                        aria-label={labels.zoomIn}
-                      />
-                    )}
-                    {onDownload && (
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        iconType="icon-only"
-                        icon={DownloadIcon}
-                        onClick={handleDownload}
-                        aria-label={labels.download}
-                      />
-                    )}
-                    <Button
-                      variant="base-secondary"
-                      size="minor"
-                      iconType="icon-only"
-                      icon={TrashIcon}
-                      onClick={handleDelete}
-                      aria-label={labels.delete}
-                    />
-                  </div>
-                </div>
-                {onReplace && (
-                  <span className={classes.replaceLabel}>
-                    {labels.clickToReplace}
-                  </span>
-                )}
-              </>
-            )}
-            {status === 'error' && size !== 'minor' && !readable && (
-              <>
-                <div className={classes.tools}>
-                  <div className={classes.toolsContent}>
-                    <Button
-                      variant="base-secondary"
-                      size="minor"
-                      iconType="icon-only"
-                      icon={ResetIcon}
-                      onClick={onReload}
-                      aria-label={labels.reload}
-                    />
-                    <Button
-                      variant="base-secondary"
-                      size="minor"
-                      iconType="icon-only"
-                      icon={TrashIcon}
-                      onClick={onDelete}
-                      aria-label={labels.delete}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-            {size === 'minor' && !readable && (
-              <Icon icon={ZoomInIcon} color="fixed-light" size={24} />
-            )}
+          : undefined
+      }
+      ref={ref}
+      role="group"
+      tabIndex={disabled || readable ? -1 : 0}
+      {...rest}
+    >
+      <div className={classes.container}>
+        {isImage && imageUrl && status !== 'error' && (
+          <img
+            alt={fileName}
+            src={imageUrl}
+            style={{
+              objectFit: imageFit,
+              objectPosition: 'center',
+            }}
+          />
+        )}
+        {status === 'done' && size !== 'minor' && !isImage && (
+          <div className={classes.content}>
+            <Icon icon={FileIcon} color="brand" size={16} />
+            <Typography className={classes.name} ellipsis>
+              {fileName}
+            </Typography>
           </div>
+        )}
+        {status === 'error' && size !== 'minor' && (
+          <div className={classes.errorMessage} role="alert" aria-live="polite">
+            <Icon icon={errorIconContent} color="error" size={16} />
+            <Typography className={classes.errorMessageText}>
+              {errorMessageContent}
+            </Typography>
+          </div>
+        )}
+        <div className={cx(classes.actions, classes.actionsStatus(status))}>
+          {status === 'loading' && size !== 'minor' && !readable && (
+            <>
+              <ClearActions
+                type="embedded"
+                variant="contrast"
+                onClick={onDelete}
+                className={classes.clearActionsIcon}
+                aria-label={labels.cancelUpload}
+              />
+              <div
+                className={classes.loadingIcon}
+                aria-label={labels.uploading}
+              >
+                <Spin loading size="sub" />
+              </div>
+            </>
+          )}
+          {status === 'done' && size !== 'minor' && !readable && (
+            <>
+              <div className={classes.tools}>
+                <div className={classes.toolsContent}>
+                  {onZoomIn && (
+                    <Button
+                      variant="base-secondary"
+                      size="minor"
+                      icon={ZoomInIcon}
+                      iconType="icon-only"
+                      onClick={handleZoomIn}
+                      aria-label={labels.zoomIn}
+                    />
+                  )}
+                  {onDownload && (
+                    <Button
+                      variant="base-secondary"
+                      size="minor"
+                      iconType="icon-only"
+                      icon={DownloadIcon}
+                      onClick={handleDownload}
+                      aria-label={labels.download}
+                    />
+                  )}
+                  <Button
+                    variant="base-secondary"
+                    size="minor"
+                    iconType="icon-only"
+                    icon={TrashIcon}
+                    onClick={handleDelete}
+                    aria-label={labels.delete}
+                  />
+                </div>
+              </div>
+              {onReplace && (
+                <span className={classes.replaceLabel}>
+                  {labels.clickToReplace}
+                </span>
+              )}
+            </>
+          )}
+          {status === 'error' && size !== 'minor' && !readable && (
+            <>
+              <div className={classes.tools}>
+                <div className={classes.toolsContent}>
+                  <Button
+                    variant="base-secondary"
+                    size="minor"
+                    iconType="icon-only"
+                    icon={ResetIcon}
+                    onClick={onReload}
+                    aria-label={labels.reload}
+                  />
+                  <Button
+                    variant="base-secondary"
+                    size="minor"
+                    iconType="icon-only"
+                    icon={TrashIcon}
+                    onClick={onDelete}
+                    aria-label={labels.delete}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+          {size === 'minor' && !readable && (
+            <Icon icon={ZoomInIcon} color="fixed-light" size={24} />
+          )}
         </div>
       </div>
-    );
-  },
-);
+    </div>
+  );
+}
 
 export default UploadPictureCard;

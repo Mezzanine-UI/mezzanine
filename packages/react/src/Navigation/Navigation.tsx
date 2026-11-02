@@ -2,7 +2,7 @@
 
 import {
   Children,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactElement,
   useCallback,
@@ -82,7 +82,10 @@ export interface NavigationProps
   optionsAnchorComponent?: React.ElementType;
 }
 
-const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
+const Navigation = ({
+  ref,
+  ...props
+}: NavigationProps & RefAttributes<HTMLElement>) => {
   const {
     activatedPath,
     children = [],
@@ -262,7 +265,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
         className,
       )}
     >
-      <NavigationActivatedContext.Provider
+      <NavigationActivatedContext
         value={{
           activatedPath: activatedPath || innerActivatedPath,
           activatedPathKey,
@@ -276,7 +279,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
         }}
       >
         {headerComponent}
-        <NavigationOptionLevelContext.Provider
+        <NavigationOptionLevelContext
           value={navigationOptionLevelContextDefaultValues}
         >
           <div ref={contentRef} className={classes.content}>
@@ -305,11 +308,11 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
               </ul>
             </Scrollbar>
           </div>
-        </NavigationOptionLevelContext.Provider>
+        </NavigationOptionLevelContext>
         {footerComponent}
-      </NavigationActivatedContext.Provider>
+      </NavigationActivatedContext>
     </nav>
   );
-});
+};
 
 export default Navigation;

@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useCallback } from 'react';
+import { type RefAttributes, memo, useCallback } from 'react';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';
 import { ChevronRightIcon } from '@mezzanine-ui/icons';
 import { cx } from '../../utils/cx';
@@ -21,10 +21,10 @@ export interface TableExpandCellProps {
   width?: number;
 }
 
-const TableExpandCellInner = forwardRef<
-  HTMLTableCellElement,
-  TableExpandCellProps
->(function TableExpandCell(props, ref) {
+const TableExpandCellInner = function TableExpandCell({
+  ref,
+  ...props
+}: TableExpandCellProps & RefAttributes<HTMLTableCellElement>) {
   const { loading } = useTableContext();
   const {
     canExpand = true,
@@ -105,6 +105,6 @@ const TableExpandCellInner = forwardRef<
       {renderChild()}
     </CellComponent>
   );
-});
+};
 
 export const TableExpandCell = memo(TableExpandCellInner);

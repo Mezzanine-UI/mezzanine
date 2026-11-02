@@ -2,7 +2,7 @@
 
 import {
   Children,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactElement,
   use,
@@ -36,10 +36,10 @@ export interface NavigationOverflowMenuOptionProps
   ) => void;
 }
 
-const NavigationOverflowMenuOption = forwardRef<
-  HTMLLIElement,
-  NavigationOverflowMenuOptionProps
->((props, ref) => {
+const NavigationOverflowMenuOption = ({
+  ref,
+  ...props
+}: NavigationOverflowMenuOptionProps & RefAttributes<HTMLLIElement>) => {
   const {
     active,
     children,
@@ -176,6 +176,6 @@ const NavigationOverflowMenuOption = forwardRef<
       </Component>
     </li>
   );
-});
+};
 
 export default NavigationOverflowMenuOption;

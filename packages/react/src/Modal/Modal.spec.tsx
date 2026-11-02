@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { use } from 'react';
 import { ModalSize, modalClasses as classes } from '@mezzanine-ui/core/modal';
 import {
   act,
@@ -62,7 +62,7 @@ describe('<Modal />', () => {
       open: true,
     };
 
-    const { result } = renderHook(() => useContext(ModalControlContext), {
+    const { result } = renderHook(() => use(ModalControlContext), {
       wrapper: createWrapper(Modal, props),
     });
 
@@ -366,7 +366,7 @@ describe('<Modal />', () => {
         open: true,
       };
 
-      const { result } = renderHook(() => useContext(ModalControlContext), {
+      const { result } = renderHook(() => use(ModalControlContext), {
         wrapper: createWrapper(Modal, props),
       });
 

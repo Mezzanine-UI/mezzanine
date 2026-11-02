@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useCallback, useMemo } from 'react';
+import { type RefAttributes, memo, useCallback, useMemo } from 'react';
 import {
   COLLECTABLE_COLUMN_WIDTH,
   COLLECTABLE_KEY,
@@ -70,290 +70,275 @@ const parseFixed = (fixed: FixedType | undefined): 'end' | 'start' | null => {
   return null;
 };
 
-const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
-  function TableRow(props, ref) {
-    const { className, draggableProvided, record, rowIndex, style } = props;
+const TableRowInner = function TableRow({
+  ref,
+  ...props
+}: TableRowProps & RefAttributes<HTMLTableRowElement>) {
+  const { className, draggableProvided, record, rowIndex, style } = props;
 
-    const {
-      actions,
-      collectable,
-      draggable,
-      expansion,
-      fixedOffsets,
-      highlight,
-      pinnable,
-      rowState,
-      rowHeight,
-      selection,
-      separatorAtRowIndexes,
-      toggleable,
-      transitionState,
-      zebraStriping,
-    } = useTableContext();
-    const { columns } = useTableDataContext();
+  const {
+    actions,
+    collectable,
+    draggable,
+    expansion,
+    fixedOffsets,
+    highlight,
+    pinnable,
+    rowState,
+    rowHeight,
+    selection,
+    separatorAtRowIndexes,
+    toggleable,
+    transitionState,
+    zebraStriping,
+  } = useTableContext();
+  const { columns } = useTableDataContext();
 
-    const isDragging = useMemo(
-      () =>
-        (draggableProvided?.draggableProps.style as React.CSSProperties)
-          ?.position === 'fixed',
-      [draggableProvided?.draggableProps.style],
-    );
+  const isDragging = useMemo(
+    () =>
+      (draggableProvided?.draggableProps.style as React.CSSProperties)
+        ?.position === 'fixed',
+    [draggableProvided?.draggableProps.style],
+  );
 
-    const resolvedStyle = useMemo(
-      () => ({
-        ...style,
-        ...draggableProvided?.draggableProps.style,
-        ...(rowHeight !== undefined && { height: rowHeight }),
-      }),
-      [style, rowHeight, draggableProvided?.draggableProps.style],
-    );
+  const resolvedStyle = useMemo(
+    () => ({
+      ...style,
+      ...draggableProvided?.draggableProps.style,
+      ...(rowHeight !== undefined && { height: rowHeight }),
+    }),
+    [style, rowHeight, draggableProvided?.draggableProps.style],
+  );
 
-    const { containerWidth, getResizedColumnWidth, scrollLeft } =
-      useTableSuperContext();
+  const { containerWidth, getResizedColumnWidth, scrollLeft } =
+    useTableSuperContext();
 
-    /**
-     * Skeleton rows get a key that cannot collide with a real row key, so
-     * selection / expansion / transition lookups never match them.
-     */
-    const rowKey = useMemo(
-      () => (record ? getRowKey(record) : `skeleton-${rowIndex}`),
-      [record, rowIndex],
-    );
-    const isSelected = record
-      ? (selection?.config?.getCheckboxProps?.(record)?.selected ??
-        selection?.isRowSelected(rowKey) ??
-        false)
-      : false;
-    const isIndeterminate = record
-      ? (selection?.config?.getCheckboxProps?.(record)?.indeterminate ?? false)
-      : false;
-    const isExpanded = record
-      ? (expansion?.isRowExpanded(rowKey) ?? false)
-      : false;
+  /**
+   * Skeleton rows get a key that cannot collide with a real row key, so
+   * selection / expansion / transition lookups never match them.
+   */
+  const rowKey = useMemo(
+    () => (record ? getRowKey(record) : `skeleton-${rowIndex}`),
+    [record, rowIndex],
+  );
+  const isSelected = record
+    ? (selection?.config?.getCheckboxProps?.(record)?.selected ??
+      selection?.isRowSelected(rowKey) ??
+      false)
+    : false;
+  const isIndeterminate = record
+    ? (selection?.config?.getCheckboxProps?.(record)?.indeterminate ?? false)
+    : false;
+  const isExpanded = record
+    ? (expansion?.isRowExpanded(rowKey) ?? false)
+    : false;
 
-    // Check transition states
-    const isAdding = transitionState?.addingKeys.has(rowKey) ?? false;
-    const isDeleting = transitionState?.deletingKeys.has(rowKey) ?? false;
-    const isFadingOut = transitionState?.fadingOutKeys.has(rowKey) ?? false;
+  // Check transition states
+  const isAdding = transitionState?.addingKeys.has(rowKey) ?? false;
+  const isDeleting = transitionState?.deletingKeys.has(rowKey) ?? false;
+  const isFadingOut = transitionState?.fadingOutKeys.has(rowKey) ?? false;
 
-    // Calculate column widths when dragging (since position: fixed breaks colgroup)
-    const draggingColumnWidths = useMemo(() => {
-      if (!isDragging || !containerWidth) return null;
+  // Calculate column widths when dragging (since position: fixed breaks colgroup)
+  const draggingColumnWidths = useMemo(() => {
+    if (!isDragging || !containerWidth) return null;
 
-      // Calculate action columns total width
-      let actionColumnsWidth = 0;
+    // Calculate action columns total width
+    let actionColumnsWidth = 0;
 
-      if (draggable?.enabled || pinnable?.enabled)
-        actionColumnsWidth += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
-      if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
-      if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
-      if (toggleable?.enabled)
-        actionColumnsWidth += toggleable.minWidth ?? TOGGLEABLE_COLUMN_WIDTH;
-      if (collectable?.enabled) actionColumnsWidth += COLLECTABLE_COLUMN_WIDTH;
+    if (draggable?.enabled || pinnable?.enabled)
+      actionColumnsWidth += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
+    if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
+    if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
+    if (toggleable?.enabled)
+      actionColumnsWidth += toggleable.minWidth ?? TOGGLEABLE_COLUMN_WIDTH;
+    if (collectable?.enabled) actionColumnsWidth += COLLECTABLE_COLUMN_WIDTH;
 
-      return calculateColumnWidths({
-        actionColumnsWidth,
-        columns,
-        containerWidth,
-        getResizedColumnWidth,
-      });
-    }, [
-      isDragging,
-      containerWidth,
+    return calculateColumnWidths({
+      actionColumnsWidth,
       columns,
-      collectable?.enabled,
-      draggable?.enabled,
-      expansion,
+      containerWidth,
       getResizedColumnWidth,
-      pinnable?.enabled,
-      selection,
-      toggleable?.enabled,
-      toggleable?.minWidth,
-    ]);
+    });
+  }, [
+    isDragging,
+    containerWidth,
+    columns,
+    collectable?.enabled,
+    draggable?.enabled,
+    expansion,
+    getResizedColumnWidth,
+    pinnable?.enabled,
+    selection,
+    toggleable?.enabled,
+    toggleable?.minWidth,
+  ]);
 
-    // Check if this row should be highlighted based on highlight mode
-    const isRowHighlighted = useMemo(() => {
-      if (!highlight) return false;
+  // Check if this row should be highlighted based on highlight mode
+  const isRowHighlighted = useMemo(() => {
+    if (!highlight) return false;
 
-      const { mode, rowIndex: hoveredRow } = highlight;
+    const { mode, rowIndex: hoveredRow } = highlight;
 
-      if (hoveredRow === null) return false;
+    if (hoveredRow === null) return false;
 
-      // Row highlight: when hovering any cell in this row
-      if (mode === 'row' && hoveredRow === rowIndex) return true;
+    // Row highlight: when hovering any cell in this row
+    if (mode === 'row' && hoveredRow === rowIndex) return true;
 
-      // Cross highlight: this row matches the hovered row
-      if (mode === 'cross' && hoveredRow === rowIndex) return true;
+    // Cross highlight: this row matches the hovered row
+    if (mode === 'cross' && hoveredRow === rowIndex) return true;
 
-      return false;
-    }, [highlight, rowIndex]);
+    return false;
+  }, [highlight, rowIndex]);
 
-    const handleMouseLeave = useCallback(() => {
-      highlight?.setHoveredCell(null, null);
-    }, [highlight]);
+  const handleMouseLeave = useCallback(() => {
+    highlight?.setHoveredCell(null, null);
+  }, [highlight]);
 
-    const renderDragOrPinHandleCell = () => {
-      const isDragMode = draggable?.enabled;
-      const isPinMode = pinnable?.enabled;
+  const renderDragOrPinHandleCell = () => {
+    const isDragMode = draggable?.enabled;
+    const isPinMode = pinnable?.enabled;
 
-      if (!isDragMode && !isPinMode) return null;
+    if (!isDragMode && !isPinMode) return null;
 
-      const offsetInfo = fixedOffsets?.getDragOrPinHandleOffset();
-      const isFixed = isDragMode ? !!draggable?.fixed : !!pinnable?.fixed;
+    const offsetInfo = fixedOffsets?.getDragOrPinHandleOffset();
+    const isFixed = isDragMode ? !!draggable?.fixed : !!pinnable?.fixed;
+    const showShadow =
+      isFixed &&
+      fixedOffsets?.shouldShowShadow(
+        DRAG_OR_PIN_HANDLE_KEY,
+        scrollLeft ?? 0,
+        containerWidth ?? 0,
+      );
+
+    return (
+      <TableDragOrPinHandleCell
+        dragHandleProps={
+          isDragMode
+            ? (draggableProvided?.dragHandleProps as
+                | Record<string, unknown>
+                | undefined)
+            : undefined
+        }
+        fixed={isFixed}
+        fixedOffset={offsetInfo?.offset ?? 0}
+        mode={isDragMode ? 'drag' : 'pin'}
+        record={record}
+        showShadow={showShadow ?? false}
+        width={isDragging ? DRAG_OR_PIN_HANDLE_COLUMN_WIDTH : undefined}
+      />
+    );
+  };
+
+  const renderSelectionCell = () => {
+    if (!selection) return null;
+
+    const isDisabled = record ? selection.isRowDisabled(record) : false;
+    const offsetInfo = fixedOffsets?.getSelectionOffset();
+    const isFixed = !!selection.config?.fixed;
+    const showShadow =
+      isFixed &&
+      fixedOffsets?.shouldShowShadow(
+        SELECTION_KEY,
+        scrollLeft ?? 0,
+        containerWidth ?? 0,
+      );
+
+    return (
+      <TableSelectionCell
+        disabled={isDisabled}
+        fixed={isFixed}
+        fixedOffset={offsetInfo?.offset ?? 0}
+        indeterminate={isIndeterminate}
+        mode={selection.mode}
+        onChange={() => record && selection.toggleRow(rowKey, record)}
+        selected={isSelected}
+        showShadow={showShadow ?? false}
+        width={isDragging ? SELECTION_COLUMN_WIDTH : undefined}
+      />
+    );
+  };
+
+  const renderExpandCell = () => {
+    if (!expansion) return null;
+
+    const { config } = expansion;
+    const canExpand =
+      record && config.rowExpandable ? config.rowExpandable(record) : !!record;
+    const offsetInfo = fixedOffsets?.getExpansionOffset();
+    const isFixed = !!config.fixed;
+    const showShadow =
+      isFixed &&
+      fixedOffsets?.shouldShowShadow(
+        EXPANSION_KEY,
+        scrollLeft ?? 0,
+        containerWidth ?? 0,
+      );
+
+    return (
+      <TableExpandCell
+        canExpand={canExpand}
+        expanded={isExpanded}
+        fixed={isFixed}
+        fixedOffset={offsetInfo?.offset ?? 0}
+        onClick={() => record && expansion.toggleExpand(rowKey, record)}
+        showShadow={showShadow ?? false}
+        width={isDragging ? EXPANSION_COLUMN_WIDTH : undefined}
+      />
+    );
+  };
+
+  const renderCells = () => {
+    return columns.map((column, columnIndex) => {
+      const fixedPos = parseFixed(column.fixed);
+      const offsetInfo = fixedOffsets?.getColumnOffset(column.key);
+      const offset = offsetInfo?.offset ?? 0;
+      // Show shadow based on scroll position and sticky state
       const showShadow =
-        isFixed &&
+        !!fixedPos &&
         fixedOffsets?.shouldShowShadow(
-          DRAG_OR_PIN_HANDLE_KEY,
+          column.key,
           scrollLeft ?? 0,
           containerWidth ?? 0,
         );
 
-      return (
-        <TableDragOrPinHandleCell
-          dragHandleProps={
-            isDragMode
-              ? (draggableProvided?.dragHandleProps as
-                  | Record<string, unknown>
-                  | undefined)
-              : undefined
-          }
-          fixed={isFixed}
-          fixedOffset={offsetInfo?.offset ?? 0}
-          mode={isDragMode ? 'drag' : 'pin'}
-          record={record}
-          showShadow={showShadow ?? false}
-          width={isDragging ? DRAG_OR_PIN_HANDLE_COLUMN_WIDTH : undefined}
-        />
-      );
-    };
-
-    const renderSelectionCell = () => {
-      if (!selection) return null;
-
-      const isDisabled = record ? selection.isRowDisabled(record) : false;
-      const offsetInfo = fixedOffsets?.getSelectionOffset();
-      const isFixed = !!selection.config?.fixed;
-      const showShadow =
-        isFixed &&
-        fixedOffsets?.shouldShowShadow(
-          SELECTION_KEY,
-          scrollLeft ?? 0,
-          containerWidth ?? 0,
-        );
-
-      return (
-        <TableSelectionCell
-          disabled={isDisabled}
-          fixed={isFixed}
-          fixedOffset={offsetInfo?.offset ?? 0}
-          indeterminate={isIndeterminate}
-          mode={selection.mode}
-          onChange={() => record && selection.toggleRow(rowKey, record)}
-          selected={isSelected}
-          showShadow={showShadow ?? false}
-          width={isDragging ? SELECTION_COLUMN_WIDTH : undefined}
-        />
-      );
-    };
-
-    const renderExpandCell = () => {
-      if (!expansion) return null;
-
-      const { config } = expansion;
-      const canExpand =
-        record && config.rowExpandable
-          ? config.rowExpandable(record)
-          : !!record;
-      const offsetInfo = fixedOffsets?.getExpansionOffset();
-      const isFixed = !!config.fixed;
-      const showShadow =
-        isFixed &&
-        fixedOffsets?.shouldShowShadow(
-          EXPANSION_KEY,
-          scrollLeft ?? 0,
-          containerWidth ?? 0,
-        );
-
-      return (
-        <TableExpandCell
-          canExpand={canExpand}
-          expanded={isExpanded}
-          fixed={isFixed}
-          fixedOffset={offsetInfo?.offset ?? 0}
-          onClick={() => record && expansion.toggleExpand(rowKey, record)}
-          showShadow={showShadow ?? false}
-          width={isDragging ? EXPANSION_COLUMN_WIDTH : undefined}
-        />
-      );
-    };
-
-    const renderCells = () => {
-      return columns.map((column, columnIndex) => {
-        const fixedPos = parseFixed(column.fixed);
-        const offsetInfo = fixedOffsets?.getColumnOffset(column.key);
-        const offset = offsetInfo?.offset ?? 0;
-        // Show shadow based on scroll position and sticky state
-        const showShadow =
-          !!fixedPos &&
-          fixedOffsets?.shouldShowShadow(
-            column.key,
-            scrollLeft ?? 0,
-            containerWidth ?? 0,
-          );
-
-        // Render toggleable cell for TOGGLEABLE_KEY column
-        if (column.key === TOGGLEABLE_KEY && toggleable?.enabled) {
-          const toggleableOffsetInfo = fixedOffsets?.getToggleableOffset();
-
-          return (
-            <TableToggleableCell
-              fixed={!!toggleable.fixed}
-              fixedOffset={toggleableOffsetInfo?.offset ?? 0}
-              key={column.key}
-              record={record}
-              showShadow={showShadow ?? false}
-              width={isDragging ? column.width : undefined}
-            />
-          );
-        }
-
-        // Render collectable cell for COLLECTABLE_KEY column
-        if (column.key === COLLECTABLE_KEY && collectable?.enabled) {
-          const collectableOffsetInfo = fixedOffsets?.getCollectableOffset();
-
-          return (
-            <TableCollectableCell
-              fixed={!!collectable.fixed}
-              fixedOffset={collectableOffsetInfo?.offset ?? 0}
-              key={column.key}
-              record={record}
-              showShadow={showShadow ?? false}
-              width={isDragging ? column.width : undefined}
-            />
-          );
-        }
-
-        // Render actions cell for TABLE_ACTIONS_KEY column
-        if (column.key === TABLE_ACTIONS_KEY && actions) {
-          return (
-            <TableActionsCell
-              actions={actions}
-              className={column.className}
-              columnIndex={columnIndex}
-              fixed={fixedPos ?? undefined}
-              fixedOffset={offset}
-              key={column.key}
-              record={record}
-              rowIndex={rowIndex}
-              showShadow={showShadow ?? false}
-              width={draggingColumnWidths?.get(column.key)}
-            />
-          );
-        }
+      // Render toggleable cell for TOGGLEABLE_KEY column
+      if (column.key === TOGGLEABLE_KEY && toggleable?.enabled) {
+        const toggleableOffsetInfo = fixedOffsets?.getToggleableOffset();
 
         return (
-          <TableCell
-            column={column}
+          <TableToggleableCell
+            fixed={!!toggleable.fixed}
+            fixedOffset={toggleableOffsetInfo?.offset ?? 0}
+            key={column.key}
+            record={record}
+            showShadow={showShadow ?? false}
+            width={isDragging ? column.width : undefined}
+          />
+        );
+      }
+
+      // Render collectable cell for COLLECTABLE_KEY column
+      if (column.key === COLLECTABLE_KEY && collectable?.enabled) {
+        const collectableOffsetInfo = fixedOffsets?.getCollectableOffset();
+
+        return (
+          <TableCollectableCell
+            fixed={!!collectable.fixed}
+            fixedOffset={collectableOffsetInfo?.offset ?? 0}
+            key={column.key}
+            record={record}
+            showShadow={showShadow ?? false}
+            width={isDragging ? column.width : undefined}
+          />
+        );
+      }
+
+      // Render actions cell for TABLE_ACTIONS_KEY column
+      if (column.key === TABLE_ACTIONS_KEY && actions) {
+        return (
+          <TableActionsCell
+            actions={actions}
+            className={column.className}
             columnIndex={columnIndex}
             fixed={fixedPos ?? undefined}
             fixedOffset={offset}
@@ -364,56 +349,70 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             width={draggingColumnWidths?.get(column.key)}
           />
         );
-      });
-    };
+      }
 
-    // Combine refs if draggable is provided
-    const rowRef = draggableProvided
-      ? composeRefs([ref, draggableProvided.innerRef])
-      : ref;
+      return (
+        <TableCell
+          column={column}
+          columnIndex={columnIndex}
+          fixed={fixedPos ?? undefined}
+          fixedOffset={offset}
+          key={column.key}
+          record={record}
+          rowIndex={rowIndex}
+          showShadow={showShadow ?? false}
+          width={draggingColumnWidths?.get(column.key)}
+        />
+      );
+    });
+  };
 
-    const isZebraRow = zebraStriping && rowIndex % 2 === 1;
+  // Combine refs if draggable is provided
+  const rowRef = draggableProvided
+    ? composeRefs([ref, draggableProvided.innerRef])
+    : ref;
 
-    const isSeparatorRow = separatorAtRowIndexes?.includes(rowIndex);
+  const isZebraRow = zebraStriping && rowIndex % 2 === 1;
 
-    return (
-      <tr
-        aria-rowindex={rowIndex + 1}
-        aria-selected={isSelected}
-        className={cx(
-          classes.bodyRow,
-          {
-            [classes.bodyRowAdding]: isAdding,
-            [classes.bodyRowDeleting]: isDeleting,
-            [classes.bodyRowDragging]: isDragging,
-            [classes.bodyRowFadingOut]: isFadingOut,
-            [classes.bodyRowHighlight]: isRowHighlighted,
-            [classes.bodyRowSelected]: isSelected,
-            [classes.bodyRowSeparator]: isSeparatorRow,
-            [classes.bodyRowZebra]: isZebraRow,
-          },
-          resolveRowStateClass(
-            typeof rowState === 'function'
-              ? record && rowState(record)
-              : rowState,
-          ),
-          className,
-        )}
-        data-index={rowIndex}
-        data-row-key={rowKey}
-        onMouseLeave={handleMouseLeave}
-        ref={rowRef}
-        tabIndex={0}
-        {...draggableProvided?.draggableProps}
-        style={resolvedStyle}
-      >
-        {renderExpandCell()}
-        {renderDragOrPinHandleCell()}
-        {renderSelectionCell()}
-        {renderCells()}
-      </tr>
-    );
-  },
-);
+  const isSeparatorRow = separatorAtRowIndexes?.includes(rowIndex);
+
+  return (
+    <tr
+      aria-rowindex={rowIndex + 1}
+      aria-selected={isSelected}
+      className={cx(
+        classes.bodyRow,
+        {
+          [classes.bodyRowAdding]: isAdding,
+          [classes.bodyRowDeleting]: isDeleting,
+          [classes.bodyRowDragging]: isDragging,
+          [classes.bodyRowFadingOut]: isFadingOut,
+          [classes.bodyRowHighlight]: isRowHighlighted,
+          [classes.bodyRowSelected]: isSelected,
+          [classes.bodyRowSeparator]: isSeparatorRow,
+          [classes.bodyRowZebra]: isZebraRow,
+        },
+        resolveRowStateClass(
+          typeof rowState === 'function'
+            ? record && rowState(record)
+            : rowState,
+        ),
+        className,
+      )}
+      data-index={rowIndex}
+      data-row-key={rowKey}
+      onMouseLeave={handleMouseLeave}
+      ref={rowRef}
+      tabIndex={0}
+      {...draggableProvided?.draggableProps}
+      style={resolvedStyle}
+    >
+      {renderExpandCell()}
+      {renderDragOrPinHandleCell()}
+      {renderSelectionCell()}
+      {renderCells()}
+    </tr>
+  );
+};
 
 export const TableRow = memo(TableRowInner) as typeof TableRowInner;

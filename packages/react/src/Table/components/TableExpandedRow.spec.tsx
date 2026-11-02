@@ -70,15 +70,15 @@ const renderWithContext = (
   dataContextValue: any = defaultDataContextValue,
 ) => {
   return render(
-    <TableDataContext.Provider value={dataContextValue as any}>
-      <TableContext.Provider value={contextValue as any}>
+    <TableDataContext value={dataContextValue as any}>
+      <TableContext value={contextValue as any}>
         <table>
           <tbody>
             <TableExpandedRow record={record as any} />
           </tbody>
         </table>
-      </TableContext.Provider>
-    </TableDataContext.Provider>,
+      </TableContext>
+    </TableDataContext>,
   );
 };
 
@@ -257,8 +257,8 @@ describe('<TableExpandedRow />', () => {
   describe('Custom className and style', () => {
     it('should apply custom className', () => {
       const { getHostHTMLElement } = render(
-        <TableDataContext.Provider value={defaultDataContextValue as any}>
-          <TableContext.Provider value={defaultContextValue as any}>
+        <TableDataContext value={defaultDataContextValue as any}>
+          <TableContext value={defaultContextValue as any}>
             <table>
               <tbody>
                 <TableExpandedRow
@@ -267,8 +267,8 @@ describe('<TableExpandedRow />', () => {
                 />
               </tbody>
             </table>
-          </TableContext.Provider>
-        </TableDataContext.Provider>,
+          </TableContext>
+        </TableDataContext>,
       );
 
       const row = getHostHTMLElement().querySelector('tr');
@@ -278,8 +278,8 @@ describe('<TableExpandedRow />', () => {
 
     it('should apply custom style', () => {
       const { getHostHTMLElement } = render(
-        <TableDataContext.Provider value={defaultDataContextValue as any}>
-          <TableContext.Provider value={defaultContextValue as any}>
+        <TableDataContext value={defaultDataContextValue as any}>
+          <TableContext value={defaultContextValue as any}>
             <table>
               <tbody>
                 <TableExpandedRow
@@ -288,8 +288,8 @@ describe('<TableExpandedRow />', () => {
                 />
               </tbody>
             </table>
-          </TableContext.Provider>
-        </TableDataContext.Provider>,
+          </TableContext>
+        </TableDataContext>,
       );
 
       const row = getHostHTMLElement().querySelector('tr');

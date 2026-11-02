@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  forwardRef,
+  type RefAttributes,
   useRef,
   useState,
   useEffect,
@@ -72,10 +72,10 @@ export interface ModalBodyForVerificationProps
 /**
  * The react component for verification code input in modal.
  */
-const ModalBodyForVerification = forwardRef<
-  HTMLDivElement,
-  ModalBodyForVerificationProps
->(function ModalBodyForVerification(props, ref) {
+function ModalBodyForVerification({
+  ref,
+  ...props
+}: ModalBodyForVerificationProps & RefAttributes<HTMLDivElement>) {
   const {
     autoFocus = true,
     className,
@@ -235,6 +235,6 @@ const ModalBodyForVerification = forwardRef<
       )}
     </div>
   );
-});
+}
 
 export default ModalBodyForVerification;

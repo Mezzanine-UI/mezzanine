@@ -6,7 +6,7 @@ import {
   LongTailArrowDownIcon,
   LongTailArrowRightIcon,
 } from '@mezzanine-ui/icons';
-import { forwardRef, useCallback, useMemo } from 'react';
+import { type RefAttributes, useCallback, useMemo } from 'react';
 import DateTimePicker, { DateTimePickerProps } from '../DateTimePicker';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
@@ -47,10 +47,10 @@ export interface DateTimeRangePickerProps
  * This component combines two DateTimePicker components for selecting a date-time range.
  * Notice that any component related to date-time picker should be used along with `CalendarContext`.
  */
-const DateTimeRangePicker = forwardRef<
-  HTMLDivElement,
-  DateTimeRangePickerProps
->(function DateTimeRangePicker(props, ref) {
+function DateTimeRangePicker({
+  ref,
+  ...props
+}: DateTimeRangePickerProps & RefAttributes<HTMLDivElement>) {
   const {
     className,
     direction = 'row',
@@ -231,6 +231,6 @@ const DateTimeRangePicker = forwardRef<
       />
     </div>
   );
-});
+}
 
 export default DateTimeRangePicker;

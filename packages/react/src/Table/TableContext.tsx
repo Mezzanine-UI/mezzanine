@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 import type {
   HighlightMode,
   TableSize,
@@ -115,7 +115,7 @@ export interface TableContextValue<
 export const TableContext = createContext<TableContextValue | null>(null);
 
 export function useTableContext<T extends TableDataSource = TableDataSource>() {
-  const context = useContext(TableContext) as TableContextValue<T> | null;
+  const context = use(TableContext) as TableContextValue<T> | null;
 
   if (!context) {
     throw new Error('useTableContext must be used within a Table component');
@@ -139,9 +139,7 @@ export const TableDataContext = createContext<TableDataContextValue | null>(
 export function useTableDataContext<
   T extends TableDataSource = TableDataSource,
 >() {
-  const context = useContext(
-    TableDataContext,
-  ) as TableDataContextValue<T> | null;
+  const context = use(TableDataContext) as TableDataContextValue<T> | null;
 
   if (!context) {
     throw new Error(
@@ -165,7 +163,7 @@ export const TableSuperContext = createContext<TableSuperContextValue | null>(
 );
 
 export function useTableSuperContext() {
-  const context = useContext(TableSuperContext) || {};
+  const context = use(TableSuperContext) || {};
 
   return context;
 }

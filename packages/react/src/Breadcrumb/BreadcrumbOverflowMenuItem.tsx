@@ -1,14 +1,14 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { breadcrumbOverflowMenuItemClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import { cx } from '../utils/cx';
 import Typography from '../Typography';
 import type { BreadcrumbItemProps } from './typings';
 import BreadcrumbOverflowMenuDropdown from './BreadcrumbOverflowMenuDropdown';
 
-const BreadcrumbOverflowMenuItem = forwardRef<
-  HTMLSpanElement,
-  BreadcrumbItemProps
->(function BreadcrumbOverflowMenuItem(props, ref) {
+function BreadcrumbOverflowMenuItem({
+  ref,
+  ...props
+}: BreadcrumbItemProps & RefAttributes<HTMLSpanElement>) {
   if ('options' in props) return <BreadcrumbOverflowMenuDropdown {...props} />;
 
   const {
@@ -53,6 +53,6 @@ const BreadcrumbOverflowMenuItem = forwardRef<
       </TriggerComponent>
     </span>
   );
-});
+}
 
 export default BreadcrumbOverflowMenuItem;

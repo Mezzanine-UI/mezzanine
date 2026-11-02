@@ -4,7 +4,7 @@ import {
   inputSpinnerButtonClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import Icon from '../../Icon';
 import { cx } from '../../utils/cx';
 import { CaretDownFlatIcon, CaretUpFlatIcon } from '@mezzanine-ui/icons';
@@ -30,32 +30,33 @@ export interface SpinnerButtonProps
   type: 'up' | 'down';
 }
 
-const SpinnerButton = forwardRef<HTMLButtonElement, SpinnerButtonProps>(
-  function SpinnerButton(props, ref) {
-    const { className, disabled, size = 'main', type, ...rest } = props;
+function SpinnerButton({
+  ref,
+  ...props
+}: SpinnerButtonProps & RefAttributes<HTMLButtonElement>) {
+  const { className, disabled, size = 'main', type, ...rest } = props;
 
-    return (
-      <button
-        ref={ref}
-        type="button"
-        disabled={disabled}
-        className={cx(
-          classes.host,
-          disabled && classes.disabled,
-          size === 'main' ? classes.main : classes.sub,
-          className,
-        )}
-        aria-label={type === 'up' ? 'Increase value' : 'Decrease value'}
-        title={type === 'up' ? 'Increase value' : 'Decrease value'}
-        {...rest}
-      >
-        <Icon
-          aria-hidden="true"
-          icon={type === 'up' ? CaretUpFlatIcon : CaretDownFlatIcon}
-        />
-      </button>
-    );
-  },
-);
+  return (
+    <button
+      ref={ref}
+      type="button"
+      disabled={disabled}
+      className={cx(
+        classes.host,
+        disabled && classes.disabled,
+        size === 'main' ? classes.main : classes.sub,
+        className,
+      )}
+      aria-label={type === 'up' ? 'Increase value' : 'Decrease value'}
+      title={type === 'up' ? 'Increase value' : 'Decrease value'}
+      {...rest}
+    >
+      <Icon
+        aria-hidden="true"
+        icon={type === 'up' ? CaretUpFlatIcon : CaretDownFlatIcon}
+      />
+    </button>
+  );
+}
 
 export default SpinnerButton;

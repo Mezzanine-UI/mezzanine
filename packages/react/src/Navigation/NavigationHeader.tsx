@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, use } from 'react';
+import { type RefAttributes, ReactNode, use } from 'react';
 import { navigationHeaderClasses as classes } from '@mezzanine-ui/core/navigation';
 import { SiderIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
@@ -30,56 +30,57 @@ export interface NavigationHeaderProps
   title: string;
 }
 
-const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
-  (props, ref) => {
-    const {
-      children,
-      className,
-      collapseToggleLabel = 'Toggle navigation',
-      onBrandClick,
-      title,
-      ...rest
-    } = props;
+const NavigationHeader = ({
+  ref,
+  ...props
+}: NavigationHeaderProps & RefAttributes<HTMLElement>) => {
+  const {
+    children,
+    className,
+    collapseToggleLabel = 'Toggle navigation',
+    onBrandClick,
+    title,
+    ...rest
+  } = props;
 
-    const { collapsed, handleCollapseChange } = use(NavigationActivatedContext);
+  const { collapsed, handleCollapseChange } = use(NavigationActivatedContext);
 
-    const BrandComponent = onBrandClick ? 'button' : 'span';
+  const BrandComponent = onBrandClick ? 'button' : 'span';
 
-    return (
-      <header
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          collapsed && classes.collapsed,
-          !!children && classes.hasChildren,
-          className,
-        )}
+  return (
+    <header
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        collapsed && classes.collapsed,
+        !!children && classes.hasChildren,
+        className,
+      )}
+    >
+      <NavigationIconButton
+        aria-expanded={!collapsed}
+        aria-label={collapseToggleLabel}
+        onClick={() => handleCollapseChange(!collapsed)}
+        icon={SiderIcon}
+      />
+      <BrandComponent
+        type={onBrandClick ? 'button' : undefined}
+        className={classes.content}
+        onClick={onBrandClick}
       >
-        <NavigationIconButton
-          aria-expanded={!collapsed}
-          aria-label={collapseToggleLabel}
-          onClick={() => handleCollapseChange(!collapsed)}
-          icon={SiderIcon}
-        />
-        <BrandComponent
-          type={onBrandClick ? 'button' : undefined}
-          className={classes.content}
-          onClick={onBrandClick}
-        >
-          {!!children && (
-            <span className={classes.childrenWrapper}>{children}</span>
-          )}
+        {!!children && (
+          <span className={classes.childrenWrapper}>{children}</span>
+        )}
 
-          <Fade in={!collapsed || !children}>
-            <span className={classes.title}>
-              {collapsed ? title?.[0] : title}
-            </span>
-          </Fade>
-        </BrandComponent>
-      </header>
-    );
-  },
-);
+        <Fade in={!collapsed || !children}>
+          <span className={classes.title}>
+            {collapsed ? title?.[0] : title}
+          </span>
+        </Fade>
+      </BrandComponent>
+    </header>
+  );
+};
 
 export default NavigationHeader;

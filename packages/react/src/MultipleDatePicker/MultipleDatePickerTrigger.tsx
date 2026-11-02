@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  forwardRef,
+  type RefAttributes,
   MouseEventHandler,
   ReactNode,
   useCallback,
@@ -80,10 +80,10 @@ export interface MultipleDatePickerTriggerProps
  * The trigger component for MultipleDatePicker.
  * Displays selected dates as tags within a TextField.
  */
-const MultipleDatePickerTrigger = forwardRef<
-  HTMLDivElement,
-  MultipleDatePickerTriggerProps
->(function MultipleDatePickerTrigger(props, ref) {
+function MultipleDatePickerTrigger({
+  ref,
+  ...props
+}: MultipleDatePickerTriggerProps & RefAttributes<HTMLDivElement>) {
   const {
     active = false,
     className,
@@ -294,6 +294,6 @@ const MultipleDatePickerTrigger = forwardRef<
       </div>
     </TextField>
   );
-});
+}
 
 export default MultipleDatePickerTrigger;

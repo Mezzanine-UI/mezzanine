@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { type RefAttributes, useState } from 'react';
 import { breadcrumbOverflowMenuItemClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import { ChevronRightIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
@@ -7,10 +7,10 @@ import Icon from '../Icon';
 import Typography from '../Typography';
 import type { BreadcrumbDropdownProps } from './typings';
 
-const BreadcrumbOverflowMenuDropdown = forwardRef<
-  HTMLSpanElement,
-  BreadcrumbDropdownProps
->(function BreadcrumbOverflowMenuDropdown(props, ref) {
+function BreadcrumbOverflowMenuDropdown({
+  ref,
+  ...props
+}: BreadcrumbDropdownProps & RefAttributes<HTMLSpanElement>) {
   const { className, name, onClick, open: openProp, options, ...rest } = props;
 
   const [_open, setOpen] = useState(false);
@@ -40,6 +40,6 @@ const BreadcrumbOverflowMenuDropdown = forwardRef<
       </Dropdown>
     </span>
   );
-});
+}
 
 export default BreadcrumbOverflowMenuDropdown;

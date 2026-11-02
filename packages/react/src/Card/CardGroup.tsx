@@ -3,7 +3,7 @@
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import {
   Children,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactNode,
   ReactElement,
@@ -171,107 +171,108 @@ function getGroupClassFromLoadingType(loadingType: CardGroupLoadingType) {
  * CardGroup is a container for card components.
  * It uses CSS Grid to layout cards in a horizontal row with consistent spacing.
  */
-const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
-  function CardGroup(props, ref) {
-    const {
-      className,
-      children,
-      loading = false,
-      loadingCount = 3,
-      loadingThumbnailAspectRatio,
-      loadingThumbnailWidth,
-      loadingType,
-    } = props;
+function CardGroup({
+  ref,
+  ...props
+}: CardGroupProps & RefAttributes<HTMLDivElement>) {
+  const {
+    className,
+    children,
+    loading = false,
+    loadingCount = 3,
+    loadingThumbnailAspectRatio,
+    loadingThumbnailWidth,
+    loadingType,
+  } = props;
 
-    // Detect first card type to determine min-width class
-    const firstCardType = getFirstCardType(children);
+  // Detect first card type to determine min-width class
+  const firstCardType = getFirstCardType(children);
 
-    // Validate children at runtime
-    const validChildren = Children.map(children, (child) => {
-      if (!isValidElement(child)) {
-        return child;
-      }
+  // Validate children at runtime
+  const validChildren = Children.map(children, (child) => {
+    if (!isValidElement(child)) {
+      return child;
+    }
 
-      const isAllowedType = ALLOWED_CARD_TYPES.some(
-        (allowedType) => child.type === allowedType,
+    const isAllowedType = ALLOWED_CARD_TYPES.some(
+      (allowedType) => child.type === allowedType,
+    );
+
+    if (!isAllowedType) {
+      const displayName = getComponentDisplayName(child);
+
+      console.warn(
+        `[CardGroup] Invalid child type: <${displayName}>. ` +
+          'CardGroup only accepts Card components (BaseCard, FourThumbnailCard, QuickActionCard, SingleThumbnailCard) as children.',
       );
 
-      if (!isAllowedType) {
-        const displayName = getComponentDisplayName(child);
+      return null;
+    }
 
-        console.warn(
-          `[CardGroup] Invalid child type: <${displayName}>. ` +
-            'CardGroup only accepts Card components (BaseCard, FourThumbnailCard, QuickActionCard, SingleThumbnailCard) as children.',
-        );
+    return child;
+  });
 
-        return null;
-      }
+  // Render loading skeletons
+  const renderSkeletons = () => {
+    if (!loading || !loadingType) {
+      return null;
+    }
 
-      return child;
-    });
+    const SkeletonComponent = getSkeletonComponent(loadingType);
 
-    // Render loading skeletons
-    const renderSkeletons = () => {
-      if (!loading || !loadingType) {
-        return null;
-      }
-
-      const SkeletonComponent = getSkeletonComponent(loadingType);
-
-      // Build props for thumbnail skeletons
-      const thumbnailSkeletonProps:
-        | { thumbnailAspectRatio?: string; thumbnailWidth?: number | string }
-        | undefined =
-        loadingType === 'single-thumbnail' || loadingType === 'four-thumbnail'
-          ? {
-              ...(loadingThumbnailAspectRatio && {
-                thumbnailAspectRatio: loadingThumbnailAspectRatio,
-              }),
-              ...(loadingThumbnailWidth && {
-                thumbnailWidth: loadingThumbnailWidth,
-              }),
-            }
-          : undefined;
-
-      return Array.from({ length: loadingCount }, (_, index) => (
-        <SkeletonComponent
-          key={`skeleton-${index}`}
-          {...thumbnailSkeletonProps}
-        />
-      ));
-    };
-
-    // Determine group class modifier
-    const groupClassModifier =
-      loadingType && loading
-        ? getGroupClassFromLoadingType(loadingType)
+    // Build props for thumbnail skeletons
+    const thumbnailSkeletonProps:
+      | { thumbnailAspectRatio?: string; thumbnailWidth?: number | string }
+      | undefined =
+      loadingType === 'single-thumbnail' || loadingType === 'four-thumbnail'
+        ? {
+            ...(loadingThumbnailAspectRatio && {
+              thumbnailAspectRatio: loadingThumbnailAspectRatio,
+            }),
+            ...(loadingThumbnailWidth && {
+              thumbnailWidth: loadingThumbnailWidth,
+            }),
+          }
         : undefined;
 
-    return (
-      <div
-        ref={ref}
-        className={cx(
-          classes.group,
-          {
-            [classes.groupFourThumbnail]:
-              firstCardType === FourThumbnailCard ||
-              groupClassModifier === classes.groupFourThumbnail,
-            [classes.groupQuickAction]:
-              firstCardType === QuickActionCard ||
-              groupClassModifier === classes.groupQuickAction,
-            [classes.groupSingleThumbnail]:
-              firstCardType === SingleThumbnailCard ||
-              groupClassModifier === classes.groupSingleThumbnail,
-          },
-          className,
-        )}
-      >
-        {validChildren}
-        {renderSkeletons()}
-      </div>
-    );
-  },
-);
+    return Array.from({ length: loadingCount }, (_, index) => (
+      <SkeletonComponent
+        key={`skeleton-${index}`}
+        {...thumbnailSkeletonProps}
+      />
+    ));
+  };
+
+  // Determine group class modifier
+  const groupClassModifier =
+    loadingType && loading
+      ? getGroupClassFromLoadingType(loadingType)
+      : undefined;
+
+  return (
+    <div
+      ref={ref}
+      className={cx(
+        classes.group,
+        {
+          [classes.groupFourThumbnail]:
+            firstCardType === FourThumbnailCard ||
+            groupClassModifier === classes.groupFourThumbnail,
+          [classes.groupQuickAction]:
+            firstCardType === QuickActionCard ||
+            groupClassModifier === classes.groupQuickAction,
+          [classes.groupSingleThumbnail]:
+            firstCardType === SingleThumbnailCard ||
+            groupClassModifier === classes.groupSingleThumbnail,
+        },
+        className,
+      )}
+    >
+      {validChildren}
+      {renderSkeletons()}
+    </div>
+  );
+}
 
 CardGroup.displayName = 'CardGroup';
 

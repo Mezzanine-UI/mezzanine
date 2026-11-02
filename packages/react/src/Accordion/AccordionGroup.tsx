@@ -2,7 +2,7 @@
 
 import {
   cloneElement,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactElement,
   useMemo,
@@ -29,82 +29,83 @@ export interface AccordionGroupProps
   size?: 'main' | 'sub';
 }
 
-const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
-  function AccordionGroup(props, ref) {
-    const { className, children, exclusive = false, size, ...rest } = props;
+function AccordionGroup({
+  ref,
+  ...props
+}: AccordionGroupProps & RefAttributes<HTMLDivElement>) {
+  const { className, children, exclusive = false, size, ...rest } = props;
 
-    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-    const flattenedChildren = useMemo(
-      () => flattenChildren(children),
-      [children],
-    );
+  const flattenedChildren = useMemo(
+    () => flattenChildren(children),
+    [children],
+  );
 
-    const defaultExpandedIndex = useMemo(
-      () =>
-        flattenedChildren.findIndex(
-          (child) =>
-            isValidElement(child) &&
-            child.type === Accordion &&
-            typeof (child.props as AccordionProps).expanded === 'undefined' &&
-            !!(child.props as AccordionProps).defaultExpanded,
-        ),
-      [flattenedChildren],
-    );
+  const defaultExpandedIndex = useMemo(
+    () =>
+      flattenedChildren.findIndex(
+        (child) =>
+          isValidElement(child) &&
+          child.type === Accordion &&
+          typeof (child.props as AccordionProps).expanded === 'undefined' &&
+          !!(child.props as AccordionProps).defaultExpanded,
+      ),
+    [flattenedChildren],
+  );
 
-    const resolvedExpandedIndex =
-      expandedIndex === null ? defaultExpandedIndex : expandedIndex;
+  const resolvedExpandedIndex =
+    expandedIndex === null ? defaultExpandedIndex : expandedIndex;
 
-    const handleChange = useCallback((index: number, open: boolean) => {
-      setExpandedIndex(open ? index : -1);
-    }, []);
+  const handleChange = useCallback((index: number, open: boolean) => {
+    setExpandedIndex(open ? index : -1);
+  }, []);
 
-    const childrenWithProps = useMemo(
-      () =>
-        flattenedChildren.map((child, index) => {
-          if (isValidElement(child) && child.type === Accordion) {
-            const accordionProps = child.props as AccordionProps;
-            const extraProps: Partial<AccordionProps> = { size };
+  const childrenWithProps = useMemo(
+    () =>
+      flattenedChildren.map((child, index) => {
+        if (isValidElement(child) && child.type === Accordion) {
+          const accordionProps = child.props as AccordionProps;
+          const extraProps: Partial<AccordionProps> = { size };
 
-            if (exclusive) {
-              const isExpandedControlled =
-                typeof accordionProps.expanded !== 'undefined';
+          if (exclusive) {
+            const isExpandedControlled =
+              typeof accordionProps.expanded !== 'undefined';
 
-              if (!isExpandedControlled) {
-                extraProps.expanded = resolvedExpandedIndex === index;
-              }
-
-              extraProps.onChange = (open: boolean) => {
-                if (typeof accordionProps.onChange === 'function') {
-                  accordionProps.onChange(open);
-                }
-
-                if (!isExpandedControlled) {
-                  handleChange(index, open);
-                }
-              };
+            if (!isExpandedControlled) {
+              extraProps.expanded = resolvedExpandedIndex === index;
             }
 
-            return cloneElement(child as ReactElement<AccordionProps>, {
-              ...accordionProps,
-              ...extraProps,
-            });
-          }
-          return child;
-        }),
-      [exclusive, flattenedChildren, handleChange, resolvedExpandedIndex, size],
-    );
+            extraProps.onChange = (open: boolean) => {
+              if (typeof accordionProps.onChange === 'function') {
+                accordionProps.onChange(open);
+              }
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(accordionGroupClasses.host, className)}
-      >
-        {childrenWithProps}
-      </div>
-    );
-  },
-);
+              if (!isExpandedControlled) {
+                handleChange(index, open);
+              }
+            };
+          }
+
+          return cloneElement(child as ReactElement<AccordionProps>, {
+            ...accordionProps,
+            ...extraProps,
+          });
+        }
+        return child;
+      }),
+    [exclusive, flattenedChildren, handleChange, resolvedExpandedIndex, size],
+  );
+
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(accordionGroupClasses.host, className)}
+    >
+      {childrenWithProps}
+    </div>
+  );
+}
 
 export default AccordionGroup;

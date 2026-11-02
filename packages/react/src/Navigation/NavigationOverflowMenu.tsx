@@ -32,8 +32,11 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { activatedPath, collapsedHiddenKeys } = use(NavigationActivatedContext);
-  const isActive = activatedPath.length > 0 && collapsedHiddenKeys.has(activatedPath[0]);
+  const { activatedPath, collapsedHiddenKeys } = use(
+    NavigationActivatedContext,
+  );
+  const isActive =
+    activatedPath.length > 0 && collapsedHiddenKeys.has(activatedPath[0]);
 
   const targetRef = useRef<HTMLButtonElement | null>(null);
   const popperRef = useRef<HTMLDivElement | null>(null);
@@ -155,7 +158,7 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                   <Scrollbar className={classes.subMenu}>
                     <ul>{renderedItems}</ul>
                   </Scrollbar>
-                  <NavigationOptionLevelContext.Provider
+                  <NavigationOptionLevelContext
                     value={{
                       level: 1,
                       path: level1path,
@@ -166,8 +169,8 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                         <ul>{renderedItems2}</ul>
                       </Scrollbar>
                     )}
-                  </NavigationOptionLevelContext.Provider>
-                  <NavigationOptionLevelContext.Provider
+                  </NavigationOptionLevelContext>
+                  <NavigationOptionLevelContext
                     value={{
                       level: 2,
                       path: level2path,
@@ -178,7 +181,7 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                         <ul>{renderedItems3}</ul>
                       </Scrollbar>
                     )}
-                  </NavigationOptionLevelContext.Provider>
+                  </NavigationOptionLevelContext>
                 </span>
               </li>
             </Translate>

@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { type RefAttributes, useEffect, useRef, useState } from 'react';
 import OverflowTooltip, { OverflowTooltipProps } from './OverflowTooltip';
 import Tag from '../Tag';
 import { useComposeRefs } from '../hooks/useComposeRefs';
@@ -26,85 +26,86 @@ export type OverflowCounterTagProps =
 /**
  * Compound component for OverflowTooltip and Tag with overflow-counter type.
  */
-const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
-  function OverflowCounterTag(props, ref) {
-    const {
-      disabled,
-      onTagDismiss,
-      tags = [],
-      placement,
-      readOnly,
-      tagSize,
-      ...restTagProps
-    } = props;
+function OverflowCounterTag({
+  ref,
+  ...props
+}: OverflowCounterTagProps & RefAttributes<HTMLSpanElement>) {
+  const {
+    disabled,
+    onTagDismiss,
+    tags = [],
+    placement,
+    readOnly,
+    tagSize,
+    ...restTagProps
+  } = props;
 
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-    const triggerRef = useRef<HTMLSpanElement>(null);
-    const composedTriggerRef = useComposeRefs([ref, triggerRef]);
-    const tooltipRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLSpanElement>(null);
+  const composedTriggerRef = useComposeRefs([ref, triggerRef]);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
-    useDocumentEvents(() => {
-      const handler = (e: PointerEvent | TouchEvent) => {
-        const target = e.target as HTMLElement | null;
+  useDocumentEvents(() => {
+    const handler = (e: PointerEvent | TouchEvent) => {
+      const target = e.target as HTMLElement | null;
 
-        if (
-          target === triggerRef.current ||
-          target === tooltipRef.current ||
-          triggerRef.current?.contains(target) ||
-          tooltipRef.current?.contains(target)
-        ) {
-          return;
-        }
+      if (
+        target === triggerRef.current ||
+        target === tooltipRef.current ||
+        triggerRef.current?.contains(target) ||
+        tooltipRef.current?.contains(target)
+      ) {
+        return;
+      }
 
-        setOpen(false);
-      };
+      setOpen(false);
+    };
 
-      return {
-        click: handler,
-        touchend: handler,
-      };
-    });
+    return {
+      click: handler,
+      touchend: handler,
+    };
+  });
 
-    useEffect(() => setOpen(false), [disabled, readOnly, tagSize]);
+  useEffect(() => setOpen(false), [disabled, readOnly, tagSize]);
 
-    return (
-      <>
-        <Tag
-          {...restTagProps}
-          className={cx(
-            classes.counterTagHost,
-            {
-              [classes.counterTagDisabled]: disabled,
-              [classes.counterTagReadOnly]: readOnly,
-            },
-            restTagProps.className,
-          )}
-          count={tags.length}
-          onClick={(e) => {
-            setOpen((prevOpen) => !prevOpen);
-            restTagProps.onClick?.(e);
-          }}
-          ref={composedTriggerRef}
-          type="overflow-counter"
-          size={tagSize}
-          disabled={disabled}
-          readOnly={readOnly}
-        />
+  return (
+    <>
+      <Tag
+        {...restTagProps}
+        className={cx(
+          classes.counterTagHost,
+          {
+            [classes.counterTagDisabled]: disabled,
+            [classes.counterTagReadOnly]: readOnly,
+          },
+          restTagProps.className,
+        )}
+        count={tags.length}
+        onClick={(e) => {
+          setOpen((prevOpen) => !prevOpen);
+          restTagProps.onClick?.(e);
+        }}
+        ref={composedTriggerRef}
+        type="overflow-counter"
+        size={tagSize}
+        disabled={disabled}
+        readOnly={readOnly}
+      />
 
-        <OverflowTooltip
-          anchor={triggerRef}
-          onTagDismiss={onTagDismiss}
-          open={open}
-          placement={placement}
-          ref={tooltipRef}
-          tags={tags}
-          tagSize={tagSize}
-          readOnly={readOnly}
-        />
-      </>
-    );
-  },
-);
+      <OverflowTooltip
+        anchor={triggerRef}
+        onTagDismiss={onTagDismiss}
+        open={open}
+        placement={placement}
+        ref={tooltipRef}
+        tags={tags}
+        tagSize={tagSize}
+        readOnly={readOnly}
+      />
+    </>
+  );
+}
 
 export default OverflowCounterTag;

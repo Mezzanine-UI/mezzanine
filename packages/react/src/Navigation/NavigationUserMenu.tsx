@@ -1,4 +1,11 @@
-import { forwardRef, ReactNode, use, useEffect, useRef, useState } from 'react';
+import {
+  type RefAttributes,
+  ReactNode,
+  use,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { navigationUserMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import { ChevronDownIcon, UserIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
@@ -23,10 +30,10 @@ export interface NavigationUserMenuProps
   onClick?: () => void;
 }
 
-const NavigationUserMenu = forwardRef<
-  HTMLButtonElement,
-  NavigationUserMenuProps
->((props, ref) => {
+const NavigationUserMenu = ({
+  ref,
+  ...props
+}: NavigationUserMenuProps & RefAttributes<HTMLButtonElement>) => {
   const {
     'aria-label': ariaLabel,
     children,
@@ -145,6 +152,6 @@ const NavigationUserMenu = forwardRef<
       </button>
     </Dropdown>
   );
-});
+};
 
 export default NavigationUserMenu;

@@ -1,14 +1,14 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 
 export interface EmptyMainInitialDataIconProps
   extends React.SVGProps<SVGSVGElement> {
   size?: number;
 }
 
-export const EmptyMainInitialDataIcon = forwardRef<
-  SVGSVGElement,
-  EmptyMainInitialDataIconProps
->(function EmptyInitialDataIcon(props, ref) {
+export const EmptyMainInitialDataIcon = function EmptyInitialDataIcon({
+  ref,
+  ...props
+}: EmptyMainInitialDataIconProps & RefAttributes<SVGSVGElement>) {
   const { className, size = 64, ...rest } = props;
 
   return (
@@ -69,4 +69,4 @@ export const EmptyMainInitialDataIcon = forwardRef<
       </g>
     </svg>
   );
-});
+};

@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { type RefAttributes, ReactNode } from 'react';
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -155,137 +155,137 @@ export type ModalFooterProps =
 /**
  * The react component for `mezzanine` modal footer.
  */
-const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
-  function ModalFooter(props, ref) {
-    const {
-      children,
-      className,
-      actionsButtonLayout = 'fixed',
-      annotation,
-      auxiliaryContentButtonProps,
-      auxiliaryContentButtonText,
-      auxiliaryContentChecked,
-      auxiliaryContentLabel,
-      auxiliaryContentOnChange,
-      auxiliaryContentOnClick,
-      auxiliaryContentType,
-      cancelButtonProps,
-      cancelText,
-      confirmButtonProps,
-      confirmText,
-      loading,
-      onCancel,
-      onConfirm,
-      passwordButtonProps,
-      passwordButtonText,
-      passwordChecked,
-      passwordCheckedLabel,
-      passwordCheckedOnChange,
-      passwordOnClick,
-      showCancelButton = true,
-      ...rest
-    } = props;
+function ModalFooter({
+  ref,
+  ...props
+}: ModalFooterProps & RefAttributes<HTMLDivElement>) {
+  const {
+    children,
+    className,
+    actionsButtonLayout = 'fixed',
+    annotation,
+    auxiliaryContentButtonProps,
+    auxiliaryContentButtonText,
+    auxiliaryContentChecked,
+    auxiliaryContentLabel,
+    auxiliaryContentOnChange,
+    auxiliaryContentOnClick,
+    auxiliaryContentType,
+    cancelButtonProps,
+    cancelText,
+    confirmButtonProps,
+    confirmText,
+    loading,
+    onCancel,
+    onConfirm,
+    passwordButtonProps,
+    passwordButtonText,
+    passwordChecked,
+    passwordCheckedLabel,
+    passwordCheckedOnChange,
+    passwordOnClick,
+    showCancelButton = true,
+    ...rest
+  } = props;
 
-    const { disabled: cancelButtonDisabled = loading } =
-      cancelButtonProps || {};
+  const { disabled: cancelButtonDisabled = loading } = cancelButtonProps || {};
 
-    const isActionsButtonFillLayout =
-      actionsButtonLayout === 'fill' && !auxiliaryContentType;
+  const isActionsButtonFillLayout =
+    actionsButtonLayout === 'fill' && !auxiliaryContentType;
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.modalFooter,
-          {
-            [classes.modalFooter + '--password-mode']:
-              auxiliaryContentType === 'password',
-            [classes.modalFooter + '--with-auxiliary-content']:
-              !!auxiliaryContentType && auxiliaryContentType !== 'password',
-          },
-          className,
-        )}
-      >
-        {auxiliaryContentType === 'password' && (
-          <div className={classes.modalFooterPasswordContainer}>
-            <Checkbox
-              checked={passwordChecked}
-              label={passwordCheckedLabel}
-              onChange={(e) => passwordCheckedOnChange?.(e.target.checked)}
-            />
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.modalFooter,
+        {
+          [classes.modalFooter + '--password-mode']:
+            auxiliaryContentType === 'password',
+          [classes.modalFooter + '--with-auxiliary-content']:
+            !!auxiliaryContentType && auxiliaryContentType !== 'password',
+        },
+        className,
+      )}
+    >
+      {auxiliaryContentType === 'password' && (
+        <div className={classes.modalFooterPasswordContainer}>
+          <Checkbox
+            checked={passwordChecked}
+            label={passwordCheckedLabel}
+            onChange={(e) => passwordCheckedOnChange?.(e.target.checked)}
+          />
+          <Button
+            variant="base-text-link"
+            {...passwordButtonProps}
+            onClick={passwordOnClick}
+          >
+            {passwordButtonText}
+          </Button>
+        </div>
+      )}
+      {auxiliaryContentType && auxiliaryContentType !== 'password' && (
+        <div className={classes.modalFooterAuxiliaryContentContainer}>
+          {auxiliaryContentType === 'annotation' && (
+            <Typography variant="caption" color="text-neutral">
+              {annotation}
+            </Typography>
+          )}
+          {auxiliaryContentType === 'button' && (
             <Button
               variant="base-text-link"
-              {...passwordButtonProps}
-              onClick={passwordOnClick}
+              {...auxiliaryContentButtonProps}
+              onClick={auxiliaryContentOnClick}
             >
-              {passwordButtonText}
-            </Button>
-          </div>
-        )}
-        {auxiliaryContentType && auxiliaryContentType !== 'password' && (
-          <div className={classes.modalFooterAuxiliaryContentContainer}>
-            {auxiliaryContentType === 'annotation' && (
-              <Typography variant="caption" color="text-neutral">
-                {annotation}
-              </Typography>
-            )}
-            {auxiliaryContentType === 'button' && (
-              <Button
-                variant="base-text-link"
-                {...auxiliaryContentButtonProps}
-                onClick={auxiliaryContentOnClick}
-              >
-                {auxiliaryContentButtonText}
-              </Button>
-            )}
-            {auxiliaryContentType === 'checkbox' && (
-              <Checkbox
-                checked={auxiliaryContentChecked}
-                label={auxiliaryContentLabel}
-                onChange={(e) => auxiliaryContentOnChange?.(e.target.checked)}
-              />
-            )}
-            {auxiliaryContentType === 'toggle' && (
-              <Toggle
-                checked={auxiliaryContentChecked}
-                label={auxiliaryContentLabel}
-                onChange={(e) => auxiliaryContentOnChange?.(e.target.checked)}
-              />
-            )}
-          </div>
-        )}
-        <ButtonGroup
-          className={cx(classes.modalFooterActionsButtonContainer, {
-            [classes.modalFooterActionsButtonContainer + '--fill-layout']:
-              isActionsButtonFillLayout,
-          })}
-        >
-          {showCancelButton && (
-            <Button
-              variant="base-secondary"
-              {...cancelButtonProps}
-              disabled={cancelButtonDisabled}
-              onClick={onCancel}
-              className={classes.modalFooterActionsButton}
-            >
-              {cancelText}
+              {auxiliaryContentButtonText}
             </Button>
           )}
+          {auxiliaryContentType === 'checkbox' && (
+            <Checkbox
+              checked={auxiliaryContentChecked}
+              label={auxiliaryContentLabel}
+              onChange={(e) => auxiliaryContentOnChange?.(e.target.checked)}
+            />
+          )}
+          {auxiliaryContentType === 'toggle' && (
+            <Toggle
+              checked={auxiliaryContentChecked}
+              label={auxiliaryContentLabel}
+              onChange={(e) => auxiliaryContentOnChange?.(e.target.checked)}
+            />
+          )}
+        </div>
+      )}
+      <ButtonGroup
+        className={cx(classes.modalFooterActionsButtonContainer, {
+          [classes.modalFooterActionsButtonContainer + '--fill-layout']:
+            isActionsButtonFillLayout,
+        })}
+      >
+        {showCancelButton && (
           <Button
-            variant="base-primary"
-            {...confirmButtonProps}
-            loading={loading}
-            onClick={onConfirm}
+            variant="base-secondary"
+            {...cancelButtonProps}
+            disabled={cancelButtonDisabled}
+            onClick={onCancel}
             className={classes.modalFooterActionsButton}
           >
-            {confirmText}
+            {cancelText}
           </Button>
-        </ButtonGroup>
-        {children}
-      </div>
-    );
-  },
-);
+        )}
+        <Button
+          variant="base-primary"
+          {...confirmButtonProps}
+          loading={loading}
+          onClick={onConfirm}
+          className={classes.modalFooterActionsButton}
+        >
+          {confirmText}
+        </Button>
+      </ButtonGroup>
+      {children}
+    </div>
+  );
+}
 
 export default ModalFooter;

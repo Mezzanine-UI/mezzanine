@@ -1,4 +1,4 @@
-import { forwardRef, JSXElementConstructor } from 'react';
+import { type RefAttributes, JSXElementConstructor } from 'react';
 import {
   toTypographyCssVars,
   TypographyAlign,
@@ -98,56 +98,56 @@ export type TypographyProps<C extends TypographyComponent = 'p'> =
  * <Typography variant="caption" ellipsis display="block">超長文字會在此被截斷顯示省略號...</Typography>
  * ```
  */
-const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(
-  function Typography(props, ref) {
-    const {
-      align,
-      children,
-      className,
-      color,
-      component,
-      display,
-      ellipsis = false,
-      noWrap = false,
-      variant = 'body',
-      style: styleProp,
-      ...rest
-    } = props;
-    const Component = component || (getComponentFromType(variant) as any);
-    const cssVars = toTypographyCssVars({
-      align,
-      color,
-      display,
-    });
-    const style = {
-      ...cssVars,
-      ...styleProp,
-    };
-    const title =
-      ellipsis && typeof children === 'string' ? children : undefined;
+function Typography({
+  ref,
+  ...props
+}: TypographyProps<'p'> & RefAttributes<HTMLParagraphElement>) {
+  const {
+    align,
+    children,
+    className,
+    color,
+    component,
+    display,
+    ellipsis = false,
+    noWrap = false,
+    variant = 'body',
+    style: styleProp,
+    ...rest
+  } = props;
+  const Component = component || (getComponentFromType(variant) as any);
+  const cssVars = toTypographyCssVars({
+    align,
+    color,
+    display,
+  });
+  const style = {
+    ...cssVars,
+    ...styleProp,
+  };
+  const title = ellipsis && typeof children === 'string' ? children : undefined;
 
-    return (
-      <Component
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.type(variant),
-          {
-            [classes.align]: align,
-            [classes.color]: color,
-            [classes.display]: display,
-            [classes.ellipsis]: ellipsis,
-            [classes.noWrap]: noWrap,
-          },
-          className,
-        )}
-        style={style}
-        title={title}
-      >
-        {children}
-      </Component>
-    );
-  },
-);
+  return (
+    <Component
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.type(variant),
+        {
+          [classes.align]: align,
+          [classes.color]: color,
+          [classes.display]: display,
+          [classes.ellipsis]: ellipsis,
+          [classes.noWrap]: noWrap,
+        },
+        className,
+      )}
+      style={style}
+      title={title}
+    >
+      {children}
+    </Component>
+  );
+}
 
 export default Typography;

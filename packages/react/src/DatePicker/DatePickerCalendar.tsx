@@ -1,7 +1,7 @@
 'use client';
 
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
-import { forwardRef, RefObject, useMemo } from 'react';
+import { type RefAttributes, RefObject, useMemo } from 'react';
 import Calendar, {
   CalendarProps,
   useCalendarControls,
@@ -92,157 +92,155 @@ export interface DatePickerCalendarProps
   onLeave?: () => void;
 }
 
-const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
-  function DatePickerCalendar(props, ref) {
-    const { locale, getMonth, getYear, setMonth, setYear } =
-      useCalendarContext();
-    const {
-      anchor,
-      calendarProps,
-      calendarRef,
-      disabledMonthSwitch,
-      disableOnNext,
-      disableOnPrev,
-      disableOnDoubleNext,
-      disableOnDoublePrev,
-      disabledYearSwitch,
-      displayMonthLocale = locale,
-      fadeProps,
-      isDateDisabled,
-      isMonthDisabled,
-      isQuarterDisabled,
-      isHalfYearDisabled,
-      isWeekDisabled,
-      isYearDisabled,
-      mode = 'day',
-      onChange: onChangeProp,
-      onHover,
-      onLeave,
-      open,
-      popperProps,
-      referenceDate: referenceDateProp,
-      value,
-    } = props;
-    const { className: calendarClassName, ...restCalendarProps } =
-      calendarProps || {};
-    const {
-      currentMode,
-      onMonthControlClick,
-      onNext,
-      onPrev,
-      onDoublePrev,
-      onDoubleNext,
-      onYearControlClick,
-      popModeStack,
-      referenceDate,
-      updateReferenceDate,
-    } = useCalendarControls(referenceDateProp, mode);
+function DatePickerCalendar({
+  ref,
+  ...props
+}: DatePickerCalendarProps & RefAttributes<HTMLDivElement>) {
+  const { locale, getMonth, getYear, setMonth, setYear } = useCalendarContext();
+  const {
+    anchor,
+    calendarProps,
+    calendarRef,
+    disabledMonthSwitch,
+    disableOnNext,
+    disableOnPrev,
+    disableOnDoubleNext,
+    disableOnDoublePrev,
+    disabledYearSwitch,
+    displayMonthLocale = locale,
+    fadeProps,
+    isDateDisabled,
+    isMonthDisabled,
+    isQuarterDisabled,
+    isHalfYearDisabled,
+    isWeekDisabled,
+    isYearDisabled,
+    mode = 'day',
+    onChange: onChangeProp,
+    onHover,
+    onLeave,
+    open,
+    popperProps,
+    referenceDate: referenceDateProp,
+    value,
+  } = props;
+  const { className: calendarClassName, ...restCalendarProps } =
+    calendarProps || {};
+  const {
+    currentMode,
+    onMonthControlClick,
+    onNext,
+    onPrev,
+    onDoublePrev,
+    onDoubleNext,
+    onYearControlClick,
+    popModeStack,
+    referenceDate,
+    updateReferenceDate,
+  } = useCalendarControls(referenceDateProp, mode);
 
-    // Helper to handle mode switching with optional value transformation
-    const createModeChangeHandler = useMemo(() => {
-      return (
-        transformValue?: (target: DateType, reference: DateType) => DateType,
-      ) => {
-        return (target: DateType) => {
-          const result = transformValue
-            ? transformValue(target, referenceDate)
-            : target;
-
-          updateReferenceDate(result);
-          popModeStack();
-
-          if (currentMode === mode && onChangeProp) {
-            onChangeProp(result);
-          }
-        };
-      };
-    }, [
-      currentMode,
-      mode,
-      referenceDate,
-      updateReferenceDate,
-      popModeStack,
-      onChangeProp,
-    ]);
-
-    const onChange = useMemo(() => {
-      switch (currentMode) {
-        case 'day':
-        case 'week':
-          return createModeChangeHandler();
-        case 'month':
-          return createModeChangeHandler((target, reference) =>
-            currentMode === mode
-              ? target
-              : setMonth(reference, getMonth(target)),
-          );
-        case 'year':
-          return createModeChangeHandler((target, reference) =>
-            currentMode === mode ? target : setYear(reference, getYear(target)),
-          );
-        case 'quarter':
-        case 'half-year':
-          return createModeChangeHandler();
-        default:
-          return undefined;
-      }
-    }, [
-      currentMode,
-      mode,
-      createModeChangeHandler,
-      getMonth,
-      setMonth,
-      getYear,
-      setYear,
-    ]);
-
+  // Helper to handle mode switching with optional value transformation
+  const createModeChangeHandler = useMemo(() => {
     return (
-      <InputTriggerPopper
-        {...popperProps}
-        ref={ref}
-        anchor={anchor}
-        open={open}
-        fadeProps={fadeProps}
-      >
-        <div onMouseLeave={onLeave}>
-          <Calendar
-            {...restCalendarProps}
-            ref={calendarRef}
-            className={calendarClassName}
-            disabledMonthSwitch={disabledMonthSwitch}
-            disableOnNext={disableOnNext}
-            disableOnPrev={disableOnPrev}
-            disableOnDoubleNext={disableOnDoubleNext}
-            disableOnDoublePrev={disableOnDoublePrev}
-            disabledYearSwitch={disabledYearSwitch}
-            displayMonthLocale={displayMonthLocale}
-            isDateDisabled={isDateDisabled}
-            isMonthDisabled={isMonthDisabled}
-            isQuarterDisabled={isQuarterDisabled}
-            isHalfYearDisabled={isHalfYearDisabled}
-            isWeekDisabled={isWeekDisabled}
-            isYearDisabled={isYearDisabled}
-            mode={currentMode}
-            onChange={onChange}
-            onDateHover={currentMode === 'day' ? onHover : undefined}
-            onDoubleNext={onDoubleNext}
-            onDoublePrev={onDoublePrev}
-            onHalfYearHover={currentMode === 'half-year' ? onHover : undefined}
-            onMonthControlClick={onMonthControlClick}
-            onMonthHover={currentMode === 'month' ? onHover : undefined}
-            onNext={onNext}
-            onPrev={onPrev}
-            onQuarterHover={currentMode === 'quarter' ? onHover : undefined}
-            onWeekHover={currentMode === 'week' ? onHover : undefined}
-            onYearControlClick={onYearControlClick}
-            onYearHover={currentMode === 'year' ? onHover : undefined}
-            referenceDate={referenceDate}
-            value={value}
-          />
-        </div>
-      </InputTriggerPopper>
-    );
-  },
-);
+      transformValue?: (target: DateType, reference: DateType) => DateType,
+    ) => {
+      return (target: DateType) => {
+        const result = transformValue
+          ? transformValue(target, referenceDate)
+          : target;
+
+        updateReferenceDate(result);
+        popModeStack();
+
+        if (currentMode === mode && onChangeProp) {
+          onChangeProp(result);
+        }
+      };
+    };
+  }, [
+    currentMode,
+    mode,
+    referenceDate,
+    updateReferenceDate,
+    popModeStack,
+    onChangeProp,
+  ]);
+
+  const onChange = useMemo(() => {
+    switch (currentMode) {
+      case 'day':
+      case 'week':
+        return createModeChangeHandler();
+      case 'month':
+        return createModeChangeHandler((target, reference) =>
+          currentMode === mode ? target : setMonth(reference, getMonth(target)),
+        );
+      case 'year':
+        return createModeChangeHandler((target, reference) =>
+          currentMode === mode ? target : setYear(reference, getYear(target)),
+        );
+      case 'quarter':
+      case 'half-year':
+        return createModeChangeHandler();
+      default:
+        return undefined;
+    }
+  }, [
+    currentMode,
+    mode,
+    createModeChangeHandler,
+    getMonth,
+    setMonth,
+    getYear,
+    setYear,
+  ]);
+
+  return (
+    <InputTriggerPopper
+      {...popperProps}
+      ref={ref}
+      anchor={anchor}
+      open={open}
+      fadeProps={fadeProps}
+    >
+      <div onMouseLeave={onLeave}>
+        <Calendar
+          {...restCalendarProps}
+          ref={calendarRef}
+          className={calendarClassName}
+          disabledMonthSwitch={disabledMonthSwitch}
+          disableOnNext={disableOnNext}
+          disableOnPrev={disableOnPrev}
+          disableOnDoubleNext={disableOnDoubleNext}
+          disableOnDoublePrev={disableOnDoublePrev}
+          disabledYearSwitch={disabledYearSwitch}
+          displayMonthLocale={displayMonthLocale}
+          isDateDisabled={isDateDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isQuarterDisabled={isQuarterDisabled}
+          isHalfYearDisabled={isHalfYearDisabled}
+          isWeekDisabled={isWeekDisabled}
+          isYearDisabled={isYearDisabled}
+          mode={currentMode}
+          onChange={onChange}
+          onDateHover={currentMode === 'day' ? onHover : undefined}
+          onDoubleNext={onDoubleNext}
+          onDoublePrev={onDoublePrev}
+          onHalfYearHover={currentMode === 'half-year' ? onHover : undefined}
+          onMonthControlClick={onMonthControlClick}
+          onMonthHover={currentMode === 'month' ? onHover : undefined}
+          onNext={onNext}
+          onPrev={onPrev}
+          onQuarterHover={currentMode === 'quarter' ? onHover : undefined}
+          onWeekHover={currentMode === 'week' ? onHover : undefined}
+          onYearControlClick={onYearControlClick}
+          onYearHover={currentMode === 'year' ? onHover : undefined}
+          referenceDate={referenceDate}
+          value={value}
+        />
+      </div>
+    </InputTriggerPopper>
+  );
+}
 
 export default DatePickerCalendar;

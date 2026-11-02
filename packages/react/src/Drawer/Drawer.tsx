@@ -11,7 +11,7 @@ import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { DotHorizontalIcon, IconDefinition } from '@mezzanine-ui/icons';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import {
-  forwardRef,
+  type RefAttributes,
   useEffect,
   useMemo,
   useState,
@@ -29,18 +29,17 @@ import useTopStack from '../hooks/useTopStack';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-
 export interface DrawerProps
   extends NativeElementPropsWithoutKeyAndRef<'div'>,
-  Pick<
-    BackdropProps,
-    | 'container'
-    | 'disableCloseOnBackdropClick'
-    | 'disablePortal'
-    | 'onBackdropClick'
-    | 'onClose'
-    | 'open'
-  > {
+    Pick<
+      BackdropProps,
+      | 'container'
+      | 'disableCloseOnBackdropClick'
+      | 'disablePortal'
+      | 'onBackdropClick'
+      | 'onClose'
+      | 'open'
+    > {
   /**
    * Key prop for forcing content remount when data changes.
    * Use this to prevent DOM residue when list items decrease (e.g., records.length).
@@ -272,7 +271,10 @@ export interface DrawerProps
  * @see {@link Modal} 對話框元件
  * @see {@link Backdrop} 遮罩層元件
  */
-const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
+const Drawer = ({
+  ref,
+  ...props
+}: DrawerProps & RefAttributes<HTMLDivElement>) => {
   const {
     bottomGhostActionDisabled,
     bottomGhostActionIcon,
@@ -378,7 +380,8 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
 
       const hasRadios = radios.length > 0;
       const hasButton =
-        filterAreaOptions.length > 0 || filterAreaOnCustomButtonClick !== undefined;
+        filterAreaOptions.length > 0 ||
+        filterAreaOnCustomButtonClick !== undefined;
 
       // Don't render if neither radios nor button are provided
       if (!hasRadios && !hasButton) {
@@ -403,8 +406,8 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
               {radios}
             </RadioGroup>
           )}
-          {hasButton && (
-            filterAreaOptions.length > 0 ? (
+          {hasButton &&
+            (filterAreaOptions.length > 0 ? (
               <Dropdown
                 onSelect={filterAreaOnSelect}
                 options={filterAreaOptions}
@@ -428,8 +431,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
               >
                 {filterAreaCustomButtonLabel}
               </Button>
-            )
-          )}
+            ))}
         </div>
       );
     };
@@ -571,6 +573,6 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
       </Slide>
     </Backdrop>
   );
-});
+};
 
 export default Drawer;

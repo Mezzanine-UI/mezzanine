@@ -1,7 +1,7 @@
 'use client';
 
 import { DateType, CalendarMode } from '@mezzanine-ui/core/calendar';
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { RangeCalendar, RangeCalendarProps } from '../Calendar';
 import InputTriggerPopper, {
   InputTriggerPopperProps,
@@ -79,10 +79,10 @@ export interface DateRangePickerCalendarProps
  * The react component for `mezzanine` date range picker calendar.
  * This is a wrapper around RangeCalendar with InputTriggerPopper for popup behavior.
  */
-const DateRangePickerCalendar = forwardRef<
-  HTMLDivElement,
-  DateRangePickerCalendarProps
->(function DateRangePickerCalendar(props, ref) {
+function DateRangePickerCalendar({
+  ref,
+  ...props
+}: DateRangePickerCalendarProps & RefAttributes<HTMLDivElement>) {
   const {
     actions,
     anchor,
@@ -179,6 +179,6 @@ const DateRangePickerCalendar = forwardRef<
       </div>
     </InputTriggerPopper>
   );
-});
+}
 
 export default DateRangePickerCalendar;

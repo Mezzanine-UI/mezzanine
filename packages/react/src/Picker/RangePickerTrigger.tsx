@@ -2,7 +2,7 @@ import { CalendarIcon, LongTailArrowRightIcon } from '@mezzanine-ui/icons';
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import {
   FocusEventHandler,
-  forwardRef,
+  type RefAttributes,
   MouseEventHandler,
   ReactNode,
   RefObject,
@@ -164,191 +164,192 @@ export interface RangePickerTriggerProps
  * The react component for `mezzanine` date range picker trigger.
  * Uses FormattedInput for both from and to inputs to support the new input mode.
  */
-const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
-  function RangePickerTrigger(props, ref) {
-    const {
-      className,
-      clearable = true,
-      disabled,
-      errorMessagesFrom,
-      errorMessagesTo,
-      format,
-      hoverFromValue,
-      hoverToValue,
-      inputFromPlaceholder,
-      inputFromProps,
-      inputFromRef: inputFromRefProp,
-      inputFromValue,
-      inputToPlaceholder,
-      inputToProps,
-      inputToRef: inputToRefProp,
-      inputToValue,
-      onFromBlur,
-      onFromFocus,
-      onIconClick,
-      onInputFromChange,
-      onInputToChange,
-      onToBlur,
-      onToFocus,
-      readOnly,
-      required,
-      suffix,
-      suffixActionIcon,
-      validateFrom,
-      validateTo,
-      ...restTextFieldProps
-    } = props;
+function RangePickerTrigger({
+  ref,
+  ...props
+}: RangePickerTriggerProps & RefAttributes<HTMLDivElement>) {
+  const {
+    className,
+    clearable = true,
+    disabled,
+    errorMessagesFrom,
+    errorMessagesTo,
+    format,
+    hoverFromValue,
+    hoverToValue,
+    inputFromPlaceholder,
+    inputFromProps,
+    inputFromRef: inputFromRefProp,
+    inputFromValue,
+    inputToPlaceholder,
+    inputToProps,
+    inputToRef: inputToRefProp,
+    inputToValue,
+    onFromBlur,
+    onFromFocus,
+    onIconClick,
+    onInputFromChange,
+    onInputToChange,
+    onToBlur,
+    onToFocus,
+    readOnly,
+    required,
+    suffix,
+    suffixActionIcon,
+    validateFrom,
+    validateTo,
+    ...restTextFieldProps
+  } = props;
 
-    const internalFromRef = useRef<HTMLInputElement>(null);
-    const internalToRef = useRef<HTMLInputElement>(null);
+  const internalFromRef = useRef<HTMLInputElement>(null);
+  const internalToRef = useRef<HTMLInputElement>(null);
 
-    const fromRef = useComposeRefs([
-      internalFromRef,
-      inputFromRefProp,
-    ]) as unknown as RefObject<HTMLInputElement | null>;
+  const fromRef = useComposeRefs([
+    internalFromRef,
+    inputFromRefProp,
+  ]) as unknown as RefObject<HTMLInputElement | null>;
 
-    const toRef = useComposeRefs([
-      internalToRef,
-      inputToRefProp,
-    ]) as unknown as RefObject<HTMLInputElement | null>;
+  const toRef = useComposeRefs([
+    internalToRef,
+    inputToRefProp,
+  ]) as unknown as RefObject<HTMLInputElement | null>;
 
-    const defaultSuffix = suffixActionIcon ?? (
-      <Icon
-        icon={CalendarIcon}
-        onClick={onIconClick}
-        aria-label="Open calendar"
+  const defaultSuffix = suffixActionIcon ?? (
+    <Icon
+      icon={CalendarIcon}
+      onClick={onIconClick}
+      aria-label="Open calendar"
+    />
+  );
+
+  // TextField requires disabled and readonly to be mutually exclusive
+  let defaultTextFieldProps = {};
+
+  if (disabled) {
+    defaultTextFieldProps = { disabled: true as const };
+  } else if (readOnly) {
+    defaultTextFieldProps = { readonly: true as const };
+  }
+
+  /**
+   * Handle from input change
+   */
+  const handleFromChange = useCallback(
+    (formattedValue: string, rawDigits: string) => {
+      onInputFromChange?.(formattedValue, rawDigits);
+    },
+    [onInputFromChange],
+  );
+
+  /**
+   * Handle to input change
+   */
+  const handleToChange = useCallback(
+    (formattedValue: string, rawDigits: string) => {
+      onInputToChange?.(formattedValue, rawDigits);
+    },
+    [onInputToChange],
+  );
+
+  /**
+   * Handle from input focus
+   */
+  const handleFromFocus: FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      onFromFocus?.(e);
+    },
+    [onFromFocus],
+  );
+
+  /**
+   * Handle to input focus
+   */
+  const handleToFocus: FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      onToFocus?.(e);
+    },
+    [onToFocus],
+  );
+
+  /**
+   * Handle from input blur
+   */
+  const handleFromBlur: FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      onFromBlur?.(e);
+    },
+    [onFromBlur],
+  );
+
+  /**
+   * Handle to input blur
+   */
+  const handleToBlur: FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      onToBlur?.(e);
+    },
+    [onToBlur],
+  );
+
+  return (
+    <TextField
+      role="presentation"
+      {...restTextFieldProps}
+      {...defaultTextFieldProps}
+      ref={ref}
+      className={cx(classes.host, classes.hostRange, className)}
+      clearable={!readOnly && clearable}
+      suffix={suffix ?? defaultSuffix}
+    >
+      <FormattedInput
+        {...inputFromProps}
+        ref={fromRef}
+        aria-disabled={disabled}
+        aria-label="Start date"
+        aria-multiline={false}
+        aria-readonly={readOnly}
+        aria-required={required}
+        disabled={disabled}
+        errorMessages={errorMessagesFrom}
+        format={format}
+        hoverValue={hoverFromValue}
+        onBlur={handleFromBlur}
+        onChange={handleFromChange}
+        onFocus={handleFromFocus}
+        placeholder={inputFromPlaceholder}
+        readOnly={readOnly}
+        required={required}
+        validate={validateFrom}
+        value={inputFromValue}
       />
-    );
-
-    // TextField requires disabled and readonly to be mutually exclusive
-    let defaultTextFieldProps = {};
-
-    if (disabled) {
-      defaultTextFieldProps = { disabled: true as const };
-    } else if (readOnly) {
-      defaultTextFieldProps = { readonly: true as const };
-    }
-
-    /**
-     * Handle from input change
-     */
-    const handleFromChange = useCallback(
-      (formattedValue: string, rawDigits: string) => {
-        onInputFromChange?.(formattedValue, rawDigits);
-      },
-      [onInputFromChange],
-    );
-
-    /**
-     * Handle to input change
-     */
-    const handleToChange = useCallback(
-      (formattedValue: string, rawDigits: string) => {
-        onInputToChange?.(formattedValue, rawDigits);
-      },
-      [onInputToChange],
-    );
-
-    /**
-     * Handle from input focus
-     */
-    const handleFromFocus: FocusEventHandler<HTMLInputElement> = useCallback(
-      (e) => {
-        onFromFocus?.(e);
-      },
-      [onFromFocus],
-    );
-
-    /**
-     * Handle to input focus
-     */
-    const handleToFocus: FocusEventHandler<HTMLInputElement> = useCallback(
-      (e) => {
-        onToFocus?.(e);
-      },
-      [onToFocus],
-    );
-
-    /**
-     * Handle from input blur
-     */
-    const handleFromBlur: FocusEventHandler<HTMLInputElement> = useCallback(
-      (e) => {
-        onFromBlur?.(e);
-      },
-      [onFromBlur],
-    );
-
-    /**
-     * Handle to input blur
-     */
-    const handleToBlur: FocusEventHandler<HTMLInputElement> = useCallback(
-      (e) => {
-        onToBlur?.(e);
-      },
-      [onToBlur],
-    );
-
-    return (
-      <TextField
-        role="presentation"
-        {...restTextFieldProps}
-        {...defaultTextFieldProps}
-        ref={ref}
-        className={cx(classes.host, classes.hostRange, className)}
-        clearable={!readOnly && clearable}
-        suffix={suffix ?? defaultSuffix}
-      >
-        <FormattedInput
-          {...inputFromProps}
-          ref={fromRef}
-          aria-disabled={disabled}
-          aria-label="Start date"
-          aria-multiline={false}
-          aria-readonly={readOnly}
-          aria-required={required}
-          disabled={disabled}
-          errorMessages={errorMessagesFrom}
-          format={format}
-          hoverValue={hoverFromValue}
-          onBlur={handleFromBlur}
-          onChange={handleFromChange}
-          onFocus={handleFromFocus}
-          placeholder={inputFromPlaceholder}
-          readOnly={readOnly}
-          required={required}
-          validate={validateFrom}
-          value={inputFromValue}
-        />
-        <Icon
-          icon={LongTailArrowRightIcon}
-          className={classes.arrowIcon}
-          aria-hidden="true"
-        />
-        <FormattedInput
-          {...inputToProps}
-          ref={toRef}
-          aria-disabled={disabled}
-          aria-label="End date"
-          aria-multiline={false}
-          aria-readonly={readOnly}
-          aria-required={required}
-          disabled={disabled}
-          errorMessages={errorMessagesTo}
-          format={format}
-          hoverValue={hoverToValue}
-          onBlur={handleToBlur}
-          onChange={handleToChange}
-          onFocus={handleToFocus}
-          placeholder={inputToPlaceholder}
-          readOnly={readOnly}
-          required={required}
-          validate={validateTo}
-          value={inputToValue}
-        />
-      </TextField>
-    );
-  },
-);
+      <Icon
+        icon={LongTailArrowRightIcon}
+        className={classes.arrowIcon}
+        aria-hidden="true"
+      />
+      <FormattedInput
+        {...inputToProps}
+        ref={toRef}
+        aria-disabled={disabled}
+        aria-label="End date"
+        aria-multiline={false}
+        aria-readonly={readOnly}
+        aria-required={required}
+        disabled={disabled}
+        errorMessages={errorMessagesTo}
+        format={format}
+        hoverValue={hoverToValue}
+        onBlur={handleToBlur}
+        onChange={handleToChange}
+        onFocus={handleToFocus}
+        placeholder={inputToPlaceholder}
+        readOnly={readOnly}
+        required={required}
+        validate={validateTo}
+        value={inputToValue}
+      />
+    </TextField>
+  );
+}
 
 export default RangePickerTrigger;

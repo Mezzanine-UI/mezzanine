@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type RefAttributes } from 'react';
 import { pageFooterClasses as classes } from '@mezzanine-ui/core/page-footer';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -117,110 +117,111 @@ type _PageFooterFlatProps = PageFooterBaseProps & {
   supportingActionVariant?: ButtonProps['variant'];
 };
 
-const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
-  function PageFooter(props, ref) {
-    const {
-      actions,
-      annotationClassName,
-      annotation,
-      className,
-      dropdownProps,
-      supportingActionIcon,
-      supportingActionName,
-      supportingActionOnClick,
-      supportingActionType,
-      supportingActionVariant = 'base-ghost',
-      type = 'standard',
-      warningMessage,
-      ...rest
-    } = props as _PageFooterFlatProps;
+function PageFooter({
+  ref,
+  ...props
+}: PageFooterProps & RefAttributes<HTMLElement>) {
+  const {
+    actions,
+    annotationClassName,
+    annotation,
+    className,
+    dropdownProps,
+    supportingActionIcon,
+    supportingActionName,
+    supportingActionOnClick,
+    supportingActionType,
+    supportingActionVariant = 'base-ghost',
+    type = 'standard',
+    warningMessage,
+    ...rest
+  } = props as _PageFooterFlatProps;
 
-    const { children: primaryButtonText, ...restPrimaryButtonProps } =
-      actions?.primaryButton ?? {};
+  const { children: primaryButtonText, ...restPrimaryButtonProps } =
+    actions?.primaryButton ?? {};
 
-    // Render annotation based on type
-    const renderAnnotation = () => {
-      switch (type) {
-        case 'standard':
-          if (!supportingActionName) return null;
+  // Render annotation based on type
+  const renderAnnotation = () => {
+    switch (type) {
+      case 'standard':
+        if (!supportingActionName) return null;
 
-          return (
+        return (
+          <Button
+            size="main"
+            type={supportingActionType}
+            onClick={supportingActionOnClick}
+            variant={supportingActionVariant}
+          >
+            {supportingActionName}
+          </Button>
+        );
+
+      case 'overflow':
+        if (!dropdownProps) return null;
+
+        return (
+          <Dropdown
+            {...dropdownProps}
+            options={dropdownProps.options || []}
+            placement={dropdownProps.placement || 'top'}
+          >
             <Button
+              type="button"
+              iconType="icon-only"
+              icon={supportingActionIcon || DotHorizontalIcon}
               size="main"
-              type={supportingActionType}
-              onClick={supportingActionOnClick}
-              variant={supportingActionVariant}
-            >
-              {supportingActionName}
-            </Button>
-          );
-
-        case 'overflow':
-          if (!dropdownProps) return null;
-
-          return (
-            <Dropdown
-              {...dropdownProps}
-              options={dropdownProps.options || []}
-              placement={dropdownProps.placement || 'top'}
-            >
-              <Button
-                type="button"
-                iconType="icon-only"
-                icon={supportingActionIcon || DotHorizontalIcon}
-                size="main"
-                variant="base-ghost"
-              />
-            </Dropdown>
-          );
-
-        case 'information':
-          if (!annotation) return null;
-
-          return (
-            <Typography color="text-neutral" variant="caption">
-              {annotation}
-            </Typography>
-          );
-
-        default:
-          return null;
-      }
-    };
-
-    return (
-      <footer ref={ref} {...rest} className={cx(classes.host, className)}>
-        <div className={cx(classes.annotation, annotationClassName)}>
-          {renderAnnotation()}
-        </div>
-        <div className={classes.message}>
-          {warningMessage ? (
-            <Typography variant="caption" color="text-warning" align="right">
-              {warningMessage}
-            </Typography>
-          ) : null}
-        </div>
-        <ButtonGroup>
-          {actions?.secondaryButton && (
-            <Button
-              size="main"
-              variant="base-secondary"
-              {...actions.secondaryButton}
+              variant="base-ghost"
             />
-          )}
-          {actions?.primaryButton && (
-            <Button
-              size="main"
-              variant="base-primary"
-              {...restPrimaryButtonProps}
-            >
-              {primaryButtonText}
-            </Button>
-          )}
-        </ButtonGroup>
-      </footer>
-    );
-  },
-);
+          </Dropdown>
+        );
+
+      case 'information':
+        if (!annotation) return null;
+
+        return (
+          <Typography color="text-neutral" variant="caption">
+            {annotation}
+          </Typography>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <footer ref={ref} {...rest} className={cx(classes.host, className)}>
+      <div className={cx(classes.annotation, annotationClassName)}>
+        {renderAnnotation()}
+      </div>
+      <div className={classes.message}>
+        {warningMessage ? (
+          <Typography variant="caption" color="text-warning" align="right">
+            {warningMessage}
+          </Typography>
+        ) : null}
+      </div>
+      <ButtonGroup>
+        {actions?.secondaryButton && (
+          <Button
+            size="main"
+            variant="base-secondary"
+            {...actions.secondaryButton}
+          />
+        )}
+        {actions?.primaryButton && (
+          <Button
+            size="main"
+            variant="base-primary"
+            {...restPrimaryButtonProps}
+          >
+            {primaryButtonText}
+          </Button>
+        )}
+      </ButtonGroup>
+    </footer>
+  );
+}
 
 export default PageFooter;

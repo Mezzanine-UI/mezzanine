@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { type RefAttributes, ReactNode } from 'react';
 import {
   inputCheckClasses as classes,
   InputCheckSize,
@@ -50,56 +50,57 @@ export interface InputCheckProps
 /**
  * The react component for `mezzanine` input check.
  */
-const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
-  function InputCheck(props, ref) {
-    const {
-      children,
-      className,
-      control,
-      disabled,
-      error,
-      focused,
-      hint,
-      htmlFor,
-      segmentedStyle = false,
-      size = 'main',
-      ...rest
-    } = props;
+function InputCheck({
+  ref,
+  ...props
+}: InputCheckProps & RefAttributes<HTMLLabelElement>) {
+  const {
+    children,
+    className,
+    control,
+    disabled,
+    error,
+    focused,
+    hint,
+    htmlFor,
+    segmentedStyle = false,
+    size = 'main',
+    ...rest
+  } = props;
 
-    return (
-      <label
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          classes.size(size),
-          {
-            [classes.disabled]: disabled,
-            [classes.error]: error,
-            [classes.segmented]: segmentedStyle,
-            [classes.withLabel]: !!children,
-          },
-          className,
-        )}
-        htmlFor={htmlFor}
+  return (
+    <label
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        classes.size(size),
+        {
+          [classes.disabled]: disabled,
+          [classes.error]: error,
+          [classes.segmented]: segmentedStyle,
+          [classes.withLabel]: !!children,
+        },
+        className,
+      )}
+      htmlFor={htmlFor}
+    >
+      <span
+        className={cx(classes.control, {
+          [classes.controlFocused]: focused,
+          [classes.controlSegmented]: segmentedStyle,
+        })}
       >
-        <span
-          className={cx(classes.control, {
-            [classes.controlFocused]: focused,
-            [classes.controlSegmented]: segmentedStyle,
-          })}
-        >
-          {control}
+        {control}
+      </span>
+      {children && (
+        <span className={classes.label}>
+          {children}
+          {hint && <span className={classes.hint}>{hint}</span>}
         </span>
-        {children && (
-          <span className={classes.label}>
-            {children}
-            {hint && <span className={classes.hint}>{hint}</span>}
-          </span>
-        )}
-      </label>
-    );
-  },
-);
+      )}
+    </label>
+  );
+}
 
 export default InputCheck;

@@ -7,7 +7,7 @@ import {
 } from '@mezzanine-ui/core/form';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { InfoOutlineIcon } from '@mezzanine-ui/icons';
-import { useContext } from 'react';
+import { use } from 'react';
 import { cleanup, cleanupHook, render, renderHook } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -60,21 +60,18 @@ describe('<FormField />', () => {
       required: true,
     };
 
-    const { result, rerender } = renderHook(
-      () => useContext(FormControlContext),
-      {
-        wrapper: ({ children }) => (
-          <FormField
-            {...firstProps}
-            label="Test"
-            name="test"
-            layout={FormFieldLayout.VERTICAL}
-          >
-            {children}
-          </FormField>
-        ),
-      },
-    );
+    const { result, rerender } = renderHook(() => use(FormControlContext), {
+      wrapper: ({ children }) => (
+        <FormField
+          {...firstProps}
+          label="Test"
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        >
+          {children}
+        </FormField>
+      ),
+    });
 
     expect(result.current).toEqual({
       ...firstProps,
@@ -90,21 +87,18 @@ describe('<FormField />', () => {
 
     rerender();
     // Need to re-render with new wrapper since props changed
-    const { result: result2 } = renderHook(
-      () => useContext(FormControlContext),
-      {
-        wrapper: ({ children }) => (
-          <FormField
-            {...secondProps}
-            label="Test"
-            name="test"
-            layout={FormFieldLayout.VERTICAL}
-          >
-            {children}
-          </FormField>
-        ),
-      },
-    );
+    const { result: result2 } = renderHook(() => use(FormControlContext), {
+      wrapper: ({ children }) => (
+        <FormField
+          {...secondProps}
+          label="Test"
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        >
+          {children}
+        </FormField>
+      ),
+    });
     expect(result2.current).toEqual(secondProps);
   });
 

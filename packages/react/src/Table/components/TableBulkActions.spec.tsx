@@ -37,13 +37,13 @@ const renderWithContext = (
   return {
     onClearSelection,
     ...render(
-      <TableDataContext.Provider value={dataContextValue as any}>
+      <TableDataContext value={dataContextValue as any}>
         <TableBulkActions
           bulkActions={bulkActions}
           onClearSelection={onClearSelection}
           selectedRowKeys={selectedRowKeys}
         />
-      </TableDataContext.Provider>,
+      </TableDataContext>,
     ),
   };
 };
@@ -204,14 +204,14 @@ describe('<TableBulkActions />', () => {
   describe('Fixed positioning', () => {
     it('should apply fixed class when isFixed is true', () => {
       const { getHostHTMLElement } = render(
-        <TableDataContext.Provider value={defaultDataContextValue as any}>
+        <TableDataContext value={defaultDataContextValue as any}>
           <TableBulkActions
             bulkActions={defaultBulkActions}
             isFixed
             onClearSelection={jest.fn()}
             selectedRowKeys={['1']}
           />
-        </TableDataContext.Provider>,
+        </TableDataContext>,
       );
 
       const bulkActions = getHostHTMLElement();
@@ -225,14 +225,14 @@ describe('<TableBulkActions />', () => {
   describe('Custom className', () => {
     it('should apply custom className', () => {
       const { getHostHTMLElement } = render(
-        <TableDataContext.Provider value={defaultDataContextValue as any}>
+        <TableDataContext value={defaultDataContextValue as any}>
           <TableBulkActions
             bulkActions={defaultBulkActions}
             className="custom-bulk-actions"
             onClearSelection={jest.fn()}
             selectedRowKeys={['1']}
           />
-        </TableDataContext.Provider>,
+        </TableDataContext>,
       );
 
       const bulkActions = getHostHTMLElement();

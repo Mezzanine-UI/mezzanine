@@ -5,7 +5,7 @@ import type {
 import { resultStateClasses as classes } from '@mezzanine-ui/core/result-state';
 import {
   cloneElement,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactElement,
   useMemo,
@@ -112,96 +112,93 @@ const renderButtonOrElement = (
   return <Button {...button} size={size} variant={variant} />;
 };
 
-const ResultState = forwardRef<HTMLDivElement, ResultStateProps>(
-  function ResultState(props, ref) {
-    const {
-      actions,
-      className,
-      children,
-      description,
-      size = 'main',
-      title,
-      type = 'information',
-      ...rest
-    } = props;
+function ResultState({
+  ref,
+  ...props
+}: ResultStateProps & RefAttributes<HTMLDivElement>) {
+  const {
+    actions,
+    className,
+    children,
+    description,
+    size = 'main',
+    title,
+    type = 'information',
+    ...rest
+  } = props;
 
-    const icon = useMemo(() => iconMap[type], [type]);
+  const icon = useMemo(() => iconMap[type], [type]);
 
-    const flatChildren = flattenChildren(children);
-    const fragmentButtons: ButtonGroupChild =
-      actions &&
-      ('secondaryButton' in actions ? (
-        <>
-          {renderButtonOrElement(
-            actions.secondaryButton,
-            size,
-            'base-secondary',
-          )}
-          {renderButtonOrElement(actions.primaryButton, size, 'base-primary')}
-        </>
-      ) : (
-        renderButtonOrElement(actions, size, 'base-secondary')
-      ));
+  const flatChildren = flattenChildren(children);
+  const fragmentButtons: ButtonGroupChild =
+    actions &&
+    ('secondaryButton' in actions ? (
+      <>
+        {renderButtonOrElement(actions.secondaryButton, size, 'base-secondary')}
+        {renderButtonOrElement(actions.primaryButton, size, 'base-primary')}
+      </>
+    ) : (
+      renderButtonOrElement(actions, size, 'base-secondary')
+    ));
 
-    const renderChildren =
-      !fragmentButtons &&
-      flatChildren.length > 0 &&
-      flatChildren.map((child, index) => {
-        if (!isValidElement(child)) {
-          return null;
-        } else if (child.type === Button) {
-          switch (index) {
-            case 0:
-              return renderButtonOrElement(
-                child as ReactElement<ButtonProps>,
-                size,
-                'base-secondary',
-              );
-            case 1:
-              return renderButtonOrElement(
-                child as ReactElement<ButtonProps>,
-                size,
-                'base-primary',
-              );
-            default:
-              console.warn(
-                'Only up to two Button components are allowed as children of ResultState.',
-              );
-              return null;
-          }
-        }
-
-        console.warn(
-          'Only Button components are allowed as children of ResultState.',
-        );
-
+  const renderChildren =
+    !fragmentButtons &&
+    flatChildren.length > 0 &&
+    flatChildren.map((child, index) => {
+      if (!isValidElement(child)) {
         return null;
-      });
+      } else if (child.type === Button) {
+        switch (index) {
+          case 0:
+            return renderButtonOrElement(
+              child as ReactElement<ButtonProps>,
+              size,
+              'base-secondary',
+            );
+          case 1:
+            return renderButtonOrElement(
+              child as ReactElement<ButtonProps>,
+              size,
+              'base-primary',
+            );
+          default:
+            console.warn(
+              'Only up to two Button components are allowed as children of ResultState.',
+            );
+            return null;
+        }
+      }
 
-    return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          classes.type(type),
-          classes.size(size),
-          className,
-        )}
-      >
-        <div className={classes.container}>
-          <Icon className={classes.icon} icon={icon} />
-          <h3 className={classes.title}>{title}</h3>
-          {description && <p className={classes.description}>{description}</p>}
-          {actions || children ? (
-            <ButtonGroup className={classes.actions}>
-              {fragmentButtons || renderChildren}
-            </ButtonGroup>
-          ) : null}
-        </div>
+      console.warn(
+        'Only Button components are allowed as children of ResultState.',
+      );
+
+      return null;
+    });
+
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        classes.type(type),
+        classes.size(size),
+        className,
+      )}
+    >
+      <div className={classes.container}>
+        <Icon className={classes.icon} icon={icon} />
+        <h3 className={classes.title}>{title}</h3>
+        {description && <p className={classes.description}>{description}</p>}
+        {actions || children ? (
+          <ButtonGroup className={classes.actions}>
+            {fragmentButtons || renderChildren}
+          </ButtonGroup>
+        ) : null}
       </div>
-    );
-  },
-);
+    </div>
+  );
+}
 
 export default ResultState;

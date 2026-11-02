@@ -2,7 +2,7 @@
 
 import {
   Children,
-  forwardRef,
+  type RefAttributes,
   isValidElement,
   ReactElement,
   use,
@@ -81,242 +81,243 @@ export interface NavigationOptionProps
   onTriggerClick?: (path: string[], currentKey: string, href?: string) => void;
 }
 
-const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
-  (props, ref) => {
-    const {
-      active,
-      children,
-      className,
-      anchorComponent,
-      defaultOpen,
-      href,
-      icon,
-      id,
-      onTriggerClick,
-      title,
-      ...rest
-    } = props;
+const NavigationOption = ({
+  ref,
+  ...props
+}: NavigationOptionProps & RefAttributes<HTMLLIElement>) => {
+  const {
+    active,
+    children,
+    className,
+    anchorComponent,
+    defaultOpen,
+    href,
+    icon,
+    id,
+    onTriggerClick,
+    title,
+    ...rest
+  } = props;
 
-    const {
-      activatedPathKey,
-      activatedPath,
-      collapsed,
-      collapsedHiddenKeys,
-      filterText,
-      handleCollapseChange,
-      setActivatedPath,
-      optionsAnchorComponent,
-    } = use(NavigationActivatedContext);
+  const {
+    activatedPathKey,
+    activatedPath,
+    collapsed,
+    collapsedHiddenKeys,
+    filterText,
+    handleCollapseChange,
+    setActivatedPath,
+    optionsAnchorComponent,
+  } = use(NavigationActivatedContext);
 
-    const [open, setOpen] = useState<boolean>(defaultOpen ?? false);
+  const [open, setOpen] = useState<boolean>(defaultOpen ?? false);
 
-    const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
+  const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
 
-    const { level, path: parentPath } = use(NavigationOptionLevelContext);
-    const currentLevel = level + 1; // start as 1
+  const { level, path: parentPath } = use(NavigationOptionLevelContext);
+  const currentLevel = level + 1; // start as 1
 
-    const uuid = useId();
-    const currentKey = id || title || href || uuid;
-    const currentPath = useMemo(
-      () => [...parentPath, currentKey],
-      [parentPath, currentKey],
-    );
-    const currentPathKey = currentPath.join('::');
+  const uuid = useId();
+  const currentKey = id || title || href || uuid;
+  const currentPath = useMemo(
+    () => [...parentPath, currentKey],
+    [parentPath, currentKey],
+  );
+  const currentPathKey = currentPath.join('::');
 
-    const flattenedChildren = useMemo(
-      () => flattenChildren(children) as NavigationOptionChildren,
-      [children],
-    );
+  const flattenedChildren = useMemo(
+    () => flattenChildren(children) as NavigationOptionChildren,
+    [children],
+  );
 
-    const { badge, items } = useMemo(() => {
-      let badgeComponent: ReactElement<BadgeProps> | null = null;
+  const { badge, items } = useMemo(() => {
+    let badgeComponent: ReactElement<BadgeProps> | null = null;
 
-      const items: ReactElement<NavigationOptionProps>[] = [];
+    const items: ReactElement<NavigationOptionProps>[] = [];
 
-      Children.forEach(flattenedChildren, (child: NavigationOptionChildren) => {
-        if (child && isValidElement(child)) {
-          switch (child.type) {
-            case Badge: {
-              badgeComponent = child as ReactElement<BadgeProps>;
-              break;
-            }
-            case NavigationOption: {
-              items.push(child as ReactElement<NavigationOptionProps>);
-              break;
-            }
-            default:
-              console.warn(
-                '[Mezzanine][NavigationOption]: NavigationOption only accepts NavigationOption or Badge as children.',
-              );
+    Children.forEach(flattenedChildren, (child: NavigationOptionChildren) => {
+      if (child && isValidElement(child)) {
+        switch (child.type) {
+          case Badge: {
+            badgeComponent = child as ReactElement<BadgeProps>;
+            break;
           }
+          case NavigationOption: {
+            items.push(child as ReactElement<NavigationOptionProps>);
+            break;
+          }
+          default:
+            console.warn(
+              '[Mezzanine][NavigationOption]: NavigationOption only accepts NavigationOption or Badge as children.',
+            );
         }
-      });
-
-      return { badge: badgeComponent, items };
-    }, [flattenedChildren]);
-
-    // Group vs leaf is decided by the presence of real sub-options, not by
-    // raw `children` — a lone `Badge` child is rendered inline on a leaf.
-    const hasSubOptions = items.length > 0;
-
-    const Component =
-      href && !hasSubOptions
-        ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
-        : 'div';
-
-    // Default open if current path is activated
-    useEffect(() => {
-      if (
-        activatedPathKey === currentPathKey ||
-        activatedPathKey.startsWith(`${currentPathKey}::`)
-      ) {
-        setOpen(true);
       }
-    }, [activatedPathKey, currentLevel, currentPathKey]);
+    });
 
-    const [filter, setFilter] = useState(true);
+    return { badge: badgeComponent, items };
+  }, [flattenedChildren]);
 
-    useEffect(() => {
-      if (!filterText) {
-        setFilter(true);
+  // Group vs leaf is decided by the presence of real sub-options, not by
+  // raw `children` — a lone `Badge` child is rendered inline on a leaf.
+  const hasSubOptions = items.length > 0;
 
-        return;
-      }
+  const Component =
+    href && !hasSubOptions
+      ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
+      : 'div';
 
-      setFilter(
-        (title.includes(filterText) || href?.includes(filterText)) ?? false,
-      );
-    }, [currentPath, filterText, href, title]);
+  // Default open if current path is activated
+  useEffect(() => {
+    if (
+      activatedPathKey === currentPathKey ||
+      activatedPathKey.startsWith(`${currentPathKey}::`)
+    ) {
+      setOpen(true);
+    }
+  }, [activatedPathKey, currentLevel, currentPathKey]);
 
-    const titleRef = useRef<HTMLElement>(null);
-    const [titleOverflow, setTitleOverflow] = useState(false);
+  const [filter, setFilter] = useState(true);
 
-    useEffect(() => {
+  useEffect(() => {
+    if (!filterText) {
+      setFilter(true);
+
+      return;
+    }
+
+    setFilter(
+      (title.includes(filterText) || href?.includes(filterText)) ?? false,
+    );
+  }, [currentPath, filterText, href, title]);
+
+  const titleRef = useRef<HTMLElement>(null);
+  const [titleOverflow, setTitleOverflow] = useState(false);
+
+  useEffect(() => {
+    if (!titleRef.current) return;
+
+    const checkOverflow = () => {
       if (!titleRef.current) return;
 
-      const checkOverflow = () => {
-        if (!titleRef.current) return;
+      const { scrollWidth, clientWidth } = titleRef.current;
 
-        const { scrollWidth, clientWidth } = titleRef.current;
+      setTitleOverflow(scrollWidth > clientWidth);
+    };
 
-        setTitleOverflow(scrollWidth > clientWidth);
-      };
+    checkOverflow();
 
-      checkOverflow();
+    const resizeObserver = new ResizeObserver(checkOverflow);
 
-      const resizeObserver = new ResizeObserver(checkOverflow);
+    resizeObserver.observe(titleRef.current);
 
-      resizeObserver.observe(titleRef.current);
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [title]);
 
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }, [title]);
-
-    return (
-      <li
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          open && classes.open,
-          !hasSubOptions && classes.basic,
-          (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
-            classes.active,
-          collapsed && classes.collapsed,
-          (collapsed && collapsedHiddenKeys.has(currentKey)) ||
-            (!collapsed && !filter)
-            ? classes.hidden
-            : undefined,
-          className,
-        )}
-        data-id={currentKey}
+  return (
+    <li
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        open && classes.open,
+        !hasSubOptions && classes.basic,
+        (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
+          classes.active,
+        collapsed && classes.collapsed,
+        (collapsed && collapsedHiddenKeys.has(currentKey)) ||
+          (!collapsed && !filter)
+          ? classes.hidden
+          : undefined,
+        className,
+      )}
+      data-id={currentKey}
+    >
+      <Tooltip
+        disablePortal={false}
+        offsetMainAxis={8 + 6 /* 6 is the padding of the item */}
+        options={{
+          placement: collapsed ? 'right' : 'top',
+        }}
+        title={collapsed || titleOverflow ? title : undefined}
       >
-        <Tooltip
-          disablePortal={false}
-          offsetMainAxis={8 + 6 /* 6 is the padding of the item */}
-          options={{
-            placement: collapsed ? 'right' : 'top',
-          }}
-          title={collapsed || titleOverflow ? title : undefined}
-        >
-          {({ onMouseEnter, onMouseLeave, ref: tooltipChildRef }) => (
-            <Component
-              /**
-               * The div form is a disclosure for its sub-options, so tell
-               * assistive technology whether that group is currently open.
-               */
-              aria-expanded={hasSubOptions ? open : undefined}
-              className={cx(classes.content, classes.level(currentLevel))}
-              href={Component === 'div' ? undefined : href}
-              onClick={() => {
-                setOpen(!open);
-                onTriggerClick?.(currentPath, currentKey, href);
+        {({ onMouseEnter, onMouseLeave, ref: tooltipChildRef }) => (
+          <Component
+            /**
+             * The div form is a disclosure for its sub-options, so tell
+             * assistive technology whether that group is currently open.
+             */
+            aria-expanded={hasSubOptions ? open : undefined}
+            className={cx(classes.content, classes.level(currentLevel))}
+            href={Component === 'div' ? undefined : href}
+            onClick={() => {
+              setOpen(!open);
+              onTriggerClick?.(currentPath, currentKey, href);
 
-                if (collapsed) {
-                  handleCollapseChange(false);
-                }
+              if (collapsed) {
+                handleCollapseChange(false);
+              }
+
+              if (!hasSubOptions) setActivatedPath(currentPath);
+            }}
+            onKeyDown={(
+              e: React.KeyboardEvent<HTMLAnchorElement | HTMLDivElement>,
+            ) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setOpen(!open);
 
                 if (!hasSubOptions) setActivatedPath(currentPath);
-              }}
-              onKeyDown={(
-                e: React.KeyboardEvent<HTMLAnchorElement | HTMLDivElement>,
-              ) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setOpen(!open);
+              }
+            }}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            ref={tooltipChildRef}
+            /**
+             * A side navigation is a set of links, not a menu widget: per the
+             * ARIA APG it must not claim `menuitem`, which additionally
+             * requires a menu/menubar/group ancestor that Navigation does not
+             * render. The anchor form already exposes the native `link` role;
+             * the `div` form is an activatable control driven by Enter/Space,
+             * which is exactly the `button` contract.
+             */
+            role={Component === 'div' ? 'button' : undefined}
+            tabIndex={0}
+          >
+            {icon && <Icon className={classes.icon} icon={icon} />}
 
-                  if (!hasSubOptions) setActivatedPath(currentPath);
-                }
-              }}
-              onMouseEnter={onMouseEnter}
-              onMouseLeave={onMouseLeave}
-              ref={tooltipChildRef}
-              /**
-               * A side navigation is a set of links, not a menu widget: per the
-               * ARIA APG it must not claim `menuitem`, which additionally
-               * requires a menu/menubar/group ancestor that Navigation does not
-               * render. The anchor form already exposes the native `link` role;
-               * the `div` form is an activatable control driven by Enter/Space,
-               * which is exactly the `button` contract.
-               */
-              role={Component === 'div' ? 'button' : undefined}
-              tabIndex={0}
-            >
-              {icon && <Icon className={classes.icon} icon={icon} />}
+            <span className={classes.titleWrapper}>
+              <Fade ref={titleRef} in={collapsed === false || !icon}>
+                <span className={classes.title}>
+                  {collapsed && !icon
+                    ? Array.from(title).slice(0, 2).join('')
+                    : title}
+                </span>
+              </Fade>
+            </span>
 
-              <span className={classes.titleWrapper}>
-                <Fade ref={titleRef} in={collapsed === false || !icon}>
-                  <span className={classes.title}>
-                    {collapsed && !icon
-                      ? Array.from(title).slice(0, 2).join('')
-                      : title}
-                  </span>
-                </Fade>
-              </span>
-
-              {badge}
-              {hasSubOptions && (
-                <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
-              )}
-            </Component>
-          )}
-        </Tooltip>
-        {hasSubOptions && !collapsed && (
-          <Collapse lazyMount className={cx(classes.childrenWrapper)} in={open}>
-            <NavigationOptionLevelContext.Provider
-              value={{
-                level: currentLevel,
-                path: currentPath,
-              }}
-            >
-              <ul className={classes.group}>{items}</ul>
-            </NavigationOptionLevelContext.Provider>
-          </Collapse>
+            {badge}
+            {hasSubOptions && (
+              <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
+            )}
+          </Component>
         )}
-      </li>
-    );
-  },
-);
+      </Tooltip>
+      {hasSubOptions && !collapsed && (
+        <Collapse lazyMount className={cx(classes.childrenWrapper)} in={open}>
+          <NavigationOptionLevelContext
+            value={{
+              level: currentLevel,
+              path: currentPath,
+            }}
+          >
+            <ul className={classes.group}>{items}</ul>
+          </NavigationOptionLevelContext>
+        </Collapse>
+      )}
+    </li>
+  );
+};
 
 export default NavigationOption;

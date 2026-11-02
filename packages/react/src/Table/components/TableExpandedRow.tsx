@@ -1,6 +1,6 @@
 'use client';
 
-import { cloneElement, forwardRef, memo, useMemo } from 'react';
+import { cloneElement, type RefAttributes, memo, useMemo } from 'react';
 import {
   getRowKey,
   tableClasses as classes,
@@ -18,10 +18,10 @@ export interface TableExpandedRowProps<
   style?: React.CSSProperties;
 }
 
-const TableExpandedRowInner = forwardRef<
-  HTMLTableRowElement,
-  TableExpandedRowProps
->(function TableExpandedRow(props, ref) {
+const TableExpandedRowInner = function TableExpandedRow({
+  ref,
+  ...props
+}: TableExpandedRowProps & RefAttributes<HTMLTableRowElement>) {
   const { className, record, style } = props;
 
   const { expansion, draggable, selection, transitionState } =
@@ -96,7 +96,7 @@ const TableExpandedRowInner = forwardRef<
       </td>
     </tr>
   );
-});
+};
 
 export const TableExpandedRow = memo(
   TableExpandedRowInner,
