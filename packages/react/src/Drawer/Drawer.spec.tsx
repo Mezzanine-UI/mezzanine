@@ -5,7 +5,14 @@ import {
 } from '@mezzanine-ui/core/drawer';
 import { CloseIcon } from '@mezzanine-ui/icons';
 import userEvent from '@testing-library/user-event';
-import { cleanup, cleanupHook, fireEvent, render, screen, waitFor } from '../../__test-utils__';
+import {
+  cleanup,
+  cleanupHook,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Drawer from '.';
 
@@ -1062,7 +1069,9 @@ describe('<Drawer />', () => {
       const iconButton = filterAreaElement?.querySelector('button');
 
       expect(iconButton).toBeInstanceOf(Node);
-      expect(iconButton?.querySelector('i[data-icon-name]')).toBeInstanceOf(Node);
+      expect(iconButton?.querySelector('i[data-icon-name]')).toBeInstanceOf(
+        Node,
+      );
     });
 
     it('should render plain text button when filterAreaOptions is empty', () => {
@@ -1104,7 +1113,9 @@ describe('<Drawer />', () => {
       const filterAreaElement = getDrawerElement()!.querySelector(
         `.${classes.filterArea}`,
       );
-      const iconButton = filterAreaElement?.querySelector('button') as HTMLButtonElement;
+      const iconButton = filterAreaElement?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       await user.click(iconButton);
 
@@ -1406,7 +1417,9 @@ describe('<Drawer />', () => {
 
       const drawerElement = getDrawerElement()!;
       const headerElement = drawerElement.querySelector(`.${classes.header}`);
-      const filterAreaElement = drawerElement.querySelector(`.${classes.filterArea}`);
+      const filterAreaElement = drawerElement.querySelector(
+        `.${classes.filterArea}`,
+      );
       const contentElement = drawerElement.querySelector(`.${classes.content}`);
       const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
 
@@ -1417,6 +1430,133 @@ describe('<Drawer />', () => {
 
       expect(headerElement?.textContent).toContain('Complete Drawer');
       expect(contentElement?.textContent).toBe('Main Content');
+    });
+  });
+
+  describe('focus model', () => {
+    const DrawerHarness = ({ open }: { open: boolean }) => (
+      <Drawer onClose={jest.fn()} open={open}>
+        <button type="button">first</button>
+        <button type="button">second</button>
+      </Drawer>
+    );
+
+    it('should expose dialog semantics on the panel while open', () => {
+      render(<DrawerHarness open />);
+
+      const drawerElement = getDrawerElement()!;
+
+      expect(drawerElement.getAttribute('role')).toBe('dialog');
+      expect(drawerElement.getAttribute('aria-modal')).toBe('true');
+      expect(drawerElement.getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('should move focus into the drawer when it opens', async () => {
+      const { rerender } = render(<DrawerHarness open={false} />);
+      const outside = document.createElement('button');
+
+      outside.textContent = 'outside';
+      document.body.appendChild(outside);
+      outside.focus();
+
+      rerender(<DrawerHarness open />);
+
+      await waitFor(() => {
+        expect(document.activeElement?.textContent).toBe('first');
+      });
+
+      outside.remove();
+    });
+
+    it('should focus the header close control first when the header is displayed', async () => {
+      render(
+        <Drawer headerTitle="Title" isHeaderDisplay onClose={jest.fn()} open>
+          <button type="button">first</button>
+        </Drawer>,
+      );
+
+      const closeButton = getDrawerElement()!
+        .querySelector(`.${classes.header}`)!
+        .querySelector('button');
+
+      await waitFor(() => {
+        expect(document.activeElement).toBe(closeButton);
+      });
+    });
+
+    it('should fall back to the panel itself when nothing inside is focusable', async () => {
+      render(
+        <Drawer onClose={jest.fn()} open>
+          <p>Plain text</p>
+        </Drawer>,
+      );
+
+      await waitFor(() => {
+        expect(document.activeElement).toBe(getDrawerElement());
+      });
+    });
+
+    it('should restore focus to the previously focused element on close', async () => {
+      const { rerender } = render(<DrawerHarness open={false} />);
+      const trigger = document.createElement('button');
+
+      trigger.textContent = 'trigger';
+      document.body.appendChild(trigger);
+      trigger.focus();
+
+      rerender(<DrawerHarness open />);
+
+      await waitFor(() => {
+        expect(document.activeElement?.textContent).toBe('first');
+      });
+
+      rerender(<DrawerHarness open={false} />);
+
+      expect(document.activeElement).toBe(trigger);
+
+      trigger.remove();
+    });
+
+    it('should cycle Tab from the last focusable back to the first', () => {
+      render(<DrawerHarness open />);
+
+      const buttons = Array.from(
+        getDrawerElement()!.querySelectorAll<HTMLButtonElement>('button'),
+      );
+
+      buttons[buttons.length - 1].focus();
+      fireEvent.keyDown(document, { key: 'Tab' });
+
+      expect(document.activeElement).toBe(buttons[0]);
+    });
+
+    it('should cycle Shift+Tab from the first focusable back to the last', () => {
+      render(<DrawerHarness open />);
+
+      const buttons = Array.from(
+        getDrawerElement()!.querySelectorAll<HTMLButtonElement>('button'),
+      );
+
+      buttons[0].focus();
+      fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+
+      expect(document.activeElement).toBe(buttons[buttons.length - 1]);
+    });
+
+    it('should not let focus escape to an element outside the drawer', () => {
+      const outside = document.createElement('button');
+
+      outside.textContent = 'outside';
+      document.body.appendChild(outside);
+
+      render(<DrawerHarness open />);
+
+      outside.focus();
+      fireEvent.keyDown(document, { key: 'Tab' });
+
+      expect(document.activeElement?.textContent).toBe('first');
+
+      outside.remove();
     });
   });
 });
