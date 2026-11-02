@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
@@ -64,6 +65,32 @@ describe('<NavigationOption />', () => {
       const title = element.querySelector('.mzn-navigation-option__title');
 
       expect(title?.textContent).toBe('My Title');
+    });
+  });
+
+  describe('collapsed accessible name (#496)', () => {
+    it('should name collapsed icon-only anchors by their title', () => {
+      const { getByRole } = render(
+        <Navigation collapsed>
+          <NavigationOption href="#home" icon={PlusIcon} title="Home" />
+          <NavigationOption href="#members" icon={PlusIcon} title="Members" />
+        </Navigation>,
+      );
+
+      expect(getByRole('link', { name: 'Home' })).toBeTruthy();
+      expect(getByRole('link', { name: 'Members' })).toBeTruthy();
+    });
+
+    it('should not set aria-label when expanded', () => {
+      const { getByRole } = render(
+        <Navigation>
+          <NavigationOption href="#home" icon={PlusIcon} title="Home" />
+        </Navigation>,
+      );
+
+      expect(getByRole('link', { name: 'Home' })).not.toHaveAttribute(
+        'aria-label',
+      );
     });
   });
 

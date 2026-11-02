@@ -249,6 +249,11 @@ const NavigationOption = ({
              * assistive technology whether that group is currently open.
              */
             aria-expanded={hasSubOptions ? open : undefined}
+            /**
+             * When collapsed the title is unmounted (icon only) or truncated to
+             * two characters, so name the control by its full title.
+             */
+            aria-label={collapsed ? title : undefined}
             className={cx(classes.content, classes.level(currentLevel))}
             href={Component === 'div' ? undefined : href}
             onClick={() => {
