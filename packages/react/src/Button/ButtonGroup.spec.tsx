@@ -5,7 +5,7 @@ import {
 } from '@mezzanine-ui/core/button';
 import { cleanup, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import { ButtonGroup } from '.';
+import Button, { ButtonGroup } from '.';
 
 describe('<ButtonGroup />', () => {
   afterEach(cleanup);
@@ -333,6 +333,54 @@ describe('<ButtonGroup />', () => {
       ).toBeTruthy();
       expect(element.getAttribute('aria-orientation')).toBe('vertical');
       expect(element.getAttribute('role')).toBe('group');
+    });
+  });
+
+  describe('fragment children', () => {
+    it('should pass group props through fragments to inner buttons', () => {
+      const { getByText } = render(
+        <ButtonGroup disabled size="sub" variant="base-secondary">
+          <>
+            <Button>Button 1</Button>
+            <Button>Button 2</Button>
+          </>
+        </ButtonGroup>,
+      );
+
+      ['Button 1', 'Button 2'].forEach((text) => {
+        const button = getByText(text).closest('button');
+
+        expect(button?.disabled).toBe(true);
+        expect(button?.classList.contains('mzn-button--sub')).toBeTruthy();
+        expect(
+          button?.classList.contains('mzn-button--base-secondary'),
+        ).toBeTruthy();
+      });
+    });
+
+    it('should not warn about invalid fragment props on re-render', () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      const renderGroup = (label: string) => (
+        <ButtonGroup disabled>
+          <>
+            <Button>{label}</Button>
+            <Button>Button 2</Button>
+          </>
+        </ButtonGroup>
+      );
+
+      const { rerender } = render(renderGroup('Button 1'));
+
+      rerender(renderGroup('Button 1 updated'));
+
+      expect(consoleError).not.toHaveBeenCalledWith(
+        expect.stringContaining('React.Fragment'),
+        expect.anything(),
+      );
+
+      consoleError.mockRestore();
     });
   });
 });
