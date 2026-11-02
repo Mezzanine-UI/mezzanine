@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import {
   modalClasses as classes,
   modalStatusTypeIcons,
@@ -67,6 +67,19 @@ const iconColor = (type: ModalStatusType): IconColor => {
   }
 };
 
+// Name the parent dialog by this header's title (aria-labelledby).
+watch(
+  () => Boolean(props.title),
+  (hasTitle, _previous, onCleanup) => {
+    if (!hasTitle) return;
+
+    const unregister = modalControl.value.registerTitle?.();
+
+    if (unregister) onCleanup(unregister);
+  },
+  { immediate: true },
+);
+
 const statusTypeIcon = computed(
   (): IconDefinition =>
     modalStatusTypeIcons[modalControl.value.modalStatusType],
@@ -112,6 +125,7 @@ const titleClass = classes.modalHeaderTitle;
     </div>
     <div :class="titleAndSupportingTextContainerClass">
       <MznTypography
+        :id="modalControl.titleId"
         :class="titleClass"
         color="text-neutral-solid"
         :title="title"

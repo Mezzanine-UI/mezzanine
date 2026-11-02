@@ -7,6 +7,13 @@ export interface ModalControl {
   loading: boolean;
   /** The status the header draws its icon and colour from. */
   modalStatusType: ModalStatusType;
+  /**
+   * Called by a titled header so the dialog can point `aria-labelledby` at
+   * `titleId`. Returns the unregister callback.
+   */
+  registerTitle?: () => () => void;
+  /** Id assigned to the header title; names the dialog. */
+  titleId?: string;
 }
 
 /**
