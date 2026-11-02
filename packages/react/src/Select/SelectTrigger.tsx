@@ -5,6 +5,7 @@ import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { type RefAttributes } from 'react';
 import TextField, { TextFieldInteractiveStateProps } from '../TextField';
 import { cx } from '../utils/cx';
+import { splitAriaProps } from '../utils/pick-aria-props';
 import {
   SelectTriggerComponentProps,
   SelectTriggerMultipleProps,
@@ -57,6 +58,11 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     }
     return restTextFieldProps;
   })();
+
+  // The native <input> is the combobox: aria-* / role (from the caller or
+  // cloned in by Dropdown, e.g. aria-expanded / aria-controls) belong on it,
+  // while the TextField wrapper stays presentational.
+  const [ariaProps, textFieldProps] = splitAriaProps(sanitizedTextFieldProps);
 
   /** Render value to string for single selection trigger input */
   const renderValue = () => {
@@ -111,9 +117,9 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   return (
     <TextField
       ref={innerRef}
-      role="presentation"
       {...interactiveProps}
-      {...sanitizedTextFieldProps}
+      {...textFieldProps}
+      role="presentation"
       onClick={onClick}
       active={active}
       className={cx(
@@ -135,6 +141,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       suffix={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
     >
       <input
+        {...ariaProps}
         {...inputProps}
         ref={inputRef}
         aria-autocomplete="list"

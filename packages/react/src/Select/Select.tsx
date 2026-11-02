@@ -31,6 +31,7 @@ import {
 } from '../Form/useSelectValueControl';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
+import { pickAriaProps } from '../utils/pick-aria-props';
 import { SelectControlContext } from './SelectControlContext';
 import SelectTrigger from './SelectTrigger';
 import {
@@ -281,7 +282,11 @@ function Select({
     dropdownZIndex,
     flip = false,
     globalPortal = true,
+    ...rest
   } = props;
+
+  // Select-level aria-* (e.g. aria-label) name the combobox input.
+  const ariaProps = pickAriaProps(rest);
 
   const dropdownStatus: DropdownStatusType | undefined = loading
     ? 'loading'
@@ -551,6 +556,7 @@ function Select({
   );
 
   const resolvedInputProps: SelectTriggerInputProps = {
+    ...ariaProps,
     ...inputProps,
     role: 'combobox',
   };
