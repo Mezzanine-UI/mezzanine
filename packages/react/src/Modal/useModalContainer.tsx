@@ -16,6 +16,7 @@ export interface ModalContainerProps
     | 'container'
     | 'disableCloseOnBackdropClick'
     | 'disablePortal'
+    | 'disableScrollLock'
     | 'onBackdropClick'
     | 'onClose'
     | 'open'
@@ -34,11 +35,13 @@ const defaultOptions: Pick<
   | 'disableCloseOnBackdropClick'
   | 'disableCloseOnEscapeKeyDown'
   | 'disablePortal'
+  | 'disableScrollLock'
   | 'open'
 > = {
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
   disablePortal: false,
+  disableScrollLock: false,
   open: false,
 };
 
@@ -53,6 +56,7 @@ function ModalContainer({
     disableCloseOnBackdropClick = defaultOptions.disableCloseOnBackdropClick,
     disableCloseOnEscapeKeyDown = defaultOptions.disableCloseOnEscapeKeyDown,
     disablePortal = defaultOptions.disablePortal,
+    disableScrollLock = defaultOptions.disableScrollLock,
     onBackdropClick,
     onClose,
     open = defaultOptions.open,
@@ -103,6 +107,7 @@ function ModalContainer({
       container={container}
       disableCloseOnBackdropClick={disableCloseOnBackdropClick}
       disablePortal={disablePortal}
+      disableScrollLock={disableScrollLock}
       onBackdropClick={onBackdropClick}
       onClose={onClose}
       open={open}
