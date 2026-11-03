@@ -1,4 +1,5 @@
 import { use } from 'react';
+import { hydrateRoot } from 'react-dom/client';
 import { ModalSize, modalClasses as classes } from '@mezzanine-ui/core/modal';
 import {
   act,
@@ -1021,6 +1022,41 @@ describe('<Modal />', () => {
       expect(getModalElement()!.getAttribute('aria-labelledby')).toBe(
         'external',
       );
+    });
+  });
+
+  describe('hydration', () => {
+    it('should hydrate the server markup of an open modal without a mismatch', async () => {
+      const App = () => (
+        <div>
+          <p>Hydration probe</p>
+          <Modal
+            modalType="standard"
+            onClose={() => {}}
+            open
+            showModalHeader
+            title="Hydrating dialog"
+          >
+            <p>Rendered on the first client pass</p>
+          </Modal>
+        </div>
+      );
+      const host = document.createElement('div');
+      const onRecoverableError = jest.fn();
+
+      // What renderToString produces in Node (#500): portaled content is
+      // client-only, so the modal contributes no server markup.
+      host.innerHTML = '<div><p>Hydration probe</p></div>';
+      document.body.appendChild(host);
+
+      await act(async () => {
+        hydrateRoot(host, <App />, { onRecoverableError });
+      });
+
+      expect(onRecoverableError).not.toHaveBeenCalled();
+      expect(document.body.querySelector('[role="dialog"]')).not.toBeNull();
+
+      host.remove();
     });
   });
 });

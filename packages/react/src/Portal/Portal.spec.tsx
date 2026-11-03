@@ -1,6 +1,12 @@
-import { useRef } from 'react';
+import { act, ReactElement, useRef } from 'react';
+import { hydrateRoot } from 'react-dom/client';
 import { cleanup, render, waitFor } from '../../__test-utils__';
 import Portal from '.';
+import {
+  SSR_MARKUP,
+  SSR_MARKUP_DISABLE_PORTAL,
+  SsrApp,
+} from './__fixtures__/ssrApp';
 import { initializePortals, resetPortals } from './portalRegistry';
 
 // Mock ResizeObserver
@@ -324,6 +330,51 @@ describe('<Portal />', () => {
       );
 
       expect(targetInAlert).toBeNull();
+    });
+  });
+
+  describe('hydration', () => {
+    async function hydrate(markup: string, app: ReactElement) {
+      const host = document.createElement('div');
+      const onRecoverableError = jest.fn();
+
+      host.innerHTML = markup;
+      document.body.appendChild(host);
+
+      await act(async () => {
+        hydrateRoot(host, app, { onRecoverableError });
+      });
+
+      return { host, onRecoverableError };
+    }
+
+    it('should hydrate server markup without a mismatch and portal after mount', async () => {
+      const { host, onRecoverableError } = await hydrate(
+        SSR_MARKUP,
+        <SsrApp />,
+      );
+
+      expect(onRecoverableError).not.toHaveBeenCalled();
+
+      const portalContainer = document.getElementById('mzn-portal-container');
+      const targetNode = portalContainer?.querySelector('#portal-test');
+
+      expectParentNode(targetNode, portalContainer);
+      expectTargetNode(targetNode);
+
+      host.remove();
+    });
+
+    it('should hydrate server markup without a mismatch when disablePortal=true', async () => {
+      const { host, onRecoverableError } = await hydrate(
+        SSR_MARKUP_DISABLE_PORTAL,
+        <SsrApp disablePortal />,
+      );
+
+      expect(onRecoverableError).not.toHaveBeenCalled();
+      expectTargetNode(host.querySelector('#portal-test'));
+
+      host.remove();
     });
   });
 
