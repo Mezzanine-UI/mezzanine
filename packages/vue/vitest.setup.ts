@@ -17,12 +17,15 @@ if (!('ResizeObserver' in globalThis)) {
   } as unknown as typeof ResizeObserver;
 }
 
-if (!Element.prototype.scrollTo) {
-  Element.prototype.scrollTo = function scrollTo(): void {};
-}
+// Server-rendering specs opt into `@vitest-environment node`, which has no DOM.
+if (typeof Element !== 'undefined') {
+  if (!Element.prototype.scrollTo) {
+    Element.prototype.scrollTo = function scrollTo(): void {};
+  }
 
-if (!Element.prototype.scrollIntoView) {
-  Element.prototype.scrollIntoView = function scrollIntoView(): void {};
+  if (!Element.prototype.scrollIntoView) {
+    Element.prototype.scrollIntoView = function scrollIntoView(): void {};
+  }
 }
 
 /**

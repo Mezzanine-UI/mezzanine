@@ -1,6 +1,12 @@
 'use client';
 
-import { ReactNode, RefObject, useEffect, useState } from 'react';
+import {
+  ReactNode,
+  RefObject,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { getContainer, type PortalLayer } from './portalRegistry';
 
@@ -34,6 +40,47 @@ export interface PortalProps {
   layer?: PortalLayer;
 }
 
+const subscribeNoop = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+/**
+ * `false` during server rendering and the hydration pass, `true` afterwards
+ * and on every plain client render. Unlike `typeof window`, this lets the
+ * first hydration render match the server markup exactly.
+ */
+function useIsClient(): boolean {
+  return useSyncExternalStore(
+    subscribeNoop,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
+}
+
+/**
+ * Renders its children into a DOM node outside the parent hierarchy.
+ *
+ * Without `container` the children go to the Mezzanine portal layer chosen by
+ * `layer` (created on first use); `container` overrides the destination and
+ * `disablePortal` keeps the children in place.
+ *
+ * Portaled content is client-only: the server and the hydration pass render
+ * nothing, then the children are portaled once mounted, so hydration never
+ * mismatches. With `disablePortal` the children are rendered in place on the
+ * server as well.
+ *
+ * @example
+ * ```tsx
+ * import { Portal } from '@mezzanine-ui/react';
+ *
+ * <Portal layer="alert">
+ *   <div>Rendered into the alert layer</div>
+ * </Portal>
+ * ```
+ *
+ * @see Backdrop
+ * @see Popper
+ */
 export default function Portal({
   children,
   container: containerProp,
@@ -70,12 +117,13 @@ export default function Portal({
     setContainer(targetContainer);
   }, [containerProp, disablePortal, layer, refCurrent]);
 
-  /** This element is fully client side, so `return null` on server side */
-  if (typeof window === 'undefined') return null;
+  const isClient = useIsClient();
 
-  if (disablePortal || !container) {
-    return <>{children}</>;
-  }
+  if (disablePortal) return <>{children}</>;
+
+  if (!isClient) return null;
+
+  if (!container) return <>{children}</>;
 
   return createPortal(children, container);
 }

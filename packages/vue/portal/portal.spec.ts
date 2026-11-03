@@ -1,7 +1,12 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, h, ref } from 'vue';
+import { createSSRApp, defineComponent, h, ref } from 'vue';
 import MznPortal from './portal.vue';
 import { initializePortals, resetPortals } from './portal-registry';
+import {
+  SSR_MARKUP,
+  SSR_MARKUP_DISABLE_PORTAL,
+  SsrApp,
+} from './__fixtures__/ssr-app';
 
 const child = () => h('div', { id: 'portal-test' }, 'hello');
 
@@ -149,6 +154,65 @@ describe('MznPortal', () => {
 
       expect(wrapper.text()).toBe('hello');
       expect(target(alertContainer())).toBeNull();
+    });
+  });
+
+  describe('hydration', () => {
+    async function hydrate(markup: string, disablePortal = false) {
+      const host = document.createElement('div');
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      host.innerHTML = markup;
+      document.body.appendChild(host);
+
+      const app = createSSRApp({ render: () => h(SsrApp, { disablePortal }) });
+
+      app.mount(host);
+      await flushPromises();
+
+      const messages = [...warn.mock.calls, ...error.mock.calls].map((args) =>
+        String(args[0]),
+      );
+
+      warn.mockRestore();
+      error.mockRestore();
+
+      return {
+        cleanup: () => {
+          app.unmount();
+          host.remove();
+        },
+        host,
+        mismatches: messages.filter((message) => /mismatch/i.test(message)),
+      };
+    }
+
+    it('should still render in place on the first frame of a plain client mount', () => {
+      const wrapper = mount(MznPortal, { slots: { default: child } });
+
+      expect(wrapper.find('#portal-test').exists()).toBe(true);
+    });
+
+    it('should hydrate server markup without a mismatch and portal after mount', async () => {
+      const { cleanup, mismatches } = await hydrate(SSR_MARKUP);
+
+      expect(mismatches).toEqual([]);
+      expectPortaledInto(defaultContainer());
+
+      cleanup();
+    });
+
+    it('should hydrate server markup without a mismatch when disablePortal is set', async () => {
+      const { cleanup, host, mismatches } = await hydrate(
+        SSR_MARKUP_DISABLE_PORTAL,
+        true,
+      );
+
+      expect(mismatches).toEqual([]);
+      expect(target(host)).toBeInstanceOf(Node);
+
+      cleanup();
     });
   });
 
