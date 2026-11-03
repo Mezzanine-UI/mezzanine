@@ -3,7 +3,11 @@ import type { BackdropProps } from '../backdrop/backdrop.types';
 export interface ModalContainerProps
   extends Pick<
     BackdropProps,
-    'container' | 'disableCloseOnBackdropClick' | 'disablePortal' | 'open'
+    | 'container'
+    | 'disableCloseOnBackdropClick'
+    | 'disablePortal'
+    | 'disableScrollLock'
+    | 'open'
   > {
   /**
    * Controls whether to disable closing modal while escape key down.
@@ -22,11 +26,13 @@ export const modalContainerDefaultOptions: Required<
     | 'disableCloseOnBackdropClick'
     | 'disableCloseOnEscapeKeyDown'
     | 'disablePortal'
+    | 'disableScrollLock'
     | 'open'
   >
 > = {
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
   disablePortal: false,
+  disableScrollLock: false,
   open: false,
 };

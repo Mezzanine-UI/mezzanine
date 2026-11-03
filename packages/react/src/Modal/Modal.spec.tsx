@@ -544,6 +544,29 @@ describe('<Modal />', () => {
     });
   });
 
+  describe('prop: disableScrollLock', () => {
+    afterEach(() => {
+      document.body.style.overflow = '';
+    });
+
+    it('should lock body scroll by default', () => {
+      render(<Modal open modalType="standard" />);
+
+      expect(document.body.style.overflow).toBe('hidden');
+    });
+
+    it('should forward disableScrollLock to the backdrop instead of the dialog', () => {
+      render(<Modal disableScrollLock open modalType="standard" />);
+
+      expect(document.body.style.overflow).not.toBe('hidden');
+      expect(
+        document
+          .querySelector('[role="dialog"]')
+          ?.hasAttribute('disablescrolllock'),
+      ).toBe(false);
+    });
+  });
+
   describe('body container separator classes', () => {
     it('should not have separator classes initially for standard modal', () => {
       render(

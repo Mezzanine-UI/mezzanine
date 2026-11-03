@@ -43,6 +43,7 @@ const props = withDefaults(defineProps<ModalContainerProps>(), {
   disableCloseOnBackdropClick: defaultOptions.disableCloseOnBackdropClick,
   disableCloseOnEscapeKeyDown: defaultOptions.disableCloseOnEscapeKeyDown,
   disablePortal: defaultOptions.disablePortal,
+  disableScrollLock: defaultOptions.disableScrollLock,
   open: defaultOptions.open,
 });
 
@@ -119,6 +120,7 @@ const contentWrapperClass = classes.contentWrapper;
     :container="container"
     :disable-close-on-backdrop-click="disableCloseOnBackdropClick"
     :disable-portal="disablePortal"
+    :disable-scroll-lock="disableScrollLock"
     :open="open"
     role="presentation"
     @backdrop-click="emit('backdropClick', $event)"

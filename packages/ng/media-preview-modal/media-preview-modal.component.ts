@@ -87,6 +87,7 @@ export type MediaPreviewItem = string | TemplateRef<unknown>;
     '[attr.disableCloseOnBackdropClick]': 'null',
     '[attr.disableCloseOnEscapeKeyDown]': 'null',
     '[attr.disablePortal]': 'null',
+    '[attr.disableScrollLock]': 'null',
   },
   template: `
     <div
@@ -94,6 +95,7 @@ export type MediaPreviewItem = string | TemplateRef<unknown>;
       [open]="open()"
       [disableCloseOnBackdropClick]="disableCloseOnBackdropClick()"
       [disablePortal]="disablePortal()"
+      [disableScrollLock]="disableScrollLock()"
       (closed)="onBackdropClose()"
     >
       <div mznScale [in]="open()" class="mzn-modal__content-wrapper">
@@ -251,6 +253,13 @@ export class MznMediaPreviewModal {
 
   /** Whether to disable portal rendering. @default false */
   readonly disablePortal = input(false);
+
+  /**
+   * Whether to disable body scroll locking while open. Keep the lock for
+   * modal overlays: a scrollable background contradicts `aria-modal`.
+   * @default false
+   */
+  readonly disableScrollLock = input(false);
 
   // ─── Outputs ─────────────────────────────────────────────────
 

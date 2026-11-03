@@ -99,6 +99,7 @@ function MediaPreviewModal({
     disableCloseOnEscapeKeyDown = false,
     disableNext = false,
     disablePortal = false,
+    disableScrollLock = false,
     disablePrev = false,
     enableCircularNavigation = false,
     mediaItems,
@@ -310,6 +311,7 @@ function MediaPreviewModal({
       disableCloseOnBackdropClick={disableCloseOnBackdropClick}
       disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
       disablePortal={disablePortal}
+      disableScrollLock={disableScrollLock}
       onBackdropClick={onBackdropClick}
       onClose={onClose}
       open={open}

@@ -167,6 +167,29 @@ describe('<MediaPreviewModal />', () => {
     expect(modalElement.classList.contains(className)).toBeTruthy();
   });
 
+  describe('prop: disableScrollLock', () => {
+    it('should lock body scroll by default', () => {
+      render(
+        <MediaPreviewModal currentIndex={0} mediaItems={mockMediaItems} open />,
+      );
+
+      expect(document.body.style.overflow).toBe('hidden');
+    });
+
+    it('should keep body scrollable when disableScrollLock=true', () => {
+      render(
+        <MediaPreviewModal
+          currentIndex={0}
+          disableScrollLock
+          mediaItems={mockMediaItems}
+          open
+        />,
+      );
+
+      expect(document.body.style.overflow).not.toBe('hidden');
+    });
+  });
+
   describe('navigation buttons', () => {
     it('should render prev and next buttons when callbacks are provided', () => {
       const onPrev = jest.fn();

@@ -274,6 +274,7 @@ function Modal({ ref, ...props }: ModalProps & RefAttributes<HTMLDivElement>) {
     disableCloseOnBackdropClick = false,
     disableCloseOnEscapeKeyDown = false,
     disablePortal = false,
+    disableScrollLock = false,
     extendedSplitLeftSideContent,
     extendedSplitRightSideContent,
     extendedSplitSidebarPosition = 'right',
@@ -415,6 +416,7 @@ function Modal({ ref, ...props }: ModalProps & RefAttributes<HTMLDivElement>) {
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
         disablePortal={disablePortal}
+        disableScrollLock={disableScrollLock}
         onBackdropClick={onBackdropClick}
         onClose={onClose}
         open={open}

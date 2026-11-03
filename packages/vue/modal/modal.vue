@@ -76,6 +76,7 @@ const props = withDefaults(defineProps<ModalProps>(), {
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
   disablePortal: false,
+  disableScrollLock: false,
   extendedSplitLeftSideContent: undefined,
   extendedSplitRightSideContent: undefined,
   extendedSplitSidebarPosition: 'right',
@@ -290,6 +291,7 @@ const extendedSplitRightClass = classes.modalBodyContainerExtendedSplitRight;
     :disable-close-on-backdrop-click="disableCloseOnBackdropClick"
     :disable-close-on-escape-key-down="disableCloseOnEscapeKeyDown"
     :disable-portal="disablePortal"
+    :disable-scroll-lock="disableScrollLock"
     :open="open"
     @backdrop-click="emit('backdropClick', $event)"
     @close="emit('close')"
