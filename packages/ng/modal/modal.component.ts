@@ -66,6 +66,7 @@ let modalTitleSeq = 0;
     '[attr.disableCloseOnBackdropClick]': 'null',
     '[attr.disableCloseOnEscapeKeyDown]': 'null',
     '[attr.disablePortal]': 'null',
+    '[attr.disableScrollLock]': 'null',
     '[attr.fullScreen]': 'null',
     '[attr.loading]': 'null',
     '[attr.modalStatusType]': 'null',
@@ -117,6 +118,7 @@ let modalTitleSeq = 0;
       [class]="backdropClassName()"
       [disableCloseOnBackdropClick]="disableCloseOnBackdropClick()"
       [disablePortal]="disablePortal()"
+      [disableScrollLock]="disableScrollLock()"
       (closed)="onBackdropClose()"
       (backdropClick)="backdropClick.emit()"
     >
@@ -177,6 +179,13 @@ export class MznModal {
 
   /** 是否禁用 Portal。 */
   readonly disablePortal = input(false);
+
+  /**
+   * Whether to disable body scroll locking while open. Keep the lock for
+   * modal overlays: a scrollable background contradicts `aria-modal`.
+   * @default false
+   */
+  readonly disableScrollLock = input(false);
 
   /** 是否全螢幕。 */
   readonly fullScreen = input(false);

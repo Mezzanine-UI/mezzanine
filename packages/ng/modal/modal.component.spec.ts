@@ -89,6 +89,25 @@ class FocusModelHost {
 })
 class FieldsetFocusHost {}
 
+/** Open dialog whose scroll lock is toggled by a signal. */
+@Component({
+  standalone: true,
+  imports: [MznModal],
+  template: `
+    <div
+      mznModal
+      [disablePortal]="true"
+      [disableScrollLock]="disableScrollLock()"
+      [open]="true"
+    >
+      <p>Scroll lock</p>
+    </div>
+  `,
+})
+class ScrollLockHost {
+  readonly disableScrollLock = signal(false);
+}
+
 function createFixture<T>(component: new () => T): {
   fixture: ReturnType<typeof TestBed.createComponent<T>>;
   host: T;
@@ -240,6 +259,38 @@ describe('MznModal', () => {
       expect(document.querySelector('[role="dialog"]')).toBeNull();
     });
   });
+  describe('disableScrollLock', () => {
+    afterEach(() => {
+      document.body.style.overflow = '';
+    });
+
+    it('should lock body scroll by default', () => {
+      const fixture = TestBed.createComponent(ScrollLockHost);
+
+      fixture.detectChanges();
+
+      expect(document.body.style.overflow).toBe('hidden');
+
+      fixture.destroy();
+    });
+
+    it('should forward disableScrollLock to the backdrop', () => {
+      const fixture = TestBed.createComponent(ScrollLockHost);
+
+      fixture.componentInstance.disableScrollLock.set(true);
+      fixture.detectChanges();
+
+      expect(document.body.style.overflow).not.toBe('hidden');
+      expect(
+        fixture.nativeElement
+          .querySelector('[mznModal]')
+          .hasAttribute('disablescrolllock'),
+      ).toBe(false);
+
+      fixture.destroy();
+    });
+  });
+
   describe('focus model', () => {
     function wrapperOf(): HTMLElement {
       return document.querySelector<HTMLElement>(
