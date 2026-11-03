@@ -50,6 +50,7 @@ const props = withDefaults(defineProps<MediaPreviewModalProps>(), {
   disableCloseOnEscapeKeyDown: false,
   disableNext: false,
   disablePortal: false,
+  disableScrollLock: false,
   disablePrev: false,
   enableCircularNavigation: false,
   open: undefined,
@@ -268,6 +269,7 @@ const paginationIndicatorClass = classes.mediaPreviewPaginationIndicator;
     :disable-close-on-backdrop-click="disableCloseOnBackdropClick"
     :disable-close-on-escape-key-down="disableCloseOnEscapeKeyDown"
     :disable-portal="disablePortal"
+    :disable-scroll-lock="disableScrollLock"
     :open="open"
     @backdrop-click="emit('backdropClick', $event)"
     @close="emit('close')"

@@ -42,6 +42,14 @@ describe('<MznMediaPreviewModal />', () => {
     resetPortals();
   });
 
+  it('should keep body scrollable when disableScrollLock=true', async () => {
+    const wrapper = await render({ disableScrollLock: true });
+
+    expect(document.body.style.overflow).not.toBe('hidden');
+
+    wrapper.unmount();
+  });
+
   it('should render nothing while closed', async () => {
     await render({ open: false });
 

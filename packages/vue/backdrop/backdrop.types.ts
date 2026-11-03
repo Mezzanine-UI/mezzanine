@@ -10,6 +10,8 @@ export interface BackdropProps
   disableCloseOnBackdropClick?: boolean;
   /**
    * Controls whether to disable scroll locking when backdrop is open.
+   * Keep the lock for modal overlays: a scrollable background contradicts
+   * `aria-modal`, which tells assistive tech the content behind is inert.
    * @default false
    */
   disableScrollLock?: boolean;

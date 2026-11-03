@@ -456,6 +456,25 @@ describe('<MznModal />', () => {
     });
   });
 
+  describe('disableScrollLock', () => {
+    it('should lock body scroll by default', async () => {
+      const wrapper = await renderModal();
+
+      expect(document.body.style.overflow).toBe('hidden');
+
+      wrapper.unmount();
+    });
+
+    it('should forward disableScrollLock to the backdrop instead of the dialog', async () => {
+      const wrapper = await renderModal({ disableScrollLock: true });
+
+      expect(document.body.style.overflow).not.toBe('hidden');
+      expect(host()?.hasAttribute('disable-scroll-lock')).toBe(false);
+
+      wrapper.unmount();
+    });
+  });
+
   describe('accessible name (#497)', () => {
     const labelledTitle = (): string | null | undefined => {
       const titleId = host()?.getAttribute('aria-labelledby');
