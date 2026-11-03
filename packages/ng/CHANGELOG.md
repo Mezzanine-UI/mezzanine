@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.21](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.20...@mezzanine-ui/ng@1.0.0-rc.21) (2026-11-03)
+
+### Bug Fixes
+
+- **ng/autocomplete:** stop the selected name leaking into the search ([8f70194](https://github.com/Mezzanine-UI/mezzanine/commit/8f70194e78222b61df3053b1ee0b42a5bf434df0)), closes [#489](https://github.com/Mezzanine-UI/mezzanine/issues/489)
+- **ng/button-group:** emit aria-orientation only for supporting roles ([#502](https://github.com/Mezzanine-UI/mezzanine/issues/502)) ([dcef1aa](https://github.com/Mezzanine-UI/mezzanine/commit/dcef1aa5a56ed25ac8e867847f1468b78bd95b14))
+- **ng/clear-actions:** let caller aria-label override default Close ([#498](https://github.com/Mezzanine-UI/mezzanine/issues/498)) ([94d2d62](https://github.com/Mezzanine-UI/mezzanine/commit/94d2d623bb63f7fbabf5095cf178915effc21f24))
+- **ng/drawer:** implement the dialog focus model, matching React ([3940712](https://github.com/Mezzanine-UI/mezzanine/commit/3940712022997a0644756182158aa77d5f71543f)), closes [#490](https://github.com/Mezzanine-UI/mezzanine/issues/490)
+- **ng/dropdown:** enable shift by default ([#494](https://github.com/Mezzanine-UI/mezzanine/issues/494)) ([a55d6e0](https://github.com/Mezzanine-UI/mezzanine/commit/a55d6e0748c8aabac4269167f4e283448b07ce9c))
+- **ng/dropdown:** keep button semantics on native button triggers ([#503](https://github.com/Mezzanine-UI/mezzanine/issues/503)) ([84353aa](https://github.com/Mezzanine-UI/mezzanine/commit/84353aa5b2e218852523cf70ee359cae77eb89b4))
+- **ng/input:** forward aria-label to native input ([#504](https://github.com/Mezzanine-UI/mezzanine/issues/504)) ([428b3b7](https://github.com/Mezzanine-UI/mezzanine/commit/428b3b7350663e622f986d3de14192199cbf689e))
+- **ng/modal:** add disableScrollLock input to modal and media preview modal ([#499](https://github.com/Mezzanine-UI/mezzanine/issues/499)) ([4c4ba8f](https://github.com/Mezzanine-UI/mezzanine/commit/4c4ba8fb17469768ecb93a7f56d45eb9f8539d70))
+- **ng/modal:** label dialog by modal header title ([#497](https://github.com/Mezzanine-UI/mezzanine/issues/497)) ([035b9f2](https://github.com/Mezzanine-UI/mezzanine/commit/035b9f293de0b0a9ad14dbe05600527bae72bdc2))
+- **ng/notification-center:** localize sub-minute time stamp and keep it fresh ([#492](https://github.com/Mezzanine-UI/mezzanine/issues/492)) ([4174616](https://github.com/Mezzanine-UI/mezzanine/commit/4174616e48a87093dd45777ed0a89e7974a84566))
+- **ng/page-footer:** add dropdownTriggerAriaLabel for overflow trigger ([#495](https://github.com/Mezzanine-UI/mezzanine/issues/495)) ([0d3581d](https://github.com/Mezzanine-UI/mezzanine/commit/0d3581dabc8697ac9a92ee8bef9f59d77b76ddca))
+- **ng/select:** expose combobox ARIA and aria-label on the input ([#506](https://github.com/Mezzanine-UI/mezzanine/issues/506)) ([2277b8c](https://github.com/Mezzanine-UI/mezzanine/commit/2277b8c634a029f5da1668749681f0178870cb83))
+- **ng/table:** render bulk action separators only after a preceding group ([#493](https://github.com/Mezzanine-UI/mezzanine/issues/493)) ([a4d78f1](https://github.com/Mezzanine-UI/mezzanine/commit/a4d78f17ead095d6d0c7ea8873fc2bff244f63fc))
+- **ng/upload:** bind cancel label through clear-actions aria-label input ([#498](https://github.com/Mezzanine-UI/mezzanine/issues/498)) ([32c4a3d](https://github.com/Mezzanine-UI/mezzanine/commit/32c4a3d3c7cbebf51df40b78ed0bad23eee392d8))
+
 # [1.0.0-rc.20](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.19...@mezzanine-ui/ng@1.0.0-rc.20) (2026-10-29)
 
 ### Bug Fixes

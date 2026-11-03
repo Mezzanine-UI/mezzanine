@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.4...@mezzanine-ui/core@1.2.5) (2026-11-03)
+
+### Bug Fixes
+
+- **core/button:** add aria-orientation role helper for button group ([#502](https://github.com/Mezzanine-UI/mezzanine/issues/502)) ([97bdf68](https://github.com/Mezzanine-UI/mezzanine/commit/97bdf6847a27dde4d183f08e048af3cf2700f9c6))
+- **core/table:** make bulk mainActions optional ([#493](https://github.com/Mezzanine-UI/mezzanine/issues/493)) ([85769fb](https://github.com/Mezzanine-UI/mezzanine/commit/85769fbb93e4d06aa2027cac0f02d20e6b5c3384))
+
 ## [1.2.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.3...@mezzanine-ui/core@1.2.4) (2026-10-21)
 
 ### Bug Fixes

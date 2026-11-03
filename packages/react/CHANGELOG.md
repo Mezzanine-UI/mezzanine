@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.4...@mezzanine-ui/react@1.8.0) (2026-11-03)
+
+### Bug Fixes
+
+- **react/auto-complete:** allow re-search right after a single select ([1d8d558](https://github.com/Mezzanine-UI/mezzanine/commit/1d8d5586bf1c4344df722ecd0a48edba4397a924)), closes [#489](https://github.com/Mezzanine-UI/mezzanine/issues/489)
+- **react/button-group:** emit aria-orientation only for supporting roles ([#502](https://github.com/Mezzanine-UI/mezzanine/issues/502)) ([bb20266](https://github.com/Mezzanine-UI/mezzanine/commit/bb20266db690b405ade17dbffa9685357e8c3af4))
+- **react/button:** unwrap fragments in ButtonGroup children ([4e6dfea](https://github.com/Mezzanine-UI/mezzanine/commit/4e6dfea40a332e565392118bd997d1dde7b4600e))
+- **react/clear-actions:** let caller aria-label override default Close ([#498](https://github.com/Mezzanine-UI/mezzanine/issues/498)) ([d8d5576](https://github.com/Mezzanine-UI/mezzanine/commit/d8d55767c93007cdc5657b8d90a936f921de7728))
+- **react/drawer:** implement the dialog focus model ([5d5e09d](https://github.com/Mezzanine-UI/mezzanine/commit/5d5e09dff1793790810d132346ae4ff19160b2d7)), closes [#490](https://github.com/Mezzanine-UI/mezzanine/issues/490) [#490](https://github.com/Mezzanine-UI/mezzanine/issues/490)
+- **react/dropdown:** enable shift middleware by default ([#494](https://github.com/Mezzanine-UI/mezzanine/issues/494)) ([fa5a369](https://github.com/Mezzanine-UI/mezzanine/commit/fa5a3695bdc7aad134b574c0288d7ddefdf7ee42))
+- **react/dropdown:** keep button semantics on native button triggers ([#503](https://github.com/Mezzanine-UI/mezzanine/issues/503)) ([8b9a403](https://github.com/Mezzanine-UI/mezzanine/commit/8b9a40341eaefbffc111b47ef9f986b10fdd5600))
+- **react/empty:** pass action buttons as keyed array ([35a1263](https://github.com/Mezzanine-UI/mezzanine/commit/35a1263f01bd069f1071455424aaed0561928bb2))
+- **react/input:** forward aria props to native input ([#504](https://github.com/Mezzanine-UI/mezzanine/issues/504)) ([21a4748](https://github.com/Mezzanine-UI/mezzanine/commit/21a4748b5001acdb95924f045dc3b84b1c56618e))
+- **react/modal:** forward disableScrollLock to the backdrop ([#499](https://github.com/Mezzanine-UI/mezzanine/issues/499)) ([9a4d035](https://github.com/Mezzanine-UI/mezzanine/commit/9a4d035104f7df27aa774764f03e6bb26048e499))
+- **react/modal:** label dialog by ModalHeader title ([#497](https://github.com/Mezzanine-UI/mezzanine/issues/497)) ([75b282a](https://github.com/Mezzanine-UI/mezzanine/commit/75b282a810036762cfe4e3d43a3a65dad943ebcb))
+- **react/navigation:** name collapsed navigation options by title ([#496](https://github.com/Mezzanine-UI/mezzanine/issues/496)) ([09fe4b8](https://github.com/Mezzanine-UI/mezzanine/commit/09fe4b8814c8ac314edfdcf541fb615f29007377))
+- **react/navigation:** name image-only user menu trigger ([#505](https://github.com/Mezzanine-UI/mezzanine/issues/505)) ([59f9a54](https://github.com/Mezzanine-UI/mezzanine/commit/59f9a546b158d3abe27e529baf7ad785fe5fde2d))
+- **react/notification-center:** localize sub-minute time stamp and keep it fresh ([#492](https://github.com/Mezzanine-UI/mezzanine/issues/492)) ([c98a65e](https://github.com/Mezzanine-UI/mezzanine/commit/c98a65e833449bb90f36282974a20a3626a4094f))
+- **react/page-footer:** add dropdownTriggerAriaLabel for overflow trigger ([#495](https://github.com/Mezzanine-UI/mezzanine/issues/495)) ([9d660c2](https://github.com/Mezzanine-UI/mezzanine/commit/9d660c2361591d5048bb929fa21d01f197b2d864))
+- **react/portal:** match server markup on the hydration pass ([#500](https://github.com/Mezzanine-UI/mezzanine/issues/500)) ([117ef75](https://github.com/Mezzanine-UI/mezzanine/commit/117ef75e88572f17e87ddd2f7e2d35a1bfbbeb50)), closes [#418](https://github.com/Mezzanine-UI/mezzanine/issues/418)
+- **react/result-state:** pass action buttons as keyed array ([#491](https://github.com/Mezzanine-UI/mezzanine/issues/491)) ([60c0150](https://github.com/Mezzanine-UI/mezzanine/commit/60c015077635b5d270e219c6c36183698db4ed01))
+- **react/section:** forward native and aria props to root ([#501](https://github.com/Mezzanine-UI/mezzanine/issues/501)) ([6c99b0f](https://github.com/Mezzanine-UI/mezzanine/commit/6c99b0fe065a7a754afa9bdcbf736a30da26a0da))
+- **react/select:** expose combobox ARIA and aria-label on the input ([#506](https://github.com/Mezzanine-UI/mezzanine/issues/506)) ([f6fb42d](https://github.com/Mezzanine-UI/mezzanine/commit/f6fb42dbcf319e6dda3b932457d2e0ae9b0f7b67))
+- **react/table:** render bulk action separators only after a preceding group ([#493](https://github.com/Mezzanine-UI/mezzanine/issues/493)) ([092cccb](https://github.com/Mezzanine-UI/mezzanine/commit/092cccb2ecd89570ef9236941a425e578ceb3841))
+- **react/text-field:** handle input via React onInput to stop dropped keystrokes ([1eb4133](https://github.com/Mezzanine-UI/mezzanine/commit/1eb4133377e10bf55ed276c62e950545cc9f136b)), closes [#485](https://github.com/Mezzanine-UI/mezzanine/issues/485)
+
+### chore
+
+- **react:** require React 19 as peer dependency ([b4e5292](https://github.com/Mezzanine-UI/mezzanine/commit/b4e529254028289c7bb4ab6a315af73687b85176))
+
+### Features
+
+- **react/utils:** add splitAriaProps / pickAriaProps helpers ([9469de1](https://github.com/Mezzanine-UI/mezzanine/commit/9469de18e29b6537627debf9b470dd7481cc6ac9))
+
+### Notes
+
+- **react:** The `react` / `react-dom` peer range is now `>=19`. Navigation already relied on React 19's `use()`, so React 18 was never fully supported; this release only makes the peer range accurate.
+
 ## [1.7.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.3...@mezzanine-ui/react@1.7.4) (2026-10-29)
 
 ### Bug Fixes

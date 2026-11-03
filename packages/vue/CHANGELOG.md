@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.8...@mezzanine-ui/vue@1.0.0-rc.9) (2026-11-03)
+
+### Bug Fixes
+
+- **vue/auto-complete:** allow re-search right after a single select ([4928163](https://github.com/Mezzanine-UI/mezzanine/commit/49281631b8e2476d63e40a195045adcdb65ac851)), closes [#489](https://github.com/Mezzanine-UI/mezzanine/issues/489)
+- **vue/button-group:** emit aria-orientation only for supporting roles ([#502](https://github.com/Mezzanine-UI/mezzanine/issues/502)) ([69878a6](https://github.com/Mezzanine-UI/mezzanine/commit/69878a60e7132f6ac9e5e858b993a46fc75122a8))
+- **vue/clear-actions:** let caller aria-label override default Close ([#498](https://github.com/Mezzanine-UI/mezzanine/issues/498)) ([8acb300](https://github.com/Mezzanine-UI/mezzanine/commit/8acb3006a7a9af88c5ab82684675e1f59234c282))
+- **vue/drawer:** implement the dialog focus model, matching React ([c1cca8f](https://github.com/Mezzanine-UI/mezzanine/commit/c1cca8f2a416d15e0f0f9436c3920d470a4a63a0)), closes [#490](https://github.com/Mezzanine-UI/mezzanine/issues/490)
+- **vue/dropdown:** enable shift by default ([#494](https://github.com/Mezzanine-UI/mezzanine/issues/494)) ([46d9aeb](https://github.com/Mezzanine-UI/mezzanine/commit/46d9aeb5322f5476e0950b5928f9bdaf093913ce))
+- **vue/dropdown:** keep button semantics on native button triggers ([#503](https://github.com/Mezzanine-UI/mezzanine/issues/503)) ([67f87b0](https://github.com/Mezzanine-UI/mezzanine/commit/67f87b0c03d305f16cb2b2583e57f8aaabb6eeb8))
+- **vue/input:** forward aria attrs to native input ([#504](https://github.com/Mezzanine-UI/mezzanine/issues/504)) ([16ff523](https://github.com/Mezzanine-UI/mezzanine/commit/16ff52375862b8492febd5577232a0af6226835e))
+- **vue/internal:** remove stray 'use client' directive ([00477c2](https://github.com/Mezzanine-UI/mezzanine/commit/00477c222178638f66e4a0101f5c0a5ae02e4856))
+- **vue/modal:** forward disableScrollLock through the modal container ([#499](https://github.com/Mezzanine-UI/mezzanine/issues/499)) ([e1f066f](https://github.com/Mezzanine-UI/mezzanine/commit/e1f066f8aeb16fcc5e50ac3f53cf481ae4772d5b))
+- **vue/modal:** label dialog by modal header title ([#497](https://github.com/Mezzanine-UI/mezzanine/issues/497)) ([beded85](https://github.com/Mezzanine-UI/mezzanine/commit/beded853450843f5f36fecf3348099d08103ac7c))
+- **vue/navigation:** name collapsed navigation options by title ([#496](https://github.com/Mezzanine-UI/mezzanine/issues/496)) ([b2b5701](https://github.com/Mezzanine-UI/mezzanine/commit/b2b570149831d87cb0d63440e2e36b49a5d41355))
+- **vue/navigation:** name image-only user menu trigger ([#505](https://github.com/Mezzanine-UI/mezzanine/issues/505)) ([47ec3cf](https://github.com/Mezzanine-UI/mezzanine/commit/47ec3cf345c6b9ac3409d7d2cd0ea136fc1cc311))
+- **vue/notification-center:** localize sub-minute time stamp and keep it fresh ([#492](https://github.com/Mezzanine-UI/mezzanine/issues/492)) ([fad0c19](https://github.com/Mezzanine-UI/mezzanine/commit/fad0c192f43735020d628e16ca7bebf5c41b70ca))
+- **vue/page-footer:** add dropdownTriggerAriaLabel for overflow trigger ([#495](https://github.com/Mezzanine-UI/mezzanine/issues/495)) ([9191487](https://github.com/Mezzanine-UI/mezzanine/commit/919148798b0dcc0dea5272741cd5d4706317ec09))
+- **vue/portal:** match server markup on the hydration pass ([#500](https://github.com/Mezzanine-UI/mezzanine/issues/500)) ([26181e4](https://github.com/Mezzanine-UI/mezzanine/commit/26181e4c9cb26d046c04ca11c6c40d617cb9cc6a))
+- **vue/select:** expose combobox ARIA and aria-label on the input ([#506](https://github.com/Mezzanine-UI/mezzanine/issues/506)) ([c15108c](https://github.com/Mezzanine-UI/mezzanine/commit/c15108c9efcfe6f09b04ff14344de79b2df0c72b))
+- **vue/table:** render bulk action separators only after a preceding group ([#493](https://github.com/Mezzanine-UI/mezzanine/issues/493)) ([f41553c](https://github.com/Mezzanine-UI/mezzanine/commit/f41553cdbf7e78ca17fa6d42ca10dcb524b26ccb))
+- **vue:** drop angle-bracket tags from script comments ([1fcfc11](https://github.com/Mezzanine-UI/mezzanine/commit/1fcfc11fcea41c0a0b750701481375c639c4fa49))
+
+### Features
+
+- **vue/internal:** add splitAriaAttrs helper ([7726c66](https://github.com/Mezzanine-UI/mezzanine/commit/7726c6640725452ebd36c99cb3f520943e0c4351))
+
 # [1.0.0-rc.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.7...@mezzanine-ui/vue@1.0.0-rc.8) (2026-10-29)
 
 ### Bug Fixes
