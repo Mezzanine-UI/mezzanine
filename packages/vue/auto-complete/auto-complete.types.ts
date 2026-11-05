@@ -170,6 +170,13 @@ export interface AutoCompleteProps
    */
   placeholder?: string;
   /**
+   * Whether the field is read-only.
+   * The value stays visible and focusable, but the dropdown never opens and
+   * typing, selecting, clearing, tag removal and creation are all blocked.
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Whether the selection is required.
    * @default false
    */

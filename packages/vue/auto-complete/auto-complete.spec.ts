@@ -370,6 +370,91 @@ describe('<MznAutoComplete />', () => {
     });
   });
 
+  describe('readOnly (#517)', () => {
+    const modeProps = {
+      multiple: { mode: 'multiple', value: [options[0]] },
+      single: { mode: 'single', value: options[0] },
+    } as const;
+
+    it.each(['single', 'multiple'] as const)(
+      'should mark the native input readonly in %s mode',
+      (mode) => {
+        const wrapper = mountAutoComplete({
+          ...modeProps[mode],
+          readOnly: true,
+        });
+
+        expect(wrapper.get('input').attributes('readonly')).toBeDefined();
+      },
+    );
+
+    it.each(['single', 'multiple'] as const)(
+      'should not open, search or change on focus, typing and keys in %s mode',
+      async (mode) => {
+        const wrapper = mountAutoComplete({
+          ...modeProps[mode],
+          readOnly: true,
+        });
+        const input = wrapper.get('input');
+
+        await input.trigger('focus');
+        await input.trigger('click');
+        await type(wrapper, 'an');
+        await input.trigger('keydown', { key: 'ArrowDown' });
+        await input.trigger('keydown', { key: 'Enter' });
+        await input.trigger('keydown', { key: 'Backspace' });
+        await nextTick();
+
+        expect(listbox()).toBeNull();
+        expect(wrapper.emitted('visibilityChange') ?? []).not.toContainEqual([
+          true,
+        ]);
+        expect(wrapper.emitted('change')).toBeUndefined();
+        expect(wrapper.emitted('searchTextChange')).toBeUndefined();
+      },
+    );
+
+    it('should keep showing the value after focus and blur in single mode', async () => {
+      const wrapper = mountAutoComplete({ readOnly: true, value: options[0] });
+      const input = wrapper.get('input');
+
+      await input.trigger('focus');
+      await nextTick();
+      expect((input.element as HTMLInputElement).value).toBe('Apple');
+
+      await input.trigger('blur');
+      await nextTick();
+      expect((input.element as HTMLInputElement).value).toBe('Apple');
+      expect(wrapper.emitted('change')).toBeUndefined();
+    });
+
+    it('should not open when inputPosition is inside', async () => {
+      const wrapper = mountAutoComplete({
+        inputPosition: 'inside',
+        readOnly: true,
+      });
+
+      await wrapper.get('input').trigger('focus');
+      await wrapper.get('input').trigger('click');
+      await nextTick();
+
+      expect(listbox()).toBeNull();
+    });
+
+    it('should render static tags in multiple mode', () => {
+      const wrapper = mountAutoComplete({
+        mode: 'multiple',
+        readOnly: true,
+        value: [options[0], options[1]],
+      });
+
+      expect(
+        wrapper.findAll(`.${tagClasses.type('dismissable')}`),
+      ).toHaveLength(0);
+      expect(wrapper.findAll(`.${tagClasses.type('static')}`)).toHaveLength(2);
+    });
+  });
+
   describe('escape', () => {
     it('should close the list and leave the search alone in single mode', async () => {
       const wrapper = mountAutoComplete();

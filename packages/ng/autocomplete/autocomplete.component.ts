@@ -277,6 +277,7 @@ export function getFullParsedList(
                 [placeholder]="hasValue() ? '' : placeholder()"
                 [disabled]="disabled()"
                 [name]="name() ?? null"
+                [readOnly]="readOnly()"
                 [required]="required()"
                 [value]="searchText()"
                 (input)="onSearchInput($event)"
@@ -896,7 +897,7 @@ export class MznAutocomplete
 
   /** clearable icon 是否顯示。 */
   protected readonly shouldShowClearable = computed((): boolean => {
-    if (!this.clearable()) return false;
+    if (!this.clearable() || this.readOnly()) return false;
 
     if (this.mode() === 'multiple') {
       return this.hasValue() || !!this.searchText().trim();
@@ -1217,7 +1218,7 @@ export class MznAutocomplete
   }
 
   protected onInputKeydown(event: KeyboardEvent): void {
-    if (isImeComposing(event)) return;
+    if (isImeComposing(event) || this.readOnly()) return;
 
     if (
       event.key.length === 1 &&
@@ -1259,6 +1260,8 @@ export class MznAutocomplete
   }
 
   protected onSearchInput(event: Event): void {
+    if (this.readOnly()) return;
+
     const val = (event.target as HTMLInputElement).value;
 
     if (this.mode() === 'single') this.isSearching.set(true);
@@ -1334,6 +1337,8 @@ export class MznAutocomplete
   }
 
   protected onTagClose(item: SelectTriggerTagValue): void {
+    if (this.readOnly()) return;
+
     const next = this.internalValue().filter((id) => id !== item.id);
 
     this.internalValue.set(next);
@@ -1346,6 +1351,8 @@ export class MznAutocomplete
   }
 
   protected onClear(): void {
+    if (this.readOnly()) return;
+
     // Mark all created items as unselected
     const currentValue = this.internalValue();
 
@@ -1383,7 +1390,7 @@ export class MznAutocomplete
 
   /** A9: 貼上事件。 */
   protected onPaste(event: ClipboardEvent): void {
-    if (!this.addable() || !this.onInsert()) return;
+    if (this.readOnly() || !this.addable() || !this.onInsert()) return;
 
     const pastedText = event.clipboardData?.getData('text') ?? '';
     const hasSeparator = this.createSeparators().some((sep) =>
@@ -1651,7 +1658,8 @@ export class MznAutocomplete
    * lands in the search text instead of being appended to the selected name.
    */
   private enterSearchMode(): void {
-    if (this.mode() !== 'single' || this.isSearching()) return;
+    if (this.readOnly() || this.mode() !== 'single' || this.isSearching())
+      return;
 
     this.isSearching.set(true);
     this.setNativeInputValue(this.searchText());
