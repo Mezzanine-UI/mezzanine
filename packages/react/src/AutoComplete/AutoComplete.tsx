@@ -208,6 +208,13 @@ export interface AutoCompleteBaseProps
    */
   placeholder?: string;
   /**
+   * Whether the field is read-only.
+   * The value stays visible and focusable, but the dropdown never opens and
+   * typing, selecting, clearing, tag removal and creation are all blocked.
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Whether the selection is required.
    * @default false
    */
@@ -468,6 +475,7 @@ function AutoComplete({
     overflowStrategy,
     placeholder = '',
     prefix,
+    readOnly = false,
     required = requiredFromFormControl || false,
     searchDebounceTime = 300,
     searchTextControlRef,
@@ -501,13 +509,16 @@ function AutoComplete({
     (newOpen: boolean | ((prev: boolean) => boolean)) => {
       const nextValue = typeof newOpen === 'function' ? newOpen(open) : newOpen;
 
+      // A read-only field never opens its dropdown (mirrors `Select`).
+      if (readOnly && nextValue) return;
+
       if (!isOpenControlled) {
         setUncontrolledOpen(nextValue);
       }
 
       onVisibilityChange?.(nextValue);
     },
-    [isOpenControlled, open, onVisibilityChange],
+    [isOpenControlled, open, onVisibilityChange, readOnly],
   );
   const {
     focused,
@@ -653,6 +664,8 @@ function AutoComplete({
   // Wrap onChange to track unselected created items
   const wrappedOnChange = useCallback(
     (chooseOption: SelectValue | null) => {
+      if (readOnly) return value;
+
       const result = onChange(chooseOption);
       if (chooseOption) {
         clearNewlyCreated([chooseOption.id]);
@@ -674,7 +687,15 @@ function AutoComplete({
 
       return result;
     },
-    [clearNewlyCreated, isMultiple, isSingle, markUnselected, onChange, value],
+    [
+      clearNewlyCreated,
+      isMultiple,
+      isSingle,
+      markUnselected,
+      onChange,
+      readOnly,
+      value,
+    ],
   );
 
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -816,17 +837,19 @@ function AutoComplete({
    * because the input kept DOM focus.
    */
   const enterSearchMode = useCallback(() => {
-    if (!isSingle || isSearching) return;
+    if (readOnly || !isSingle || isSearching) return;
 
     setIsSearching(true);
 
     if (!open) {
       toggleOpen(true);
     }
-  }, [isSearching, isSingle, open, toggleOpen]);
+  }, [isSearching, isSingle, open, readOnly, toggleOpen]);
 
   /** Trigger input props */
   const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (readOnly) return;
+
     clearPendingOptionsReset();
     enterSearchMode();
     const nextSearch = e.target.value;
@@ -853,6 +876,12 @@ function AutoComplete({
       e.stopPropagation();
     }
 
+    // Read-only: keep showing the committed value, never enter search mode.
+    if (readOnly) {
+      inputProps?.onFocus?.(e);
+      return;
+    }
+
     // Only open if not already open to avoid flickering
     // Ensure inside/uncontrolled can open from the native input focus.
     if (!open) {
@@ -865,6 +894,14 @@ function AutoComplete({
   };
 
   const onSearchInputBlur: FocusEventHandler<HTMLInputElement> = (e) => {
+    // Read-only never entered search mode, so there is nothing to reset. The
+    // reset path also clears the native input imperatively, which would wipe
+    // the displayed value because React sees no prop change to restore it.
+    if (readOnly) {
+      inputProps?.onBlur?.(e);
+      return;
+    }
+
     // In multiple mode while dropdown is open, defer clearing to visibility change.
     // This prevents clearing on intermediate blur triggered by dropdown interactions.
     const shouldDeferMultipleBlurReset = isMultiple && open;
@@ -910,6 +947,8 @@ function AutoComplete({
 
   const handleClear = useCallback(
     (e: ReactMouseEvent<Element>) => {
+      if (readOnly) return;
+
       if (isSingle && isSingleValue(value)) {
         markUnselected([value.id]);
       }
@@ -917,7 +956,7 @@ function AutoComplete({
       resetSearchInputs();
       setIsSearching(true);
     },
-    [isSingle, markUnselected, onClear, resetSearchInputs, value],
+    [isSingle, markUnselected, onClear, readOnly, resetSearchInputs, value],
   );
 
   const onClickSuffixActionIcon = () => {
@@ -1118,6 +1157,11 @@ function AutoComplete({
       (e) => {
         if (isImeComposing(e)) return;
 
+        if (readOnly) {
+          inputProps?.onKeyDown?.(e);
+          return;
+        }
+
         if (e.key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey) {
           enterSearchMode();
         }
@@ -1148,6 +1192,7 @@ function AutoComplete({
         inputProps,
         isMultiple,
         onFocus,
+        readOnly,
         resetSearchInputsAndOptions,
         setActiveIndex,
         setKeyboardActiveIndex,
@@ -1219,10 +1264,12 @@ function AutoComplete({
 
   const handlePasteWithFallback = useCallback(
     (e: ClipboardEvent<HTMLInputElement>) => {
-      handlePaste(e);
+      if (!readOnly) {
+        handlePaste(e);
+      }
       inputProps?.onPaste?.(e);
     },
-    [handlePaste, inputProps],
+    [handlePaste, inputProps, readOnly],
   );
 
   const resolvedInputProps: SelectTriggerInputProps = {
@@ -1239,7 +1286,7 @@ function AutoComplete({
     onFocus: onSearchInputFocus,
     onKeyDown: onSearchInputKeyDown,
     onPaste: handlePasteWithFallback,
-    readOnly: false,
+    readOnly,
     role: 'combobox',
   };
 
@@ -1265,7 +1312,7 @@ function AutoComplete({
           }
           activeIndex={activeIndex}
           keyboardActiveIndex={keyboardActiveIndex}
-          disabled={isInputDisabled}
+          disabled={isInputDisabled || readOnly}
           emptyText={emptyText}
           followText={searchText}
           inputPosition={inputPosition}
@@ -1281,7 +1328,7 @@ function AutoComplete({
           onItemHover={setActiveIndex}
           onSelect={handleDropdownSelect}
           onVisibilityChange={handleVisibilityChange}
-          open={open}
+          open={readOnly ? false : open}
           options={asyncData && isLoading ? [] : dropdownOptions}
           placement="bottom"
           sameWidth
@@ -1302,9 +1349,9 @@ function AutoComplete({
         >
           {inputPosition === 'inside' ? (
             <AutoCompleteInsideTrigger
-              active={open}
+              active={!readOnly && open}
               className={className}
-              clearable={shouldForceClearable}
+              clearable={!readOnly && shouldForceClearable}
               disabled={isInputDisabled}
               error={error}
               inputRef={composedInputRef}
@@ -1323,12 +1370,12 @@ function AutoComplete({
           ) : (
             <SelectTrigger
               ref={composedRef}
-              active={open}
+              active={!readOnly && open}
               className={className}
-              clearable
+              clearable={!readOnly}
               disabled={isInputDisabled}
               fullWidth
-              isForceClearable={shouldForceClearable}
+              isForceClearable={!readOnly && shouldForceClearable}
               inputRef={composedInputRef}
               mode={mode}
               onTagClose={wrappedOnChange}
@@ -1338,7 +1385,7 @@ function AutoComplete({
               }
               placeholder={getPlaceholder()}
               prefix={prefix}
-              readOnly={false}
+              readOnly={readOnly}
               required={required}
               type={error ? 'error' : 'default'}
               inputProps={{

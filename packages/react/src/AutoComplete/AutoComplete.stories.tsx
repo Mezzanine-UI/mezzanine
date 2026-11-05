@@ -478,6 +478,46 @@ export const Multiple: StoryObj<typeof AutoComplete> = {
   render: () => <MultipleComponent />,
 };
 
+const ReadOnlyComponent = () => {
+  const [singleSelection, setSingleSelection] = useState<SelectValue | null>(
+    originOptions[0],
+  );
+  const [multipleSelections, setMultipleSelections] = useState<SelectValue[]>(
+    originOptions.slice(0, 2),
+  );
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 240px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <AutoComplete
+        onChange={setSingleSelection}
+        options={originOptions}
+        placeholder="單選唯讀"
+        readOnly
+        value={singleSelection}
+      />
+      <AutoComplete
+        mode="multiple"
+        onChange={setMultipleSelections}
+        options={originOptions}
+        placeholder="多選唯讀"
+        readOnly
+        value={multipleSelections}
+      />
+    </div>
+  );
+};
+
+export const ReadOnly: StoryObj<typeof AutoComplete> = {
+  render: () => <ReadOnlyComponent />,
+};
+
 const caseSensitiveOptions: SelectValue[] = [
   { id: 'colorado', name: 'Colorado' },
   { id: 'connecticut', name: 'Connecticut' },

@@ -1313,6 +1313,190 @@ describe('<AutoComplete />', () => {
     });
   });
 
+  describe('prop: readOnly (#517)', () => {
+    const readOnlyModeProps = (mode: 'single' | 'multiple') =>
+      mode === 'multiple'
+        ? { mode: 'multiple' as const, value: [defaultOptions[0]] }
+        : { mode: 'single' as const, value: defaultOptions[0] };
+
+    it.each(['single', 'multiple'] as const)(
+      'should mark the native input readonly in mode="%s"',
+      (mode) => {
+        const inputRef = createRef<HTMLInputElement>();
+
+        render(
+          <AutoComplete
+            inputRef={inputRef}
+            options={defaultOptions}
+            readOnly
+            {...readOnlyModeProps(mode)}
+          />,
+        );
+
+        expect(inputRef.current).toHaveAttribute('readonly');
+      },
+    );
+
+    it.each(['single', 'multiple'] as const)(
+      'should not open the dropdown on click, typing or ArrowDown in mode="%s"',
+      async (mode) => {
+        jest.useFakeTimers();
+        const user = userEvent.setup({ delay: null });
+        const inputRef = createRef<HTMLInputElement>();
+        const onChange = jest.fn();
+        const onSearch = jest.fn();
+        const onVisibilityChange = jest.fn();
+
+        render(
+          <AutoComplete
+            inputRef={inputRef}
+            onChange={onChange}
+            onSearch={onSearch}
+            onVisibilityChange={onVisibilityChange}
+            options={defaultOptions}
+            readOnly
+            {...readOnlyModeProps(mode)}
+          />,
+        );
+
+        await act(async () => {
+          await user.click(inputRef.current!);
+          await user.keyboard('bar');
+          await user.keyboard('{ArrowDown}');
+          await user.keyboard('{Enter}');
+          jest.runAllTimers();
+        });
+
+        expect(getDropdownListbox()).not.toBeInTheDocument();
+        expect(onVisibilityChange).not.toHaveBeenCalledWith(true);
+        expect(onChange).not.toHaveBeenCalled();
+        expect(onSearch).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each([false, true])(
+      'inputPosition="inside" with readOnly=%s: opens only when not readOnly',
+      async (readOnly) => {
+        const user = userEvent.setup({ delay: null });
+        const inputRef = createRef<HTMLInputElement>();
+        const onVisibilityChange = jest.fn();
+
+        render(
+          <AutoComplete
+            inputPosition="inside"
+            inputRef={inputRef}
+            onVisibilityChange={onVisibilityChange}
+            options={defaultOptions}
+            readOnly={readOnly}
+          />,
+        );
+
+        await act(async () => {
+          await user.click(
+            document.querySelector('input[role="combobox"]') as HTMLElement,
+          );
+        });
+
+        if (!readOnly) {
+          // Baseline: the same interaction opens the dropdown without readOnly.
+          expect(onVisibilityChange).toHaveBeenCalledWith(true);
+          return;
+        }
+
+        expect(getDropdownListbox()).not.toBeInTheDocument();
+        expect(onVisibilityChange).not.toHaveBeenCalledWith(true);
+      },
+    );
+
+    it('should keep showing the value after focus and blur in mode="single"', async () => {
+      const user = userEvent.setup({ delay: null });
+      const inputRef = createRef<HTMLInputElement>();
+      const onChange = jest.fn();
+
+      const ControlledHost = () => {
+        const [selection, setSelection] = useState<SelectValue | null>(
+          defaultOptions[0],
+        );
+
+        return (
+          <AutoComplete
+            inputRef={inputRef}
+            onChange={(next) => {
+              onChange(next);
+              setSelection(next);
+            }}
+            options={defaultOptions}
+            readOnly
+            value={selection}
+          />
+        );
+      };
+
+      render(<ControlledHost />);
+
+      await act(async () => {
+        await user.click(inputRef.current!);
+      });
+
+      expect(inputRef.current).toHaveValue('foo');
+
+      await act(async () => {
+        await user.click(document.body);
+      });
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(inputRef.current).toHaveValue('foo');
+    });
+
+    it('should render static tags without close buttons in mode="multiple"', () => {
+      const { container } = render(
+        <AutoComplete
+          mode="multiple"
+          options={defaultOptions}
+          readOnly
+          value={[defaultOptions[0], defaultOptions[1]]}
+        />,
+      );
+
+      expect(container.querySelectorAll('.mzn-tag__close-button')).toHaveLength(
+        0,
+      );
+    });
+
+    it('should hide the clear icon and keep the value', async () => {
+      const onChange = jest.fn();
+      const onClear = jest.fn();
+
+      const { container } = render(
+        <AutoComplete
+          mode="multiple"
+          onChange={onChange}
+          onClear={onClear}
+          options={defaultOptions}
+          readOnly
+          value={[defaultOptions[0]]}
+        />,
+      );
+
+      fireEvent.mouseEnter(container.querySelector('.mzn-text-field')!);
+
+      expect(getClearIcon(container)).not.toBeInTheDocument();
+
+      expect(onClear).not.toHaveBeenCalled();
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('should apply readonly trigger styling', () => {
+      const { container } = render(
+        <AutoComplete options={defaultOptions} readOnly />,
+      );
+
+      expect(
+        container.querySelector('.mzn-text-field--readonly'),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('prop: inputPosition="inside"', () => {
     it('should render single-like checked icon (without checkbox) in multiple mode', async () => {
       const { container } = render(
