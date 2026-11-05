@@ -882,6 +882,52 @@ export const Multiple: Story = {
 };
 
 // ──────────────────────────────────────────────
+//  ReadOnly
+// ──────────────────────────────────────────────
+
+@Component({
+  selector: 'story-autocomplete-read-only',
+  standalone: true,
+  imports: [FormsModule, MznAutocomplete],
+  template: `
+    <div
+      style="display: inline-grid; grid-template-columns: repeat(2, 240px); gap: 16px; align-items: center;"
+    >
+      <div
+        mznAutocomplete
+        [options]="options"
+        placeholder="單選唯讀"
+        [readOnly]="true"
+        [(ngModel)]="singleSelection"
+      ></div>
+      <div
+        mznAutocomplete
+        mode="multiple"
+        [options]="options"
+        placeholder="多選唯讀"
+        [readOnly]="true"
+        [(ngModel)]="multipleSelections"
+      ></div>
+    </div>
+  `,
+})
+class ReadOnlyStoryComponent {
+  readonly options = originOptions;
+  multipleSelections: ReadonlyArray<string> = originOptions
+    .slice(0, 2)
+    .map((option) => option.id);
+  singleSelection = originOptions[0].id;
+}
+
+export const ReadOnly: Story = {
+  parameters: { controls: { disable: true } },
+  decorators: [moduleMetadata({ imports: [ReadOnlyStoryComponent] })],
+  render: () => ({
+    template: `<story-autocomplete-read-only />`,
+  }),
+};
+
+// ──────────────────────────────────────────────
 //  6. OverflowStrategy
 // ──────────────────────────────────────────────
 

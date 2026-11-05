@@ -100,6 +100,28 @@ class CaseSensitiveCreateHostComponent {
   ];
 }
 
+@Component({
+  standalone: true,
+  imports: [MznAutocomplete, FormsModule],
+  template: `
+    <div
+      mznAutocomplete
+      [clearable]="true"
+      [mode]="mode"
+      [options]="options"
+      [readOnly]="true"
+      [(ngModel)]="selected"
+      (valueChange)="changes = changes + 1"
+    ></div>
+  `,
+})
+class ReadOnlyHostComponent {
+  changes = 0;
+  mode: 'single' | 'multiple' = 'single';
+  options = MOCK_OPTIONS;
+  selected: string | ReadonlyArray<string> = 'apple';
+}
+
 function createFixture<T>(
   component: new () => T,
   overrides: Partial<T> = {},
@@ -440,6 +462,61 @@ describe('MznAutocomplete', () => {
       pressChar(fixture, input, 'c');
 
       expect(optionNames()).toEqual(['Cherry']);
+    });
+  });
+
+  describe('readOnly (#517)', () => {
+    const cases = [
+      { mode: 'single' as const, selected: 'apple' },
+      { mode: 'multiple' as const, selected: ['apple', 'banana'] },
+    ];
+
+    it.each(cases)(
+      'should not open, search or change in $mode mode',
+      async ({ mode, selected }) => {
+        const { fixture, host } = createFixture(ReadOnlyHostComponent, {
+          mode,
+          selected,
+        });
+
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const input = fixture.nativeElement.querySelector(
+          'input',
+        ) as HTMLInputElement;
+
+        expect(input.readOnly).toBe(true);
+
+        input.dispatchEvent(new Event('focus'));
+        input.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        input.value = 'ban';
+        input.dispatchEvent(new Event('input'));
+        for (const key of ['ArrowDown', 'Enter', 'Backspace', 'Delete']) {
+          input.dispatchEvent(
+            new KeyboardEvent('keydown', { bubbles: true, key }),
+          );
+        }
+        fixture.detectChanges();
+        fixture.detectChanges();
+
+        expect(document.querySelector('[role="listbox"]')).toBeNull();
+        expect(host.changes).toBe(0);
+        expect(host.selected).toEqual(selected);
+      },
+    );
+
+    it('should hide the clear button', async () => {
+      const { fixture } = createFixture(ReadOnlyHostComponent, {
+        mode: 'multiple',
+        selected: ['apple'],
+      });
+
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector('button[mznClearActions]'),
+      ).toBeNull();
     });
   });
 });
