@@ -10,6 +10,7 @@ import {
 import MaskFormat, { getMaskRange } from './MaskFormat';
 import { getTemplateWithoutBrackets } from './formatUtils';
 import { useCalendarContext } from '../Calendar';
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import Message from '../Message';
 
 export interface UseDateInputFormatterProps {
@@ -91,6 +92,23 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   // Track focus state
   const [focused, setFocused] = useState(false);
 
+  // A new object per request, so typing that leaves the value unchanged still commits
+  const [caretRestore, setCaretRestore] = useState<{
+    position: number;
+  } | null>(null);
+
+  // Keydown reads the caret from the DOM and the next key can arrive within the
+  // same frame, so it has to be back in place as soon as the commit lands.
+  // `internalValue` re-applies it when the external sync below rewrites the value.
+  useIsomorphicLayoutEffect(() => {
+    if (caretRestore) {
+      inputRef?.current?.setSelectionRange(
+        caretRestore.position,
+        caretRestore.position,
+      );
+    }
+  }, [caretRestore, inputRef, internalValue]);
+
   /**
    * Check if value is completely filled and valid
    */
@@ -103,10 +121,19 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
   // Sync external value - only update internal when external explicitly changes
   const prevExternalValue = useRef(externalValue);
+  // Whether the last typed key emitted, so its answer keeps the caret in place
+  const awaitingCommit = useRef(false);
   useEffect(() => {
     // Only sync when external value actually changes (not caused by our own onChange)
     if (externalValue !== prevExternalValue.current) {
       prevExternalValue.current = externalValue;
+
+      if (!awaitingCommit.current) {
+        setCaretRestore(null);
+      }
+
+      awaitingCommit.current = false;
+
       if (externalValue) {
         setInternalValue(externalValue);
       } else {
@@ -124,6 +151,10 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   const triggerChange = useCallback(
     (newValue: string, cursorPosition?: number, skipIfUnchanged = false) => {
       setInternalValue(newValue);
+      setCaretRestore(
+        cursorPosition === undefined ? null : { position: cursorPosition },
+      );
+      awaitingCommit.current = false;
 
       // Only trigger onChange if value is complete and valid
       if (
@@ -137,6 +168,8 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         // Validate format and custom validation (e.g., time step)
         if (isoDate && (!validate || validate(isoDate))) {
           const rawDigits = newValue.replace(/[^0-9]/g, '');
+
+          awaitingCommit.current = cursorPosition !== undefined;
           onChange(isoDate, rawDigits);
         } else {
           if (errorMessages.enabled) {
@@ -144,19 +177,11 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
           }
         }
       }
-
-      // Restore cursor position after React re-renders
-      if (cursorPosition !== undefined && inputRef?.current) {
-        requestAnimationFrame(() => {
-          inputRef.current?.setSelectionRange(cursorPosition, cursorPosition);
-        });
-      }
     },
     [
       errorMessages,
       externalValue,
       onChange,
-      inputRef,
       isValueComplete,
       parseFormattedValue,
       format,
@@ -186,6 +211,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   const handleBlur: FocusEventHandler<HTMLInputElement> = useCallback(
     (e) => {
       setFocused(false);
+      setCaretRestore(null);
       onBlurProp?.(e);
 
       // If value is incomplete, clear it and notify parent
