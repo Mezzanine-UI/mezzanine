@@ -209,3 +209,77 @@ describe('<FormattedInput /> typing over an existing value', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 });
+
+describe('<FormattedInput /> keys arriving within one frame', () => {
+  afterEach(cleanup);
+
+  /** Press each key with no frame in between, like a scanner or key rollover. */
+  function typeKeysBackToBack(input: HTMLInputElement, keys: string[]) {
+    keys.forEach((key) => {
+      fireEvent.keyDown(input, { key });
+    });
+  }
+
+  it('should keep every digit typed over an existing value', () => {
+    const { input, onChange } = renderInput('YYYY-MM-DD', '2025-08-15');
+
+    placeCursor(input, 0, input.value.length);
+    typeKeysBackToBack(input, [...'20260601']);
+
+    expect(input.value).toBe('2026-06-01');
+    expect(onChange.mock.calls.map(([value]) => value)).toEqual([
+      '2026-08-15',
+      '2026-06-15',
+      '2026-06-01',
+    ]);
+  });
+
+  it('should clear consecutive positions on repeated Backspace', () => {
+    const { input } = renderInput('YYYY-MM-DD', '2026-08-15');
+
+    placeCursor(input, 10);
+    typeKeysBackToBack(input, ['Backspace', 'Backspace', 'Backspace']);
+
+    expect(input.value).toBe('2026-0M-DD');
+  });
+
+  it('should move the cursor when the typed digit leaves the value unchanged', () => {
+    const { input, onChange } = renderInput('YYYY-MM-DD', '2026-05-15');
+
+    placeCursor(input, 6);
+    typeKeysBackToBack(input, ['5']);
+
+    expect(input.selectionStart).toBe(8);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('should not put the cursor back after a paste replaces the value', () => {
+    const { input } = renderInput('YYYY-MM-DD', '2026-08-15');
+
+    placeCursor(input, 0);
+    typeKeysBackToBack(input, ['2']);
+    fireEvent.paste(input, {
+      clipboardData: { getData: () => moment('2027-03-20').toISOString() },
+    });
+
+    expect(input.value).toBe('2027-03-20');
+    expect(input.selectionStart).toBe(10);
+  });
+
+  it('should not put the cursor back when the value changes from outside', () => {
+    const renderWith = (value: string) => (
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <FormattedInput format="YYYY-MM-DD" value={value} />
+      </CalendarConfigProvider>
+    );
+    const { container, rerender } = render(renderWith('2026-08-15'));
+    const input = container.querySelector('input') as HTMLInputElement;
+
+    placeCursor(input, 8);
+    typeKeysBackToBack(input, ['2']);
+    rerender(renderWith('2027-03-20'));
+
+    expect(input.value).toBe('2027-03-20');
+    expect(input.selectionStart).toBe(10);
+  });
+});

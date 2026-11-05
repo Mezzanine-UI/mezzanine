@@ -226,3 +226,97 @@ describe('MznFormattedInput typing over an existing value', () => {
     expect(fixture.componentInstance.committed).toEqual([]);
   });
 });
+
+describe('MznFormattedInput keys arriving within one frame', () => {
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  function pressKey(el: HTMLInputElement, key: string): void {
+    el.dispatchEvent(
+      new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key }),
+    );
+  }
+
+  /** Press each key with no frame in between, like a scanner or key rollover. */
+  function typeKeysBackToBack(
+    fixture: ComponentFixture<HostComponent>,
+    el: HTMLInputElement,
+    keys: string[],
+  ): void {
+    keys.forEach((key) => {
+      pressKey(el, key);
+      fixture.detectChanges();
+    });
+  }
+
+  it('should keep every digit typed over an existing value', async () => {
+    const { fixture, el } = await setup('YYYY-MM-DD', '2025-08-15');
+
+    placeCursor(fixture, el, 0, el.value.length);
+    typeKeysBackToBack(fixture, el, [...'20260601']);
+
+    expect(el.value).toBe('2026-06-01');
+    expect(fixture.componentInstance.committed).toEqual([
+      '2026-08-15',
+      '2026-06-15',
+      '2026-06-01',
+    ]);
+  });
+
+  it('should clear consecutive positions on repeated Backspace', async () => {
+    const { fixture, el } = await setup('YYYY-MM-DD', '2026-08-15');
+
+    placeCursor(fixture, el, 10);
+    typeKeysBackToBack(fixture, el, ['Backspace', 'Backspace', 'Backspace']);
+
+    expect(el.value).toBe('2026-0M-DD');
+  });
+
+  it('should move the cursor when the typed digit leaves the value unchanged', async () => {
+    const { fixture, el } = await setup('YYYY-MM-DD', '2026-05-15');
+
+    placeCursor(fixture, el, 6);
+    typeKeysBackToBack(fixture, el, ['5']);
+
+    expect(el.selectionStart).toBe(8);
+    expect(fixture.componentInstance.committed).toEqual([]);
+  });
+
+  it('should not depend on change detection running between keys', async () => {
+    const { fixture, el } = await setup('YYYY-MM-DD', '2025-08-15');
+
+    placeCursor(fixture, el, 0, el.value.length);
+    [...'20260601'].forEach((key) => pressKey(el, key));
+    fixture.detectChanges();
+
+    expect(el.value).toBe('2026-06-01');
+  });
+
+  it('should keep typed digits when a render lands right after the next key', async () => {
+    const { fixture, el } = await setup('YYYY-MM-DD', '2025-08-15');
+
+    placeCursor(fixture, el, 0, el.value.length);
+    [...'20261'].forEach((key) => pressKey(el, key));
+    fixture.detectChanges();
+    pressKey(el, '1');
+    fixture.detectChanges();
+
+    expect(el.value).toBe('2026-11-15');
+  });
+
+  it('should follow the parent when it later sets a commit it had ignored', async () => {
+    const { fixture, el } = await setup('YYYY-MM', '2026-08');
+
+    fixture.componentInstance.onValueChanged = () => undefined;
+    placeCursor(fixture, el, 5);
+    typeKeysBackToBack(fixture, el, ['0', '5']);
+    placeCursor(fixture, el, 5);
+    typeKeysBackToBack(fixture, el, ['1']);
+
+    fixture.componentInstance.value.set('2026-05');
+    fixture.detectChanges();
+
+    expect(el.value).toBe('2026-05');
+  });
+});

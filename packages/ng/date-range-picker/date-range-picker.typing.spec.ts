@@ -90,4 +90,40 @@ describe('MznDateRangePicker typing with a strict adapter (Moment)', () => {
       expect(fixture.componentInstance.committed).toEqual([expected]);
     },
   );
+
+  it('should keep the cursor on the next cell when the typed year swaps from and to', async () => {
+    await TestBed.configureTestingModule({
+      imports: [HostComponent],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsMoment),
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(HostComponent);
+
+    fixture.componentInstance.value.set([
+      moment('2026-08-01').toISOString(),
+      moment('2027-02-28').toISOString(),
+    ]);
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+
+    el.focus();
+    fixture.detectChanges();
+    el.setSelectionRange(0, 0);
+
+    for (const key of '2028') {
+      el.dispatchEvent(
+        new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key }),
+      );
+      fixture.detectChanges();
+    }
+
+    expect(el.value).toBe('2027-02-28');
+    expect(el.selectionStart).toBe(5);
+  });
 });

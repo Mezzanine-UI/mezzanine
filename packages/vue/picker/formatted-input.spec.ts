@@ -367,6 +367,62 @@ describe('<MznFormattedInput />', () => {
     });
   });
 
+  describe('keys arriving within one frame', () => {
+    /** Presses each key with no frame in between, like a scanner or key rollover. */
+    async function typeKeysBackToBack(
+      wrapper: VueWrapper,
+      keys: string[],
+    ): Promise<void> {
+      for (const key of keys) {
+        await input(wrapper).trigger('keydown', { key });
+      }
+    }
+
+    it('should keep every digit typed over an existing value', async () => {
+      const { committed, wrapper } = mountControlled(
+        'YYYY-MM-DD',
+        '2025-08-15',
+      );
+      const element = input(wrapper).element as HTMLInputElement;
+
+      await placeCursor(wrapper, 0, element.value.length);
+      await typeKeysBackToBack(wrapper, [...'20260601']);
+
+      expect(element.value).toBe('2026-06-01');
+      expect(committed).toEqual(['2026-08-15', '2026-06-15', '2026-06-01']);
+    });
+
+    it('should clear consecutive positions on repeated Backspace', async () => {
+      const { wrapper } = mountControlled('YYYY-MM-DD', '2026-08-15');
+
+      await placeCursor(wrapper, 10);
+      await typeKeysBackToBack(wrapper, [
+        'Backspace',
+        'Backspace',
+        'Backspace',
+      ]);
+
+      expect((input(wrapper).element as HTMLInputElement).value).toBe(
+        '2026-0M-DD',
+      );
+    });
+
+    it('should move the cursor when the typed digit leaves the value unchanged', async () => {
+      const { committed, wrapper } = mountControlled(
+        'YYYY-MM-DD',
+        '2026-05-15',
+      );
+
+      await placeCursor(wrapper, 6);
+      await typeKeysBackToBack(wrapper, ['5']);
+
+      expect((input(wrapper).element as HTMLInputElement).selectionStart).toBe(
+        8,
+      );
+      expect(committed).toEqual([]);
+    });
+  });
+
   describe('paste', () => {
     const pasteEvent = (text: string): ClipboardEvent =>
       Object.assign(new Event('paste', { bubbles: true }), {

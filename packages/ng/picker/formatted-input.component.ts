@@ -1,10 +1,12 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
   ElementRef,
   inject,
+  Injector,
   input,
   output,
   signal,
@@ -106,6 +108,7 @@ export interface FormattedInputErrorMessages {
 })
 export class MznFormattedInput {
   private readonly config = inject(MZN_CALENDAR_CONFIG);
+  private readonly injector = inject(Injector);
   private readonly messageService = inject(MznMessageService);
 
   // -------------------------------------------------------------------------
@@ -223,6 +226,12 @@ export class MznFormattedInput {
   protected readonly focused = signal(false);
   protected readonly internalValue = signal('');
 
+  /** Latest caret position still owed to the input by the next render. */
+  private pendingCaret: number | null = null;
+
+  /** Last value sent to the parent, until it comes back through `value`. */
+  private emittedValue: string | null = null;
+
   // Cached computed values — rebuilt when format changes
   private maskFormat!: MaskFormat;
   private segments!: readonly FormatSegment[];
@@ -317,6 +326,14 @@ export class MznFormattedInput {
       const fmt = this.format();
       this.rebuildFormat(fmt);
 
+      // Our own commit coming back: without zone.js it can land after further
+      // keys, and syncing it would wipe what they typed
+      const isOwnCommit = externalValue === this.emittedValue;
+
+      this.emittedValue = null;
+
+      if (isOwnCommit) return;
+
       if (externalValue) {
         this.internalValue.set(externalValue);
       } else {
@@ -370,6 +387,8 @@ export class MznFormattedInput {
 
   protected onBlur(event: FocusEvent): void {
     this.focused.set(false);
+    this.pendingCaret = null;
+    this.emittedValue = null;
     this.inputBlurred.emit(event);
 
     const current = this.internalValue();
@@ -508,6 +527,8 @@ export class MznFormattedInput {
 
       if (isoDate && (!validateFn || validateFn(isoDate as string))) {
         const rawDigits = newValue.replace(/[^0-9]/g, '');
+
+        this.emittedValue = newValue;
         this.valueChanged.emit({ isoValue: isoDate as string, rawDigits });
       } else {
         const msgs = this.errorMessages();
@@ -520,13 +541,50 @@ export class MznFormattedInput {
     }
 
     if (cursorPosition !== undefined) {
-      requestAnimationFrame(() => {
-        this.inputEl()?.nativeElement.setSelectionRange(
-          cursorPosition,
-          cursorPosition,
-        );
-      });
+      this.restoreCaret(cursorPosition);
     }
+
+    this.settleAfterRender();
+  }
+
+  /**
+   * Keydown reads the caret from the DOM and the next key can arrive before
+   * change detection does (always possible when zoneless), so the input is
+   * written here instead of waiting for the binding, which then writes the same
+   * value and leaves the caret alone. The render pass re-applies the caret in
+   * case it brings a different value, such as a range picker swapping its ends.
+   */
+  private restoreCaret(position: number): void {
+    const element = this.inputEl()?.nativeElement;
+
+    if (!element) return;
+
+    element.value = this.inputDisplayValue();
+    element.setSelectionRange(position, position);
+    this.pendingCaret = position;
+  }
+
+  /**
+   * By the end of a render the parent has answered any commit, so a value that
+   * matches `emittedValue` later on is a change of its own.
+   */
+  private settleAfterRender(): void {
+    afterNextRender(
+      {
+        write: () => {
+          this.emittedValue = null;
+
+          if (this.pendingCaret === null) return;
+
+          this.inputEl()?.nativeElement.setSelectionRange(
+            this.pendingCaret,
+            this.pendingCaret,
+          );
+          this.pendingCaret = null;
+        },
+      },
+      { injector: this.injector },
+    );
   }
 
   private handleBackspace(event: KeyboardEvent): void {
