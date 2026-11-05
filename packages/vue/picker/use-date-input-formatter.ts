@@ -1,4 +1,4 @@
-import { computed, ref, toValue, watch } from 'vue';
+import { computed, nextTick, ref, toValue, watch } from 'vue';
 import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue';
 import { useCalendarContext } from '../calendar/calendar-context';
 import { message } from '../message/message';
@@ -192,10 +192,11 @@ export function useDateInputFormatter(
       }
     }
 
-    // Restore cursor position after Vue re-renders
-    if (cursorPosition !== undefined && inputRef?.value) {
-      requestAnimationFrame(() => {
-        inputRef.value?.setSelectionRange(cursorPosition, cursorPosition);
+    // Keydown reads the caret from the DOM and the next key can arrive within
+    // the same frame, so it has to be back in place right after the flush
+    if (cursorPosition !== undefined) {
+      nextTick(() => {
+        inputRef?.value?.setSelectionRange(cursorPosition, cursorPosition);
       });
     }
   }
