@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.9...@mezzanine-ui/vue@1.0.0-rc.10) (2026-11-05)
+
+### Bug Fixes
+
+- **vue/auto-complete:** honour readOnly prop ([#517](https://github.com/Mezzanine-UI/mezzanine/issues/517)) ([0be4f8a](https://github.com/Mezzanine-UI/mezzanine/commit/0be4f8ad2a650e6d81e67c4f7fa4912dbbea0262))
+- **vue/picker:** restore the caret before the next key arrives ([#518](https://github.com/Mezzanine-UI/mezzanine/issues/518)) ([9d48713](https://github.com/Mezzanine-UI/mezzanine/commit/9d48713e36632c19e324edc5853bd412ad50c31b))
+
 # [1.0.0-rc.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.8...@mezzanine-ui/vue@1.0.0-rc.9) (2026-11-03)
 
 ### Bug Fixes

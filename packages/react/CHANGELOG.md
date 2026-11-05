@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.8.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.8.0...@mezzanine-ui/react@1.8.1) (2026-11-05)
+
+### Bug Fixes
+
+- **react/auto-complete:** honour readOnly prop ([#517](https://github.com/Mezzanine-UI/mezzanine/issues/517)) ([50490a2](https://github.com/Mezzanine-UI/mezzanine/commit/50490a286b3257d63add70da0f7c79c944657322))
+- **react/picker:** restore the caret before the next key arrives ([#518](https://github.com/Mezzanine-UI/mezzanine/issues/518)) ([c931eae](https://github.com/Mezzanine-UI/mezzanine/commit/c931eae6d8bdfb6d25c6b10d25e284d381c38e16))
+
 # [1.8.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.7.4...@mezzanine-ui/react@1.8.0) (2026-11-03)
 
 ### Bug Fixes

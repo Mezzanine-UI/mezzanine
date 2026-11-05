@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.22](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.21...@mezzanine-ui/ng@1.0.0-rc.22) (2026-11-05)
+
+### Bug Fixes
+
+- **ng/autocomplete:** close remaining readOnly gaps ([#517](https://github.com/Mezzanine-UI/mezzanine/issues/517)) ([b98fe0e](https://github.com/Mezzanine-UI/mezzanine/commit/b98fe0eca292af3792e872fdc62ee02a80243402))
+- **ng/picker:** restore the caret before the next key arrives ([#518](https://github.com/Mezzanine-UI/mezzanine/issues/518)) ([cbaf7a1](https://github.com/Mezzanine-UI/mezzanine/commit/cbaf7a13ea62ab1e1eb62f3afdfa53e92e7fccc7))
+
 # [1.0.0-rc.21](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.20...@mezzanine-ui/ng@1.0.0-rc.21) (2026-11-03)
 
 ### Bug Fixes
