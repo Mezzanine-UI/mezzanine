@@ -92,7 +92,7 @@ const props = withDefaults(defineProps<AutoCompleteProps>(), {
   open: undefined,
   overflowStrategy: undefined,
   placeholder: '',
-  readOnly: undefined,
+  readOnly: false,
   required: undefined,
   searchDebounceTime: 300,
   searchText: undefined,
@@ -166,6 +166,9 @@ const open = computed((): boolean =>
 );
 
 function toggleOpen(newOpen: boolean): void {
+  // A read-only field never opens its dropdown (mirrors `Select`).
+  if (props.readOnly && newOpen) return;
+
   if (!isOpenControlled.value) uncontrolledOpen.value = newOpen;
 
   emit('visibilityChange', newOpen);
@@ -271,6 +274,9 @@ function wrappedOnChange(
   chooseOption: SelectValue | null,
 ): SelectValue[] | SelectValue | null {
   const current = value.value;
+
+  if (props.readOnly) return current;
+
   const result = onChange(chooseOption);
 
   if (chooseOption) clearNewlyCreated([chooseOption.id]);
@@ -478,7 +484,7 @@ const resolvedPlaceholder = computed((): string => {
  * input kept DOM focus.
  */
 function enterSearchMode(): void {
-  if (!isSingle.value || isSearching.value) return;
+  if (props.readOnly || !isSingle.value || isSearching.value) return;
 
   isSearching.value = true;
 
@@ -487,6 +493,8 @@ function enterSearchMode(): void {
 
 /** Trigger input props */
 function onSearchInputChange(event: Event): void {
+  if (props.readOnly) return;
+
   clearPendingOptionsReset();
   enterSearchMode();
 
@@ -515,6 +523,13 @@ function onSearchInputFocus(event: FocusEvent): void {
   // Otherwise, stop propagation to prevent conflicts
   if (props.inputPosition !== 'inside') event.stopPropagation();
 
+  // Read-only: keep showing the committed value, never enter search mode.
+  if (props.readOnly) {
+    props.inputProps?.onFocus?.(event);
+
+    return;
+  }
+
   // Only open if not already open to avoid flickering
   if (!open.value) toggleOpen(true);
 
@@ -524,6 +539,15 @@ function onSearchInputFocus(event: FocusEvent): void {
 }
 
 function onSearchInputBlur(event: FocusEvent): void {
+  // Read-only never entered search mode, so there is nothing to reset. The
+  // reset path also clears the native input imperatively, which would wipe
+  // the displayed value because no reactive change restores it.
+  if (props.readOnly) {
+    props.inputProps?.onBlur?.(event);
+
+    return;
+  }
+
   // In multiple mode while the dropdown is open, defer clearing to the
   // visibility change: an intermediate blur from a dropdown interaction is not
   // the user leaving.
@@ -548,6 +572,8 @@ function onSearchInputBlur(event: FocusEvent): void {
 }
 
 function handleClear(event: MouseEvent): void {
+  if (props.readOnly) return;
+
   if (isSingle.value && value.value && !Array.isArray(value.value)) {
     markUnselected([value.value.id]);
   }
@@ -775,6 +801,12 @@ const { handleInputKeyDown } = useAutoCompleteKeyboard({
 function onSearchInputKeyDown(event: KeyboardEvent): void {
   if (isImeComposing(event)) return;
 
+  if (props.readOnly) {
+    props.inputProps?.onKeydown?.(event);
+
+    return;
+  }
+
   if (
     event.key.length === 1 &&
     !event.altKey &&
@@ -850,7 +882,8 @@ function handleCompositionStart(event: CompositionEvent): void {
 }
 
 function handlePasteWithFallback(event: ClipboardEvent): void {
-  handlePaste(event);
+  if (!props.readOnly) handlePaste(event);
+
   props.inputProps?.onPaste?.(event);
 }
 
@@ -869,7 +902,7 @@ const resolvedInputProps = computed(
     onFocus: onSearchInputFocus,
     onKeydown: onSearchInputKeyDown,
     onPaste: handlePasteWithFallback,
-    readonly: false,
+    readonly: props.readOnly,
     role: 'combobox',
   }),
 );
@@ -951,7 +984,7 @@ const hostClasses = computed((): string =>
     <MznDropdown
       :action-text="actionText"
       :active-index="activeIndex"
-      :disabled="isInputDisabled"
+      :disabled="isInputDisabled || readOnly"
       :empty-text="emptyText"
       :follow-text="searchText"
       :global-portal="globalPortal"
@@ -963,7 +996,7 @@ const hostClasses = computed((): string =>
       :loading-text="loadingText"
       :max-height="menuMaxHeight"
       :mode="mode"
-      :open="open"
+      :open="readOnly ? false : open"
       :options="asyncData && isLoading ? [] : dropdownOptions"
       placement="bottom"
       same-width
@@ -987,9 +1020,9 @@ const hostClasses = computed((): string =>
         <MznAutoCompleteInsideTrigger
           v-if="inputPosition === 'inside'"
           :ref="(element) => setTrigger(element)"
-          :active="open"
+          :active="!readOnly && open"
           :class="attrs.class"
-          :clearable="shouldForceClearable"
+          :clearable="!readOnly && shouldForceClearable"
           :disabled="isInputDisabled"
           :error="error"
           :placeholder="resolvedPlaceholder"
@@ -1002,18 +1035,18 @@ const hostClasses = computed((): string =>
           v-else
           :ref="(element) => setTrigger(element, triggerProps.ref)"
           v-bind="triggerBindings(triggerProps)"
-          :active="open"
-          clearable
+          :active="!readOnly && open"
+          :clearable="!readOnly"
           :disabled="isInputDisabled"
           full-width
           :input-props="outsideInputProps"
-          :is-force-clearable="shouldForceClearable"
+          :is-force-clearable="!readOnly && shouldForceClearable"
           :mode="mode"
           :overflow-strategy="
             isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy
           "
           :placeholder="resolvedPlaceholder"
-          :read-only="false"
+          :read-only="readOnly"
           :render-value="mode === 'single' ? renderValue : undefined"
           :required="required"
           :search-text="searchText"

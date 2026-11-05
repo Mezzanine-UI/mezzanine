@@ -402,6 +402,42 @@ export const Multiple: Story = {
   }),
 };
 
+export const ReadOnly: Story = {
+  render: () => ({
+    components: { MznAutoComplete },
+    setup: () => {
+      const singleSelection = ref<SelectValue | null>(originOptions[0]);
+      const multipleSelections = ref<SelectValue[]>(originOptions.slice(0, 2));
+
+      return {
+        gridStyle: gridStyle('repeat(2, 240px)'),
+        multipleSelections,
+        originOptions,
+        singleSelection,
+      };
+    },
+    template: `
+      <div :style="gridStyle">
+        <MznAutoComplete
+          :options="originOptions"
+          placeholder="單選唯讀"
+          read-only
+          :value="singleSelection"
+          @change="singleSelection = $event"
+        />
+        <MznAutoComplete
+          mode="multiple"
+          :options="originOptions"
+          placeholder="多選唯讀"
+          read-only
+          :value="multipleSelections"
+          @change="multipleSelections = $event"
+        />
+      </div>
+    `,
+  }),
+};
+
 const caseSensitiveOptions: SelectValue[] = [
   { id: 'colorado', name: 'Colorado' },
   { id: 'connecticut', name: 'Connecticut' },
