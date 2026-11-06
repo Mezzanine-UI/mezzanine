@@ -2,12 +2,16 @@
 
 import {
   calendarClasses as classes,
+  CalendarFooterControlChildren,
   CalendarMode,
   DateType,
+  getCalendarFooterControlLabel,
+  getCalendarFooterControlTarget,
   getYearRange,
   calendarYearModuler,
   calendarQuarterYearsCount,
   calendarHalfYearYearsCount,
+  isCalendarFooterControlDisabled,
 } from '@mezzanine-ui/core/calendar';
 import castArray from 'lodash/castArray';
 import { type RefAttributes } from 'react';
@@ -21,7 +25,9 @@ import CalendarWeeks, { CalendarWeeksProps } from './CalendarWeeks';
 import CalendarYears, { CalendarYearsProps } from './CalendarYears';
 import CalendarQuarters, { CalendarQuartersProps } from './CalendarQuarters';
 import CalendarHalfYears, { CalendarHalfYearsProps } from './CalendarHalfYears';
-import CalendarFooterControl from './CalendarFooterControl';
+import CalendarFooterControl, {
+  CalendarFooterControlProps,
+} from './CalendarFooterControl';
 import CalendarQuickSelect, {
   CalendarQuickSelectProps,
 } from './CalendarQuickSelect';
@@ -146,6 +152,18 @@ export interface CalendarProps
     | 'onHalfYearHover'
   >;
   /**
+   * Other props you may provide to `CalendarFooterControl`. <br />
+   * `children` customizes the label: a string applies to every mode, while a map
+   * overrides the listed modes and keeps the default label for the others. <br />
+   * Prefer a map in pickers, whose footer follows the panel the user drilled down to.
+   */
+  calendarFooterControlProps?: Omit<
+    CalendarFooterControlProps,
+    'children' | 'onClick'
+  > & {
+    children?: CalendarFooterControlChildren;
+  };
+  /**
    * Disabled footer control element
    * @default false
    */
@@ -220,26 +238,13 @@ function Calendar({
   ref,
   ...props
 }: CalendarProps & RefAttributes<HTMLDivElement>) {
-  const {
-    locale,
-    getNow,
-    getMonth,
-    getMonthShortName,
-    getYear,
-    getCurrentWeekFirstDate,
-    getCurrentMonthFirstDate,
-    getCurrentYearFirstDate,
-    getCurrentQuarterFirstDate,
-    getCurrentHalfYearFirstDate,
-    setHour,
-    setMinute,
-    setSecond,
-    setMillisecond,
-  } = useCalendarContext();
+  const calendarContext = useCalendarContext();
+  const { locale, getMonth, getMonthShortName, getYear } = calendarContext;
 
   const {
     renderAnnotations,
     calendarDaysProps,
+    calendarFooterControlProps,
     calendarMonthsProps,
     calendarWeeksProps,
     calendarYearsProps,
@@ -309,23 +314,6 @@ function Calendar({
         value={value}
       />
     );
-
-    if (!disabledFooterControl) {
-      displayFooterControl = (
-        <CalendarFooterControl
-          onClick={() =>
-            onChange?.(
-              setMillisecond(
-                setSecond(setMinute(setHour(getNow(), 0), 0), 0),
-                0,
-              ),
-            )
-          }
-        >
-          Today
-        </CalendarFooterControl>
-      );
-    }
   } else if (mode === 'week') {
     displayCalendar = (
       <CalendarWeeks
@@ -341,18 +329,6 @@ function Calendar({
         value={value}
       />
     );
-
-    if (!disabledFooterControl) {
-      displayFooterControl = (
-        <CalendarFooterControl
-          onClick={() =>
-            onChange?.(getCurrentWeekFirstDate(getNow(), displayWeekDayLocale))
-          }
-        >
-          This week
-        </CalendarFooterControl>
-      );
-    }
   } else if (mode === 'month') {
     displayCalendar = (
       <CalendarMonths
@@ -366,16 +342,6 @@ function Calendar({
         value={value}
       />
     );
-
-    if (!disabledFooterControl) {
-      displayFooterControl = (
-        <CalendarFooterControl
-          onClick={() => onChange?.(getCurrentMonthFirstDate(getNow()))}
-        >
-          This month
-        </CalendarFooterControl>
-      );
-    }
   } else if (mode === 'year') {
     displayCalendar = (
       <CalendarYears
@@ -388,16 +354,6 @@ function Calendar({
         value={value}
       />
     );
-
-    if (!disabledFooterControl) {
-      displayFooterControl = (
-        <CalendarFooterControl
-          onClick={() => onChange?.(getCurrentYearFirstDate(getNow()))}
-        >
-          This year
-        </CalendarFooterControl>
-      );
-    }
   } else if (mode === 'quarter') {
     displayCalendar = (
       <CalendarQuarters
@@ -410,16 +366,6 @@ function Calendar({
         value={value}
       />
     );
-
-    if (!disabledFooterControl) {
-      displayFooterControl = (
-        <CalendarFooterControl
-          onClick={() => onChange?.(getCurrentQuarterFirstDate(getNow()))}
-        >
-          This quarter
-        </CalendarFooterControl>
-      );
-    }
   } else if (mode === 'half-year') {
     displayCalendar = (
       <CalendarHalfYears
@@ -432,16 +378,42 @@ function Calendar({
         value={value}
       />
     );
+  }
 
-    if (!disabledFooterControl) {
-      displayFooterControl = (
-        <CalendarFooterControl
-          onClick={() => onChange?.(getCurrentHalfYearFirstDate(getNow()))}
-        >
-          This half year
-        </CalendarFooterControl>
+  /** Compute footer control */
+  if (!disabledFooterControl) {
+    const {
+      children: footerControlChildren,
+      disabled: footerControlDisabled,
+      ...restFooterControlProps
+    } = calendarFooterControlProps ?? {};
+
+    const getFooterControlTarget = () =>
+      getCalendarFooterControlTarget(
+        mode,
+        calendarContext,
+        displayWeekDayLocale,
       );
-    }
+
+    displayFooterControl = (
+      <CalendarFooterControl
+        {...restFooterControlProps}
+        disabled={
+          footerControlDisabled ||
+          isCalendarFooterControlDisabled(mode, getFooterControlTarget(), {
+            isDateDisabled,
+            isHalfYearDisabled,
+            isMonthDisabled,
+            isQuarterDisabled,
+            isWeekDisabled,
+            isYearDisabled,
+          })
+        }
+        onClick={() => onChange?.(getFooterControlTarget())}
+      >
+        {getCalendarFooterControlLabel(mode, footerControlChildren)}
+      </CalendarFooterControl>
+    );
   }
 
   /** Compute controls outcome */

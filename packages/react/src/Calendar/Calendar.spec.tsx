@@ -663,6 +663,121 @@ describe('<Calendar />', () => {
     });
   });
 
+  describe('prop: calendarFooterControlProps', () => {
+    it('should apply a string label', () => {
+      const { getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            calendarFooterControlProps={{ children: '現在' }}
+            mode="month"
+            referenceDate={moment().toISOString()}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('現在')).toBeInstanceOf(HTMLButtonElement);
+    });
+
+    it('should resolve a label map by mode and fall back to the default', () => {
+      const calendarFooterControlProps = { children: { day: '今天' } };
+      const { getByText, rerender } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            calendarFooterControlProps={calendarFooterControlProps}
+            mode="day"
+            referenceDate={moment().toISOString()}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('今天')).toBeInstanceOf(HTMLButtonElement);
+
+      rerender(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            calendarFooterControlProps={calendarFooterControlProps}
+            mode="month"
+            referenceDate={moment().toISOString()}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('This month')).toBeInstanceOf(HTMLButtonElement);
+    });
+
+    it('should forward the other props to the footer control', () => {
+      const { container, getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            calendarFooterControlProps={{
+              className: 'custom-footer',
+              disabled: true,
+            }}
+            referenceDate={moment().toISOString()}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(container.querySelector('.custom-footer')).not.toBeNull();
+      expect(getByText('Today').closest('button')?.disabled).toBe(true);
+    });
+  });
+
+  describe('footer control and disabled periods', () => {
+    it('should disable the footer control when the target is disabled', () => {
+      const onChange = jest.fn();
+      const { getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            isMonthDisabled={() => true}
+            mode="month"
+            onChange={onChange}
+            referenceDate={moment().toISOString()}
+          />
+        </CalendarConfigProvider>,
+      );
+      const button = getByText('This month').closest('button');
+
+      expect(button?.disabled).toBe(true);
+
+      fireEvent.click(button as HTMLButtonElement);
+
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('should combine the predicates the same way the cells do', () => {
+      const { getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            isYearDisabled={() => true}
+            mode="day"
+            referenceDate={moment().toISOString()}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('Today').closest('button')?.disabled).toBe(true);
+    });
+
+    it('should keep the footer control enabled when the target is allowed', () => {
+      const onChange = jest.fn();
+      const { getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            isMonthDisabled={() => false}
+            mode="month"
+            onChange={onChange}
+            referenceDate={moment().toISOString()}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      fireEvent.click(getByText('This month'));
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('prop: quickSelect', () => {
     it('should render quick select when provided', () => {
       const options = [

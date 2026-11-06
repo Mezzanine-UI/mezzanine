@@ -41,6 +41,7 @@ export { default as CalendarControls } from './CalendarControls';
 export type { CalendarControlsProps } from './CalendarControls';
 export type { CalendarCellProps } from './CalendarCell';
 export { default as CalendarCell } from './CalendarCell';
+export type { CalendarFooterControlProps } from './CalendarFooterControl';
 export type { CalendarProps } from './Calendar';
 export { default } from './Calendar';
 export type { RangeCalendarProps } from './RangeCalendar';

@@ -69,6 +69,44 @@ describe('<DatePickerCalendar />', () => {
     });
   });
 
+  describe('prop: calendarProps', () => {
+    it('should hide the footer control with disabledFooterControl', () => {
+      const { queryByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DatePickerCalendar
+            calendarProps={{ disabledFooterControl: true }}
+            open
+            referenceDate="2021-10-20"
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(queryByText('Today')).toBeNull();
+    });
+
+    it('should resolve the footer label of the panel the user drilled down to', () => {
+      const { getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DatePickerCalendar
+            calendarProps={{
+              calendarFooterControlProps: {
+                children: { day: '今天', month: '本月' },
+              },
+            }}
+            open
+            referenceDate="2021-10-20"
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('今天')).toBeInstanceOf(HTMLButtonElement);
+
+      fireEvent.click(getByText('Oct'));
+
+      expect(getByText('本月')).toBeInstanceOf(HTMLButtonElement);
+    });
+  });
+
   describe('prop: calendarRef', () => {
     it('should bind to calendar element', () => {
       const ref = createRef<HTMLInputElement>();
