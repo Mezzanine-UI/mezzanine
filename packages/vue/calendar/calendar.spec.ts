@@ -195,6 +195,69 @@ describe('<MznCalendar />', () => {
       expect(wrapper.find(`.${classes.footerControl}`).exists()).toBe(false);
     });
 
+    it('should apply a string label from calendarFooterControlProps', () => {
+      const wrapper = mountCalendar({
+        calendarFooterControlProps: { children: '現在' },
+        mode: 'month',
+      });
+
+      expect(wrapper.get(`.${classes.footerControl}`).text()).toBe('現在');
+    });
+
+    it('should resolve a label map by mode and fall back to the default', () => {
+      const calendarFooterControlProps = { children: { day: '今天' } };
+
+      expect(
+        mountCalendar({ calendarFooterControlProps, mode: 'day' })
+          .get(`.${classes.footerControl}`)
+          .text(),
+      ).toBe('今天');
+      expect(
+        mountCalendar({ calendarFooterControlProps, mode: 'month' })
+          .get(`.${classes.footerControl}`)
+          .text(),
+      ).toBe('This month');
+    });
+
+    it('should forward the other bundle props to the footer control', () => {
+      const wrapper = mountCalendar({
+        calendarFooterControlProps: { class: 'custom-footer', disabled: true },
+      });
+
+      expect(wrapper.find('.custom-footer').exists()).toBe(true);
+      expect(
+        wrapper.get(`.${classes.footerControl} button`).attributes('disabled'),
+      ).toBeDefined();
+    });
+
+    it('should disable the footer control when the target is disabled', async () => {
+      const onChange = vi.fn();
+      const wrapper = mountWithCalendar(MznCalendar, {
+        isMonthDisabled: () => true,
+        mode: 'month',
+        onChange,
+        referenceDate,
+      });
+      const button = wrapper.get(`.${classes.footerControl} button`);
+
+      expect(button.attributes('disabled')).toBeDefined();
+
+      await button.trigger('click');
+
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('should combine the predicates the same way the cells do', () => {
+      const wrapper = mountCalendar({
+        isYearDisabled: () => true,
+        mode: 'day',
+      });
+
+      expect(
+        wrapper.get(`.${classes.footerControl} button`).attributes('disabled'),
+      ).toBeDefined();
+    });
+
     it('should emit change with the start of today in day mode', async () => {
       const onChange = vi.fn();
       const wrapper = mountWithCalendar(MznCalendar, {

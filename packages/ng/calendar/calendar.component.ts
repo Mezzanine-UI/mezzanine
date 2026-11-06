@@ -15,7 +15,10 @@ import {
   calendarQuarterYearsCount,
   calendarHalfYearYearsCount,
   DateType,
+  getCalendarFooterControlLabel,
+  getCalendarFooterControlTarget,
   getYearRange,
+  isCalendarFooterControlDisabled,
 } from '@mezzanine-ui/core/calendar';
 import clsx from 'clsx';
 import { MZN_CALENDAR_CONFIG } from './calendar-config';
@@ -26,14 +29,34 @@ import { MznCalendarYears } from './calendar-years.component';
 import { MznCalendarWeeks } from './calendar-weeks.component';
 import { MznCalendarQuarters } from './calendar-quarters.component';
 import { MznCalendarHalfYears } from './calendar-half-years.component';
-import { MznCalendarFooterControl } from './calendar-footer-control.component';
+import {
+  MznCalendarFooterControl,
+  type MznCalendarFooterControlProps,
+} from './calendar-footer-control.component';
 import {
   MznCalendarQuickSelect,
   CalendarQuickSelectOption,
 } from './calendar-quick-select.component';
 import { CalendarDayAnnotation } from './calendar-days.component';
 
-export { CalendarQuickSelectOption, CalendarDayAnnotation };
+export {
+  CalendarQuickSelectOption,
+  CalendarDayAnnotation,
+  type MznCalendarFooterControlProps,
+};
+
+/**
+ * Host props of a calendar board, mirroring what `calendarDaysProps` and its
+ * siblings effectively do in React: the rest of the bundle lands on the board
+ * host. React also types the predicates here, but its flat props always
+ * override them, so they are left out.
+ */
+export interface MznCalendarBoardProps {
+  /** Extra class of the board host. */
+  readonly className?: string;
+  /** Inline style of the board host. */
+  readonly style?: Readonly<Record<string, string>>;
+}
 
 /**
  * 日曆元件，支援 day/week/month/year/quarter/half-year 等模式。
@@ -77,6 +100,13 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
     '[attr.mode]': 'null',
     '[attr.referenceDate]': 'null',
     '[attr.value]': 'null',
+    '[attr.calendarDaysProps]': 'null',
+    '[attr.calendarFooterControlProps]': 'null',
+    '[attr.calendarHalfYearsProps]': 'null',
+    '[attr.calendarMonthsProps]': 'null',
+    '[attr.calendarQuartersProps]': 'null',
+    '[attr.calendarWeeksProps]': 'null',
+    '[attr.calendarYearsProps]': 'null',
     '[attr.disabledFooterControl]': 'null',
     '[attr.disabledMonthSwitch]': 'null',
     '[attr.disabledYearSwitch]': 'null',
@@ -171,6 +201,8 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
           @case ('day') {
             <div
               mznCalendarDays
+              [class]="calendarDaysProps()?.className"
+              [style]="calendarDaysProps()?.style"
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isDateDisabled]="isDateDisabled()"
@@ -186,6 +218,8 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
           @case ('week') {
             <div
               mznCalendarWeeks
+              [class]="calendarWeeksProps()?.className"
+              [style]="calendarWeeksProps()?.style"
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isWeekDisabled]="isWeekDisabled()"
@@ -200,6 +234,8 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
           @case ('month') {
             <div
               mznCalendarMonths
+              [class]="calendarMonthsProps()?.className"
+              [style]="calendarMonthsProps()?.style"
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isMonthDisabled]="isMonthDisabled()"
@@ -213,6 +249,8 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
           @case ('year') {
             <div
               mznCalendarYears
+              [class]="calendarYearsProps()?.className"
+              [style]="calendarYearsProps()?.style"
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isYearDisabled]="isYearDisabled()"
@@ -224,6 +262,8 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
           @case ('quarter') {
             <div
               mznCalendarQuarters
+              [class]="calendarQuartersProps()?.className"
+              [style]="calendarQuartersProps()?.style"
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isQuarterDisabled]="isQuarterDisabled()"
@@ -235,6 +275,8 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
           @case ('half-year') {
             <div
               mznCalendarHalfYears
+              [class]="calendarHalfYearsProps()?.className"
+              [style]="calendarHalfYearsProps()?.style"
               [referenceDate]="internalReferenceDate()"
               [value]="normalizedValue()"
               [isHalfYearDisabled]="isHalfYearDisabled()"
@@ -247,12 +289,14 @@ export { CalendarQuickSelectOption, CalendarDayAnnotation };
       </div>
 
       <!-- Footer control -->
-      @if (!disabledFooterControl() && footerLabel()) {
+      @if (!disabledFooterControl()) {
         <div
           mznCalendarFooterControl
-          [label]="footerLabel()!"
+          [class]="calendarFooterControlProps()?.className"
+          [disabled]="isFooterDisabled()"
           (footerClick)="onFooterClick()"
-        ></div>
+          >{{ footerLabel() }}</div
+        >
       }
     </div>
   `,
@@ -268,6 +312,45 @@ export class MznCalendar {
   readonly value = input<DateType | ReadonlyArray<DateType> | undefined>(
     undefined,
   );
+
+  /** Other props of the day board host. */
+  readonly calendarDaysProps = input<MznCalendarBoardProps | undefined>(
+    undefined,
+  );
+
+  /** Other props of the half-year board host. */
+  readonly calendarHalfYearsProps = input<MznCalendarBoardProps | undefined>(
+    undefined,
+  );
+
+  /** Other props of the month board host. */
+  readonly calendarMonthsProps = input<MznCalendarBoardProps | undefined>(
+    undefined,
+  );
+
+  /** Other props of the quarter board host. */
+  readonly calendarQuartersProps = input<MznCalendarBoardProps | undefined>(
+    undefined,
+  );
+
+  /** Other props of the week board host. */
+  readonly calendarWeeksProps = input<MznCalendarBoardProps | undefined>(
+    undefined,
+  );
+
+  /** Other props of the year board host. */
+  readonly calendarYearsProps = input<MznCalendarBoardProps | undefined>(
+    undefined,
+  );
+
+  /**
+   * Other props of the footer control. `children` customizes the label: a string
+   * applies to every mode, while a map overrides the listed modes and keeps the
+   * default label for the others.
+   */
+  readonly calendarFooterControlProps = input<
+    MznCalendarFooterControlProps | undefined
+  >(undefined);
 
   /** 是否禁用頁腳控制按鈕。 */
   readonly disabledFooterControl = input(false);
@@ -433,25 +516,12 @@ export class MznCalendar {
     return `${start} - ${end}`;
   });
 
-  protected readonly footerLabel = computed((): string | null => {
-    const m = this.currentMode();
-    switch (m) {
-      case 'day':
-        return 'Today';
-      case 'week':
-        return 'This week';
-      case 'month':
-        return 'This month';
-      case 'year':
-        return 'This year';
-      case 'quarter':
-        return 'This quarter';
-      case 'half-year':
-        return 'This half year';
-      default:
-        return null;
-    }
-  });
+  protected readonly footerLabel = computed((): string =>
+    getCalendarFooterControlLabel(
+      this.currentMode(),
+      this.calendarFooterControlProps()?.children,
+    ),
+  );
 
   /** Navigation handlers */
   protected onPrev(): void {
@@ -520,39 +590,44 @@ export class MznCalendar {
     }
   }
 
+  /**
+   * A footer click behaves like a click on the target cell, so a drilled-down
+   * panel only navigates instead of selecting a value.
+   */
   protected onFooterClick(): void {
-    const c = this.config;
-    const now = c.setMillisecond(
-      c.setSecond(c.setMinute(c.setHour(c.getNow(), 0), 0), 0),
-      0,
-    );
+    if (this.isFooterDisabled()) return;
 
-    const m = this.currentMode();
-    switch (m) {
-      case 'day':
-        this.dateChanged.emit(now);
-        break;
-      case 'week':
-        this.dateChanged.emit(
-          c.getCurrentWeekFirstDate(
-            c.getNow(),
-            this.displayWeekDayLocale() ?? c.locale,
-          ),
-        );
-        break;
-      case 'month':
-        this.dateChanged.emit(c.getCurrentMonthFirstDate(c.getNow()));
-        break;
-      case 'year':
-        this.dateChanged.emit(c.getCurrentYearFirstDate(c.getNow()));
-        break;
-      case 'quarter':
-        this.dateChanged.emit(c.getCurrentQuarterFirstDate(c.getNow()));
-        break;
-      case 'half-year':
-        this.dateChanged.emit(c.getCurrentHalfYearFirstDate(c.getNow()));
-        break;
-    }
+    this.onCellClick(this.getFooterTarget());
+  }
+
+  /**
+   * A method rather than a `computed`: the target depends on the current time,
+   * which is not a signal, so a cached value would go stale past midnight.
+   */
+  protected isFooterDisabled(): boolean {
+    return (
+      Boolean(this.calendarFooterControlProps()?.disabled) ||
+      isCalendarFooterControlDisabled(
+        this.currentMode(),
+        this.getFooterTarget(),
+        {
+          isDateDisabled: this.isDateDisabled(),
+          isHalfYearDisabled: this.isHalfYearDisabled(),
+          isMonthDisabled: this.isMonthDisabled(),
+          isQuarterDisabled: this.isQuarterDisabled(),
+          isWeekDisabled: this.isWeekDisabled(),
+          isYearDisabled: this.isYearDisabled(),
+        },
+      )
+    );
+  }
+
+  private getFooterTarget(): DateType {
+    return getCalendarFooterControlTarget(
+      this.currentMode(),
+      this.config,
+      this.displayWeekDayLocale() ?? this.config.locale,
+    );
   }
 
   /** Public API for external control (used by RangeCalendar). */

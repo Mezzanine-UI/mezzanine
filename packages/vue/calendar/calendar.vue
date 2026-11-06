@@ -5,7 +5,10 @@ import {
   calendarHalfYearYearsCount,
   calendarQuarterYearsCount,
   calendarYearModuler,
+  getCalendarFooterControlLabel,
+  getCalendarFooterControlTarget,
   getYearRange,
+  isCalendarFooterControlDisabled,
   type CalendarMode,
   type DateType,
 } from '@mezzanine-ui/core/calendar';
@@ -57,6 +60,7 @@ defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(defineProps<CalendarProps>(), {
   calendarDaysProps: undefined,
+  calendarFooterControlProps: undefined,
   calendarHalfYearsProps: undefined,
   calendarMonthsProps: undefined,
   calendarQuartersProps: undefined,
@@ -185,59 +189,48 @@ const yearRangeAriaLabel = computed((): string => {
   return `Year range ${yearRangeLabel.value}`;
 });
 
-const footerControlLabel = computed(
-  (): string | undefined =>
-    ({
-      day: 'Today',
-      week: 'This week',
-      month: 'This month',
-      year: 'This year',
-      quarter: 'This quarter',
-      'half-year': 'This half year',
-    })[props.mode],
+const footerControlLabel = computed((): string =>
+  getCalendarFooterControlLabel(
+    props.mode,
+    props.calendarFooterControlProps?.children,
+  ),
 );
 
-function handleFooterControlClick(): void {
-  const {
-    getNow,
-    getCurrentWeekFirstDate,
-    getCurrentMonthFirstDate,
-    getCurrentYearFirstDate,
-    getCurrentQuarterFirstDate,
-    getCurrentHalfYearFirstDate,
-    setHour,
-    setMinute,
-    setSecond,
-    setMillisecond,
-  } = calendar.value;
-
-  switch (props.mode) {
-    case 'week':
-      emit(
-        'change',
-        getCurrentWeekFirstDate(getNow(), displayWeekDayLocale.value),
-      );
-      break;
-    case 'month':
-      emit('change', getCurrentMonthFirstDate(getNow()));
-      break;
-    case 'year':
-      emit('change', getCurrentYearFirstDate(getNow()));
-      break;
-    case 'quarter':
-      emit('change', getCurrentQuarterFirstDate(getNow()));
-      break;
-    case 'half-year':
-      emit('change', getCurrentHalfYearFirstDate(getNow()));
-      break;
-    case 'day':
-    default:
-      emit(
-        'change',
-        setMillisecond(setSecond(setMinute(setHour(getNow(), 0), 0), 0), 0),
-      );
-  }
+function getFooterControlTarget(): DateType {
+  return getCalendarFooterControlTarget(
+    props.mode,
+    calendar.value,
+    displayWeekDayLocale.value,
+  );
 }
+
+/**
+ * A function rather than a `computed`: the target depends on the current time,
+ * which is not reactive, so a cached value would go stale past midnight.
+ */
+function isFooterControlDisabled(): boolean {
+  return (
+    Boolean(props.calendarFooterControlProps?.disabled) ||
+    isCalendarFooterControlDisabled(props.mode, getFooterControlTarget(), {
+      isDateDisabled: props.isDateDisabled,
+      isHalfYearDisabled: props.isHalfYearDisabled,
+      isMonthDisabled: props.isMonthDisabled,
+      isQuarterDisabled: props.isQuarterDisabled,
+      isWeekDisabled: props.isWeekDisabled,
+      isYearDisabled: props.isYearDisabled,
+    })
+  );
+}
+
+const footerControlAttrs = computed(() => {
+  const {
+    children: _children,
+    disabled: _disabled,
+    ...rest
+  } = props.calendarFooterControlProps ?? {};
+
+  return rest;
+});
 
 const hostClasses = computed((): string =>
   clsx(classes.host, classes.mode(props.mode), attrs.class as string),
@@ -384,8 +377,10 @@ const mainWithFooterClass = classes.mainWithFooter;
         />
       </div>
       <MznCalendarFooterControl
-        v-if="!disabledFooterControl && footerControlLabel"
-        @click="handleFooterControlClick"
+        v-if="!disabledFooterControl"
+        v-bind="footerControlAttrs"
+        :disabled="isFooterControlDisabled()"
+        @click="emit('change', getFooterControlTarget())"
       >
         {{ footerControlLabel }}
       </MznCalendarFooterControl>

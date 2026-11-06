@@ -570,6 +570,7 @@ export type {
   CalendarControlsProps,
   CalendarDayOfWeekProps,
   CalendarDaysProps,
+  CalendarFooterControlProps,
   CalendarHalfYearsProps,
   CalendarMonthsProps,
   CalendarProps,

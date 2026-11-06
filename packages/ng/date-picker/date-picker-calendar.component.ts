@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   input,
   output,
@@ -10,12 +11,47 @@ import {
   MznCalendar,
   type CalendarDayAnnotation,
   type CalendarQuickSelectOption,
+  type MznCalendarBoardProps,
+  type MznCalendarFooterControlProps,
 } from '@mezzanine-ui/ng/calendar';
 import { MznPopper } from '@mezzanine-ui/ng/popper';
 import type {
   PopperOffsetOptions,
   PopperPlacement,
 } from '@mezzanine-ui/ng/popper';
+
+/**
+ * Calendar bundle of the date picker, mirroring React `calendarProps`.
+ * An escape hatch for the calendar props without a flat input; the flat inputs
+ * of the same name take priority.
+ */
+export interface MznDatePickerCalendarProps {
+  /** Other props of the day board host. */
+  readonly calendarDaysProps?: MznCalendarBoardProps;
+  /** Other props of the footer control, including its label. */
+  readonly calendarFooterControlProps?: MznCalendarFooterControlProps;
+  /** Other props of the half-year board host. */
+  readonly calendarHalfYearsProps?: MznCalendarBoardProps;
+  /** Other props of the month board host. */
+  readonly calendarMonthsProps?: MznCalendarBoardProps;
+  /** Other props of the quarter board host. */
+  readonly calendarQuartersProps?: MznCalendarBoardProps;
+  /** Other props of the week board host. */
+  readonly calendarWeeksProps?: MznCalendarBoardProps;
+  /** Other props of the year board host. */
+  readonly calendarYearsProps?: MznCalendarBoardProps;
+  /** Hide the footer control. */
+  readonly disabledFooterControl?: boolean;
+  /** The locale of the weekday header. */
+  readonly displayWeekDayLocale?: string;
+  /** Quick select shortcut options. */
+  readonly quickSelect?: {
+    activeId?: string;
+    options: ReadonlyArray<CalendarQuickSelectOption>;
+  };
+  /** Per-date annotation render function. */
+  readonly renderAnnotations?: (date: DateType) => CalendarDayAnnotation;
+}
 
 /**
  * DatePicker 專用的日曆彈出層子元件。
@@ -46,6 +82,7 @@ import type {
   selector: '[mznDatePickerCalendar]',
   host: {
     '[attr.anchor]': 'null',
+    '[attr.calendarProps]': 'null',
     '[attr.open]': 'null',
     '[attr.mode]': 'null',
     '[attr.referenceDate]': 'null',
@@ -86,6 +123,18 @@ import type {
           [referenceDate]="referenceDate()"
           [value]="value()"
           [mode]="mode()"
+          [calendarDaysProps]="calendarProps()?.calendarDaysProps"
+          [calendarFooterControlProps]="
+            calendarProps()?.calendarFooterControlProps
+          "
+          [calendarHalfYearsProps]="calendarProps()?.calendarHalfYearsProps"
+          [calendarMonthsProps]="calendarProps()?.calendarMonthsProps"
+          [calendarQuartersProps]="calendarProps()?.calendarQuartersProps"
+          [calendarWeeksProps]="calendarProps()?.calendarWeeksProps"
+          [calendarYearsProps]="calendarProps()?.calendarYearsProps"
+          [disabledFooterControl]="
+            calendarProps()?.disabledFooterControl ?? false
+          "
           [disabledMonthSwitch]="disabledMonthSwitch()"
           [disabledYearSwitch]="disabledYearSwitch()"
           [disableOnNext]="disableOnNext()"
@@ -93,15 +142,15 @@ import type {
           [disableOnDoubleNext]="disableOnDoubleNext()"
           [disableOnDoublePrev]="disableOnDoublePrev()"
           [displayMonthLocale]="displayMonthLocale()"
-          [displayWeekDayLocale]="displayWeekDayLocale()"
+          [displayWeekDayLocale]="resolvedDisplayWeekDayLocale()"
           [isDateDisabled]="isDateDisabled()"
           [isHalfYearDisabled]="isHalfYearDisabled()"
           [isMonthDisabled]="isMonthDisabled()"
           [isQuarterDisabled]="isQuarterDisabled()"
           [isWeekDisabled]="isWeekDisabled()"
           [isYearDisabled]="isYearDisabled()"
-          [quickSelect]="quickSelect()"
-          [renderAnnotations]="renderAnnotations()"
+          [quickSelect]="resolvedQuickSelect()"
+          [renderAnnotations]="resolvedRenderAnnotations()"
           (cellHover)="hover.emit($event)"
           (dateChanged)="dateChanged.emit($event)"
         ></div>
@@ -115,6 +164,14 @@ export class MznDatePickerCalendar {
    * @default null
    */
   readonly anchor = input<HTMLElement | ElementRef<HTMLElement> | null>(null);
+
+  /**
+   * Calendar bundle, mirroring React `calendarProps`. Hoist it to a class field
+   * or signal: an inline object literal changes on every change detection.
+   */
+  readonly calendarProps = input<MznDatePickerCalendarProps | undefined>(
+    undefined,
+  );
 
   /**
    * 是否顯示日曆彈出層。
@@ -203,6 +260,21 @@ export class MznDatePickerCalendar {
    * @default { mainAxis: 4 }
    */
   readonly popperOffsetOptions = input<PopperOffsetOptions>({ mainAxis: 4 });
+
+  protected readonly resolvedDisplayWeekDayLocale = computed(
+    (): string | undefined =>
+      this.displayWeekDayLocale() ?? this.calendarProps()?.displayWeekDayLocale,
+  );
+
+  protected readonly resolvedQuickSelect = computed(
+    (): MznDatePickerCalendarProps['quickSelect'] =>
+      this.quickSelect() ?? this.calendarProps()?.quickSelect,
+  );
+
+  protected readonly resolvedRenderAnnotations = computed(
+    (): MznDatePickerCalendarProps['renderAnnotations'] =>
+      this.renderAnnotations() ?? this.calendarProps()?.renderAnnotations,
+  );
 
   /** 日期選取事件。 */
   readonly dateChanged = output<DateType>();

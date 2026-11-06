@@ -438,6 +438,38 @@ const InnerRangeCalendarPlayground = ({
   );
 };
 
+const FOOTER_STORY_REFERENCE_DATE = '2026-09-01';
+
+export const FooterControl: Story = {
+  render: function FooterControl() {
+    return (
+      <CalendarConfigProvider
+        locale={CalendarLocale.EN_US}
+        methods={CalendarMethodsMoment}
+      >
+        <p>Custom label</p>
+        <Calendar
+          calendarFooterControlProps={{ children: { year: '今年' } }}
+          mode="year"
+          referenceDate={FOOTER_STORY_REFERENCE_DATE}
+        />
+        <p>Hidden</p>
+        <Calendar
+          disabledFooterControl
+          mode="year"
+          referenceDate={FOOTER_STORY_REFERENCE_DATE}
+        />
+        <p>Current period disabled</p>
+        <Calendar
+          isYearDisabled={(date) => moment(date).isSame(moment(), 'year')}
+          mode="year"
+          referenceDate={FOOTER_STORY_REFERENCE_DATE}
+        />
+      </CalendarConfigProvider>
+    );
+  },
+};
+
 export const RangeCalendarPlayground: StoryObj<typeof RangeCalendar> = {
   args: {
     mode: 'day',

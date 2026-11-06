@@ -1,2 +1,5 @@
 export { MznDatePicker } from './date-picker.component';
-export { MznDatePickerCalendar } from './date-picker-calendar.component';
+export {
+  MznDatePickerCalendar,
+  type MznDatePickerCalendarProps,
+} from './date-picker-calendar.component';

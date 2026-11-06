@@ -20,7 +20,10 @@ import { isImeComposing } from '@mezzanine-ui/core/utils';
 import { CalendarTimeIcon } from '@mezzanine-ui/icons';
 import { MZN_CALENDAR_CONFIG } from '@mezzanine-ui/ng/calendar';
 import { MznClearActions } from '@mezzanine-ui/ng/clear-actions';
-import { MznDatePickerCalendar } from '@mezzanine-ui/ng/date-picker';
+import {
+  MznDatePickerCalendar,
+  type MznDatePickerCalendarProps,
+} from '@mezzanine-ui/ng/date-picker';
 import { MznIcon } from '@mezzanine-ui/ng/icon';
 import {
   FormattedInputErrorMessages,
@@ -42,7 +45,8 @@ type FocusedInput = 'left' | 'right' | null;
  * `calendarProps?: Omit<CalendarProps, 'disableOnNext' | ...>`。
  * 為 escape hatch，用於傳遞未在 top-level flat prop 暴露的額外 CalendarProps。
  */
-export interface MznDateTimePickerCalendarProps {
+export interface MznDateTimePickerCalendarProps
+  extends MznDatePickerCalendarProps {
   /** 禁用日曆月份切換按鈕。 */
   disabledMonthSwitch?: boolean;
   /** 禁用日曆年份切換按鈕。 */
@@ -283,6 +287,7 @@ export interface MznDateTimePickerPopperProps {
         [mode]="mode()"
         [referenceDate]="internalReferenceDate()"
         [value]="dateValue()"
+        [calendarProps]="calendarProps()"
         [disabledMonthSwitch]="resolvedCalendar().disabledMonthSwitch"
         [disabledYearSwitch]="resolvedCalendar().disabledYearSwitch"
         [disableOnNext]="resolvedDisableOnNext()"

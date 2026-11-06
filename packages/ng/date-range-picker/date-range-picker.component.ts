@@ -25,6 +25,7 @@ import {
   MZN_CALENDAR_CONFIG,
   type CalendarDayAnnotation,
   type CalendarQuickSelectOption,
+  type MznCalendarFooterActionsProps,
 } from '@mezzanine-ui/ng/calendar';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznRangePickerTrigger } from '@mezzanine-ui/ng/picker';
@@ -54,6 +55,7 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
   selector: '[mznDateRangePicker]',
   host: {
     '[attr.clearable]': 'null',
+    '[attr.actions]': 'null',
     '[attr.confirmMode]': 'null',
     '[attr.disabled]': 'null',
     '[attr.disableOnDoubleNext]': 'null',
@@ -137,10 +139,9 @@ import { MznDateRangePickerCalendar } from './date-range-picker-calendar.compone
       [isYearDisabled]="isYearDisabled()"
       [quickSelect]="quickSelect()"
       [renderAnnotations]="renderAnnotations()"
+      [actions]="resolvedActions()"
       [showFooterActions]="confirmMode() === 'manual'"
       (rangeChanged)="onRangeChanged($event)"
-      (confirmed)="onConfirm()"
-      (cancelled)="onCancel()"
       (mouseLeave)="onMouseLeave()"
     ></div>
   `,
@@ -156,6 +157,42 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
 
   /** 確認模式。immediate = 選完兩個日期自動關閉；manual = 需按 Ok。 @default 'immediate' */
   readonly confirmMode = input<'immediate' | 'manual'>('immediate');
+
+  /**
+   * Footer action buttons, mirroring React `actions`. When provided, picking a
+   * range stages it instead of committing and closing. In manual mode these
+   * override the auto-generated Confirm and Cancel buttons, handlers included.
+   * Hoist it to a class field or signal.
+   */
+  readonly actions = input<MznCalendarFooterActionsProps | undefined>(
+    undefined,
+  );
+
+  /** Mirrors React `shouldTriggerOnChangeImmediately`. */
+  private readonly commitsImmediately = computed(
+    (): boolean => this.confirmMode() === 'immediate' && !this.actions(),
+  );
+
+  protected readonly resolvedActions = computed(
+    (): MznCalendarFooterActionsProps | undefined => {
+      const actions = this.actions();
+
+      if (this.confirmMode() !== 'manual') return actions;
+
+      return {
+        primaryButtonProps: {
+          children: 'Confirm',
+          onClick: (): void => this.onConfirm(),
+          ...actions?.primaryButtonProps,
+        },
+        secondaryButtonProps: {
+          children: 'Cancel',
+          onClick: (): void => this.onCancel(),
+          ...actions?.secondaryButtonProps,
+        },
+      };
+    },
+  );
 
   /** 是否禁用。 @default false */
   readonly disabled = input(false);
@@ -483,7 +520,7 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     nextFrom: DateType | undefined,
     nextTo: DateType | undefined,
   ): void {
-    if (this.confirmMode() === 'immediate') {
+    if (this.commitsImmediately()) {
       if (nextFrom && nextTo) {
         this.commitRange(nextFrom, nextTo);
         this.stagedValue.set(undefined);
@@ -508,7 +545,7 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
       // React: "開始新的選取，則先清除值" — when starting a new selection
       // over a previously complete range, immediate mode clears the external
       // value. Manual mode preserves committed so Cancel can restore it.
-      if (this.confirmMode() === 'immediate') {
+      if (this.commitsImmediately()) {
         const committed = this.committedValue();
         if (committed?.[0] && committed?.[1]) {
           const empty: RangePickerValue = [
@@ -527,7 +564,7 @@ export class MznDateRangePicker implements ControlValueAccessor, AfterViewInit {
     }
 
     // Second click — full range picked
-    if (this.confirmMode() === 'immediate') {
+    if (this.commitsImmediately()) {
       this.commitRange(start, end);
       this.stagedValue.set(undefined);
     } else {

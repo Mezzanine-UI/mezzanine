@@ -502,6 +502,44 @@ const InnerRangeCalendarPlayground = defineComponent({
   `,
 });
 
+const FOOTER_STORY_REFERENCE_DATE = '2026-09-01';
+
+export const FooterControl: Story = {
+  render: () => ({
+    components: { MznCalendar, MznCalendarConfigProvider },
+    setup: () => ({
+      CalendarMethodsMoment,
+      customLabelProps: { children: { year: '今年' } },
+      isCurrentYear: (date: DateType): boolean =>
+        moment(date).isSame(moment(), 'year'),
+      locale: CalendarLocale.EN_US,
+      referenceDate: FOOTER_STORY_REFERENCE_DATE,
+    }),
+    template: `
+      <MznCalendarConfigProvider :methods="CalendarMethodsMoment" :locale="locale">
+        <p>Custom label</p>
+        <MznCalendar
+          :calendar-footer-control-props="customLabelProps"
+          mode="year"
+          :reference-date="referenceDate"
+        />
+        <p>Hidden</p>
+        <MznCalendar
+          disabled-footer-control
+          mode="year"
+          :reference-date="referenceDate"
+        />
+        <p>Current period disabled</p>
+        <MznCalendar
+          :is-year-disabled="isCurrentYear"
+          mode="year"
+          :reference-date="referenceDate"
+        />
+      </MznCalendarConfigProvider>
+    `,
+  }),
+};
+
 export const RangeCalendarPlayground: StoryObj<typeof MznRangeCalendar> = {
   args: {
     mode: 'day',

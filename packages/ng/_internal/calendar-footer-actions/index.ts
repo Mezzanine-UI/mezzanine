@@ -8,6 +8,24 @@ import {
 import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
 import { buttonClasses } from '@mezzanine-ui/core/button';
 
+/** Props of one footer action button, mirroring the React `ButtonProps` in use. */
+export interface MznCalendarFooterActionButtonProps {
+  /** The button label. */
+  readonly children?: string;
+  /** Whether the button is disabled. */
+  readonly disabled?: boolean;
+  /** The click handler. */
+  readonly onClick?: () => void;
+}
+
+/** Footer action buttons bundle, mirroring React `actions`. */
+export interface MznCalendarFooterActionsProps {
+  /** Props of the confirm button. */
+  readonly primaryButtonProps?: MznCalendarFooterActionButtonProps;
+  /** Props of the cancel button. */
+  readonly secondaryButtonProps?: MznCalendarFooterActionButtonProps;
+}
+
 /**
  * 日曆頁腳操作按鈕元件（如 Cancel / Ok）。
  *

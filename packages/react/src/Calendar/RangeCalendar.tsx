@@ -64,6 +64,7 @@ export interface RangeCalendarProps
    */
   calendarProps?: Omit<
     CalendarProps,
+    | 'calendarFooterControlProps'
     | 'mode'
     | 'value'
     | 'onChange'

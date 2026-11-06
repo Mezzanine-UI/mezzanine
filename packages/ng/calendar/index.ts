@@ -6,7 +6,12 @@ export {
   MZN_CALENDAR_CONFIG,
 } from './calendar-config';
 export { MznCalendarConfigProvider } from './calendar-config-provider.component';
-export { MznCalendar, type CalendarDayAnnotation } from './calendar.component';
+export {
+  MznCalendar,
+  type CalendarDayAnnotation,
+  type MznCalendarBoardProps,
+  type MznCalendarFooterControlProps,
+} from './calendar.component';
 export { MznCalendarCell } from './calendar-cell.component';
 export { MznCalendarControls } from './calendar-controls.component';
 export { MznCalendarDayOfWeek } from './calendar-day-of-week.component';
@@ -23,4 +28,8 @@ export { MznCalendarYears } from './calendar-years.component';
 // date-time-range-picker) for their quick-select inputs, so the type-only
 // re-export is kept.
 export type { CalendarQuickSelectOption } from './calendar-quick-select.component';
-export { MznRangeCalendar } from './range-calendar.component';
+export {
+  MznRangeCalendar,
+  type MznCalendarFooterActionButtonProps,
+  type MznCalendarFooterActionsProps,
+} from './range-calendar.component';

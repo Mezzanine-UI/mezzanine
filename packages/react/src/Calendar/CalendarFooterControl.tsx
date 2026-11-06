@@ -10,6 +10,11 @@ export interface CalendarFooterControlProps
    */
   children?: string;
   /**
+   * Whether the button is disabled.
+   * @default false
+   */
+  disabled?: boolean;
+  /**
    * The onClick handler for button
    */
   onClick?: VoidFunction;
@@ -19,11 +24,16 @@ export interface CalendarFooterControlProps
  * The react component for `mezzanine` calendar footer control.
  */
 function CalendarFooterControl(props: CalendarFooterControlProps) {
-  const { children, className, onClick, ...restElementProps } = props;
+  const { children, className, disabled, onClick, ...restElementProps } = props;
 
   return (
     <div {...restElementProps} className={cx(classes.footerControl, className)}>
-      <Button variant="base-ghost" size="minor" onClick={onClick}>
+      <Button
+        disabled={disabled}
+        onClick={onClick}
+        size="minor"
+        variant="base-ghost"
+      >
         {children}
       </Button>
     </div>

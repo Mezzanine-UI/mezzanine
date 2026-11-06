@@ -11,6 +11,7 @@ import {
   MznRangeCalendar,
   type CalendarDayAnnotation,
   type CalendarQuickSelectOption,
+  type MznCalendarFooterActionsProps,
 } from '@mezzanine-ui/ng/calendar';
 import {
   MznPopper,
@@ -47,6 +48,7 @@ import {
 @Component({
   selector: '[mznDateRangePickerCalendar]',
   host: {
+    '[attr.actions]': 'null',
     '[attr.anchor]': 'null',
     '[attr.offsetOptions]': 'null',
     '[attr.open]': 'null',
@@ -93,6 +95,7 @@ import {
       <div (mouseleave)="mouseLeave.emit()">
         <div
           mznRangeCalendar
+          [actions]="actions()"
           [referenceDate]="referenceDate()"
           [value]="value()"
           [mode]="mode()"
@@ -162,6 +165,11 @@ export class MznDateRangePickerCalendar {
   readonly placement = input<PopperPlacement>('bottom-start');
 
   // ─── RangeCalendar inputs ──────────────────────────────────────
+
+  /** Footer action buttons, mirroring React `actions`. */
+  readonly actions = input<MznCalendarFooterActionsProps | undefined>(
+    undefined,
+  );
 
   /** 是否禁用月份切換按鈕。 @default false */
   readonly disabledMonthSwitch = input(false);
