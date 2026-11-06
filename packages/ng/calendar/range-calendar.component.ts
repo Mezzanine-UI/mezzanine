@@ -18,13 +18,21 @@ import {
 } from '@mezzanine-ui/core/calendar';
 import { MZN_CALENDAR_CONFIG } from './calendar-config';
 import { MznCalendar, CalendarDayAnnotation } from './calendar.component';
-import { MznCalendarFooterActions } from '@mezzanine-ui/ng/_internal';
+import {
+  MznCalendarFooterActions,
+  type MznCalendarFooterActionButtonProps,
+  type MznCalendarFooterActionsProps,
+} from '@mezzanine-ui/ng/_internal';
 import {
   MznCalendarQuickSelect,
   CalendarQuickSelectOption,
 } from './calendar-quick-select.component';
 
-export { CalendarQuickSelectOption };
+export {
+  CalendarQuickSelectOption,
+  type MznCalendarFooterActionButtonProps,
+  type MznCalendarFooterActionsProps,
+};
 
 /**
  * 雙日曆範圍選取元件。
@@ -58,6 +66,7 @@ export { CalendarQuickSelectOption };
     role: 'application',
     '[attr.aria-label]': '"Range calendar, " + mode() + " view"',
     '[class]': 'hostClass',
+    '[attr.actions]': 'null',
     '[attr.disabledMonthSwitch]': 'null',
     '[attr.disabledYearSwitch]': 'null',
     '[attr.disableOnDoubleNext]': 'null',
@@ -166,11 +175,14 @@ export { CalendarQuickSelectOption };
           (yearControlClicked)="onYearControlClick()"
         ></div>
       </div>
-      @if (showFooterActions()) {
+      @if (showFooterActions() || actions()) {
         <div
           mznCalendarFooterActions
-          [confirmDisabled]="!canConfirm()"
-          (confirmed)="confirmed.emit()"
+          [cancelDisabled]="actions()?.secondaryButtonProps?.disabled ?? false"
+          [cancelText]="actions()?.secondaryButtonProps?.children ?? 'Cancel'"
+          [confirmDisabled]="confirmDisabled()"
+          [confirmText]="actions()?.primaryButtonProps?.children ?? 'Ok'"
+          (confirmed)="onConfirmedInternal()"
           (cancelled)="onCancelledInternal()"
         ></div>
       }
@@ -181,6 +193,14 @@ export class MznRangeCalendar {
   private readonly config = inject(MZN_CALENDAR_CONFIG);
 
   // ─── Inputs ────────────────────────────────────────────────────
+
+  /**
+   * Footer action buttons, mirroring React `actions`. The footer renders when
+   * this or `showFooterActions` is set. Hoist it to a class field or signal.
+   */
+  readonly actions = input<MznCalendarFooterActionsProps | undefined>(
+    undefined,
+  );
 
   /** 是否禁用月份切換按鈕。 @default false */
   readonly disabledMonthSwitch = input(false);
@@ -294,6 +314,13 @@ export class MznRangeCalendar {
   /** Whether the picking state has both start and end committed. */
   protected readonly canConfirm = computed(
     (): boolean => !!this.pickingStart() && !!this.pickingEnd(),
+  );
+
+  /** An explicit `disabled` wins; `showFooterActions` gates on a complete range. */
+  protected readonly confirmDisabled = computed(
+    (): boolean =>
+      this.actions()?.primaryButtonProps?.disabled ??
+      (this.showFooterActions() && !this.canConfirm()),
   );
 
   /** Managed reference dates for the two calendars. */
@@ -640,8 +667,14 @@ export class MznRangeCalendar {
     this.cellHover.emit(date);
   }
 
+  protected onConfirmedInternal(): void {
+    this.actions()?.primaryButtonProps?.onClick?.();
+    this.confirmed.emit();
+  }
+
   protected onCancelledInternal(): void {
     this.resetPickingState();
+    this.actions()?.secondaryButtonProps?.onClick?.();
     this.cancelled.emit();
   }
 
