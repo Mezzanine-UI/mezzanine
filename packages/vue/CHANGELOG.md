@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.10...@mezzanine-ui/vue@1.0.0-rc.11) (2026-11-06)
+
+### Features
+
+- **vue/calendar:** customize the footer control and respect disabled periods ([#521](https://github.com/Mezzanine-UI/mezzanine/issues/521)) ([450a87a](https://github.com/Mezzanine-UI/mezzanine/commit/450a87a0e7bbdb557a3ce7193359bf931153eb32))
+
 # [1.0.0-rc.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.9...@mezzanine-ui/vue@1.0.0-rc.10) (2026-11-05)
 
 ### Bug Fixes

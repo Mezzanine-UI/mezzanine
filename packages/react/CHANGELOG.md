@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.9.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.8.1...@mezzanine-ui/react@1.9.0) (2026-11-06)
+
+### Features
+
+- **react/calendar:** customize the footer control and respect disabled periods ([#521](https://github.com/Mezzanine-UI/mezzanine/issues/521)) ([e1fe715](https://github.com/Mezzanine-UI/mezzanine/commit/e1fe7155a4f0384b447af5a28296fbcf9640c5f6))
+
 ## [1.8.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.8.0...@mezzanine-ui/react@1.8.1) (2026-11-05)
 
 ### Bug Fixes

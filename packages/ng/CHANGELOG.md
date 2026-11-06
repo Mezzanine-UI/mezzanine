@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.23](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.22...@mezzanine-ui/ng@1.0.0-rc.23) (2026-11-06)
+
+### Features
+
+- **ng/calendar:** mirror the footer control and board bundles, fix drill-down selection ([#521](https://github.com/Mezzanine-UI/mezzanine/issues/521)) ([03e16aa](https://github.com/Mezzanine-UI/mezzanine/commit/03e16aa6f8275a6d5d5f0e50d3ee53c4ffff9072))
+- **ng/date-picker:** add calendarProps ([#521](https://github.com/Mezzanine-UI/mezzanine/issues/521)) ([ee5ef5e](https://github.com/Mezzanine-UI/mezzanine/commit/ee5ef5eb0df2e62ac449684cc523c2370e274dc8))
+- **ng/date-range-picker:** add actions ([#521](https://github.com/Mezzanine-UI/mezzanine/issues/521)) ([c01f51a](https://github.com/Mezzanine-UI/mezzanine/commit/c01f51a692ad6e6a182c720aee2547f26cf036ee))
+
 # [1.0.0-rc.22](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.21...@mezzanine-ui/ng@1.0.0-rc.22) (2026-11-05)
 
 ### Bug Fixes

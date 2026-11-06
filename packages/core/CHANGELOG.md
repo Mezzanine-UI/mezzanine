@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.5...@mezzanine-ui/core@1.3.0) (2026-11-06)
+
+### Features
+
+- **core/calendar:** add shared footer control helpers ([#521](https://github.com/Mezzanine-UI/mezzanine/issues/521)) ([1c443cc](https://github.com/Mezzanine-UI/mezzanine/commit/1c443ccb200bb7737cd0b2a17748507c57e7a252))
+
 ## [1.2.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.4...@mezzanine-ui/core@1.2.5) (2026-11-03)
 
 ### Bug Fixes
