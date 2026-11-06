@@ -6,7 +6,12 @@ export {
   MZN_CALENDAR_CONFIG,
 } from './calendar-config';
 export { MznCalendarConfigProvider } from './calendar-config-provider.component';
-export { MznCalendar, type CalendarDayAnnotation } from './calendar.component';
+export {
+  MznCalendar,
+  type CalendarDayAnnotation,
+  type MznCalendarBoardProps,
+  type MznCalendarFooterControlProps,
+} from './calendar.component';
 export { MznCalendarCell } from './calendar-cell.component';
 export { MznCalendarControls } from './calendar-controls.component';
 export { MznCalendarDayOfWeek } from './calendar-day-of-week.component';

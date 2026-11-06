@@ -21,6 +21,7 @@ import {
   MznCalendar,
   CalendarDayAnnotation,
   CalendarQuickSelectOption,
+  type MznCalendarFooterControlProps,
 } from './calendar.component';
 import { MznCalendarConfigProvider } from './calendar-config-provider.component';
 import { MZN_CALENDAR_CONFIG, createCalendarConfig } from './calendar-config';
@@ -265,6 +266,47 @@ export const CalendarPlayground: Story = {
  * Toggle；上方 Typography 顯示 Confirmed Range 與 Current Selection；
  * 下方 MznRangeCalendar 有 footer actions (Ok / Cancel)。
  */
+const footerCustomLabelProps: MznCalendarFooterControlProps = {
+  children: { year: '今年' },
+};
+
+const isCurrentYear = (date: DateType): boolean =>
+  moment(date).isSame(moment(), 'year');
+
+export const FooterControl: Story = {
+  decorators: [moduleMetadata({ imports: [MznCalendar] })],
+  render: () => ({
+    props: {
+      customLabelProps: footerCustomLabelProps,
+      isCurrentYear,
+      referenceDate: '2026-09-01',
+    },
+    template: `
+      <p>Custom label</p>
+      <div
+        mznCalendar
+        [calendarFooterControlProps]="customLabelProps"
+        mode="year"
+        [referenceDate]="referenceDate"
+      ></div>
+      <p>Hidden</p>
+      <div
+        mznCalendar
+        [disabledFooterControl]="true"
+        mode="year"
+        [referenceDate]="referenceDate"
+      ></div>
+      <p>Current period disabled</p>
+      <div
+        mznCalendar
+        [isYearDisabled]="isCurrentYear"
+        mode="year"
+        [referenceDate]="referenceDate"
+      ></div>
+    `,
+  }),
+};
+
 @Component({
   selector: 'story-range-calendar-playground',
   standalone: true,

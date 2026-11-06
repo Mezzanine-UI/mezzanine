@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, signal } from '@angular/core';
 import { CalendarMethods, DateType } from '@mezzanine-ui/core/calendar';
-import { MznCalendar } from './calendar.component';
+import {
+  MznCalendar,
+  type MznCalendarFooterControlProps,
+} from './calendar.component';
 import { MZN_CALENDAR_CONFIG, createCalendarConfig } from './calendar-config';
 
 /** Minimal mock CalendarMethods for testing. */
@@ -195,11 +198,23 @@ const testConfig = createCalendarConfig(mockMethods);
       [referenceDate]="refDate()"
       [value]="selected()"
       [mode]="mode()"
+      [calendarFooterControlProps]="footerProps()"
+      [isMonthDisabled]="isMonthDisabled()"
+      [isYearDisabled]="isYearDisabled()"
       (dateChanged)="onDateChanged($event)"
     ></div>
   `,
 })
 class TestHost {
+  readonly footerProps = signal<MznCalendarFooterControlProps | undefined>(
+    undefined,
+  );
+  readonly isMonthDisabled = signal<((date: DateType) => boolean) | undefined>(
+    undefined,
+  );
+  readonly isYearDisabled = signal<((date: DateType) => boolean) | undefined>(
+    undefined,
+  );
   readonly refDate = signal('2024-06-15T00:00:00.000Z');
   readonly selected = signal<DateType | undefined>(undefined);
   readonly mode = signal<string>('day');
@@ -282,6 +297,104 @@ describe('MznCalendar', () => {
     const footer = el.querySelector('[mznCalendarFooterControl]');
     expect(footer).toBeTruthy();
     expect(footer?.textContent).toContain('Today');
+  });
+
+  describe('footer control', () => {
+    const footerButton = (): HTMLButtonElement =>
+      fixture.nativeElement.querySelector(
+        '[mznCalendarFooterControl] button',
+      ) as HTMLButtonElement;
+
+    const openMonthPanel = (): void => {
+      const monthControl = Array.from<HTMLButtonElement>(
+        fixture.nativeElement.querySelectorAll('button'),
+      ).find((button) => button.textContent?.trim() === 'Jun');
+
+      monthControl?.click();
+      fixture.detectChanges();
+    };
+
+    it('should apply a string label', () => {
+      host.footerProps.set({ children: '現在' });
+      host.mode.set('month');
+      fixture.detectChanges();
+
+      expect(footerButton().textContent?.trim()).toBe('現在');
+    });
+
+    it('should resolve a label map by mode and fall back to the default', () => {
+      host.footerProps.set({ children: { day: '今天' } });
+      fixture.detectChanges();
+
+      expect(footerButton().textContent?.trim()).toBe('今天');
+
+      host.mode.set('month');
+      fixture.detectChanges();
+
+      expect(footerButton().textContent?.trim()).toBe('This month');
+    });
+
+    it('should follow the panel the user drilled down to', () => {
+      host.footerProps.set({ children: { day: '今天', month: '本月' } });
+      fixture.detectChanges();
+      openMonthPanel();
+
+      expect(footerButton().textContent?.trim()).toBe('本月');
+    });
+
+    it('should forward className and disabled from the bundle', () => {
+      host.footerProps.set({ className: 'custom-footer', disabled: true });
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector('.custom-footer'),
+      ).toBeTruthy();
+      expect(footerButton().hasAttribute('disabled')).toBe(true);
+    });
+
+    it('should render the core button classes', () => {
+      expect(footerButton().className).toContain('mzn-button--base-ghost');
+      expect(footerButton().className).toContain('mzn-button--minor');
+    });
+
+    it('should emit the target when it is allowed', () => {
+      host.mode.set('month');
+      fixture.detectChanges();
+      footerButton().click();
+
+      expect(host.lastEmitted).toBeTruthy();
+    });
+
+    it('should disable the footer control when the target is disabled', () => {
+      host.isMonthDisabled.set(() => true);
+      host.mode.set('month');
+      fixture.detectChanges();
+
+      expect(footerButton().hasAttribute('disabled')).toBe(true);
+      expect(footerButton().className).toContain('mzn-button--disabled');
+
+      footerButton().click();
+
+      expect(host.lastEmitted).toBeUndefined();
+    });
+
+    it('should combine the predicates the same way the cells do', () => {
+      host.isYearDisabled.set(() => true);
+      fixture.detectChanges();
+
+      expect(footerButton().hasAttribute('disabled')).toBe(true);
+    });
+
+    it('should not select a value from a drilled-down panel', () => {
+      openMonthPanel();
+      footerButton().click();
+      fixture.detectChanges();
+
+      expect(host.lastEmitted).toBeUndefined();
+      expect(
+        fixture.nativeElement.querySelector('[mznCalendarDays]'),
+      ).toBeTruthy();
+    });
   });
 
   it('should render in month mode', () => {
