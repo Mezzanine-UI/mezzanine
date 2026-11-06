@@ -27,6 +27,7 @@ export type { CalendarDaysProps } from './calendar-days.types';
 export { default as MznCalendarFooterActions } from './calendar-footer-actions.vue';
 export type { CalendarFooterActionsProps } from './calendar-footer-actions.types';
 export { default as MznCalendarFooterControl } from './calendar-footer-control.vue';
+export type { CalendarFooterControlProps } from './calendar-footer-control.types';
 export { default as MznCalendarHalfYears } from './calendar-half-years.vue';
 export type { CalendarHalfYearsProps } from './calendar-half-years.types';
 export { default as MznCalendarMonths } from './calendar-months.vue';

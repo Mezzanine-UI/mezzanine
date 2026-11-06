@@ -35,7 +35,10 @@ export interface RangeCalendarProps
   /**
    * Other props you may provide to each `MznCalendar`
    */
-  calendarProps?: Omit<CalendarProps, 'mode' | 'value' | 'referenceDate'>;
+  calendarProps?: Omit<
+    CalendarProps,
+    'calendarFooterControlProps' | 'mode' | 'value' | 'referenceDate'
+  >;
   /**
    * Use this prop to switch calendars.
    * @default 'day'

@@ -1,6 +1,11 @@
-import type { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
+import type {
+  CalendarFooterControlChildren,
+  CalendarMode,
+  DateType,
+} from '@mezzanine-ui/core/calendar';
 import type { CalendarControlsProps } from './calendar-controls.types';
 import type { CalendarDaysProps } from './calendar-days.types';
+import type { CalendarFooterControlProps } from './calendar-footer-control.types';
 import type { CalendarHalfYearsProps } from './calendar-half-years.types';
 import type { CalendarMonthsProps } from './calendar-months.types';
 import type { CalendarQuartersProps } from './calendar-quarters.types';
@@ -42,6 +47,16 @@ export interface CalendarProps
     | 'isDateDisabled'
     | 'isDateInRange'
   >;
+  /**
+   * Other props you may provide to `MznCalendarFooterControl`.
+   * `children` customizes the label: a string applies to every mode, while a map
+   * overrides the listed modes and keeps the default label for the others.
+   * Prefer a map in pickers, whose footer follows the panel the user drilled down to.
+   */
+  calendarFooterControlProps?: CalendarFooterControlProps & {
+    children?: CalendarFooterControlChildren;
+    class?: string;
+  };
   /**
    * Other props you may provide to `MznCalendarHalfYears`
    */

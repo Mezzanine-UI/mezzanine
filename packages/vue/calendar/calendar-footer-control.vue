@@ -3,6 +3,7 @@ import { computed, useAttrs } from 'vue';
 import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
 import clsx from 'clsx';
 import MznButton from '../button/button.vue';
+import type { CalendarFooterControlProps } from './calendar-footer-control.types';
 
 /**
  * 日曆底部的快捷按鈕，例如「Today」、「This week」。
@@ -23,6 +24,10 @@ import MznButton from '../button/button.vue';
  * @see MznCalendarFooterActions 區間日曆底部的確認／取消按鈕
  */
 defineOptions({ inheritAttrs: false });
+
+withDefaults(defineProps<CalendarFooterControlProps>(), {
+  disabled: false,
+});
 
 const emit = defineEmits<{
   click: [];
@@ -48,7 +53,12 @@ const forwardedAttrs = computed(() => {
 
 <template>
   <div v-bind="forwardedAttrs" :class="hostClasses">
-    <MznButton size="minor" variant="base-ghost" @click="emit('click')">
+    <MznButton
+      :disabled="disabled"
+      size="minor"
+      variant="base-ghost"
+      @click="emit('click')"
+    >
       <slot />
     </MznButton>
   </div>
