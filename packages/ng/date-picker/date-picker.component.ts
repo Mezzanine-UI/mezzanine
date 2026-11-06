@@ -31,7 +31,12 @@ import { MznIcon } from '@mezzanine-ui/ng/icon';
 import { ClickAwayService } from '@mezzanine-ui/ng/services';
 import { MznPickerTrigger } from '@mezzanine-ui/ng/picker';
 import { provideValueAccessor } from '@mezzanine-ui/ng/utils';
-import { MznDatePickerCalendar } from './date-picker-calendar.component';
+import {
+  MznDatePickerCalendar,
+  type MznDatePickerCalendarProps,
+} from './date-picker-calendar.component';
+
+export type { MznDatePickerCalendarProps };
 
 /**
  * 日期選擇器元件，點擊輸入框開啟日曆彈出層。
@@ -50,12 +55,34 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
  * ></div>
  * ```
  *
+ * Calendar-only settings go through the `calendarProps` bundle, such as relabeling
+ * or hiding the footer shortcut. Prefer a per-mode label map: the footer follows
+ * the panel the user drilled down to.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   MznDatePicker,
+ *   type MznDatePickerCalendarProps,
+ * } from '@mezzanine-ui/ng/date-picker';
+ *
+ * @Component({
+ *   template: `<div mznDatePicker [calendarProps]="calendarProps"></div>`,
+ * })
+ * class Host {
+ *   readonly calendarProps: MznDatePickerCalendarProps = {
+ *     calendarFooterControlProps: { children: { day: '今天', month: '本月' } },
+ *   };
+ * }
+ * ```
+ *
  * @see {@link MznCalendar} 日曆元件
  * @see {@link MznDateRangePicker} 日期範圍選擇器
  */
 @Component({
   selector: '[mznDatePicker]',
   host: {
+    '[attr.calendarProps]': 'null',
     '[attr.clearable]': 'null',
     '[attr.disabled]': 'null',
     '[attr.disableOnDoubleNext]': 'null',
@@ -122,6 +149,7 @@ import { MznDatePickerCalendar } from './date-picker-calendar.component';
       [mode]="mode()"
       [referenceDate]="internalReferenceDate()"
       [value]="internalValue()"
+      [calendarProps]="calendarProps()"
       [disabledMonthSwitch]="disabledMonthSwitch()"
       [disabledYearSwitch]="disabledYearSwitch()"
       [disableOnNext]="disableOnNext()"
@@ -147,6 +175,14 @@ export class MznDatePicker implements ControlValueAccessor, AfterViewInit {
   private readonly clickAway = inject(ClickAwayService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly hostElRef = inject(ElementRef<HTMLElement>);
+
+  /**
+   * Calendar bundle, mirroring React `calendarProps`. Hoist it to a class field
+   * or signal: an inline object literal changes on every change detection.
+   */
+  readonly calendarProps = input<MznDatePickerCalendarProps | undefined>(
+    undefined,
+  );
 
   /** 是否可清除。 @default true */
   readonly clearable = input(true);
