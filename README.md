@@ -8,10 +8,10 @@ Current releases:
 
 ```json
 {
-  "@mezzanine-ui/core": "1.2.5",
-  "@mezzanine-ui/react": "1.8.1",
-  "@mezzanine-ui/ng": "1.0.0-rc.22",
-  "@mezzanine-ui/vue": "1.0.0-rc.10",
+  "@mezzanine-ui/core": "1.3.0",
+  "@mezzanine-ui/react": "1.9.0",
+  "@mezzanine-ui/ng": "1.0.0-rc.23",
+  "@mezzanine-ui/vue": "1.0.0-rc.11",
   "@mezzanine-ui/system": "1.0.2",
   "@mezzanine-ui/icons": "1.0.2"
 }
@@ -223,6 +223,8 @@ function App({ children }) {
 | `locale`            | `CalendarLocaleValue` | `CalendarLocale.EN_US` | Controls calendar display: first day of week, month/weekday names |
 | `defaultDateFormat` | `string`              | `'YYYY-MM-DD'`         | Default format string for date values                             |
 | `defaultTimeFormat` | `string`              | `'HH:mm:ss'`           | Default format string for time values                             |
+
+> `locale` does not translate the calendar's footer shortcut (`Today`, `This month`, ...). See [DatePicker](#datepicker) to relabel it.
 
 ### Supported Locales
 
@@ -582,6 +584,26 @@ function Example() {
 }
 ```
 
+The calendar footer has a shortcut to the current period (`Today`, `This month`, ...). It is disabled when that period is disabled, and its labels stay in English whatever the `locale` is. Relabel or hide it through `calendarProps`:
+
+```jsx
+// Define it outside the render so the object stays stable.
+const calendarProps = {
+  calendarFooterControlProps: {
+    children: { day: '今天', month: '本月', year: '今年' },
+  },
+};
+
+<DatePicker calendarProps={calendarProps} onChange={setDate} value={date} />;
+
+// Hide the shortcut
+<DatePicker calendarProps={{ disabledFooterControl: true }} onChange={setDate} value={date} />;
+```
+
+`children` takes a string or a per-mode map. Prefer the map: the shortcut follows the panel the user drills down to, so a day picker also shows the `month` and `year` labels. Modes missing from the map keep their default label.
+
+Angular and Vue take the same object, as `[calendarProps]` and `:calendar-props`. In Angular, keep it in a class field or signal rather than an inline literal.
+
 #### DateRangePicker
 
 ```jsx
@@ -599,6 +621,19 @@ function Example() {
   );
 }
 ```
+
+Range pickers have no footer shortcut. With `confirmMode="manual"` they show Cancel and Confirm buttons, which you can relabel through `actions`:
+
+```jsx
+const actions = {
+  primaryButtonProps: { children: '確認' },
+  secondaryButtonProps: { children: '取消' },
+};
+
+<DateRangePicker actions={actions} confirmMode="manual" onChange={setRange} value={range} />;
+```
+
+Angular and Vue take the same object, as `[actions]` and `:actions`. Outside manual mode, passing `actions` means the picker no longer commits the range by itself, so your button handlers have to do it.
 
 #### Layout
 
