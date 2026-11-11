@@ -26,6 +26,7 @@ export const Playground: Story = {
   args: {
     className: '',
     disabled: false,
+    fullWidth: true,
     id: 'test-id-01',
     placeholder: '輸入文字...',
     readOnly: false,
@@ -36,6 +37,7 @@ export const Playground: Story = {
   argTypes: {
     className: { control: 'text' },
     disabled: { control: 'boolean' },
+    fullWidth: { control: 'boolean' },
     placeholder: { control: 'text' },
     readOnly: { control: 'boolean' },
     resize: {
@@ -55,6 +57,7 @@ export const Playground: Story = {
       <MznTextarea
         :class="args.className"
         :disabled="args.disabled"
+        :full-width="args.fullWidth"
         :id="args.id"
         :placeholder="args.placeholder"
         :read-only="args.readOnly"

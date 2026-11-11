@@ -21,6 +21,11 @@ export interface TextareaProps {
    */
   disabled?: boolean;
   /**
+   * Whether the textarea should take the full width of its container.
+   * @default true
+   */
+  fullWidth?: boolean;
+  /**
    * ReadOnly state of the textarea. Only available on `type="default"`.
    * @default false
    */
