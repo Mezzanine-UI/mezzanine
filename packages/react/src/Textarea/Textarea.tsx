@@ -13,6 +13,11 @@ export type TextareaProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'textarea'>,
   'disabled' | 'readOnly'
 > & {
+  /**
+   * Whether the textarea should take the full width of its container.
+   * @default true
+   */
+  fullWidth?: boolean;
   /** ClassName apply to textarea */
   textareaClassName?: string;
   /** The react ref passed to textarea element. */
@@ -60,6 +65,9 @@ export type TextareaProps = Omit<
  *
  * // 禁用狀態
  * <Textarea disabled placeholder="此欄位已停用" />
+ *
+ * // 維持內容寬度，不填滿容器
+ * <Textarea fullWidth={false} />
  * ```
  *
  * @see {@link Input} 單行文字輸入元件
@@ -72,6 +80,7 @@ function Textarea({
   const {
     className,
     disabled,
+    fullWidth = true,
     readOnly,
     textareaClassName,
     textareaRef: textareaRefProp,
@@ -94,10 +103,11 @@ function Textarea({
   return (
     <TextField
       {...interactiveProps}
-      ref={ref}
-      role="presentation"
       className={cx(classes.host, className)}
       error={type === 'error'}
+      fullWidth={fullWidth}
+      ref={ref}
+      role="presentation"
       warning={type === 'warning'}
     >
       <textarea

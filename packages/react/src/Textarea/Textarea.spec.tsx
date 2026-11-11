@@ -35,6 +35,22 @@ describe('<Textarea />', () => {
     expect(host.classList.contains('mzn-text-field--error')).toBe(false);
   });
 
+  it('should take the full width of its container by default', () => {
+    const { getHostHTMLElement } = render(<Textarea />);
+
+    expect(
+      getHostHTMLElement().classList.contains('mzn-text-field--full-width'),
+    ).toBe(true);
+  });
+
+  it('should not take the full width when fullWidth is false', () => {
+    const { getHostHTMLElement } = render(<Textarea fullWidth={false} />);
+
+    expect(
+      getHostHTMLElement().classList.contains('mzn-text-field--full-width'),
+    ).toBe(false);
+  });
+
   it('should render textarea with mzn-textarea__textarea class', () => {
     const { getHostHTMLElement } = render(<Textarea className="foo" />);
     const textarea = getTextareaElement(getHostHTMLElement());

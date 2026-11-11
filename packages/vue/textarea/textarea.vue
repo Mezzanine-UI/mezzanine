@@ -31,6 +31,7 @@ import type { TextareaProps } from './textarea.types';
  *   <MznTextarea resize="vertical" rows="3" />
  *   <MznTextarea :value="text" type="error" @input="text = $event.target.value" />
  *   <MznTextarea disabled placeholder="此欄位已停用" />
+ *   <MznTextarea :full-width="false" />
  * </template>
  * ```
  *
@@ -47,6 +48,7 @@ defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(defineProps<TextareaProps>(), {
   disabled: undefined,
+  fullWidth: true,
   readOnly: undefined,
   resize: 'none',
   textareaClassName: undefined,
@@ -111,6 +113,7 @@ const resizerClass = classes.resizer;
     :class="hostClasses"
     :disabled="fieldDisabled"
     :error="type === 'error'"
+    :full-width="fullWidth"
     :readonly="fieldReadonly"
     role="presentation"
     :warning="type === 'warning'"

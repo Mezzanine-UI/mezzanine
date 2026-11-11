@@ -10,9 +10,8 @@
 }
 
 .#{$prefix} {
-    padding: 0;
-    width: fit-content;
-    height: fit-content;
+  padding: 0;
+  height: fit-content;
 
   &__textarea {
     appearance: none;

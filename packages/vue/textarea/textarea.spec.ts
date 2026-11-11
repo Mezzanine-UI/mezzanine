@@ -22,6 +22,19 @@ describe('MznTextarea', () => {
     expect(wrapper.classes()).not.toContain(textFieldClasses.error);
   });
 
+  it('should take the full width of its container by default', () => {
+    expect(render().classes()).toContain(textFieldClasses.fullWidth);
+  });
+
+  it('should not take the full width when fullWidth is false', () => {
+    const wrapper = render({ props: { fullWidth: false } });
+
+    expect(wrapper.classes()).not.toContain(textFieldClasses.fullWidth);
+    expect(wrapper.get('textarea').attributes()).not.toHaveProperty(
+      'fullwidth',
+    );
+  });
+
   it('should put a consumer class on the frame and never on the textarea', () => {
     const wrapper = render({ attrs: { class: 'foo' } });
     const textarea = wrapper.get('textarea');
