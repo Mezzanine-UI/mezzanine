@@ -2,6 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular';
 import { TextareaResize, TextareaType } from './textarea.component';
 import { MznTextarea } from './textarea.component';
+import { MznTypography } from '../typography/typography.directive';
 
 const types: TextareaType[] = ['default', 'warning', 'error'];
 const resizes: TextareaResize[] = ['none', 'both', 'horizontal', 'vertical'];
@@ -24,6 +25,15 @@ export const Playground: Story = {
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
+      },
+    },
+    fullWidth: {
+      control: { type: 'boolean' },
+      description:
+        'Whether the textarea should take the full width of its container.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
     },
     placeholder: {
@@ -72,6 +82,7 @@ export const Playground: Story = {
   },
   args: {
     disabled: false,
+    fullWidth: true,
     placeholder: '輸入文字...',
     readonly: false,
     resize: 'none',
@@ -80,62 +91,65 @@ export const Playground: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <div style="width: 400px;">
-        <div mznTextarea
-          [disabled]="disabled"
-          [placeholder]="placeholder"
-          [readonly]="readonly"
-          [resize]="resize"
-          [rows]="rows"
-          [type]="type"
-        ></div>
-      </div>
+      <div mznTextarea
+        [disabled]="disabled"
+        [fullWidth]="fullWidth"
+        [placeholder]="placeholder"
+        [readonly]="readonly"
+        [resize]="resize"
+        [rows]="rows"
+        textareaClassName="aa"
+        textareaId="test-id-01"
+        [type]="type"
+      ></div>
     `,
   }),
 };
 
 export const Types: Story = {
   parameters: { controls: { disable: true } },
-  decorators: [moduleMetadata({ imports: [MznTextarea, FormsModule] })],
+  decorators: [
+    moduleMetadata({ imports: [MznTextarea, MznTypography, FormsModule] }),
+  ],
   render: () => ({
     props: { filledValue: 'Lorem ipsum dolor sit amet' },
     template: `
       <div style="display: flex; flex-direction: column; gap: 24px;">
         <div>
-          <p style="margin: 0 0 8px 0; font-size: 18px; font-weight: bold;">Default</p>
+          <h2 mznTypography variant="h2">Default</h2>
           <div style="display: flex; gap: 24px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 12px;">Default</span>
+              <span mznTypography variant="caption">Default</span>
               <div mznTextarea type="default" placeholder="Enter a description..." resize="horizontal" ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 12px;">Filled</span>
+              <span mznTypography variant="caption">Filled</span>
               <div mznTextarea type="default" placeholder="輸入文字..." [ngModel]="filledValue" ></div>
             </div>
           </div>
         </div>
         <div>
-          <p style="margin: 0 0 8px 0; font-size: 18px; font-weight: bold;">Warning</p>
+          <h2 mznTypography variant="h2">Warning</h2>
           <div style="display: flex; gap: 24px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 12px;">Default</span>
+              <span mznTypography variant="caption">Default</span>
               <div mznTextarea type="warning" placeholder="Enter a description..." ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 12px;">Filled</span>
+              <span mznTypography variant="caption">Filled</span>
               <div mznTextarea type="warning" placeholder="輸入文字..." [ngModel]="filledValue" ></div>
             </div>
           </div>
         </div>
         <div>
-          <p style="margin: 0 0 8px 0; font-size: 18px; font-weight: bold;">Error</p>
+          <h2 mznTypography variant="h2">Error</h2>
           <div style="display: flex; gap: 24px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 12px;">Default</span>
+              <span mznTypography variant="caption">Default</span>
               <div mznTextarea type="error" placeholder="Enter a description..." ></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <span style="font-size: 12px;">Filled</span>
+              <span mznTypography variant="caption">Filled</span>
               <div mznTextarea type="error" placeholder="輸入文字..." [ngModel]="filledValue" ></div>
             </div>
           </div>
