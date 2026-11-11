@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.12](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.11...@mezzanine-ui/vue@1.0.0-rc.12) (2026-11-11)
+
+### Features
+
+- **vue/textarea:** add fullWidth ([b531539](https://github.com/Mezzanine-UI/mezzanine/commit/b531539adfc103f914c95ed9092dde6359dd4833)), closes [#523](https://github.com/Mezzanine-UI/mezzanine/issues/523)
+
 # [1.0.0-rc.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.10...@mezzanine-ui/vue@1.0.0-rc.11) (2026-11-06)
 
 ### Features

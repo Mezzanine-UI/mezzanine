@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.24](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.23...@mezzanine-ui/ng@1.0.0-rc.24) (2026-11-11)
+
+### Bug Fixes
+
+- **ng/textarea:** render the host as the text field and add fullWidth ([7c0580e](https://github.com/Mezzanine-UI/mezzanine/commit/7c0580e01bc3cdd8c5d0faaad0ec01ecad6582b6)), closes [#523](https://github.com/Mezzanine-UI/mezzanine/issues/523)
+
 # [1.0.0-rc.23](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.22...@mezzanine-ui/ng@1.0.0-rc.23) (2026-11-06)
 
 ### Features

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.9.0...@mezzanine-ui/react@1.10.0) (2026-11-11)
+
+### Features
+
+- **react/textarea:** add fullWidth ([668ae1e](https://github.com/Mezzanine-UI/mezzanine/commit/668ae1e925af4628e87cb3abdb284d10cc1d4767)), closes [#523](https://github.com/Mezzanine-UI/mezzanine/issues/523)
+
 # [1.9.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.8.1...@mezzanine-ui/react@1.9.0) (2026-11-06)
 
 ### Features

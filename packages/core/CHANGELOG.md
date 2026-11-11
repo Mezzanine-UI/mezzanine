@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.3.0...@mezzanine-ui/core@1.3.1) (2026-11-11)
+
+### Bug Fixes
+
+- **core/textarea:** let the full-width modifier win over fit-content ([3eedfee](https://github.com/Mezzanine-UI/mezzanine/commit/3eedfeebd36a5c7c099899e30960848cff119997)), closes [#523](https://github.com/Mezzanine-UI/mezzanine/issues/523)
+
 # [1.3.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.2.5...@mezzanine-ui/core@1.3.0) (2026-11-06)
 
 ### Features
