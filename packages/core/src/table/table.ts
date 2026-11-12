@@ -529,6 +529,11 @@ export interface TableActionItemDropdown<
   icon?: IconDefinition;
   /** Button icon type */
   iconType?: ButtonIconType;
+  /**
+   * Accessible name for the opened listbox.
+   * @default name
+   */
+  listboxLabel?: string;
   /** Dropdown options */
   options: DropdownOption[];
   /** Callback when a dropdown option is selected */
