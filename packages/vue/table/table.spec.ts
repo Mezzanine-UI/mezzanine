@@ -319,6 +319,23 @@ describe('<MznTable />', () => {
       wrapper.unmount();
     });
 
+    it('should name the opened overflow listbox after the action label', async () => {
+      const wrapper = renderBulkActions({ overflowAction });
+
+      const trigger = wrapper
+        .findAll(`.${classes.bulkActions} button`)
+        .find((button) => button.text() === 'More');
+
+      await trigger?.trigger('click');
+      await flushPromises();
+
+      expect(
+        document.querySelector('[role="listbox"]')?.getAttribute('aria-label'),
+      ).toBe('More');
+
+      wrapper.unmount();
+    });
+
     it('should render one separator between destructive and overflow actions without main actions', () => {
       const wrapper = renderBulkActions({
         destructiveAction: { label: 'Remove', onClick: vi.fn() },
@@ -480,6 +497,60 @@ describe('<MznTable />', () => {
       await buttons[0].trigger('click');
 
       expect(onClick).toHaveBeenCalledWith(rows[0], 0);
+    });
+
+    describe('dropdown action listbox name', () => {
+      const openFirstDropdown = async (
+        item: Record<string, unknown>,
+      ): Promise<ReturnType<typeof render>> => {
+        const wrapper = render({
+          actions: {
+            render: () => [
+              {
+                name: 'More actions',
+                onSelect: vi.fn(),
+                options: [{ id: 'remove', name: 'Remove' }],
+                type: 'dropdown',
+                ...item,
+              },
+            ],
+            title: 'Action',
+          } as never,
+        });
+
+        await wrapper
+          .find(`tbody .${classes.actionsCell} button`)
+          .trigger('click');
+        await flushPromises();
+
+        return wrapper;
+      };
+
+      it('should name the opened listbox after the action name by default', async () => {
+        const wrapper = await openFirstDropdown({});
+
+        expect(
+          document
+            .querySelector('[role="listbox"]')
+            ?.getAttribute('aria-label'),
+        ).toBe('More actions');
+
+        wrapper.unmount();
+      });
+
+      it('should prefer listboxLabel over the action name', async () => {
+        const wrapper = await openFirstDropdown({
+          listboxLabel: 'Row actions menu',
+        });
+
+        expect(
+          document
+            .querySelector('[role="listbox"]')
+            ?.getAttribute('aria-label'),
+        ).toBe('Row actions menu');
+
+        wrapper.unmount();
+      });
     });
 
     it('should pin rows through the handle column', async () => {

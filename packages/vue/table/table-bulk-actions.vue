@@ -136,6 +136,7 @@ function handleOverflowSelect(option: DropdownOption): void {
           :class="classes.bulkActionsSeparator"
         />
         <MznDropdown
+          :listbox-label="bulkActions.overflowAction.label"
           :max-height="bulkActions.overflowAction.maxHeight"
           :options="bulkActions.overflowAction.options"
           :placement="bulkActions.overflowAction.placement ?? 'top'"
