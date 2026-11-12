@@ -486,6 +486,11 @@ export interface TableActionDropdownItem {
   readonly type: 'dropdown';
   /** Trigger 按鈕的文字，可留空（僅以圖示當 trigger）。 */
   readonly label?: string;
+  /**
+   * Accessible name for the opened listbox.
+   * @default label
+   */
+  readonly listboxLabel?: string;
   /** Trigger 按鈕的圖示。 */
   readonly icon?: IconDefinition;
   /** 是否停用。 */

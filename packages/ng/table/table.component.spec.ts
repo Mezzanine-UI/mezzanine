@@ -347,6 +347,47 @@ describe('MznTable row action accessibility', () => {
     // accessible name at all.
     expect(trigger?.getAttribute('aria-label')).toBe('More actions');
   });
+
+  function openRowActionListbox(
+    fixture: ComponentFixture<RowActionsHostComponent>,
+  ): Element | null {
+    fixture.detectChanges();
+
+    (fixture.nativeElement as HTMLElement)
+      .querySelector<HTMLButtonElement>('.mzn-table__cell__actions button')
+      ?.click();
+    fixture.detectChanges();
+
+    return document.querySelector('[role="listbox"]');
+  }
+
+  it('should name the opened listbox after the action label by default', () => {
+    const fixture = TestBed.createComponent(RowActionsHostComponent);
+
+    expect(openRowActionListbox(fixture)?.getAttribute('aria-label')).toBe(
+      'More actions',
+    );
+  });
+
+  it('should prefer listboxLabel over the action label for the listbox', () => {
+    const fixture = TestBed.createComponent(RowActionsHostComponent);
+
+    fixture.componentInstance.actions.set({
+      render: () => [
+        {
+          key: 'more',
+          type: 'dropdown' as const,
+          label: 'More actions',
+          listboxLabel: 'Row actions menu',
+          options: [{ id: 'copy', name: 'Copy' }],
+        },
+      ],
+    });
+
+    expect(openRowActionListbox(fixture)?.getAttribute('aria-label')).toBe(
+      'Row actions menu',
+    );
+  });
 });
 
 @Component({
@@ -534,6 +575,26 @@ describe('MznTable bulk actions separators', () => {
 
     expect(el.textContent).toContain('Remove');
     expect(el.querySelectorAll(separatorSelector)).toHaveLength(0);
+  });
+
+  it('should name the opened overflow listbox after the action label', () => {
+    const fixture = TestBed.createComponent(BulkActionsHostComponent);
+
+    fixture.componentInstance.bulkActions.set({ overflowAction });
+    fixture.detectChanges();
+
+    Array.from(
+      (
+        fixture.nativeElement as HTMLElement
+      ).querySelectorAll<HTMLButtonElement>('.mzn-table__bulk-actions button'),
+    )
+      .find((button) => button.textContent?.trim() === 'More')
+      ?.click();
+    fixture.detectChanges();
+
+    expect(
+      document.querySelector('[role="listbox"]')?.getAttribute('aria-label'),
+    ).toBe('More');
   });
 
   it('should not render separator when only overflow action is provided', () => {
