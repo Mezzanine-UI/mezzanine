@@ -798,6 +798,9 @@ function throttleRaf(
                                   rowActionDropdownOpenKey() ===
                                   rowActionDropdownKey(idx, dropAction.key)
                                 "
+                                [listboxLabel]="
+                                  dropAction.listboxLabel ?? dropAction.label
+                                "
                                 [options]="dropAction.options"
                                 [placement]="
                                   dropAction.placement ?? 'bottom-end'
@@ -974,6 +977,7 @@ function throttleRaf(
                 mznDropdown
                 [anchor]="bulkOverflowAnchor"
                 [open]="bulkOverflowOpen()"
+                [listboxLabel]="oa.label"
                 [options]="oa.options"
                 [placement]="oa.placement ?? 'top'"
                 (select)="onBulkOverflowSelect(oa, $event)"

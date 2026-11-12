@@ -114,6 +114,7 @@ function TableBulkActions(props: TableBulkActionsProps) {
               <div className={classes.bulkActionsSeparator} />
             )}
             <Dropdown
+              listboxLabel={overflowAction.label}
               maxHeight={overflowAction.maxHeight}
               onSelect={(option) =>
                 overflowAction.onSelect(option, selectedRowKeys, selectedRows)

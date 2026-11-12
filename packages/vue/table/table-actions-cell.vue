@@ -156,6 +156,9 @@ function handleClick(item: TableActionItem<TableDataSource>): void {
         >
           <MznDropdown
             v-if="item.type === 'dropdown'"
+            :listbox-label="
+              asDropdown(item).listboxLabel ?? asDropdown(item).name
+            "
             :max-height="asDropdown(item).maxHeight"
             :options="asDropdown(item).options"
             :placement="asDropdown(item).placement ?? 'bottom-end'"

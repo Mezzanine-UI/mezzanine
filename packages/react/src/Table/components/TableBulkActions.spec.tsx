@@ -201,6 +201,24 @@ describe('<TableBulkActions />', () => {
     });
   });
 
+  describe('Overflow action accessibility', () => {
+    it('should name the opened overflow listbox after the action label', async () => {
+      renderWithContext({
+        overflowAction: {
+          label: 'More',
+          onSelect: jest.fn(),
+          options: [{ id: 'archive', name: 'Archive' }],
+        },
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: 'More' }));
+
+      expect(
+        await screen.findByRole('listbox', { name: 'More' }),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('Separators', () => {
     const separatorSelector = '.mzn-table__bulk-actions__separator';
     const overflowAction = {

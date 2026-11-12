@@ -202,6 +202,37 @@ describe('<TableActionsCell />', () => {
       ).toBeInTheDocument();
     });
 
+    it('should name the opened listbox after the action name by default', async () => {
+      renderWithContext(dropdownActions);
+
+      fireEvent.click(screen.getByRole('button', { name: 'More actions' }));
+
+      expect(
+        await screen.findByRole('listbox', { name: 'More actions' }),
+      ).toBeInTheDocument();
+    });
+
+    it('should prefer listboxLabel over the action name for the listbox', async () => {
+      renderWithContext({
+        ...dropdownActions,
+        render: () => [
+          {
+            listboxLabel: 'Row actions menu',
+            name: 'More actions',
+            onSelect: jest.fn(),
+            options: [{ id: '1', name: 'Option 1' }],
+            type: 'dropdown',
+          },
+        ],
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: 'More actions' }));
+
+      expect(
+        await screen.findByRole('listbox', { name: 'Row actions menu' }),
+      ).toBeInTheDocument();
+    });
+
     it('should close the menu after an option is clicked', async () => {
       const onSelect = jest.fn();
 

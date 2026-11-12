@@ -171,6 +171,9 @@ const TableActionsCellInner = function TableActionsCell({
                 <Dropdown
                   key={baseKey}
                   type="default"
+                  // A listbox with options gets no fallback name from
+                  // Dropdown, so reuse the trigger's name unless overridden.
+                  listboxLabel={dropdownItem.listboxLabel ?? dropdownItem.name}
                   maxHeight={dropdownItem.maxHeight}
                   onSelect={(option) =>
                     dropdownItem.onSelect(option, record, rowIndex)
