@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.10.0...@mezzanine-ui/react@1.10.1) (2026-11-12)
+
+### Bug Fixes
+
+- **react/table:** name dropdown action listboxes ([dce7e69](https://github.com/Mezzanine-UI/mezzanine/commit/dce7e69ee59f458c600f8d9d7df87f078d66b744))
+
 # [1.10.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.9.0...@mezzanine-ui/react@1.10.0) (2026-11-11)
 
 ### Features

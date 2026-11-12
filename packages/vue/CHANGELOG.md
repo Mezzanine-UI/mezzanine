@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.13](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.12...@mezzanine-ui/vue@1.0.0-rc.13) (2026-11-12)
+
+### Bug Fixes
+
+- **vue/table:** name dropdown action listboxes ([617b22f](https://github.com/Mezzanine-UI/mezzanine/commit/617b22f9ff080535a966f7c1538758cb9303f6be))
+
 # [1.0.0-rc.12](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.11...@mezzanine-ui/vue@1.0.0-rc.12) (2026-11-11)
 
 ### Features

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.25](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.24...@mezzanine-ui/ng@1.0.0-rc.25) (2026-11-12)
+
+### Bug Fixes
+
+- **ng/table:** name dropdown action listboxes ([04c62f2](https://github.com/Mezzanine-UI/mezzanine/commit/04c62f2ba3eb735edb96976d8744f6860847f630))
+
 # [1.0.0-rc.24](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.23...@mezzanine-ui/ng@1.0.0-rc.24) (2026-11-11)
 
 ### Bug Fixes
