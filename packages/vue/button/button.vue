@@ -115,6 +115,29 @@ const showTooltip = computed(
     isIconOnly.value && !props.disabledTooltip && Boolean(slots.default),
 );
 
+/**
+ * A Dropdown marks its trigger with `aria-haspopup` and `aria-expanded`.
+ * Hovering back onto the trigger would mount the tooltip after the open menu
+ * in the portal layer, on top of it, so the tooltip stays hidden while the
+ * popup is expanded. A disclosure (`aria-expanded` alone) opens nothing that
+ * floats, so its tooltip is kept. Only the title slot is dropped: leaving the
+ * tooltip branch would remount the button and lose its focus and the anchor
+ * ref. Read at render time — `attrs` is not reactive, so a `computed` would
+ * cache a stale value.
+ */
+function isPopupExpanded(): boolean {
+  const ariaExpanded = attrs['aria-expanded'];
+  const ariaHasPopup = attrs['aria-haspopup'];
+  const isExpanded = ariaExpanded === true || ariaExpanded === 'true';
+  const hasPopup =
+    ariaHasPopup !== undefined &&
+    ariaHasPopup !== null &&
+    ariaHasPopup !== false &&
+    ariaHasPopup !== 'false';
+
+  return isExpanded && hasPopup;
+}
+
 const hostClasses = computed((): string =>
   clsx(
     classes.host,
@@ -131,6 +154,11 @@ const hostClasses = computed((): string =>
   ),
 );
 
+/**
+ * The tooltip is rendered with `disable-portal` off: in place it would live in
+ * the button's own stacking context, where a sibling of an ancestor (e.g. the
+ * pinned Table cell of the next row) paints over it.
+ */
 const tooltipOptions = computed(
   (): PopperOptions => ({ placement: props.tooltipPosition }),
 );
@@ -231,8 +259,12 @@ const ButtonContent: FunctionalComponent = () => {
 </script>
 
 <template>
-  <MznTooltip v-if="showTooltip" :options="tooltipOptions">
-    <template #title>
+  <MznTooltip
+    v-if="showTooltip"
+    :disable-portal="false"
+    :options="tooltipOptions"
+  >
+    <template v-if="!isPopupExpanded()" #title>
       <slot />
     </template>
     <template #default="tooltipProps">
