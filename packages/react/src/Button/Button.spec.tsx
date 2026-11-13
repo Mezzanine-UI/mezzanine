@@ -358,6 +358,24 @@ describe('<Button />', () => {
       expect(tooltip?.textContent).toBe('Add new item');
     });
 
+    it('should portal the tooltip out of the button position so ancestor stacking contexts cannot cover it', async () => {
+      const { container, getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(container.contains(tooltip)).toBe(false);
+    });
+
     it('should not show tooltip when disabledTooltip is true', async () => {
       const { getHostHTMLElement } = render(
         <Button disabledTooltip icon={PlusIcon} iconType="icon-only">

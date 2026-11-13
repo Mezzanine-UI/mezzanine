@@ -170,7 +170,13 @@ function Button({
 
   if (showTooltip) {
     return (
-      <Tooltip options={{ placement: tooltipPosition }} title={children}>
+      // Portaled so an ancestor stacking context (e.g. a pinned Table cell)
+      // cannot paint its siblings over the tooltip.
+      <Tooltip
+        disablePortal={false}
+        options={{ placement: tooltipPosition }}
+        title={children}
+      >
         {(tooltipProps) => buttonElement(tooltipProps)}
       </Tooltip>
     );
