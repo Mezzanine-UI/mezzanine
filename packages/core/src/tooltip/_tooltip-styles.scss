@@ -4,6 +4,7 @@
 @use '@mezzanine-ui/system/radius' as radius;
 @use '@mezzanine-ui/system/effect' as effect;
 @use '@mezzanine-ui/system/z-index' as z-index;
+@use '../portal/portal' as portal;
 @use './tooltip' as *;
 
 .#{$prefix} {
@@ -30,4 +31,13 @@
   &__arrow {
     color: palette.semantic-variable("background", fixed-dark);
   }
+}
+
+// In place, `popover` lifts the tooltip over its neighbours. Inside the portal
+// layer every element stacks by mount order instead (a Dropdown or Modal opened
+// later lands on top), so a portaled tooltip drops its fixed z-index. Only a
+// direct child of the layer is a portaled tooltip: one rendered in place
+// inside a portaled Modal or Drawer is nested deeper and keeps `popover`.
+.#{portal.$prefix}-default > .#{$prefix} {
+  z-index: auto;
 }
