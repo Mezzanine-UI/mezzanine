@@ -70,6 +70,14 @@ function Button({
 
   const isIconOnly = iconType === 'icon-only';
   const showTooltip = isIconOnly && !disabledTooltip && Boolean(children);
+  /**
+   * A Dropdown marks its trigger with `aria-expanded`. The portaled tooltip
+   * would sit above the portaled menu it just opened, so it stays hidden while
+   * the popup is expanded. Only the title is dropped: unmounting the Tooltip
+   * branch would remount the button and lose its focus and the anchor ref.
+   */
+  const ariaExpanded = rest['aria-expanded'];
+  const isPopupExpanded = ariaExpanded === true || ariaExpanded === 'true';
 
   /**
    * Tooltip 分支會提供自己的 ref，必須與呼叫端的 ref 合成而非取代，
@@ -175,7 +183,7 @@ function Button({
       <Tooltip
         disablePortal={false}
         options={{ placement: tooltipPosition }}
-        title={children}
+        title={isPopupExpanded ? undefined : children}
       >
         {(tooltipProps) => buttonElement(tooltipProps)}
       </Tooltip>
