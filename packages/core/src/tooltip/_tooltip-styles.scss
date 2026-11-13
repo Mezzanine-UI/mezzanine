@@ -18,6 +18,10 @@
   color: palette.semantic-variable(text, fixed-light);
   box-shadow: effect.variable(shadow, floating);
   z-index: z-index.get(popover);
+
+  // The portal layer is `pointer-events: none`; a portaled tooltip has to opt
+  // back in so the pointer can move onto it without closing it.
+  pointer-events: auto;
   white-space: pre-line;
   word-break: break-all;
 
