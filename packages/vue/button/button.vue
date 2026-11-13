@@ -115,6 +115,20 @@ const showTooltip = computed(
     isIconOnly.value && !props.disabledTooltip && Boolean(slots.default),
 );
 
+/**
+ * A Dropdown marks its trigger with `aria-expanded`. The portaled tooltip
+ * would sit above the portaled menu it just opened, so it stays hidden while
+ * the popup is expanded. Only the title slot is dropped: leaving the tooltip
+ * branch would remount the button and lose its focus and the anchor ref.
+ * Read at render time — `attrs` is not reactive, so a `computed` would cache
+ * a stale value.
+ */
+function isPopupExpanded(): boolean {
+  const ariaExpanded = attrs['aria-expanded'];
+
+  return ariaExpanded === true || ariaExpanded === 'true';
+}
+
 const hostClasses = computed((): string =>
   clsx(
     classes.host,
@@ -241,7 +255,7 @@ const ButtonContent: FunctionalComponent = () => {
     :disable-portal="false"
     :options="tooltipOptions"
   >
-    <template #title>
+    <template v-if="!isPopupExpanded()" #title>
       <slot />
     </template>
     <template #default="tooltipProps">

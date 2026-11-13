@@ -214,6 +214,43 @@ describe('MznButton', () => {
       expect(tooltip?.parentElement).not.toBe(button.element.parentElement);
     });
 
+    // A Dropdown marks its trigger with `aria-expanded`. The portaled tooltip
+    // sits above the portaled menu, so it must not cover the menu it opened.
+    it('should not show the tooltip while the button reports an expanded popup', async () => {
+      const wrapper = renderButton(
+        { icon: PlusIcon, iconType: 'icon-only' },
+        { attrs: { 'aria-expanded': true }, text: 'more actions' },
+      );
+      const button = wrapper.get('button');
+
+      await button.trigger('mouseenter');
+      await flushPromises();
+
+      expect(document.body.querySelector(`.${tooltipClasses.host}`)).toBeNull();
+      expect(button.attributes('aria-describedby')).toBeUndefined();
+    });
+
+    it('should hide an open tooltip once the popup expands, keeping the same button node', async () => {
+      const wrapper = renderButton(
+        { icon: PlusIcon, iconType: 'icon-only' },
+        { attrs: { 'aria-expanded': false }, text: 'more actions' },
+      );
+      const button = wrapper.get('button').element;
+
+      await wrapper.get('button').trigger('mouseenter');
+      await flushPromises();
+
+      expect(
+        document.body.querySelector(`.${tooltipClasses.host}`),
+      ).not.toBeNull();
+
+      await wrapper.setProps({ 'aria-expanded': true } as never);
+      await flushPromises();
+
+      expect(document.body.querySelector(`.${tooltipClasses.host}`)).toBeNull();
+      expect(wrapper.get('button').element).toBe(button);
+    });
+
     it('should not show a tooltip when disabledTooltip is set', async () => {
       const wrapper = renderButton({
         disabledTooltip: true,
