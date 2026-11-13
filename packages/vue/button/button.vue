@@ -116,17 +116,26 @@ const showTooltip = computed(
 );
 
 /**
- * A Dropdown marks its trigger with `aria-expanded`. The portaled tooltip
- * would sit above the portaled menu it just opened, so it stays hidden while
- * the popup is expanded. Only the title slot is dropped: leaving the tooltip
- * branch would remount the button and lose its focus and the anchor ref.
- * Read at render time — `attrs` is not reactive, so a `computed` would cache
- * a stale value.
+ * A Dropdown marks its trigger with `aria-haspopup` and `aria-expanded`.
+ * Hovering back onto the trigger would mount the tooltip after the open menu
+ * in the portal layer, on top of it, so the tooltip stays hidden while the
+ * popup is expanded. A disclosure (`aria-expanded` alone) opens nothing that
+ * floats, so its tooltip is kept. Only the title slot is dropped: leaving the
+ * tooltip branch would remount the button and lose its focus and the anchor
+ * ref. Read at render time — `attrs` is not reactive, so a `computed` would
+ * cache a stale value.
  */
 function isPopupExpanded(): boolean {
   const ariaExpanded = attrs['aria-expanded'];
+  const ariaHasPopup = attrs['aria-haspopup'];
+  const isExpanded = ariaExpanded === true || ariaExpanded === 'true';
+  const hasPopup =
+    ariaHasPopup !== undefined &&
+    ariaHasPopup !== null &&
+    ariaHasPopup !== false &&
+    ariaHasPopup !== 'false';
 
-  return ariaExpanded === true || ariaExpanded === 'true';
+  return isExpanded && hasPopup;
 }
 
 const hostClasses = computed((): string =>

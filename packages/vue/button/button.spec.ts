@@ -214,12 +214,15 @@ describe('MznButton', () => {
       expect(tooltip?.parentElement).not.toBe(button.element.parentElement);
     });
 
-    // A Dropdown marks its trigger with `aria-expanded`. The portaled tooltip
-    // sits above the portaled menu, so it must not cover the menu it opened.
+    // A Dropdown marks its trigger with `aria-expanded` and `aria-haspopup`.
+    // The tooltip must not cover the menu the button just opened.
     it('should not show the tooltip while the button reports an expanded popup', async () => {
       const wrapper = renderButton(
         { icon: PlusIcon, iconType: 'icon-only' },
-        { attrs: { 'aria-expanded': true }, text: 'more actions' },
+        {
+          attrs: { 'aria-expanded': true, 'aria-haspopup': 'listbox' },
+          text: 'more actions',
+        },
       );
       const button = wrapper.get('button');
 
@@ -233,7 +236,10 @@ describe('MznButton', () => {
     it('should hide an open tooltip once the popup expands, keeping the same button node', async () => {
       const wrapper = renderButton(
         { icon: PlusIcon, iconType: 'icon-only' },
-        { attrs: { 'aria-expanded': false }, text: 'more actions' },
+        {
+          attrs: { 'aria-expanded': false, 'aria-haspopup': 'listbox' },
+          text: 'more actions',
+        },
       );
       const button = wrapper.get('button').element;
 
@@ -250,6 +256,28 @@ describe('MznButton', () => {
       expect(document.body.querySelector(`.${tooltipClasses.host}`)).toBeNull();
       expect(wrapper.get('button').element).toBe(button);
     });
+
+    // A disclosure (e.g. an expand/collapse toggle) reports `aria-expanded`
+    // without a popup: nothing floats over the tooltip, so it stays.
+    it.each([
+      ['without aria-haspopup', {}],
+      ['with aria-haspopup="false"', { 'aria-haspopup': 'false' }],
+    ])(
+      'should still show the tooltip on an expanded disclosure %s',
+      async (_, popupAttrs) => {
+        const wrapper = renderButton(
+          { icon: PlusIcon, iconType: 'icon-only' },
+          { attrs: { 'aria-expanded': true, ...popupAttrs }, text: 'collapse' },
+        );
+
+        await wrapper.get('button').trigger('mouseenter');
+        await flushPromises();
+
+        expect(
+          document.body.querySelector(`.${tooltipClasses.host}`),
+        ).not.toBeNull();
+      },
+    );
 
     it('should not show a tooltip when disabledTooltip is set', async () => {
       const wrapper = renderButton({
