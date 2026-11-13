@@ -6,6 +6,7 @@ import type {
   TableBulkActions,
   TableRowSelectionCheckbox,
 } from '@mezzanine-ui/core/table';
+import { tooltipClasses } from '@mezzanine-ui/core/tooltip';
 import MznTable from './table.vue';
 import type { TableCollectable, TableColumn, TableProps } from './table.types';
 
@@ -434,6 +435,28 @@ describe('<MznTable />', () => {
       expect(wrapper.find('thead th').attributes('aria-sort')).toBe(
         'descending',
       );
+    });
+  });
+
+  describe('cell truncation tooltip', () => {
+    // In place, the tooltip sits in the pinned cell's stacking context, where
+    // the pinned header cell paints over it on the first row (#527).
+    it('should portal the tooltip out of the cell', async () => {
+      const wrapper = render();
+      const content = wrapper.get(`tbody .${classes.cellEllipsis}`);
+
+      Object.defineProperty(content.element, 'scrollWidth', { value: 200 });
+      Object.defineProperty(content.element, 'offsetWidth', { value: 100 });
+
+      await content.trigger('mouseenter');
+      await flushPromises();
+
+      const tooltip = document.body.querySelector(`.${tooltipClasses.host}`);
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.closest('td')).toBeNull();
+
+      wrapper.unmount();
     });
   });
 
