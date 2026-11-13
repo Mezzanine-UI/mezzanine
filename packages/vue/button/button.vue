@@ -131,6 +131,11 @@ const hostClasses = computed((): string =>
   ),
 );
 
+/**
+ * The tooltip is rendered with `disable-portal` off: in place it would live in
+ * the button's own stacking context, where a sibling of an ancestor (e.g. the
+ * pinned Table cell of the next row) paints over it.
+ */
 const tooltipOptions = computed(
   (): PopperOptions => ({ placement: props.tooltipPosition }),
 );
@@ -231,7 +236,11 @@ const ButtonContent: FunctionalComponent = () => {
 </script>
 
 <template>
-  <MznTooltip v-if="showTooltip" :options="tooltipOptions">
+  <MznTooltip
+    v-if="showTooltip"
+    :disable-portal="false"
+    :options="tooltipOptions"
+  >
     <template #title>
       <slot />
     </template>

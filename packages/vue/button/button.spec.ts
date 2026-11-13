@@ -196,6 +196,24 @@ describe('MznButton', () => {
       );
     });
 
+    // In place, the tooltip lives in the button's own stacking context, so a
+    // pinned Table cell of the next row paints over it (#527).
+    it('should portal the tooltip out of the button position', async () => {
+      const wrapper = renderButton(
+        { icon: PlusIcon, iconType: 'icon-only' },
+        { text: 'add item' },
+      );
+      const button = wrapper.get('button');
+
+      await button.trigger('mouseenter');
+      await flushPromises();
+
+      const tooltip = document.body.querySelector(`.${tooltipClasses.host}`);
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.parentElement).not.toBe(button.element.parentElement);
+    });
+
     it('should not show a tooltip when disabledTooltip is set', async () => {
       const wrapper = renderButton({
         disabledTooltip: true,
