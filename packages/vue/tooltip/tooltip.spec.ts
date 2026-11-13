@@ -190,6 +190,33 @@ describe('MznTooltip', () => {
 
       expect(tooltip()?.textContent).toBe('slot only');
     });
+
+    // React re-reads `title` on every render, so a title that goes away closes
+    // an open tooltip. `slots` is not reactive, so this needs explicit care.
+    it('should close an open tooltip once the title slot goes away', async () => {
+      const Host = defineComponent({
+        props: { withTitle: { default: true, type: Boolean } },
+        setup(props) {
+          return () =>
+            h(MznTooltip, null, {
+              default: trigger,
+              ...(props.withTitle && { title: () => 'slot only' }),
+            });
+        },
+      });
+      const wrapper = mount(Host, { attachTo: document.body });
+
+      await flushPromises();
+      await wrapper.get('button').trigger('mouseenter');
+      await flushPromises();
+
+      expect(tooltip()).not.toBeNull();
+
+      await wrapper.setProps({ withTitle: false });
+      await flushPromises();
+
+      expect(tooltip()).toBeNull();
+    });
   });
 
   describe('attributes', () => {
