@@ -358,6 +358,111 @@ describe('<Button />', () => {
       expect(tooltip?.textContent).toBe('Add new item');
     });
 
+    it('should portal the tooltip out of the button position so ancestor stacking contexts cannot cover it', async () => {
+      const { container, getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(container.contains(tooltip)).toBe(false);
+    });
+
+    // A Dropdown marks its trigger with `aria-expanded` and `aria-haspopup`.
+    // The tooltip must not cover the menu the button just opened.
+    it('should not show the tooltip while the button reports an expanded popup', async () => {
+      const { getHostHTMLElement } = render(
+        <Button
+          aria-expanded
+          aria-haspopup="listbox"
+          icon={PlusIcon}
+          iconType="icon-only"
+        >
+          More actions
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      expect(document.querySelector('[data-popper-placement]')).toBeNull();
+      expect(element.getAttribute('aria-describedby')).toBeNull();
+    });
+
+    it('should hide an open tooltip once the popup expands, keeping the same button node', async () => {
+      const { getHostHTMLElement, rerender } = render(
+        <Button
+          aria-expanded={false}
+          aria-haspopup="listbox"
+          icon={PlusIcon}
+          iconType="icon-only"
+        >
+          More actions
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      expect(document.querySelector('[data-popper-placement]')).not.toBeNull();
+
+      rerender(
+        <Button
+          aria-expanded
+          aria-haspopup="listbox"
+          icon={PlusIcon}
+          iconType="icon-only"
+        >
+          More actions
+        </Button>,
+      );
+
+      expect(document.querySelector('[data-popper-placement]')).toBeNull();
+      expect(getHostHTMLElement()).toBe(element);
+    });
+
+    // A disclosure (e.g. an expand/collapse toggle) reports `aria-expanded`
+    // without a popup: nothing floats over the tooltip, so it stays.
+    it.each([
+      ['without aria-haspopup', {}],
+      ['with aria-haspopup="false"', { 'aria-haspopup': 'false' as const }],
+    ])(
+      'should still show the tooltip on an expanded disclosure %s',
+      async (_, popupProps) => {
+        const { getHostHTMLElement } = render(
+          <Button
+            aria-expanded
+            icon={PlusIcon}
+            iconType="icon-only"
+            {...popupProps}
+          >
+            Collapse
+          </Button>,
+        );
+        const element = getHostHTMLElement();
+
+        await act(async () => {
+          fireEvent.mouseEnter(element);
+        });
+
+        expect(
+          document.querySelector('[data-popper-placement]'),
+        ).not.toBeNull();
+      },
+    );
+
     it('should not show tooltip when disabledTooltip is true', async () => {
       const { getHostHTMLElement } = render(
         <Button disabledTooltip icon={PlusIcon} iconType="icon-only">

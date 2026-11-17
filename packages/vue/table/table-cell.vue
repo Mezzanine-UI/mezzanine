@@ -163,6 +163,7 @@ function handleEllipsisEnter(
     <MznTooltip
       v-else-if="isColumnEllipsis"
       :anchor="ellipsisEl"
+      :disable-portal="false"
       :options="{ placement: 'top-start' }"
     >
       <template v-if="hasCellValue" #title>

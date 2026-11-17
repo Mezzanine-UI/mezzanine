@@ -18,6 +18,24 @@ export type ButtonProps<C extends ButtonComponent = 'button'> =
   >;
 
 /**
+ * Whether the button is the trigger of a popup (`aria-haspopup`) that is
+ * currently open (`aria-expanded`). ARIA allows both as booleans or strings.
+ */
+function isExpandedPopupTrigger(
+  ariaExpanded: unknown,
+  ariaHasPopup: unknown,
+): boolean {
+  const isExpanded = ariaExpanded === true || ariaExpanded === 'true';
+  const hasPopup =
+    ariaHasPopup !== undefined &&
+    ariaHasPopup !== null &&
+    ariaHasPopup !== false &&
+    ariaHasPopup !== 'false';
+
+  return isExpanded && hasPopup;
+}
+
+/**
  * 通用按鈕元件，支援多種外觀變體與尺寸。
  *
  * 可透過 `variant` 控制外觀（如 `base-primary`、`outlined-primary`、`text-primary` 等），
@@ -70,6 +88,19 @@ function Button({
 
   const isIconOnly = iconType === 'icon-only';
   const showTooltip = isIconOnly && !disabledTooltip && Boolean(children);
+  /**
+   * A Dropdown marks its trigger with `aria-haspopup` and `aria-expanded`.
+   * Hovering back onto the trigger would mount the tooltip after the open menu
+   * in the portal layer, on top of it, so the tooltip stays hidden while the
+   * popup is expanded. A disclosure (`aria-expanded` alone) opens nothing that
+   * floats, so its tooltip is kept. Only the title is dropped: unmounting the
+   * Tooltip branch would remount the button and lose its focus and the anchor
+   * ref.
+   */
+  const isPopupExpanded = isExpandedPopupTrigger(
+    rest['aria-expanded'],
+    rest['aria-haspopup'],
+  );
 
   /**
    * Tooltip 分支會提供自己的 ref，必須與呼叫端的 ref 合成而非取代，
@@ -170,7 +201,13 @@ function Button({
 
   if (showTooltip) {
     return (
-      <Tooltip options={{ placement: tooltipPosition }} title={children}>
+      // Portaled so an ancestor stacking context (e.g. a pinned Table cell)
+      // cannot paint its siblings over the tooltip.
+      <Tooltip
+        disablePortal={false}
+        options={{ placement: tooltipPosition }}
+        title={isPopupExpanded ? undefined : children}
+      >
         {(tooltipProps) => buttonElement(tooltipProps)}
       </Tooltip>
     );

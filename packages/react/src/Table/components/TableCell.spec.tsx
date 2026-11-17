@@ -1,5 +1,11 @@
 import '@testing-library/jest-dom';
-import { cleanup, render, screen } from '../../../__test-utils__';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '../../../__test-utils__';
 import { TableCell } from './TableCell';
 import { TableContext, TableSuperContext } from '../TableContext';
 
@@ -193,6 +199,33 @@ describe('<TableCell />', () => {
       expect(cellContent?.classList.contains('mzn-table__cell--ellipsis')).toBe(
         true,
       );
+    });
+
+    // In place, the tooltip sits in the pinned cell's stacking context, where
+    // the pinned header cell paints over it on the first row (#527).
+    it('should portal the truncation tooltip out of the cell', async () => {
+      const ellipsisColumn = {
+        ...testColumn,
+        ellipsis: true,
+      } as any;
+
+      const { getHostHTMLElement } = renderWithContext(ellipsisColumn);
+      const host = getHostHTMLElement();
+      const cellContent = host.querySelector<HTMLElement>(
+        '.mzn-table__cell__content',
+      )!;
+
+      Object.defineProperty(cellContent, 'scrollWidth', { value: 200 });
+      Object.defineProperty(cellContent, 'offsetWidth', { value: 100 });
+
+      await act(async () => {
+        fireEvent.mouseEnter(cellContent);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(host.contains(tooltip)).toBe(false);
     });
   });
 

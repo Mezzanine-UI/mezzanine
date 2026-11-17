@@ -41,6 +41,8 @@ export interface ButtonPropsBase {
   /**
    * The button text content.
    * When iconType is 'icon-only', children will be used as tooltip content.
+   * The tooltip is rendered through a portal, so it is never covered by an
+   * ancestor stacking context (e.g. a pinned Table cell).
    */
   children?: ReactNode;
   /**

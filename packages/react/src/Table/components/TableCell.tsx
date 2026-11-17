@@ -137,10 +137,13 @@ const TableCellInner = function TableCell({
       return (
         <Tooltip
           anchor={ellipsisRef}
-          title={cellValue as React.ReactNode}
+          // Portaled: in place it sits in the cell's stacking context, where
+          // a pinned header/body cell of a neighbouring row paints over it.
+          disablePortal={false}
           options={{
             placement: 'top-start',
           }}
+          title={cellValue as React.ReactNode}
         >
           {({ onMouseEnter, onMouseLeave }) => (
             /** @Note "display: grid" for feature ellipsis to work properly */

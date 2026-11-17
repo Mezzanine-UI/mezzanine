@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   computed,
+  onBeforeUpdate,
   ref,
   shallowRef,
   useAttrs,
@@ -134,7 +135,21 @@ const generatedId = useId();
 const tooltipId = computed((): string => (attrs.id as string) ?? generatedId);
 const role = computed((): string => (attrs.role as string) ?? 'tooltip');
 
-const hasTitle = computed((): boolean => Boolean(props.title || slots.title));
+/**
+ * React re-reads `title` on every render, so a title that goes away closes an
+ * open tooltip. `slots` is not reactive and a `computed` over it would cache
+ * the first answer, so the slot's presence is mirrored into a ref on each
+ * render instead.
+ */
+const hasTitleSlot = ref(Boolean(slots.title));
+
+onBeforeUpdate(() => {
+  hasTitleSlot.value = Boolean(slots.title);
+});
+
+const hasTitle = computed((): boolean =>
+  Boolean(props.title || hasTitleSlot.value),
+);
 
 /** tooltip shown only when title existed && hovered or focused */
 const isTriggerVisible = computed(
