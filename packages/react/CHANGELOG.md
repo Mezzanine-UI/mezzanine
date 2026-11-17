@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.10.1...@mezzanine-ui/react@1.10.2) (2026-11-17)
+
+### Bug Fixes
+
+- **react/button:** hide the tooltip while its popup is expanded ([6686716](https://github.com/Mezzanine-UI/mezzanine/commit/6686716dd5bb384919a872bfdef2a2034a1d15bd))
+- **react/button:** only hide the tooltip for an expanded popup ([9785ccc](https://github.com/Mezzanine-UI/mezzanine/commit/9785cccdfd5a84a53cfa55514e8dc6b1f8ca0efd))
+- **react/button:** portal the icon-only tooltip ([fe22dfd](https://github.com/Mezzanine-UI/mezzanine/commit/fe22dfdff2550280539cecc8024a79c6919e1de6)), closes [#527](https://github.com/Mezzanine-UI/mezzanine/issues/527)
+- **react/table:** portal the cell truncation tooltip ([6e90d70](https://github.com/Mezzanine-UI/mezzanine/commit/6e90d7098acdb25c9d068357e852e1b2680d59e7)), closes [#527](https://github.com/Mezzanine-UI/mezzanine/issues/527)
+
 ## [1.10.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.10.0...@mezzanine-ui/react@1.10.1) (2026-11-12)
 
 ### Bug Fixes

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.3.2...@mezzanine-ui/core@1.3.3) (2026-11-17)
+
+### Bug Fixes
+
+- **core/tooltip:** keep a portaled tooltip hoverable ([65a21fa](https://github.com/Mezzanine-UI/mezzanine/commit/65a21fa40e54f440511e3b560d380f83b6efd033))
+- **core/tooltip:** stack a portaled tooltip by mount order ([bbeb1f1](https://github.com/Mezzanine-UI/mezzanine/commit/bbeb1f14ad0a30aabaa00dc99da7e1a54e0c931b))
+
 ## [1.3.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.3.1...@mezzanine-ui/core@1.3.2) (2026-11-12)
 
 ### Bug Fixes

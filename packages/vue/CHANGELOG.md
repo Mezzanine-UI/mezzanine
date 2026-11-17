@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.14](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.13...@mezzanine-ui/vue@1.0.0-rc.14) (2026-11-17)
+
+### Bug Fixes
+
+- **vue/button:** hide the tooltip while its popup is expanded ([2a1e3b6](https://github.com/Mezzanine-UI/mezzanine/commit/2a1e3b66d370e102d9a51da866c7fd0726a709b3))
+- **vue/button:** only hide the tooltip for an expanded popup ([b182d3c](https://github.com/Mezzanine-UI/mezzanine/commit/b182d3cbfe70510265ab0670d69df50c6ae7f83c))
+- **vue/button:** portal the icon-only tooltip ([28e63fb](https://github.com/Mezzanine-UI/mezzanine/commit/28e63fb06cecadf08a4e9057ae81eb31a48a2571)), closes [#527](https://github.com/Mezzanine-UI/mezzanine/issues/527)
+- **vue/table:** portal the cell truncation tooltip ([81e47bd](https://github.com/Mezzanine-UI/mezzanine/commit/81e47bd104014ad20f98a4edc3b08f65406e8c23)), closes [#527](https://github.com/Mezzanine-UI/mezzanine/issues/527)
+- **vue/tooltip:** close when the title slot goes away ([47fa7c3](https://github.com/Mezzanine-UI/mezzanine/commit/47fa7c3c1cc6ab2622a9ece63d23daa9797ee787))
+
 # [1.0.0-rc.13](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.12...@mezzanine-ui/vue@1.0.0-rc.13) (2026-11-12)
 
 ### Bug Fixes
