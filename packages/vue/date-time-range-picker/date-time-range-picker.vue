@@ -131,6 +131,8 @@ const sharedProps = computed(() => ({
   hideMinute: props.hideMinute,
   hideSecond: props.hideSecond,
   hourStep: props.hourStep,
+  inputLeftProps: props.inputLeftProps,
+  inputRightProps: props.inputRightProps,
   isDateDisabled: props.isDateDisabled,
   isHalfYearDisabled: props.isHalfYearDisabled,
   isMonthDisabled: props.isMonthDisabled,
