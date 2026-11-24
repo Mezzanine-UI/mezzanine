@@ -16,13 +16,14 @@ import { useDateInputFormatter } from './use-date-input-formatter';
  *
  * 真正的 input 是隱形的，畫面上看到的是一層 `aria-hidden` 的字元疊層，
  * 讓已填與未填的字元可以分別上色；輸入只接受數字與 Backspace。
+ * 空值且未聚焦時可用 `hoverValue` 顯示日曆的懸停預覽。
+ * 必須放在 MznCalendarConfigProvider 底下。
+ *
  * The native input defaults to `inputmode="numeric"` since the mask only
  * accepts digits. On Win11 + Edge with Microsoft Bopomofo in Chinese mode,
  * digits then reach `keydown` as plain keys instead of `key="Process"`
  * composition; other IMEs and browsers are unverified. Pass an `inputmode`
  * attr to override it.
- * 空值且未聚焦時可用 `hoverValue` 顯示日曆的懸停預覽。
- * 必須放在 MznCalendarConfigProvider 底下。
  *
  * @example
  * ```vue
@@ -168,6 +169,7 @@ const displayClass = classes.formattedInputDisplay;
 
 <template>
   <div :class="hostClass">
+    <!-- inputmode must stay before v-bind so an inputmode attr can override it -->
     <input
       ref="input"
       inputmode="numeric"
