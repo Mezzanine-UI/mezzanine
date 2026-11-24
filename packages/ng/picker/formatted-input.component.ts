@@ -450,7 +450,7 @@ export class MznFormattedInput {
     }
 
     // Block non-digit printable chars (allow ctrl/meta combos)
-    if (key.length === 1 && !/[\dBackspace]/.test(key)) {
+    if (key.length === 1 && !/^\d$/.test(key)) {
       if (!(event.ctrlKey || event.metaKey || event.altKey)) {
         event.preventDefault();
       }
