@@ -66,6 +66,42 @@ describe('<RangePickerTrigger />', () => {
     });
   });
 
+  describe('prop: inputFromProps.inputMode / inputToProps.inputMode', () => {
+    it('should default both native inputs to inputmode="numeric"', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <RangePickerTrigger format="YYYY-MM-DD" />
+        </CalendarConfigProvider>,
+      );
+      const inputs = Array.from(
+        getHostHTMLElement().getElementsByTagName('input'),
+      );
+
+      expect(inputs).toHaveLength(2);
+      inputs.forEach((input) => {
+        expect(input.getAttribute('inputmode')).toBe('numeric');
+      });
+    });
+
+    it('should override the default per input', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <RangePickerTrigger
+            format="YYYY-MM-DD"
+            inputFromProps={{ inputMode: 'text' }}
+            inputToProps={{ inputMode: 'decimal' }}
+          />
+        </CalendarConfigProvider>,
+      );
+      const [inputFrom, inputTo] = Array.from(
+        getHostHTMLElement().getElementsByTagName('input'),
+      );
+
+      expect(inputFrom.getAttribute('inputmode')).toBe('text');
+      expect(inputTo.getAttribute('inputmode')).toBe('decimal');
+    });
+  });
+
   describe('prop disabled, placeholder, readOnly, required should directly pass to native input element', () => {
     const inputFromPlaceholder = 'inputFromPlaceholder';
     const inputToPlaceholder = 'inputToPlaceholder';

@@ -283,3 +283,29 @@ describe('<FormattedInput /> keys arriving within one frame', () => {
     expect(input.selectionStart).toBe(10);
   });
 });
+
+describe('<FormattedInput /> inputMode', () => {
+  afterEach(cleanup);
+
+  it('should default the native input to inputmode="numeric"', () => {
+    const { container } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <FormattedInput format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    );
+    const input = container.querySelector('input') as HTMLInputElement;
+
+    expect(input.getAttribute('inputmode')).toBe('numeric');
+  });
+
+  it('should let an explicit inputMode override the default', () => {
+    const { container } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <FormattedInput format="YYYY-MM-DD" inputMode="text" />
+      </CalendarConfigProvider>,
+    );
+    const input = container.querySelector('input') as HTMLInputElement;
+
+    expect(input.getAttribute('inputmode')).toBe('text');
+  });
+});

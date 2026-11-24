@@ -70,6 +70,7 @@ export interface FormattedInputErrorMessages {
     '[attr.format]': 'null',
     '[attr.inputSize]': 'null',
     '[attr.hoverValue]': 'null',
+    '[attr.inputMode]': 'null',
     '[attr.placeholder]': 'null',
     '[attr.validate]': 'null',
     '[attr.value]': 'null',
@@ -87,6 +88,7 @@ export interface FormattedInputErrorMessages {
       [attr.aria-multiline]="ariaMultiline() ?? null"
       [attr.aria-readonly]="ariaReadonly() ?? null"
       [attr.aria-required]="ariaRequired() ?? null"
+      [attr.inputmode]="inputMode()"
       [attr.size]="inputSize() ?? null"
       [value]="inputDisplayValue()"
       [attr.value]="inputDisplayValue()"
@@ -152,6 +154,17 @@ export class MznFormattedInput {
    * 未聚焦且值為空時，以佔位色預覽的日期字串（例如日曆滑鼠懸停預覽）。
    */
   readonly hoverValue = input<string | undefined>(undefined);
+
+  /**
+   * The native input's `inputmode`. The mask only accepts digits, so it defaults
+   * to `numeric`. On Win11 + Edge with Microsoft Bopomofo in Chinese mode, digits
+   * then reach `keydown` as plain keys instead of `key="Process"` composition;
+   * other IMEs and browsers are unverified.
+   * @default 'numeric'
+   */
+  readonly inputMode = input<
+    'decimal' | 'email' | 'none' | 'numeric' | 'search' | 'tel' | 'text' | 'url'
+  >('numeric');
 
   /**
    * 未聚焦且值為空時顯示的佔位文字。

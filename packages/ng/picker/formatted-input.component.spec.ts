@@ -320,3 +320,46 @@ describe('MznFormattedInput keys arriving within one frame', () => {
     expect(el.value).toBe('2026-05');
   });
 });
+
+@Component({
+  standalone: true,
+  imports: [MznFormattedInput],
+  template: `
+    <div mznFormattedInput format="YYYY-MM-DD" [inputMode]="inputMode"></div>
+  `,
+})
+class InputModeHostComponent {
+  readonly inputMode = 'text' as const;
+}
+
+describe('MznFormattedInput inputMode', () => {
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  it('should default the native input to inputmode="numeric"', async () => {
+    const { el } = await setup('YYYY-MM-DD', '');
+
+    expect(el.getAttribute('inputmode')).toBe('numeric');
+  });
+
+  it('should let the inputMode input override the default', async () => {
+    await TestBed.configureTestingModule({
+      imports: [InputModeHostComponent],
+      providers: [
+        {
+          provide: MZN_CALENDAR_CONFIG,
+          useValue: createCalendarConfig(CalendarMethodsMoment),
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(InputModeHostComponent);
+
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+
+    expect(el.getAttribute('inputmode')).toBe('text');
+  });
+});

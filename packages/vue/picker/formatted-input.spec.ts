@@ -451,4 +451,18 @@ describe('<MznFormattedInput />', () => {
       expect(segments(wrapper).join('')).toBe('2026-09-15');
     });
   });
+
+  describe('inputmode', () => {
+    it('should default the native input to inputmode="numeric"', () => {
+      const wrapper = mountInput();
+
+      expect(input(wrapper).attributes('inputmode')).toBe('numeric');
+    });
+
+    it('should let an inputmode attr override the default', () => {
+      const wrapper = mountInput({ inputmode: 'text' });
+
+      expect(input(wrapper).attributes('inputmode')).toBe('text');
+    });
+  });
 });
