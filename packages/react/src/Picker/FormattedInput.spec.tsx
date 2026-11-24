@@ -309,3 +309,34 @@ describe('<FormattedInput /> inputMode', () => {
     expect(input.getAttribute('inputmode')).toBe('text');
   });
 });
+
+describe('<FormattedInput /> non-digit keys', () => {
+  afterEach(cleanup);
+
+  // `B a c k s p e` used to slip through a `/[\dBackspace]/` character class.
+  it.each(['a', 'B', 'c', 'e', 'k', 'p', 's', 'x', '-'])(
+    'should prevent the default action of %p',
+    (key) => {
+      const { container } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <FormattedInput format="YYYY-MM-DD" />
+        </CalendarConfigProvider>,
+      );
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      // fireEvent returns false once preventDefault() was called
+      expect(fireEvent.keyDown(input, { key })).toBe(false);
+    },
+  );
+
+  it('should keep modifier shortcuts such as ctrl+a working', () => {
+    const { container } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <FormattedInput format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    );
+    const input = container.querySelector('input') as HTMLInputElement;
+
+    expect(fireEvent.keyDown(input, { ctrlKey: true, key: 'a' })).toBe(true);
+  });
+});

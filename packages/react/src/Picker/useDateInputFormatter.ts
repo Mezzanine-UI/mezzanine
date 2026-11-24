@@ -484,7 +484,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       }
 
       // Block other keys (separators, letters, etc.)
-      if (key.length === 1 && !/[\dBackspace]/.test(key)) {
+      if (key.length === 1 && !/^\d$/.test(key)) {
         if (!(e.ctrlKey || e.metaKey || e.altKey)) {
           e.preventDefault();
         }
