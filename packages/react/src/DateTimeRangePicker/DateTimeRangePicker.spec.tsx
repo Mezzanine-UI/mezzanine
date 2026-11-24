@@ -58,6 +58,41 @@ describe('<DateTimeRangePicker />', () => {
     });
   });
 
+  describe('prop: inputLeftProps / inputRightProps', () => {
+    it('should default every input to inputmode="numeric"', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateTimeRangePicker />
+        </CalendarConfigProvider>,
+      );
+      const inputs = Array.from(
+        getHostHTMLElement().getElementsByTagName('input'),
+      );
+
+      expect(inputs).toHaveLength(4);
+      inputs.forEach((input) => {
+        expect(input.getAttribute('inputmode')).toBe('numeric');
+      });
+    });
+
+    it('should pass them to the date and time inputs of both pickers', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateTimeRangePicker
+            inputLeftProps={{ inputMode: 'text' }}
+            inputRightProps={{ inputMode: 'decimal' }}
+          />
+        </CalendarConfigProvider>,
+      );
+      // [from date, from time, to date, to time]
+      const inputModes = Array.from(
+        getHostHTMLElement().getElementsByTagName('input'),
+      ).map((input) => input.getAttribute('inputmode'));
+
+      expect(inputModes).toEqual(['text', 'decimal', 'text', 'decimal']);
+    });
+  });
+
   describe('prop: direction', () => {
     it('should have row class by default', () => {
       const { getHostHTMLElement } = render(
