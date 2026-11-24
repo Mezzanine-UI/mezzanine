@@ -36,6 +36,12 @@ export interface FormattedInputProps
 
 /**
  * Formatted input component with mixed-color placeholder
+ *
+ * The native input defaults to `inputMode="numeric"` since the mask only
+ * accepts digits. On Win11 + Edge with Microsoft Bopomofo in Chinese mode,
+ * digits then reach `keydown` as plain keys instead of `key="Process"`
+ * composition; other IMEs and browsers are unverified. Pass `inputMode` to
+ * override it.
  */
 function FormattedInput({
   ref,
@@ -159,6 +165,7 @@ function FormattedInput({
   return (
     <div className={classes.formattedInput}>
       <input
+        inputMode="numeric"
         {...inputProps}
         ref={composedRef}
         className={cx(

@@ -37,6 +37,22 @@ describe('<DateTimePicker />', () => {
     ),
   );
 
+  it('should default both the date and time inputs to inputmode="numeric"', () => {
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <DateTimePicker />
+      </CalendarConfigProvider>,
+    );
+    const inputs = Array.from(
+      getHostHTMLElement().getElementsByTagName('input'),
+    );
+
+    expect(inputs).toHaveLength(2);
+    inputs.forEach((input) => {
+      expect(input.getAttribute('inputmode')).toBe('numeric');
+    });
+  });
+
   describe('panel toggle', () => {
     it('should open calendar panel when left (date) input focused', async () => {
       const { getHostHTMLElement } = render(

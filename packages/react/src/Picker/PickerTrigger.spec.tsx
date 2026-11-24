@@ -52,6 +52,30 @@ describe('<PickerTrigger />', () => {
     });
   });
 
+  describe('prop: inputProps.inputMode', () => {
+    it('should default the native input to inputmode="numeric"', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <PickerTrigger format="YYYY-MM-DD" />
+        </CalendarConfigProvider>,
+      );
+      const inputElement = getHostHTMLElement().getElementsByTagName('input')[0];
+
+      expect(inputElement.getAttribute('inputmode')).toBe('numeric');
+    });
+
+    it('should override the default', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <PickerTrigger format="YYYY-MM-DD" inputProps={{ inputMode: 'text' }} />
+        </CalendarConfigProvider>,
+      );
+      const inputElement = getHostHTMLElement().getElementsByTagName('input')[0];
+
+      expect(inputElement.getAttribute('inputmode')).toBe('text');
+    });
+  });
+
   describe('prop disabled, placeholder, readOnly, required should directly pass to native input element', () => {
     const placeholder = 'placeholder';
 
