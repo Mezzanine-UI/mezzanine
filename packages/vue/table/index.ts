@@ -16,6 +16,7 @@ export type {
   TableDraggable,
   TablePinnable,
   TableRecord,
+  TableResizeStrategy,
   TableRowSelection,
   TableRowSelectionBase,
   TableRowSelectionCheckbox,

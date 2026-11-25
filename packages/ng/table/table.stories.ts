@@ -1840,6 +1840,121 @@ export const WithPersistedColumnWidths: Story = {
   }),
 };
 
+const GROW_TABLE_WIDTHS_STORAGE_KEY = 'mzn-storybook-table-grow-table-widths';
+
+const GROW_TABLE_DATA_COLUMN_COUNT = 15;
+
+const readGrowTableWidths = (): Record<string, number> => {
+  try {
+    const parsed: unknown = JSON.parse(
+      localStorage.getItem(GROW_TABLE_WIDTHS_STORAGE_KEY) ?? '{}',
+    );
+
+    return parsed && typeof parsed === 'object'
+      ? (parsed as Record<string, number>)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+@Component({
+  selector: '[storyTableGrowTableResizeStrategy]',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  // Host is the root <div>, matching React's flex column wrapper
+  host: { style: 'display: flex; flex-flow: column; gap: 12px;' },
+  imports: [MznButton, MznTable, MznTableCellRender, MznTypography],
+  template: `
+    <span style="white-space: pre-line">{{ description }}</span>
+    <div>
+      <button mznButton variant="base-secondary" (click)="onReset()">
+        Reset column widths
+      </button>
+    </div>
+    <span mznTypography variant="caption">{{ columnWidthsText() }}</span>
+    <div
+      mznTable
+      [columnWidths]="columnWidths()"
+      [columns]="growColumns"
+      [dataSource]="dataSource"
+      [fullWidth]="true"
+      [resizable]="true"
+      resizeStrategy="grow-table"
+      (columnWidthsChange)="onColumnWidthsChange($event)"
+    >
+      @for (col of fieldColumns; track col.key; let index = $index) {
+        <ng-template [mznTableCellRender]="col.key" let-record>{{
+          record.name.split(' ')[0] + ' #' + (index + 1)
+        }}</ng-template>
+      }
+    </div>
+  `,
+})
+class WithGrowTableResizeStrategyStoryComponent {
+  readonly columnWidths = signal(readGrowTableWidths());
+
+  readonly columnWidthsText = computed(() =>
+    JSON.stringify(this.columnWidths()),
+  );
+
+  readonly dataSource = RESIZABLE_DATA;
+
+  readonly description = `resizeStrategy="grow-table": dragging a handle changes only that column — every other column keeps its width and the table scrolls horizontally (spreadsheet-style). The last column has a handle too, and no actions column is needed.
+
+Widths are persisted to localStorage through columnWidths + onColumnWidthsChange, which reports only the columns you resized. "Name" is pinned to show sticky offsets following the new widths.`;
+
+  readonly fieldColumns: readonly TableColumn[] = Array.from(
+    { length: GROW_TABLE_DATA_COLUMN_COUNT - 1 },
+    (_, index): TableColumn => ({
+      key: `field-${index + 1}`,
+      minWidth: 40,
+      title: `Field ${index + 1}`,
+      width: index % 2 === 0 ? 140 : 100,
+    }),
+  );
+
+  readonly growColumns: readonly TableColumn[] = [
+    {
+      dataIndex: 'name',
+      fixed: 'start',
+      key: 'name',
+      minWidth: 80,
+      title: 'Name',
+      width: 140,
+    },
+    ...this.fieldColumns,
+  ];
+
+  onColumnWidthsChange(widths: Record<string, number>): void {
+    this.columnWidths.set(widths);
+
+    try {
+      localStorage.setItem(
+        GROW_TABLE_WIDTHS_STORAGE_KEY,
+        JSON.stringify(widths),
+      );
+    } catch {
+      // Storage may be unavailable (private mode / blocked); widths still apply.
+    }
+  }
+
+  onReset(): void {
+    this.onColumnWidthsChange({});
+  }
+}
+
+export const WithGrowTableResizeStrategy: Story = {
+  name: 'Resizable / Grow Table',
+  parameters: { controls: { disable: true } },
+  decorators: [
+    moduleMetadata({ imports: [WithGrowTableResizeStrategyStoryComponent] }),
+  ],
+  render: () => ({
+    template: `<div storyTableGrowTableResizeStrategy></div>`,
+  }),
+};
+
 interface CustomRenderRowType extends TableDataSource {
   readonly key: string;
   readonly name: string;

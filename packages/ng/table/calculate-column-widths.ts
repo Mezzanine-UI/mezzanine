@@ -2,7 +2,7 @@
 // Used by `MznTable` to derive per-cell widths for the CDK drag preview so
 // they match React's dragging-row behaviour — explicit column widths clamp
 // to min/max, the rest share remaining container width equally.
-import type { TableColumn } from './table-types';
+import type { TableColumn, TableResizeStrategy } from './table-types';
 
 export function clampWidth(
   width: number,
@@ -53,6 +53,12 @@ export interface CalculateColumnWidthsOptions {
   readonly columns: readonly TableColumn[];
   readonly containerWidth: number;
   readonly getResizedColumnWidth?: (key: string) => number | undefined;
+  /**
+   * With `'grow-table'`, when no column flexes and the columns are narrower
+   * than the container, the last column absorbs the remaining space.
+   * @default 'preserve-table-width'
+   */
+  readonly resizeStrategy?: TableResizeStrategy;
 }
 
 export function calculateColumnWidths({
@@ -60,6 +66,7 @@ export function calculateColumnWidths({
   columns,
   containerWidth,
   getResizedColumnWidth,
+  resizeStrategy = 'preserve-table-width',
 }: CalculateColumnWidthsOptions): Map<string, number> {
   const widthMap = new Map<string, number>();
 
@@ -100,6 +107,18 @@ export function calculateColumnWidths({
         clampWidth(averageWidth, column.minWidth, column.maxWidth),
       );
     });
+
+    return widthMap;
+  }
+
+  const remainingWidth = availableWidth - totalFixedWidth;
+  const lastColumn = columns[columns.length - 1];
+
+  if (resizeStrategy === 'grow-table' && lastColumn && remainingWidth > 0) {
+    widthMap.set(
+      lastColumn.key,
+      (widthMap.get(lastColumn.key) ?? 0) + remainingWidth,
+    );
   }
 
   return widthMap;

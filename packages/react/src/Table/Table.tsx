@@ -117,6 +117,9 @@ import type { TableProps, TableNonVirtualizedProps } from './typings';
  *   }}
  *   resizable
  * />
+ *
+ * // Spreadsheet-style resizing: only the dragged column changes and the table scrolls horizontally
+ * <Table columns={columns} dataSource={data} fullWidth resizable resizeStrategy="grow-table" />
  * ```
  *
  * @see {@link Pagination} 搭配 `pagination` prop 使用分頁元件
@@ -144,6 +147,7 @@ export function Table<T extends TableDataSource = TableDataSource>({
     pagination,
     pinnable,
     resizable = false,
+    resizeStrategy = 'preserve-table-width',
     rowState,
     rowHeightPreset = 'base',
     rowSelection,
@@ -465,6 +469,7 @@ export function Table<T extends TableDataSource = TableDataSource>({
       pagination: pagination || undefined,
       pinnable: pinnableState,
       resizable,
+      resizeStrategy,
       rowState: rowState as TableContextValue['rowState'],
       rowHeight,
       scroll,
@@ -496,6 +501,7 @@ export function Table<T extends TableDataSource = TableDataSource>({
       pagination,
       pinnableState,
       resizable,
+      resizeStrategy,
       rowState,
       rowHeight,
       scroll,

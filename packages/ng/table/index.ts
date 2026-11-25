@@ -32,6 +32,7 @@ export type {
   TableExpandable,
   TablePagination,
   TablePinnable,
+  TableResizeStrategy,
   TableRowSelection,
   TableRowSelectionBase,
   TableRowSelectionCheckbox,

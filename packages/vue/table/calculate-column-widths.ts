@@ -1,3 +1,4 @@
+import type { TableResizeStrategy } from '@mezzanine-ui/core/table';
 import type { TableColumn } from './table.types';
 
 /**
@@ -78,6 +79,14 @@ export interface CalculateColumnWidthsOptions {
   containerWidth: number;
   /** Get resized column width by key */
   getResizedColumnWidth?: (key: string) => number | undefined;
+  /**
+   * Resize strategy of the table. With `'grow-table'`, when no column flexes
+   * and the columns are narrower than the container, the last column absorbs
+   * the remaining space so the browser does not spread it over every column
+   * (which would shift other columns while one is being dragged).
+   * @default 'preserve-table-width'
+   */
+  resizeStrategy?: TableResizeStrategy;
 }
 
 /**
@@ -85,12 +94,15 @@ export interface CalculateColumnWidthsOptions {
  * - Columns with explicit width use that value
  * - Columns without width share the remaining space equally (simulating flex: 1)
  * - All widths are clamped to minWidth/maxWidth if specified
+ * - With `'grow-table'` and no flex column, the last column absorbs any
+ *   remaining space
  */
 export function calculateColumnWidths({
   actionColumnsWidth,
   columns,
   containerWidth,
   getResizedColumnWidth,
+  resizeStrategy = 'preserve-table-width',
 }: CalculateColumnWidthsOptions): Map<string, number> {
   const widthMap = new Map<string, number>();
 
@@ -143,6 +155,18 @@ export function calculateColumnWidths({
 
       widthMap.set(column.key, clampedWidth);
     });
+
+    return widthMap;
+  }
+
+  const remainingWidth = availableWidth - totalFixedWidth;
+  const lastColumn = columns[columns.length - 1];
+
+  if (resizeStrategy === 'grow-table' && lastColumn && remainingWidth > 0) {
+    widthMap.set(
+      lastColumn.key,
+      (widthMap.get(lastColumn.key) ?? 0) + remainingWidth,
+    );
   }
 
   return widthMap;

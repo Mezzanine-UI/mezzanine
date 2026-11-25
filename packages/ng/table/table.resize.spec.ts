@@ -6,6 +6,7 @@ import type {
   TableDataSource,
   TableDraggable,
   TablePinnable,
+  TableResizeStrategy,
 } from './table-types';
 
 const columns: readonly TableColumn[] = [
@@ -32,12 +33,13 @@ const dataSource: readonly TableDataSource[] = [
       <div
         mznTable
         [columnWidths]="columnWidths()"
-        [columns]="columns"
+        [columns]="columns()"
         [dataSource]="dataSource"
         [draggable]="draggable()"
         [expandable]="expandable()"
         [pinnable]="pinnable()"
         [resizable]="true"
+        [resizeStrategy]="resizeStrategy()"
         [rowSelection]="rowSelection()"
         (columnWidthsChange)="onColumnWidthsChange($event)"
       ></div>
@@ -46,13 +48,14 @@ const dataSource: readonly TableDataSource[] = [
 })
 class ResizeHostComponent {
   readonly columnWidths = signal<Record<string, number> | undefined>(undefined);
-  readonly columns = columns;
+  readonly columns = signal<readonly TableColumn[]>(columns);
   readonly dataSource = dataSource;
   readonly draggable = signal<TableDraggable | undefined>(undefined);
   readonly expandable = signal(false);
   readonly mounted = signal(true);
   readonly onColumnWidthsChange = jest.fn<void, [Record<string, number>]>();
   readonly pinnable = signal<TablePinnable | undefined>(undefined);
+  readonly resizeStrategy = signal<TableResizeStrategy>('preserve-table-width');
   readonly rowSelection = signal(false);
 }
 
@@ -145,6 +148,108 @@ describe('MznTable resizable', () => {
     dragHandle(fixture, 0, 50);
 
     expect(getColWidths(fixture)).toEqual(['210px', '100px', '350px']);
+  });
+
+  it('should hide the resize handle of the last column by default', () => {
+    const fixture = render();
+
+    expect(
+      getHostEl(fixture).querySelectorAll('.mzn-table__resize-handle'),
+    ).toHaveLength(columns.length - 1);
+  });
+
+  it.each<TableResizeStrategy>(['preserve-table-width', 'grow-table'])(
+    'should not render an actions column without actions (%s)',
+    (resizeStrategy) => {
+      const fixture = render((host) => host.resizeStrategy.set(resizeStrategy));
+
+      expect(getColWidths(fixture)).toHaveLength(columns.length);
+    },
+  );
+
+  describe("resizeStrategy='grow-table'", () => {
+    const growTable = (host: ResizeHostComponent): void =>
+      host.resizeStrategy.set('grow-table');
+
+    it('should grow only the dragged column and emit only its width', () => {
+      const fixture = render(growTable);
+      const host = fixture.componentInstance;
+
+      dragHandle(fixture, 0, 300);
+
+      expect(host.onColumnWidthsChange).toHaveBeenCalledTimes(1);
+      expect(host.onColumnWidthsChange).toHaveBeenCalledWith({ name: 460 });
+      expect(getColWidths(fixture)).toEqual(['460px', '100px', '400px']);
+    });
+
+    it('should keep other columns unchanged during the drag', () => {
+      const fixture = render(growTable);
+      const handle = getHostEl(fixture).querySelectorAll(
+        '.mzn-table__resize-handle',
+      )[1];
+
+      firePointer(handle, 'pointerdown', 0);
+      firePointer(document, 'pointermove', 120);
+      fixture.detectChanges();
+
+      expect(getColWidths(fixture)).toEqual(['160px', '220px', '400px']);
+
+      firePointer(document, 'pointerup', 120);
+    });
+
+    it('should ignore moves below minWidth or above maxWidth of the dragged column', () => {
+      const fixture = render((host) => {
+        growTable(host);
+        host.columns.set([
+          { ...columns[0], maxWidth: 200 },
+          ...columns.slice(1),
+        ]);
+      });
+      const host = fixture.componentInstance;
+      const handle = getHostEl(fixture).querySelector(
+        '.mzn-table__resize-handle',
+      )!;
+
+      firePointer(handle, 'pointerdown', 0);
+      firePointer(document, 'pointermove', 30);
+      firePointer(document, 'pointermove', 100);
+      firePointer(document, 'pointermove', -100);
+      firePointer(document, 'pointerup', -100);
+
+      expect(host.onColumnWidthsChange).toHaveBeenCalledWith({ name: 190 });
+    });
+
+    it('should render a resize handle on the last column too', () => {
+      const fixture = render(growTable);
+
+      expect(
+        getHostEl(fixture).querySelectorAll('.mzn-table__resize-handle'),
+      ).toHaveLength(columns.length);
+    });
+
+    it('should resize the last column alone', () => {
+      const fixture = render(growTable);
+      const host = fixture.componentInstance;
+
+      dragHandle(fixture, 2, 80);
+
+      expect(host.onColumnWidthsChange).toHaveBeenCalledWith({ address: 480 });
+    });
+
+    it('should merge previously committed widths when emitting', () => {
+      const fixture = render((host) => {
+        growTable(host);
+        host.columnWidths.set({ age: 120 });
+      });
+      const host = fixture.componentInstance;
+
+      dragHandle(fixture, 0, 40);
+
+      expect(host.onColumnWidthsChange).toHaveBeenCalledWith({
+        age: 120,
+        name: 200,
+      });
+    });
   });
 
   describe('with leading action columns', () => {

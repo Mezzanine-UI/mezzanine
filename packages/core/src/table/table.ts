@@ -150,6 +150,13 @@ export type TableSize = 'main' | 'sub';
 export type TableRowState = 'added' | 'deleted' | 'disabled';
 
 /**
+ * How a resizable table distributes the width gained or lost by a column drag.
+ * - `'preserve-table-width'` — The table keeps its total width: the dragged column borrows from the last column first, then from its right neighbour (stops at their `minWidth`).
+ * - `'grow-table'` — Only the dragged column changes; the table widens (or narrows) by the drag distance and scrolls horizontally, like a spreadsheet.
+ */
+export type TableResizeStrategy = 'preserve-table-width' | 'grow-table';
+
+/**
  * Title menu configuration for table column header dropdown
  */
 export interface TableColumnTitleMenu {

@@ -6,6 +6,7 @@ import type {
   TableDraggable,
   TablePinnable,
   TableRowSelection,
+  TableResizeStrategy,
   TableRowState,
   TableScroll,
   TableSelectionMode,
@@ -117,6 +118,7 @@ export interface TableContextValue<
   pagination?: TablePaginationProps;
   pinnable?: TablePinnable;
   resizable?: boolean;
+  resizeStrategy?: TableResizeStrategy;
   rowState?:
     | TableRowState
     | ((rowData: TableDataSource) => TableRowState | undefined);

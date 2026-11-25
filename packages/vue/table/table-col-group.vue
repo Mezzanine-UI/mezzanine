@@ -74,6 +74,7 @@ const resolvedWidths = computed((): Map<string, number> => {
     columns: data.value.columns,
     containerWidth: superContext.value.containerWidth ?? 0,
     getResizedColumnWidth: getResizedColumnWidth.value,
+    resizeStrategy: table.value.resizeStrategy,
   });
 });
 
