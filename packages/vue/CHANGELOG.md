@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.15](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.14...@mezzanine-ui/vue@1.0.0-rc.15) (2026-11-25)
+
+### Bug Fixes
+
+- **vue/date-time-range-picker:** forward inputLeftProps and inputRightProps ([4eba456](https://github.com/Mezzanine-UI/mezzanine/commit/4eba4562e5e46eb951c8be7e2a426d3bb7e47828))
+- **vue/picker:** block the letters of Backspace in the mask input ([b8385c5](https://github.com/Mezzanine-UI/mezzanine/commit/b8385c5dd165633fe14b639997f6a659978a79a0))
+- **vue/picker:** default the mask input to inputmode numeric ([8ab2b35](https://github.com/Mezzanine-UI/mezzanine/commit/8ab2b359b20bc3fdc10af373d51a7aec364a6c46))
+
+### Features
+
+- **vue/table:** add resizeStrategy 'grow-table' ([ffebb08](https://github.com/Mezzanine-UI/mezzanine/commit/ffebb08e730113a6f0fbf52a4c2483d882d86e17))
+
 # [1.0.0-rc.14](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/vue@1.0.0-rc.13...@mezzanine-ui/vue@1.0.0-rc.14) (2026-11-17)
 
 ### Bug Fixes

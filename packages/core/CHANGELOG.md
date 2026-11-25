@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.3.3...@mezzanine-ui/core@1.4.0) (2026-11-25)
+
+### Features
+
+- **core/table:** add TableResizeStrategy type ([2337ca1](https://github.com/Mezzanine-UI/mezzanine/commit/2337ca18edd538b3b2774ea9d7a7a4061d4a2c91)), closes [#529](https://github.com/Mezzanine-UI/mezzanine/issues/529)
+
 ## [1.3.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.3.2...@mezzanine-ui/core@1.3.3) (2026-11-17)
 
 ### Bug Fixes

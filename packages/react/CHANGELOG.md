@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.10.2...@mezzanine-ui/react@1.11.0) (2026-11-25)
+
+### Bug Fixes
+
+- **react/date-time-range-picker:** forward inputLeftProps and inputRightProps ([0f38e3a](https://github.com/Mezzanine-UI/mezzanine/commit/0f38e3af4a52782206760c39d5cab981591ea28c))
+- **react/picker:** block the letters of Backspace in the mask input ([d711d70](https://github.com/Mezzanine-UI/mezzanine/commit/d711d7044643d22e19c4d40be4c1a3d0ac791337))
+- **react/picker:** default the mask input to inputMode numeric ([1341fae](https://github.com/Mezzanine-UI/mezzanine/commit/1341fae288194ce57022869d2622f450b547aa03))
+
+### Features
+
+- **react/table:** add resizeStrategy 'grow-table' ([21f458b](https://github.com/Mezzanine-UI/mezzanine/commit/21f458becb153f0be8f405446d9cefe5babd2672)), closes [#529](https://github.com/Mezzanine-UI/mezzanine/issues/529)
+
 ## [1.10.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.10.1...@mezzanine-ui/react@1.10.2) (2026-11-17)
 
 ### Bug Fixes

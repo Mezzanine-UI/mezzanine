@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.27](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.26...@mezzanine-ui/ng@1.0.0-rc.27) (2026-11-25)
+
+### Bug Fixes
+
+- **ng/picker:** block the letters of Backspace in the mask input ([5b2c59f](https://github.com/Mezzanine-UI/mezzanine/commit/5b2c59f318258a0dbd2cf3fa7a263805465930e0))
+- **ng/picker:** default the mask input to inputmode numeric ([c6d747c](https://github.com/Mezzanine-UI/mezzanine/commit/c6d747c158db4479f9df79e667607547daee46b6))
+
+### Features
+
+- **ng/table:** add resizeStrategy 'grow-table' ([f2b671d](https://github.com/Mezzanine-UI/mezzanine/commit/f2b671de5098621d30419153f957afa2acb47bd3))
+
 # [1.0.0-rc.26](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@1.0.0-rc.25...@mezzanine-ui/ng@1.0.0-rc.26) (2026-11-17)
 
 **Note:** Version bump only for package @mezzanine-ui/ng
