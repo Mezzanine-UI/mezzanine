@@ -9,6 +9,7 @@ import type {
   TableDraggable,
   TableExpandable,
   TablePinnable,
+  TableResizeStrategy,
   TableRowSelection,
   TableRowState,
   TableScroll,
@@ -166,6 +167,14 @@ export interface TableResizableProps<
    * Whether columns are resizable by user interaction
    */
   resizable: true;
+  /**
+   * How a column drag distributes width.
+   * `'preserve-table-width'` keeps the table's total width by borrowing from
+   * the last column, then the right neighbour; `'grow-table'` changes only
+   * the dragged column so the table widens and scrolls horizontally.
+   * @default 'preserve-table-width'
+   */
+  resizeStrategy?: TableResizeStrategy;
 }
 
 /**
@@ -187,6 +196,8 @@ export interface TableNonResizableProps<
    * @default false
    */
   resizable?: false;
+  /** Not available when resizable is disabled */
+  resizeStrategy?: never;
 }
 
 /**

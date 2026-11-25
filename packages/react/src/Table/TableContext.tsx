@@ -16,6 +16,7 @@ import type {
   TableToggleable,
   TablePinnable,
   TableDraggable,
+  TableResizeStrategy,
 } from '@mezzanine-ui/core/table';
 import type { EmptyProps } from '../Empty';
 import type { PaginationProps } from '../Pagination';
@@ -96,6 +97,7 @@ export interface TableContextValue<
   pagination?: PaginationProps;
   pinnable?: TablePinnable;
   resizable?: boolean;
+  resizeStrategy?: TableResizeStrategy;
   rowState?:
     | TableRowState
     | ((rowData: TableDataSource) => TableRowState | undefined);

@@ -1464,6 +1464,101 @@ export const WithPersistedColumnWidths: Story = {
   },
 };
 
+const GROW_TABLE_WIDTHS_STORAGE_KEY = 'mzn-storybook-table-grow-table-widths';
+
+const GROW_TABLE_DATA_COLUMN_COUNT = 15;
+
+export const WithGrowTableResizeStrategy: Story = {
+  name: 'Resizable / Grow Table',
+  render: function GrowTableResizeStrategyStory() {
+    const growColumns: TableColumnWithMinWidth<DataType>[] = useMemo(
+      () => [
+        {
+          dataIndex: 'name',
+          fixed: 'start',
+          key: 'name',
+          minWidth: 80,
+          title: 'Name',
+          width: 140,
+        },
+        ...Array.from(
+          { length: GROW_TABLE_DATA_COLUMN_COUNT - 1 },
+          (_, index): TableColumnWithMinWidth<DataType> => ({
+            key: `field-${index + 1}`,
+            minWidth: 40,
+            render: (record) => `${record.name.split(' ')[0]} #${index + 1}`,
+            title: `Field ${index + 1}`,
+            width: index % 2 === 0 ? 140 : 100,
+          }),
+        ),
+      ],
+      [],
+    );
+    const [columnWidths, setColumnWidths] = useState<Record<string, number>>(
+      () => {
+        try {
+          const parsed: unknown = JSON.parse(
+            localStorage.getItem(GROW_TABLE_WIDTHS_STORAGE_KEY) ?? '{}',
+          );
+
+          return parsed && typeof parsed === 'object'
+            ? (parsed as Record<string, number>)
+            : {};
+        } catch {
+          return {};
+        }
+      },
+    );
+
+    const handleColumnWidthsChange = useCallback(
+      (widths: Record<string, number>) => {
+        setColumnWidths(widths);
+
+        try {
+          localStorage.setItem(
+            GROW_TABLE_WIDTHS_STORAGE_KEY,
+            JSON.stringify(widths),
+          );
+        } catch {
+          // Storage may be unavailable (private mode / blocked); widths still apply.
+        }
+      },
+      [],
+    );
+
+    const handleReset = useCallback(() => {
+      handleColumnWidthsChange({});
+    }, [handleColumnWidthsChange]);
+
+    return (
+      <div style={{ display: 'flex', flexFlow: 'column', gap: '12px' }}>
+        <span style={{ whiteSpace: 'pre-line' }}>
+          {`resizeStrategy="grow-table": dragging a handle changes only that column — every other column keeps its width and the table scrolls horizontally (spreadsheet-style). The last column has a handle too, and no actions column is needed.
+
+Widths are persisted to localStorage through columnWidths + onColumnWidthsChange, which reports only the columns you resized. "Name" is pinned to show sticky offsets following the new widths.`}
+        </span>
+        <div>
+          <Button onClick={handleReset} variant="base-secondary">
+            Reset column widths
+          </Button>
+        </div>
+        <Typography component="span" variant="caption">
+          {JSON.stringify(columnWidths)}
+        </Typography>
+        <Table<DataType>
+          columnWidths={columnWidths}
+          columns={growColumns}
+          dataSource={baseData}
+          fullWidth
+          onColumnWidthsChange={handleColumnWidthsChange}
+          resizable
+          resizeStrategy="grow-table"
+        />
+      </div>
+    );
+  },
+};
+
 export const WithCustomRender: Story = {
   render: function CustomRenderStory() {
     const customColumns: TableColumn<DataType>[] = useMemo(

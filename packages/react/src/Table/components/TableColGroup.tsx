@@ -26,6 +26,7 @@ const TableColGroupInner = memo(function TableColGroup() {
     expansion,
     isInsideExpandedContentArea,
     pinnable,
+    resizeStrategy,
     selection,
   } = useTableContext();
   const { columns } = useTableDataContext();
@@ -66,6 +67,7 @@ const TableColGroupInner = memo(function TableColGroup() {
       columns,
       containerWidth: containerWidth ?? 0,
       getResizedColumnWidth,
+      resizeStrategy,
     });
   }, [
     enableWidthCalculation,
@@ -73,6 +75,7 @@ const TableColGroupInner = memo(function TableColGroup() {
     containerWidth,
     actionColumnsWidth,
     getResizedColumnWidth,
+    resizeStrategy,
   ]);
 
   const renderCols = () => {

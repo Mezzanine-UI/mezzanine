@@ -103,6 +103,16 @@ describe('<TableResizeHandle />', () => {
       // because there's no adjacent column to resize
       expect(handle).toBeNull();
     });
+
+    it("should render resize handle for last column with resizeStrategy='grow-table'", () => {
+      const { container } = renderWithContext(testColumns[1], 1, {
+        ...defaultContextValue,
+        resizeStrategy: 'grow-table',
+      });
+      const handle = container.querySelector('.mzn-table__resize-handle');
+
+      expect(handle).toBeInTheDocument();
+    });
   });
 
   describe('Resize handle behavior', () => {

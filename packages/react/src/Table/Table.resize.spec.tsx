@@ -204,6 +204,163 @@ describe('<Table resizable />', () => {
     expect(onColumnWidthsChange).not.toHaveBeenCalled();
   });
 
+  describe("resizeStrategy='grow-table'", () => {
+    it('should grow only the dragged column and report only its width', () => {
+      const onColumnWidthsChange = jest.fn();
+      const { container } = render(
+        <Table<TestDataType>
+          columns={columns}
+          dataSource={dataSource}
+          onColumnWidthsChange={onColumnWidthsChange}
+          resizable
+          resizeStrategy="grow-table"
+        />,
+      );
+
+      dragHandle(container, 0, 300);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledTimes(1);
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({ name: 460 });
+      expect(getColWidths(container)).toEqual(['460px', '100px', '400px']);
+    });
+
+    it('should keep other columns unchanged during the drag', () => {
+      const { container } = render(
+        <Table<TestDataType>
+          columns={columns}
+          dataSource={dataSource}
+          resizable
+          resizeStrategy="grow-table"
+        />,
+      );
+      const handle = container.querySelectorAll('.mzn-table__resize-handle')[1];
+
+      fireEvent.mouseDown(handle, { clientX: 0 });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 120 });
+      });
+
+      expect(getColWidths(container)).toEqual(['160px', '220px', '400px']);
+
+      act(() => {
+        fireEvent.mouseUp(document, { clientX: 120 });
+      });
+    });
+
+    it('should ignore moves below minWidth or above maxWidth of the dragged column', () => {
+      const onColumnWidthsChange = jest.fn();
+      const { container } = render(
+        <Table<TestDataType>
+          columns={[{ ...columns[0], maxWidth: 200 }, columns[1], columns[2]]}
+          dataSource={dataSource}
+          onColumnWidthsChange={onColumnWidthsChange}
+          resizable
+          resizeStrategy="grow-table"
+        />,
+      );
+      const handle = container.querySelector('.mzn-table__resize-handle')!;
+
+      fireEvent.mouseDown(handle, { clientX: 0 });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 30 });
+      });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: 100 });
+      });
+      act(() => {
+        fireEvent.mouseMove(document, { clientX: -100 });
+      });
+      act(() => {
+        fireEvent.mouseUp(document, { clientX: -100 });
+      });
+
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({ name: 190 });
+    });
+
+    it('should render a resize handle on the last column too', () => {
+      const { container } = render(
+        <Table<TestDataType>
+          columns={columns}
+          dataSource={dataSource}
+          resizable
+          resizeStrategy="grow-table"
+        />,
+      );
+
+      expect(
+        container.querySelectorAll('.mzn-table__resize-handle'),
+      ).toHaveLength(columns.length);
+    });
+
+    it('should resize the last column alone', () => {
+      const onColumnWidthsChange = jest.fn();
+      const { container } = render(
+        <Table<TestDataType>
+          columns={columns}
+          dataSource={dataSource}
+          onColumnWidthsChange={onColumnWidthsChange}
+          resizable
+          resizeStrategy="grow-table"
+        />,
+      );
+
+      dragHandle(container, 2, 80);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({ address: 480 });
+    });
+
+    it('should merge previously committed widths when reporting', () => {
+      const onColumnWidthsChange = jest.fn();
+      const { container } = render(
+        <Table<TestDataType>
+          columnWidths={{ age: 120 }}
+          columns={columns}
+          dataSource={dataSource}
+          onColumnWidthsChange={onColumnWidthsChange}
+          resizable
+          resizeStrategy="grow-table"
+        />,
+      );
+
+      dragHandle(container, 0, 40);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({
+        age: 120,
+        name: 200,
+      });
+    });
+  });
+
+  it('should hide the resize handle of the last column by default', () => {
+    const { container } = render(
+      <Table<TestDataType>
+        columns={columns}
+        dataSource={dataSource}
+        resizable
+      />,
+    );
+
+    expect(
+      container.querySelectorAll('.mzn-table__resize-handle'),
+    ).toHaveLength(columns.length - 1);
+  });
+
+  it.each(['preserve-table-width', 'grow-table'] as const)(
+    'should not render an actions column without actions (%s)',
+    (resizeStrategy) => {
+      const { container } = render(
+        <Table<TestDataType>
+          columns={columns}
+          dataSource={dataSource}
+          resizable
+          resizeStrategy={resizeStrategy}
+        />,
+      );
+
+      expect(getColWidths(container)).toHaveLength(columns.length);
+    },
+  );
+
   describe('controlled columnWidths', () => {
     it('should render widths from columnWidths over column.width', () => {
       const { container } = render(

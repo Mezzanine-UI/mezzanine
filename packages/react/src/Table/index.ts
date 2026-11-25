@@ -31,6 +31,7 @@ export {
   type TableExpandable,
   type TablePinnable,
   type TableRecord,
+  type TableResizeStrategy,
   type TableToggleable,
   type TableRowSelection,
   type TableRowSelectionBase,
