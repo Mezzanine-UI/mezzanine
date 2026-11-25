@@ -3,14 +3,16 @@ import { computed, onBeforeUnmount } from 'vue';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';
 import { useTableContext } from './table-context';
 import { useTableDataContext } from './table-data-context';
+import type { TableColumn } from './table.types';
 import type { TableResizeHandleProps } from './table-resize-handle.types';
 
 /**
  * 表頭欄位右緣的拖曳把手，負責調整欄寬。
  *
- * 寬度是零和的：拉寬這一欄的量優先從**最後一欄**扣，扣不完才回頭找右邊相鄰的那一欄；
- * 當這一欄本來就緊鄰最後一欄時退回單純的相鄰補償。最後一欄自己沒有把手（右邊沒有欄位
- * 可以補償）。所有寬度都從 DOM 的 colgroup 實際量出來，而不是用宣告值。
+ * `resizeStrategy='preserve-table-width'`（預設）時寬度是零和的：拉寬這一欄的量優先從
+ * **最後一欄**扣，扣不完才回頭找右邊相鄰的那一欄，最後一欄自己沒有把手。
+ * `'grow-table'` 時只改被拖的那一欄，表格隨之變寬並水平捲動，最後一欄也有把手。
+ * 所有寬度都從 DOM 的 colgroup 實際量出來，而不是用宣告值。
  *
  * @example
  * ```vue
@@ -27,10 +29,14 @@ const props = defineProps<TableResizeHandleProps>();
 const table = useTableContext();
 const data = useTableDataContext();
 
-/** React keeps these three in refs; a drag is short-lived, so plain bindings do. */
-let startWidth = 0;
-let nextStartWidth = 0;
-let startX = 0;
+type SetColumnWidth = (key: string, width: number) => void;
+
+/**
+ * Applies the drag distance `diff` (px, relative to mousedown) to the widths.
+ * Returns false when the move violates a constraint and was ignored.
+ */
+type ResizeMoveHandler = (diff: number) => boolean;
+
 // Detaches the document listeners of an in-progress drag (null when idle)
 let stopDraggingFn: (() => void) | null = null;
 
@@ -42,6 +48,10 @@ onBeforeUnmount(() => {
   stopDraggingFn = null;
   table.value.columnState?.discardResizedColumnWidths();
 });
+
+const isGrowTable = computed(
+  (): boolean => table.value.resizeStrategy === 'grow-table',
+);
 
 // Calculate action columns offset. Must mirror the leading cols rendered
 // by MznTableColGroup: drag and pin share a single handle column.
@@ -56,136 +66,159 @@ const actionColumnsOffset = computed((): number => {
   return offset;
 });
 
-const isLastColumn = computed(
-  (): boolean => props.columnIndex >= data.value.columns.length - 1,
+// Preserving the table width needs a column to the right to borrow from;
+// growing the table does not, so the last column keeps its handle.
+const isHandleHidden = computed(
+  (): boolean =>
+    !isGrowTable.value && props.columnIndex >= data.value.columns.length - 1,
 );
+
+/** Whether `width` is within `[minWidth, maxWidth]` and non-negative. */
+function isWithinBounds(
+  width: number,
+  minWidth?: number,
+  maxWidth?: number,
+): boolean {
+  if (width < 0) return false;
+  if (minWidth !== undefined && width < minWidth) return false;
+  if (maxWidth !== undefined && width > maxWidth) return false;
+
+  return true;
+}
 
 // Get the actual rendered width of a column from the DOM
 function getColumnActualWidth(colIndex: number): number {
-  const container = table.value.scrollContainerRef?.value;
+  const colElements = table.value.scrollContainerRef?.value?.querySelectorAll(
+    'table > colgroup > col',
+  );
+  const targetCol = colElements?.[actionColumnsOffset.value + colIndex];
 
-  if (!container) return 0;
+  return targetCol ? targetCol.getBoundingClientRect().width : 0;
+}
 
-  const tableElement = container.querySelector('table');
+/**
+ * `'grow-table'`: only the dragged column changes, so the table widens or
+ * narrows by the drag distance (spreadsheet-style resizing).
+ */
+function createGrowTableMove(
+  column: TableColumn,
+  startWidth: number,
+  setWidth: SetColumnWidth,
+): ResizeMoveHandler {
+  return (diff) => {
+    const newWidth = startWidth + diff;
 
-  if (!tableElement) return 0;
+    if (!isWithinBounds(newWidth, column.minWidth, column.maxWidth)) {
+      return false;
+    }
 
-  const colGroup = tableElement.querySelector('colgroup');
+    setWidth(column.key, newWidth);
 
-  if (!colGroup) return 0;
+    return true;
+  };
+}
 
-  const colElements = colGroup.querySelectorAll('col');
-  const targetCol = colElements[actionColumnsOffset.value + colIndex];
+/**
+ * `'preserve-table-width'`: the table keeps its total width. The width the
+ * dragged column gains or loses is taken from (or given to) the last column
+ * first, within its min/max, and the overflow from the adjacent column.
+ */
+function createPreserveTableWidthMove(
+  column: TableColumn,
+  startWidth: number,
+  setWidth: SetColumnWidth,
+): ResizeMoveHandler | null {
+  const { columns } = data.value;
+  const nextColumn = columns[props.columnIndex + 1];
+  const lastColumnIndex = columns.length - 1;
+  const lastColumn = columns[lastColumnIndex];
 
-  if (!targetCol) return 0;
+  if (!nextColumn) return null;
 
-  return targetCol.getBoundingClientRect().width;
+  // When resizing the second-to-last column, nextColumn === lastColumn:
+  // collapse to plain adjacent compensation to avoid double-writing a key.
+  const isAdjacentToLast = props.columnIndex + 1 === lastColumnIndex;
+  const nextStartWidth = getColumnActualWidth(props.columnIndex + 1);
+  const lastStartWidth = isAdjacentToLast
+    ? nextStartWidth
+    : getColumnActualWidth(lastColumnIndex);
+
+  if (nextStartWidth === 0 || lastStartWidth === 0) return null;
+
+  // Slack the last column can absorb (signed against `diff`):
+  // - positive `diff` shrinks last → capped by lastShrinkBudget
+  // - negative `diff` grows last → capped by lastGrowBudget
+  const lastShrinkBudget = lastStartWidth - (lastColumn.minWidth ?? 0);
+  const lastGrowBudget =
+    lastColumn.maxWidth !== undefined
+      ? lastColumn.maxWidth - lastStartWidth
+      : Infinity;
+
+  return (diff) => {
+    const newWidth = startWidth + diff;
+
+    if (!isWithinBounds(newWidth, column.minWidth, column.maxWidth)) {
+      return false;
+    }
+
+    const toLast = isAdjacentToLast
+      ? 0
+      : diff >= 0
+        ? Math.min(diff, lastShrinkBudget)
+        : Math.max(diff, -lastGrowBudget);
+    // Always write N+1 too — when the overflow returns to 0 on the return
+    // drag, this restores N+1 to its start width (LIFO donor restoration).
+    const newNextWidth = nextStartWidth - (diff - toLast);
+
+    if (
+      !isWithinBounds(newNextWidth, nextColumn.minWidth, nextColumn.maxWidth)
+    ) {
+      return false;
+    }
+
+    setWidth(column.key, newWidth);
+
+    if (!isAdjacentToLast) {
+      setWidth(lastColumn.key, lastStartWidth - toLast);
+    }
+
+    setWidth(nextColumn.key, newNextWidth);
+
+    return true;
+  };
+}
+
+// Builds the move handler of the active strategy (null = cannot resize)
+function createMoveHandler(): ResizeMoveHandler | null {
+  const setWidth: SetColumnWidth = (key, width) =>
+    table.value.columnState?.setResizedColumnWidth(key, width);
+  const startWidth = getColumnActualWidth(props.columnIndex);
+
+  if (startWidth === 0) return null;
+
+  return isGrowTable.value
+    ? createGrowTableMove(props.column, startWidth, setWidth)
+    : createPreserveTableWidthMove(props.column, startWidth, setWidth);
 }
 
 function handleMouseDown(event: MouseEvent): void {
   event.preventDefault();
   event.stopPropagation();
 
-  const { columns } = data.value;
-  const {
-    commitResizedColumnWidths,
-    discardResizedColumnWidths,
-    setResizedColumnWidth,
-  } = table.value.columnState ?? {};
+  const applyMove = createMoveHandler();
 
-  // Get next column (the one to the right)
-  const nextColumn = columns[props.columnIndex + 1];
+  if (!applyMove) return;
 
-  if (!nextColumn) {
-    // If there's no next column, we can't do adjacent resize
-    return;
-  }
-
-  const lastColumnIndex = columns.length - 1;
-  const lastColumn = columns[lastColumnIndex];
-  // When resizing the second-to-last column, nextColumn === lastColumn.
-  // We collapse to the legacy adjacent-compensation path to avoid
-  // double-writing the same key.
-  const isAdjacentToLast = props.columnIndex + 1 === lastColumnIndex;
-
-  // Get the actual rendered widths from the DOM
-  const currentWidth = getColumnActualWidth(props.columnIndex);
-  const nextWidth = getColumnActualWidth(props.columnIndex + 1);
-  const lastWidth = isAdjacentToLast
-    ? nextWidth
-    : getColumnActualWidth(lastColumnIndex);
-
-  if (currentWidth === 0 || nextWidth === 0 || lastWidth === 0) {
-    return;
-  }
-
-  startX = event.clientX;
-  startWidth = currentWidth;
-  nextStartWidth = nextWidth;
-
-  const { maxWidth, minWidth } = props.column;
-  const { maxWidth: nextMaxWidth, minWidth: nextMinWidth } = nextColumn;
-  const { maxWidth: lastMaxWidth, minWidth: lastMinWidth } = lastColumn;
-
-  // Slack the last column can absorb (signed against `diff`):
-  // - positive `diff` shrinks last → capped by lastShrinkBudget
-  // - negative `diff` grows last → capped by lastGrowBudget
-  const lastShrinkBudget = lastWidth - (lastMinWidth ?? 0);
-  const lastGrowBudget =
-    lastMaxWidth !== undefined ? lastMaxWidth - lastWidth : Infinity;
-
+  const { commitResizedColumnWidths, discardResizedColumnWidths } =
+    table.value.columnState ?? {};
+  const startX = event.clientX;
   // Net drag distance last written to the widths; 0 means no visible change
   let appliedDiff = 0;
 
   const handleMouseMove = (moveEvent: MouseEvent): void => {
     const diff = moveEvent.clientX - startX;
-    const newWidth = startWidth + diff;
 
-    // Current column constraint checks
-    if (minWidth !== undefined && newWidth < minWidth) return;
-    if (maxWidth !== undefined && newWidth > maxWidth) return;
-    if (newWidth < 0) return;
-
-    if (isAdjacentToLast) {
-      // Legacy adjacent compensation: donor === N+1 === last
-      const newNextWidth = nextStartWidth - diff;
-
-      if (nextMinWidth !== undefined && newNextWidth < nextMinWidth) return;
-      if (nextMaxWidth !== undefined && newNextWidth > nextMaxWidth) return;
-      if (newNextWidth < 0) return;
-
-      setResizedColumnWidth?.(props.column.key, newWidth);
-      setResizedColumnWidth?.(nextColumn.key, newNextWidth);
-      appliedDiff = diff;
-
-      return;
-    }
-
-    // Last-column donor strategy:
-    // Project `diff` onto the last column first (clamped to its budget).
-    // Any overflow falls back to the adjacent column (N+1).
-    let toLast: number;
-
-    if (diff >= 0) {
-      toLast = Math.min(diff, lastShrinkBudget);
-    } else {
-      toLast = Math.max(diff, -lastGrowBudget);
-    }
-
-    const overflow = diff - toLast;
-    const newLastWidth = lastWidth - toLast;
-    // Always write N+1 too — when overflow returns to 0 on the return
-    // drag, this restores N+1 to its start width (LIFO donor restoration).
-    const newNextWidth = nextStartWidth - overflow;
-
-    if (nextMinWidth !== undefined && newNextWidth < nextMinWidth) return;
-    if (nextMaxWidth !== undefined && newNextWidth > nextMaxWidth) return;
-    if (newNextWidth < 0) return;
-
-    setResizedColumnWidth?.(props.column.key, newWidth);
-    setResizedColumnWidth?.(lastColumn.key, newLastWidth);
-    setResizedColumnWidth?.(nextColumn.key, newNextWidth);
-    appliedDiff = diff;
+    if (applyMove(diff)) appliedDiff = diff;
   };
 
   const stopDragging = (): void => {
@@ -213,9 +246,8 @@ function handleMouseDown(event: MouseEvent): void {
 </script>
 
 <template>
-  <!-- Don't show resize handle for the last column (no adjacent column to resize) -->
   <div
-    v-if="!isLastColumn"
+    v-if="!isHandleHidden"
     aria-hidden="true"
     :class="classes.resizeHandle"
     role="presentation"

@@ -11,6 +11,7 @@ import type {
   TableDraggable,
   TablePinnable,
   TableRowSelection,
+  TableResizeStrategy,
   TableRowState,
   TableScroll,
   TableSize,
@@ -344,6 +345,15 @@ export interface TableProps<T extends TableDataSource = TableDataSource> {
    * @default false
    */
   resizable?: boolean;
+  /**
+   * How a column drag distributes width. Only takes effect when `resizable`
+   * is true.
+   * `'preserve-table-width'` keeps the table's total width by borrowing from
+   * the last column, then the right neighbour; `'grow-table'` changes only
+   * the dragged column so the table widens and scrolls horizontally.
+   * @default 'preserve-table-width'
+   */
+  resizeStrategy?: TableResizeStrategy;
   /**
    * Row height preset token.
    * @default 'base'

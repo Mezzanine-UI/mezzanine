@@ -193,6 +193,107 @@ describe('<MznTable resizable />', () => {
     expect(onColumnWidthsChange).not.toHaveBeenCalled();
   });
 
+  it('should hide the resize handle of the last column by default', () => {
+    const wrapper = render();
+
+    expect(wrapper.findAll('.mzn-table__resize-handle')).toHaveLength(
+      columns.length - 1,
+    );
+  });
+
+  it.each(['preserve-table-width', 'grow-table'] as const)(
+    'should not render an actions column without actions (%s)',
+    (resizeStrategy) => {
+      const wrapper = render({ resizeStrategy });
+
+      expect(getColWidths(wrapper)).toHaveLength(columns.length);
+    },
+  );
+
+  describe("resizeStrategy='grow-table'", () => {
+    it('should grow only the dragged column and report only its width', async () => {
+      const onColumnWidthsChange = vi.fn();
+      const wrapper = render({
+        onColumnWidthsChange,
+        resizeStrategy: 'grow-table',
+      });
+
+      await dragHandle(wrapper, 0, 300);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledTimes(1);
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({ name: 460 });
+      expect(getColWidths(wrapper)).toEqual(['460px', '100px', '400px']);
+    });
+
+    it('should keep other columns unchanged during the drag', async () => {
+      const wrapper = render({ resizeStrategy: 'grow-table' });
+
+      await getHandle(wrapper, 1).trigger('mousedown', { clientX: 0 });
+      await fireDocumentMouse('mousemove', 120);
+
+      expect(getColWidths(wrapper)).toEqual(['160px', '220px', '400px']);
+
+      await fireDocumentMouse('mouseup', 120);
+    });
+
+    it('should ignore moves below minWidth or above maxWidth of the dragged column', async () => {
+      const onColumnWidthsChange = vi.fn();
+      const wrapper = render({
+        columns: [
+          { ...columns[0], maxWidth: 200 },
+          columns[1],
+          columns[2],
+        ] as TableColumn<TestDataType>[],
+        onColumnWidthsChange,
+        resizeStrategy: 'grow-table',
+      });
+
+      await getHandle(wrapper).trigger('mousedown', { clientX: 0 });
+      await fireDocumentMouse('mousemove', 30);
+      await fireDocumentMouse('mousemove', 100);
+      await fireDocumentMouse('mousemove', -100);
+      await fireDocumentMouse('mouseup', -100);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({ name: 190 });
+    });
+
+    it('should render a resize handle on the last column too', () => {
+      const wrapper = render({ resizeStrategy: 'grow-table' });
+
+      expect(wrapper.findAll('.mzn-table__resize-handle')).toHaveLength(
+        columns.length,
+      );
+    });
+
+    it('should resize the last column alone', async () => {
+      const onColumnWidthsChange = vi.fn();
+      const wrapper = render({
+        onColumnWidthsChange,
+        resizeStrategy: 'grow-table',
+      });
+
+      await dragHandle(wrapper, 2, 80);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({ address: 480 });
+    });
+
+    it('should merge previously committed widths when reporting', async () => {
+      const onColumnWidthsChange = vi.fn();
+      const wrapper = render({
+        columnWidths: { age: 120 },
+        onColumnWidthsChange,
+        resizeStrategy: 'grow-table',
+      });
+
+      await dragHandle(wrapper, 0, 40);
+
+      expect(onColumnWidthsChange).toHaveBeenCalledWith({
+        age: 120,
+        name: 200,
+      });
+    });
+  });
+
   describe('controlled columnWidths', () => {
     it('should render widths from columnWidths over column.width', () => {
       const wrapper = render({ columnWidths: { name: 240 } });
