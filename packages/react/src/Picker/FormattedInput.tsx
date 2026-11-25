@@ -165,6 +165,7 @@ function FormattedInput({
   return (
     <div className={classes.formattedInput}>
       <input
+        // Must stay before the spread so inputProps.inputMode can override it
         inputMode="numeric"
         {...inputProps}
         ref={composedRef}

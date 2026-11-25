@@ -363,3 +363,40 @@ describe('MznFormattedInput inputMode', () => {
     expect(el.getAttribute('inputmode')).toBe('text');
   });
 });
+
+describe('MznFormattedInput non-digit keys', () => {
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  // `B a c k s p e` used to slip through a `/[\dBackspace]/` character class.
+  it.each(['a', 'B', 'c', 'e', 'k', 'p', 's', 'x', '-'])(
+    'should prevent the default action of %j',
+    async (key) => {
+      const { el } = await setup('YYYY-MM-DD', '');
+      const event = new KeyboardEvent('keydown', {
+        bubbles: true,
+        cancelable: true,
+        key,
+      });
+
+      el.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(true);
+    },
+  );
+
+  it('should keep modifier shortcuts such as ctrl+a working', async () => {
+    const { el } = await setup('YYYY-MM-DD', '');
+    const event = new KeyboardEvent('keydown', {
+      bubbles: true,
+      cancelable: true,
+      ctrlKey: true,
+      key: 'a',
+    });
+
+    el.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(false);
+  });
+});

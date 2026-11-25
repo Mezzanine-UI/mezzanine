@@ -173,6 +173,32 @@ describe('<MznFormattedInput />', () => {
       expect(segments(wrapper).join('')).toBe('YYYY-MM-DD');
     });
 
+    // `B a c k s p e` used to slip through a `/[\dBackspace]/` character class.
+    it.each(['a', 'B', 'c', 'e', 'k', 'p', 's', 'x', '-'])(
+      'should prevent the default action of %j',
+      (key) => {
+        const wrapper = mountInput();
+        const event = new KeyboardEvent('keydown', { cancelable: true, key });
+
+        input(wrapper).element.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(true);
+      },
+    );
+
+    it('should keep modifier shortcuts such as ctrl+a working', () => {
+      const wrapper = mountInput();
+      const event = new KeyboardEvent('keydown', {
+        cancelable: true,
+        ctrlKey: true,
+        key: 'a',
+      });
+
+      input(wrapper).element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(false);
+    });
+
     it('should emit change once the value is complete and parseable', async () => {
       const onChange = vi.fn();
       const wrapper = mountInput({ onChange, value: '2026-09-1D' });

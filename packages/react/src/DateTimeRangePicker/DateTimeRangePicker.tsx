@@ -31,6 +31,16 @@ export interface DateTimeRangePickerProps
    */
   direction?: 'row' | 'column';
   /**
+   * Other props for the date input. Applied to both the "from" and the "to"
+   * picker, so avoid values that must be unique, such as `id` or `name`.
+   */
+  inputLeftProps?: DateTimePickerProps['inputLeftProps'];
+  /**
+   * Other props for the time input. Applied to both the "from" and the "to"
+   * picker, so avoid values that must be unique, such as `id` or `name`.
+   */
+  inputRightProps?: DateTimePickerProps['inputRightProps'];
+  /**
    * Change handler for the range value.
    * Called when either from or to value changes.
    */
@@ -77,6 +87,8 @@ function DateTimeRangePicker({
     hideMinute,
     hideSecond,
     hourStep,
+    inputLeftProps,
+    inputRightProps,
     isDateDisabled,
     isHalfYearDisabled,
     isMonthDisabled,
@@ -143,6 +155,8 @@ function DateTimeRangePicker({
       hideMinute,
       hideSecond,
       hourStep,
+      inputLeftProps,
+      inputRightProps,
       isDateDisabled,
       isHalfYearDisabled,
       isMonthDisabled,
@@ -184,6 +198,8 @@ function DateTimeRangePicker({
       hideMinute,
       hideSecond,
       hourStep,
+      inputLeftProps,
+      inputRightProps,
       isDateDisabled,
       isHalfYearDisabled,
       isMonthDisabled,

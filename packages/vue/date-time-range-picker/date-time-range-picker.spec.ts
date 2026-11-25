@@ -48,6 +48,19 @@ describe('<MznDateTimeRangePicker />', () => {
     );
   });
 
+  it('should pass inputLeftProps / inputRightProps to the date and time inputs of both pickers', () => {
+    const wrapper = mountPicker({
+      inputLeftProps: { inputmode: 'text' },
+      inputRightProps: { inputmode: 'decimal' },
+    });
+    // [from date, from time, to date, to time]
+    const inputModes = wrapper
+      .findAll('input')
+      .map((input) => input.attributes('inputmode'));
+
+    expect(inputModes).toEqual(['text', 'decimal', 'text', 'decimal']);
+  });
+
   it('should turn the arrow and the host class in column direction', () => {
     const wrapper = mountPicker({ direction: 'column' });
     const host = wrapper.get(`.${classes.host}`);
