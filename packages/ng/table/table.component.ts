@@ -81,6 +81,7 @@ import {
   type TablePinnable,
   type TableRowSelection,
   type TableRowSelectionCheckbox,
+  type TableResizeStrategy,
   type TableRowState,
   type TableScroll,
   type TableSelectionMode,
@@ -449,7 +450,11 @@ function throttleRaf(
                       </div>
                     }
                   </div>
-                  @if (resizable() && colIndex < columns().length - 1) {
+                  @if (
+                    resizable() &&
+                    (resizeStrategy() === 'grow-table' ||
+                      colIndex < columns().length - 1)
+                  ) {
                     <span
                       [class]="resizeHandleClass"
                       (pointerdown)="onResizeStart($event, colIndex)"
@@ -1763,6 +1768,16 @@ export class MznTable {
    * @default false
    */
   readonly resizable = input(false);
+
+  /**
+   * How a column drag distributes width. Only takes effect when `resizable`
+   * is true.
+   * `'preserve-table-width'` keeps the table's total width by borrowing from
+   * the last column, then the right neighbour; `'grow-table'` changes only
+   * the dragged column so the table widens and scrolls horizontally.
+   * @default 'preserve-table-width'
+   */
+  readonly resizeStrategy = input<TableResizeStrategy>('preserve-table-width');
 
   /**
    * 捲動設定。設定 y 高度上限以啟用垂直捲動。
@@ -3186,6 +3201,18 @@ export class MznTable {
         for (const col of flex) {
           map.set(col.key, clamp(avg, col));
         }
+
+        return map;
+      }
+
+      // 'grow-table': with no flex column, the last column absorbs the
+      // remaining space so the browser does not spread it over every column
+      // (which would shift other columns while one is being dragged).
+      const remaining = available - totalFixed;
+      const lastCol = cols[cols.length - 1];
+
+      if (this.resizeStrategy() === 'grow-table' && remaining > 0) {
+        map.set(lastCol.key, (map.get(lastCol.key) ?? 0) + remaining);
       }
 
       return map;
@@ -3559,6 +3586,7 @@ export class MznTable {
         columns,
         containerWidth,
         getResizedColumnWidth: (key) => this.getResizedColumnWidth(key),
+        resizeStrategy: this.resizeStrategy(),
       });
 
       // Source cells: lock widths so the placeholder (invisible via
@@ -3819,12 +3847,53 @@ export class MznTable {
 
   private onResizeMove(event: PointerEvent, colIndex: number): void {
     const delta = event.clientX - this.resizeStartX();
+    const applied =
+      this.resizeStrategy() === 'grow-table'
+        ? this.applyGrowTableResize(delta, colIndex)
+        : this.applyPreserveTableWidthResize(delta, colIndex);
+
+    if (applied) this.resizeAppliedDelta = delta;
+  }
+
+  /**
+   * `'grow-table'`: only the dragged column changes, so the table widens or
+   * narrows by the drag distance (spreadsheet-style resizing). Returns false
+   * when the move violates the column's min/max width and was ignored.
+   */
+  private applyGrowTableResize(delta: number, colIndex: number): boolean {
+    const currentCol = this.columns()[colIndex];
+
+    if (!currentCol) return false;
+
+    const startWidth = this.resizeStartWidths().get(currentCol.key) ?? 100;
+    const newWidth = startWidth + delta;
+
+    if (newWidth < (currentCol.minWidth ?? 40)) return false;
+    if (currentCol.maxWidth !== undefined && newWidth > currentCol.maxWidth) {
+      return false;
+    }
+
+    this.setResizedColumnWidth(currentCol.key, newWidth);
+
+    return true;
+  }
+
+  /**
+   * `'preserve-table-width'`: the table keeps its total width. The width the
+   * dragged column gains or loses is taken from (or given to) the last column
+   * first, within its min/max, and the overflow from the adjacent column.
+   * Returns false when the move violates a constraint and was ignored.
+   */
+  private applyPreserveTableWidthResize(
+    delta: number,
+    colIndex: number,
+  ): boolean {
     const colDefs = this.columns();
     const currentCol = colDefs[colIndex];
     const nextCol = colDefs[colIndex + 1];
 
     // Last column has no resize handle rendered; nothing to compensate against
-    if (!currentCol || !nextCol) return;
+    if (!currentCol || !nextCol) return false;
 
     const lastIdx = colDefs.length - 1;
     const lastCol = colDefs[lastIdx];
@@ -3844,50 +3913,37 @@ export class MznTable {
 
     // Current column constraint checks — reject instead of clamp so that
     // total table width stays conserved.
-    if (newCurrentWidth < minCurrent) return;
-    if (maxCurrent !== undefined && newCurrentWidth > maxCurrent) return;
+    if (newCurrentWidth < minCurrent) return false;
+    if (maxCurrent !== undefined && newCurrentWidth > maxCurrent) return false;
 
-    if (isAdjacentToLast) {
-      // Donor === N+1 === last; collapse to legacy adjacent compensation
-      // to avoid writing the same key twice.
-      const newNextWidth = nextStartWidth - delta;
-
-      if (newNextWidth < minNext) return;
-      if (maxNext !== undefined && newNextWidth > maxNext) return;
-
-      this.setResizedColumnWidth(currentCol.key, newCurrentWidth);
-      this.setResizedColumnWidth(nextCol.key, newNextWidth);
-      this.resizeAppliedDelta = delta;
-
-      return;
-    }
-
-    // Last-column donor strategy:
-    // Project `delta` onto the last column first (clamped to its budget).
-    // Any overflow falls back to the adjacent column (N+1).
+    // Donor === N+1 === last collapses to plain adjacent compensation, so
+    // nothing is projected onto the last column (avoids double-writing a key).
     const minLast = lastCol.minWidth ?? 40;
     const maxLast = lastCol.maxWidth;
     const lastShrinkBudget = lastStartWidth - minLast;
     const lastGrowBudget =
       maxLast !== undefined ? maxLast - lastStartWidth : Infinity;
-
-    const toLast =
-      delta >= 0
+    const toLast = isAdjacentToLast
+      ? 0
+      : delta >= 0
         ? Math.min(delta, lastShrinkBudget)
         : Math.max(delta, -lastGrowBudget);
-    const overflow = delta - toLast;
-    const newLastWidth = lastStartWidth - toLast;
     // Always write N+1 too — when overflow returns to 0 on the return drag,
     // this restores N+1 to its start width (LIFO donor restoration).
-    const newNextWidth = nextStartWidth - overflow;
+    const newNextWidth = nextStartWidth - (delta - toLast);
 
-    if (newNextWidth < minNext) return;
-    if (maxNext !== undefined && newNextWidth > maxNext) return;
+    if (newNextWidth < minNext) return false;
+    if (maxNext !== undefined && newNextWidth > maxNext) return false;
 
     this.setResizedColumnWidth(currentCol.key, newCurrentWidth);
-    this.setResizedColumnWidth(lastCol.key, newLastWidth);
+
+    if (!isAdjacentToLast) {
+      this.setResizedColumnWidth(lastCol.key, lastStartWidth - toLast);
+    }
+
     this.setResizedColumnWidth(nextCol.key, newNextWidth);
-    this.resizeAppliedDelta = delta;
+
+    return true;
   }
 
   private onResizeEnd(): void {
