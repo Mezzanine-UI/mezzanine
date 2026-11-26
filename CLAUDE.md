@@ -28,6 +28,7 @@ Detailed how-to guides are stored in `.claude/skills/` — read the relevant fil
 
 - **Adding a new icon** → `.claude/skills/add-icon.md`
 - **Adding a spacing token** → `.claude/skills/add-spacing-token.md`
+- **Writing release notes**（使用者傳 `Release:` + 套件版本清單時）→ `.claude/skills/release-notes/SKILL.md`
 - **Angular 元件架構（強制規範）** → `.claude/skills/architecting-angular-components/SKILL.md`
 - **Vue 3 元件架構（強制規範）** → `.claude/skills/architecting-vue-components/SKILL.md`（另含 `PORTING-PLAYBOOK.md`、`PARITY-TOOLING.md`）
 
