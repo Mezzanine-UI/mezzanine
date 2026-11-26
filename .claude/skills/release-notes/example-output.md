@@ -129,7 +129,7 @@ Expected reply (everything below the line). Match this shape, language split, or
 
 ### 4. `@mezzanine-ui/core@1.4.0`
 
-```markdown
+````markdown
 ## `@mezzanine-ui/core@1.4.0`
 
 > Adds the `TableResizeStrategy` type used by the new table resize strategy ([#529](https://github.com/Mezzanine-UI/mezzanine/issues/529)).
@@ -145,7 +145,7 @@ Expected reply (everything below the line). Match this shape, language split, or
 ---
 
 **Full Changelog**: https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.3.3...@mezzanine-ui/core@1.4.0
-```
+````
 
 ---
 

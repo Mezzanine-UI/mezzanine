@@ -7,3 +7,5 @@
 **/*.css
 **/*.scss
 /.nx/workspace-data
+# Release-note skill: output samples must keep exact fences and emphasis
+/.claude/skills/release-notes

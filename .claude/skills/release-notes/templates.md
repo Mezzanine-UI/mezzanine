@@ -129,7 +129,7 @@ Notes:
 
 ### 🚀 Improvements
 
-- **`{Component}`** — {effect of the core change on this framework} _(via core@{coreVersion})_
+- **`{Component}`** — {effect of the core change on this framework} *(via core@{coreVersion})*
 
 ---
 
