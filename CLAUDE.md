@@ -26,6 +26,7 @@
 
 Detailed how-to guides are stored in `.claude/skills/` — read the relevant file before starting the task:
 
+- **Fixing a bug / issue, or adding a small cross-framework feature**（修 `#<issue>`、跨 React／Vue／Angular 修正、驗證、開 PR）→ `.claude/skills/fixing-mezzanine/SKILL.md`（另含 `verification.md`、`pitfalls.md`、`pr-template.md`）
 - **Adding a new icon** → `.claude/skills/add-icon.md`
 - **Adding a spacing token** → `.claude/skills/add-spacing-token.md`
 - **Writing release notes**（使用者傳 `Release:` + 套件版本清單時）→ `.claude/skills/release-notes/SKILL.md`
